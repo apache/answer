@@ -6,3 +6,4 @@ build
 node_modules/
 src/types/
 scripts/
+src

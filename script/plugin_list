@@ -1,1 +1,5 @@
 github.com/apache/incubator-answer-plugins/connector-basic@latest
+github.com/apache/incubator-answer-plugins/user-center-wecom@latest
+github.com/apache/incubator-answer-plugins/storage-aliyunoss@latest
+github.com/apache/incubator-answer-plugins/editor-chart@latest
+github.com/apache/incubator-answer-plugins/editor-formula@latest

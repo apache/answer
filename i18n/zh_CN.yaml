@@ -821,7 +821,7 @@ ui:
     tag_required_text: 必选标签（至少一个）
   header:
     nav:
-      question: 问题
+      question: 问题/话题
       tag: 标签
       user: 用户
       profile: 用户主页
@@ -835,7 +835,7 @@ ui:
       placeholder: 搜索
   footer:
     build_on: >-
-      由 <1>Apache Answer</1> 提供动力 - 驱动问答社区的开源软件。<br />用爱制造 © {{cc}}.
+      Powered by <1>众康云</1> - AI实验室团队提供支持 Q&A 社区。<br />答案=知识 © {{cc}}.
   upload_img:
     name: 更改
     loading: 加载中...
