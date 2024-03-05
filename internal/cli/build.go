@@ -22,12 +22,12 @@ package cli
 import (
 	"bytes"
 	"fmt"
-	"io"
 	"io/fs"
 	"os"
 	"os/exec"
 	"path"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"text/template"
 
@@ -41,29 +41,29 @@ import (
 
 const (
 	mainGoTpl = `package main
-
-import (
-	answercmd "github.com/apache/incubator-answer/cmd"
-
-  // remote plugins
-	{{- range .remote_plugins}}
-	_ "{{.}}"
-	{{- end}}
-
-  // local plugins
-	{{- range .local_plugins}}
-	_ "answer/{{.}}"
-	{{- end}}
-)
-
-func main() {
-	answercmd.Main()
-}
-`
+ 
+ import (
+	 answercmd "github.com/apache/incubator-answer/cmd"
+ 
+   // remote plugins
+	 {{- range .remote_plugins}}
+	 _ "{{.}}"
+	 {{- end}}
+ 
+   // local plugins
+	 {{- range .local_plugins}}
+	 _ "answer/{{.}}"
+	 {{- end}}
+ )
+ 
+ func main() {
+	 answercmd.Main()
+ }
+ `
 	goModTpl = `module answer
-
-go 1.19
-`
+ 
+ go 1.19
+ `
 )
 
 type answerBuilder struct {
@@ -126,7 +126,7 @@ func BuildNewAnswer(outputPath string, plugins []string, originalAnswerInfo Orig
 	builder.DoTask(buildUI)
 	builder.DoTask(mergeI18nFiles)
 	builder.DoTask(buildBinary)
-	builder.DoTask(cleanByproduct)
+	// builder.DoTask(cleanByproduct)
 	return builder.BuildError
 }
 
@@ -228,7 +228,7 @@ func copyUIFiles(b *buildingMaterial) (err error) {
 	goModUIDir := filepath.Join(answerDir, "ui")
 	localUIBuildDir := filepath.Join(b.tmpDir, "vendor/github.com/apache/incubator-answer/ui/")
 	// The node_modules folder generated during development will interfere packaging, so it needs to be ignored.
-	if err = copyDirEntries(os.DirFS(goModUIDir), ".", localUIBuildDir, "node_modules"); err != nil {
+	if err = copyDirEntries(goModUIDir, os.DirFS(goModUIDir), ".", localUIBuildDir, "node_modules"); err != nil {
 		return fmt.Errorf("failed to copy ui files: %w", err)
 	}
 
@@ -260,7 +260,7 @@ func copyUIFiles(b *buildingMaterial) (err error) {
 		}
 		localPluginDir := filepath.Join(localUIPluginDir, entry.Name())
 		fmt.Printf("try to copy dir from %s to %s\n", sourcePluginDir, localPluginDir)
-		if err = copyDirEntries(os.DirFS(sourcePluginDir), ".", localPluginDir); err != nil {
+		if err = copyDirEntries("", os.DirFS(sourcePluginDir), ".", localPluginDir); err != nil {
 			return fmt.Errorf("failed to copy ui files: %w", err)
 		}
 	}
@@ -333,7 +333,7 @@ func buildUI(b *buildingMaterial) (err error) {
 func replaceNecessaryFile(b *buildingMaterial) (err error) {
 	fmt.Printf("try to replace ui build directory\n")
 	uiBuildDir := filepath.Join(b.tmpDir, "vendor/github.com/apache/incubator-answer/ui")
-	err = copyDirEntries(ui.Build, ".", uiBuildDir)
+	err = copyDirEntries("", ui.Build, ".", uiBuildDir)
 	return err
 }
 
@@ -425,11 +425,25 @@ func mergeI18nFiles(b *buildingMaterial) (err error) {
 	return err
 }
 
-func copyDirEntries(sourceFs fs.FS, sourceDir, targetDir string, ignoreDir ...string) (err error) {
-	err = dir.CreateDirIfNotExist(targetDir)
+// CopyDir 函数接受两个字符串参数，分别表示源文件夹和目标文件夹的路径
+// 返回值是拷贝的文件数量和可能发生的错误
+func CopyDir(src, dst string, ignoreDir []string) (count int, err error) {
+	// 使用正则表达式将路径按照 / 或 \ 分割成切片
+	regexp1, err := regexp.Compile(`(/|\\)`)
 	if err != nil {
-		return err
+		return 0, err
 	}
+	srcSplits := regexp1.Split(src, 10000)
+	dstSplits := regexp1.Split(dst, 10000)
+
+	// 调用 CopyDirInner 函数，传入源文件夹和目标文件夹的前缀和最后一级名称
+	return CopyDirInner(strings.Join(srcSplits[:len(srcSplits)-1], "/"), srcSplits[len(srcSplits)-1], strings.Join(dstSplits[:len(dstSplits)-1], "/"), "", ignoreDir)
+}
+
+// CopyDirInner 函数接受四个字符串参数，分别表示源文件夹和目标文件夹的前缀和最后一级名称
+// 返回值是拷贝的文件数量和可能发生的错误
+func CopyDirInner(srcPrefix, src string, dstPrefix, dst string, ignoreDir []string) (count int, err error) {
+
 	ignoreThisDir := func(path string) bool {
 		for _, s := range ignoreDir {
 			if strings.HasPrefix(path, s) {
@@ -439,53 +453,119 @@ func copyDirEntries(sourceFs fs.FS, sourceDir, targetDir string, ignoreDir ...st
 		return false
 	}
 
-	err = fs.WalkDir(sourceFs, sourceDir, func(path string, d fs.DirEntry, err error) error {
-		if err != nil {
-			return err
-		}
-		if ignoreThisDir(path) {
-			return nil
-		}
+	// 如果前缀为空，则设置为当前目录
+	if srcPrefix == "" {
+		srcPrefix = "."
+	}
+	if dstPrefix == "" {
+		dstPrefix = "."
+	}
+	// 读取源文件夹下的所有文件和子文件夹
+	dirs, err := os.ReadDir(srcPrefix + "/" + src)
+	if err != nil {
+		return 0, err
+	}
 
-		// Convert the path to use forward slashes, important because we use embedded FS which always uses forward slashes
-		path = filepath.ToSlash(path)
+	if ignoreThisDir(srcPrefix) {
+		return 0, nil
+	}
 
-		// Construct the absolute path for the source file/directory
-		srcPath := filepath.Join(sourceDir, path)
-
-		// Construct the absolute path for the destination file/directory
-		dstPath := filepath.Join(targetDir, path)
-
-		if d.IsDir() {
-			// Create the directory in the destination
-			err := os.MkdirAll(dstPath, os.ModePerm)
+	// 在目标文件夹下创建同名的子文件夹
+	pathCursor := dstPrefix + "/" + dst + "/" + src
+	err = os.MkdirAll(pathCursor, 0600)
+	if err != nil {
+		return 0, err
+	}
+	for _, dir := range dirs {
+		if dir.IsDir() {
+			// 如果是子文件夹，则递归调用 CopyDirInner 函数，传入相应的参数
+			countSub, err := CopyDirInner(srcPrefix+"/"+src, dir.Name(), dstPrefix+"/"+dst, src, ignoreDir)
 			if err != nil {
-				return fmt.Errorf("failed to create directory %s: %w", dstPath, err)
+				return 0, err
 			}
+			count += countSub
 		} else {
-			// Open the source file
-			srcFile, err := sourceFs.Open(srcPath)
+			// 如果是文件，则读取其内容，并写入到目标文件夹下同名的文件中
+			bytesFile, err := os.ReadFile(srcPrefix + "/" + src + "/" + dir.Name())
 			if err != nil {
-				return fmt.Errorf("failed to open source file %s: %w", srcPath, err)
+				return 0, err
 			}
-			defer srcFile.Close()
 
-			// Create the destination file
-			dstFile, err := os.Create(dstPath)
+			err = os.WriteFile(pathCursor+"/"+dir.Name(), bytesFile, 0600)
 			if err != nil {
-				return fmt.Errorf("failed to create destination file %s: %w", dstPath, err)
+				return 0, err
 			}
-			defer dstFile.Close()
-
-			// Copy the file contents
-			_, err = io.Copy(dstFile, srcFile)
-			if err != nil {
-				return fmt.Errorf("failed to copy file contents from %s to %s: %w", srcPath, dstPath, err)
-			}
+			count++
 		}
+	}
+	return count, nil
+}
 
-		return nil
-	})
+func copyDirEntries(sourceFsDir string, sourceFs fs.FS, sourceDir, targetDir string, ignoreDir ...string) (err error) {
+	err = dir.CreateDirIfNotExist(targetDir)
+	if err != nil {
+		return err
+	}
+	// ignoreThisDir := func(path string) bool {
+	// 	for _, s := range ignoreDir {
+	// 		if strings.HasPrefix(path, s) {
+	// 			return true
+	// 		}
+	// 	}
+	// 	return false
+	// }
+	srcPath := filepath.Join(sourceFsDir, sourceDir)
+	fmt.Println(srcPath, targetDir)
+	_, err = CopyDir(srcPath, targetDir, ignoreDir)
+
+	// err = fs.WalkDir(sourceFs, sourceDir, func(path string, d fs.DirEntry, err error) error {
+	// 	if err != nil {
+	// 		return err
+	// 	}
+	// 	if ignoreThisDir(path) {
+	// 		return nil
+	// 	}
+
+	// 	// Convert the path to use forward slashes, important because we use embedded FS which always uses forward slashes
+	// 	path = filepath.ToSlash(path)
+
+	// 	// Construct the absolute path for the source file/directory
+	// 	srcPath := filepath.Join(sourceFsDir, sourceDir, path)
+
+	// 	// Construct the absolute path for the destination file/directory
+	// 	dstPath := filepath.Join(targetDir, path)
+
+	// 	if d.IsDir() {
+	// 		// Create the directory in the destination
+	// 		err := os.MkdirAll(dstPath, os.ModePerm)
+	// 		if err != nil {
+	// 			return fmt.Errorf("failed to create directory %s: %w", dstPath, err)
+	// 		}
+	// 	} else {
+
+	// 		// // Open the source file
+	// 		// srcFile, err := sourceFs.Open(srcPath)
+	// 		// if err != nil {
+	// 		// 	return fmt.Errorf("failed to open source file %s: %w", srcPath, err)
+	// 		// }
+	// 		// defer srcFile.Close()
+
+	// 		// // Create the destination file
+	// 		// dstFile, err := os.Create(dstPath)
+	// 		// if err != nil {
+	// 		// 	return fmt.Errorf("failed to create destination file %s: %w", dstPath, err)
+	// 		// }
+	// 		// defer dstFile.Close()
+
+	// 		// // Copy the file contents
+	// 		// _, err = io.Copy(dstFile, srcFile)
+	// 		// if err != nil {
+	// 		// 	return fmt.Errorf("failed to copy file contents from %s to %s: %w", srcPath, dstPath, err)
+	// 		// }
+	// 	}
+
+	// 	return nil
+	// })
 
 	return err
 }
