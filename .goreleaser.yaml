@@ -18,8 +18,9 @@
 env:
   - GO11MODULE=on
   - GO111MODULE=on
-  - GOPROXY=https://goproxy.io,direct
+  - GOPROXY=https://goproxy.cn,direct
   - CGO_ENABLED=0
+  - GIT_TOKEN=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
 
 before:
   hooks:

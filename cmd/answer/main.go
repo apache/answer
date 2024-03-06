@@ -21,6 +21,13 @@ package main
 
 import (
 	answercmd "github.com/apache/incubator-answer/cmd"
+
+	// 默认将插件打包进入answer中
+	// remote plugins
+	_ "github.com/apache/incubator-answer-plugins/connector-basic"
+	_ "github.com/apache/incubator-answer-plugins/storage-aliyunoss"
+	_ "github.com/apache/incubator-answer-plugins/user-center-wecom"
+	// local plugins
 )
 
 // @securityDefinitions.apikey ApiKeyAuth

@@ -831,11 +831,12 @@ ui:
       review: 审查
       bookmark: 收藏夹
       moderation: 管理
+      quick: 快速入口
     search:
       placeholder: 搜索
   footer:
     build_on: >-
-      Powered by <1>众康云</1> - AI实验室团队提供支持 Q&A 社区。<br />答案=知识 © {{cc}}.
+      Powered by <1>众康云</1> - AI实验室提供支持。<br />知识 © {{cc}}.
   upload_img:
     name: 更改
     loading: 加载中...
@@ -1360,7 +1361,7 @@ ui:
       title: 后台管理
     dashboard:
       title: 后台管理
-      welcome: 欢迎来到 Answer 后台管理！
+      welcome: 欢迎来到 {{site_name}} 后台管理！
       site_statistics: 站点统计
       questions: "问题:"
       answers: "回答:"
@@ -1802,3 +1803,253 @@ ui:
     post_hide_list: 此帖子已经从列表中隐藏。
     post_show_list: 该帖子已显示到列表中。
     post_reopen: 这个帖子已被重新打开.
+plugin:
+  aliyunoss_storage:
+    backend:
+      info:
+        name:
+          other: 阿里云OSS存储
+        description:
+          other: 上传文件到阿里云OSS存储
+      config:
+        endpoint:
+          title:
+            other: Endpoint
+          description:
+            other: 阿里云OSS存储的Endpoint
+        bucket_name:
+          title:
+            other: Bucket名称
+          description:
+            other: 阿里云OSS存储的Bucket名称
+        object_key_prefix:
+          title:
+            other: 对象Key前缀
+          description:
+            other: 对象键的前缀，如'answer/data/'，以'/'结尾
+        access_key_id:
+          title:
+            other: AccessKeyID
+          description:
+            other: 阿里云OSS存储的AccessKeyID
+        access_key_secret:
+          title:
+            other: AccessKeySecret
+          description:
+            other: 阿里云OSS存储的AccessKeySecret
+        visit_url_prefix:
+          title:
+            other: 访问URL前缀
+          description:
+            other: 上传文件最终访问地址的前缀，以 '/' 结尾 https://example.com/xxx/
+        max_file_size:
+          title:
+            other: 最大文件大小(MB)
+          description:
+            other: 限制上传文件的最大大小，单位为MB，默认为 10MB
+      err:
+        mis_storage_config:
+          other: 错误的存储配置导致上传失败
+        file_not_found:
+          other: 文件未找到
+        unsupported_file_type:
+          other: 不支持的文件类型
+        over_file_size_limit:
+          other: 超过文件大小限制
+        upload_file_failed:
+          other: 上传文件失败
+  basic_connector:
+    backend:
+      name:
+        other: 通用连接器
+      info:
+        name:
+          other: 通用连接器
+        description:
+          other: 适用于各种 OAuth 登录的通用插件
+      config:
+        name:
+          title:
+            other: 名称
+          description:
+            other: 在登录页面上显示的连接器名称
+        client_id:
+          title:
+            other: 客户端ID
+          description:
+            other: 您的应用程序的客户端ID
+        client_secret:
+          title:
+            other: 客户端密钥
+          description:
+            other: 您的应用程序的客户端密钥
+        authorize_url:
+          title:
+            other: 授权URL
+          description:
+            other: 您的应用程序的授权URL
+        token_url:
+          title:
+            other: 令牌URL
+          description:
+            other: 您的应用程序的令牌URL
+        user_json_url:
+          title:
+            other: 用户JSON URL
+          description:
+            other: 从此URL获取用户信息
+        user_id_json_path:
+          title:
+            other: 用户ID JSON路径
+          description:
+            other: "OAuth2用户JSON中用户ID的路径。例如：user.id"
+        user_display_name_json_path:
+          title:
+            other: 用户显示名称JSON路径
+          description:
+            other: "OAuth2用户JSON中用户显示名称的路径。例如：user.name"
+        user_username_json_path:
+          title:
+            other: 用户用户名JSON路径
+          description:
+            other: "OAuth2用户JSON中用户用户名的路径。例如：user.login"
+        user_email_json_path:
+          title:
+            other: 用户电子邮件JSON路径
+          description:
+            other: "OAuth2用户JSON中用户电子邮件的路径。例如：user.email"
+        user_avatar_json_path:
+          title:
+            other: 用户头像JSON路径
+          description:
+            other: "OAuth2用户JSON中用户头像的路径。例如：user.avatar_url"
+        check_email_verified:
+          title:
+            other: 检查电子邮件已验证
+          label:
+            other: OAuth2网站已经验证了该电子邮件
+        email_verified_json_path:
+          title:
+            other: 电子邮件已验证JSON路径
+          description:
+            other: "OAuth2用户JSON中电子邮件验证的路径。例如：user.email_verified"
+        scope:
+          title:
+            other: 范围(Scope)
+          description:
+            other: "您的应用程序的OAuth范围。多个 Scope 以 `,` 分隔，如：user.email,user.age"
+        logo_svg:
+          title:
+            other: 徽标SVG
+          description:
+            other: "应用程序徽标的SVG格式，格式为base64"
+  wecom_user_center:
+    backend:
+      response:
+        sync_now:
+          success:
+            other: 联系人同步成功。
+          failed:
+            other: 联系人同步失败。
+      info:
+        name: 
+          other: 企业微信
+        description:
+          other: 从企业微信获取用户信息并同步到用户中心
+      config:
+        tip:
+          title:
+            other: 推送通知服务已关闭。
+        auto_sync:
+          label:
+            other: 打开自动同步
+          title:
+            other: 自动同步联系人
+          description:
+            other: 每小时自动同步。
+        sync_now:
+          label:
+            other: 立即同步
+          label_for_doing:
+            other: 同步中
+          title:
+            other: 手动同步联系人
+          description:
+            other: 上次成功同步于
+        authorize_url:
+          title:
+            other: 授权网址
+          description:
+            other: 企业微信授权网址
+        corp_id:
+          title:
+            other: 企业 ID
+          description:
+            other: 企业微信企业ID
+        corp_secret:
+          title:
+            other: 应用 Secret
+          description:
+            other: 企业微信应用程序密钥
+        agent_id:
+          title:
+            other: 应用 Agent ID
+          description:
+            other: 企业微信应用程序代理ID
+        notification:
+          label:
+            other: 打开通知
+          title:
+            other: 通知
+          description:
+            other: 用户将在企业微信上收到通知。
+      user_config:
+        inbox_notifications:
+          title:
+            other: 收件箱通知
+          label:
+            other: 打开收件箱通知
+          description:
+            other: 问题的答案、评论、邀请等。
+        all_new_questions:
+          title:
+            other: 所有新问题通知
+          label:
+            other: 打开所有新问题通知
+          description:
+            other: 收到所有新问题的通知。每周最多 50 个问题。
+        new_questions_for_following_tags:
+          title:
+            other: 关注标签的新问题通知
+          label:
+            other: 打开关注标签的新问题通知
+          description:
+            other: 收到以下标签的新问题通知。
+      tpl:
+        update_question:
+          other: "<a href=\"{{.TriggerUserUrl}}\">{{.TriggerUserDisplayName}}</a> 更新问题 <a href=\"{{.QuestionUrl}}\">{{.QuestionTitle}}</a>"
+        answer_the_question:
+          other: "<a href=\"{{.TriggerUserUrl}}\">{{.TriggerUserDisplayName}}</a> 回答了问题 <a href=\"{{.AnswerUrl}}\">{{.QuestionTitle}}</a>"
+        update_answer:
+          other: "<a href=\"{{.TriggerUserUrl}}\">{{.TriggerUserDisplayName}}</a> 更新答案 <a href=\"{{.AnswerUrl}}\">{{.QuestionTitle}}</a>"
+        accept_answer:
+          other: "<a href=\"{{.TriggerUserUrl}}\">{{.TriggerUserDisplayName}}</a> 接受答案 <a href=\"{{.AnswerUrl}}\">{{.QuestionTitle}}</a>"
+        comment_question:
+          other: "<a href=\"{{.TriggerUserUrl}}\">{{.TriggerUserDisplayName}}</a> 评论提问 <a href=\"{{.CommentUrl}}\">{{.QuestionTitle}}</a>"
+        comment_answer:
+          other: "<a href=\"{{.TriggerUserUrl}}\">{{.TriggerUserDisplayName}}</a> 评论回答 <a href=\"{{.CommentUrl}}\">{{.QuestionTitle}}</a>"
+        reply_to_you:
+          other: "<a href=\"{{.TriggerUserUrl}}\">{{.TriggerUserDisplayName}}</a> 回复了问题 <a href=\"{{.CommentUrl}}\">{{.QuestionTitle}}</a>"
+        mention_you:
+          other: "<a href=\"{{.TriggerUserUrl}}\">{{.TriggerUserDisplayName}}</a> 提到了你 <a href=\"{{.CommentUrl}}\">{{.QuestionTitle}}</a>"
+        invited_you_to_answer:
+          other: "<a href=\"{{.TriggerUserUrl}}\">{{.TriggerUserDisplayName}}</a> 邀请你回答 <a href=\"{{.QuestionUrl}}\">{{.QuestionTitle}}</a>"
+        new_question:
+          other: "新问题:\n<a href=\"{{.QuestionUrl}}\">{{.QuestionTitle}}</a>\n{{.QuestionTags}}"
+  formula_editor:
+    backend:
+      info:
+        name:
+          other: 公式编辑器
+        description:
+          other: 在编辑器中渲染公式
