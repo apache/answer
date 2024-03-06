@@ -24,7 +24,7 @@ interface Props {
   count?: number;
 }
 
-const Index: FC<Props> = ({ count = 20 }) => {
+const Index: FC<Props> = ({ count = 8 }) => {
   const list = new Array(count).fill(0).map((v, i) => v + i);
   return (
     <>

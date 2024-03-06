@@ -1,0 +1,1 @@
+--with github.com/apache/incubator-answer-plugins/connector-basic@latest \ --with github.com/apache/incubator-answer-plugins/user-center-wecom@latest \ --with github.com/apache/incubator-answer-plugins/storage-aliyunoss@latest \ --with github.com/apache/incubator-answer-plugins/editor-chart@latest \ --with github.com/apache/incubator-answer-plugins/editor-formula@latest

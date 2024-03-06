@@ -19,10 +19,12 @@
 
 import { FC } from 'react';
 import { Col, Nav } from 'react-bootstrap';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import classnames from 'classnames';
+
+import { useQueryTags } from '@/services';
 
 import { loggedUserInfoStore, sideNavStore } from '@/stores';
 import { Icon } from '@/components';
@@ -31,6 +33,7 @@ import './index.scss';
 const Index: FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [ urlSearch ] = useSearchParams();
   const { pathname } = useLocation();
   const { user: userInfo } = loggedUserInfoStore();
   const { visible, can_revision, revision } = sideNavStore();
@@ -39,6 +42,43 @@ const Index: FC = () => {
     e.preventDefault();
     navigate(path);
   };
+
+  const page = Number(urlSearch.get('page')) || 1;
+  
+  const {
+    data: tags,
+    mutate,
+    isLoading,
+  } = useQueryTags({
+    page,
+    page_size: 10,
+    query_cond: 'popular'
+  });
+
+  let recommendTags: any[] = [];
+  let reservedTags: any[] = [];
+
+  tags?.list?.sort((a,b) => b.question_count - a.question_count).map(tag => {
+    tag.href = '/tags/' + tag.slug_name;
+    if(tag.recommend && recommendTags.length < 5){
+      recommendTags.push(tag)
+    }
+    if(tag.reserved && recommendTags.length < 5){
+      reservedTags.push(tag)
+    }
+  })
+
+  const renderTag = (tag) => {
+    return (<Nav.Link 
+      className='tag-link'
+      href={tag.href} 
+      key={tag.href}
+      active={pathname === tag.href} 
+      onClick={(e) => handleNavClick(e, tag.href)}>
+      <span>{tag.display_name}</span><small className='question-count'>{tag.question_count}</small>
+    </Nav.Link>)
+  }
+
   return (
     <Col
       xl={2}
@@ -72,6 +112,14 @@ const Index: FC = () => {
             <Icon name="people-fill" className="me-2" />
             <span>{t('header.nav.user')}</span>
           </NavLink>
+
+          {recommendTags.length ? (<div className="zky-separator"></div>):null}
+          {recommendTags.length ? (<div className="py-2 px-3 mt-3 small fw-bold">
+            {t('header.nav.quick')}
+          </div>):null}
+          {recommendTags.map(tag => renderTag(tag))}
+          {reservedTags.length ? (<div className="zky-separator-sub"></div>):null}
+          {reservedTags.map(tag => renderTag(tag))}
 
           {can_revision || userInfo?.role_id === 2 ? (
             <>

@@ -1,3 +1,6 @@
+# 非必要兼容用官方的版本，这个我做了一定调整区兼容win11编译，同时build指令执行后保留了编译源码并没有删除，部分系统可能会导致目录过长无法删除源码
+# 另外就是针对企业微信插件做了修改
+
 <a href="https://answer.apache.org">
     <img alt="logo" src="docs/img/logo.svg" height="99px">
 </a>

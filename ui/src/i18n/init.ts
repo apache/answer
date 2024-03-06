@@ -29,13 +29,13 @@ import Storage from '@/utils/storage';
 /**
  * Prevent i18n from re-initialising when the page is refreshed and switching to `fallbackLng`.
  */
-const initLng = i18next.resolvedLanguage || DEFAULT_LANG;
+const initLng = i18next.language || DEFAULT_LANG;
 const initResources = {
-  en_US: {
-    translation: en_US.ui,
-  },
   zh_CN: {
     translation: zh_CN.ui,
+  },
+  en_US: {
+    translation: en_US.ui,
   },
 };
 
@@ -44,8 +44,8 @@ if (
   storageLang &&
   storageLang.resources &&
   storageLang.lng &&
-  storageLang.lng !== 'en_US' &&
-  storageLang.lng !== 'zh_CN'
+  storageLang.lng !== 'zh_CN' &&
+  storageLang.lng !== 'en_US'
 ) {
   initResources[storageLang.lng] = {
     translation: storageLang.resources,

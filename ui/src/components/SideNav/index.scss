@@ -50,6 +50,24 @@
     background-color: var(--bs-border-color);
     min-height: calc(100vh - 62px - 74px);
   }
+  .zky-separator{
+    margin: 10px 16px;
+    height: 1px;
+    background-color: var(--bs-gray-100);
+  }
+  .zky-separator-sub{
+    margin: 10px 16px;
+    height: 1px;
+    background-color: var(--bs-gray-600);
+  }
+  .question-count{
+    position: absolute;
+    right: 0;
+    padding: 3px;
+  }
+  .tag-link{
+    position: relative;
+  }
 }
 
 @media screen and (max-width: 991.9px) {
