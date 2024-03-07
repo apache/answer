@@ -21,6 +21,7 @@ package plugin
 
 import (
 	"encoding/json"
+
 	"github.com/segmentfault/pacman/i18n"
 
 	"github.com/apache/incubator-answer/internal/base/handler"
@@ -155,6 +156,11 @@ func (m *statusManager) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON implements the json.Unmarshaler interface.
 func (m *statusManager) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &m.status)
+}
+
+// Like plug-ins expose the language in context
+func GetLangByCtx(ctx *GinContext) string {
+	return string(handler.GetLangByCtx(ctx))
 }
 
 // Translate translates the key to the current language of the context
