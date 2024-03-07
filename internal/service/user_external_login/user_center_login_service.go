@@ -162,6 +162,7 @@ func (us *UserCenterLoginService) registerNewUser(ctx context.Context, provider 
 	userInfo.LastLoginDate = time.Now()
 	userInfo.Bio = basicUserInfo.Bio
 	userInfo.BioHTML = converter.Markdown2HTML(basicUserInfo.Bio)
+	userInfo.Language = basicUserInfo.Language
 	err = us.userRepo.AddUser(ctx, userInfo)
 	if err != nil {
 		return nil, err

@@ -75,6 +75,7 @@ type UserCenterBasicUserInfo struct {
 	Mobile      string     `json:"mobile"`
 	Bio         string     `json:"bio"`
 	Status      UserStatus `json:"status"`
+	Language    string     `json:"language"`
 }
 
 type ControlCenter struct {

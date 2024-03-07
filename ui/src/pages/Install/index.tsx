@@ -54,7 +54,7 @@ const Index: FC = () => {
 
   const [formData, setFormData] = useState<FormDataType>({
     lang: {
-      value: 'en_US',
+      value: 'zh_CN',
       isInvalid: false,
       errorMsg: '',
     },

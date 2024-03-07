@@ -53,5 +53,5 @@ func ExtractAndSetAcceptLanguage(ctx *gin.Context) {
 	}
 
 	// default language
-	ctx.Set(constant.AcceptLanguageFlag, i18n.LanguageEnglish)
+	ctx.Set(constant.AcceptLanguageFlag, i18n.LanguageChinese)
 }
