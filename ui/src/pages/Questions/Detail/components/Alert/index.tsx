@@ -32,7 +32,7 @@ const Index: FC<Props> = ({ data }) => {
     <Alert className="mb-4" variant={data.level}>
       {data.level === 'info' ? (
         <div>
-          {data.msg.indexOf('http') > -1 ? (
+          {data.msg.startsWith('http') ? (
             <p>
               {data.description}{' '}
               <a href={data.msg} className="alert-exist">

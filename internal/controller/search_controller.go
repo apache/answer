@@ -27,8 +27,8 @@ import (
 	"github.com/apache/incubator-answer/internal/base/validator"
 	"github.com/apache/incubator-answer/internal/entity"
 	"github.com/apache/incubator-answer/internal/schema"
-	"github.com/apache/incubator-answer/internal/service"
 	"github.com/apache/incubator-answer/internal/service/action"
+	"github.com/apache/incubator-answer/internal/service/content"
 	"github.com/apache/incubator-answer/plugin"
 	"github.com/gin-gonic/gin"
 	"github.com/segmentfault/pacman/errors"
@@ -36,13 +36,13 @@ import (
 
 // SearchController tag controller
 type SearchController struct {
-	searchService *service.SearchService
+	searchService *content.SearchService
 	actionService *action.CaptchaService
 }
 
 // NewSearchController new controller
 func NewSearchController(
-	searchService *service.SearchService,
+	searchService *content.SearchService,
 	actionService *action.CaptchaService,
 ) *SearchController {
 	return &SearchController{

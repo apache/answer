@@ -219,7 +219,6 @@ const routes: RouteNode[] = [
           },
         ],
       },
-
       {
         path: 'users/login',
         page: 'pages/Users/Login',
@@ -332,10 +331,6 @@ const routes: RouteNode[] = [
           {
             path: 'answers',
             page: 'pages/Admin/Answers',
-          },
-          {
-            path: 'flags',
-            page: 'pages/Admin/Flags',
           },
           {
             path: 'themes',

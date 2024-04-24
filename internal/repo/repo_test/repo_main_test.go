@@ -24,6 +24,7 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -56,7 +57,7 @@ var (
 	}
 	sqlite3DBSetting = TestDBSetting{
 		Driver:     string(schemas.SQLITE),
-		Connection: os.TempDir() + "answer-test-data.db",
+		Connection: filepath.Join(os.TempDir(), "answer-test-data.db"),
 	}
 	dbSettingMapping = map[string]TestDBSetting{
 		mysqlDBSetting.Driver:    mysqlDBSetting,

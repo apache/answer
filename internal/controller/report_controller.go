@@ -103,3 +103,54 @@ func (rc *ReportController) AddReport(ctx *gin.Context) {
 	}
 	handler.HandleResponse(ctx, err, nil)
 }
+
+// GetUnreviewedReportPostPage get unreviewed report post page
+// @Summary get unreviewed report post page
+// @Description get unreviewed report post page
+// @Tags Report
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param page query int false "page"
+// @Success 200 {object} handler.RespBody{data=pager.PageModel{list=[]schema.GetReportListPageResp}}
+// @Router /answer/api/v1/report/unreviewed/post [get]
+func (rc *ReportController) GetUnreviewedReportPostPage(ctx *gin.Context) {
+	req := &schema.GetUnreviewedReportPostPageReq{}
+	if handler.BindAndCheck(ctx, req) {
+		return
+	}
+
+	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
+	req.IsAdmin = middleware.GetUserIsAdminModerator(ctx)
+
+	resp, err := rc.reportService.GetUnreviewedReportPostPage(ctx, req)
+	handler.HandleResponse(ctx, err, resp)
+}
+
+// ReviewReport review report
+// @Summary review report
+// @Description review report
+// @Security ApiKeyAuth
+// @Tags Report
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param data body schema.ReviewReportReq true "flag"
+// @Success 200 {object} handler.RespBody
+// @Router /answer/api/v1/report/review [put]
+func (rc *ReportController) ReviewReport(ctx *gin.Context) {
+	req := &schema.ReviewReportReq{}
+	if handler.BindAndCheck(ctx, req) {
+		return
+	}
+
+	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
+	req.IsAdmin = middleware.GetUserIsAdminModerator(ctx)
+	if !req.IsAdmin {
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
+		return
+	}
+
+	err := rc.reportService.ReviewReport(ctx, req)
+	handler.HandleResponse(ctx, err, nil)
+}

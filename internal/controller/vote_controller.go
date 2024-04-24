@@ -27,8 +27,8 @@ import (
 	"github.com/apache/incubator-answer/internal/base/validator"
 	"github.com/apache/incubator-answer/internal/entity"
 	"github.com/apache/incubator-answer/internal/schema"
-	"github.com/apache/incubator-answer/internal/service"
 	"github.com/apache/incubator-answer/internal/service/action"
+	"github.com/apache/incubator-answer/internal/service/content"
 	"github.com/apache/incubator-answer/internal/service/rank"
 	"github.com/apache/incubator-answer/pkg/uid"
 	"github.com/gin-gonic/gin"
@@ -37,14 +37,14 @@ import (
 
 // VoteController activity controller
 type VoteController struct {
-	VoteService   *service.VoteService
+	VoteService   *content.VoteService
 	rankService   *rank.RankService
 	actionService *action.CaptchaService
 }
 
 // NewVoteController new controller
 func NewVoteController(
-	voteService *service.VoteService,
+	voteService *content.VoteService,
 	rankService *rank.RankService,
 	actionService *action.CaptchaService,
 ) *VoteController {

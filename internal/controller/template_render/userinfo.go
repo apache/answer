@@ -25,5 +25,5 @@ import (
 )
 
 func (q *TemplateRenderController) UserInfo(ctx context.Context, req *schema.GetOtherUserInfoByUsernameReq) (resp *schema.GetOtherUserInfoByUsernameResp, err error) {
-	return q.userService.GetOtherUserInfoByUsername(ctx, req.Username)
+	return q.userService.GetOtherUserInfoByUsername(ctx, req)
 }

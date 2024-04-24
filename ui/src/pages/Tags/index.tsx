@@ -22,7 +22,7 @@ import { Row, Col, Card, Button, Form, Stack } from 'react-bootstrap';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { usePageTags } from '@/hooks';
+import { usePageTags, useSkeletonControl } from '@/hooks';
 import { Tag, Pagination, QueryGroup, TagsLoader } from '@/components';
 import { formatCount, escapeRemove } from '@/utils';
 import { tryNormalLogged } from '@/utils/guard';
@@ -52,6 +52,8 @@ const Tags = () => {
     ...(sort ? { query_cond: sort } : {}),
   });
 
+  const { isSkeletonShow } = useSkeletonControl(isLoading);
+
   const handleChange = (e) => {
     setSearchTag(e.target.value);
   };
@@ -67,9 +69,11 @@ const Tags = () => {
       mutate();
     });
   };
+
   usePageTags({
     title: t('tags', { keyPrefix: 'page_title' }),
   });
+
   return (
     <Row className="py-4 mb-4">
       <Col xxl={12}>
@@ -106,7 +110,7 @@ const Tags = () => {
 
       <Col className="mt-4" xxl={12}>
         <Row>
-          {isLoading ? (
+          {isSkeletonShow ? (
             <TagsLoader />
           ) : (
             tags?.list?.map((tag) => (

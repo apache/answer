@@ -34,7 +34,7 @@ func (t *TemplateRenderController) Index(ctx *gin.Context, req *schema.QuestionP
 	return t.questionService.GetQuestionPage(ctx, req)
 }
 
-func (t *TemplateRenderController) QuestionDetail(ctx *gin.Context, id string) (resp *schema.QuestionInfo, err error) {
+func (t *TemplateRenderController) QuestionDetail(ctx *gin.Context, id string) (resp *schema.QuestionInfoResp, err error) {
 	return t.questionService.GetQuestion(ctx, id, "", schema.QuestionPermission{})
 }
 

@@ -20,6 +20,8 @@
 package controller
 
 import (
+	"net/http"
+
 	"github.com/apache/incubator-answer/internal/base/handler"
 	"github.com/apache/incubator-answer/internal/base/middleware"
 	"github.com/apache/incubator-answer/internal/base/pager"
@@ -28,8 +30,8 @@ import (
 	"github.com/apache/incubator-answer/internal/base/validator"
 	"github.com/apache/incubator-answer/internal/entity"
 	"github.com/apache/incubator-answer/internal/schema"
-	"github.com/apache/incubator-answer/internal/service"
 	"github.com/apache/incubator-answer/internal/service/action"
+	"github.com/apache/incubator-answer/internal/service/content"
 	"github.com/apache/incubator-answer/internal/service/permission"
 	"github.com/apache/incubator-answer/internal/service/rank"
 	"github.com/apache/incubator-answer/internal/service/siteinfo_common"
@@ -37,13 +39,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
 	"github.com/segmentfault/pacman/errors"
-	"net/http"
 )
 
 // QuestionController question controller
 type QuestionController struct {
-	questionService     *service.QuestionService
-	answerService       *service.AnswerService
+	questionService     *content.QuestionService
+	answerService       *content.AnswerService
 	rankService         *rank.RankService
 	siteInfoService     siteinfo_common.SiteInfoCommonService
 	actionService       *action.CaptchaService
@@ -52,8 +53,8 @@ type QuestionController struct {
 
 // NewQuestionController new controller
 func NewQuestionController(
-	questionService *service.QuestionService,
-	answerService *service.AnswerService,
+	questionService *content.QuestionService,
+	answerService *content.AnswerService,
 	rankService *rank.RankService,
 	siteInfoService siteinfo_common.SiteInfoCommonService,
 	actionService *action.CaptchaService,
@@ -542,7 +543,7 @@ func (qc *QuestionController) AddQuestionByAnswer(ctx *gin.Context) {
 		return
 	}
 	//add the question id to the answer
-	questionInfo, ok := resp.(*schema.QuestionInfo)
+	questionInfo, ok := resp.(*schema.QuestionInfoResp)
 	if ok {
 		answerReq := &schema.AnswerAddReq{}
 		answerReq.QuestionID = uid.DeShortID(questionInfo.ID)
@@ -656,7 +657,7 @@ func (qc *QuestionController) UpdateQuestion(ctx *gin.Context) {
 		handler.HandleResponse(ctx, err, resp)
 		return
 	}
-	respInfo, ok := resp.(*schema.QuestionInfo)
+	respInfo, ok := resp.(*schema.QuestionInfoResp)
 	if !ok {
 		handler.HandleResponse(ctx, err, resp)
 		return
@@ -816,6 +817,7 @@ func (qc *QuestionController) PersonalQuestionPage(ctx *gin.Context) {
 	}
 
 	req.LoginUserID = middleware.GetLoginUserIDFromContext(ctx)
+	req.IsAdmin = middleware.GetUserIsAdminModerator(ctx)
 	resp, err := qc.questionService.PersonalQuestionPage(ctx, req)
 	handler.HandleResponse(ctx, err, resp)
 }
@@ -840,6 +842,7 @@ func (qc *QuestionController) PersonalAnswerPage(ctx *gin.Context) {
 	}
 
 	req.LoginUserID = middleware.GetLoginUserIDFromContext(ctx)
+	req.IsAdmin = middleware.GetUserIsAdminModerator(ctx)
 	resp, err := qc.questionService.PersonalAnswerPage(ctx, req)
 	handler.HandleResponse(ctx, err, resp)
 }
@@ -869,14 +872,14 @@ func (qc *QuestionController) PersonalCollectionPage(ctx *gin.Context) {
 
 // AdminQuestionPage admin question page
 // @Summary AdminQuestionPage admin question page
-// @Description Status:[available,closed,deleted]
+// @Description Status:[available,closed,deleted,pending]
 // @Tags admin
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
 // @Param page query int false "page size"
 // @Param page_size query int false "page size"
-// @Param status query string false "user status" Enums(available, closed, deleted)
+// @Param status query string false "user status" Enums(available, closed, deleted, pending)
 // @Param query query string false "question id or title"
 // @Success 200 {object} handler.RespBody
 // @Router /answer/admin/api/question/page [get]
@@ -893,14 +896,14 @@ func (qc *QuestionController) AdminQuestionPage(ctx *gin.Context) {
 
 // AdminAnswerPage admin answer page
 // @Summary AdminAnswerPage admin answer page
-// @Description Status:[available,deleted]
+// @Description Status:[available,deleted,pending]
 // @Tags admin
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
 // @Param page query int false "page size"
 // @Param page_size query int false "page size"
-// @Param status query string false "user status" Enums(available,deleted)
+// @Param status query string false "user status" Enums(available,deleted,pending)
 // @Param query query string false "answer id or question title"
 // @Param question_id query string false "question id"
 // @Success 200 {object} handler.RespBody

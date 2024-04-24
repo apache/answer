@@ -22,7 +22,6 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/apache/incubator-answer/internal/entity"
 	"html/template"
 	"net/http"
 	"regexp"
@@ -32,6 +31,7 @@ import (
 	"github.com/apache/incubator-answer/internal/base/constant"
 	"github.com/apache/incubator-answer/internal/base/handler"
 	templaterender "github.com/apache/incubator-answer/internal/controller/template_render"
+	"github.com/apache/incubator-answer/internal/entity"
 	"github.com/apache/incubator-answer/internal/schema"
 	"github.com/apache/incubator-answer/internal/service/siteinfo_common"
 	"github.com/apache/incubator-answer/pkg/checker"
@@ -47,7 +47,7 @@ import (
 var SiteUrl = ""
 
 type TemplateController struct {
-	scriptPath               string
+	scriptPath               []string
 	cssPath                  string
 	templateRenderController *templaterender.TemplateRenderController
 	siteInfoService          siteinfo_common.SiteInfoCommonService
@@ -66,18 +66,21 @@ func NewTemplateController(
 		siteInfoService:          siteInfoService,
 	}
 }
-func GetStyle() (script, css string) {
+func GetStyle() (script []string, css string) {
 	file, err := ui.Build.ReadFile("build/index.html")
 	if err != nil {
 		return
 	}
-	scriptRegexp := regexp.MustCompile(`<script defer="defer" src="(.*)"></script>`)
-	scriptData := scriptRegexp.FindStringSubmatch(string(file))
+	scriptRegexp := regexp.MustCompile(`<script defer="defer" src="([^"]*)"></script>`)
+	scriptData := scriptRegexp.FindAllStringSubmatch(string(file), -1)
+	for _, s := range scriptData {
+		if len(s) == 2 {
+			script = append(script, s[1])
+		}
+	}
+
 	cssRegexp := regexp.MustCompile(`<link href="(.*)" rel="stylesheet">`)
 	cssListData := cssRegexp.FindStringSubmatch(string(file))
-	if len(scriptData) == 2 {
-		script = scriptData[1]
-	}
 	if len(cssListData) == 2 {
 		css = cssListData[1]
 	}

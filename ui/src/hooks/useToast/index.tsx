@@ -25,9 +25,9 @@ import ReactDOM from 'react-dom/client';
 const toastPortal = document.createElement('div');
 toastPortal.style.position = 'fixed';
 toastPortal.style.top = '90px';
-toastPortal.style.left = '0';
-toastPortal.style.right = '0';
-toastPortal.style.margin = 'auto';
+toastPortal.style.left = '50%';
+toastPortal.style.transform = 'translate(-50%, 0)';
+toastPortal.style.maxWidth = '100%';
 toastPortal.style.zIndex = '1001';
 
 const setPortalPosition = () => {

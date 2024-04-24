@@ -34,9 +34,20 @@ type SimpleObjectInfo struct {
 }
 
 type UnreviewedRevisionInfoInfo struct {
-	ObjectID string     `json:"object_id"`
-	Title    string     `json:"title"`
-	Content  string     `json:"content"`
-	Html     string     `json:"html"`
-	Tags     []*TagResp `json:"tags"`
+	CreatedAt           int64      `json:"created_at"`
+	ObjectID            string     `json:"object_id"`
+	QuestionID          string     `json:"question_id"`
+	AnswerID            string     `json:"answer_id"`
+	CommentID           string     `json:"comment_id"`
+	ObjectType          string     `json:"object_type"`
+	ObjectCreatorUserID string     `json:"object_creator_user_id"`
+	Title               string     `json:"title"`
+	UrlTitle            string     `json:"url_title"`
+	Content             string     `json:"content"`
+	Html                string     `json:"html"`
+	AnswerCount         int        `json:"answer_count"`
+	AnswerAccepted      bool       `json:"answer_accepted"`
+	Tags                []*TagResp `json:"tags"`
+	Status              int        `json:"status"`
+	ShowStatus          int        `json:"show_status"`
 }

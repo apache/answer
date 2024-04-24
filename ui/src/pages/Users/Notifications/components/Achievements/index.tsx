@@ -21,7 +21,7 @@ import { ListGroup } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 import classNames from 'classnames';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 
 import { Empty } from '@/components';
 

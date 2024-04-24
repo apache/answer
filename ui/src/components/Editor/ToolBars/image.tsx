@@ -167,17 +167,29 @@ const Image = ({ editorInstance }) => {
     }
     event.preventDefault();
 
-    const newHtml = new DOMParser()
+    let innerText = '';
+    const allPTag = new DOMParser()
       .parseFromString(
         htmlStr.replace(
           /<img([\s\S]*?) src\s*=\s*(['"])([\s\S]*?)\2([^>]*)>/gi,
-          `<p>\n![${t('image.text')}]($3)\n</p>`,
+          `<p>![${t('image.text')}]($3)\n\n</p>`,
         ),
         'text/html',
       )
-      .querySelector('body')?.innerText as string;
+      .querySelectorAll('body p');
 
-    editor.replaceSelection(newHtml);
+    allPTag.forEach((p, index) => {
+      const text = p.textContent || '';
+      if (text !== '') {
+        if (index === allPTag.length - 1) {
+          innerText += `${p.textContent}`;
+        } else {
+          innerText += `${p.textContent}${text.endsWith('\n') ? '' : '\n\n'}`;
+        }
+      }
+    });
+
+    editor.replaceSelection(innerText);
   };
   const handleClick = () => {
     if (!link.value) {

@@ -17,10 +17,11 @@
  * under the License.
  */
 
-package service
+package collection
 
 import (
 	"context"
+
 	"github.com/apache/incubator-answer/internal/entity"
 	"github.com/apache/incubator-answer/internal/schema"
 	collectioncommon "github.com/apache/incubator-answer/internal/service/collection_common"

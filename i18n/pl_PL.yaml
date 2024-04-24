@@ -84,7 +84,7 @@ backend:
         other: Poziom 3 (wysoka reputacja wymagana dla dojrzałej społeczności)
     level_custom:
       description:
-        other: Custom Level
+        other: Poziom niestandardowy
     rank_question_add_label:
       other: Zadaj pytanie
     rank_answer_add_label:
@@ -140,6 +140,9 @@ backend:
   email_or_password_wrong_error:
     other: Email lub hasło nie są poprawne.
   error:
+    common:
+      invalid_url:
+        other: Invalid URL.
     password:
       space_invalid:
         other: Hasło nie może zawierać spacji.
@@ -200,6 +203,8 @@ backend:
     question:
       already_deleted:
         other: Ten post został usunięty.
+      under_review:
+        other: Your post is awaiting review. It will be visible after it has been approved.
       not_found:
         other: Pytanie nie zostało odnalezione.
       cannot_deleted:
@@ -247,7 +252,7 @@ backend:
       review_underway:
         other: Nie można teraz edytować, istnieje wersja w kolejce sprawdzeń.
       no_permission:
-        other: No permission to revise.
+        other: Brak uprawnień do wersji.
     user:
       external_login_missing_user_id:
         other: Platforma zewnętrzna nie dostarcza unikalnego identyfikatora użytkownika (UserID), dlatego nie możesz się zalogować. Skontaktuj się z administratorem witryny.
@@ -485,6 +490,15 @@ backend:
       other: akceptuj
     accepted:
       other: zaakceptowane
+    edit:
+      other: edit
+  review:
+    queued_post:
+      other: Queued post
+    flagged_post:
+      other: Flagged post
+    suggested_post_edit:
+      other: Suggested edits
 # The following fields are used for interface presentation(Front-end)
 ui:
   how_to_format:
@@ -666,6 +680,8 @@ ui:
       empty: Nie może być puste.
     msg:
       empty: Proszę wybrać powód.
+      not_a_url: URL format is incorrect.
+      url_not_match: URL origin does not match the current website.
   tag_modal:
     title: Utwórz nowy tag
     form:
@@ -685,11 +701,11 @@ ui:
         desc:
           label: Opis
         revision:
-          label: Revision
+          label: Wersja
         edit_summary:
-          label: Edit summary
+          label: Podsumowanie edycji
           placeholder: >-
-            Briefly explain your changes (corrected spelling, fixed grammar, improved formatting)
+            Krótkie wyjaśnienie zmian (poprawa pisowni, naprawa gramatyki, poprawa formatowania)
     btn_cancel: Anuluj
     btn_submit: Prześlij
     btn_post: Opublikuj nowy tag
@@ -740,7 +756,7 @@ ui:
     btn_flag: Zgłoś
     btn_save_edits: Zapisz edycje
     btn_cancel: Anuluj
-    show_more: "{{count}} more comments"
+    show_more: "Jest {{count}} komentarzy, pokaż więcej"
     tip_question: >-
       Użyj komentarzy, aby poprosić o dodatkowe informacje lub sugerować poprawki. Unikaj udzielania odpowiedzi na pytania w komentarzach.
     tip_answer: >-
@@ -759,7 +775,7 @@ ui:
           feedback:
             characters: Treść musi mieć co najmniej 6 znaków.
         edit_summary:
-          label: Edit summary
+          label: Podsumowanie edycji
           placeholder: >-
             Pokrótce opisz swoje zmiany (poprawa pisowni, naprawa gramatyki, poprawa formatowania)
     btn_save_edits: Zapisz edycje
@@ -805,7 +821,7 @@ ui:
           msg:
             empty: Odpowiedź nie może być pusta.
         edit_summary:
-          label: Edit summary
+          label: Podsumowanie edycji
           placeholder: >-
             Pokrótce opisz swoje zmiany (poprawa pisowni, naprawa gramatyki, poprawa formatowania)
     btn_post_question: Opublikuj swoje pytanie
@@ -965,10 +981,10 @@ ui:
         label: Lokalizacja
         placeholder: "Miasto, Kraj"
     notification:
-      heading: Email Notifications
-      turn_on: Turn on
+      heading: Powiadomienia email
+      turn_on: Włącz
       inbox:
-        label: Inbox notifications
+        label: Powiadomienia skrzynki odbiorczej
         description: Odpowiedzi na Twoje pytania, komentarze, zaproszenia i inne.
       all_new_question:
         label: Wszystkie nowe pytania
@@ -1005,9 +1021,9 @@ ui:
         label: Język Interfejsu
         text: Język interfejsu użytkownika. Zmieni się po odświeżeniu strony.
     my_logins:
-      title: My logins
+      title: Moje logowania
       label: Zaloguj się lub zarejestruj na tej stronie za pomocą tych kont.
-      modal_title: Remove login
+      modal_title: Usuń logowanie
       modal_content: Czy na pewno chcesz usunąć to logowanie z Twojego konta?
       modal_confirm_btn: Usuń
       remove_success: Pomyślnie usunięto
@@ -1022,8 +1038,8 @@ ui:
     title: Powiązane pytania
     answers: odpowiedzi
   invite_to_answer:
-    title: People Asked
-    desc: Select people who you think might know the answer.
+    title: Ludzie pytali
+    desc: Wybierz osoby, które mogą znać odpowiedź.
     invite: Zaproś do odpowiedzi
     add: Dodaj osoby
     search: Wyszukaj osoby
@@ -1033,6 +1049,7 @@ ui:
     asked: zadał(a)
     update: Zmodyfikowane
     edit: edytowany
+    commented: commented
     Views: Wyświetlone
     Follow: Obserwuj
     Following: Obserwuje
@@ -1050,6 +1067,7 @@ ui:
       title: Odpowiedzi
       score: Ocena
       newest: Najnowsze
+      oldest: Oldest
       btn_accept: Akceptuj
       btn_accepted: Zaakceptowane
     write_answer:
@@ -1073,6 +1091,14 @@ ui:
       confirm_btn: Ponowne otwarcie
       title: Otwórz ponownie ten post
       content: Czy na pewno chcesz go ponownie otworzyć?
+    list:
+      confirm_btn: List
+      title: List this post
+      content: Are you sure you want to list?
+    unlist:
+      confirm_btn: Unlist
+      title: Unlist this post
+      content: Are you sure you want to unlist?
     pin:
       title: Przypnij ten post
       content: Czy na pewno chcesz przypiąć go globalnie? Ten post będzie wyświetlany na górze wszystkich list postów.
@@ -1094,6 +1120,9 @@ ui:
     save: Zapisz
     delete: Usuń
     undelete: Przywróć
+    list: List
+    unlist: Unlist
+    unlisted: Unlisted
     login: Zaloguj się
     signup: Zarejestruj się
     logout: Wyloguj się
@@ -1117,11 +1146,20 @@ ui:
     close: Zamknij
     reopen: Otwórz ponownie
     ok: Ok
-    light: Light
-    dark: Dark
-    system_setting: System setting
-    default: Default
+    light: Jasny
+    dark: Ciemny
+    system_setting: Ustawienia systemowe
+    default: Domyślne
     reset: Reset
+    tag: Tag
+    post_lowercase: post
+    filter: Filter
+    ignore: Ignore
+    submit: Submit
+    normal: Normal
+    closed: Closed
+    deleted: Deleted
+    pending: Pending
   search:
     title: Wyniki wyszukiwania
     keywords: Słowa kluczowe
@@ -1368,7 +1406,8 @@ ui:
       votes: "Głosy:"
       users: "Użytkownicy:"
       flags: "Flagi:"
-      site_health_status: Status kondycji witryny
+      reviews: "Reviews:"
+      site_health: Site health
       version: "Wersja:"
       https: "HTTPS:"
       upload_folder: "Prześlij folder:"
@@ -1383,11 +1422,12 @@ ui:
       database_size: "Wielkość bazy danych:"
       storage_used: "Wykorzystane miejsce:"
       uptime: "Czas pracy:"
-      answer_links: Linki do odpowiedzi
+      links: Links
       plugins: Wtyczki
       github: GitHub
       blog: Blog
       contact: Kontakt
+      forum: Forum
       documents: Dokumenty
       feedback: Opinie
       support: Wsparcie
@@ -1490,9 +1530,7 @@ ui:
         content: Zawieszony użytkownik nie może się logować.
     questions:
       page_title: Pytania
-      normal: Normalne
-      closed: Zamknięte
-      deleted: Usunięte
+      unlisted: Unlisted
       post: Wpis
       votes: Głosy
       answers: Odpowiedzi
@@ -1500,12 +1538,11 @@ ui:
       status: Status
       action: Akcja
       change: Zmień
+      pending: Pending
       filter:
         placeholder: "Filtruj według tytułu, pytanie:id"
     answers:
       page_title: Odpowiedzi
-      normal: Normalne
-      deleted: Usunięte
       post: Wpis
       votes: Głosy
       created: Utworzone
@@ -1538,6 +1575,9 @@ ui:
         msg: Email kontaktowy nie może być pusty.
         validate: Email kontaktowy nie jest poprawny.
         text: Adres email głównego kontaktu odpowiedzialnego za tę stronę.
+      check_update:
+        label: Software updates
+        text: Automatically check for updates
     interface:
       page_title: Interfejs
       language:
@@ -1642,11 +1682,11 @@ ui:
         label: Motywy
         text: Wybierz istniejący motyw.
       color_scheme:
-        label: Color scheme
+        label: Schemat kolorów
       navbar_style:
-        label: Navbar style
+        label: Styl paska nawigacyjnego
       primary_color:
-        label: Primary color
+        label: Kolor podstawowy
         text: Zmodyfikuj kolory używane przez Twoje motywy.
     css_and_html:
       page_title: CSS i HTML
@@ -1686,7 +1726,7 @@ ui:
         label: Wymagane logowanie
         text: Dostęp do tej społeczności mają tylko zalogowani użytkownicy.
       password_login:
-        title: Password login
+        title: Hasło logowania
         label: Zezwalaj na logowanie email i hasłem
         text: "OSTRZEŻENIE: Jeśli wyłączone, już się nie zalogujesz, jeśli wcześniej nie skonfigurowałeś innej metody logowania."
     installed_plugins:
@@ -1716,7 +1756,7 @@ ui:
         label: Adres URL bazy Gravatar
         text: Adres URL bazy API dostawcy Gravatar. Ignorowane, gdy puste.
       profile_editable:
-        title: Profile editable
+        title: Edycja profilu
       allow_update_display_name:
         label: Zezwalaj użytkownikom na zmianę wyświetlanej nazwy
       allow_update_username:
@@ -1752,6 +1792,22 @@ ui:
     edit_answer: Edytuj odpowiedź
     edit_tag: Edytuj tag
     empty: Nie ma więcej zadań do przeglądu.
+    approve_revision_tip: Do you approve this revision?
+    approve_flag_tip: Do you approve this flag?
+    approve_post_tip: Do you approve this post?
+    approve_user_tip: Do you approve this user?
+    suggest_edits: Suggested edits
+    flag_post: Flag post
+    flag_user: Flag user
+    queued_post: Queued post
+    queued_user: Queued user
+    filter_label: Type
+    reputation: reputation
+    flag_post_type: Flagged this post as {{ type }}.
+    flag_user_type: Flagged this user as {{ type }}.
+    edit_post: Edit post
+    list_post: List post
+    unlist_post: Unlist post
   timeline:
     undeleted: nieusunięte
     deleted: usunięty
@@ -1802,3 +1858,6 @@ ui:
     post_hide_list: Ten post został ukryty na liście.
     post_show_list: Ten post został wyświetlony na liście.
     post_reopen: Ten post został ponownie otwarty.
+    post_list: This post has been listed.
+    post_unlist: This post has been unlisted.
+    post_pending: Your post is awaiting review. This is a preview, it will be visible after it has been approved.

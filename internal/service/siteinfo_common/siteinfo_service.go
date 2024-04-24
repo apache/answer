@@ -66,7 +66,7 @@ func NewSiteInfoCommonService(siteInfoRepo SiteInfoRepo) SiteInfoCommonService {
 
 // GetSiteGeneral get site info general
 func (s *siteInfoCommonService) GetSiteGeneral(ctx context.Context) (resp *schema.SiteGeneralResp, err error) {
-	resp = &schema.SiteGeneralResp{}
+	resp = &schema.SiteGeneralResp{CheckUpdate: true}
 	if err = s.GetSiteInfoByType(ctx, constant.SiteTypeGeneral, resp); err != nil {
 		return nil, err
 	}

@@ -40,6 +40,7 @@ type SiteGeneralReq struct {
 	Description      string `validate:"omitempty,sanitizer,gt=3,lte=2000" form:"description" json:"description"`
 	SiteUrl          string `validate:"required,sanitizer,gt=1,lte=512,url" form:"site_url" json:"site_url"`
 	ContactEmail     string `validate:"required,sanitizer,gt=1,lte=512,email" form:"contact_email" json:"contact_email"`
+	CheckUpdate      bool   `validate:"omitempty,sanitizer" form:"check_update" json:"check_update"`
 }
 
 func (r *SiteGeneralReq) FormatSiteUrl() {

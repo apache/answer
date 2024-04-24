@@ -200,18 +200,8 @@ const TagSelector: FC<IProps> = ({
   };
 
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('handleSearch');
     const searchStr = e.currentTarget.value.replace(';', '');
     setSearchValue(searchStr);
-    const ele = document.querySelector('.a-input-width') as HTMLElement;
-    if (ele.offsetWidth > 60) {
-      inputRef.current?.setAttribute(
-        'style',
-        `width:${ele.offsetWidth + 16}px`,
-      );
-    } else {
-      inputRef.current?.setAttribute('style', 'width: 60px');
-    }
     fetchTags(searchStr);
   };
 
@@ -330,6 +320,19 @@ const TagSelector: FC<IProps> = ({
       }
     }
   }, [focusState, tags, hiddenCreateBtn, searchValue, maxTagLength]);
+
+  useEffect(() => {
+    // set width of tag Form.Control
+    const ele = document.querySelector('.a-input-width') as HTMLElement;
+    if (ele.offsetWidth > 60) {
+      inputRef.current?.setAttribute(
+        'style',
+        `width:${ele.offsetWidth + 16}px`,
+      );
+    } else {
+      inputRef.current?.setAttribute('style', 'width: 60px');
+    }
+  }, [searchValue]);
 
   return (
     <div ref={containerRef} className="position-relative">

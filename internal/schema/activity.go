@@ -101,3 +101,12 @@ type ObjectTimelineTag struct {
 	Recommend       bool   `json:"recommend"`
 	Reserved        bool   `json:"reserved"`
 }
+
+// PassReviewActivity pass review activity
+type PassReviewActivity struct {
+	UserID           string `json:"user_id"`
+	TriggerUserID    string `json:"trigger_user_id"`
+	ObjectID         string `json:"object_id"`
+	OriginalObjectID string `json:"original_object_id"`
+	RevisionID       string `json:"revision_id"`
+}

@@ -20,11 +20,28 @@
 package report
 
 import (
+	"encoding/json"
+
+	"github.com/apache/incubator-answer/internal/base/constant"
+	"github.com/apache/incubator-answer/internal/base/handler"
+	"github.com/apache/incubator-answer/internal/base/pager"
+	"github.com/apache/incubator-answer/internal/base/reason"
 	"github.com/apache/incubator-answer/internal/entity"
 	"github.com/apache/incubator-answer/internal/schema"
+	answercommon "github.com/apache/incubator-answer/internal/service/answer_common"
+	"github.com/apache/incubator-answer/internal/service/comment_common"
+	"github.com/apache/incubator-answer/internal/service/config"
 	"github.com/apache/incubator-answer/internal/service/object_info"
+	questioncommon "github.com/apache/incubator-answer/internal/service/question_common"
 	"github.com/apache/incubator-answer/internal/service/report_common"
+	"github.com/apache/incubator-answer/internal/service/report_handle"
+	usercommon "github.com/apache/incubator-answer/internal/service/user_common"
+	"github.com/apache/incubator-answer/pkg/checker"
+	"github.com/apache/incubator-answer/pkg/htmltext"
 	"github.com/apache/incubator-answer/pkg/obj"
+	"github.com/jinzhu/copier"
+	"github.com/segmentfault/pacman/errors"
+	"github.com/segmentfault/pacman/log"
 	"golang.org/x/net/context"
 )
 
@@ -32,15 +49,34 @@ import (
 type ReportService struct {
 	reportRepo        report_common.ReportRepo
 	objectInfoService *object_info.ObjService
+	commonUser        *usercommon.UserCommon
+	answerRepo        answercommon.AnswerRepo
+	questionRepo      questioncommon.QuestionRepo
+	commentCommonRepo comment_common.CommentCommonRepo
+	reportHandle      *report_handle.ReportHandle
+	configService     *config.ConfigService
 }
 
 // NewReportService new report service
-func NewReportService(reportRepo report_common.ReportRepo,
+func NewReportService(
+	reportRepo report_common.ReportRepo,
 	objectInfoService *object_info.ObjService,
+	commonUser *usercommon.UserCommon,
+	answerRepo answercommon.AnswerRepo,
+	questionRepo questioncommon.QuestionRepo,
+	commentCommonRepo comment_common.CommentCommonRepo,
+	reportHandle *report_handle.ReportHandle,
+	configService *config.ConfigService,
 ) *ReportService {
 	return &ReportService{
 		reportRepo:        reportRepo,
 		objectInfoService: objectInfoService,
+		commonUser:        commonUser,
+		answerRepo:        answerRepo,
+		questionRepo:      questionRepo,
+		commentCommonRepo: commentCommonRepo,
+		reportHandle:      reportHandle,
+		configService:     configService,
 	}
 }
 
@@ -51,10 +87,17 @@ func (rs *ReportService) AddReport(ctx context.Context, req *schema.AddReportReq
 		return err
 	}
 
-	// TODO this reported user id should be get by revision
 	objInfo, err := rs.objectInfoService.GetInfo(ctx, req.ObjectID)
 	if err != nil {
 		return err
+	}
+
+	cf, err := rs.configService.GetConfigByID(ctx, req.ReportType)
+	if err != nil || cf == nil {
+		return errors.BadRequest(reason.ReportNotFound)
+	}
+	if cf.Key == constant.ReasonADuplicate && !checker.IsURL(req.Content) {
+		return errors.BadRequest(reason.InvalidURLError)
 	}
 
 	report := &entity.Report{
@@ -67,4 +110,108 @@ func (rs *ReportService) AddReport(ctx context.Context, req *schema.AddReportReq
 		Status:         entity.ReportStatusPending,
 	}
 	return rs.reportRepo.AddReport(ctx, report)
+}
+
+// GetUnreviewedReportPostPage get unreviewed report post page
+func (rs *ReportService) GetUnreviewedReportPostPage(ctx context.Context, req *schema.GetUnreviewedReportPostPageReq) (
+	pageModel *pager.PageModel, err error) {
+	if !req.IsAdmin {
+		return pager.NewPageModel(0, make([]*schema.GetReportListPageResp, 0)), nil
+	}
+	lang := handler.GetLangByCtx(ctx)
+	reports, total, err := rs.reportRepo.GetReportListPage(ctx, &schema.GetReportListPageDTO{
+		Page:     req.Page,
+		PageSize: 1,
+		Status:   entity.ReportStatusPending,
+	})
+	if err != nil {
+		return
+	}
+
+	resp := make([]*schema.GetReportListPageResp, 0)
+	for _, report := range reports {
+		info, err := rs.objectInfoService.GetUnreviewedRevisionInfo(ctx, report.ObjectID)
+		if err != nil {
+			log.Errorf("GetUnreviewedRevisionInfo failed, err: %v", err)
+			continue
+		}
+
+		r := &schema.GetReportListPageResp{
+			FlagID:           report.ID,
+			CreatedAt:        info.CreatedAt,
+			ObjectID:         info.ObjectID,
+			ObjectType:       info.ObjectType,
+			QuestionID:       info.QuestionID,
+			AnswerID:         info.AnswerID,
+			CommentID:        info.CommentID,
+			Title:            info.Title,
+			UrlTitle:         htmltext.UrlTitle(info.Title),
+			OriginalText:     info.Content,
+			ParsedText:       info.Html,
+			AnswerCount:      info.AnswerCount,
+			AnswerAccepted:   info.AnswerAccepted,
+			Tags:             info.Tags,
+			SubmitAt:         report.CreatedAt.Unix(),
+			ObjectStatus:     info.Status,
+			ObjectShowStatus: info.ShowStatus,
+			ReasonContent:    report.Content,
+		}
+
+		// get user info
+		userInfo, exists, e := rs.commonUser.GetUserBasicInfoByID(ctx, info.ObjectCreatorUserID)
+		if e != nil {
+			log.Errorf("user not found by id: %s, err: %v", info.ObjectCreatorUserID, e)
+		}
+		if exists {
+			_ = copier.Copy(&r.AuthorUserInfo, userInfo)
+		}
+
+		// get submitter info
+		submitter, exists, e := rs.commonUser.GetUserBasicInfoByID(ctx, report.ReportedUserID)
+		if e != nil {
+			log.Errorf("user not found by id: %s, err: %v", info.ObjectCreatorUserID, e)
+		}
+		if exists {
+			_ = copier.Copy(&r.SubmitterUser, submitter)
+		}
+
+		if report.ReportType > 0 {
+			r.Reason = &schema.ReasonItem{ReasonType: report.ReportType}
+			cf, err := rs.configService.GetConfigByID(ctx, report.ReportType)
+			if err != nil {
+				log.Error(err)
+			} else {
+				_ = json.Unmarshal([]byte(cf.Value), r.Reason)
+				r.Reason.Translate(cf.Key, lang)
+			}
+		}
+		resp = append(resp, r)
+	}
+	return pager.NewPageModel(total, resp), nil
+}
+
+// ReviewReport review report
+func (rs *ReportService) ReviewReport(ctx context.Context, req *schema.ReviewReportReq) (err error) {
+	report, exist, err := rs.reportRepo.GetByID(ctx, req.FlagID)
+	if err != nil {
+		return err
+	}
+	if !exist {
+		return errors.NotFound(reason.ReportNotFound)
+	}
+	// check if handle or not
+	if report.Status != entity.ReportStatusPending {
+		return nil
+	}
+
+	// ignore this report
+	if req.OperationType == constant.ReportOperationIgnoreReport {
+		return rs.reportRepo.UpdateStatus(ctx, report.ID, entity.ReportStatusIgnore)
+	}
+
+	if err = rs.reportHandle.UpdateReportedObject(ctx, report, req); err != nil {
+		return
+	}
+
+	return rs.reportRepo.UpdateStatus(ctx, report.ID, entity.ReportStatusCompleted)
 }

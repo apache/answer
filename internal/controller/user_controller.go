@@ -20,6 +20,8 @@
 package controller
 
 import (
+	"net/url"
+
 	"github.com/apache/incubator-answer/internal/base/constant"
 	"github.com/apache/incubator-answer/internal/base/handler"
 	"github.com/apache/incubator-answer/internal/base/middleware"
@@ -28,9 +30,9 @@ import (
 	"github.com/apache/incubator-answer/internal/base/validator"
 	"github.com/apache/incubator-answer/internal/entity"
 	"github.com/apache/incubator-answer/internal/schema"
-	"github.com/apache/incubator-answer/internal/service"
 	"github.com/apache/incubator-answer/internal/service/action"
 	"github.com/apache/incubator-answer/internal/service/auth"
+	"github.com/apache/incubator-answer/internal/service/content"
 	"github.com/apache/incubator-answer/internal/service/export"
 	"github.com/apache/incubator-answer/internal/service/siteinfo_common"
 	"github.com/apache/incubator-answer/internal/service/user_notification_config"
@@ -38,12 +40,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
-	"net/url"
 )
 
 // UserController user controller
 type UserController struct {
-	userService                   *service.UserService
+	userService                   *content.UserService
 	authService                   *auth.AuthService
 	actionService                 *action.CaptchaService
 	emailService                  *export.EmailService
@@ -54,7 +55,7 @@ type UserController struct {
 // NewUserController new controller
 func NewUserController(
 	authService *auth.AuthService,
-	userService *service.UserService,
+	userService *content.UserService,
 	actionService *action.CaptchaService,
 	emailService *export.EmailService,
 	siteInfoCommonService siteinfo_common.SiteInfoCommonService,
@@ -114,7 +115,10 @@ func (uc *UserController) GetOtherUserInfoByUsername(ctx *gin.Context) {
 		return
 	}
 
-	resp, err := uc.userService.GetOtherUserInfoByUsername(ctx, req.Username)
+	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
+	req.IsAdmin = middleware.GetUserIsAdminModerator(ctx)
+
+	resp, err := uc.userService.GetOtherUserInfoByUsername(ctx, req)
 	handler.HandleResponse(ctx, err, resp)
 }
 

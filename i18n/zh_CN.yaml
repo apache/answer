@@ -84,7 +84,7 @@ backend:
         other: 级别 3（高声望要求，适合成熟的社区）
     level_custom:
       description:
-        other: Custom Level
+        other: 自定义等级
     rank_question_add_label:
       other: 提问
     rank_answer_add_label:
@@ -140,6 +140,9 @@ backend:
   email_or_password_wrong_error:
     other: 邮箱和密码不匹配。
   error:
+    common:
+      invalid_url:
+        other: 不合法的 URL
     password:
       space_invalid:
         other: 密码不得含有空格。
@@ -200,6 +203,8 @@ backend:
     question:
       already_deleted:
         other: 该帖子已被删除。
+      under_review:
+        other: 您的帖子正在等待审核。它将在它获得批准后可见。
       not_found:
         other: 问题未找到。
       cannot_deleted:
@@ -485,6 +490,15 @@ backend:
       other: 采纳
     accepted:
       other: 已采纳
+    edit:
+      other: 编辑
+  review:
+    queued_post:
+      other: 排队的帖子
+    flagged_post:
+      other: 举报的帖子
+    suggested_post_edit:
+      other: 建议的编辑
 # The following fields are used for interface presentation(Front-end)
 ui:
   how_to_format:
@@ -666,6 +680,8 @@ ui:
       empty: 不能为空
     msg:
       empty: 请选择一个原因。
+      not_a_url: URL 格式不正确。
+      url_not_match: URL 来源与当前网站不匹配。
   tag_modal:
     title: 创建新标签
     form:
@@ -687,9 +703,9 @@ ui:
         revision:
           label: 编辑历史
         edit_summary:
-          label: 编辑摘要
+          label: 编辑备注
           placeholder: >-
-            简单描述更改原因 (错别字、文字表达、格式等等)
+            简单描述更改原因（更正拼写、修复语法、改进格式）
     btn_cancel: 取消
     btn_submit: 提交
     btn_post: 发布新标签
@@ -740,7 +756,7 @@ ui:
     btn_flag: 举报
     btn_save_edits: 保存更改
     btn_cancel: 取消
-    show_more: "{{count}}条剩余评论"
+    show_more: "{{count}} 条剩余评论"
     tip_question: >-
       使用评论提问更多信息或者提出改进意见。避免在评论里回答问题。
     tip_answer: >-
@@ -966,10 +982,10 @@ ui:
         label: 位置
         placeholder: "城市，国家"
     notification:
-      heading: 通知
-      turn_on: Turn on
+      heading: 邮件通知
+      turn_on: 开启
       inbox:
-        label: 邮件通知
+        label: 收件箱通知
         description: 你的提问有新的回答，评论，邀请回答和其他。
       all_new_question:
         label: 所有新问题
@@ -1034,6 +1050,7 @@ ui:
     asked: 提问于
     update: 修改于
     edit: 编辑于
+    commented: 评论
     Views: 阅读次数
     Follow: 关注此问题
     Following: 已关注
@@ -1051,6 +1068,7 @@ ui:
       title: 个回答
       score: 评分
       newest: 最新
+      oldest: 最旧
       btn_accept: 采纳
       btn_accepted: 已被采纳
     write_answer:
@@ -1074,6 +1092,14 @@ ui:
       confirm_btn: 重新打开
       title: 重新打开这个帖子
       content: 确定要重新打开吗？
+    list:
+      confirm_btn: 列表显示
+      title: 列表中显示这个帖子
+      content: 确定要列表中显示这个帖子吗？
+    unlist:
+      confirm_btn: 列表隐藏
+      title: 从列表中隐藏这个帖子
+      content: 确定要从列表中隐藏这个帖子吗？
     pin:
       title: 置顶该帖子
       content: 你确定要全局置顶吗？这个帖子将出现在所有帖子列表的顶部。
@@ -1095,6 +1121,9 @@ ui:
     save: 保存
     delete: 删除
     undelete: 撤消删除
+    list: 列表显示
+    unlist: 列表隐藏
+    unlisted: 已隐藏
     login: 登录
     signup: 注册
     logout: 退出
@@ -1118,11 +1147,20 @@ ui:
     close: 关闭
     reopen: 重新打开
     ok: 确定
-    light: Light
-    dark: Dark
-    system_setting: System setting
-    default: Default
-    reset: Reset
+    light: 浅色
+    dark: 深色
+    system_setting: 跟随系统
+    default: 默认
+    reset: 重置
+    tag: 标签
+    post_lowercase: 帖子
+    filter: 筛选
+    ignore: 忽略
+    submit: 提交
+    normal: 正常
+    closed: 已关闭
+    deleted: 已删除
+    pending: 等待处理
   search:
     title: 搜索结果
     keywords: 关键词
@@ -1369,7 +1407,8 @@ ui:
       votes: "投票:"
       users: "用户:"
       flags: "举报:"
-      site_health_status: '健康状态:'
+      reviews: "审查:"
+      site_health: 网站健康
       version: "版本"
       https: "HTTPS:"
       upload_folder: "上传文件夹："
@@ -1384,11 +1423,12 @@ ui:
       database_size: "数据库大小："
       storage_used: "已用存储空间："
       uptime: "运行时间："
-      answer_links: 回答链接
+      links: 链接
       plugins: 插件
       github: GitHub
       blog: 博客
       contact: 联系
+      forum: 论坛
       documents: 文档
       feedback: 用户反馈
       support: 帮助
@@ -1491,9 +1531,7 @@ ui:
         content: 被封禁的用户将无法登录。
     questions:
       page_title: 问题
-      normal: 正常
-      closed: 已关闭
-      deleted: 已删除
+      unlisted: 已隐藏
       post: 标题
       votes: 得票数
       answers: 回答数
@@ -1501,12 +1539,11 @@ ui:
       status: 状态
       action: 操作
       change: 更改
+      pending: 等待处理
       filter:
         placeholder: "按标题过滤，问题:id"
     answers:
       page_title: 回答
-      normal: 正常
-      deleted: 已删除
       post: 标题
       votes: 得票数
       created: 创建于
@@ -1539,6 +1576,9 @@ ui:
         msg: 联系人邮箱不能为空。
         validate: 联系人邮箱无效。
         text: 本网站的主要联系邮箱地址。
+      check_update:
+        label: 软件更新
+        text: 自动检查软件更新
     interface:
       page_title: 界面
       language:
@@ -1643,7 +1683,7 @@ ui:
         label: 主题
         text: 选择一个现有主题。
       color_scheme:
-        label: Color scheme
+        label: 配色方案
       navbar_style:
         label: 导航栏样式
       primary_color:
@@ -1753,6 +1793,22 @@ ui:
     edit_answer: 编辑回答
     edit_tag: 编辑标签
     empty: 没有剩余的审核任务。
+    approve_revision_tip: 您是否批准此修订？
+    approve_flag_tip: 您是否批准此举报？
+    approve_post_tip: 您是否批准此帖子？
+    approve_user_tip: 您是否批准此修订？
+    suggest_edits: 建议的编辑
+    flag_post: 举报帖子
+    flag_user: 举报用户
+    queued_post: 排队的帖子
+    queued_user: 排队用户
+    filter_label: 类型
+    reputation: 声望值
+    flag_post_type: 举报这个帖子的类型是 {{ type }}
+    flag_user_type: 举报这个用户的类型是 {{ type }}
+    edit_post: 编辑帖子
+    list_post: 文章列表
+    unlist_post: 隐藏的帖子
   timeline:
     undeleted: 取消删除
     deleted: 删除
@@ -1803,6 +1859,9 @@ ui:
     post_hide_list: 此帖子已经从列表中隐藏。
     post_show_list: 该帖子已显示到列表中。
     post_reopen: 这个帖子已被重新打开.
+    post_list: 这个帖子已经被显示
+    post_unlist: 这个帖子已经被隐藏
+    post_pending: 您的帖子正在等待审核。它将在它获得批准后可见。
 plugin:
   aliyunoss_storage:
     backend:

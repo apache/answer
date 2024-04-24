@@ -98,22 +98,22 @@ type AnswerListReq struct {
 }
 
 type AnswerInfo struct {
-	ID             string         `json:"id"`
-	QuestionID     string         `json:"question_id"`
-	Content        string         `json:"content"`
-	HTML           string         `json:"html"`
-	CreateTime     int64          `json:"create_time"`
-	UpdateTime     int64          `json:"update_time"`
-	Accepted       int            `json:"accepted"`
-	UserID         string         `json:"-"`
-	UpdateUserID   string         `json:"-"`
-	UserInfo       *UserBasicInfo `json:"user_info,omitempty"`
-	UpdateUserInfo *UserBasicInfo `json:"update_user_info,omitempty"`
-	Collected      bool           `json:"collected"`
-	VoteStatus     string         `json:"vote_status"`
-	VoteCount      int            `json:"vote_count"`
-	QuestionInfo   *QuestionInfo  `json:"question_info,omitempty"`
-	Status         int            `json:"status"`
+	ID             string            `json:"id"`
+	QuestionID     string            `json:"question_id"`
+	Content        string            `json:"content"`
+	HTML           string            `json:"html"`
+	CreateTime     int64             `json:"create_time"`
+	UpdateTime     int64             `json:"update_time"`
+	Accepted       int               `json:"accepted"`
+	UserID         string            `json:"-"`
+	UpdateUserID   string            `json:"-"`
+	UserInfo       *UserBasicInfo    `json:"user_info,omitempty"`
+	UpdateUserInfo *UserBasicInfo    `json:"update_user_info,omitempty"`
+	Collected      bool              `json:"collected"`
+	VoteStatus     string            `json:"vote_status"`
+	VoteCount      int               `json:"vote_count"`
+	QuestionInfo   *QuestionInfoResp `json:"question_info,omitempty"`
+	Status         int               `json:"status"`
 
 	// MemberActions
 	MemberActions []*PermissionMemberAction `json:"member_actions"`

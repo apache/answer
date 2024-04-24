@@ -19,7 +19,7 @@
 
 import { useState } from 'react';
 
-import { uniqBy } from 'lodash';
+import uniqBy from 'lodash/uniqBy';
 
 import * as Types from '@/common/interface';
 

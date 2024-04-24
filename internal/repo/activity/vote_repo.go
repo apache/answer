@@ -22,8 +22,10 @@ package activity
 import (
 	"context"
 	"fmt"
-	"github.com/segmentfault/pacman/log"
 	"time"
+
+	"github.com/apache/incubator-answer/internal/service/content"
+	"github.com/segmentfault/pacman/log"
 
 	"github.com/apache/incubator-answer/internal/base/constant"
 	"github.com/apache/incubator-answer/internal/service/notice_queue"
@@ -39,7 +41,6 @@ import (
 	"github.com/apache/incubator-answer/internal/base/reason"
 	"github.com/apache/incubator-answer/internal/entity"
 	"github.com/apache/incubator-answer/internal/schema"
-	"github.com/apache/incubator-answer/internal/service"
 	"github.com/apache/incubator-answer/internal/service/activity_common"
 	"github.com/segmentfault/pacman/errors"
 	"xorm.io/xorm"
@@ -59,7 +60,7 @@ func NewVoteRepo(
 	activityRepo activity_common.ActivityRepo,
 	userRankRepo rank.UserRankRepo,
 	notificationQueueService notice_queue.NotificationQueueService,
-) service.VoteRepo {
+) content.VoteRepo {
 	return &VoteRepo{
 		data:                     data,
 		activityRepo:             activityRepo,

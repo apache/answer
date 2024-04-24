@@ -252,7 +252,7 @@ func (us *UserExternalLoginService) activeUser(ctx context.Context, oldUserInfo 
 	}
 
 	// try to update user avatar
-	if len(externalUserInfo.Avatar) > 0 {
+	if oldUserInfo.Avatar == "" && len(externalUserInfo.Avatar) > 0 {
 		avatarInfo := &schema.AvatarInfo{
 			Type:   constant.AvatarTypeCustom,
 			Custom: externalUserInfo.Avatar,

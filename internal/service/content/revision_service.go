@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package service
+package content
 
 import (
 	"context"
@@ -25,21 +25,28 @@ import (
 	"time"
 
 	"github.com/apache/incubator-answer/internal/base/constant"
+	"github.com/apache/incubator-answer/internal/base/handler"
 	"github.com/apache/incubator-answer/internal/base/pager"
 	"github.com/apache/incubator-answer/internal/base/reason"
+	"github.com/apache/incubator-answer/internal/base/translator"
 	"github.com/apache/incubator-answer/internal/entity"
 	"github.com/apache/incubator-answer/internal/schema"
+	"github.com/apache/incubator-answer/internal/service/activity"
 	"github.com/apache/incubator-answer/internal/service/activity_queue"
 	answercommon "github.com/apache/incubator-answer/internal/service/answer_common"
 	"github.com/apache/incubator-answer/internal/service/notice_queue"
 	"github.com/apache/incubator-answer/internal/service/object_info"
 	questioncommon "github.com/apache/incubator-answer/internal/service/question_common"
+	"github.com/apache/incubator-answer/internal/service/report_common"
+	"github.com/apache/incubator-answer/internal/service/review"
 	"github.com/apache/incubator-answer/internal/service/revision"
 	"github.com/apache/incubator-answer/internal/service/tag_common"
 	tagcommon "github.com/apache/incubator-answer/internal/service/tag_common"
 	usercommon "github.com/apache/incubator-answer/internal/service/user_common"
 	"github.com/apache/incubator-answer/pkg/converter"
+	"github.com/apache/incubator-answer/pkg/htmltext"
 	"github.com/apache/incubator-answer/pkg/obj"
+	"github.com/apache/incubator-answer/pkg/uid"
 	"github.com/jinzhu/copier"
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
@@ -58,6 +65,9 @@ type RevisionService struct {
 	tagCommon                *tagcommon.TagCommonService
 	notificationQueueService notice_queue.NotificationQueueService
 	activityQueueService     activity_queue.ActivityQueueService
+	reportRepo               report_common.ReportRepo
+	reviewService            *review.ReviewService
+	reviewActivity           activity.ReviewActivityRepo
 }
 
 func NewRevisionService(
@@ -72,6 +82,9 @@ func NewRevisionService(
 	tagCommon *tagcommon.TagCommonService,
 	notificationQueueService notice_queue.NotificationQueueService,
 	activityQueueService activity_queue.ActivityQueueService,
+	reportRepo report_common.ReportRepo,
+	reviewService *review.ReviewService,
+	reviewActivity activity.ReviewActivityRepo,
 ) *RevisionService {
 	return &RevisionService{
 		revisionRepo:             revisionRepo,
@@ -85,6 +98,9 @@ func NewRevisionService(
 		tagCommon:                tagCommon,
 		notificationQueueService: notificationQueueService,
 		activityQueueService:     activityQueueService,
+		reportRepo:               reportRepo,
+		reviewService:            reviewService,
+		reviewActivity:           reviewActivity,
 	}
 }
 
@@ -136,6 +152,28 @@ func (rs *RevisionService) RevisionAudit(ctx context.Context, req *schema.Revisi
 			return saveErr
 		}
 		err = rs.revisionRepo.UpdateStatus(ctx, req.ID, entity.RevisionReviewPassStatus, req.UserID)
+		if err != nil {
+			return err
+		}
+		err = rs.reviewActivity.Review(ctx, &schema.PassReviewActivity{
+			UserID:           revisioninfo.UserID,
+			TriggerUserID:    req.UserID,
+			ObjectID:         revisioninfo.ObjectID,
+			OriginalObjectID: "0",
+			RevisionID:       revisioninfo.ID,
+		})
+		if err != nil {
+			log.Errorf("add review activity failed: %v", err)
+		}
+
+		msg := &schema.NotificationMsg{
+			TriggerUserID:  req.UserID,
+			ReceiverUserID: revisioninfo.UserID,
+			Type:           schema.NotificationTypeAchievement,
+			ObjectID:       revisioninfo.ObjectID,
+			ObjectType:     objectType,
+		}
+		rs.notificationQueueService.Send(ctx, msg)
 		return
 	}
 
@@ -143,7 +181,7 @@ func (rs *RevisionService) RevisionAudit(ctx context.Context, req *schema.Revisi
 }
 
 func (rs *RevisionService) revisionAuditQuestion(ctx context.Context, revisionitem *schema.GetRevisionResp) (err error) {
-	questioninfo, ok := revisionitem.ContentParsed.(*schema.QuestionInfo)
+	questioninfo, ok := revisionitem.ContentParsed.(*schema.QuestionInfoResp)
 	if ok {
 		var PostUpdateTime time.Time
 		dbquestion, exist, dberr := rs.questionRepo.GetQuestion(ctx, questioninfo.ID)
@@ -333,6 +371,8 @@ func (rs *RevisionService) GetUnreviewedRevisionPage(ctx context.Context, req *s
 			_ = copier.Copy(&uinfo, userInfo)
 			item.UnreviewedInfo.UserInfo = uinfo
 		}
+		item.Info.UrlTitle = htmltext.UrlTitle(item.Info.Title)
+		item.UnreviewedInfo.UrlTitle = htmltext.UrlTitle(item.UnreviewedInfo.Title)
 		revisionResp = append(revisionResp, item)
 	}
 	return pager.NewPageModel(total, revisionResp), nil
@@ -380,13 +420,17 @@ func (rs *RevisionService) parseItem(ctx context.Context, item *schema.GetRevisi
 	var (
 		err          error
 		question     entity.QuestionWithTagsRevision
-		questionInfo *schema.QuestionInfo
+		questionInfo *schema.QuestionInfoResp
 		answer       entity.Answer
 		answerInfo   *schema.AnswerInfo
 		tag          entity.Tag
 		tagInfo      *schema.GetTagResp
 	)
 
+	shortID := handler.GetEnableShortID(ctx)
+	if shortID {
+		item.ObjectID = uid.EnShortID(item.ObjectID)
+	}
 	switch item.ObjectType {
 	case constant.ObjectTypeStrMapping["question"]:
 		err = json.Unmarshal([]byte(item.Content), &question)
@@ -394,6 +438,9 @@ func (rs *RevisionService) parseItem(ctx context.Context, item *schema.GetRevisi
 			break
 		}
 		questionInfo = rs.questionCommon.ShowFormatWithTag(ctx, &question)
+		if shortID {
+			questionInfo.ID = uid.EnShortID(questionInfo.ID)
+		}
 		item.ContentParsed = questionInfo
 	case constant.ObjectTypeStrMapping["answer"]:
 		err = json.Unmarshal([]byte(item.Content), &answer)
@@ -401,6 +448,10 @@ func (rs *RevisionService) parseItem(ctx context.Context, item *schema.GetRevisi
 			break
 		}
 		answerInfo = rs.answerService.ShowFormat(ctx, &answer)
+		if shortID {
+			answerInfo.ID = uid.EnShortID(answerInfo.ID)
+			answerInfo.QuestionID = uid.EnShortID(answerInfo.QuestionID)
+		}
 		item.ContentParsed = answerInfo
 	case constant.ObjectTypeStrMapping["tag"]:
 		err = json.Unmarshal([]byte(item.Content), &tag)
@@ -441,4 +492,50 @@ func (rs *RevisionService) CheckCanUpdateRevision(ctx context.Context, req *sche
 		return &schema.ErrTypeToast, errors.BadRequest(reason.RevisionReviewUnderway)
 	}
 	return nil, nil
+}
+
+// GetReviewingType get reviewing type
+func (rs *RevisionService) GetReviewingType(ctx context.Context, req *schema.GetReviewingTypeReq) (resp []*schema.GetReviewingTypeResp, err error) {
+	resp = make([]*schema.GetReviewingTypeResp, 0)
+
+	// get queue amount
+	if req.IsAdmin {
+		reviewCount, err := rs.reviewService.GetReviewPendingCount(ctx)
+		if err != nil {
+			log.Errorf("get report count failed: %v", err)
+		} else {
+			resp = append(resp, &schema.GetReviewingTypeResp{
+				Name:       string(constant.QueuedPost),
+				Label:      translator.Tr(handler.GetLangByCtx(ctx), constant.ReviewQueuedPostLabel),
+				TodoAmount: reviewCount,
+			})
+		}
+	}
+
+	// get flag amount
+	if req.IsAdmin {
+		reportCount, err := rs.reportRepo.GetReportCount(ctx)
+		if err != nil {
+			log.Errorf("get report count failed: %v", err)
+		} else {
+			resp = append(resp, &schema.GetReviewingTypeResp{
+				Name:       string(constant.FlaggedPost),
+				Label:      translator.Tr(handler.GetLangByCtx(ctx), constant.ReviewFlaggedPostLabel),
+				TodoAmount: reportCount,
+			})
+		}
+	}
+
+	// get suggestion amount
+	countUnreviewedRevision, err := rs.revisionRepo.CountUnreviewedRevision(ctx, req.GetCanReviewObjectTypes())
+	if err != nil {
+		log.Errorf("get unreviewed revision count failed: %v", err)
+	} else {
+		resp = append(resp, &schema.GetReviewingTypeResp{
+			Name:       string(constant.SuggestedPostEdit),
+			Label:      translator.Tr(handler.GetLangByCtx(ctx), constant.ReviewSuggestedPostEditLabel),
+			TodoAmount: countUnreviewedRevision,
+		})
+	}
+	return resp, nil
 }

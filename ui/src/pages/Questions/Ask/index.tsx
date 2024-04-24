@@ -24,7 +24,8 @@ import { useTranslation } from 'react-i18next';
 
 import dayjs from 'dayjs';
 import classNames from 'classnames';
-import { isEqual, debounce } from 'lodash';
+import isEqual from 'lodash/isEqual';
+import debounce from 'lodash/debounce';
 
 import { usePageTags, usePromptWithUnload, useCaptchaModal } from '@/hooks';
 import { Editor, EditorRef, TagSelector } from '@/components';

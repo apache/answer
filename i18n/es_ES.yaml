@@ -84,7 +84,7 @@ backend:
         other: Nivel 3 (reputación alta requerida para una comunidad madura)
     level_custom:
       description:
-        other: Custom Level
+        other: Nivel personalizado
     rank_question_add_label:
       other: Hacer una pregunta
     rank_answer_add_label:
@@ -140,6 +140,9 @@ backend:
   email_or_password_wrong_error:
     other: Contraseña o correo incorrecto.
   error:
+    common:
+      invalid_url:
+        other: Invalid URL.
     password:
       space_invalid:
         other: La contraseña no puede contener espacios.
@@ -200,6 +203,8 @@ backend:
     question:
       already_deleted:
         other: Esta publicación ha sido eliminada.
+      under_review:
+        other: Your post is awaiting review. It will be visible after it has been approved.
       not_found:
         other: Pregunta no encontrada.
       cannot_deleted:
@@ -485,6 +490,15 @@ backend:
       other: aceptar
     accepted:
       other: aceptado
+    edit:
+      other: edit
+  review:
+    queued_post:
+      other: Queued post
+    flagged_post:
+      other: Flagged post
+    suggested_post_edit:
+      other: Suggested edits
 # The following fields are used for interface presentation(Front-end)
 ui:
   how_to_format:
@@ -666,6 +680,8 @@ ui:
       empty: No puede estar en blanco.
     msg:
       empty: Por favor selecciona una razón.
+      not_a_url: URL format is incorrect.
+      url_not_match: URL origin does not match the current website.
   tag_modal:
     title: Crear nueva etiqueta
     form:
@@ -685,11 +701,11 @@ ui:
         desc:
           label: Descripción
         revision:
-          label: Revision
+          label: Revisión
         edit_summary:
-          label: Edit summary
+          label: Editar resumen
           placeholder: >-
-            Briefly explain your changes (corrected spelling, fixed grammar, improved formatting)
+            Explica brevemente los cambios (corrección ortográfica, mejora de formato)
     btn_cancel: Cancelar
     btn_submit: Enviar
     btn_post: Publicar nueva etiqueta
@@ -740,7 +756,7 @@ ui:
     btn_flag: Reportar
     btn_save_edits: Guardar cambios
     btn_cancel: Cancelar
-    show_more: "{{count}} more comments"
+    show_more: "{{count}} comentarios más"
     tip_question: >-
       Utiliza los comentarios para pedir más información o sugerir mejoras y modificaciones. Evita responder preguntas en los comentarios.
     tip_answer: >-
@@ -965,10 +981,10 @@ ui:
         label: Ubicación
         placeholder: "Ciudad, País"
     notification:
-      heading: Email Notifications
-      turn_on: Turn on
+      heading: Notificaciones por correo
+      turn_on: Activar
       inbox:
-        label: Inbox notifications
+        label: Notificaciones de bandeja
         description: Respuestas a tus preguntas, comentarios, invitaciones, y más.
       all_new_question:
         label: Todas las preguntas nuevas
@@ -1023,7 +1039,7 @@ ui:
     answers: respuestas
   invite_to_answer:
     title: Personas Preguntadas
-    desc: Select people who you think might know the answer.
+    desc: Selecciona personas que creas que sepan la respuesta.
     invite: Invitar a responder
     add: Añadir personas
     search: Buscar personas
@@ -1033,6 +1049,7 @@ ui:
     asked: preguntada
     update: Modificada
     edit: editada
+    commented: commented
     Views: Visto
     Follow: Seguir
     Following: Siguiendo
@@ -1050,6 +1067,7 @@ ui:
       title: Respuestas
       score: Puntuación
       newest: Más reciente
+      oldest: Oldest
       btn_accept: Aceptar
       btn_accepted: Aceptada
     write_answer:
@@ -1073,6 +1091,14 @@ ui:
       confirm_btn: Reabrir
       title: Reabrir esta publicación
       content: '¿Seguro que quieres reabrir esta publicación?'
+    list:
+      confirm_btn: List
+      title: List this post
+      content: Are you sure you want to list?
+    unlist:
+      confirm_btn: Unlist
+      title: Unlist this post
+      content: Are you sure you want to unlist?
     pin:
       title: Fijar esta publicación
       content: '¿Estás seguro de querer fijar esto globalmente? Esta publicación aparecerá por encima de todas las listas de publicaciones.'
@@ -1094,6 +1120,9 @@ ui:
     save: Guardar
     delete: Eliminar
     undelete: Restaurar
+    list: List
+    unlist: Unlist
+    unlisted: Unlisted
     login: Acceder
     signup: Registrarse
     logout: Cerrar sesión
@@ -1117,11 +1146,20 @@ ui:
     close: Cerrar
     reopen: Reabrir
     ok: Aceptar
-    light: Light
-    dark: Dark
-    system_setting: System setting
-    default: Default
-    reset: Reset
+    light: Claro
+    dark: Oscuro
+    system_setting: Ajuste de sistema
+    default: Por defecto
+    reset: Reiniciar
+    tag: Tag
+    post_lowercase: post
+    filter: Filter
+    ignore: Ignore
+    submit: Submit
+    normal: Normal
+    closed: Closed
+    deleted: Deleted
+    pending: Pending
   search:
     title: Resultados de la búsqueda
     keywords: Palabras claves
@@ -1368,7 +1406,8 @@ ui:
       votes: "Votos:"
       users: "Usuarios:"
       flags: "Banderas:"
-      site_health_status: Estado del sitio
+      reviews: "Reviews:"
+      site_health: Site health
       version: "Versión:"
       https: "HTTPS:"
       upload_folder: "Cargar carpeta:"
@@ -1383,11 +1422,12 @@ ui:
       database_size: "Tamaño de la base de datos:"
       storage_used: "Almacenamiento utilizado:"
       uptime: "Tiempo ejecutándose:"
-      answer_links: Enlaces de respuestas
+      links: Links
       plugins: Extensiones
       github: GitHub
       blog: Blog
       contact: Contacto
+      forum: Forum
       documents: Documentos
       feedback: Comentario
       support: Soporte
@@ -1490,9 +1530,7 @@ ui:
         content: Un usuario suspendido no puede iniciar sesión.
     questions:
       page_title: Preguntas
-      normal: Normal
-      closed: Cerrado
-      deleted: Eliminado
+      unlisted: Unlisted
       post: Correo
       votes: Votos
       answers: Respuestas
@@ -1500,12 +1538,11 @@ ui:
       status: Estado
       action: Acción
       change: Cambiar
+      pending: Pending
       filter:
         placeholder: "Filtrar por título, pregunta:id"
     answers:
       page_title: Respuestas
-      normal: Normal
-      deleted: Eliminado
       post: Correo
       votes: Votos
       created: Creado
@@ -1538,6 +1575,9 @@ ui:
         msg: El correo electrónico de contacto no puede estar vacío.
         validate: El correo electrónico de contacto no es válido.
         text: Dirección de correo electrónico del contacto clave responsable de este sitio.
+      check_update:
+        label: Software updates
+        text: Automatically check for updates
     interface:
       page_title: Interfaz
       language:
@@ -1642,11 +1682,11 @@ ui:
         label: Temas
         text: Seleccione un tema existente.
       color_scheme:
-        label: Color scheme
+        label: Esquema de color
       navbar_style:
-        label: Navbar style
+        label: Estilo de barra de navegación
       primary_color:
-        label: Primary color
+        label: Color primario
         text: Modifica los colores usados por tus temas
     css_and_html:
       page_title: CSS y HTML
@@ -1752,6 +1792,22 @@ ui:
     edit_answer: Editar respuesta
     edit_tag: Editar etiqueta
     empty: No quedan tareas de revisión.
+    approve_revision_tip: Do you approve this revision?
+    approve_flag_tip: Do you approve this flag?
+    approve_post_tip: Do you approve this post?
+    approve_user_tip: Do you approve this user?
+    suggest_edits: Suggested edits
+    flag_post: Flag post
+    flag_user: Flag user
+    queued_post: Queued post
+    queued_user: Queued user
+    filter_label: Type
+    reputation: reputation
+    flag_post_type: Flagged this post as {{ type }}.
+    flag_user_type: Flagged this user as {{ type }}.
+    edit_post: Edit post
+    list_post: List post
+    unlist_post: Unlist post
   timeline:
     undeleted: recuperado
     deleted: eliminado
@@ -1802,3 +1858,6 @@ ui:
     post_hide_list: Esta publicación ha sido ocultada de la lista.
     post_show_list: Esta publicación ha sido mostrada a la lista.
     post_reopen: Esta publicación ha sido reabierta.
+    post_list: This post has been listed.
+    post_unlist: This post has been unlisted.
+    post_pending: Your post is awaiting review. This is a preview, it will be visible after it has been approved.

@@ -40,7 +40,6 @@ type AnswerAPIRouter struct {
 	searchController        *controller.SearchController
 	revisionController      *controller.RevisionController
 	rankController          *controller.RankController
-	adminReportController   *controller_admin.ReportController
 	adminUserController     *controller_admin.UserAdminController
 	reasonController        *controller.ReasonController
 	themeController         *controller_admin.ThemeController
@@ -54,6 +53,7 @@ type AnswerAPIRouter struct {
 	pluginController        *controller_admin.PluginController
 	permissionController    *controller.PermissionController
 	userPluginController    *controller.UserPluginController
+	reviewController        *controller.ReviewController
 }
 
 func NewAnswerAPIRouter(
@@ -70,7 +70,6 @@ func NewAnswerAPIRouter(
 	searchController *controller.SearchController,
 	revisionController *controller.RevisionController,
 	rankController *controller.RankController,
-	adminReportController *controller_admin.ReportController,
 	adminUserController *controller_admin.UserAdminController,
 	reasonController *controller.ReasonController,
 	themeController *controller_admin.ThemeController,
@@ -84,6 +83,7 @@ func NewAnswerAPIRouter(
 	pluginController *controller_admin.PluginController,
 	permissionController *controller.PermissionController,
 	userPluginController *controller.UserPluginController,
+	reviewController *controller.ReviewController,
 ) *AnswerAPIRouter {
 	return &AnswerAPIRouter{
 		langController:          langController,
@@ -99,7 +99,6 @@ func NewAnswerAPIRouter(
 		searchController:        searchController,
 		revisionController:      revisionController,
 		rankController:          rankController,
-		adminReportController:   adminReportController,
 		adminUserController:     adminUserController,
 		reasonController:        reasonController,
 		themeController:         themeController,
@@ -113,6 +112,7 @@ func NewAnswerAPIRouter(
 		pluginController:        pluginController,
 		permissionController:    permissionController,
 		userPluginController:    userPluginController,
+		reviewController:        reviewController,
 	}
 }
 
@@ -194,6 +194,7 @@ func (a *AnswerAPIRouter) RegisterAnswerAPIRouter(r *gin.RouterGroup) {
 	r.GET("/revisions/unreviewed", a.revisionController.GetUnreviewedRevisionList)
 	r.PUT("/revisions/audit", a.revisionController.RevisionAudit)
 	r.GET("/revisions/edit/check", a.revisionController.CheckCanUpdateRevision)
+	r.GET("/reviewing/type", a.revisionController.GetReviewingType)
 
 	// comment
 	r.POST("/comment", a.commentController.AddComment)
@@ -202,6 +203,12 @@ func (a *AnswerAPIRouter) RegisterAnswerAPIRouter(r *gin.RouterGroup) {
 
 	// report
 	r.POST("/report", a.reportController.AddReport)
+	r.GET("/report/unreviewed/post", a.reportController.GetUnreviewedReportPostPage)
+	r.PUT("/report/review", a.reportController.ReviewReport)
+
+	// review
+	r.GET("/review/pending/post/page", a.reviewController.GetUnreviewedPostPage)
+	r.PUT("/review/pending/post", a.reviewController.UpdateReview)
 
 	// vote
 	r.POST("/vote/up", a.voteController.VoteUp)
@@ -285,10 +292,6 @@ func (a *AnswerAPIRouter) RegisterAnswerAdminAPIRouter(r *gin.RouterGroup) {
 	r.PUT("/question/status", a.questionController.AdminUpdateQuestionStatus)
 	r.GET("/answer/page", a.questionController.AdminAnswerPage)
 	r.PUT("/answer/status", a.answerController.AdminUpdateAnswerStatus)
-
-	// report
-	r.GET("/reports/page", a.adminReportController.ListReportPage)
-	r.PUT("/report", a.adminReportController.Handle)
 
 	// user
 	r.GET("/users/page", a.adminUserController.GetUserPage)

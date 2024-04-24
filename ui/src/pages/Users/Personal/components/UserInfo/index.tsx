@@ -128,7 +128,7 @@ const Index: FC<Props> = ({ data }) => {
                   <a
                     className="link-secondary"
                     href={
-                      data.website?.includes('http')
+                      data.website?.startsWith('http')
                         ? data.website
                         : `http://${data.website}`
                     }>

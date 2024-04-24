@@ -30,8 +30,8 @@ import (
 	"github.com/apache/incubator-answer/internal/base/validator"
 	"github.com/apache/incubator-answer/internal/entity"
 	"github.com/apache/incubator-answer/internal/schema"
-	"github.com/apache/incubator-answer/internal/service"
 	"github.com/apache/incubator-answer/internal/service/action"
+	"github.com/apache/incubator-answer/internal/service/content"
 	"github.com/apache/incubator-answer/internal/service/permission"
 	"github.com/apache/incubator-answer/internal/service/rank"
 	"github.com/apache/incubator-answer/internal/service/siteinfo_common"
@@ -42,7 +42,7 @@ import (
 
 // AnswerController answer controller
 type AnswerController struct {
-	answerService         *service.AnswerService
+	answerService         *content.AnswerService
 	rankService           *rank.RankService
 	actionService         *action.CaptchaService
 	siteInfoCommonService siteinfo_common.SiteInfoCommonService
@@ -51,7 +51,7 @@ type AnswerController struct {
 
 // NewAnswerController new controller
 func NewAnswerController(
-	answerService *service.AnswerService,
+	answerService *content.AnswerService,
 	rankService *rank.RankService,
 	actionService *action.CaptchaService,
 	siteInfoCommonService siteinfo_common.SiteInfoCommonService,

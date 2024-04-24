@@ -214,7 +214,7 @@ type QuestionBaseInfo struct {
 	AcceptedAnswer  bool   `json:"accepted_answer"`
 }
 
-type QuestionInfo struct {
+type QuestionInfoResp struct {
 	ID                   string         `json:"id" `
 	Title                string         `json:"title"`
 	UrlTitle             string         `json:"url_title"`
@@ -265,6 +265,8 @@ type AdminQuestionInfo struct {
 	ID               string         `json:"id"`
 	Title            string         `json:"title"`
 	VoteCount        int            `json:"vote_count"`
+	Show             int            `json:"show"`
+	Pin              int            `json:"pin"`
 	AnswerCount      int            `json:"answer_count"`
 	AcceptedAnswerID string         `json:"accepted_answer_id"`
 	CreateTime       int64          `json:"create_time"`
@@ -277,9 +279,10 @@ type AdminQuestionInfo struct {
 type OperationLevel string
 
 const (
-	OperationLevelInfo    OperationLevel = "info"
-	OperationLevelDanger  OperationLevel = "danger"
-	OperationLevelWarning OperationLevel = "warning"
+	OperationLevelInfo      OperationLevel = "info"
+	OperationLevelDanger    OperationLevel = "danger"
+	OperationLevelWarning   OperationLevel = "warning"
+	OperationLevelSecondary OperationLevel = "secondary"
 )
 
 type Operation struct {
@@ -353,6 +356,7 @@ type QuestionPageReq struct {
 	LoginUserID      string `json:"-"`
 	UserIDBeSearched string `json:"-"`
 	TagID            string `json:"-"`
+	ShowPending      bool   `json:"-"`
 }
 
 const (
@@ -403,7 +407,7 @@ type QuestionPageRespOperator struct {
 type AdminQuestionPageReq struct {
 	Page        int    `validate:"omitempty,min=1" form:"page"`
 	PageSize    int    `validate:"omitempty,min=1" form:"page_size"`
-	StatusCond  string `validate:"omitempty,oneof=normal closed deleted" form:"status"`
+	StatusCond  string `validate:"omitempty,oneof=normal closed deleted pending" form:"status"`
 	Query       string `validate:"omitempty,gt=0,lte=100" json:"query" form:"query" `
 	Status      int    `json:"-"`
 	LoginUserID string `json:"-"`
@@ -424,7 +428,7 @@ func (req *AdminQuestionPageReq) Check() (errField []*validator.FormErrorField, 
 type AdminAnswerPageReq struct {
 	Page          int    `validate:"omitempty,min=1" form:"page"`
 	PageSize      int    `validate:"omitempty,min=1" form:"page_size"`
-	StatusCond    string `validate:"omitempty,oneof=normal deleted" form:"status"`
+	StatusCond    string `validate:"omitempty,oneof=normal deleted pending" form:"status"`
 	Query         string `validate:"omitempty,gt=0,lte=100" form:"query"`
 	QuestionID    string `validate:"omitempty,gt=0,lte=24" form:"question_id"`
 	QuestionTitle string `json:"-"`
@@ -470,6 +474,7 @@ type PersonalQuestionPageReq struct {
 	OrderCond   string `validate:"omitempty,oneof=newest active frequent score unanswered" form:"order"`
 	Username    string `validate:"omitempty,gt=0,lte=100" form:"username"`
 	LoginUserID string `json:"-"`
+	IsAdmin     bool   `json:"-"`
 }
 
 type PersonalAnswerPageReq struct {
@@ -478,6 +483,7 @@ type PersonalAnswerPageReq struct {
 	OrderCond   string `validate:"omitempty,oneof=newest active frequent score unanswered" form:"order"`
 	Username    string `validate:"omitempty,gt=0,lte=100" form:"username"`
 	LoginUserID string `json:"-"`
+	IsAdmin     bool   `json:"-"`
 }
 
 type PersonalCollectionPageReq struct {

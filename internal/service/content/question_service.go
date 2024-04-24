@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package service
+package content
 
 import (
 	"encoding/json"
@@ -36,17 +36,20 @@ import (
 	"github.com/apache/incubator-answer/internal/service/activity"
 	"github.com/apache/incubator-answer/internal/service/activity_queue"
 	collectioncommon "github.com/apache/incubator-answer/internal/service/collection_common"
+	"github.com/apache/incubator-answer/internal/service/config"
 	"github.com/apache/incubator-answer/internal/service/export"
 	"github.com/apache/incubator-answer/internal/service/meta"
 	"github.com/apache/incubator-answer/internal/service/notice_queue"
 	"github.com/apache/incubator-answer/internal/service/notification"
 	"github.com/apache/incubator-answer/internal/service/permission"
 	questioncommon "github.com/apache/incubator-answer/internal/service/question_common"
+	"github.com/apache/incubator-answer/internal/service/review"
 	"github.com/apache/incubator-answer/internal/service/revision_common"
 	"github.com/apache/incubator-answer/internal/service/role"
 	"github.com/apache/incubator-answer/internal/service/siteinfo_common"
 	tagcommon "github.com/apache/incubator-answer/internal/service/tag_common"
 	usercommon "github.com/apache/incubator-answer/internal/service/user_common"
+	"github.com/apache/incubator-answer/pkg/checker"
 	"github.com/apache/incubator-answer/pkg/converter"
 	"github.com/apache/incubator-answer/pkg/htmltext"
 	"github.com/apache/incubator-answer/pkg/token"
@@ -77,6 +80,8 @@ type QuestionService struct {
 	activityQueueService             activity_queue.ActivityQueueService
 	siteInfoService                  siteinfo_common.SiteInfoCommonService
 	newQuestionNotificationService   *notification.ExternalNotificationService
+	reviewService                    *review.ReviewService
+	configService                    *config.ConfigService
 }
 
 func NewQuestionService(
@@ -96,6 +101,8 @@ func NewQuestionService(
 	activityQueueService activity_queue.ActivityQueueService,
 	siteInfoService siteinfo_common.SiteInfoCommonService,
 	newQuestionNotificationService *notification.ExternalNotificationService,
+	reviewService *review.ReviewService,
+	configService *config.ConfigService,
 ) *QuestionService {
 	return &QuestionService{
 		questionRepo:                     questionRepo,
@@ -114,6 +121,8 @@ func NewQuestionService(
 		activityQueueService:             activityQueueService,
 		siteInfoService:                  siteInfoService,
 		newQuestionNotificationService:   newQuestionNotificationService,
+		reviewService:                    reviewService,
+		configService:                    configService,
 	}
 }
 
@@ -124,6 +133,14 @@ func (qs *QuestionService) CloseQuestion(ctx context.Context, req *schema.CloseQ
 	}
 	if !has {
 		return nil
+	}
+
+	cf, err := qs.configService.GetConfigByID(ctx, req.CloseType)
+	if err != nil || cf == nil {
+		return errors.BadRequest(reason.ReportNotFound)
+	}
+	if cf.Key == constant.ReasonADuplicate && !checker.IsURL(req.CloseMsg) {
+		return errors.BadRequest(reason.InvalidURLError)
 	}
 
 	questionInfo.Status = entity.QuestionStatusClosed
@@ -299,7 +316,7 @@ func (qs *QuestionService) AddQuestion(ctx context.Context, req *schema.Question
 	question.LastAnswerID = "0"
 	question.LastEditUserID = "0"
 	//question.PostUpdateTime = nil
-	question.Status = entity.QuestionStatusAvailable
+	question.Status = entity.QuestionStatusPending
 	question.RevisionID = "0"
 	question.CreatedAt = now
 	question.PostUpdateTime = now
@@ -309,6 +326,13 @@ func (qs *QuestionService) AddQuestion(ctx context.Context, req *schema.Question
 	err = qs.questionRepo.AddQuestion(ctx, question)
 	if err != nil {
 		return
+	}
+	if qs.reviewService.AddQuestionReview(ctx, question, req.Tags) {
+		if err := qs.questionRepo.UpdateQuestionStatus(ctx, question.ID, entity.QuestionStatusAvailable); err != nil {
+			return nil, err
+		} else {
+			question.Status = entity.AnswerStatusAvailable
+		}
 	}
 	objectTagData := schema.TagChange{}
 	objectTagData.ObjectID = question.ID
@@ -356,8 +380,10 @@ func (qs *QuestionService) AddQuestion(ctx context.Context, req *schema.Question
 		RevisionID:       revisionID,
 	})
 
-	qs.externalNotificationQueueService.Send(ctx,
-		schema.CreateNewQuestionNotificationMsg(question.ID, question.Title, question.UserID, tags))
+	if question.Status == entity.QuestionStatusAvailable {
+		qs.externalNotificationQueueService.Send(ctx,
+			schema.CreateNewQuestionNotificationMsg(question.ID, question.Title, question.UserID, tags))
+	}
 
 	questionInfo, err = qs.GetQuestion(ctx, question.ID, question.UserID, req.QuestionPermission)
 	return
@@ -513,7 +539,8 @@ func (qs *QuestionService) RemoveQuestion(ctx context.Context, req *schema.Remov
 	// 	 log.Errorf("user DeleteQuestion rank rollback error %s", err.Error())
 	// }
 	qs.activityQueueService.Send(ctx, &schema.ActivityMsg{
-		UserID:           req.UserID,
+		UserID:           questionInfo.UserID,
+		TriggerUserID:    converter.StringToInt64(req.UserID),
 		ObjectID:         questionInfo.ID,
 		OriginalObjectID: questionInfo.ID,
 		ActivityTypeKey:  constant.ActQuestionDeleted,
@@ -616,7 +643,7 @@ func (qs *QuestionService) RecoverQuestion(ctx context.Context, req *schema.Ques
 	}
 
 	// update tag's question count
-	if err = qs.tagCommon.RemoveTagRelListByObjectID(ctx, questionInfo.ID); err != nil {
+	if err = qs.tagCommon.RecoverTagRelListByObjectID(ctx, questionInfo.ID); err != nil {
 		log.Errorf("remove tag rel list by object id error %v", err)
 	}
 
@@ -754,7 +781,7 @@ func (qs *QuestionService) notificationInviteUser(
 // UpdateQuestion update question
 func (qs *QuestionService) UpdateQuestion(ctx context.Context, req *schema.QuestionUpdate) (questionInfo any, err error) {
 	var canUpdate bool
-	questionInfo = &schema.QuestionInfo{}
+	questionInfo = &schema.QuestionInfoResp{}
 
 	_, existUnreviewed, err := qs.revisionService.ExistUnreviewedByObjectID(ctx, req.ID)
 	if err != nil {
@@ -917,13 +944,14 @@ func (qs *QuestionService) UpdateQuestion(ctx context.Context, req *schema.Quest
 
 // GetQuestion get question one
 func (qs *QuestionService) GetQuestion(ctx context.Context, questionID, userID string,
-	per schema.QuestionPermission) (resp *schema.QuestionInfo, err error) {
+	per schema.QuestionPermission) (resp *schema.QuestionInfoResp, err error) {
 	question, err := qs.questioncommon.Info(ctx, questionID, userID)
 	if err != nil {
 		return
 	}
-	// If the question is deleted, only the administrator and the author can view it
-	if question.Status == entity.QuestionStatusDeleted && !per.CanReopen && question.UserID != userID {
+	// If the question is deleted or pending, only the administrator and the author can view it
+	if (question.Status == entity.QuestionStatusDeleted ||
+		question.Status == entity.QuestionStatusPending) && !per.CanReopen && question.UserID != userID {
 		return nil, errors.NotFound(reason.QuestionNotFound)
 	}
 	if question.Status != entity.QuestionStatusClosed {
@@ -953,6 +981,12 @@ func (qs *QuestionService) GetQuestion(ctx context.Context, questionID, userID s
 		operation.Level = schema.OperationLevelDanger
 		question.Operation = operation
 	}
+	if question.Status == entity.QuestionStatusPending {
+		operation := &schema.Operation{}
+		operation.Msg = translator.Tr(handler.GetLangByCtx(ctx), reason.QuestionUnderReview)
+		operation.Level = schema.OperationLevelSecondary
+		question.Operation = operation
+	}
 
 	question.Description = htmltext.FetchExcerpt(question.HTML, "...", 240)
 	question.MemberActions = permission.GetQuestionPermission(ctx, userID, question.UserID, question.Status,
@@ -966,7 +1000,7 @@ func (qs *QuestionService) GetQuestion(ctx context.Context, questionID, userID s
 // GetQuestionAndAddPV get question one
 func (qs *QuestionService) GetQuestionAndAddPV(ctx context.Context, questionID, loginUserID string,
 	per schema.QuestionPermission) (
-	resp *schema.QuestionInfo, err error) {
+	resp *schema.QuestionInfoResp, err error) {
 	err = qs.questioncommon.UpdatePv(ctx, questionID)
 	if err != nil {
 		log.Error(err)
@@ -1003,6 +1037,10 @@ func (qs *QuestionService) PersonalQuestionPage(ctx context.Context, req *schema
 	search.PageSize = req.PageSize
 	search.UserIDBeSearched = userinfo.ID
 	search.LoginUserID = req.LoginUserID
+	// Only author and administrator can view the pending question
+	if req.LoginUserID == userinfo.ID || req.IsAdmin {
+		search.ShowPending = true
+	}
 	questionList, total, err := qs.GetQuestionPage(ctx, search)
 	if err != nil {
 		return nil, err
@@ -1029,17 +1067,18 @@ func (qs *QuestionService) PersonalAnswerPage(ctx context.Context, req *schema.P
 	if !exist {
 		return nil, errors.BadRequest(reason.UserNotFound)
 	}
-	answersearch := &entity.AnswerSearch{}
-	answersearch.UserID = userinfo.ID
-	answersearch.PageSize = req.PageSize
-	answersearch.Page = req.Page
+	cond := &entity.PersonalAnswerPageQueryCond{}
+	cond.UserID = userinfo.ID
+	cond.Page = req.Page
+	cond.PageSize = req.PageSize
+	cond.ShowPending = req.IsAdmin || req.LoginUserID == cond.UserID
 	if req.OrderCond == "newest" {
-		answersearch.Order = entity.AnswerSearchOrderByTime
+		cond.Order = entity.AnswerSearchOrderByTime
 	} else {
-		answersearch.Order = entity.AnswerSearchOrderByDefault
+		cond.Order = entity.AnswerSearchOrderByDefault
 	}
 	questionIDs := make([]string, 0)
-	answerList, total, err := qs.questioncommon.AnswerCommon.Search(ctx, answersearch)
+	answerList, total, err := qs.questioncommon.AnswerCommon.PersonalAnswerPage(ctx, cond)
 	if err != nil {
 		return nil, err
 	}
@@ -1080,7 +1119,7 @@ func (qs *QuestionService) PersonalAnswerPage(ctx context.Context, req *schema.P
 // PersonalCollectionPage get collection list by user
 func (qs *QuestionService) PersonalCollectionPage(ctx context.Context, req *schema.PersonalCollectionPageReq) (
 	pageModel *pager.PageModel, err error) {
-	list := make([]*schema.QuestionInfo, 0)
+	list := make([]*schema.QuestionInfoResp, 0)
 	collectionSearch := &entity.CollectionSearch{}
 	collectionSearch.UserID = req.UserID
 	collectionSearch.Page = req.Page
@@ -1235,7 +1274,17 @@ func (qs *QuestionService) SimilarQuestion(ctx context.Context, questionID strin
 		search.Tag = tagNames[0]
 	}
 	search.LoginUserID = loginUserID
-	return qs.GetQuestionPage(ctx, search)
+	similarQuestions, _, err := qs.GetQuestionPage(ctx, search)
+	if err != nil {
+		return nil, 0, err
+	}
+	var result []*schema.QuestionPageResp
+	for _, v := range similarQuestions {
+		if uid.DeShortID(v.ID) != questionID {
+			result = append(result, v)
+		}
+	}
+	return result, int64(len(result)), nil
 }
 
 // GetQuestionPage query questions page
@@ -1283,7 +1332,7 @@ func (qs *QuestionService) GetQuestionPage(ctx context.Context, req *schema.Ques
 	}
 
 	questionList, total, err := qs.questionRepo.GetQuestionPage(ctx, req.Page, req.PageSize,
-		tagIDs, req.UserIDBeSearched, req.OrderCond, req.InDays, showHidden)
+		tagIDs, req.UserIDBeSearched, req.OrderCond, req.InDays, showHidden, req.ShowPending)
 	if err != nil {
 		return nil, 0, err
 	}

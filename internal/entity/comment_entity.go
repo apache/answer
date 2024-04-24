@@ -30,6 +30,7 @@ import (
 const (
 	CommentStatusAvailable = 1
 	CommentStatusDeleted   = 10
+	CommentStatusPending   = 11
 )
 
 // Comment comment

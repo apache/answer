@@ -71,6 +71,7 @@ const Index = () => {
       },
     },
   };
+
   const uiSchema: UISchema = {
     language: {
       'ui:widget': 'select',
@@ -86,7 +87,7 @@ const Index = () => {
       ...formData,
       language: {
         ...formData.language,
-        value: res[0].value,
+        value: loggedUserInfo.language || res[0].value,
       },
     });
     setLangs(res);

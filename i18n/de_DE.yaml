@@ -75,16 +75,16 @@ backend:
   privilege:
     level_1:
       description:
-        other: Level 1 (less reputation required for private team, group)
+        other: Level 1 (weniger Reputation für privates Team, Gruppen)
     level_2:
       description:
-        other: Level 2 (low reputation required for startup community)
+        other: Level 2 (niedrige Reputation erforderlich für Start-Community)
     level_3:
       description:
-        other: Level 3 (high reputation required for mature community)
+        other: Level 3 (hohe Reputation, für ausgereifte Community)
     level_custom:
       description:
-        other: Custom Level
+        other: Benutzerdefinierter Level
     rank_question_add_label:
       other: Fragen stellen
     rank_answer_add_label:
@@ -140,6 +140,9 @@ backend:
   email_or_password_wrong_error:
     other: E-Mail und Passwort stimmen nicht überein.
   error:
+    common:
+      invalid_url:
+        other: Invalid URL.
     password:
       space_invalid:
         other: Passwort darf keine Leerzeichen enthalten.
@@ -200,6 +203,8 @@ backend:
     question:
       already_deleted:
         other: Dieser Beitrag wurde gelöscht.
+      under_review:
+        other: Your post is awaiting review. It will be visible after it has been approved.
       not_found:
         other: Frage nicht gefunden.
       cannot_deleted:
@@ -271,7 +276,7 @@ backend:
       not_allowed_registration:
         other: Derzeit ist die Seite nicht für die Anmeldung geöffnet.
       not_allowed_login_via_password:
-        other: Currently the site is not allowed to login via password.
+        other: Zurzeit ist es auf der Seite nicht möglich, sich mit einem Passwort anzumelden.
       access_denied:
         other: Zugriff verweigert
       page_access_denied:
@@ -300,7 +305,7 @@ backend:
   reason:
     spam:
       name:
-        other: spam
+        other: Spam
       desc:
         other: Dieser Beitrag ist eine Werbung oder Vandalismus. Er ist nicht nützlich oder relevant für das aktuelle Thema.
     rude_or_abusive:
@@ -485,6 +490,15 @@ backend:
       other: akzeptieren
     accepted:
       other: akzeptiert
+    edit:
+      other: edit
+  review:
+    queued_post:
+      other: Queued post
+    flagged_post:
+      other: Flagged post
+    suggested_post_edit:
+      other: Suggested edits
 # The following fields are used for interface presentation(Front-end)
 ui:
   how_to_format:
@@ -525,7 +539,7 @@ ui:
     http_404: HTTP-Fehler 404
     http_50X: HTTP-Fehler 500
     http_403: HTTP Fehler 403
-    logout: Log Out
+    logout: Ausloggen
   notifications:
     title: Benachrichtigungen
     inbox: Posteingang
@@ -604,7 +618,7 @@ ui:
             msg:
               empty: Datei darf nicht leer sein.
               only_image: Nur Bilddateien sind erlaubt.
-              max_size: File size cannot exceed 4 MB.
+              max_size: Die Dateigröße darf 4 MB nicht überschreiten.
           desc:
             label: Beschreibung
       tab_url: Bild URL
@@ -624,10 +638,10 @@ ui:
     outdent:
       text: Ausrücken
     italic:
-      text: Schwerpunkt
+      text: Hervorhebung
     link:
-      text: Hyperlinks
-      add_link: Hyperlinks hinzufügen
+      text: Hyperlink
+      add_link: Hyperlink hinzufügen
       form:
         fields:
           url:
@@ -657,15 +671,17 @@ ui:
   report_modal:
     flag_title: Ich melde diesen Beitrag als...
     close_title: Ich schließe diesen Beitrag wegen ...
-    review_question_title: Frage ansehen
-    review_answer_title: Antworten überprüfen
-    review_comment_title: Kommentare anzeigen
+    review_question_title: Frage prüfen
+    review_answer_title: Antwort prüfen
+    review_comment_title: Kommentar prüfen
     btn_cancel: Abbrechen
     btn_submit: Senden
     remark:
       empty: Kann nicht leer sein.
     msg:
       empty: Bitte wähle einen Grund aus.
+      not_a_url: URL format is incorrect.
+      url_not_match: URL origin does not match the current website.
   tag_modal:
     title: Neuen Tag erstellen
     form:
@@ -685,11 +701,11 @@ ui:
         desc:
           label: Beschreibung
         revision:
-          label: Revision
+          label: Version
         edit_summary:
-          label: Edit summary
+          label: Zusammenfassung bearbeiten
           placeholder: >-
-            Briefly explain your changes (corrected spelling, fixed grammar, improved formatting)
+            Erkläre kurz deine Änderungen (korrigierte Rechtschreibung, korrigierte Grammatik, verbesserte Formatierung)
     btn_cancel: Abbrechen
     btn_submit: Senden
     btn_post: Neuen Tag erstellen
@@ -716,31 +732,31 @@ ui:
   edit_tag:
     title: Tag bearbeiten
     default_reason: Tag bearbeiten
-    default_first_reason: Schlagwort hinzufügen
+    default_first_reason: Tag hinzufügen
     btn_save_edits: Änderungen speichern
-    btn_cancel: Stornieren
+    btn_cancel: Abbrechen
   dates:
     long_date: DD. MMM
     long_date_with_year: "DD. MMM YYYY"
     long_date_with_time: "DD. MMM YYYY [at] HH:mm"
-    now: jetzt
-    x_seconds_ago: "vor {{count}}s"
-    x_minutes_ago: "vor {{count}}m"
-    x_hours_ago: "vor {{count}}h"
-    hour: stunde
+    now: Gerade eben
+    x_seconds_ago: "Vor {{count}}s"
+    x_minutes_ago: "Vor {{count}}m"
+    x_hours_ago: "Vor {{count}}h"
+    hour: Stunde
     day: tag
-    hours: hours
-    days: days
+    hours: Stunden
+    days: Tage
   comment:
     btn_add_comment: Einen Kommentar hinzufügen
     reply_to: Antwort an
     btn_reply: Antwort
     btn_edit: Bearbeiten
     btn_delete: Löschen
-    btn_flag: Flagge
+    btn_flag: Melden
     btn_save_edits: Änderungen speichern
-    btn_cancel: Stornieren
-    show_more: "{{count}} more comments"
+    btn_cancel: Abbrechen
+    show_more: "{{count}} mehr Kommentare"
     tip_question: >-
       Verwende Kommentare, um nach weiteren Informationen zu fragen oder Verbesserungen vorzuschlagen. Vermeide es, Fragen in Kommentaren zu beantworten.
     tip_answer: >-
@@ -753,7 +769,7 @@ ui:
     form:
       fields:
         revision:
-          label: Revision
+          label: Version
         answer:
           label: Antwort
           feedback:
@@ -763,9 +779,9 @@ ui:
           placeholder: >-
             Erkläre kurz deine Änderungen (korrigierte Rechtschreibung, korrigierte Grammatik, verbesserte Formatierung)
     btn_save_edits: Änderungen speichern
-    btn_cancel: Stornieren
+    btn_cancel: Abbrechen
   tags:
-    title: Stichworte
+    title: Tags
     sort_buttons:
       popular: Beliebt
       name: Name
@@ -785,7 +801,7 @@ ui:
     form:
       fields:
         revision:
-          label: Revision
+          label: Version
         title:
           label: Titel
           placeholder: Sei spezifisch und stelle dir vor, du stelle eine Frage an eine andere Person
@@ -835,7 +851,7 @@ ui:
       placeholder: Suchen
   footer:
     build_on: >-
-      Powered by <1> Apache Answer </1>- the open-source software that powers Q&A communities.<br />Made with love © {{cc}}.
+      Betrieben von <1> Apache Answer </1>- die Open-Source-Software, die Q&A-Communities betreibt.<br />Made with love © {{cc}}.
   upload_img:
     name: Ändern
     loading: wird geladen...
@@ -889,7 +905,7 @@ ui:
         empty: E-Mail darf nicht leer sein.
   change_email:
     btn_cancel: Stornieren
-    btn_update: Aktualisiere email adresse
+    btn_update: E-Mail Adresse aktualisieren
     send_success: >-
       Wenn ein Konto mit <strong>{{mail}}</strong> übereinstimmt, solltest du in Kürze eine E-Mail mit Anweisungen erhalten, wie du dein Passwort zurücksetzen kannst.
     email:
@@ -901,13 +917,13 @@ ui:
     remove: '{{ auth_name }} entfernen'
   oauth_bind_email:
     subtitle: Wiederherstellungs-E-Mail zu deinem Konto hinzufügen.
-    btn_update: E-Mail-Adresse aktualisieren
+    btn_update: E-Mail aktualisieren
     email:
       label: E-Mail
       msg:
         empty: E-Mail darf nicht leer sein.
     modal_title: E-Mail existiert bereits.
-    modal_content: Diese E-Mail-Adresse ist bereits registriert. Bist du sicher, dass du dich mit dem bestehenden Konto verbinden möchtest?
+    modal_content: Diese E-Mail ist bereits registriert. Bist du sicher, dass du dich mit dem bestehenden Konto verbinden möchtest?
     modal_cancel: E-Mail ändern
     modal_confirm: Mit dem bestehenden Konto verbinden
   password_reset:
@@ -933,7 +949,7 @@ ui:
       profile: Profil
       notification: Benachrichtigungen
       account: Konto
-      interface: Schnittstelle
+      interface: Benutzeroberfläche
     profile:
       heading: Profil
       btn_name: Speichern
@@ -965,10 +981,10 @@ ui:
         label: Standort
         placeholder: "Stadt, Land"
     notification:
-      heading: Email Notifications
-      turn_on: Turn on
+      heading: E-Mail-Benachrichtigungen
+      turn_on: Aktivieren
       inbox:
-        label: Inbox notifications
+        label: Posteingangsbenachrichtigungen
         description: Antworten auf deine Fragen, Kommentare, Einladungen und mehr.
       all_new_question:
         label: Alle neuen Fragen
@@ -978,7 +994,7 @@ ui:
         description: Lass dich über neue Fragen zu folgenden Tags benachrichtigen.
     account:
       heading: Konto
-      change_email_btn: E-Mail-Adresse ändern
+      change_email_btn: E-Mail ändern
       change_pass_btn: Passwort ändern
       change_email_info: >-
         Wir haben eine E-Mail an diese Adresse geschickt. Bitte befolge die Anweisungen zur Bestätigung.
@@ -1000,7 +1016,7 @@ ui:
       pass_confirm:
         label: Neues Passwort bestätigen
     interface:
-      heading: Schnittstelle
+      heading: Benutzeroberfläche
       lang:
         label: Sprache der Benutzeroberfläche
         text: Sprache der Benutzeroberfläche. Sie ändert sich, wenn du die Seite aktualisierst.
@@ -1023,16 +1039,17 @@ ui:
     answers: antworten
   invite_to_answer:
     title: Menschen gefragt
-    desc: Select people who you think might know the answer.
+    desc: Wähle Leute aus, von denen du glaubst, dass sie die Antwort wissen könnten.
     invite: Zur Antwort einladen
     add: Personen hinzufügen
     search: Personen suchen
   question_detail:
     action: Aktion
-    Asked: Fragte
-    asked: asked
+    Asked: Gefragt
+    asked: gefragt
     update: Geändert
     edit: bearbeitet
+    commented: commented
     Views: Gesehen
     Follow: Folgen
     Following: Folgend
@@ -1044,17 +1061,18 @@ ui:
     question_useful: Es ist nützlich und klar
     question_un_useful: Es ist unklar oder nicht nützlich
     question_bookmark: Lesezeichen für diese Frage
-    answer_useful: It is useful
-    answer_un_useful: It is not useful
+    answer_useful: Es ist nützlich
+    answer_un_useful: Es ist nicht nützlich
     answers:
       title: Antworten
       score: Punkte
       newest: Neueste
+      oldest: Oldest
       btn_accept: Akzeptieren
       btn_accepted: Akzeptiert
     write_answer:
       title: Deine Antwort
-      edit_answer: Edit my existing answer
+      edit_answer: Meine existierende Antwort bearbeiten
       btn_name: Poste deine Antwort
       add_another_answer: Weitere Antwort hinzufügen
       confirm_title: Antworten fortsetzen
@@ -1073,6 +1091,14 @@ ui:
       confirm_btn: Wieder öffnen
       title: Diesen Beitrag erneut öffnen
       content: Bist du sicher, dass du wieder öffnen willst?
+    list:
+      confirm_btn: List
+      title: List this post
+      content: Are you sure you want to list?
+    unlist:
+      confirm_btn: Unlist
+      title: Unlist this post
+      content: Are you sure you want to unlist?
     pin:
       title: Diesen Beitrag anpinnen
       content: Bist du sicher, dass du den Beitrag global anheften möchtest? Dieser Beitrag wird in allen Beitragslisten ganz oben erscheinen.
@@ -1085,15 +1111,18 @@ ui:
       <p>Wir empfehlen nicht, <strong>akzeptierte Antworten zu löschen</strong>, denn dadurch wird zukünftigen Lesern dieses Wissen vorenthalten. </p> Das wiederholte Löschen von akzeptierten Antworten kann dazu führen, dass dein Konto für die Beantwortung gesperrt wird. Bist du sicher, dass du löschen möchtest?
     other: Bist du sicher, dass du löschen möchtest?
     tip_answer_deleted: Diese Antwort wurde gelöscht
-    undelete_title: Undelete this post
-    undelete_desc: Are you sure you wish to undelete?
+    undelete_title: Diesen Beitrag wiederherstellen
+    undelete_desc: Bist du sicher, dass du die Löschung umkehren willst?
   btns:
     confirm: Bestätigen
     cancel: Abbrechen
     edit: Bearbeiten
     save: Speichern
     delete: Löschen
-    undelete: Undelete
+    undelete: Wiederherstellen
+    list: List
+    unlist: Unlist
+    unlisted: Unlisted
     login: Einloggen
     signup: Registrieren
     logout: Ausloggen
@@ -1110,18 +1139,27 @@ ui:
     comment: Kommentar
     refresh: Aktualisieren
     resend: Erneut senden
-    deactivate: Deactivate
-    active: Active
-    suspend: Suspend
-    unsuspend: Unsuspend
-    close: Close
-    reopen: Reopen
+    deactivate: Deaktivieren
+    active: Aktiv
+    suspend: Sperren
+    unsuspend: Entsperren
+    close: Schließen
+    reopen: Wieder öffnen
     ok: OK
-    light: Light
-    dark: Dark
-    system_setting: System setting
-    default: Default
-    reset: Reset
+    light: Hell
+    dark: Dunkel
+    system_setting: System-Einstellung
+    default: Standard
+    reset: Zurücksetzen
+    tag: Tag
+    post_lowercase: post
+    filter: Filter
+    ignore: Ignore
+    submit: Submit
+    normal: Normal
+    closed: Closed
+    deleted: Deleted
+    pending: Pending
   search:
     title: Suchergebnisse
     keywords: Schlüsselwörter
@@ -1160,7 +1198,7 @@ ui:
     link: Weiter zur Startseite
     invalid: >-
       Entschuldige, dieser Link zur Aktivierung des Benutzerkontos ist nicht länger gültig. Ist Dein Konto schon aktiviert?
-    confirm_new_email: Deine Mailadresse wurde aktualisiert.
+    confirm_new_email: Deine E-Mail wurde aktualisiert.
     confirm_new_email_invalid: >-
       Dieser Bestätigungslink ist leider nicht mehr gültig. Vielleicht wurde deine E-Mail-Adresse bereits geändert?
   unsubscribe:
@@ -1215,8 +1253,8 @@ ui:
     list_empty: Keine Beiträge gefunden.<br />Vielleicht möchtest du einen anderen Reiter auswählen?
     accepted: Akzeptiert
     answered: antwortete
-    asked: asked
-    downvoted: downvoted
+    asked: gefragt
+    downvoted: negativ bewertet
     mod_short: MOD
     mod_long: Moderatoren
     x_reputation: Ansehen
@@ -1263,20 +1301,20 @@ ui:
     site_name:
       label: Seitenname
       msg: Standortname darf nicht leer sein.
-      msg_max_length: Site name must be at maximum 30 characters in length.
+      msg_max_length: Der Name der Website darf maximal 30 Zeichen lang sein.
     site_url:
       label: Seiten-URL
       text: Die Adresse deiner Website.
       msg:
         empty: Die Website-URL darf nicht leer sein.
         incorrect: Falsches Format der Website-URL.
-        max_length: Site URL must be at maximum 512 characters in length.
+        max_length: Die URL der Website darf maximal 512 Zeichen lang sein.
     contact_email:
       label: Kontakt E-Mail
       text: E-Mail-Adresse des Hauptkontakts, der für diese Website verantwortlich ist.
       msg:
         empty: Kontakt-E-Mail kann nicht leer sein.
-        incorrect: Contact email incorrect format.
+        incorrect: Falsches Format der Kontakt-E-Mail.
     login_required:
       label: Privat
       switch: Anmeldung erforderlich
@@ -1285,16 +1323,16 @@ ui:
       label: Name
       msg: Der Name darf nicht leer sein.
       character: 'Muss den Zeichensatz "a-z", "0-9", " - . _" verwenden'
-      msg_max_length: Name must be at maximum 30 characters in length.
+      msg_max_length: Name darf maximal 30 Zeichen lang sein.
     admin_password:
       label: Passwort
       text: >-
         Du brauchst dieses Passwort, um dich einzuloggen. Bitte bewahre es an einem sicheren Ort auf.
       msg: Passwort kann nicht leer sein.
-      msg_min_length: Password must be at least 8 characters in length.
-      msg_max_length: Password must be at maximum 32 characters in length.
+      msg_min_length: Passwort muss mindestens 8 Zeichen lang sein.
+      msg_max_length: Das Passwort darf maximal 32 Zeichen lang sein.
     admin_email:
-      label: Email
+      label: E-Mail
       text: Du brauchst diese E-Mail, um dich einzuloggen.
       msg:
         empty: E-Mail darf nicht leer sein.
@@ -1314,9 +1352,9 @@ ui:
     db_failed_desc: >-
       Das bedeutet entweder, dass die Datenbankinformationen in deiner <1>config.yaml</1> Datei falsch sind oder dass der Kontakt zum Datenbankserver nicht hergestellt werden konnte. Das könnte bedeuten, dass der Datenbankserver deines Hosts ausgefallen ist.
   counts:
-    views: ansehen
-    votes: stimmen
-    answers: antworten
+    views: Ansichten
+    votes: Stimmen
+    answers: Antworten
     accepted: Akzeptiert
   page_error:
     http_error: HTTP Fehler {{ code }}
@@ -1335,10 +1373,10 @@ ui:
     flags: Meldungen
     settings: Einstellungen
     general: Allgemein
-    interface: Schnittstelle
+    interface: Benutzeroberfläche
     smtp: SMTP
     branding: Branding
-    legal: Gesetzliche
+    legal: Rechtliches
     write: Schreiben
     tos: Nutzungsbedingungen
     privacy: Privatsphäre
@@ -1361,49 +1399,51 @@ ui:
     dashboard:
       title: Dashboard
       welcome: Willkommen beim Answer-Admin!
-      site_statistics: Site statistics
+      site_statistics: Website-Statistiken
       questions: "Fragen:"
       answers: "Antworten:"
       comments: "Kommentare:"
       votes: "Stimmen:"
-      users: "Users:"
+      users: "Nutzer:"
       flags: "Meldungen:"
-      site_health_status: Site health status
+      reviews: "Reviews:"
+      site_health: Site health
       version: "Version:"
       https: "HTTPS:"
-      upload_folder: "Upload folder:"
-      run_mode: "Running mode:"
-      private: Private
-      public: Public
+      upload_folder: "Hochladeverzeichnis:"
+      run_mode: "Betriebsmodus:"
+      private: Privat
+      public: Öffentlich
       smtp: "SMTP:"
       timezone: "Zeitzone:"
       system_info: System info
-      go_version: "Go version:"
-      database: "Database:"
-      database_size: "Database size:"
+      go_version: "Go Version:"
+      database: "Datenbank:"
+      database_size: "Datenbankgröße:"
       storage_used: "Verwendeter Speicher:"
       uptime: "Betriebszeit:"
-      answer_links: Answer links
+      links: Links
       plugins: Plugins
       github: GitHub
       blog: Blog
-      contact: Contact
+      contact: Kontakt
+      forum: Forum
       documents: Dokumentation
       feedback: Rückmeldung
       support: Unterstützung
       review: Überprüfung
       config: Konfig
       update_to: Aktualisieren zu
-      latest: Neueste
+      latest: Aktuell
       check_failed: Prüfung fehlgeschlagen
       "yes": "Ja"
       "no": "Nein"
       not_allowed: Nicht erlaubt
       allowed: Erlaubt
-      enabled: Ermöglicht
-      disabled: Behinderte
-      writable: Writable
-      not_writable: Not writable
+      enabled: Aktiviert
+      disabled: Deaktiviert
+      writable: Schreibbar
+      not_writable: Nicht schreibbar
     flags:
       title: Meldungen
       pending: Ausstehend
@@ -1435,13 +1475,13 @@ ui:
             label: Masse Benutzer hinzufügen
             placeholder: "John Smith, john@example.com, BUSYopr2\nAlice, alice@example.com, fpDntV8q"
             text: Trenne "Name, E-Mail, Passwort" mit Kommas. Ein Benutzer pro Zeile.
-            msg: "Bitte gib die E-Mail-Adresse des Nutzers ein, eine pro Zeile."
+            msg: "Bitte gib die E-Mail des Nutzers ein, eine pro Zeile."
           display_name:
             label: Anzeigename
             msg: Der Anzeigename muss zwischen 4 und 30 Zeichen lang sein.
           email:
             label: E-Mail
-            msg: Email ist ungültig.
+            msg: Die E-Mail ist nicht gültig.
           password:
             label: Passwort
             msg: Das Passwort muss mindestens 8-32 Zeichen lang sein.
@@ -1452,18 +1492,18 @@ ui:
       name: Namen
       email: E-Mail
       reputation: Ansehen
-      created_at: Created Time
-      delete_at: Deleted Time
-      suspend_at: Suspended Time
+      created_at: Erstellt
+      delete_at: Löschzeit
+      suspend_at: Sperrzeit
       status: Status
       role: Rolle
       action: Aktion
       change: Ändern
       all: Alle
-      staff: Mitarbeiter
+      staff: Teammitglieder
       more: Mehr
       inactive: Inaktiv
-      suspended: Ausgesetzt
+      suspended: Gesperrt
       deleted: Gelöscht
       normal: Normal
       Moderator: Moderation
@@ -1477,36 +1517,33 @@ ui:
       show_logs: Protokolle anzeigen
       add_user: Benutzer hinzufügen
       deactivate_user:
-        title: Deactivate user
-        content: An inactive user must re-validate their email.
+        title: Benutzer deaktivieren
+        content: Ein inaktiver Nutzer muss seine E-Mail erneut bestätigen.
       delete_user:
-        title: Delete this user
-        content: Are you sure you want to delete this user? This is permanent!
-        remove: Remove their content
-        label: Remove all questions, answers, comments, etc.
-        text: Don’t check this if you wish to only delete the user’s account.
+        title: Diesen Benutzer löschen
+        content: Bist du sicher, dass du diesen Benutzer löschen willst? Das ist dauerhaft!
+        remove: Ihren Inhalt entfernen
+        label: Alle Fragen, Antworten, Kommentare, etc. entfernen
+        text: Aktiviere diese Option nicht, wenn du nur das Benutzerkonto löschen möchtest.
       suspend_user:
-        title: Suspend this user
+        title: Diesen Benutzer sperren
         content: Ein gesperrter Benutzer kann sich nicht einloggen.
     questions:
       page_title: Fragen
-      normal: Normal
-      closed: Geschlossen
-      deleted: Gelöscht
-      post: Post
+      unlisted: Unlisted
+      post: Beitrag
       votes: Stimmen
       answers: Antworten
       created: Erstellt
       status: Status
       action: Aktion
       change: Ändern
+      pending: Pending
       filter:
         placeholder: "Filtern nach Titel, Frage:Id"
     answers:
       page_title: Antworten
-      normal: Normal
-      deleted: Gelöscht
-      post: Post
+      post: Beitrag
       votes: Stimmen
       created: Erstellt
       status: Status
@@ -1538,8 +1575,11 @@ ui:
         msg: Kontakt-E-Mail darf nicht leer sein.
         validate: Kontakt-E-Mail ist ungültig.
         text: E-Mail-Adresse des Hauptkontakts, der für diese Website verantwortlich ist.
+      check_update:
+        label: Software updates
+        text: Automatically check for updates
     interface:
-      page_title: Schnittstelle
+      page_title: Benutzeroberfläche
       language:
         label: Interface Sprache
         msg: Sprache der Benutzeroberfläche darf nicht leer sein.
@@ -1605,7 +1645,7 @@ ui:
         label: Favicon
         text: Ein Favicon für deine Website. Um korrekt über ein CDN zu funktionieren, muss es ein png sein. Es wird auf 32x32 verkleinert. Wenn du es leer lässt, wird das "quadratische Symbol" verwendet.
     legal:
-      page_title: Gesetzlich
+      page_title: Rechtliches
       terms_of_service:
         label: Nutzungsbedingungen
         text: "Du kannst hier Inhalte zu den Nutzungsbedingungen hinzufügen. Wenn du bereits ein Dokument hast, das anderswo gehostet wird, gib hier die vollständige URL an."
@@ -1615,9 +1655,9 @@ ui:
     write:
       page_title: Schreiben
       restrict_answer:
-        title: Restrict answer
-        label: Each user can only write one answer for each question
-        text: "They can use the edit link to refine and improve their existing answer, instead."
+        title: Antwort einschränken
+        label: Jeder Benutzer kann für jede Frage nur eine Antwort schreiben
+        text: "Sie können den Bearbeiten-Link verwenden, um ihre bestehende Antwort zu verfeinern und zu verbessern."
       recommend_tags:
         label: Empfohlene Tags
         text: "Bitte gib den Tag-Slug oben ein, ein Tag pro Zeile."
@@ -1642,14 +1682,14 @@ ui:
         label: Themen
         text: Wähle ein bestehendes Thema aus.
       color_scheme:
-        label: Color scheme
+        label: Farbschema
       navbar_style:
-        label: Navbar style
+        label: Stil der Navigationsleiste
       primary_color:
-        label: Primary color
+        label: Primäre Farbe
         text: Ändere die Farben, die von deinen Themes verwendet werden
     css_and_html:
-      page_title: CSS and HTML
+      page_title: CSS und HTML
       custom_css:
         label: Benutzerdefinierte CSS
         text: >
@@ -1664,7 +1704,7 @@ ui:
 
       footer:
         label: Fusszeile
-        text: This will insert before &lt;/body>.
+        text: Dies wird vor </body> eingefügt.
       sidebar:
         label: Seitenleiste
         text: Dies wird in die Seitenleiste eingefügt.
@@ -1677,18 +1717,18 @@ ui:
       email_registration:
         title: E-Mail Registrierung
         label: E-Mail-Registrierung zulassen
-        text: Schalte sie ab, um zu verhindern, dass jemand ein neues Konto per E-Mail erstellt.
+        text: Abschalten, um zu verhindern, dass jemand ein neues Konto per E-Mail erstellt.
       allowed_email_domains:
-        title: Erlaubte E-Mail-Domänen
+        title: Zugelassene E-Mail-Domänen
         text: E-Mail-Domänen, bei denen die Nutzer Konten registrieren müssen. Eine Domäne pro Zeile. Wird ignoriert, wenn leer.
       private:
         title: Privatgelände
         label: Anmeldung erforderlich
         text: Nur angemeldete Benutzer können auf diese Community zugreifen.
       password_login:
-        title: Password login
-        label: Allow email and password login
-        text: "WARNING: If turn off, you may be unable to log in if you have not previously configured other login method."
+        title: Passwort-Login
+        label: E-Mail-und Passwort-Login erlauben
+        text: "WARNUNG: Wenn du diese Option abschaltest, kannst du dich möglicherweise nicht mehr anmelden, wenn du zuvor keine andere Anmeldemethode konfiguriert hast."
     installed_plugins:
       title: Installierte Plugins
       plugin_link: Plugins erweitern und ergänzen die Funktionalität von Answer. Du kannst Plugins im <1>Answer Plugin Repository</1> finden.
@@ -1698,7 +1738,7 @@ ui:
         inactive: Inaktiv
         outdated: Veraltet
       plugins:
-        label: Plugins
+        label: Erweiterungen
         text: Wähle ein bestehendes Plugin aus.
       name: Name
       version: Version
@@ -1732,8 +1772,8 @@ ui:
     privilege:
       title: Berechtigungen
       level:
-        label: Reputation required level
-        text: Choose the reputation required for the privileges
+        label: Benötigtes Reputations-Level
+        text: Wähle die für die Privilegien erforderliche Reputation aus
   form:
     optional: (optional)
     empty: kann nicht leer sein
@@ -1752,6 +1792,22 @@ ui:
     edit_answer: Antwort bearbeiten
     edit_tag: Tag bearbeiten
     empty: Keine Überprüfungsaufgaben mehr übrig.
+    approve_revision_tip: Do you approve this revision?
+    approve_flag_tip: Do you approve this flag?
+    approve_post_tip: Do you approve this post?
+    approve_user_tip: Do you approve this user?
+    suggest_edits: Suggested edits
+    flag_post: Flag post
+    flag_user: Flag user
+    queued_post: Queued post
+    queued_user: Queued user
+    filter_label: Type
+    reputation: reputation
+    flag_post_type: Flagged this post as {{ type }}.
+    flag_user_type: Flagged this user as {{ type }}.
+    edit_post: Edit post
+    list_post: List post
+    unlist_post: Unlist post
   timeline:
     undeleted: ungelöscht
     deleted: gelöscht
@@ -1763,18 +1819,18 @@ ui:
     rollback: zurückrollen
     edited: bearbeitet
     answered: antwortete
-    asked: asked
+    asked: gefragt
     closed: geschlossen
     reopened: wiedereröffnet
     created: erstellt
-    pin: pinned
-    unpin: unpinned
-    show: listed
-    hide: unlisted
-    title: "Geschichte für"
+    pin: angeheftet
+    unpin: losgelöst
+    show: gelistet
+    hide: nicht gelistet
+    title: "Verlauf von"
     tag_title: "Zeitleiste für"
     show_votes: "Stimmen anzeigen"
-    n_or_a: N/A
+    n_or_a: Keine Angaben
     title_for_question: "Zeitleiste für"
     title_for_answer: "Zeitachse für die Antwort auf {{ title }} von {{ author }}"
     title_for_tag: "Zeitachse für Tag"
@@ -1787,7 +1843,7 @@ ui:
     title: Benutzer
     users_with_the_most_reputation: Benutzer mit den höchsten Ansehenspunkten dieser Woche
     users_with_the_most_vote: Benutzer, die diese Woche am meisten gestimmt haben
-    staffs: Benutzer
+    staffs: Unsere Community Teammitglieder
     reputation: Ansehen
     votes: stimmen
   prompt:
@@ -1802,3 +1858,6 @@ ui:
     post_hide_list: Dieser Beitrag wurde aus der Liste verborgen.
     post_show_list: Dieser Beitrag wird in der Liste angezeigt.
     post_reopen: Dieser Beitrag wurde wieder geöffnet.
+    post_list: This post has been listed.
+    post_unlist: This post has been unlisted.
+    post_pending: Your post is awaiting review. This is a preview, it will be visible after it has been approved.

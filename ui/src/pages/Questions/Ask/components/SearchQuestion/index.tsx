@@ -50,13 +50,20 @@ const SearchQuestion = ({ similarQuestions }) => {
                   key={item.id}
                   href={pathFactory.questionLanding(item.id, item.url_title)}
                   target="_blank">
-                  {item.title}
-                  {item.status === 'closed'
-                    ? ` [${t('closed', { keyPrefix: 'question' })}]`
-                    : null}
+                  <span
+                    className={`${
+                      item.accepted_answer || item.answer_count > 0
+                        ? 'me-3'
+                        : ''
+                    }`}>
+                    {item.title}
+                    {item.status === 'closed'
+                      ? ` [${t('closed', { keyPrefix: 'question' })}] `
+                      : null}
+                  </span>
 
                   {item.accepted_answer ? (
-                    <span className="small ms-3 text-success">
+                    <span className="small text-success d-inline-block">
                       <Icon type="bi" name="check-circle-fill" />
                       <span className="ms-1">
                         {t('x_answers', {
@@ -67,7 +74,7 @@ const SearchQuestion = ({ similarQuestions }) => {
                     </span>
                   ) : (
                     item.answer_count > 0 && (
-                      <span className="small ms-3 text-secondary">
+                      <span className="small text-secondary d-inline-block">
                         <Icon type="bi" name="chat-square-text-fill" />
                         <span className="ms-1">
                           {t('x_answers', {

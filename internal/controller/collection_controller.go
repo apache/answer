@@ -23,18 +23,18 @@ import (
 	"github.com/apache/incubator-answer/internal/base/handler"
 	"github.com/apache/incubator-answer/internal/base/middleware"
 	"github.com/apache/incubator-answer/internal/schema"
-	"github.com/apache/incubator-answer/internal/service"
+	"github.com/apache/incubator-answer/internal/service/collection"
 	"github.com/apache/incubator-answer/pkg/uid"
 	"github.com/gin-gonic/gin"
 )
 
 // CollectionController collection controller
 type CollectionController struct {
-	collectionService *service.CollectionService
+	collectionService *collection.CollectionService
 }
 
 // NewCollectionController new controller
-func NewCollectionController(collectionService *service.CollectionService) *CollectionController {
+func NewCollectionController(collectionService *collection.CollectionService) *CollectionController {
 	return &CollectionController{collectionService: collectionService}
 }
 

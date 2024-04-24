@@ -92,7 +92,8 @@ func GetQuestionPermission(ctx context.Context, userID string, creatorUserID str
 			Type:   "confirm",
 		})
 	}
-	if canDelete || userID == creatorUserID {
+
+	if (canDelete || userID == creatorUserID) && status != entity.QuestionStatusDeleted {
 		actions = append(actions, &schema.PermissionMemberAction{
 			Action: "delete",
 			Name:   translator.Tr(lang, deleteActionName),

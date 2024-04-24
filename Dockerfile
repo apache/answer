@@ -34,7 +34,7 @@ ARG CGO_EXTRA_CFLAGS
 
 COPY . ${BUILD_DIR}
 WORKDIR ${BUILD_DIR}
-RUN apk --no-cache add build-base git bash nodejs npm && npm install -g pnpm@latest \
+RUN apk --no-cache add build-base git bash nodejs npm && npm install -g pnpm@8.9.2 \
     && make clean build
 
 RUN chmod 755 answer

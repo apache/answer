@@ -20,15 +20,16 @@
 package templaterender
 
 import (
-	questioncommon "github.com/apache/incubator-answer/internal/service/question_common"
 	"math"
+
+	"github.com/apache/incubator-answer/internal/service/content"
+	questioncommon "github.com/apache/incubator-answer/internal/service/question_common"
 
 	"github.com/apache/incubator-answer/internal/service/comment"
 	"github.com/apache/incubator-answer/internal/service/siteinfo_common"
 	"github.com/google/wire"
 
 	"github.com/apache/incubator-answer/internal/schema"
-	"github.com/apache/incubator-answer/internal/service"
 	"github.com/apache/incubator-answer/internal/service/tag"
 )
 
@@ -38,20 +39,20 @@ var ProviderSetTemplateRenderController = wire.NewSet(
 )
 
 type TemplateRenderController struct {
-	questionService *service.QuestionService
-	userService     *service.UserService
+	questionService *content.QuestionService
+	userService     *content.UserService
 	tagService      *tag.TagService
-	answerService   *service.AnswerService
+	answerService   *content.AnswerService
 	commentService  *comment.CommentService
 	siteInfoService siteinfo_common.SiteInfoCommonService
 	questionRepo    questioncommon.QuestionRepo
 }
 
 func NewTemplateRenderController(
-	questionService *service.QuestionService,
-	userService *service.UserService,
+	questionService *content.QuestionService,
+	userService *content.UserService,
 	tagService *tag.TagService,
-	answerService *service.AnswerService,
+	answerService *content.AnswerService,
 	commentService *comment.CommentService,
 	siteInfoService siteinfo_common.SiteInfoCommonService,
 	questionRepo questioncommon.QuestionRepo,

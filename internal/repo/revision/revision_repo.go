@@ -206,3 +206,18 @@ func (rr *revisionRepo) GetUnreviewedRevisionPage(ctx context.Context, page int,
 	}
 	return
 }
+
+// CountUnreviewedRevision get unreviewed revision count
+func (rr *revisionRepo) CountUnreviewedRevision(ctx context.Context, objectTypeList []int) (count int64, err error) {
+	if len(objectTypeList) == 0 {
+		return 0, nil
+	}
+	session := rr.data.DB.Context(ctx)
+	session = session.And("status = ?", entity.RevisionUnreviewedStatus)
+	session = session.In("object_type", objectTypeList)
+	count, err = session.Count(&entity.Revision{})
+	if err != nil {
+		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	return
+}

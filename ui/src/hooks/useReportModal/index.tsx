@@ -25,7 +25,13 @@ import ReactDOM from 'react-dom/client';
 
 import { useToast, useCaptchaModal } from '@/hooks';
 import type * as Type from '@/common/interface';
-import { reportList, postReport, closeQuestion, putReport } from '@/services';
+import {
+  reportList,
+  postReport,
+  closeQuestion,
+  putReport,
+  putFlagReviewAction,
+} from '@/services';
 
 interface Params {
   isBackend?: boolean;
@@ -33,6 +39,9 @@ interface Params {
   id: string;
   title?: string;
   action: Type.ReportAction;
+  source?: string;
+  content?: string;
+  reportType?: any;
 }
 
 const useReportModal = (callback?: () => void) => {
@@ -62,9 +71,31 @@ const useReportModal = (callback?: () => void) => {
     const div = document.createElement('div');
     rootRef.current.root = ReactDOM.createRoot(div);
   }, []);
-  const getList = ({ type, action, isBackend }: Params) => {
-    reportList({ type, action, isBackend }).then((res) => {
+  const getList = ({ type, action, isBackend, ...otherParams }: Params) => {
+    // @ts-ignore
+    reportList({
+      type,
+      action,
+      isBackend,
+    }).then((res) => {
       setList(res);
+      if (otherParams.reportType) {
+        const findType = res.find(
+          (v) => v.reason_type === otherParams.reportType,
+        );
+        if (findType) {
+          setReportType({
+            type: findType.reason_type,
+            haveContent: Boolean(findType.content_type),
+          });
+
+          setContent({
+            value: otherParams.content || '',
+            isInvalid: false,
+            errorMsg: '',
+          });
+        }
+      }
       setShow(true);
     });
   };
@@ -76,7 +107,8 @@ const useReportModal = (callback?: () => void) => {
   const handleRadio = (val) => {
     setInvalidState(false);
     setContent({
-      value: '',
+      value:
+        val.reason_type === params?.reportType ? String(params?.content) : '',
       isInvalid: false,
       errorMsg: '',
     });
@@ -87,12 +119,53 @@ const useReportModal = (callback?: () => void) => {
   };
 
   const onClose = () => {
+    setReportType({
+      type: -1,
+      haveContent: false,
+    });
     setContent({
       value: '',
       isInvalid: false,
       errorMsg: '',
     });
     setShow(false);
+  };
+
+  const checkValidate = () => {
+    if (reportType.haveContent && !content.value) {
+      setContent({
+        value: content.value,
+        isInvalid: true,
+        errorMsg: t('remark.empty'),
+      });
+      return false;
+    }
+
+    if (reportType.type === 60) {
+      // a duplicate
+      let url: URL | undefined;
+      try {
+        url = new URL(content.value);
+      } catch {
+        setContent({
+          value: content.value,
+          isInvalid: true,
+          errorMsg: t('msg.not_a_url'),
+        });
+      }
+      if (!url) return false;
+
+      if (url.origin !== window.location.origin) {
+        setContent({
+          value: content.value,
+          isInvalid: true,
+          errorMsg: t('msg.url_not_match'),
+        });
+        return false;
+      }
+    }
+
+    return true;
   };
 
   const handleSubmit = () => {
@@ -104,15 +177,23 @@ const useReportModal = (callback?: () => void) => {
       return;
     }
 
-    if (reportType.haveContent && !content.value) {
-      setContent({
-        value: content.value,
-        isInvalid: true,
-        errorMsg: t('remark.empty'),
-      });
+    if (!checkValidate()) {
       return;
     }
+
     if (params.type === 'question' && params.action === 'close') {
+      if (params?.source === 'review') {
+        putFlagReviewAction({
+          flag_id: params.id,
+          operation_type: 'close_post',
+          close_type: reportType.type,
+          close_msg: content.value,
+        }).then(() => {
+          onClose();
+          asyncCallback();
+        });
+        return;
+      }
       closeQuestion({
         id: params.id,
         close_type: reportType.type,

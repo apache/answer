@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { debounce } from 'lodash';
+import debounce from 'lodash/debounce';
 
 import {
   DRAFT_QUESTION_STORAGE_KEY,

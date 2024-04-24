@@ -23,7 +23,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/apache/incubator-answer/internal/service"
+	"github.com/apache/incubator-answer/internal/service/content"
 	"github.com/apache/incubator-answer/internal/service/siteinfo_common"
 	"github.com/robfig/cron/v3"
 	"github.com/segmentfault/pacman/log"
@@ -32,13 +32,13 @@ import (
 // ScheduledTaskManager scheduled task manager
 type ScheduledTaskManager struct {
 	siteInfoService siteinfo_common.SiteInfoCommonService
-	questionService *service.QuestionService
+	questionService *content.QuestionService
 }
 
 // NewScheduledTaskManager new scheduled task manager
 func NewScheduledTaskManager(
 	siteInfoService siteinfo_common.SiteInfoCommonService,
-	questionService *service.QuestionService,
+	questionService *content.QuestionService,
 ) *ScheduledTaskManager {
 	manager := &ScheduledTaskManager{
 		siteInfoService: siteInfoService,

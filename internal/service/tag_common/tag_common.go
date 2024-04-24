@@ -403,11 +403,11 @@ func (ts *TagCommonService) GetTagPage(ctx context.Context, page, pageSize int, 
 }
 
 func (ts *TagCommonService) GetObjectEntityTag(ctx context.Context, objectId string) (objTags []*entity.Tag, err error) {
-	tagIDList := make([]string, 0)
 	tagList, err := ts.tagRelRepo.GetObjectTagRelList(ctx, objectId)
 	if err != nil {
 		return nil, err
 	}
+	tagIDList := make([]string, 0)
 	for _, tag := range tagList {
 		tagIDList = append(tagIDList, tag.TagID)
 	}

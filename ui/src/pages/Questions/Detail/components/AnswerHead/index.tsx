@@ -36,6 +36,10 @@ const sortBtns = [
     name: 'newest',
     sort: 'updated',
   },
+  {
+    name: 'oldest',
+    sort: 'created',
+  },
 ];
 
 const Index: FC<Props> = ({ count = 0, order = 'default' }) => {
@@ -52,7 +56,13 @@ const Index: FC<Props> = ({ count = 0, order = 'default' }) => {
       </h5>
       <QueryGroup
         data={sortBtns}
-        currentSort={order === 'updated' ? 'newest' : 'score'}
+        currentSort={
+          order === 'updated'
+            ? 'newest'
+            : order === 'created'
+              ? 'oldest'
+              : 'score'
+        }
         i18nKeyPrefix="question_detail.answers"
       />
     </div>

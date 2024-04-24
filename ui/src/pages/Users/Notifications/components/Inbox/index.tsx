@@ -22,7 +22,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import classNames from 'classnames';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 
 import { FormatTime, Empty } from '@/components';
 

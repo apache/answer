@@ -12,7 +12,8 @@
     "prepare": "pnpm build:packages",
     "pre-commit": "lint-staged",
     "build:packages": "pnpm -r --filter=./src/plugins/* run build",
-    "clean": "rm -rf node_modules && rm -rf src/plugins/**/node_modules"
+    "clean": "rm -rf node_modules && rm -rf src/plugins/**/node_modules",
+    "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "dependencies": {
     "axios": "^0.27.2",
@@ -82,6 +83,7 @@
     "react-app-rewired": "^2.2.1",
     "react-scripts": "5.0.1",
     "sass": "^1.54.4",
+    "source-map-explorer": "^2.5.3",
     "typescript": "^4.9.5",
     "yaml-loader": "^0.8.0"
   },

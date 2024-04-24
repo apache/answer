@@ -25,14 +25,17 @@ const (
 	AnswerSearchOrderByDefault = "default"
 	AnswerSearchOrderByTime    = "updated"
 	AnswerSearchOrderByVote    = "vote"
+	AnswerSearchOrderByTimeAsc = "created"
 
 	AnswerStatusAvailable = 1
 	AnswerStatusDeleted   = 10
+	AnswerStatusPending   = 11
 )
 
 var AdminAnswerSearchStatus = map[string]int{
 	"available": AnswerStatusAvailable,
 	"deleted":   AnswerStatusDeleted,
+	"pending":   AnswerStatusPending,
 }
 
 // Answer answer
@@ -59,6 +62,14 @@ type AnswerSearch struct {
 	Order          string `json:"order_by"`                   // default or updated
 	Page           int    `json:"page" form:"page"`           // Query number of pages
 	PageSize       int    `json:"page_size" form:"page_size"` // Search page size
+}
+
+type PersonalAnswerPageQueryCond struct {
+	Page        int
+	PageSize    int
+	UserID      string
+	Order       string
+	ShowPending bool
 }
 
 // TableName answer table name

@@ -39,7 +39,7 @@ import { loggedUserInfoStore, toastStore } from '@/stores';
 
 const TagIntroduction = () => {
   const userInfo = loggedUserInfoStore((state) => state.user);
-  const { state: locationState } = useLocation();
+  const location = useLocation();
   const isLogged = Boolean(userInfo?.access_token);
   const [isEdit, setEditState] = useState(false);
   const { tagName } = useParams();
@@ -62,13 +62,18 @@ const TagIntroduction = () => {
     title: pageTitle,
   });
   useEffect(() => {
-    if (locationState?.isReview) {
+    if (location.state?.isReview) {
       toastStore.getState().show({
         msg: t('review', { keyPrefix: 'toast' }),
         variant: 'warning',
       });
+
+      // remove state isReview
+      const newLocation = { ...location };
+      delete newLocation.state;
+      window.history.replaceState(null, '', newLocation.pathname);
     }
-  }, [locationState]);
+  }, [location.state]);
 
   useEffect(() => {
     const fmt = document.querySelector('.content.fmt') as HTMLElement;

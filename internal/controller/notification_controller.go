@@ -70,6 +70,7 @@ func (nc *NotificationController) GetRedDot(ctx *gin.Context) {
 	req.CanReviewQuestion = canList[0]
 	req.CanReviewAnswer = canList[1]
 	req.CanReviewTag = canList[2]
+	req.IsAdmin = middleware.GetUserIsAdminModerator(ctx)
 
 	resp, err := nc.notificationService.GetRedDot(ctx, req)
 	handler.HandleResponse(ctx, err, resp)

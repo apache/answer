@@ -21,7 +21,9 @@ package notification
 
 import (
 	"context"
+
 	"github.com/apache/incubator-answer/internal/base/data"
+	"github.com/apache/incubator-answer/internal/base/translator"
 	"github.com/apache/incubator-answer/internal/schema"
 	"github.com/apache/incubator-answer/internal/service/activity_common"
 	"github.com/apache/incubator-answer/internal/service/export"
@@ -71,6 +73,12 @@ func NewExternalNotificationService(
 func (ns *ExternalNotificationService) Handler(ctx context.Context, msg *schema.ExternalNotificationMsg) error {
 	log.Debugf("try to send external notification %+v", msg)
 
+	// If receiver not set language, use site default language.
+	if len(msg.ReceiverLang) == 0 || msg.ReceiverLang == translator.DefaultLangOption {
+		if interfaceInfo, _ := ns.siteInfoService.GetSiteInterface(ctx); interfaceInfo != nil {
+			msg.ReceiverLang = interfaceInfo.Language
+		}
+	}
 	if msg.NewQuestionTemplateRawData != nil {
 		return ns.handleNewQuestionNotification(ctx, msg)
 	}

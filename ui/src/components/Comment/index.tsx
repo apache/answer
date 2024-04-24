@@ -23,7 +23,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import classNames from 'classnames';
-import { unionBy } from 'lodash';
+import unionBy from 'lodash/unionBy';
 
 import * as Types from '@/common/interface';
 import { Modal } from '@/components';

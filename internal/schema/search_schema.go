@@ -20,11 +20,12 @@
 package schema
 
 import (
+	"regexp"
+	"strings"
+
 	"github.com/apache/incubator-answer/internal/base/constant"
 	"github.com/apache/incubator-answer/internal/base/validator"
 	"github.com/apache/incubator-answer/plugin"
-	"regexp"
-	"strings"
 )
 
 type SearchDTO struct {
@@ -40,10 +41,32 @@ type SearchDTO struct {
 func (s *SearchDTO) Check() (errField []*validator.FormErrorField, err error) {
 	// Replace special characters.
 	// Special characters will cause the search abnormal, such as search for "#" will get nearly all the content that Markdown format.
-	s.Query = regexp.MustCompile(`[+#.<>\-_()*]`).ReplaceAllString(s.Query, " ")
-	s.Query = regexp.MustCompile(`\s+`).ReplaceAllString(s.Query, " ")
-	s.Query = strings.TrimSpace(s.Query)
+	replacedContent, patterns := ReplaceSearchContent(s.Query)
+	s.Query = strings.Join(append(patterns, replacedContent), " ")
+
 	return nil, nil
+}
+
+func ReplaceSearchContent(content string) (string, []string) {
+	// Define the regular expressions for key:value pairs and [tag]
+	keyValueRegex := regexp.MustCompile(`\w+:\S+`)
+	tagRegex := regexp.MustCompile(`\[\w+\]`)
+	// Define the pattern for characters to replace
+	replaceCharsPattern := regexp.MustCompile(`[+#.<>\-_()*]`)
+
+	// Extract key:value pairs
+	keyValues := keyValueRegex.FindAllString(content, -1)
+	// Extract [tag]
+	tags := tagRegex.FindAllString(content, -1)
+
+	// Replace key:value pairs and [tag] with empty string
+	contentWithoutPatterns := keyValueRegex.ReplaceAllString(content, "")
+	contentWithoutPatterns = tagRegex.ReplaceAllString(contentWithoutPatterns, "")
+
+	// Replace characters with pattern [+#.<>_()*] with space
+	replacedContent := replaceCharsPattern.ReplaceAllString(contentWithoutPatterns, " ")
+
+	return strings.TrimSpace(replacedContent), append(keyValues, tags...)
 }
 
 type SearchCondition struct {
