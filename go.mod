@@ -45,7 +45,6 @@ require (
 	github.com/lib/pq v1.10.7
 	github.com/microcosm-cc/bluemonday v1.0.21
 	github.com/mojocn/base64Captcha v1.3.6
-	github.com/mojocn/base64Captcha v1.3.6
 	github.com/ory/dockertest/v3 v3.10.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/scottleedavis/go-exif-remove v0.0.0-20230314195146-7e059d593405
@@ -62,9 +61,6 @@ require (
 	github.com/swaggo/swag v1.16.1
 	github.com/tidwall/gjson v1.14.4
 	github.com/yuin/goldmark v1.4.13
-	golang.org/x/crypto v0.21.0
-	golang.org/x/image v0.13.0
-	golang.org/x/net v0.21.0
 	golang.org/x/crypto v0.21.0
 	golang.org/x/image v0.13.0
 	golang.org/x/net v0.21.0
