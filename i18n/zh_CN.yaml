@@ -85,6 +85,7 @@ backend:
     level_custom:
       description:
         other: 自定义等级
+        other: 自定义等级
     rank_question_add_label:
       other: 提问
     rank_answer_add_label:
@@ -140,6 +141,9 @@ backend:
   email_or_password_wrong_error:
     other: 邮箱和密码不匹配。
   error:
+    common:
+      invalid_url:
+        other: 不合法的 URL
     common:
       invalid_url:
         other: 不合法的 URL
@@ -203,6 +207,8 @@ backend:
     question:
       already_deleted:
         other: 该帖子已被删除。
+      under_review:
+        other: 您的帖子正在等待审核。它将在它获得批准后可见。
       under_review:
         other: 您的帖子正在等待审核。它将在它获得批准后可见。
       not_found:
@@ -499,6 +505,15 @@ backend:
       other: 举报的帖子
     suggested_post_edit:
       other: 建议的编辑
+    edit:
+      other: 编辑
+  review:
+    queued_post:
+      other: 排队的帖子
+    flagged_post:
+      other: 举报的帖子
+    suggested_post_edit:
+      other: 建议的编辑
 # The following fields are used for interface presentation(Front-end)
 ui:
   how_to_format:
@@ -682,6 +697,8 @@ ui:
       empty: 请选择一个原因。
       not_a_url: URL 格式不正确。
       url_not_match: URL 来源与当前网站不匹配。
+      not_a_url: URL 格式不正确。
+      url_not_match: URL 来源与当前网站不匹配。
   tag_modal:
     title: 创建新标签
     form:
@@ -704,7 +721,9 @@ ui:
           label: 编辑历史
         edit_summary:
           label: 编辑备注
+          label: 编辑备注
           placeholder: >-
+            简单描述更改原因（更正拼写、修复语法、改进格式）
             简单描述更改原因（更正拼写、修复语法、改进格式）
     btn_cancel: 取消
     btn_submit: 提交
@@ -756,6 +775,7 @@ ui:
     btn_flag: 举报
     btn_save_edits: 保存更改
     btn_cancel: 取消
+    show_more: "{{count}} 条剩余评论"
     show_more: "{{count}} 条剩余评论"
     tip_question: >-
       使用评论提问更多信息或者提出改进意见。避免在评论里回答问题。
@@ -984,7 +1004,10 @@ ui:
     notification:
       heading: 邮件通知
       turn_on: 开启
+      heading: 邮件通知
+      turn_on: 开启
       inbox:
+        label: 收件箱通知
         label: 收件箱通知
         description: 你的提问有新的回答，评论，邀请回答和其他。
       all_new_question:
@@ -1051,6 +1074,7 @@ ui:
     update: 修改于
     edit: 编辑于
     commented: 评论
+    commented: 评论
     Views: 阅读次数
     Follow: 关注此问题
     Following: 已关注
@@ -1068,6 +1092,7 @@ ui:
       title: 个回答
       score: 评分
       newest: 最新
+      oldest: 最旧
       oldest: 最旧
       btn_accept: 采纳
       btn_accepted: 已被采纳
@@ -1100,6 +1125,14 @@ ui:
       confirm_btn: 列表隐藏
       title: 从列表中隐藏这个帖子
       content: 确定要从列表中隐藏这个帖子吗？
+    list:
+      confirm_btn: 列表显示
+      title: 列表中显示这个帖子
+      content: 确定要列表中显示这个帖子吗？
+    unlist:
+      confirm_btn: 列表隐藏
+      title: 从列表中隐藏这个帖子
+      content: 确定要从列表中隐藏这个帖子吗？
     pin:
       title: 置顶该帖子
       content: 你确定要全局置顶吗？这个帖子将出现在所有帖子列表的顶部。
@@ -1121,6 +1154,9 @@ ui:
     save: 保存
     delete: 删除
     undelete: 撤消删除
+    list: 列表显示
+    unlist: 列表隐藏
+    unlisted: 已隐藏
     list: 列表显示
     unlist: 列表隐藏
     unlisted: 已隐藏
@@ -1147,6 +1183,20 @@ ui:
     close: 关闭
     reopen: 重新打开
     ok: 确定
+    light: 浅色
+    dark: 深色
+    system_setting: 跟随系统
+    default: 默认
+    reset: 重置
+    tag: 标签
+    post_lowercase: 帖子
+    filter: 筛选
+    ignore: 忽略
+    submit: 提交
+    normal: 正常
+    closed: 已关闭
+    deleted: 已删除
+    pending: 等待处理
     light: 浅色
     dark: 深色
     system_setting: 跟随系统
@@ -1424,10 +1474,12 @@ ui:
       storage_used: "已用存储空间："
       uptime: "运行时间："
       links: 链接
+      links: 链接
       plugins: 插件
       github: GitHub
       blog: 博客
       contact: 联系
+      forum: 论坛
       forum: 论坛
       documents: 文档
       feedback: 用户反馈
@@ -1532,6 +1584,7 @@ ui:
     questions:
       page_title: 问题
       unlisted: 已隐藏
+      unlisted: 已隐藏
       post: 标题
       votes: 得票数
       answers: 回答数
@@ -1539,6 +1592,7 @@ ui:
       status: 状态
       action: 操作
       change: 更改
+      pending: 等待处理
       pending: 等待处理
       filter:
         placeholder: "按标题过滤，问题:id"
@@ -1576,6 +1630,9 @@ ui:
         msg: 联系人邮箱不能为空。
         validate: 联系人邮箱无效。
         text: 本网站的主要联系邮箱地址。
+      check_update:
+        label: 软件更新
+        text: 自动检查软件更新
       check_update:
         label: 软件更新
         text: 自动检查软件更新
@@ -1683,6 +1740,7 @@ ui:
         label: 主题
         text: 选择一个现有主题。
       color_scheme:
+        label: 配色方案
         label: 配色方案
       navbar_style:
         label: 导航栏样式
@@ -1793,6 +1851,22 @@ ui:
     edit_answer: 编辑回答
     edit_tag: 编辑标签
     empty: 没有剩余的审核任务。
+    approve_revision_tip: 您是否批准此修订？
+    approve_flag_tip: 您是否批准此举报？
+    approve_post_tip: 您是否批准此帖子？
+    approve_user_tip: 您是否批准此修订？
+    suggest_edits: 建议的编辑
+    flag_post: 举报帖子
+    flag_user: 举报用户
+    queued_post: 排队的帖子
+    queued_user: 排队用户
+    filter_label: 类型
+    reputation: 声望值
+    flag_post_type: 举报这个帖子的类型是 {{ type }}
+    flag_user_type: 举报这个用户的类型是 {{ type }}
+    edit_post: 编辑帖子
+    list_post: 文章列表
+    unlist_post: 隐藏的帖子
     approve_revision_tip: 您是否批准此修订？
     approve_flag_tip: 您是否批准此举报？
     approve_post_tip: 您是否批准此帖子？
