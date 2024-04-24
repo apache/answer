@@ -31,3 +31,5 @@ vendor/
 dist/
 
 /data
+/data_test
+/docs

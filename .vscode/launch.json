@@ -10,7 +10,15 @@
             "request": "launch",
             "mode": "debug",
             "program": "cmd\\answer\\main.go",
-            "args": ["run", "-C", "E:\\www\\answer\\data"]
+            "args": ["run", "-C", "E:\\www\\answer\\data_test"]
+        },
+        {
+            "name": "初始化",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "cmd\\answer\\main.go",
+            "args": ["init", "-C", "E:\\www\\answer\\data_test"]
         }
     ]
 }
