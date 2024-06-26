@@ -59,3 +59,6 @@ language_options:
   - label: "Slovak"
     value: "sk_SK"
     progress: 62
+  - label: "فارسی"
+    value: "fa_IR"
+    progress: 85

@@ -22,7 +22,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useMatch } from 'react-router-dom';
 
-import { cloneDeep } from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
 
 import { usePageTags } from '@/hooks';
 import { AccordionNav } from '@/components';

@@ -19,44 +19,44 @@
 backend:
   base:
     success:
-      other: Successo
+      other: Successo.
     unknown:
-      other: Errore sconosciuto
+      other: Errore sconosciuto.
     request_format_error:
-      other: Il formato della richiesta non è valido
+      other: Il formato della richiesta non è valido.
     unauthorized_error:
-      other: Non autorizzato
+      other: Non autorizzato.
     database_error:
-      other: Errore server dati
+      other: Errore nel server dati.
     forbidden_error:
-      other: Forbidden.
+      other: Vietato.
     duplicate_request_error:
-      other: Duplicate submission.
+      other: Duplica invio.
   action:
     report:
-      other: Flag
+      other: Segnala
     edit:
-      other: Edit
+      other: Modifica
     delete:
-      other: Delete
+      other: Cancella
     close:
-      other: Close
+      other: Chiudi
     reopen:
-      other: Reopen
+      other: Riapri
     forbidden_error:
-      other: Forbidden.
+      other: Vietato.
     pin:
-      other: Pin
+      other: Fissa sul profilo
     hide:
-      other: Unlist
+      other: Rimuovi dall'elenco
     unpin:
-      other: Unpin
+      other: Stacca dal profilo
     show:
-      other: List
+      other: Aggiungi all'elenco
     invite_someone_to_answer:
-      other: Edit
+      other: Modifica
     undelete:
-      other: Undelete
+      other: Ripristina
   role:
     name:
       user:
@@ -75,112 +75,115 @@ backend:
   privilege:
     level_1:
       description:
-        other: Level 1 (less reputation required for private team, group)
+        other: 'Livello 1 (per team o gruppi privati: richiesta reputazione limitata)'
     level_2:
       description:
-        other: Level 2 (low reputation required for startup community)
+        other: 'Livello 2 (per startup community: richiesta reputazione scarsa)'
     level_3:
       description:
-        other: Level 3 (high reputation required for mature community)
+        other: 'Livello 3 (per community riconosciute: richiesta reputazione alta)'
     level_custom:
       description:
-        other: Custom Level
+        other: Livello personalizzato
     rank_question_add_label:
-      other: Ask question
+      other: Fai una domanda
     rank_answer_add_label:
-      other: Write answer
+      other: Scrivi una risposta
     rank_comment_add_label:
-      other: Write comment
+      other: Scrivi un commento
     rank_report_add_label:
-      other: Flag
+      other: Segnala
     rank_comment_vote_up_label:
-      other: Upvote comment
+      other: Approva commento
     rank_link_url_limit_label:
-      other: Post more than 2 links at a time
+      other: Pubblica più di 2 link alla volta
     rank_question_vote_up_label:
-      other: Upvote question
+      other: Approva domanda
     rank_answer_vote_up_label:
-      other: Upvote answer
+      other: Approva risposta
     rank_question_vote_down_label:
-      other: Downvote question
+      other: Disapprova domanda
     rank_answer_vote_down_label:
-      other: Downvote answer
+      other: Disapprova risposta
     rank_invite_someone_to_answer_label:
-      other: Invite someone to answer
+      other: Invita qualcuno a rispondere
     rank_tag_add_label:
-      other: Create new tag
+      other: Crea un nuovo tag
     rank_tag_edit_label:
-      other: Edit tag description (need to review)
+      other: Modifica descrizione tag (necessità di revisione)
     rank_question_edit_label:
-      other: Edit other's question (need to review)
+      other: Modifica la domanda di altri (necessità di revisione)
     rank_answer_edit_label:
-      other: Edit other's answer (need to review)
+      other: Modifica la risposta di altri (necessità di revisione)
     rank_question_edit_without_review_label:
-      other: Edit other's question without review
+      other: Modifica la domanda di altri senza bisogno di revisione
     rank_answer_edit_without_review_label:
-      other: Edit other's answer without review
+      other: Modifica la risposta di altri senza bisogno di revisione
     rank_question_audit_label:
-      other: Review question edits
+      other: Rivedi modifiche alla domanda
     rank_answer_audit_label:
-      other: Review answer edits
+      other: Rivedi modifiche alla risposta
     rank_tag_audit_label:
-      other: Review tag edits
+      other: Esamina le modifiche ai tag
     rank_tag_edit_without_review_label:
-      other: Edit tag description without review
+      other: Modifica la descrizione del tag senza necessità di revisione
     rank_tag_synonym_label:
-      other: Manage tag synonyms
+      other: Gestisci sinonimi dei tag
   email:
     other: E-mail
   e_mail:
-    other: Email
+    other: E-mail
   password:
     other: Chiave di accesso
   pass:
     other: Password
   email_or_password_wrong_error:
-    other: Email o password errati
+    other: Email o password errati.
   error:
+    common:
+      invalid_url:
+        other: Invalid URL.
     password:
       space_invalid:
-        other: Password cannot contain spaces.
+        other: La password non può contenere spazi.
     admin:
       cannot_update_their_password:
-        other: You cannot modify your password.
+        other: Non è possibile modificare la password.
       cannot_modify_self_status:
-        other: You cannot modify your status.
+        other: Non è possibile modificare il tuo status.
       email_or_password_wrong:
-        other: Email o password errati
+        other: Email o password errati.
     answer:
       not_found:
-        other: Risposta non trovata
+        other: Risposta non trovata.
       cannot_deleted:
         other: Permesso per cancellare mancante.
       cannot_update:
         other: Nessun permesso per l'aggiornamento.
       question_closed_cannot_add:
-        other: Questions are closed and cannot be added.
+        other: Le domande sono chiuse e non possono essere aggiunte.
     comment:
       edit_without_permission:
-        other: Non si hanno di privilegi sufficienti per modificare il commento
+        other: Non si hanno di privilegi sufficienti per modificare il commento.
       not_found:
-        other: Commento non trovato
+        other: Commento non trovato.
       cannot_edit_after_deadline:
-        other: The comment time has been too long to modify.
+        other: Il tempo per editare è scaduto.
     email:
       duplicate:
-        other: email già esistente
+        other: Email già esistente.
       need_to_be_verified:
-        other: email deve essere verificata
+        other: L'email deve essere verificata.
       verify_url_expired:
-        other: l'url di verifica email è scaduto, si prega di reinviare la email
+        other: L'url di verifica email è scaduto, si prega di reinviare l'email.
       illegal_email_domain_error:
-        other: Email is not allowed from that email domain. Please use another one.
+        other: L'email non è consentita da quel dominio di posta elettronica. Si prega di usarne un altro.
     lang:
       not_found:
-        other: lingua non trovata
+        other: File lingua non trovato.
     object:
       captcha_verification_failed:
-        other: captcha errato
+        other: Captcha errato.
       disallow_follow:
         other: Non sei autorizzato a seguire
       disallow_vote:
@@ -199,7 +202,9 @@ backend:
         other: La nuova password è identica alla precedente
     question:
       already_deleted:
-        other: This post has been deleted.
+        other: Questo post è stato eliminato.
+      under_review:
+        other: Your post is awaiting review. It will be visible after it has been approved.
       not_found:
         other: domanda non trovata
       cannot_deleted:
@@ -210,11 +215,11 @@ backend:
         other: Nessun permesso per l'aggiornamento.
     rank:
       fail_to_meet_the_condition:
-        other: Reputation rank fail to meet the condition.
+        other: Il rango di reputazione non soddisfa le condizioni.
       vote_fail_to_meet_the_condition:
-        other: Thanks for the feedback. You need at least {{.Rank}} reputation to cast a vote.
+        other: Grazie per il feedback. Hai bisogno di almeno una reputazione {{.Rank}}  per votare.
       no_enough_rank_to_operate:
-        other: You need at least {{.Rank}} reputation to do this.
+        other: Hai bisogno di almeno una reputazione {{.Rank}} per fare questo.
     report:
       handle_failed:
         other: Gestione del report fallita
@@ -222,11 +227,11 @@ backend:
         other: Report non trovato
     tag:
       already_exist:
-        other: Tag already exists.
+        other: Tag già esistente.
       not_found:
         other: Etichetta non trovata
       recommend_tag_not_found:
-        other: Recommend tag is not exist.
+        other: Il tag consigliato non esiste.
       recommend_tag_enter:
         other: Inserisci almeno un tag.
       not_contain_synonym_tags:
@@ -234,12 +239,12 @@ backend:
       cannot_update:
         other: Nessun permesso per l'aggiornamento.
       is_used_cannot_delete:
-        other: You cannot delete a tag that is in use.
+        other: Non è possibile eliminare un tag in uso.
       cannot_set_synonym_as_itself:
         other: Non puoi impostare il sinonimo del tag corrente come se stesso.
     smtp:
       config_from_name_cannot_be_email:
-        other: The from name cannot be a email address.
+        other: Il mittente non può essere un indirizzo email.
     theme:
       not_found:
         other: tema non trovato
@@ -247,12 +252,12 @@ backend:
       review_underway:
         other: Non è possibile modificare al momento, c'è una versione nella coda di revisione.
       no_permission:
-        other: No permission to revise.
+        other: Non è permessa la revisione.
     user:
       external_login_missing_user_id:
-        other: The third-party platform does not provide a unique UserID, so you cannot login, please contact the website administrator.
+        other: La piattaforma di terze parti non fornisce un utente ID unico, quindi non è possibile effettuare il login. Si prega di contattare l'amministratore del sito web.
       external_login_unbinding_forbidden:
-        other: Please set a login password for your account before you remove this login.
+        other: Per favore imposta una password di login per il tuo account prima di rimuovere questo accesso.
       email_or_password_wrong:
         other:
           other: Email o password errati
@@ -269,99 +274,99 @@ backend:
       cannot_update_your_role:
         other: Non puoi modificare il tuo ruolo.
       not_allowed_registration:
-        other: Currently the site is not open for registration.
+        other: Attualmente il sito non è aperto per la registrazione.
       not_allowed_login_via_password:
-        other: Currently the site is not allowed to login via password.
+        other: Attualmente non è consentito accedere al sito tramite password.
       access_denied:
-        other: Access denied
+        other: Accesso negato
       page_access_denied:
-        other: You do not have access to this page.
+        other: Non hai accesso a questa pagina.
       add_bulk_users_format_error:
-        other: "Error {{.Field}} format near '{{.Content}}' at line {{.Line}}. {{.ExtraMessage}}"
+        other: "Errore {{.Field}} formato vicino a '{{.Content}}' alla riga {{.Line}}. {{.ExtraMessage}}"
       add_bulk_users_amount_error:
-        other: "The number of users you add at once should be in the range of 1-{{.MaxAmount}}."
+        other: "Il numero di utenti che aggiungi contemporaneamente dovrebbe essere compreso tra 1 e {{.MaxAmount}}."
     config:
       read_config_failed:
-        other: Read config failed
+        other: Configurazione lettura fallita
     database:
       connection_failed:
-        other: Database connection failed
+        other: Connessione al database fallita
       create_table_failed:
-        other: Create table failed
+        other: Creazione tabella non riuscita
     install:
       create_config_failed:
-        other: Can't create the config.yaml file.
+        other: Impossibile creare il file config.yaml.
     upload:
       unsupported_file_format:
-        other: Unsupported file format.
+        other: Formato file non supportato.
     site_info:
       config_not_found:
-        other: Site config not found.
+        other: Configurazione del sito non trovata.
   reason:
     spam:
       name:
-        other: spam
+        other: Spam
       desc:
-        other: This post is an advertisement, or vandalism. It is not useful or relevant to the current topic.
+        other: "Questo post è una pubblicità o spam. Non è utile o rilevante per l'argomento attuale.\n"
     rude_or_abusive:
       name:
-        other: rude or abusive
+        other: scortese o offensivo
       desc:
-        other: A reasonable person would find this content inappropriate for respectful discourse.
+        other: Una persona ragionevole troverebbe questo contenuto inappropriato o irrispettoso.
     a_duplicate:
       name:
-        other: a duplicate
+        other: duplicato
       desc:
-        other: This question has been asked before and already has an answer.
+        other: Questa domanda è già stata posta e ha già una risposta.
       placeholder:
-        other: Enter the existing question link
+        other: Inserisci il link alla domanda esistente
     not_a_answer:
       name:
-        other: not an answer
+        other: Non è una risposta
       desc:
-        other: This was posted as an answer, but it does not attempt to answer the question. It should possibly be an edit, a comment, another question, or deleted altogether.
+        other: Ciò è stato pubblicato come una risposta, ma non risponde alla domanda. Dovrebbe essere possibilmente una modifica, un commento, un'altra domanda o cancellato del tutto.
     no_longer_needed:
       name:
-        other: no longer needed
+        other: Non più necessario
       desc:
-        other: This comment is outdated, conversational or not relevant to this post.
+        other: Questo commento è obsoleto, informale o non rilevante per questo post.
     something:
       name:
-        other: something else
+        other: Qualcos'altro
       desc:
-        other: This post requires staff attention for another reason not listed above.
+        other: Questo post richiede l'attenzione dello staff per un altro motivo non elencato sopra.
       placeholder:
-        other: Let us know specifically what you are concerned about
+        other: Facci sapere nello specifico cosa ti preoccupa
     community_specific:
       name:
-        other: a community-specific reason
+        other: Un motivo legato alla community
       desc:
-        other: This question doesn't meet a community guideline.
+        other: Questa domanda non soddisfa le linee guida della community.
     not_clarity:
       name:
-        other: needs details or clarity
+        other: Richiede maggiori dettagli o chiarezza
       desc:
-        other: This question currently includes multiple questions in one. It should focus on one problem only.
+        other: Questa domanda include più domande in una. Dovrebbe concentrarsi su un unico problema.
     looks_ok:
       name:
-        other: looks OK
+        other: sembra OK
       desc:
-        other: This post is good as-is and not low quality.
+        other: Questo post è corretto così com'è e non è di bassa qualità.
     needs_edit:
       name:
-        other: needs edit, and I did it
+        other: Necessita di modifiche che ho  effettuato
       desc:
-        other: Improve and correct problems with this post yourself.
+        other: Migliora e correggi tu stesso i problemi di questo post.
     needs_close:
       name:
-        other: needs close
+        other: necessita di chiusura
       desc:
-        other: A closed question can't answer, but still can edit, vote and comment.
+        other: A una domanda chiusa non è possibile rispondere, ma è comunque possibile modificare, votare e commentare.
     needs_delete:
       name:
-        other: needs delete
+        other: Necessario eliminare
       desc:
-        other: This post will be deleted.
+        other: Questo post verrà eliminato.
   question:
     close:
       duplicate:
@@ -386,13 +391,13 @@ backend:
           other: Questo articolo richiede un'altro motivo non listato sopra.
     operation_type:
       asked:
-        other: asked
+        other: chiesto
       answered:
-        other: answered
+        other: Risposto
       modified:
-        other: modified
+        other: Modificato
     deleted_title:
-      other: Deleted question
+      other: "\nDomanda cancellata"
   notification:
     action:
       update_question:
@@ -420,71 +425,80 @@ backend:
       your_comment_was_deleted:
         other: il tuo commento è stato rimosso
       up_voted_question:
-        other: upvoted question
+        other: domanda approvata
       down_voted_question:
-        other: downvoted question
+        other: domanda scartata
       up_voted_answer:
-        other: upvoted answer
+        other: risposta approvata
       down_voted_answer:
-        other: downvoted answer
+        other: risposta sfavorevole
       up_voted_comment:
-        other: upvoted comment
+        other: commento approvato
       invited_you_to_answer:
-        other: invited you to answer
+        other: sei invitato a rispondere
   email_tpl:
     change_email:
       title:
-        other: "[{{.SiteName}}] Confirm your new email address"
+        other: "[{{.SiteName}}] Conferma il tuo nuovo indirizzo email"
       body:
-        other: "Confirm your new email address for {{.SiteName}} by clicking on the following link:<br>\n<a href='{{.ChangeEmailUrl}}' target='_blank'>{{.ChangeEmailUrl}}</a><br><br>\n\nIf you did not request this change, please ignore this email.\n"
+        other: "Conferma il tuo nuovo indirizzo email per {{.SiteName}} cliccando sul seguente link:<br>\n<a href='{{.ChangeEmailUrl}}' target='_blank'>{{.ChangeEmailUrl}}</a><br><br>\n\nSe non hai richiesto questa modifica, ignora questa email.\n"
     new_answer:
       title:
-        other: "[{{.SiteName}}] {{.DisplayName}} answered your question"
+        other: "[{{.SiteName}}] {{.DisplayName}} ha risposto alla tua domanda"
       body:
-        other: "<a href='{{.AnswerUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.AnswerSummary}}</blockquote><br>\n<a href='{{.AnswerUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "\n<a href='{{.AnswerUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.AnswerSummary}}</blockquote><br>\n<a href='{{.AnswerUrl}}'>Visualizzalo su {{.SiteName}}</a><br><br>\n\n--<br>\n<small><a href='{{.UnsubscribeUrl}}'>Annulla iscrizione</a></small>"
     invited_you_to_answer:
       title:
-        other: "[{{.SiteName}}] {{.DisplayName}} invited you to answer"
+        other: "[{{.SiteName}}] {{.DisplayName}} ti ha invitato a rispondere"
       body:
-        other: "<a href='{{.InviteUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>I think you may know the answer.</blockquote><br>\n<a href='{{.InviteUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.InviteUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>Credo che potresti sapere la risposta.</blockquote><br>\n<a href='{{.InviteUrl}}'>Visualizzalo su {{.SiteName}}</a><br><br>\n\n--<br>\n<small><a href='{{.UnsubscribeUrl}}'>Annulla iscrizione</a></small>"
     new_comment:
       title:
-        other: "[{{.SiteName}}] {{.DisplayName}} commented on your post"
+        other: "[{{.SiteName}}] {{.DisplayName}} ha commentato il tuo post"
       body:
-        other: "<a href='{{.CommentUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.CommentSummary}}</blockquote><br>\n<a href='{{.CommentUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.CommentUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.CommentSummary}}</blockquote><br>\n<a href='{{.CommentUrl}}'>Visualizzalo su {{.SiteName}}</a><br><br>\n\n--<br>\n<small><a href='{{.UnsubscribeUrl}}'>Annulla iscrizione</a></small>"
     new_question:
       title:
-        other: "[{{.SiteName}}] New question: {{.QuestionTitle}}"
+        other: "[{{.SiteName}}] Nuova domanda: {{.QuestionTitle}}"
       body:
-        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\n<small><a href='{{.UnsubscribeUrl}}'>Annulla l'iscrizione</a></small>"
     pass_reset:
       title:
-        other: "[{{.SiteName }}] Password reset"
+        other: "[{{.SiteName }}] Reimpostazione della password"
       body:
-        other: "Somebody asked to reset your password on {{.SiteName}}.<br><br>\n\nIf it was not you, you can safely ignore this email.<br><br>\n\nClick the following link to choose a new password:<br>\n<a href='{{.PassResetUrl}}' target='_blank'>{{.PassResetUrl}}</a>\n"
+        other: "Qualcuno ha chiesto di reimpostare la tua password su {{.SiteName}}.<br><br>\n\nSe non sei stato tu, ignora questa email.<br><br>\n\nClicca sul seguente link per scegliere una nuova password:<br>\n<a href='{{.PassResetUrl}}' target='_blank'>{{.PassResetUrl}}</a>\n"
     register:
       title:
-        other: "[{{.SiteName}}] Confirm your new account"
+        other: "[{{.SiteName}}] Conferma il tuo nuovo account"
       body:
-        other: "Welcome to {{.SiteName}}!<br><br>\n\nClick the following link to confirm and activate your new account:<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\nIf the above link is not clickable, try copying and pasting it into the address bar of your web browser.\n"
+        other: "Benvenuto su {{.SiteName}}!<br><br>\n\nClicca il seguente link per confermare e attivare il tuo nuovo account:<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\nSe il link qui sopra non è cliccabile, prova a copiarlo e incollarlo nella barra degli indirizzi del tuo browser.\n"
     test:
       title:
-        other: "[{{.SiteName}}] Test Email"
+        other: "[{{.SiteName}}] Email di prova"
       body:
-        other: "This is a test email."
+        other: "Questa è una email di prova."
   action_activity_type:
     upvote:
-      other: upvote
+      other: voto a favore
     upvoted:
-      other: upvoted
+      other: voto a favore
     downvote:
-      other: downvote
+      other: voto negativo
     downvoted:
-      other: downvoted
+      other: votato negativamente
     accept:
-      other: accept
+      other: Accetta
     accepted:
-      other: accepted
+      other: Accettato
+    edit:
+      other: edit
+  review:
+    queued_post:
+      other: Queued post
+    flagged_post:
+      other: Flagged post
+    suggested_post_edit:
+      other: Suggested edits
 # The following fields are used for interface presentation(Front-end)
 ui:
   how_to_format:
@@ -500,1305 +514,1350 @@ ui:
     tag: Tag
     tags: Tags
     tag_wiki: tag wiki
-    create_tag: Create Tag
+    create_tag: Crea tag
     edit_tag: Modifica Tag
     ask_a_question: Aggiungi una domanda
     edit_question: Modifica Domanda
-    edit_answer: Edit Answer
-    search: Search
-    posts_containing: Posts containing
-    settings: Settings
-    notifications: Notifications
-    login: Log In
-    sign_up: Sign Up
-    account_recovery: Account Recovery
-    account_activation: Account Activation
-    confirm_email: Confirm Email
-    account_suspended: Account Suspended
-    admin: Admin
-    change_email: Modify Email
-    install: Answer Installation
-    upgrade: Answer Upgrade
-    maintenance: Website Maintenance
-    users: Users
-    oauth_callback: Processing
-    http_404: HTTP Error 404
-    http_50X: HTTP Error 500
-    http_403: HTTP Error 403
-    logout: Log Out
+    edit_answer: Modifica risposta
+    search: Cerca
+    posts_containing: Post contenenti
+    settings: Impostazioni
+    notifications: Notifiche
+    login: Accedi
+    sign_up: Registrati
+    account_recovery: Recupero dell'account
+    account_activation: Attivazione account
+    confirm_email: Conferma Email
+    account_suspended: Account sospeso
+    admin: Amministratore
+    change_email: Modifica la tua email
+    install: Installazione di Answer
+    upgrade: Upgrade di Answer
+    maintenance: Manutenzione del sito
+    users: Utenti
+    oauth_callback: Elaborazione in corso
+    http_404: Errore HTTP 404
+    http_50X: Errore HTTP 500
+    http_403: Errore HTTP 403
+    logout: Disconnetti
   notifications:
-    title: Notifications
-    inbox: Inbox
-    achievement: Achievements
-    new_alerts: New alerts
-    all_read: Mark all as read
-    show_more: Show more
-    someone: Someone
+    title: Notifiche
+    inbox: Posta in arrivo
+    achievement: Risultati
+    new_alerts: Nuovi avvisi
+    all_read: Segna tutto come letto
+    show_more: Mostra di più
+    someone: Qualcuno
     inbox_type:
-      all: All
+      all: Tutti
       posts: Posts
-      invites: Invites
-      votes: Votes
+      invites: Inviti
+      votes: Voti
   suspended:
-    title: Your Account has been Suspended
-    until_time: "Your account was suspended until {{ time }}."
-    forever: This user was suspended forever.
-    end: You don't meet a community guideline.
-    contact_us: Contact us
+    title: Il tuo account è stato sospeso
+    until_time: "Il tuo account è stato sospeso fino a {{ time }}."
+    forever: Questo utente è stato sospeso per sempre.
+    end: Non soddisfi le linee guida della community.
+    contact_us: Contattaci
   editor:
     blockquote:
-      text: Blockquote
+      text: Citazione
     bold:
-      text: Strong
+      text: Forte
     chart:
-      text: Chart
-      flow_chart: Flow chart
-      sequence_diagram: Sequence diagram
-      class_diagram: Class diagram
-      state_diagram: State diagram
-      entity_relationship_diagram: Entity relationship diagram
-      user_defined_diagram: User defined diagram
-      gantt_chart: Gantt chart
-      pie_chart: Pie chart
+      text: Grafico
+      flow_chart: Diagramma di flusso
+      sequence_diagram: Diagramma di sequenza
+      class_diagram: Diagramma di classe
+      state_diagram: Diagramma di stato
+      entity_relationship_diagram: Diagramma Entità-Relazione
+      user_defined_diagram: "\nDiagramma definito dall'utente"
+      gantt_chart: Diagramma di Gantt
+      pie_chart: Grafico a torta
     code:
-      text: Code Sample
-      add_code: Add code sample
+      text: Esempio di codice
+      add_code: Aggiungi un esempio di codice
       form:
         fields:
           code:
-            label: Code
+            label: Codice
             msg:
-              empty: Code cannot be empty.
+              empty: Il codice non può essere vuoto
           language:
-            label: Language
-            placeholder: Automatic detection
-      btn_cancel: Cancel
-      btn_confirm: Add
+            label: Lingua
+            placeholder: Rilevamento automatico
+      btn_cancel: Cancella
+      btn_confirm: Aggiungi
     formula:
       text: Formula
       options:
-        inline: Inline formula
-        block: Block formula
+        inline: Formula nella linea
+        block: "\nFormula di blocco"
     heading:
-      text: Heading
+      text: Intestazione
       options:
-        h1: Heading 1
-        h2: Heading 2
-        h3: Heading 3
-        h4: Heading 4
-        h5: Heading 5
-        h6: Heading 6
+        h1: Intestazione 1
+        h2: Intestazione 2
+        h3: Intestazione 3
+        h4: Intestazione 4
+        h5: Intestazione 5
+        h6: Intestazione 6
     help:
-      text: Help
+      text: Aiuto
     hr:
-      text: Horizontal rule
+      text: Riga orizzontale
     image:
-      text: Image
-      add_image: Add image
-      tab_image: Upload image
+      text: Immagine
+      add_image: Aggiungi immagine
+      tab_image: Carica immagine
       form_image:
         fields:
           file:
-            label: Image file
-            btn: Select image
+            label: File d'immagine
+            btn: Scegli immagine
             msg:
-              empty: File cannot be empty.
-              only_image: Only image files are allowed.
-              max_size: File size cannot exceed 4 MB.
+              empty: Il file non può essere vuoto.
+              only_image: Sono ammesse solo le immagini
+              max_size: La dimensione del file non può superare i 4 MB.
           desc:
-            label: Description
-      tab_url: Image URL
+            label: Descrizione
+      tab_url: Url dell'Immagine
       form_url:
         fields:
           url:
-            label: Image URL
+            label: URL dell'immagine
             msg:
-              empty: Image URL cannot be empty.
+              empty: L'URL dell'immagine non può essere vuoto.
           name:
-            label: Description
-      btn_cancel: Cancel
-      btn_confirm: Add
-      uploading: Uploading
+            label: Descrizione
+      btn_cancel: Cancella
+      btn_confirm: Aggiungi
+      uploading: Caricamento in corso...
     indent:
-      text: Indent
+      text: Indenta
     outdent:
-      text: Outdent
+      text: Deindenta
     italic:
-      text: Emphasis
+      text: Corsivo
     link:
-      text: Hyperlink
-      add_link: Add hyperlink
+      text: Collegamento ipertestuale
+      add_link: Aggiungi collegamento
       form:
         fields:
           url:
             label: URL
             msg:
-              empty: URL cannot be empty.
+              empty: L'URL non può essere vuoto
           name:
-            label: Description
-      btn_cancel: Cancel
-      btn_confirm: Add
+            label: Descrizione
+      btn_cancel: Cancella
+      btn_confirm: Aggiungi
     ordered_list:
-      text: Numbered list
+      text: Elenco numerato
     unordered_list:
-      text: Bulleted list
+      text: Elenco puntato
     table:
-      text: Table
-      heading: Heading
-      cell: Cell
+      text: Tabella
+      heading: Intestazione
+      cell: Cella
   close_modal:
-    title: I am closing this post as...
-    btn_cancel: Cancel
-    btn_submit: Submit
+    title: Sto chiudendo questo post come...
+    btn_cancel: Cancella
+    btn_submit: Invia
     remark:
-      empty: Cannot be empty.
+      empty: Non può essere vuoto.
     msg:
-      empty: Please select a reason.
+      empty: Per favore seleziona un motivo
   report_modal:
-    flag_title: I am flagging to report this post as...
+    flag_title: Sto segnalando questo post per riportarlo come...
     close_title: I am closing this post as...
-    review_question_title: Review question
-    review_answer_title: Review answer
-    review_comment_title: Review comment
-    btn_cancel: Cancel
-    btn_submit: Submit
+    review_question_title: Rivedi la domanda
+    review_answer_title: Rivedi la risposta
+    review_comment_title: Rivedi il commento
+    btn_cancel: Cancella
+    btn_submit: Invia
     remark:
-      empty: Cannot be empty.
+      empty: Non può essere vuoto.
     msg:
-      empty: Please select a reason.
+      empty: Per favore seleziona un motivo
+      not_a_url: URL format is incorrect.
+      url_not_match: URL origin does not match the current website.
   tag_modal:
-    title: Create new tag
+    title: Crea un nuovo tag
     form:
       fields:
         display_name:
-          label: Display name
+          label: Nome da visualizzare
           msg:
-            empty: Display name cannot be empty.
-            range: Display name up to 35 characters.
+            empty: Il nome utente non può essere vuoto.
+            range: Nome utente fino a 35 caratteri.
         slug_name:
-          label: URL slug
+          label: Slug dell'URL
           desc: URL slug fino a 35 caratteri.
           msg:
-            empty: URL slug cannot be empty.
-            range: URL slug up to 35 characters.
-            character: URL slug contains unallowed character set.
+            empty: Lo slug dell'URL non può essere vuoto.
+            range: Slug dell'URL fino a 35 caratteri.
+            character: Lo slug dell'URL contiene un set di caratteri non consentiti.
         desc:
-          label: Description
+          label: Descrizione
         revision:
-          label: Revision
+          label: Revisione
         edit_summary:
-          label: Edit summary
+          label: Modifica il riepilogo
           placeholder: >-
-            Briefly explain your changes (corrected spelling, fixed grammar, improved formatting)
-    btn_cancel: Cancel
-    btn_submit: Submit
-    btn_post: Post new tag
+            Spiega brevemente le tue modifiche (ortografia rifinita, grammatica corretta, formattazione migliorata)
+    btn_cancel: Cancella
+    btn_submit: Invia
+    btn_post: Pubblica un nuovo tag
   tag_info:
-    created_at: Created
-    edited_at: Edited
-    history: History
+    created_at: Creato
+    edited_at: Modificato
+    history: Cronologia
     synonyms:
-      title: Synonyms
-      text: The following tags will be remapped to
-      empty: No synonyms found.
-      btn_add: Add a synonym
-      btn_edit: Edit
-      btn_save: Save
-    synonyms_text: The following tags will be remapped to
+      title: Sinonimi
+      text: I seguenti tag verranno rimappati a
+      empty: Nessun sinonimo trovato.
+      btn_add: Aggiungi un sinonimo
+      btn_edit: Modifica
+      btn_save: Salva
+    synonyms_text: I seguenti tag verranno rimappati a
     delete:
-      title: Delete this tag
+      title: Elimina questo tag
       tip_with_posts: >-
-        <p>We do not allowed <strong>deleting tag with posts</strong>.</p> <p>Please remove this tag from the posts first.</p>
+        <p>Non è consentita <strong>l'eliminazione di tag con i post</strong>.</p> <p>Rimuovi prima questo tag dai post.</p>
       tip_with_synonyms: >-
-        <p>We do not allowed <strong>deleting tag with synonyms</strong>.</p> <p>Please remove the synonyms from this tag first.</p>
-      tip: Are you sure you wish to delete?
-      close: Close
+        <p>Non è consentita <strong>l'eliminazione di tag con sinonimi</strong>.</p> <p>Per favore, rimuovi prima i sinonimi da questo tag.</p>
+      tip: Sei sicuro di voler cancellare?
+      close: Chiudi
   edit_tag:
-    title: Edit Tag
-    default_reason: Edit tag
-    default_first_reason: Add tag
-    btn_save_edits: Save edits
-    btn_cancel: Cancel
+    title: Modifica Tag
+    default_reason: Modifica tag
+    default_first_reason: Aggiungi tag
+    btn_save_edits: Salva modifiche
+    btn_cancel: Cancella
   dates:
     long_date: MMM D
     long_date_with_year: "MMM D, YYYY"
-    long_date_with_time: "MMM D, YYYY [at] HH:mm"
-    now: now
-    x_seconds_ago: "{{count}}s ago"
-    x_minutes_ago: "{{count}}m ago"
-    x_hours_ago: "{{count}}h ago"
-    hour: hour
-    day: day
-    hours: hours
-    days: days
+    long_date_with_time: "MMM D, AAAA [at] HH:mm"
+    now: ora
+    x_seconds_ago: "{{count}}s fa"
+    x_minutes_ago: "{{count}}m fa"
+    x_hours_ago: "{{count}}h fa"
+    hour: ora
+    day: giorno
+    hours: ore
+    days: giorni
   comment:
-    btn_add_comment: Add comment
-    reply_to: Reply to
-    btn_reply: Reply
-    btn_edit: Edit
-    btn_delete: Delete
-    btn_flag: Flag
-    btn_save_edits: Save edits
-    btn_cancel: Cancel
-    show_more: "{{count}} more comments"
+    btn_add_comment: Aggiungi un commento
+    reply_to: Rispondi a
+    btn_reply: Rispondi
+    btn_edit: Modifica
+    btn_delete: Cancella
+    btn_flag: Segnala
+    btn_save_edits: Salva modifiche
+    btn_cancel: Cancella
+    show_more: "{{count}} altri commenti"
     tip_question: >-
-      Use comments to ask for more information or suggest improvements. Avoid answering questions in comments.
+      Usa i commenti per chiedere maggiori informazioni o per suggerire miglioramenti. Evita di rispondere alle domande nei commenti.
     tip_answer: >-
-      Use comments to reply to other users or notify them of changes. If you are adding new information, edit your post instead of commenting.
-    tip_vote: It adds something useful to the post
+      Utilizza i commenti per rispondere ad altri utenti o avvisarli delle modifiche. Se stai aggiungendo nuove informazioni, modifica il tuo post invece di commentare.
+    tip_vote: Aggiunge qualcosa di utile al post
   edit_answer:
-    title: Edit Answer
-    default_reason: Edit answer
-    default_first_reason: Add answer
+    title: Modifica risposta
+    default_reason: Modifica risposta
+    default_first_reason: Aggiungi risposta
     form:
       fields:
         revision:
-          label: Revision
+          label: Revisione
         answer:
-          label: Answer
+          label: Risposta
           feedback:
-            characters: content must be at least 6 characters in length.
+            characters: Il testo deve contenere almeno 6 caratteri.
         edit_summary:
-          label: Edit summary
+          label: Modifica il riepilogo
           placeholder: >-
-            Briefly explain your changes (corrected spelling, fixed grammar, improved formatting)
-    btn_save_edits: Save edits
-    btn_cancel: Cancel
+            Spiega brevemente le tue modifiche (ortografia rifinita, grammatica corretta, formattazione migliorata)
+    btn_save_edits: Salva modifiche
+    btn_cancel: Annulla
   tags:
-    title: Tags
+    title: Tag
     sort_buttons:
-      popular: Popular
-      name: Name
-      newest: Newest
-    button_follow: Follow
-    button_following: Following
-    tag_label: questions
-    search_placeholder: Filter by tag name
-    no_desc: The tag has no description.
-    more: More
+      popular: Popolari
+      name: Nome
+      newest: Più recente
+    button_follow: Segui
+    button_following: Segui già
+    tag_label: domande
+    search_placeholder: Filtra per nome del tag
+    no_desc: Il tag non ha descrizioni.
+    more: Altro
   ask:
-    title: Add Question
-    edit_title: Edit Question
-    default_reason: Edit question
-    default_first_reason: Add question
-    similar_questions: Similar questions
+    title: Aggiungi una domanda
+    edit_title: Modifica Domanda
+    default_reason: Modifica domanda
+    default_first_reason: Aggiungi una domanda
+    similar_questions: Domande simili
     form:
       fields:
         revision:
-          label: Revision
+          label: Revisione
         title:
-          label: Title
-          placeholder: Be specific and imagine you're asking a question to another person
+          label: Titolo
+          placeholder: Sii specifico e immagina tu stia facendo una domanda ad un'altra persona
           msg:
-            empty: Title cannot be empty.
-            range: Title up to 150 characters
+            empty: Il titolo non può essere vuoto.
+            range: Il titolo non può superare i 150 caratteri
         body:
-          label: Body
+          label: Contenuto
           msg:
-            empty: Body cannot be empty.
+            empty: Il corpo del testo non può essere vuoto.
         tags:
           label: Tags
           msg:
-            empty: Tags cannot be empty.
+            empty: I tag non possono essere vuoti.
         answer:
-          label: Answer
+          label: Risposta
           msg:
-            empty: Answer cannot be empty.
+            empty: La risposta non può essere vuota.
         edit_summary:
-          label: Edit summary
+          label: Modifica riepilogo
           placeholder: >-
-            Briefly explain your changes (corrected spelling, fixed grammar, improved formatting)
-    btn_post_question: Post your question
-    btn_save_edits: Save edits
-    answer_question: Answer your own question
-    post_question&answer: Post your question and answer
+            Spiega brevemente le tue modifiche (ortografia corretta, grammatica corretta, formattazione migliorata)
+    btn_post_question: Posta la tua domanda
+    btn_save_edits: Salva modifiche
+    answer_question: Rispondi alla tua domanda
+    post_question&answer: Posta la tua domanda e risposta
   tag_selector:
-    add_btn: Add tag
-    create_btn: Create new tag
-    search_tag: Search tag
-    hint: "Describe what your question is about, at least one tag is required."
-    no_result: No tags matched
-    tag_required_text: Required tag (at least one)
+    add_btn: Aggiungi tag
+    create_btn: Crea un nuovo tag
+    search_tag: Cerca tag
+    hint: "Descrivi qual è la tua domanda, è richiesto almeno un tag."
+    no_result: Nessun tag corrispondente
+    tag_required_text: Tag richiesto (almeno uno)
   header:
     nav:
-      question: Questions
+      question: Domande
       tag: Tags
-      user: Users
-      profile: Profile
-      setting: Settings
-      logout: Log out
-      admin: Admin
-      review: Review
-      bookmark: Bookmarks
-      moderation: Moderation
+      user: Utenti
+      profile: Profilo
+      setting: Impostazioni
+      logout: Disconnetti
+      admin: Amministratore
+      review: Revisione
+      bookmark: Segnalibri
+      moderation: Moderazione
     search:
-      placeholder: Search
+      placeholder: Cerca
   footer:
     build_on: >-
-      Powered by <1> Apache Answer </1>- the open-source software that powers Q&A communities.<br />Made with love © {{cc}}.
+      Basato su <1> Apache Answer </1>, il software open source che alimenta le comunità di domande e risposte.<br />Fatto con amore © {{cc}}.
   upload_img:
-    name: Change
-    loading: loading...
+    name: Modifica
+    loading: caricamento in corso...
   pic_auth_code:
     title: Captcha
-    placeholder: Type the text above
+    placeholder: Digita il testo sopra
     msg:
-      empty: Captcha cannot be empty.
+      empty: Il Captcha non può essere vuoto.
   inactive:
     first: >-
-      You're almost done! We sent an activation mail to <bold>{{mail}}</bold>. Please follow the instructions in the mail to activate your account.
-    info: "If it doesn't arrive, check your spam folder."
+      Hai quasi finito! Abbiamo inviato un'e-mail di attivazione a <bold>{{mail}}</bold>. Segui le istruzioni contenute nella mail per attivare il tuo account.
+    info: "Se non arriva, controlla la cartella spam."
     another: >-
-      We sent another activation email to you at <bold>{{mail}}</bold>. It might take a few minutes for it to arrive; be sure to check your spam folder.
-    btn_name: Resend activation email
-    change_btn_name: Change email
+      Ti abbiamo inviato un'altra email di attivazione all'indirizzo <bold>{{mail}}</bold>. Potrebbero volerci alcuni minuti prima che arrivi; assicurati di controllare la cartella spam.
+    btn_name: Reinvia l'e-mail di attivazione
+    change_btn_name: Modifica e-mail
     msg:
-      empty: Cannot be empty.
+      empty: Non può essere vuoto.
     resend_email:
-      url_label: Are you sure you want to resend the activation email?
-      url_text: You can also give the activation link above to the user.
+      url_label: Sei sicuro di voler inviare nuovamente l'e-mail di attivazione?
+      url_text: Puoi anche fornire all'utente il link di attivazione riportato sopra.
   login:
-    login_to_continue: Log in to continue
-    info_sign: Don't have an account? <1>Sign up</1>
-    info_login: Already have an account? <1>Log in</1>
-    agreements: By registering, you agree to the <1>privacy policy</1> and <3>terms of service</3>.
-    forgot_pass: Forgot password?
+    login_to_continue: Accedi per continuare
+    info_sign: Non hai un account? <1>Iscriviti</1>
+    info_login: Hai già un account? <1>Accedi</1>
+    agreements: Registrandoti, accetti l'<1>informativa sulla privacy</1> e i <3>termini del servizio</3>.
+    forgot_pass: Password dimenticata?
     name:
-      label: Name
+      label: Nome
       msg:
-        empty: Name cannot be empty.
-        range: Name up to 30 characters.
-        character: 'Must use the character set "a-z", "0-9", " - . _"'
+        empty: Il nome non può essere vuoto.
+        range: Nome fino a 30 caratteri.
+        character: 'È necessario utilizzare il set di caratteri "a-z", "0-9", " - . _"'
     email:
       label: Email
       msg:
-        empty: Email cannot be empty.
+        empty: L'email non può essere vuota.
     password:
       label: Password
       msg:
-        empty: Password cannot be empty.
-        different: The passwords entered on both sides are inconsistent
+        empty: La password non può essere vuota.
+        different: Le password inserite su entrambi i lati non corrispondono
   account_forgot:
-    page_title: Forgot Your Password
-    btn_name: Send me recovery email
+    page_title: Password dimenticata?
+    btn_name: Inviami email di recupero
     send_success: >-
-      If an account matches <strong>{{mail}}</strong>, you should receive an email with instructions on how to reset your password shortly.
+      Se un account corrisponde a <strong>{{mail}}</strong>, a breve dovresti ricevere un'e-mail con le istruzioni su come reimpostare la password.
     email:
       label: Email
       msg:
-        empty: Email cannot be empty.
+        empty: Il campo email non può essere vuoto.
   change_email:
-    btn_cancel: Cancel
-    btn_update: Update email address
+    btn_cancel: Cancella
+    btn_update: Aggiorna indirizzo email
     send_success: >-
-      If an account matches <strong>{{mail}}</strong>, you should receive an email with instructions on how to reset your password shortly.
+      Se un account corrisponde a <strong>{{mail}}</strong>, a breve dovresti ricevere un'email con le istruzioni su come reimpostare la password.
     email:
-      label: New email
+      label: Nuova email
       msg:
-        empty: Email cannot be empty.
+        empty: L'email non può essere vuota.
   oauth:
-    connect: Connect with {{ auth_name }}
-    remove: Remove {{ auth_name }}
+    connect: Connettiti con {{ auth_name }}
+    remove: Rimuovi {{ auth_name }}
   oauth_bind_email:
-    subtitle: Add a recovery email to your account.
-    btn_update: Update email address
+    subtitle: Aggiungi un'email di recupero al tuo account.
+    btn_update: Aggiorna l'indirizzo email
     email:
       label: Email
       msg:
-        empty: Email cannot be empty.
-    modal_title: Email already existes.
-    modal_content: This email address already registered. Are you sure you want to connect to the existing account?
-    modal_cancel: Change email
-    modal_confirm: Connect to the existing account
+        empty: L'email non può essere vuota.
+    modal_title: Email già esistente
+    modal_content: Questo indirizzo email è già registrato. Sei sicuro che vuoi connetterti all'account esistente?
+    modal_cancel: Cambia email
+    modal_confirm: Connettiti all'account esistente
   password_reset:
-    page_title: Password Reset
-    btn_name: Reset my password
+    page_title: Reimposta la password
+    btn_name: Reimposta la mia password
     reset_success: >-
-      You successfully changed your password; you will be redirected to the log in page.
+      Hai cambiato con successo la tua password; sarai reindirizzato alla pagina di accesso.
     link_invalid: >-
-      Sorry, this password reset link is no longer valid. Perhaps your password is already reset?
-    to_login: Continue to log in page
+      Siamo spiacenti, questo link di reset della password non è più valido. Forse la password è già stata reimpostata?
+    to_login: Continua per effettuare il login
     password:
       label: Password
       msg:
-        empty: Password cannot be empty.
-        length: The length needs to be between 8 and 32
-        different: The passwords entered on both sides are inconsistent
+        empty: La password non può essere vuota
+        length: La lunghezza deve essere compresa tra 8 e 32
+        different: Le password inserite non corrispondono
     password_confirm:
-      label: Confirm new password
+      label: Conferma la nuova password
   settings:
-    page_title: Settings
-    goto_modify: Go to modify
+    page_title: Impostazioni
+    goto_modify: Vai alle modifiche
     nav:
-      profile: Profile
-      notification: Notifications
+      profile: Profilo
+      notification: Notifiche
       account: Account
-      interface: Interface
+      interface: Interfaccia
     profile:
-      heading: Profile
-      btn_name: Save
+      heading: Profilo
+      btn_name: Salva
       display_name:
-        label: Display name
-        msg: Display name cannot be empty.
-        msg_range: Display name up to 30 characters.
+        label: Visualizza nome
+        msg: Il nome utente non può essere vuoto.
+        msg_range: Il nome utente non può superare i 30 caratteri.
       username:
-        label: Username
-        caption: People can mention you as "@username".
-        msg: Username cannot be empty.
-        msg_range: Username up to 30 characters.
-        character: 'Must use the character set "a-z", "0-9", " - . _"'
+        label: Nome utente
+        caption: Gli altri utenti possono menzionarti con @{{username}}.
+        msg: Il nome utente non può essere vuoto.
+        msg_range: Nome utente fino a 30 caratteri.
+        character: 'È necessario utilizzare il set di caratteri "a-z", "0-9", " - . _"'
       avatar:
-        label: Profile image
+        label: Immagine del profilo
         gravatar: Gravatar
-        gravatar_text: You can change image on
-        custom: Custom
-        custom_text: You can upload your image.
-        default: System
-        msg: Please upload an avatar
+        gravatar_text: Puoi cambiare l'immagine 
+        custom: Personalizzato
+        custom_text: Puoi caricare la tua immagine.
+        default: Sistema
+        msg: Per favore carica un avatar
       bio:
-        label: About me
+        label: Chi sono
       website:
-        label: Website
-        placeholder: "https://example.com"
-        msg: Website incorrect format
+        label: Sito web
+        placeholder: "https://esempio.com"
+        msg: Formato non corretto del sito web
       location:
-        label: Location
-        placeholder: "City, Country"
+        label: Luogo
+        placeholder: "Città, Paese"
     notification:
-      heading: Email Notifications
-      turn_on: Turn on
+      heading: Notifiche email
+      turn_on: Accendi
       inbox:
-        label: Inbox notifications
-        description: Answers to your questions, comments, invites, and more.
+        label: Notifiche in arrivo
+        description: Risposte alle tue domande, commenti, inviti e altro ancora.
       all_new_question:
-        label: All new questions
-        description: Get notified of all new questions. Up to 50 questions per week.
+        label: Tutte le nuove domande
+        description: Ricevi una notifica per tutte le nuove domande. Fino a 50 domande a settimana.
       all_new_question_for_following_tags:
-        label: All new questions for following tags
-        description: Get notified of new questions for following tags.
+        label: Tutte le nuove domande per i seguenti tag
+        description: Ricevi una notifica delle nuove domande per i seguenti tag.
     account:
-      heading: Account
-      change_email_btn: Change email
-      change_pass_btn: Change password
+      heading: Profilo
+      change_email_btn: Modifica e-mail
+      change_pass_btn: Modifica password
       change_email_info: >-
-        We've sent an email to that address. Please follow the confirmation instructions.
+        Abbiamo inviato una mail a quell'indirizzo. Si prega di seguire le istruzioni di conferma.
       email:
-        label: New email
-        msg: New email cannot be empty.
+        label: Nuova email
+        msg: La nuova email non può essere vuota.
       pass:
-        label: Current password
-        msg: Password cannot be empty.
+        label: Password attuale
+        msg: La password non può essere vuota
       password_title: Password
       current_pass:
-        label: Current password
+        label: Password attuale
         msg:
-          empty: Current password cannot be empty.
-          length: The length needs to be between 8 and 32.
-          different: The two entered passwords do not match.
+          empty: La password attuale non può essere vuota.
+          length: La lunghezza deve essere compresa tra 8 e 32.
+          different: Le due password inserite non corrispondono.
       new_pass:
-        label: New password
+        label: Nuova password
       pass_confirm:
-        label: Confirm new password
+        label: Conferma la nuova password
     interface:
-      heading: Interface
+      heading: Interfaccia
       lang:
-        label: Interface language
-        text: User interface language. It will change when you refresh the page.
+        label: Lingua dell'interfaccia
+        text: La lingua dell'interfaccia utente cambierà quando aggiorni la pagina.
     my_logins:
-      title: My logins
-      label: Log in or sign up on this site using these accounts.
-      modal_title: Remove login
-      modal_content: Are you sure you want to remove this login from your account?
-      modal_confirm_btn: Remove
-      remove_success: Removed successfully
+      title: I miei login
+      label: Accedi o registrati su questo sito utilizzando questi account.
+      modal_title: Rimuovi login
+      modal_content: Sei sicuro di voler rimuovere questo login dal tuo account?
+      modal_confirm_btn: Rimuovi
+      remove_success: Rimosso con successo
   toast:
-    update: update success
-    update_password: Password changed successfully.
-    flag_success: Thanks for flagging.
-    forbidden_operate_self: Forbidden to operate on yourself
-    review: Your revision will show after review.
-    sent_success: Sent successfully
+    update: Aggiornamento riuscito
+    update_password: Password modificata con successo.
+    flag_success: Grazie per la segnalazione.
+    forbidden_operate_self: Vietato operare su se stessi.
+    review: Le tue modifiche verranno visualizzata dopo la revisione.
+    sent_success: Inviato correttamente
   related_question:
-    title: Related Questions
-    answers: answers
+    title: Domande correlate
+    answers: risposte
   invite_to_answer:
-    title: People Asked
-    desc: Select people who you think might know the answer.
-    invite: Invite to answer
-    add: Add people
-    search: Search people
+    title: Persone Interpellate
+    desc: Seleziona le persone che pensi potrebbero conoscere la risposta.
+    invite: Invita a rispondere
+    add: Aggiungi contatti
+    search: Cerca persone
   question_detail:
-    action: Action
-    Asked: Asked
-    asked: asked
-    update: Modified
-    edit: edited
-    Views: Viewed
-    Follow: Follow
-    Following: Following
-    follow_tip: Follow this question to receive notifications
-    answered: answered
-    closed_in: Closed in
-    show_exist: Show existing question.
-    useful: Useful
-    question_useful: It is useful and clear
-    question_un_useful: It is unclear or not useful
-    question_bookmark: Bookmark this question
-    answer_useful: It is useful
-    answer_un_useful: It is not useful
+    action: Azione
+    Asked: Chiesto
+    asked: chiesto
+    update: Modificato
+    edit: modificato
+    commented: commented
+    Views: Visualizzati
+    Follow: Segui
+    Following: Segui già
+    follow_tip: Segui questa domanda per ricevere notifiche
+    answered: Risposto
+    closed_in: Chiuso in
+    show_exist: Mostra domanda esistente.
+    useful: Utile
+    question_useful: È utile e chiaro
+    question_un_useful: Non è chiaro né utile
+    question_bookmark: Aggiungi questa domanda ai segnalibri
+    answer_useful: È utile
+    answer_un_useful: Non è utile
     answers:
-      title: Answers
-      score: Score
-      newest: Newest
-      btn_accept: Accept
-      btn_accepted: Accepted
+      title: Risposte
+      score: Punteggio
+      newest: Più recenti
+      oldest: Oldest
+      btn_accept: Accetta
+      btn_accepted: Accettato
     write_answer:
-      title: Your Answer
-      edit_answer: Edit my existing answer
-      btn_name: Post your answer
-      add_another_answer: Add another answer
-      confirm_title: Continue to answer
-      continue: Continue
+      title: La tua risposta
+      edit_answer: Modifica la mia risposta attuale
+      btn_name: Pubblica la tua risposta
+      add_another_answer: Aggiungi un'altra risposta 
+      confirm_title: Continua a rispondere
+      continue: Continua
       confirm_info: >-
-        <p>Are you sure you want to add another answer?</p><p>You could use the edit link to refine and improve your existing answer, instead.</p>
-      empty: Answer cannot be empty.
-      characters: content must be at least 6 characters in length.
+        <p>Sei sicuro di voler aggiungere un'altra risposta?</p><p>In alternativa, puoi usare il link di modifica per perfezionare e migliorare la tua risposta esistente.</p>
+      empty: La risposta non può essere vuota.
+      characters: Il contenuto deve avere una lunghezza di almeno 6 caratteri.
       tips:
-        header_1: Thanks for your answer
-        li1_1: Please be sure to <strong>answer the question</strong>. Provide details and share your research.
-        li1_2: Back up any statements you make with references or personal experience.
-        header_2: But <strong>avoid</strong> ...
-        li2_1: Asking for help, seeking clarification, or responding to other answers.
+        header_1: Grazie per la risposta
+        li1_1: Assicurati di <strong>rispondere alla domanda</strong>. Fornisci dettagli e condividi la tua ricerca.
+        li1_2: Effettua il backup di qualsiasi dichiarazione fatta con riferimenti o esperienze personali.
+        header_2: Ma <strong>evita</strong>...
+        li2_1: Chiedere aiuto, cercare chiarimenti o rispondere ad altre risposte.
     reopen:
-      confirm_btn: Reopen
-      title: Reopen this post
-      content: Are you sure you want to reopen?
+      confirm_btn: Riapri
+      title: Riapri questo post
+      content: Sei sicuro di voler riaprire?
+    list:
+      confirm_btn: List
+      title: List this post
+      content: Are you sure you want to list?
+    unlist:
+      confirm_btn: Unlist
+      title: Unlist this post
+      content: Are you sure you want to unlist?
     pin:
-      title: Pin this post
-      content: Are you sure you wish to pinned globally? This post will appear at the top of all post lists.
-      confirm_btn: Pin
+      title: Fissa questo post in cima al profilo
+      content: Sei sicuro di voler fissare in blocco? Questo post apparirà in cima a tutte le liste.
+      confirm_btn: Fissa sul profilo
   delete:
-    title: Delete this post
+    title: Cancella questo post
     question: >-
-      We do not recommend <strong>deleting questions with answers</strong> because doing so deprives future readers of this knowledge.</p><p>Repeated deletion of answered questions can result in your account being blocked from asking. Are you sure you wish to delete?
+      Non consigliamo di eliminare<strong>domande con risposte</strong> perché ciò priva i futuri lettori di questa conoscenza.</p><p>L'eliminazione ripetuta di domande con risposte può comportare il blocco delle domande nel tuo account. Sei sicuro di voler eliminare?
     answer_accepted: >-
-      <p>We do not recommend <strong>deleting accepted answer</strong> because doing so deprives future readers of this knowledge. </p> Repeated deletion of accepted answers can result in your account being blocked from answering. Are you sure you wish to delete?
-    other: Are you sure you wish to delete?
-    tip_answer_deleted: This answer has been deleted
-    undelete_title: Undelete this post
-    undelete_desc: Are you sure you wish to undelete?
+      <p>Non consigliamo di <strong>eliminare la risposta accettata</strong> perché così facendo si priva i futuri lettori di questa conoscenza. </p> La cancellazione ripetuta delle risposte accettate può causare il blocco del tuo account dalla risposta. Sei sicuro di voler eliminare?
+    other: Sei sicuro di voler eliminare?
+    tip_answer_deleted: Questa risposta è stata cancellata
+    undelete_title: Ripristina questo post
+    undelete_desc: Sei sicuro di voler ripristinare?
   btns:
-    confirm: Confirm
-    cancel: Cancel
-    edit: Edit
-    save: Save
-    delete: Delete
-    undelete: Undelete
-    login: Log in
-    signup: Sign up
-    logout: Log out
-    verify: Verify
-    add_question: Add question
-    approve: Approve
-    reject: Reject
-    skip: Skip
-    discard_draft: Discard draft
-    pinned: Pinned
-    all: All
-    question: Question
-    answer: Answer
-    comment: Comment
-    refresh: Refresh
-    resend: Resend
-    deactivate: Deactivate
-    active: Active
-    suspend: Suspend
-    unsuspend: Unsuspend
-    close: Close
-    reopen: Reopen
+    confirm: Conferma
+    cancel: Cancella
+    edit: Modifica
+    save: Salva
+    delete: Elimina
+    undelete: Ripristina
+    list: List
+    unlist: Unlist
+    unlisted: Unlisted
+    login: Accedi
+    signup: Registrati
+    logout: Disconnetti
+    verify: Verifica
+    add_question: Aggiungi una domanda
+    approve: Approva
+    reject: Rifiuta
+    skip: Salta
+    discard_draft: Elimina bozza
+    pinned: Fissato in cima
+    all: Tutti
+    question: Domanda
+    answer: Risposta
+    comment: Commento
+    refresh: Aggiorna
+    resend: Rinvia
+    deactivate: Disattivare
+    active: Attivo
+    suspend: Sospendi
+    unsuspend: Riabilita
+    close: Chiudi
+    reopen: Riapri
     ok: OK
-    light: Light
-    dark: Dark
-    system_setting: System setting
-    default: Default
-    reset: Reset
+    light: Illuminazione
+    dark: Scuro
+    system_setting: Configurazione di sistema
+    default: Predefinito
+    reset: Resetta
+    tag: Tag
+    post_lowercase: post
+    filter: Filter
+    ignore: Ignore
+    submit: Submit
+    normal: Normal
+    closed: Closed
+    deleted: Deleted
+    pending: Pending
   search:
-    title: Search Results
-    keywords: Keywords
-    options: Options
-    follow: Follow
-    following: Following
-    counts: "{{count}} Results"
-    more: More
+    title: Risultati della ricerca
+    keywords: Parole chiave
+    options: Opzioni
+    follow: Segui
+    following: Segui già
+    counts: "{{count}} Risultati"
+    more: Altro
     sort_btns:
-      relevance: Relevance
-      newest: Newest
-      active: Active
-      score: Score
-      more: More
+      relevance: Rilevanza
+      newest: Più recenti
+      active: Attivo
+      score: Punteggio
+      more: Altro
     tips:
-      title: Advanced Search Tips
-      tag: "<1>[tag]</1> search withing a tag"
-      user: "<1>user:username</1> search by author"
-      answer: "<1>answers:0</1> unanswered questions"
-      score: "<1>score:3</1> posts with a 3+ score"
-      question: "<1>is:question</1> search questions"
-      is_answer: "<1>is:answer</1> search answers"
-    empty: We couldn't find anything. <br /> Try different or less specific keywords.
+      title: Suggerimenti per ricerca avanzata
+      tag: "<1>[tag]</1> cerca dentro un tag"
+      user: "<1>user:username</1> ricerca per autore"
+      answer: "<1>risposte:0</1> domande senza risposta"
+      score: "<1>punteggio:3</1> messaggi con un punteggio di 3+"
+      question: "<1>is:question</1> cerca domande"
+      is_answer: "<1>is:answer</1> cerca risposte"
+    empty: Non siamo riusciti a trovare nulla. <br /> Prova parole chiave diverse o meno specifiche.
   share:
-    name: Share
-    copy: Copy link
-    via: Share post via...
-    copied: Copied
-    facebook: Share to Facebook
-    twitter: Share to Twitter
-  cannot_vote_for_self: You can't vote for your own post.
+    name: Condividi
+    copy: Copia il link
+    via: Condividi il post via...
+    copied: Copiato
+    facebook: Condividi su Facebook
+    twitter: Condividi su Twitter
+  cannot_vote_for_self: Non puoi votare un tuo post!
   modal_confirm:
-    title: Error...
+    title: Errore...
   account_result:
-    success: Your new account is confirmed; you will be redirected to the home page.
-    link: Continue to homepage
+    success: Il tuo nuovo account è confermato; sarai reindirizzato alla home page.
+    link: Continua alla Homepage
     invalid: >-
-      Sorry, this account confirmation link is no longer valid. Perhaps your account is already active?
-    confirm_new_email: Your email has been updated.
+      Siamo spiacenti, questo link di conferma dell'account non è più valido. Forse il tuo account è già attivo?
+    confirm_new_email: La tua email è stata aggiornata.
     confirm_new_email_invalid: >-
-      Sorry, this confirmation link is no longer valid. Perhaps your email was already changed?
+      Siamo spiacenti, questo link di conferma non è più valido. Forse la tua email è già stata modificata?
   unsubscribe:
-    page_title: Unsubscribe
-    success_title: Unsubscribe Successful
-    success_desc: You have been successfully removed from this subscriber list and won't receive any further emails from us.
-    link: Change settings
+    page_title: Annulla l'iscrizione
+    success_title: Cancellazione effettuata con successo
+    success_desc: Sei stato rimosso con successo da questa lista e non riceverai ulteriori email
+    link: Cambia impostazioni
   question:
-    following_tags: Following Tags
-    edit: Edit
-    save: Save
-    follow_tag_tip: Follow tags to curate your list of questions.
-    hot_questions: Hot Questions
-    all_questions: All Questions
-    x_questions: "{{ count }} Questions"
-    x_answers: "{{ count }} answers"
-    questions: Questions
-    answers: Answers
-    newest: Newest
-    active: Active
-    frequent: Frequent
-    score: Score
-    unanswered: Unanswered
-    modified: modified
-    answered: answered
-    asked: asked
-    closed: closed
-    follow_a_tag: Follow a tag
-    more: More
+    following_tags: Tag seguenti
+    edit: Modifica
+    save: Salva
+    follow_tag_tip: Segui i tag per curare la tua lista di domande.
+    hot_questions: Domande scottanti
+    all_questions: Tutte le domande
+    x_questions: "{{ count }} Domande"
+    x_answers: "{{count}} risposte"
+    questions: Domande
+    answers: Risposte
+    newest: Più recenti
+    active: Attivo
+    frequent: Frequenti
+    score: Punteggio
+    unanswered: Senza risposta
+    modified: Modificato
+    answered: Risposte
+    asked: chiesto
+    closed: Chiuso
+    follow_a_tag: Segui un tag
+    more: Altro
   personal:
-    overview: Overview
-    answers: Answers
-    answer: answer
-    questions: Questions
-    question: question
-    bookmarks: Bookmarks
-    reputation: Reputation
-    comments: Comments
-    votes: Votes
-    newest: Newest
-    score: Score
-    edit_profile: Edit profile
-    visited_x_days: "Visited {{ count }} days"
-    viewed: Viewed
-    joined: Joined
-    last_login: Seen
-    about_me: About Me
-    about_me_empty: "// Hello, World !"
-    top_answers: Top Answers
-    top_questions: Top Questions
-    stats: Stats
-    list_empty: No posts found.<br />Perhaps you'd like to select a different tab?
-    accepted: Accepted
-    answered: answered
-    asked: asked
-    downvoted: downvoted
+    overview: Informazioni Generali
+    answers: Risposte
+    answer: Risposta
+    questions: Domande
+    question: Domanda
+    bookmarks: Segnalibri
+    reputation: Reputazione
+    comments: Commenti
+    votes: Voti
+    newest: Più recenti
+    score: Punteggio
+    edit_profile: Modifica profilo
+    visited_x_days: "{{ count }} giorni visitati"
+    viewed: Visualizzati
+    joined: Iscritto
+    last_login: Visto
+    about_me: Chi sono
+    about_me_empty: "// Ciao, mondo !"
+    top_answers: Migliori risposte
+    top_questions: Domande principali
+    stats: Statistiche
+    list_empty: Nessun post trovato.<br />Forse desideri selezionare una scheda diversa?
+    accepted: Accettato
+    answered: risposto
+    asked: chiesto
+    downvoted: votato negativamente
     mod_short: MOD
-    mod_long: Moderators
-    x_reputation: reputation
-    x_votes: votes received
-    x_answers: answers
-    x_questions: questions
+    mod_long: Moderatori
+    x_reputation: reputazione
+    x_votes: voti ricevuti
+    x_answers: risposte
+    x_questions: domande
   install:
-    title: Answer
-    next: Next
-    done: Done
-    config_yaml_error: Can't create the config.yaml file.
+    title: Risposta
+    next: Avanti
+    done: Fatto
+    config_yaml_error: Impossibile creare il file config.yaml.
     lang:
-      label: Please choose a language
+      label: Scegli una lingua
     db_type:
-      label: Database engine
+      label: Motore database
     db_username:
-      label: Username
+      label: Nome utente
       placeholder: root
-      msg: Username cannot be empty.
+      msg: Il nome utente non può essere vuoto.
     db_password:
       label: Password
       placeholder: root
-      msg: Password cannot be empty.
+      msg: La password non può essere vuota.
     db_host:
-      label: Database host
+      label: Host del database
       placeholder: "db:3306"
-      msg: Database host cannot be empty.
+      msg: L'host del database non può essere vuoto.
     db_name:
-      label: Database name
-      placeholder: answer
-      msg: Database name cannot be empty.
+      label: Nome database
+      placeholder: risposta
+      msg: Il nome del database non può essere vuoto.
     db_file:
-      label: Database file
+      label: File del database
       placeholder: /data/answer.db
-      msg: Database file cannot be empty.
+      msg: Il file del database non può essere vuoto.
     config_yaml:
-      title: Create config.yaml
-      label: The config.yaml file created.
+      title: Crea config.yaml
+      label: File config.yaml creato.
       desc: >-
-        You can create the <1>config.yaml</1> file manually in the <1>/var/wwww/xxx/</1> directory and paste the following text into it.
-      info: After you've done that, click "Next" button.
-    site_information: Site Information
-    admin_account: Admin Account
+        Puoi creare manualmente il file <1>config.yaml</1> nella directory <1>/var/wwww/xxx/</1> e incollarvi il seguente testo.
+      info: Una volta fatto, fai clic sul pulsante "Avanti".
+    site_information: Informazioni sul sito
+    admin_account: Account Amministratore
     site_name:
-      label: Site name
-      msg: Site name cannot be empty.
-      msg_max_length: Site name must be at maximum 30 characters in length.
+      label: Nome del sito
+      msg: Il nome del sito non può essere vuoto.
+      msg_max_length: Il nome del sito deve contenere un massimo di 30 caratteri.
     site_url:
-      label: Site URL
-      text: The address of your site.
+      label: URL del sito
+      text: L'indirizzo del tuo sito.
       msg:
-        empty: Site URL cannot be empty.
-        incorrect: Site URL incorrect format.
-        max_length: Site URL must be at maximum 512 characters in length.
+        empty: L'URL del sito non può essere vuoto.
+        incorrect: Formato errato dell'URL del sito.
+        max_length: L'URL del sito deve contenere un massimo di 512 caratteri.
     contact_email:
-      label: Contact email
-      text: Email address of key contact responsible for this site.
+      label: Email di contatto
+      text: Indirizzo e-mail del contatto chiave responsabile di questo sito.
       msg:
-        empty: Contact email cannot be empty.
-        incorrect: Contact email incorrect format.
+        empty: L'email del contatto non può essere vuota.
+        incorrect: Formato errato dell'e-mail di contatto.
     login_required:
-      label: Private
-      switch: Login required
-      text: Only logged in users can access this community.
+      label: Privato
+      switch: Login obbligatorio
+      text: Solo gli utenti registrati possono accedere a questa community.
     admin_name:
-      label: Name
-      msg: Name cannot be empty.
-      character: 'Must use the character set "a-z", "0-9", " - . _"'
-      msg_max_length: Name must be at maximum 30 characters in length.
+      label: Nome
+      msg: Il nome non può essere vuoto.
+      character: 'È necessario utilizzare il set di caratteri "a-z", "0-9", " - . _"'
+      msg_max_length: Il nome deve contenere al massimo 30 caratteri.
     admin_password:
       label: Password
       text: >-
-        You will need this password to log in. Please store it in a secure location.
-      msg: Password cannot be empty.
-      msg_min_length: Password must be at least 8 characters in length.
-      msg_max_length: Password must be at maximum 32 characters in length.
+        Avrai bisogno di questa password per accedere. Conservala in un luogo sicuro.
+      msg: La password non può essere vuota
+      msg_min_length: La password deve contenere almeno 8 caratteri.
+      msg_max_length: La password deve contenere un massimo di 32 caratteri.
     admin_email:
       label: Email
-      text: You will need this email to log in.
+      text: Avrai bisogno di questa email per accedere.
       msg:
-        empty: Email cannot be empty.
-        incorrect: Email incorrect format.
-    ready_title: Your Answer is ready!
+        empty: Il campo email non può essere vuoto.
+        incorrect: Formato dell'email errato.
+    ready_title: La tua risposta è pronta!
     ready_desc: >-
-      If you ever feel like changing more settings, visit <1>admin section</1>; find it in the site menu.
-    good_luck: "Have fun, and good luck!"
-    warn_title: Warning
+      Se vuoi cambiare più impostazioni, visita la sezione <1>admin</1> che si trova nel menu del sito.
+    good_luck: "Divertiti e buona fortuna!"
+    warn_title: Pericolo
     warn_desc: >-
-      The file <1>config.yaml</1> already exists. If you need to reset any of the configuration items in this file, please delete it first.
-    install_now: You may try <1>installing now</1>.
-    installed: Already installed
+      Il file <1>config.yaml</1> esiste già. Se vuoi reimpostare uno qualsiasi degli elementi di configurazione in questo file, eliminalo prima.
+    install_now: Puoi provare a <1>installare ora</1>.
+    installed: Già installato
     installed_desc: >-
-      You appear to have already installed. To reinstall please clear your old database tables first.
-    db_failed: Database connection failed
+      Sembra che tu abbia già installato. Per reinstallare, cancella prima le vecchie tabelle del database.
+    db_failed: Connessione al database fallita
     db_failed_desc: >-
-      This either means that the database information in your <1>config.yaml</1> file is incorrect or that contact with the database server could not be established. This could mean your host's database server is down.
+      Questo significa che le informazioni sul database nel file <1>config.yaml</1> non sono corrette o che non è stato possibile stabilire il contatto con il server del database. Ciò potrebbe significare che il server del database del tuo host è inattivo.
   counts:
-    views: views
-    votes: votes
-    answers: answers
-    accepted: Accepted
+    views: visualizzazioni
+    votes: Voti
+    answers: risposte
+    accepted: Accettato
   page_error:
-    http_error: HTTP Error {{ code }}
-    desc_403: You don't have permission to access this page.
-    desc_404: Unfortunately, this page doesn't exist.
-    desc_50X: The server encountered an error and could not complete your request.
-    back_home: Back to homepage
+    http_error: Errore HTTP {{ code }}
+    desc_403: Non hai i permessi per accedere a questa pagina.
+    desc_404: Sfortunatamente, questa pagina non esiste.
+    desc_50X: Il server ha riscontrato un errore e non è stato possibile completare la richiesta.
+    back_home: Torna alla home page
   page_maintenance:
-    desc: "We are under maintenance, we'll be back soon."
+    desc: "Siamo in manutenzione, torneremo presto."
   nav_menus:
-    dashboard: Dashboard
-    contents: Contents
-    questions: Questions
-    answers: Answers
-    users: Users
-    flags: Flags
-    settings: Settings
-    general: General
-    interface: Interface
+    dashboard: Pannello di controllo
+    contents: Contenuti
+    questions: Domande
+    answers: Risposte
+    users: Utenti
+    flags: Contrassegni
+    settings: Impostazioni
+    general: Generale
+    interface: Interfaccia
     smtp: SMTP
-    branding: Branding
-    legal: Legal
-    write: Write
-    tos: Terms of Service
+    branding: Marchio
+    legal: Legale
+    write: Scrivi
+    tos: Termini del servizio
     privacy: Privacy
     seo: SEO
-    customize: Customize
-    themes: Themes
+    customize: Personalizza
+    themes: Temi
     css_html: CSS/HTML
-    login: Login
-    privileges: Privileges
-    plugins: Plugins
-    installed_plugins: Installed Plugins
-  website_welcome: Welcome to {{site_name}}
+    login: Accedi
+    privileges: Privilegi
+    plugins: Plugin
+    installed_plugins: Plugin installati
+  website_welcome: Benvenuto/a su {{site_name}}!
   user_center:
-    login: Login
-    qrcode_login_tip: Please use {{ agentName }} to scan the QR code and log in.
-    login_failed_email_tip: Login failed, please allow this app to access your email information before try again.
+    login: Accedi
+    qrcode_login_tip: Si prega di utilizzare {{ agentName }} per scansionare il codice QR e accedere.
+    login_failed_email_tip: Accesso non riuscito. Consenti a questa app di accedere alle tue informazioni email prima di riprovare.
   admin:
     admin_header:
-      title: Admin
+      title: Amministratore
     dashboard:
-      title: Dashboard
-      welcome: Welcome to Answer Admin!
-      site_statistics: Site statistics
-      questions: "Questions:"
-      answers: "Answers:"
-      comments: "Comments:"
-      votes: "Votes:"
-      users: "Users:"
-      flags: "Flags:"
-      site_health_status: Site health status
-      version: "Version:"
+      title: Pannello di controllo
+      welcome: "\nBenvenuto nell'amministratore di risposta!"
+      site_statistics: Statistiche del sito
+      questions: "Domande:"
+      answers: "Risposte:"
+      comments: "Commenti:"
+      votes: "Voti:"
+      users: "Utenti:"
+      flags: "Flags"
+      reviews: "Reviews:"
+      site_health: Site health
+      version: "Versione:"
       https: "HTTPS:"
-      upload_folder: "Upload folder:"
-      run_mode: "Running mode:"
-      private: Private
-      public: Public
+      upload_folder: "Carica Cartella"
+      run_mode: "Modalità di esecuzione:"
+      private: Privato
+      public: Pubblico
       smtp: "SMTP:"
-      timezone: "Timezone:"
-      system_info: System info
-      go_version: "Go version:"
+      timezone: "Fuso orario:"
+      system_info: Info sistema
+      go_version: "Versione Go:"
       database: "Database:"
-      database_size: "Database size:"
-      storage_used: "Storage used:"
-      uptime: "Uptime:"
-      answer_links: Answer links
-      plugins: Plugins
+      database_size: "Dimensioni del database"
+      storage_used: "Spazio di archiviazione utilizzato:"
+      uptime: "Tempo di attività:"
+      links: Links
+      plugins: Plugin
       github: GitHub
       blog: Blog
-      contact: Contact
-      documents: Documents
+      contact: Contatti
+      forum: Forum
+      documents: Documenti
       feedback: Feedback
-      support: Support
-      review: Review
-      config: Config
-      update_to: Update to
-      latest: Latest
-      check_failed: Check failed
-      "yes": "Yes"
+      support: Assistenza
+      review: Revisione
+      config: Configurazione
+      update_to: Aggiornato a
+      latest: Recenti
+      check_failed: Controllo fallito
+      "yes": "Sì"
       "no": "No"
-      not_allowed: Not allowed
-      allowed: Allowed
-      enabled: Enabled
-      disabled: Disabled
-      writable: Writable
-      not_writable: Not writable
+      not_allowed: Non autorizzato
+      allowed: Consentito
+      enabled: Abilitato
+      disabled: Disabilitato
+      writable: Editabile
+      not_writable: Non editabile
     flags:
       title: Flags
-      pending: Pending
-      completed: Completed
-      flagged: Flagged
-      flagged_type: Flagged {{ type }}
-      created: Created
-      action: Action
-      review: Review
+      pending: In attesa
+      completed: Completato
+      flagged: Contrassegnato
+      flagged_type: Contrassegnato {{ type }}
+      created: Creato
+      action: Azione
+      review: Revisione
     user_role_modal:
-      title: Change user role to...
-      btn_cancel: Cancel
-      btn_submit: Submit
+      title: Cambia ruolo utente in...
+      btn_cancel: Cancella
+      btn_submit: Invia
     new_password_modal:
-      title: Set new password
+      title: Imposta una nuova password
       form:
         fields:
           password:
             label: Password
-            text: The user will be logged out and need to login again.
-            msg: Password must be at 8-32 characters in length.
-      btn_cancel: Cancel
-      btn_submit: Submit
+            text: L'utente sarà disconnesso e dovrà effettuare nuovamente il login.
+            msg: La password deve contenere da 8 a 32 caratteri.
+      btn_cancel: Cancella
+      btn_submit: Invia
     user_modal:
-      title: Add new user
+      title: Aggiungi un nuovo utente
       form:
         fields:
           users:
-            label: Bulk add user
+            label: Aggiungi utenti in blocco
             placeholder: "John Smith, john@example.com, BUSYopr2\nAlice, alice@example.com, fpDntV8q"
-            text: Separate “name, email, password” with commas. One user per line.
-            msg: "Please enter the user's email, one per line."
+            text: Separare “nome, email, password” con delle virgole. Un utente per riga.
+            msg: "Inserisci l'email dell'utente, una per riga."
           display_name:
-            label: Display name
-            msg: Display name must be at 4-30 characters in length.
+            label: Nome da visualizzare
+            msg: Il nome visualizzato deve avere una lunghezza compresa tra 4 e 30 caratteri.
           email:
             label: Email
-            msg: Email is not valid.
+            msg: L'email non è valida.
           password:
             label: Password
-            msg: Password must be at 8-32 characters in length.
-      btn_cancel: Cancel
-      btn_submit: Submit
+            msg: La password deve contenere da 8 a 32 caratteri.
+      btn_cancel: Cancella
+      btn_submit: Invia
     users:
-      title: Users
-      name: Name
+      title: Utenti
+      name: Nome
       email: Email
-      reputation: Reputation
-      created_at: Created Time
-      delete_at: Deleted Time
-      suspend_at: Suspended Time
-      status: Status
-      role: Role
-      action: Action
-      change: Change
-      all: All
-      staff: Staff
-      more: More
-      inactive: Inactive
-      suspended: Suspended
-      deleted: Deleted
-      normal: Normal
-      Moderator: Moderator
-      Admin: Admin
-      User: User
+      reputation: Reputazione
+      created_at: Data di creazione
+      delete_at: Data di cancellazione
+      suspend_at: Data di sospensione
+      status: Stato
+      role: Ruolo
+      action: Azione
+      change: Modifica
+      all: Tutti
+      staff: Personale
+      more: Altro
+      inactive: Inattivo
+      suspended: Sospeso
+      deleted: Eliminato
+      normal: Normale
+      Moderator: Moderatore
+      Admin: Amministratore
+      User: Utente
       filter:
-        placeholder: "Filter by name, user:id"
-      set_new_password: Set new password
-      change_status: Change status
-      change_role: Change role
-      show_logs: Show logs
-      add_user: Add user
+        placeholder: "Filtra per nome, utente:id"
+      set_new_password: Imposta una nuova password
+      change_status: Modifica lo stato
+      change_role: Cambia il ruolo
+      show_logs: Visualizza i log
+      add_user: Aggiungi utente
       deactivate_user:
-        title: Deactivate user
-        content: An inactive user must re-validate their email.
+        title: Disattiva utente
+        content: Un utente inattivo deve riconvalidare la propria email.
       delete_user:
-        title: Delete this user
-        content: Are you sure you want to delete this user? This is permanent!
-        remove: Remove their content
-        label: Remove all questions, answers, comments, etc.
-        text: Don’t check this if you wish to only delete the user’s account.
+        title: Rimuovi questo utente
+        content: Sei sicuro di voler eliminare questo utente? L'operazione è permanente.
+        remove: Rimuovi il loro contenuto
+        label: Rimuovi tutte le domande, risposte, commenti, ecc.
+        text: Non selezionare questa opzione se desideri eliminare solo l'account dell'utente.
       suspend_user:
-        title: Suspend this user
-        content: A suspended user can't log in.
+        title: Sospendi questo utente
+        content: Un utente sospeso non può accedere.
     questions:
-      page_title: Questions
-      normal: Normal
-      closed: Closed
-      deleted: Deleted
-      post: Post
-      votes: Votes
-      answers: Answers
-      created: Created
-      status: Status
-      action: Action
-      change: Change
+      page_title: Domande
+      unlisted: Unlisted
+      post: Posta
+      votes: Voti
+      answers: Risposte
+      created: Creato
+      status: Stato
+      action: Azione
+      change: Modifica
+      pending: Pending
       filter:
-        placeholder: "Filter by title, question:id"
+        placeholder: "Filtra per titolo, domanda:id"
     answers:
-      page_title: Answers
-      normal: Normal
-      deleted: Deleted
+      page_title: Risposte
       post: Post
-      votes: Votes
-      created: Created
-      status: Status
-      action: Action
-      change: Change
+      votes: Voti
+      created: Creato
+      status: Stato
+      action: Azione
+      change: Cambio
       filter:
-        placeholder: "Filter by title, answer:id"
+        placeholder: "Filtra per titolo, domanda:id"
     general:
-      page_title: General
+      page_title: Generale
       name:
-        label: Site name
-        msg: Site name cannot be empty.
-        text: "The name of this site, as used in the title tag."
+        label: Nome del sito
+        msg: Il nome del sito non può essere vuoto.
+        text: "Il nome di questo sito, come usato nel tag del titolo."
       site_url:
-        label: Site URL
-        msg: Site url cannot be empty.
-        validate: Please enter a valid URL.
-        text: The address of your site.
+        label: URL del sito
+        msg: L'url del sito non può essere vuoto.
+        validate: Inserisci un URL valido.
+        text: L'indirizzo del tuo sito.
       short_desc:
-        label: Short site description
-        msg: Short site description cannot be empty.
-        text: "Short description, as used in the title tag on homepage."
+        label: Descrizione breve del sito
+        msg: La descrizione breve del sito non può essere vuota.
+        text: "Breve descrizione, come utilizzata nel tag del titolo sulla home page."
       desc:
-        label: Site description
-        msg: Site description cannot be empty.
-        text: "Describe this site in one sentence, as used in the meta description tag."
+        label: Descrizione del sito
+        msg: La descrizione del sito non può essere vuota.
+        text: "Descrivi questo sito in una frase, come utilizzato nel tag meta description."
       contact_email:
-        label: Contact email
-        msg: Contact email cannot be empty.
-        validate: Contact email is not valid.
-        text: Email address of key contact responsible for this site.
+        label: Email di contatto
+        msg: L'email del contatto non può essere vuota.
+        validate: Email di contatto non valida.
+        text: Indirizzo e-mail del contatto chiave responsabile di questo sito.
+      check_update:
+        label: Software updates
+        text: Automatically check for updates
     interface:
-      page_title: Interface
+      page_title: Interfaccia
       language:
-        label: Interface language
-        msg: Interface language cannot be empty.
-        text: User interface language. It will change when you refresh the page.
+        label: Lingua dell'interfaccia
+        msg: La lingua dell'interfaccia non può essere vuota.
+        text: La lingua dell'interfaccia utente cambierà quando aggiorni la pagina.
       time_zone:
-        label: Timezone
-        msg: Timezone cannot be empty.
-        text: Choose a city in the same timezone as you.
+        label: Fuso orario
+        msg: Il fuso orario non può essere vuoto.
+        text: Scegli una città con il tuo stesso fuso orario.
     smtp:
       page_title: SMTP
       from_email:
-        label: From email
-        msg: From email cannot be empty.
-        text: The email address which emails are sent from.
+        label: Dall'email
+        msg: L'email del contatto non può essere vuota.
+        text: L'indirizzo email da cui vengono inviate le email.
       from_name:
-        label: From name
-        msg: From name cannot be empty.
-        text: The name which emails are sent from.
+        label: Dal nome
+        msg: "Il nome del mittente non può essere vuoto.\n"
+        text: Il nome da cui vengono inviate le email.
       smtp_host:
-        label: SMTP host
-        msg: SMTP host cannot be empty.
-        text: Your mail server.
+        label: Host SMTP
+        msg: L'host SMTP non può essere vuoto.
+        text: Il tuo server di posta.
       encryption:
-        label: Encryption
-        msg: Encryption cannot be empty.
-        text: For most servers SSL is the recommended option.
+        label: Crittografia
+        msg: La crittografia non può essere vuota.
+        text: Per la maggior parte dei server SSL è l'opzione consigliata.
         ssl: SSL
-        none: None
+        none: Nessuna
       smtp_port:
-        label: SMTP port
-        msg: SMTP port must be number 1 ~ 65535.
-        text: The port to your mail server.
+        label: Porta SMTP
+        msg: La porta SMTP deve essere numero 1 ~ 65535.
+        text: La porta del tuo server di posta.
       smtp_username:
-        label: SMTP username
-        msg: SMTP username cannot be empty.
+        label: Nome utente SMTP
+        msg: Il nome utente SMTP non può essere vuoto.
       smtp_password:
-        label: SMTP password
-        msg: SMTP password cannot be empty.
+        label: Password SMTP
+        msg: La password SMTP non può essere vuota.
       test_email_recipient:
-        label: Test email recipients
-        text: Provide email address that will receive test sends.
-        msg: Test email recipients is invalid
+        label: Verifica destinatari email
+        text: Fornisci l'indirizzo email che riceverà i test inviati.
+        msg: Destinatari email di prova non validi
       smtp_authentication:
-        label: Enable authentication
-        title: SMTP authentication
-        msg: SMTP authentication cannot be empty.
-        "yes": "Yes"
+        label: "\nAbilita l'autenticazione"
+        title: Autenticazione SMTP
+        msg: L'autenticazione SMTP non può essere vuota.
+        "yes": "Sì"
         "no": "No"
     branding:
-      page_title: Branding
+      page_title: Marchio
       logo:
         label: Logo
-        msg: Logo cannot be empty.
-        text: The logo image at the top left of your site. Use a wide rectangular image with a height of 56 and an aspect ratio greater than 3:1. If left blank, the site title text will be shown.
+        msg: Il logo non può essere vuoto.
+        text: L'immagine del logo in alto a sinistra del tuo sito. Utilizza un'immagine rettangolare ampia con un'altezza di 56 e proporzioni superiori a 3:1. Se lasciato vuoto, il testo del titolo del sito verrà mostrato.
       mobile_logo:
-        label: Mobile logo
-        text: The logo used on mobile version of your site. Use a wide rectangular image with a height of 56. If left blank, the image from the "logo" setting will be used.
+        label: Logo per versione mobile
+        text: "\nIl logo utilizzato nella versione mobile del tuo sito. Utilizza un'immagine rettangolare ampia con un'altezza di 56. Se lasciata vuota, verrà utilizzata l'immagine dell'impostazione \"logo\"."
       square_icon:
-        label: Square icon
-        msg: Square icon cannot be empty.
-        text: Image used as the base for metadata icons. Should ideally be larger than 512x512.
+        label: Icona quadrata
+        msg: L'icona quadrata non può essere vuota.
+        text: "Immagine utilizzata come base per le icone dei metadata. Idealmente dovrebbe essere più grande di 512x512.\n"
       favicon:
         label: Favicon
-        text: A favicon for your site. To work correctly over a CDN it must be a png. Will be resized to 32x32. If left blank, "square icon" will be used.
+        text: Una icona favorita per il tuo sito. Per funzionare correttamente su un CDN deve essere un png. Verrà ridimensionato a 32x32. Se lasciato vuoto, verrà utilizzata l'"icona quadrata".
     legal:
-      page_title: Legal
+      page_title: Legale
       terms_of_service:
-        label: Terms of service
-        text: "You can add terms of service content here. If you already have a document hosted elsewhere, provide the full URL here."
+        label: Termini del servizio
+        text: "Puoi aggiungere qui i termini del contenuto del servizio. Se hai già un documento ospitato altrove, fornisci qui l'URL completo."
       privacy_policy:
-        label: Privacy policy
-        text: "You can add privacy policy content here. If you already have a document hosted elsewhere, provide the full URL here."
+        label: Informativa sulla privacy
+        text: "Puoi aggiungere il contenuto della politica sulla privacy qui. Se hai già un documento ospitato altrove, fornisci l'URL completo qui."
     write:
-      page_title: Write
+      page_title: Scrivi
       restrict_answer:
-        title: Restrict answer
-        label: Each user can only write one answer for each question
-        text: "They can use the edit link to refine and improve their existing answer, instead."
+        title: Limita risposta
+        label: Ogni utente può scrivere una sola risposta per ogni domanda
+        text: "Possono invece utilizzare il link di modifica per affinare e migliorare la loro risposta esistente."
       recommend_tags:
-        label: Recommend tags
-        text: "Please input tag slug above, one tag per line."
+        label: Raccomanda tag
+        text: "Inserisci il tag slug sopra, un tag per riga."
       required_tag:
-        title: Required tag
-        label: Set recommend tag as required
-        text: "Every new question must have at least one recommend tag."
+        title: Tag richiesto
+        label: Imposta il tag raccomandato come richiesto
+        text: "Ogni nuova domanda deve avere almeno un tag raccomandato."
       reserved_tags:
-        label: Reserved tags
-        text: "Reserved tags can only be added to a post by moderator."
+        label: Tag riservati
+        text: "I tag riservati possono essere aggiunti a un post solo dal moderatore."
     seo:
       page_title: SEO
       permalink:
         label: Permalink
-        text: Custom URL structures can improve the usability, and forward-compatibility of your links.
+        text: Le strutture URL personalizzate possono migliorare l'usabilità e la compatibilità futura dei tuoi link.
       robots:
         label: robots.txt
-        text: This will permanently override any related site settings.
+        text: Questo sovrascriverà definitivamente tutte le impostazioni relative al sito.
     themes:
-      page_title: Themes
+      page_title: Temi
       themes:
-        label: Themes
-        text: Select an existing theme.
+        label: Temi
+        text: Seleziona un tema esistente.
       color_scheme:
-        label: Color scheme
+        label: Schema colore
       navbar_style:
-        label: Navbar style
+        label: Stile della barra di navigazione
       primary_color:
-        label: Primary color
-        text: Modify the colors used by your themes
+        label: Colore primario
+        text: Modifica i colori utilizzati dai tuoi temi
     css_and_html:
-      page_title: CSS and HTML
+      page_title: CSS e HTML
       custom_css:
-        label: Custom CSS
+        label: CSS personalizzato
         text: >
 
       head:
-        label: Head
+        label: Testata
         text: >
 
       header:
-        label: Header
+        label: Intestazione
         text: >
 
       footer:
-        label: Footer
-        text: This will insert before &lt;/body>.
+        label: Piè di pagina
+        text: Questo verrà inserito prima di &lt;/body>.
       sidebar:
-        label: Sidebar
-        text: This will insert in sidebar.
+        label: Barra laterale
+        text: Questo verrà inserito nella barra laterale.
     login:
-      page_title: Login
+      page_title: Accedi
       membership:
         title: Membership
-        label: Allow new registrations
-        text: Turn off to prevent anyone from creating a new account.
+        label: Consenti nuove registrazioni
+        text: Disattiva per impedire a chiunque di creare un nuovo account.
       email_registration:
-        title: Email registration
-        label: Allow email registration
-        text: Turn off to prevent anyone creating new account through email.
+        title: Registrazione email
+        label: Consenti registrazione email
+        text: Disattiva per impedire a chiunque di creare un nuovo account tramite email.
       allowed_email_domains:
-        title: Allowed email domains
-        text: Email domains that users must register accounts with. One domain per line. Ignored when empty.
+        title: Domini email consentiti
+        text: "Domini email con cui gli utenti devono registrare gli account. Un dominio per riga. Verrà ignorato quando vuoto.\n"
       private:
-        title: Private
-        label: Login required
-        text: Only logged in users can access this community.
+        title: Privato
+        label: Login obbligatorio
+        text: Solo gli utenti registrati possono accedere a questa community.
       password_login:
-        title: Password login
-        label: Allow email and password login
-        text: "WARNING: If turn off, you may be unable to log in if you have not previously configured other login method."
+        title: Password di accesso
+        label: Consenti il login di email e password
+        text: "ATTENZIONE: Se disattivi, potresti non essere in grado di accedere se non hai precedentemente configurato un altro metodo di login."
     installed_plugins:
-      title: Installed Plugins
-      plugin_link: Plugins extend and expand the functionality of Answer. You may find plugins in the <1>Answer Plugin Repository</1>.
+      title: Plugin installati
+      plugin_link: I plugin estendono ed espandono le funzionalità di Answer. Potresti trovare plug-in nel <1>Repository dei plug-in di risposta</1>.
       filter:
-        all: All
-        active: Active
-        inactive: Inactive
-        outdated: Outdated
+        all: Tutto
+        active: Attivo
+        inactive: Inattivo
+        outdated: Obsoleto
       plugins:
-        label: Plugins
-        text: Select an existing plugin.
-      name: Name
-      version: Version
-      status: Status
-      action: Action
-      deactivate: Deactivate
-      activate: Activate
-      settings: Settings
+        label: Plugin
+        text: Seleziona un plugin esistente.
+      name: Nome
+      version: Versione
+      status: Stato
+      action: Azione
+      deactivate: Disattivare
+      activate: Attivare
+      settings: Impostazioni
     settings_users:
-      title: Users
+      title: Utenti
       avatar:
-        label: Default avatar
-        text: For users without a custom avatar of their own.
+        label: Avatar Predefinito
+        text: Per gli utenti senza un proprio avatar personalizzato.
       gravatar_base_url:
         label: Gravatar Base URL
-        text: URL of the Gravatar provider's API base. Ignored when empty.
+        text: "\nURL della base API del provider Gravatar. Ignorato quando vuoto."
       profile_editable:
-        title: Profile editable
+        title: Profilo modificabile
       allow_update_display_name:
-        label: Allow users to change their display name
+        label: Consenti di cambiare il nome utente
       allow_update_username:
-        label: Allow users to change their username
+        label: Consenti di modificare il proprio nome utente
       allow_update_avatar:
-        label: Allow users to change their profile image
+        label: Consenti agli utenti di modificare l'immagine del profilo
       allow_update_bio:
-        label: Allow users to change their about me
+        label: Consenti agli utenti di modificare la sezione "su di me"
       allow_update_website:
-        label: Allow users to change their website
+        label: Consenti agli utenti di modificare il proprio sito web
       allow_update_location:
-        label: Allow users to change their location
+        label: Consenti agli utenti di modificare la propria posizione
     privilege:
-      title: Privileges
+      title: Privilegi
       level:
-        label: Reputation required level
-        text: Choose the reputation required for the privileges
+        label: Livello di reputazione richiesto 
+        text: Scegli la reputazione richiesta per i privilegi
   form:
-    optional: (optional)
-    empty: cannot be empty
-    invalid: is invalid
-    btn_submit: Save
-    not_found_props: "Required property {{ key }} not found."
-    select: Select
+    optional: (opzionale)
+    empty: non può essere vuoto
+    invalid: non è valido
+    btn_submit: Salva
+    not_found_props: "Proprietà richiesta {{ key }} non trovata."
+    select: Seleziona
   page_review:
-    review: Review
-    proposed: proposed
-    question_edit: Question edit
-    answer_edit: Answer edit
-    tag_edit: Tag edit
-    edit_summary: Edit summary
-    edit_question: Edit question
-    edit_answer: Edit answer
-    edit_tag: Edit tag
-    empty: No review tasks left.
-  timeline:
-    undeleted: undeleted
-    deleted: deleted
-    downvote: downvote
-    upvote: upvote
-    accept: accept
-    cancelled: cancelled
-    commented: commented
-    rollback: rollback
-    edited: edited
-    answered: answered
-    asked: asked
-    closed: closed
-    reopened: reopened
-    created: created
-    pin: pinned
-    unpin: unpinned
-    show: listed
-    hide: unlisted
-    title: "History for"
-    tag_title: "Timeline for"
-    show_votes: "Show votes"
-    n_or_a: N/A
-    title_for_question: "Timeline for"
-    title_for_answer: "Timeline for answer to {{ title }} by {{ author }}"
-    title_for_tag: "Timeline for tag"
-    datetime: Datetime
-    type: Type
-    by: By
-    comment: Comment
-    no_data: "We couldn't find anything."
-  users:
-    title: Users
-    users_with_the_most_reputation: Users with the highest reputation scores this week
-    users_with_the_most_vote: Users who voted the most this week
-    staffs: Our community staff
+    review: Revisione
+    proposed: Proposto
+    question_edit: Edita domanda
+    answer_edit: Edita risposta
+    tag_edit: Edita tag
+    edit_summary: Edita il riepilogo
+    edit_question: Edita la domanda
+    edit_answer: Edita la risposta
+    edit_tag: Edita  tag
+    empty: Nessuna attività di revisione rimasta.
+    approve_revision_tip: Do you approve this revision?
+    approve_flag_tip: Do you approve this flag?
+    approve_post_tip: Do you approve this post?
+    approve_user_tip: Do you approve this user?
+    suggest_edits: Suggested edits
+    flag_post: Flag post
+    flag_user: Flag user
+    queued_post: Queued post
+    queued_user: Queued user
+    filter_label: Type
     reputation: reputation
-    votes: votes
+    flag_post_type: Flagged this post as {{ type }}.
+    flag_user_type: Flagged this user as {{ type }}.
+    edit_post: Edit post
+    list_post: List post
+    unlist_post: Unlist post
+  timeline:
+    undeleted: Non cancellato
+    deleted: eliminato
+    downvote: voto negativo
+    upvote: voto a favore
+    accept: accetta
+    cancelled: Cancellato
+    commented: commentato
+    rollback: ripristino
+    edited: modificato
+    answered: risposto
+    asked: chiesto
+    closed: chiuso
+    reopened: riaperto
+    created: creato
+    pin: Fissa in cima
+    unpin: Rimosso dalla cima
+    show: elencato
+    hide: non elencato
+    title: "Cronologia per"
+    tag_title: "Timeline per"
+    show_votes: "Mostra voti"
+    n_or_a: N/D
+    title_for_question: "Timeline per"
+    title_for_answer: "Timeline per rispondere a {{ title }} di {{ author }}"
+    title_for_tag: "Timeline per tag"
+    datetime: Data e ora
+    type: Tipo
+    by: Di
+    comment: Commento
+    no_data: "Non abbiamo trovato nulla"
+  users:
+    title: Utenti
+    users_with_the_most_reputation: Utenti con i punteggi di reputazione più alti questa settimana
+    users_with_the_most_vote: Utenti che hanno votato di più questa settimana
+    staffs: Lo staff della community
+    reputation: reputazione
+    votes: voti
   prompt:
-    leave_page: Are you sure you want to leave the page?
-    changes_not_save: Your changes may not be saved.
+    leave_page: Sei sicuro di voler lasciare questa pagina?
+    changes_not_save: Le modifiche potrebbero non essere salvate.
   draft:
-    discard_confirm: Are you sure you want to discard your draft?
+    discard_confirm: Sei sicuro di voler eliminare la bozza?
   messages:
-    post_deleted: This post has been deleted.
-    post_pin: This post has been pinned.
-    post_unpin: This post has been unpinned.
-    post_hide_list: This post has been hidden from list.
-    post_show_list: This post has been shown to list.
-    post_reopen: This post has been reopened.
+    post_deleted: Questo post è stato eliminato.
+    post_pin: Questo post è stato selezionato.
+    post_unpin: Questo post è stato sbloccato.
+    post_hide_list: Questo post è stato nascosto dall'elenco.
+    post_show_list: Questo post è stato mostrato in elenco.
+    post_reopen: Questo post è stato riaperto.
+    post_list: This post has been listed.
+    post_unlist: This post has been unlisted.
+    post_pending: Your post is awaiting review. This is a preview, it will be visible after it has been approved.

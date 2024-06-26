@@ -23,6 +23,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import type * as Type from '@/common/interface';
+import { siteInfoStore } from '@/stores';
 
 const { gt, gte } = require('semver');
 
@@ -33,6 +34,7 @@ interface IProps {
 const HealthStatus: FC<IProps> = ({ data }) => {
   const { t } = useTranslation('translation', { keyPrefix: 'admin.dashboard' });
   const { version, remote_version } = data.version_info || {};
+  const { siteInfo } = siteInfoStore();
   let isLatest = false;
   let hasNewerVersion = false;
   if (version && remote_version) {
@@ -42,7 +44,7 @@ const HealthStatus: FC<IProps> = ({ data }) => {
   return (
     <Card className="mb-4">
       <Card.Body>
-        <h6 className="mb-3">{t('site_health_status')}</h6>
+        <h6 className="mb-3">{t('site_health')}</h6>
         <Row>
           <Col xs={6} className="mb-1 d-flex align-items-center">
             <span className="text-secondary me-1">{t('version')}</span>
@@ -65,7 +67,7 @@ const HealthStatus: FC<IProps> = ({ data }) => {
                 {t('update_to')} {remote_version}
               </a>
             )}
-            {!isLatest && !remote_version && (
+            {!isLatest && !remote_version && siteInfo.check_update && (
               <a
                 className="ms-1 badge rounded-pill text-bg-danger"
                 target="_blank"
@@ -91,7 +93,9 @@ const HealthStatus: FC<IProps> = ({ data }) => {
           </Col>
           <Col xs={6}>
             <span className="text-secondary me-1">{t('timezone')}</span>
-            <strong>{data.time_zone.split('/')?.[1]}</strong>
+            <strong>
+              {data.time_zone.split('/')?.[1]?.replaceAll('_', ' ')}
+            </strong>
           </Col>
           <Col xs={6}>
             <span className="text-secondary me-1">{t('smtp')}</span>

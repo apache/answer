@@ -276,7 +276,7 @@ func (qr *questionRepo) GetQuestionList(ctx context.Context, question *entity.Qu
 
 func (qr *questionRepo) GetQuestionCount(ctx context.Context) (count int64, err error) {
 	session := qr.data.DB.Context(ctx)
-	session.In("status", []int{entity.QuestionStatusAvailable, entity.QuestionStatusClosed})
+	session.Where(builder.Lt{"status": entity.QuestionStatusDeleted})
 	count, err = session.Count(&entity.Question{Show: entity.QuestionShow})
 	if err != nil {
 		return 0, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
@@ -284,10 +284,10 @@ func (qr *questionRepo) GetQuestionCount(ctx context.Context) (count int64, err 
 	return count, nil
 }
 
-func (qr *questionRepo) GetUserQuestionCount(ctx context.Context, userID string) (count int64, err error) {
+func (qr *questionRepo) GetUserQuestionCount(ctx context.Context, userID string, show int) (count int64, err error) {
 	session := qr.data.DB.Context(ctx)
-	session.In("status", []int{entity.QuestionStatusAvailable, entity.QuestionStatusClosed})
-	count, err = session.Count(&entity.Question{UserID: userID})
+	session.Where(builder.Lt{"status": entity.QuestionStatusDeleted})
+	count, err = session.Count(&entity.Question{UserID: userID, Show: show})
 	if err != nil {
 		return count, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
@@ -344,12 +344,16 @@ func (qr *questionRepo) SitemapQuestions(ctx context.Context, page, pageSize int
 }
 
 // GetQuestionPage query question page
-func (qr *questionRepo) GetQuestionPage(ctx context.Context, page, pageSize int, tagIDs []string, userID, orderCond string, inDays int, showHidden bool) (
+func (qr *questionRepo) GetQuestionPage(ctx context.Context, page, pageSize int,
+	tagIDs []string, userID, orderCond string, inDays int, showHidden, showPending bool) (
 	questionList []*entity.Question, total int64, err error) {
 	questionList = make([]*entity.Question, 0)
-
-	session := qr.data.DB.Context(ctx).Where("question.status = ? OR question.status = ?",
-		entity.QuestionStatusAvailable, entity.QuestionStatusClosed)
+	session := qr.data.DB.Context(ctx)
+	status := []int{entity.QuestionStatusAvailable, entity.QuestionStatusClosed}
+	if showPending {
+		status = append(status, entity.QuestionStatusPending)
+	}
+	session.In("question.status", status)
 	if len(tagIDs) > 0 {
 		session.Join("LEFT", "tag_rel", "question.id = tag_rel.object_id")
 		session.In("tag_rel.tag_id", tagIDs)

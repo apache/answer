@@ -22,7 +22,6 @@ package report
 import (
 	"context"
 
-	"github.com/apache/incubator-answer/internal/base/constant"
 	"github.com/apache/incubator-answer/internal/base/pager"
 	"github.com/apache/incubator-answer/internal/schema"
 	"github.com/apache/incubator-answer/internal/service/report_common"
@@ -62,31 +61,11 @@ func (rr *reportRepo) AddReport(ctx context.Context, report *entity.Report) (err
 }
 
 // GetReportListPage get report list page
-func (rr *reportRepo) GetReportListPage(ctx context.Context, dto schema.GetReportListPageDTO) (reports []entity.Report, total int64, err error) {
-	var (
-		ok         bool
-		status     int
-		objectType int
-		session    = rr.data.DB.Context(ctx)
-		cond       = entity.Report{}
-	)
-
-	// parse status
-	status, ok = entity.ReportStatus[dto.Status]
-	if !ok {
-		status = entity.ReportStatus["pending"]
-	}
-	cond.Status = status
-
-	// parse object type
-	objectType, ok = constant.ObjectTypeStrMapping[dto.ObjectType]
-	if ok {
-		cond.ObjectType = objectType
-	}
-
-	// order
-	session.OrderBy("updated_at desc")
-
+func (rr *reportRepo) GetReportListPage(ctx context.Context, dto *schema.GetReportListPageDTO) (
+	reports []*entity.Report, total int64, err error) {
+	cond := &entity.Report{}
+	cond.Status = dto.Status
+	session := rr.data.DB.Context(ctx).Desc("updated_at")
 	total, err = pager.Help(dto.Page, dto.PageSize, &reports, cond, session)
 	if err != nil {
 		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
@@ -104,9 +83,9 @@ func (rr *reportRepo) GetByID(ctx context.Context, id string) (report *entity.Re
 	return
 }
 
-// UpdateByID handle report by ID
-func (rr *reportRepo) UpdateByID(ctx context.Context, id string, handleData entity.Report) (err error) {
-	_, err = rr.data.DB.Context(ctx).ID(id).Update(&handleData)
+// UpdateStatus update report status by ID
+func (rr *reportRepo) UpdateStatus(ctx context.Context, id string, status int) (err error) {
+	_, err = rr.data.DB.Context(ctx).ID(id).Update(&entity.Report{Status: status})
 	if err != nil {
 		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}

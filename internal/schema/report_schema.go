@@ -19,12 +19,6 @@
 
 package schema
 
-import (
-	"time"
-
-	"github.com/apache/incubator-answer/internal/base/constant"
-)
-
 // AddReportReq add report request
 type AddReportReq struct {
 	// object id
@@ -70,52 +64,52 @@ type ReportHandleReq struct {
 
 // GetReportListPageDTO report list data transfer object
 type GetReportListPageDTO struct {
-	ObjectType string
-	Status     string
-	Page       int
-	PageSize   int
+	Page     int
+	PageSize int
+	Status   int
 }
 
 // GetReportListPageResp get report list
 type GetReportListPageResp struct {
-	ID           string         `json:"id"`
-	ReportedUser *UserBasicInfo `json:"reported_user"`
-	ReportUser   *UserBasicInfo `json:"report_user"`
-
-	Content        string `json:"content"`
-	FlaggedContent string `json:"flagged_content"`
-	OType          string `json:"object_type"`
-
-	ObjectID   string `json:"-"`
-	QuestionID string `json:"question_id"`
-	AnswerID   string `json:"answer_id"`
-	CommentID  string `json:"comment_id"`
-
-	Title   string `json:"title"`
-	Excerpt string `json:"excerpt"`
-
-	// create time
-	CreatedAt       time.Time `json:"-"`
-	CreatedAtParsed int64     `json:"created_at"`
-
-	UpdatedAt       time.Time `json:"_"`
-	UpdatedAtParsed int64     `json:"updated_at"`
-
-	Reason        *ReasonItem `json:"reason"`
-	FlaggedReason *ReasonItem `json:"flagged_reason"`
-
-	UserID         string `json:"-"`
-	ReportedUserID string `json:"-"`
-	Status         int    `json:"-"`
-	ObjectType     int    `json:"-"`
-	ReportType     int    `json:"-"`
-	FlaggedType    int    `json:"-"`
+	FlagID           string        `json:"flag_id"`
+	CreatedAt        int64         `json:"created_at"`
+	ObjectID         string        `json:"object_id"`
+	QuestionID       string        `json:"question_id"`
+	AnswerID         string        `json:"answer_id"`
+	CommentID        string        `json:"comment_id"`
+	ObjectType       string        `json:"object_type" enums:"question,answer,comment"`
+	Title            string        `json:"title"`
+	UrlTitle         string        `json:"url_title"`
+	OriginalText     string        `json:"original_text"`
+	ParsedText       string        `json:"parsed_text"`
+	AnswerCount      int           `json:"answer_count"`
+	AnswerAccepted   bool          `json:"answer_accepted"`
+	Tags             []*TagResp    `json:"tags"`
+	ObjectStatus     int           `json:"object_status"`
+	ObjectShowStatus int           `json:"object_show_status"`
+	AuthorUserInfo   UserBasicInfo `json:"author_user_info"`
+	SubmitAt         int64         `json:"submit_at"`
+	SubmitterUser    UserBasicInfo `json:"submitter_user"`
+	Reason           *ReasonItem   `json:"reason"`
+	ReasonContent    string        `json:"reason_content"`
 }
 
-// Format format result
-func (r *GetReportListPageResp) Format() {
-	r.OType = constant.ObjectTypeNumberMapping[r.ObjectType]
+// GetUnreviewedReportPostPageReq get unreviewed report post page request
+type GetUnreviewedReportPostPageReq struct {
+	Page    int    `json:"page" form:"page"`
+	UserID  string `json:"-"`
+	IsAdmin bool   `json:"-"`
+}
 
-	r.CreatedAtParsed = r.CreatedAt.Unix()
-	r.UpdatedAtParsed = r.UpdatedAt.Unix()
+// ReviewReportReq review report request
+type ReviewReportReq struct {
+	FlagID        string     `validate:"required" json:"flag_id"`
+	OperationType string     `validate:"required,oneof=edit_post close_post delete_post unlist_post ignore_report" json:"operation_type"`
+	CloseType     int        `validate:"omitempty" json:"close_type"`
+	CloseMsg      string     `validate:"omitempty" json:"close_msg"`
+	Title         string     `validate:"omitempty,notblank,gte=6,lte=150" json:"title"`
+	Content       string     `validate:"omitempty,notblank,gte=6,lte=65535" json:"content"`
+	Tags          []*TagItem `validate:"omitempty,dive" json:"tags"`
+	UserID        string     `json:"-"`
+	IsAdmin       bool       `json:"-"`
 }

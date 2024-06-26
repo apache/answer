@@ -75,16 +75,16 @@ backend:
   privilege:
     level_1:
       description:
-        other: Level 1 (less reputation required for private team, group)
+        other: Niveau 1 (moins de réputation requise pour une équipe privée, un groupe)
     level_2:
       description:
-        other: Level 2 (low reputation required for startup community)
+        other: Niveau 2 (faible réputation requise pour la communauté des startups)
     level_3:
       description:
-        other: Level 3 (high reputation required for mature community)
+        other: Niveau 3 (haute réputation requise pour une communauté mature)
     level_custom:
       description:
-        other: Custom Level
+        other: Niveau personnalisé
     rank_question_add_label:
       other: Poser une question
     rank_answer_add_label:
@@ -110,11 +110,11 @@ backend:
     rank_tag_add_label:
       other: Créer une nouvelle étiquette
     rank_tag_edit_label:
-      other: Edit tag description (need to review)
+      other: Modifier la description de la balise (à réviser)
     rank_question_edit_label:
-      other: Edit other's question (need to review)
+      other: Modifier la question des autres (à revoir)
     rank_answer_edit_label:
-      other: Edit other's answer (need to review)
+      other: Modifier la réponse d'un autre (à revoir)
     rank_question_edit_without_review_label:
       other: Modifier la question d'un autre utilisateur sans révision
     rank_answer_edit_without_review_label:
@@ -126,7 +126,7 @@ backend:
     rank_tag_audit_label:
       other: Évaluer les modifications des tags
     rank_tag_edit_without_review_label:
-      other: Modifier la description du tag sans le relire
+      other: Modifier la description du tag sans révision
     rank_tag_synonym_label:
       other: Gérer les tags synonyme
   email:
@@ -140,6 +140,9 @@ backend:
   email_or_password_wrong_error:
     other: L'email et le mot de passe ne correspondent pas.
   error:
+    common:
+      invalid_url:
+        other: Invalid URL.
     password:
       space_invalid:
         other: Le mot de passe ne doit pas comporter d'espaces.
@@ -200,6 +203,8 @@ backend:
     question:
       already_deleted:
         other: Ce message a été supprimé.
+      under_review:
+        other: Your post is awaiting review. It will be visible after it has been approved.
       not_found:
         other: Question non trouvée.
       cannot_deleted:
@@ -212,7 +217,7 @@ backend:
       fail_to_meet_the_condition:
         other: Le rang de réputation ne remplit pas la condition.
       vote_fail_to_meet_the_condition:
-        other: Thanks for the feedback. You need at least {{.Rank}} reputation to cast a vote.
+        other: Merci pour vos commentaires. Vous avez besoin d'au moins {{.Rank}} de réputation pour voter.
       no_enough_rank_to_operate:
         other: Vous avez besoin d'au moins {{.Rank}} de réputation pour faire cela.
     report:
@@ -247,7 +252,7 @@ backend:
       review_underway:
         other: Impossible d'éditer actuellement, il y a une version dans la file d'attente des revues.
       no_permission:
-        other: No permission to revise.
+        other: Aucune autorisation de réviser.
     user:
       external_login_missing_user_id:
         other: La plateforme tierce ne fournit pas un identifiant d'utilisateur unique, vous ne pouvez donc pas vous connecter, veuillez contacter l'administrateur du site.
@@ -279,7 +284,7 @@ backend:
       add_bulk_users_format_error:
         other: "Error {{.Field}} format near '{{.Content}}' at line {{.Line}}. {{.ExtraMessage}}"
       add_bulk_users_amount_error:
-        other: "The number of users you add at once should be in the range of 1-{{.MaxAmount}}."
+        other: "Le nombre d'utilisateurs que vous ajoutez simultanément doit être compris entre 1-{{.MaxAmount}}."
     config:
       read_config_failed:
         other: La lecture de la configuration a échoué
@@ -314,7 +319,7 @@ backend:
       desc:
         other: Cette question a déjà été posée et a déjà une réponse.
       placeholder:
-        other: Enter the existing question link
+        other: Entrez le lien de la question existante
     not_a_answer:
       name:
         other: n'est pas une réponse
@@ -322,7 +327,7 @@ backend:
         other: Cela a été posté comme une réponse, mais il n'essaie pas de répondre à la question. Il devrait s'agir d'un commentaire, d'une autre question, ou devrait être supprimé totalement.
     no_longer_needed:
       name:
-        other: n’est plus nécessaire
+        other: ce n’est plus nécessaire
       desc:
         other: Ce commentaire est obsolète, conversationnel ou non pertinent pour ce post.
     something:
@@ -334,7 +339,7 @@ backend:
         other: Faites-nous savoir précisément ce qui vous préoccupe
     community_specific:
       name:
-        other: a community-specific reason
+        other: une raison spécifique à la communauté
       desc:
         other: Cette question ne répond pas à une directive de la communauté.
     not_clarity:
@@ -344,22 +349,22 @@ backend:
         other: Cette question comprend actuellement plusieurs questions en une seule. Elle ne devrait se concentrer que sur un seul problème.
     looks_ok:
       name:
-        other: looks OK
+        other: semble bien
       desc:
         other: Ce poste est bon en tant que tel et n'est pas de mauvaise qualité.
     needs_edit:
       name:
-        other: needs edit, and I did it
+        other: a besoin d'être modifié, et je l'ai fait
       desc:
-        other: Improve and correct problems with this post yourself.
+        other: Améliorez et corrigez vous-même les problèmes liés à ce message.
     needs_close:
       name:
-        other: nécessite d'être fermé
+        other: a besoin de fermer
       desc:
         other: Une question fermée ne peut pas être répondue, mais peut-être quand même modifiée, votée et commentée.
     needs_delete:
       name:
-        other: needs delete
+        other: a besoin d'être supprimé
       desc:
         other: Ce message sera supprimé.
   question:
@@ -373,7 +378,7 @@ backend:
         name:
           other: une raison spécifique à la communauté
         desc:
-          other: Cette question ne répond pas à une règle communautaire.
+          other: Cette question ne répond pas à une directive de la communauté.
       multiple:
         name:
           other: a besoin de détails ou de clarté
@@ -386,9 +391,9 @@ backend:
           other: Ce message nécessite l'attention du personnel pour une autre raison non listée ci-dessus.
     operation_type:
       asked:
-        other: a demandé
+        other: demandé
       answered:
-        other: a répondu
+        other: répondu
       modified:
         other: modifié
     deleted_title:
@@ -424,7 +429,7 @@ backend:
       down_voted_question:
         other: downvoted question
       up_voted_answer:
-        other: upvoted answer
+        other: voter favorablement la réponse
       down_voted_answer:
         other: downvoted answer
       up_voted_comment:
@@ -485,6 +490,15 @@ backend:
       other: accepter
     accepted:
       other: accepté
+    edit:
+      other: edit
+  review:
+    queued_post:
+      other: Queued post
+    flagged_post:
+      other: Flagged post
+    suggested_post_edit:
+      other: Suggested edits
 # The following fields are used for interface presentation(Front-end)
 ui:
   how_to_format:
@@ -513,7 +527,7 @@ ui:
     sign_up: S'inscrire
     account_recovery: Récupération de compte
     account_activation: Activation du compte
-    confirm_email: Confirmez votre adresse e-mail
+    confirm_email: Confirmer l'email
     account_suspended: Compte suspendu
     admin: Admin
     change_email: Modifier l'e-mail
@@ -529,13 +543,13 @@ ui:
   notifications:
     title: Notifications
     inbox: Boîte de réception
-    achievement: Succès
+    achievement: Accomplissements
     new_alerts: Nouvelles notifications
     all_read: Tout marquer comme lu
     show_more: Afficher plus
-    someone: Someone
+    someone: Quelqu'un
     inbox_type:
-      all: All
+      all: Tous
       posts: Publications
       invites: Invitations
       votes: Votes
@@ -666,6 +680,8 @@ ui:
       empty: Ne peut pas être vide.
     msg:
       empty: Veuillez sélectionner une raison s'il vous plaît.
+      not_a_url: URL format is incorrect.
+      url_not_match: URL origin does not match the current website.
   tag_modal:
     title: Créer un nouveau tag
     form:
@@ -685,11 +701,11 @@ ui:
         desc:
           label: Description
         revision:
-          label: Revision
+          label: Révision
         edit_summary:
-          label: Edit summary
+          label: Modifier le résumé
           placeholder: >-
-            Briefly explain your changes (corrected spelling, fixed grammar, improved formatting)
+            Expliquez brièvement vos modifications (orthographe corrigée, grammaire corrigée, mise en forme améliorée)
     btn_cancel: Annuler
     btn_submit: Valider
     btn_post: Publier un nouveau tag
@@ -769,7 +785,7 @@ ui:
     sort_buttons:
       popular: Populaire
       name: Nom
-      newest: Newest
+      newest: Le plus récent
     button_follow: Suivre
     button_following: Abonnements
     tag_label: questions
@@ -966,7 +982,7 @@ ui:
         placeholder: "Ville, Pays"
     notification:
       heading: Notifications
-      turn_on: Turn on
+      turn_on: Activer
       inbox:
         label: Notifications par e-mail
         description: Réponses à vos questions, commentaires, invitaitons et plus.
@@ -1005,7 +1021,7 @@ ui:
         label: Langue de l'interface
         text: Langue de l'interface utilisateur. Cela changera lorsque vous rafraîchissez la page.
     my_logins:
-      title: Mes connexions
+      title: Mes identifiants
       label: Connectez-vous ou inscrivez-vous sur ce site en utilisant ces comptes.
       modal_title: Supprimer la connexion
       modal_content: Confirmez-vous vouloir supprimer cette connexion de votre compte ?
@@ -1033,6 +1049,7 @@ ui:
     asked: demandé
     update: Modifié
     edit: modifié
+    commented: commented
     Views: Consultée
     Follow: S’abonner
     Following: Abonné(s)
@@ -1050,6 +1067,7 @@ ui:
       title: Réponses
       score: Score
       newest: Les plus récents
+      oldest: Oldest
       btn_accept: Accepter
       btn_accepted: Accepté
     write_answer:
@@ -1073,6 +1091,14 @@ ui:
       confirm_btn: Rouvrir
       title: Rouvrir ce message
       content: Êtes-vous sûr de vouloir rouvrir ?
+    list:
+      confirm_btn: List
+      title: List this post
+      content: Are you sure you want to list?
+    unlist:
+      confirm_btn: Unlist
+      title: Unlist this post
+      content: Are you sure you want to unlist?
     pin:
       title: Épingler cet article
       content: Êtes-vous sûr de vouloir l'épingler globalement ? Ce message apparaîtra en haut de toutes les listes de messages.
@@ -1086,7 +1112,7 @@ ui:
     other: Êtes-vous sûr de vouloir supprimer ?
     tip_answer_deleted: Cette réponse a été supprimée
     undelete_title: Annuler la suppression de ce message
-    undelete_desc: Are you sure you wish to undelete?
+    undelete_desc: Êtes-vous sûr de vouloir annuler la suppression ?
   btns:
     confirm: Confimer
     cancel: Annuler
@@ -1094,6 +1120,9 @@ ui:
     save: Enregistrer
     delete: Supprimer
     undelete: Annuler la suppression
+    list: List
+    unlist: Unlist
+    unlisted: Unlisted
     login: Se connecter
     signup: S'inscrire
     logout: Se déconnecter
@@ -1104,24 +1133,33 @@ ui:
     skip: Ignorer
     discard_draft: Abandonner le brouillon
     pinned: Épinglé
-    all: All
+    all: Tous
     question: Question
-    answer: Answer
-    comment: Comment
+    answer: Réponse
+    comment: Commentaire
     refresh: Actualiser
     resend: Resend
-    deactivate: Deactivate
-    active: Active
+    deactivate: Désactiver
+    active: Actif
     suspend: Suspendre
     unsuspend: Lever la suspension
     close: Fermer
     reopen: Rouvrir
     ok: OK
-    light: Light
-    dark: Dark
+    light: Clair
+    dark: Sombre
     system_setting: System setting
-    default: Default
-    reset: Reset
+    default: Défaut
+    reset: Réinitialiser
+    tag: Tag
+    post_lowercase: post
+    filter: Filter
+    ignore: Ignore
+    submit: Submit
+    normal: Normal
+    closed: Closed
+    deleted: Deleted
+    pending: Pending
   search:
     title: Résultats de la recherche
     keywords: Mots-clés
@@ -1364,12 +1402,13 @@ ui:
       site_statistics: Statistiques du site
       questions: "Questions :"
       answers: "Réponses :"
-      comments: "Commentaires :"
+      comments: "Commentaires:"
       votes: "Votes :"
       users: "Utilisateurs :"
       flags: "Signalements:"
-      site_health_status: État de santé du site
-      version: "Version :"
+      reviews: "Reviews:"
+      site_health: Site health
+      version: "Version:"
       https: "HTTPS :"
       upload_folder: "Dossier de téléversement :"
       run_mode: "Mode de fonctionnement :"
@@ -1383,11 +1422,12 @@ ui:
       database_size: "Taille de la base de données :"
       storage_used: "Stockage utilisé :"
       uptime: "Uptime :"
-      answer_links: Liens de la réponse
+      links: Links
       plugins: Extensions
       github: GitHub
       blog: Blog
       contact: Contact
+      forum: Forum
       documents: Documents
       feedback: Commentaires
       support: Support
@@ -1490,9 +1530,7 @@ ui:
         content: Un utilisateur suspendu ne peut pas se connecter.
     questions:
       page_title: Questions
-      normal: Normal
-      closed: Fermé
-      deleted: Supprimé
+      unlisted: Unlisted
       post: Publication
       votes: Votes
       answers: Réponses
@@ -1500,12 +1538,11 @@ ui:
       status: Statut
       action: Action
       change: Modifier
+      pending: Pending
       filter:
         placeholder: "Filtrer par titre, question:id"
     answers:
       page_title: Réponses
-      normal: Normal
-      deleted: Supprimé
       post: Publication
       votes: Votes
       created: Créé
@@ -1538,6 +1575,9 @@ ui:
         msg: L'email de contact ne peut pas être vide.
         validate: L'email de contact n'est pas valide.
         text: L'adresse email du responsable du site.
+      check_update:
+        label: Software updates
+        text: Automatically check for updates
     interface:
       page_title: Interface
       language:
@@ -1693,9 +1733,9 @@ ui:
       title: Extensions installées
       plugin_link: Les plugins étendent les fonctionnalités d'Answer. Vous pouvez trouver des plugins dans le dépôt <1>Answer Plugin Repositor</1>.
       filter:
-        all: All
-        active: Active
-        inactive: Inactive
+        all: Tous
+        active: Actif
+        inactive: Inactif
         outdated: Outdated
       plugins:
         label: Extensions
@@ -1716,7 +1756,7 @@ ui:
         label: Gravatar Base URL
         text: URL de la base de l'API du fournisseur Gravatar. Ignorée lorsqu'elle est vide.
       profile_editable:
-        title: Profile editable
+        title: Profil modifiable
       allow_update_display_name:
         label: Permettre aux utilisateurs de changer leur nom d'affichage
       allow_update_username:
@@ -1752,6 +1792,22 @@ ui:
     edit_answer: Modifier la réponse
     edit_tag: Modifier l’étiquette
     empty: Aucune révision restante.
+    approve_revision_tip: Do you approve this revision?
+    approve_flag_tip: Do you approve this flag?
+    approve_post_tip: Do you approve this post?
+    approve_user_tip: Do you approve this user?
+    suggest_edits: Suggested edits
+    flag_post: Flag post
+    flag_user: Flag user
+    queued_post: Queued post
+    queued_user: Queued user
+    filter_label: Type
+    reputation: reputation
+    flag_post_type: Flagged this post as {{ type }}.
+    flag_user_type: Flagged this user as {{ type }}.
+    edit_post: Edit post
+    list_post: List post
+    unlist_post: Unlist post
   timeline:
     undeleted: restauré
     deleted: supprimé
@@ -1802,3 +1858,6 @@ ui:
     post_hide_list: Ce message a été masqué de la liste.
     post_show_list: Ce message a été affiché dans la liste.
     post_reopen: Ce message a été rouvert.
+    post_list: This post has been listed.
+    post_unlist: This post has been unlisted.
+    post_pending: Your post is awaiting review. This is a preview, it will be visible after it has been approved.

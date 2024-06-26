@@ -45,6 +45,7 @@ const (
 	QuestionCannotClose              = "error.question.cannot_close"
 	QuestionCannotUpdate             = "error.question.cannot_update"
 	QuestionAlreadyDeleted           = "error.question.already_deleted"
+	QuestionUnderReview              = "error.question.under_review"
 	AnswerNotFound                   = "error.answer.not_found"
 	AnswerCannotDeleted              = "error.answer.cannot_deleted"
 	AnswerCannotUpdate               = "error.answer.cannot_update"
@@ -99,9 +100,9 @@ const (
 	AdminCannotModifySelfStatus      = "error.admin.cannot_modify_self_status"
 	UserAccessDenied                 = "error.user.access_denied"
 	UserPageAccessDenied             = "error.user.page_access_denied"
-
-	AddBulkUsersFormatError = "error.user.add_bulk_users_format_error"
-	AddBulkUsersAmountError = "error.user.add_bulk_users_amount_error"
+	AddBulkUsersFormatError          = "error.user.add_bulk_users_format_error"
+	AddBulkUsersAmountError          = "error.user.add_bulk_users_amount_error"
+	InvalidURLError                  = "error.common.invalid_url"
 )
 
 // user external login reasons

@@ -23,6 +23,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
+	"github.com/apache/incubator-answer/internal/service/report_common"
+	"github.com/apache/incubator-answer/internal/service/review"
 	usercommon "github.com/apache/incubator-answer/internal/service/user_common"
 	"github.com/apache/incubator-answer/pkg/converter"
 
@@ -46,6 +49,8 @@ type NotificationService struct {
 	notificationRepo   notficationcommon.NotificationRepo
 	notificationCommon *notficationcommon.NotificationCommon
 	revisionService    *revision_common.RevisionService
+	reportRepo         report_common.ReportRepo
+	reviewService      *review.ReviewService
 	userRepo           usercommon.UserRepo
 }
 
@@ -55,6 +60,8 @@ func NewNotificationService(
 	notificationCommon *notficationcommon.NotificationCommon,
 	revisionService *revision_common.RevisionService,
 	userRepo usercommon.UserRepo,
+	reportRepo report_common.ReportRepo,
+	reviewService *review.ReviewService,
 ) *NotificationService {
 	return &NotificationService{
 		data:               data,
@@ -62,10 +69,12 @@ func NewNotificationService(
 		notificationCommon: notificationCommon,
 		revisionService:    revisionService,
 		userRepo:           userRepo,
+		reportRepo:         reportRepo,
+		reviewService:      reviewService,
 	}
 }
 
-func (ns *NotificationService) GetRedDot(ctx context.Context, req *schema.GetRedDot) (*schema.RedDot, error) {
+func (ns *NotificationService) GetRedDot(ctx context.Context, req *schema.GetRedDot) (resp *schema.RedDot, err error) {
 	redBot := &schema.RedDot{}
 	inboxKey := fmt.Sprintf("answer_RedDot_%d_%s", schema.NotificationTypeInbox, req.UserID)
 	achievementKey := fmt.Sprintf("answer_RedDot_%d_%s", schema.NotificationTypeAchievement, req.UserID)
@@ -85,14 +94,46 @@ func (ns *NotificationService) GetRedDot(ctx context.Context, req *schema.GetRed
 	_ = copier.Copy(revisionCount, req)
 	if req.CanReviewAnswer || req.CanReviewQuestion || req.CanReviewTag {
 		redBot.CanRevision = true
-		revisionCountNum, err := ns.revisionService.GetUnreviewedRevisionCount(ctx, revisionCount)
-		if err != nil {
-			return redBot, err
-		}
-		redBot.Revision = revisionCountNum
+		redBot.Revision = ns.countAllReviewAmount(ctx, req)
 	}
 
 	return redBot, nil
+}
+
+func (ns *NotificationService) countAllReviewAmount(ctx context.Context, req *schema.GetRedDot) (amount int64) {
+	// get queue amount
+	if req.IsAdmin {
+		reviewCount, err := ns.reviewService.GetReviewPendingCount(ctx)
+		if err != nil {
+			log.Errorf("get report count failed: %v", err)
+		} else {
+			amount += reviewCount
+		}
+	}
+
+	// get flag amount
+	if req.IsAdmin {
+		reportCount, err := ns.reportRepo.GetReportCount(ctx)
+		if err != nil {
+			log.Errorf("get report count failed: %v", err)
+		} else {
+			amount += reportCount
+		}
+	}
+
+	// get suggestion amount
+	countUnreviewedRevision, err := ns.revisionService.GetUnreviewedRevisionCount(ctx, &schema.RevisionSearch{
+		CanReviewQuestion: req.CanReviewQuestion,
+		CanReviewAnswer:   req.CanReviewAnswer,
+		CanReviewTag:      req.CanReviewTag,
+		UserID:            req.UserID,
+	})
+	if err != nil {
+		log.Errorf("get unreviewed revision count failed: %v", err)
+	} else {
+		amount += countUnreviewedRevision
+	}
+	return amount
 }
 
 func (ns *NotificationService) ClearRedDot(ctx context.Context, req *schema.NotificationClearRequest) (*schema.RedDot, error) {

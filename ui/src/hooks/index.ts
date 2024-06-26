@@ -29,6 +29,7 @@ import useLoginRedirect from './useLoginRedirect';
 import usePromptWithUnload from './usePrompt';
 import useActivationEmailModal from './useActivationEmailModal';
 import useCaptchaModal from './useCaptchaModal';
+import useSkeletonControl from './useSkeletonControl';
 
 export {
   useTagModal,
@@ -43,4 +44,5 @@ export {
   usePromptWithUnload,
   useActivationEmailModal,
   useCaptchaModal,
+  useSkeletonControl,
 };

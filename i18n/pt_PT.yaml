@@ -140,6 +140,9 @@ backend:
   email_or_password_wrong_error:
     other: O e-mail e a palavra-passe não coincidem.
   error:
+    common:
+      invalid_url:
+        other: Invalid URL.
     password:
       space_invalid:
         other: A senha não pode conter espaços.
@@ -200,6 +203,8 @@ backend:
     question:
       already_deleted:
         other: Essa publicação foi deletado.
+      under_review:
+        other: Your post is awaiting review. It will be visible after it has been approved.
       not_found:
         other: Pergunta não encontrada.
       cannot_deleted:
@@ -485,6 +490,15 @@ backend:
       other: aceito
     accepted:
       other: aceito
+    edit:
+      other: edit
+  review:
+    queued_post:
+      other: Queued post
+    flagged_post:
+      other: Flagged post
+    suggested_post_edit:
+      other: Suggested edits
 # The following fields are used for interface presentation(Front-end)
 ui:
   how_to_format:
@@ -666,6 +680,8 @@ ui:
       empty: Não pode ser vazio.
     msg:
       empty: Por favor selecione um motivo.
+      not_a_url: URL format is incorrect.
+      url_not_match: URL origin does not match the current website.
   tag_modal:
     title: Criar novo marcador
     form:
@@ -1033,6 +1049,7 @@ ui:
     asked: perguntado
     update: Modificado
     edit: modificado
+    commented: commented
     Views: Visualizado
     Follow: Seguir
     Following: Seguindo
@@ -1050,6 +1067,7 @@ ui:
       title: Respostas
       score: Pontuação
       newest: Mais recente
+      oldest: Oldest
       btn_accept: Aceito
       btn_accepted: Aceito
     write_answer:
@@ -1073,6 +1091,14 @@ ui:
       confirm_btn: Reabrir
       title: Reabrir esta postagem
       content: Você tem certeza que deseja reabrir?
+    list:
+      confirm_btn: List
+      title: List this post
+      content: Are you sure you want to list?
+    unlist:
+      confirm_btn: Unlist
+      title: Unlist this post
+      content: Are you sure you want to unlist?
     pin:
       title: Fixe esta postagem
       content: Tem certeza de que deseja fixar globalmente? Esta postagem aparecerá no topo de todas as listas de postagens.
@@ -1094,6 +1120,9 @@ ui:
     save: Salvar
     delete: Excluir
     undelete: Undelete
+    list: List
+    unlist: Unlist
+    unlisted: Unlisted
     login: Entrar
     signup: Cadastrar-se
     logout: Sair
@@ -1122,6 +1151,15 @@ ui:
     system_setting: System setting
     default: Default
     reset: Reset
+    tag: Tag
+    post_lowercase: post
+    filter: Filter
+    ignore: Ignore
+    submit: Submit
+    normal: Normal
+    closed: Closed
+    deleted: Deleted
+    pending: Pending
   search:
     title: Procurar Resultados
     keywords: Palavras-chave
@@ -1368,7 +1406,8 @@ ui:
       votes: "Votos:"
       users: "Users:"
       flags: "Marcadores:"
-      site_health_status: Site health status
+      reviews: "Reviews:"
+      site_health: Site health
       version: "Versão:"
       https: "HTTPS:"
       upload_folder: "Upload folder:"
@@ -1383,11 +1422,12 @@ ui:
       database_size: "Database size:"
       storage_used: "Armazenamento usado:"
       uptime: "Tempo de atividade:"
-      answer_links: Answer links
+      links: Links
       plugins: Plugins
       github: GitHub
       blog: Blog
       contact: Contact
+      forum: Forum
       documents: Documentos
       feedback: Opinião
       support: Supporte
@@ -1490,9 +1530,7 @@ ui:
         content: A suspended user can't log in.
     questions:
       page_title: Perguntas
-      normal: Normal
-      closed: Fechado
-      deleted: Removido
+      unlisted: Unlisted
       post: Publicação
       votes: Votos
       answers: Respostas
@@ -1500,12 +1538,11 @@ ui:
       status: Estado
       action: Ação
       change: Mudar
+      pending: Pending
       filter:
         placeholder: "Filtrar por título, question:id"
     answers:
       page_title: Respostas
-      normal: Normal
-      deleted: Removido
       post: Publicação
       votes: Votos
       created: Criado
@@ -1538,6 +1575,9 @@ ui:
         msg: E-mail par contato não pode ser vazio.
         validate: E-mail par contato não é válido.
         text: Endereço de e-mail do principal contato responsável por este site.
+      check_update:
+        label: Software updates
+        text: Automatically check for updates
     interface:
       page_title: Interface
       language:
@@ -1752,6 +1792,22 @@ ui:
     edit_answer: Editar resposta
     edit_tag: Editar marcador
     empty: Nenhuma tarefa de revisão restante.
+    approve_revision_tip: Do you approve this revision?
+    approve_flag_tip: Do you approve this flag?
+    approve_post_tip: Do you approve this post?
+    approve_user_tip: Do you approve this user?
+    suggest_edits: Suggested edits
+    flag_post: Flag post
+    flag_user: Flag user
+    queued_post: Queued post
+    queued_user: Queued user
+    filter_label: Type
+    reputation: reputation
+    flag_post_type: Flagged this post as {{ type }}.
+    flag_user_type: Flagged this user as {{ type }}.
+    edit_post: Edit post
+    list_post: List post
+    unlist_post: Unlist post
   timeline:
     undeleted: não removido
     deleted: removido
@@ -1802,3 +1858,6 @@ ui:
     post_hide_list: Esta postagem foi ocultada da lista.
     post_show_list: Esta postagem foi exibida à lista.
     post_reopen: Esta publicação foi re-aberta.
+    post_list: This post has been listed.
+    post_unlist: This post has been unlisted.
+    post_pending: Your post is awaiting review. This is a preview, it will be visible after it has been approved.

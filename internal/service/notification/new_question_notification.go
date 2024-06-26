@@ -25,6 +25,7 @@ import (
 	"time"
 
 	"github.com/apache/incubator-answer/internal/base/constant"
+	"github.com/apache/incubator-answer/internal/base/translator"
 	"github.com/apache/incubator-answer/internal/schema"
 	"github.com/apache/incubator-answer/pkg/display"
 	"github.com/apache/incubator-answer/pkg/token"
@@ -229,7 +230,7 @@ func (ns *ExternalNotificationService) syncNewQuestionNotificationToPlugin(ctx c
 
 			if len(subscriberUserID) > 0 {
 				userInfo, _, _ := ns.userRepo.GetByUserID(ctx, subscriberUserID)
-				if userInfo != nil {
+				if userInfo != nil && len(userInfo.Language) > 0 && userInfo.Language != translator.DefaultLangOption {
 					newMsg.ReceiverLang = userInfo.Language
 				}
 			}
@@ -263,6 +264,13 @@ func (ns *ExternalNotificationService) newPluginQuestionNotification(
 	seoInfo, err := ns.siteInfoService.GetSiteSeo(ctx)
 	if err != nil {
 		return raw
+	}
+	interfaceInfo, err := ns.siteInfoService.GetSiteInterface(ctx)
+	if err != nil {
+		return raw
+	}
+	if len(raw.ReceiverLang) == 0 || raw.ReceiverLang == translator.DefaultLangOption {
+		raw.ReceiverLang = interfaceInfo.Language
 	}
 	raw.QuestionUrl = display.QuestionURL(
 		seoInfo.Permalink, siteInfo.SiteUrl,

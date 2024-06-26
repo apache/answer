@@ -24,6 +24,7 @@ import "time"
 const (
 	ReportStatusPending   = 1
 	ReportStatusCompleted = 2
+	ReportStatusIgnore    = 3
 	ReportStatusDeleted   = 10
 )
 

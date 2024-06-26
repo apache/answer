@@ -68,6 +68,7 @@ var (
 		&entity.UserExternalLogin{},
 		&entity.UserNotificationConfig{},
 		&entity.PluginUserConfig{},
+		&entity.Review{},
 	}
 
 	roles = []*entity.Role{
@@ -275,7 +276,7 @@ var (
 		{ID: 61, Key: "reason.not_a_answer", Value: `{"name":"not a answer","description":"This was posted as an answer, but it does not attempt to answer the question. It should possibly be an edit, a comment, another question, or deleted altogether.","content_type":""}`},
 		{ID: 62, Key: "reason.no_longer_needed", Value: `{"name":"no longer needed","description":"This comment is outdated, conversational or not relevant to this post."}`},
 		{ID: 63, Key: "reason.community_specific", Value: `{"name":"a community-specific reason","description":"This question doesn't meet a community guideline."}`},
-		{ID: 64, Key: "reason.not_clarity", Value: `{"name":"needs details or clarity","description":"This question currently includes multiple questions in one. It should focus on one problem only.","content_type":"text"}`},
+		{ID: 64, Key: "reason.not_clarity", Value: `{"name":"needs details or clarity","description":"This question currently includes multiple questions in one. It should focus on one problem only."}`},
 		{ID: 65, Key: "reason.normal", Value: `{"name":"normal","description":"A normal post available to everyone."}`},
 		{ID: 66, Key: "reason.normal.user", Value: `{"name":"normal","description":"A normal user can ask and answer questions."}`},
 		{ID: 67, Key: "reason.closed", Value: `{"name":"closed","description":"A closed question can't answer, but still can edit, vote and comment."}`},

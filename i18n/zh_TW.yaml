@@ -140,6 +140,9 @@ backend:
   email_or_password_wrong_error:
     other: 電郵和密碼不匹配。
   error:
+    common:
+      invalid_url:
+        other: Invalid URL.
     password:
       space_invalid:
         other: Password cannot contain spaces.
@@ -200,6 +203,8 @@ backend:
     question:
       already_deleted:
         other: This post has been deleted.
+      under_review:
+        other: Your post is awaiting review. It will be visible after it has been approved.
       not_found:
         other: 找不到問題。
       cannot_deleted:
@@ -485,6 +490,15 @@ backend:
       other: accept
     accepted:
       other: accepted
+    edit:
+      other: edit
+  review:
+    queued_post:
+      other: Queued post
+    flagged_post:
+      other: Flagged post
+    suggested_post_edit:
+      other: Suggested edits
 # The following fields are used for interface presentation(Front-end)
 ui:
   how_to_format:
@@ -666,6 +680,8 @@ ui:
       empty: 不能為空
     msg:
       empty: 請選擇一個原因。
+      not_a_url: URL format is incorrect.
+      url_not_match: URL origin does not match the current website.
   tag_modal:
     title: 創建新標籤
     form:
@@ -1033,6 +1049,7 @@ ui:
     asked: 提問於
     update: 修改於
     edit: 最後編輯於
+    commented: commented
     Views: 閱讀次數
     Follow: 關注
     Following: 已關注
@@ -1050,6 +1067,7 @@ ui:
       title: 個回答
       score: 評分
       newest: 最新
+      oldest: Oldest
       btn_accept: 採納
       btn_accepted: 已被採納
     write_answer:
@@ -1073,6 +1091,14 @@ ui:
       confirm_btn: Reopen
       title: 重新打開這個貼文
       content: 確定要重新打開嗎？
+    list:
+      confirm_btn: List
+      title: List this post
+      content: Are you sure you want to list?
+    unlist:
+      confirm_btn: Unlist
+      title: Unlist this post
+      content: Are you sure you want to unlist?
     pin:
       title: Pin this post
       content: Are you sure you wish to pinned globally? This post will appear at the top of all post lists.
@@ -1094,6 +1120,9 @@ ui:
     save: 儲存
     delete: 刪除
     undelete: Undelete
+    list: List
+    unlist: Unlist
+    unlisted: Unlisted
     login: 登入
     signup: 註冊
     logout: 登出
@@ -1122,6 +1151,15 @@ ui:
     system_setting: System setting
     default: Default
     reset: Reset
+    tag: Tag
+    post_lowercase: post
+    filter: Filter
+    ignore: Ignore
+    submit: Submit
+    normal: Normal
+    closed: Closed
+    deleted: Deleted
+    pending: Pending
   search:
     title: 搜尋結果
     keywords: 關鍵詞
@@ -1368,7 +1406,8 @@ ui:
       votes: "投票:"
       users: "Users:"
       flags: "檢舉:"
-      site_health_status: Site health status
+      reviews: "Reviews:"
+      site_health: Site health
       version: "版本"
       https: "HTTPS:"
       upload_folder: "Upload folder:"
@@ -1383,11 +1422,12 @@ ui:
       database_size: "Database size:"
       storage_used: "已用儲存空間："
       uptime: "運行時間："
-      answer_links: Answer links
+      links: Links
       plugins: Plugins
       github: GitHub
       blog: Blog
       contact: Contact
+      forum: Forum
       documents: 文件
       feedback: 用戶反饋
       support: 支持
@@ -1490,9 +1530,7 @@ ui:
         content: A suspended user can't log in.
     questions:
       page_title: 問題
-      normal: 正常
-      closed: 已關閉
-      deleted: 已刪除
+      unlisted: Unlisted
       post: 標題
       votes: 得票數
       answers: 回答
@@ -1500,12 +1538,11 @@ ui:
       status: 狀態
       action: 操作
       change: 更改
+      pending: Pending
       filter:
         placeholder: "按標題過濾，問題:id"
     answers:
       page_title: 回答
-      normal: 正常
-      deleted: 已刪除
       post: 發布
       votes: 得票數
       created: 創建於
@@ -1538,6 +1575,9 @@ ui:
         msg: 聯絡人信箱不能為空。
         validate: 聯絡人信箱無效。
         text: 負責本網站的主要聯絡人的電子郵件信箱。
+      check_update:
+        label: Software updates
+        text: Automatically check for updates
     interface:
       page_title: 介面
       language:
@@ -1752,6 +1792,22 @@ ui:
     edit_answer: 編輯回答
     edit_tag: 編輯標籤
     empty: 沒有剩餘的審核任務。
+    approve_revision_tip: Do you approve this revision?
+    approve_flag_tip: Do you approve this flag?
+    approve_post_tip: Do you approve this post?
+    approve_user_tip: Do you approve this user?
+    suggest_edits: Suggested edits
+    flag_post: Flag post
+    flag_user: Flag user
+    queued_post: Queued post
+    queued_user: Queued user
+    filter_label: Type
+    reputation: reputation
+    flag_post_type: Flagged this post as {{ type }}.
+    flag_user_type: Flagged this user as {{ type }}.
+    edit_post: Edit post
+    list_post: List post
+    unlist_post: Unlist post
   timeline:
     undeleted: 未刪除的
     deleted: 刪除
@@ -1802,3 +1858,6 @@ ui:
     post_hide_list: This post has been hidden from list.
     post_show_list: This post has been shown to list.
     post_reopen: This post has been reopened.
+    post_list: This post has been listed.
+    post_unlist: This post has been unlisted.
+    post_pending: Your post is awaiting review. This is a preview, it will be visible after it has been approved.

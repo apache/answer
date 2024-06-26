@@ -62,6 +62,7 @@ type GetRedDot struct {
 	CanReviewAnswer   bool   `json:"-"`
 	CanReviewTag      bool   `json:"-"`
 	UserID            string `json:"-"`
+	IsAdmin           bool   `json:"-"`
 }
 
 // NotificationMsg notification message

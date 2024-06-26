@@ -26,7 +26,7 @@ import React, {
 import { Form, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import classnames from 'classnames';
 
 import type * as Type from '@/common/interface';

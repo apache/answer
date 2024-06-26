@@ -24,6 +24,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"time"
+	"xorm.io/builder"
 
 	"github.com/apache/incubator-answer/internal/base/constant"
 	"github.com/apache/incubator-answer/internal/entity"
@@ -184,7 +185,7 @@ func updateTagCount(ctx context.Context, x *xorm.Engine) error {
 		questionsHideMap[item.ObjectID] = false
 	}
 	questionList := make([]QuestionV13, 0)
-	err = x.Context(ctx).In("id", questionIDs).In("question.status", []int{entity.QuestionStatusAvailable, entity.QuestionStatusClosed}).Find(&questionList, &QuestionV13{})
+	err = x.Context(ctx).In("id", questionIDs).And(builder.Lt{"question.status": entity.QuestionStatusDeleted}).Find(&questionList, &QuestionV13{})
 	if err != nil {
 		return fmt.Errorf("get questions failed: %w", err)
 	}
@@ -256,7 +257,7 @@ func updateTagCount(ctx context.Context, x *xorm.Engine) error {
 // updateUserQuestionCount update user question count
 func updateUserQuestionCount(ctx context.Context, x *xorm.Engine) error {
 	questionList := make([]QuestionV13, 0)
-	err := x.Context(ctx).In("status", []int{entity.QuestionStatusAvailable, entity.QuestionStatusClosed}).Find(&questionList, &QuestionV13{})
+	err := x.Context(ctx).Where(builder.Lt{"status": entity.QuestionStatusDeleted}).Find(&questionList, &QuestionV13{})
 	if err != nil {
 		return fmt.Errorf("get question  failed: %w", err)
 	}

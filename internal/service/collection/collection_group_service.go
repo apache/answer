@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package service
+package collection
 
 import (
 	"context"

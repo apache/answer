@@ -56,6 +56,7 @@ export interface TagBase {
 export interface Tag extends TagBase {
   main_tag_slug_name?: string;
   parsed_text?: string;
+  tag_id?: string;
 }
 
 export interface SynonymsTag extends Tag {
@@ -250,7 +251,7 @@ export interface QuestionDetailRes {
 }
 
 export interface AnswersReq extends Paging {
-  order?: 'default' | 'updated';
+  order?: 'default' | 'updated' | 'created';
   question_id: string;
 }
 
@@ -299,9 +300,13 @@ export interface QueryQuestionsReq extends Paging {
   in_days?: number;
 }
 
-export type AdminQuestionStatus = 'available' | 'closed' | 'deleted';
+export type AdminQuestionStatus =
+  | 'available'
+  | 'pending'
+  | 'closed'
+  | 'deleted';
 
-export type AdminContentsFilterBy = 'normal' | 'closed' | 'deleted';
+export type AdminContentsFilterBy = 'normal' | 'pending' | 'closed' | 'deleted';
 
 export interface AdminContentsReq extends Paging {
   status: AdminContentsFilterBy;
@@ -347,6 +352,8 @@ export interface AdminSettingsGeneral {
   description: string;
   site_url: string;
   contact_email: string;
+  check_update: boolean;
+  permalink?: number;
 }
 
 export interface HelmetBase {
@@ -561,7 +568,7 @@ export interface TimelineRes {
   timeline: TimelineItem[];
 }
 
-export interface ReviewItem {
+export interface SuggestReviewItem {
   type: 'question' | 'answer' | 'tag';
   info: {
     url_title?: string;
@@ -583,9 +590,60 @@ export interface ReviewItem {
     content: Tag | QuestionDetailRes | AnswerItem;
   };
 }
-export interface ReviewResp {
+export interface SuggestReviewResp {
   count: number;
-  list: ReviewItem[];
+  list: SuggestReviewItem[];
+}
+
+export interface ReasonItem {
+  content_type: string;
+  description: string;
+  name: string;
+  placeholder: string;
+  reason_type: number;
+}
+
+export interface BaseReviewItem {
+  object_type: 'question' | 'answer' | 'comment' | 'user';
+  object_id: string;
+  object_show_status: number;
+  object_status: number;
+  tags: Tag[];
+  title: string;
+  original_text: string;
+  author_user_info: UserInfoBase;
+  created_at: number;
+  submit_at: number;
+  comment_id: string;
+  question_id: string;
+  answer_id: string;
+  answer_count: number;
+  answer_accepted?: boolean;
+  flag_id: string;
+  url_title: string;
+  parsed_text: string;
+}
+
+export interface FlagReviewItem extends BaseReviewItem {
+  reason: ReasonItem;
+  reason_content: string;
+  submitter_user: UserInfoBase;
+}
+
+export interface FlagReviewResp {
+  count: number;
+  list: FlagReviewItem[];
+}
+
+export interface QueuedReviewItem extends BaseReviewItem {
+  review_id: number;
+  reason: string;
+  submitter_display_name: string;
+}
+
+export interface QueuedReviewResp {
+  count: number;
+  list: QueuedReviewItem[];
 }
 
 export interface UserRoleItem {
@@ -636,4 +694,28 @@ export interface ActivatedPlugin {
 export interface UserPluginsConfigRes {
   name: string;
   slug_name: string;
+}
+
+export interface ReviewTypeItem {
+  label: string;
+  name: string;
+  todo_amount: number;
+}
+
+export interface PutFlagReviewParams {
+  operation_type:
+    | 'edit_post'
+    | 'close_post'
+    | 'delete_post'
+    | 'unlist_post'
+    | 'ignore_report';
+  flag_id: string;
+  close_msg?: string;
+  close_type?: number;
+  title?: string;
+  content?: string;
+  tags?: Tag[];
+  // mention_username_list?: any;
+  captcha_code?: any;
+  captcha_id?: any;
 }

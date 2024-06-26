@@ -84,7 +84,7 @@ backend:
         other: Nivelul 3 (reputație ridicată necesară pentru comunitatea mature)
     level_custom:
       description:
-        other: Custom Level
+        other: Nivel personalizat
     rank_question_add_label:
       other: Întreabă ceva
     rank_answer_add_label:
@@ -140,6 +140,9 @@ backend:
   email_or_password_wrong_error:
     other: E-mailul și parola nu se potrivesc.
   error:
+    common:
+      invalid_url:
+        other: Invalid URL.
     password:
       space_invalid:
         other: Parola nu poate conține spații.
@@ -200,6 +203,8 @@ backend:
     question:
       already_deleted:
         other: Această postare a fost ștearsă.
+      under_review:
+        other: Your post is awaiting review. It will be visible after it has been approved.
       not_found:
         other: Întrebarea nu a fost găsită.
       cannot_deleted:
@@ -485,6 +490,15 @@ backend:
       other: acceptat
     accepted:
       other: acceptat
+    edit:
+      other: edit
+  review:
+    queued_post:
+      other: Queued post
+    flagged_post:
+      other: Flagged post
+    suggested_post_edit:
+      other: Suggested edits
 # The following fields are used for interface presentation(Front-end)
 ui:
   how_to_format:
@@ -666,6 +680,8 @@ ui:
       empty: Nu poate fi lăsat necompletat.
     msg:
       empty: Te rugăm să selectezi un motiv.
+      not_a_url: URL format is incorrect.
+      url_not_match: URL origin does not match the current website.
   tag_modal:
     title: Creează o etichetă nouă
     form:
@@ -685,11 +701,11 @@ ui:
         desc:
           label: Descriere
         revision:
-          label: Revision
+          label: Versiunea
         edit_summary:
-          label: Edit summary
+          label: Editează sumarul
           placeholder: >-
-            Briefly explain your changes (corrected spelling, fixed grammar, improved formatting)
+            Explicați pe scurt modificările (ortografie corectată, gramatică fixată, formatare îmbunătățită)
     btn_cancel: Anulează
     btn_submit: Trimiteți
     btn_post: Postează o nouă etichetă
@@ -740,7 +756,7 @@ ui:
     btn_flag: Marcaj
     btn_save_edits: Salvați modificările
     btn_cancel: Anulați
-    show_more: "{{count}} more comments"
+    show_more: "{{count}} alte comentarii"
     tip_question: >-
       Utilizați comentariile pentru a solicita mai multe informații sau pentru a sugera îmbunătățiri. Evitați răspunsul la întrebări în comentarii.
     tip_answer: >-
@@ -965,10 +981,10 @@ ui:
         label: Locație
         placeholder: "Oraş, Ţară"
     notification:
-      heading: Email Notifications
-      turn_on: Turn on
+      heading: Notificări prin e-mail
+      turn_on: Pornire
       inbox:
-        label: Inbox notifications
+        label: Notificări primite
         description: Răspunde la întrebări, comentarii, invitații și multe altele.
       all_new_question:
         label: Adauga o intrebare noua
@@ -1023,7 +1039,7 @@ ui:
     answers: răspunsuri
   invite_to_answer:
     title: Persoane întrebate
-    desc: Select people who you think might know the answer.
+    desc: Invită persoane care crezi că știu răspunsul.
     invite: Invită să răspundă
     add: Adaugă persoane
     search: Caută persoane
@@ -1033,6 +1049,7 @@ ui:
     asked: întrebat
     update: Modificat
     edit: editat
+    commented: commented
     Views: Văzute
     Follow: Urmărește
     Following: Urmăriți
@@ -1050,6 +1067,7 @@ ui:
       title: Răspunsuri
       score: Scor
       newest: Cele mai noi
+      oldest: Oldest
       btn_accept: Acceptă
       btn_accepted: Acceptă
     write_answer:
@@ -1073,6 +1091,14 @@ ui:
       confirm_btn: Redeschide
       title: Redeschide această postare
       content: Sunteţi sigur că doriţi să redeschideţi?
+    list:
+      confirm_btn: List
+      title: List this post
+      content: Are you sure you want to list?
+    unlist:
+      confirm_btn: Unlist
+      title: Unlist this post
+      content: Are you sure you want to unlist?
     pin:
       title: Fixează această postare
       content: Sunteţi sigur că doriţi să fixaţi la nivel global? Acest post va apărea în partea de sus a tuturor listelor de postări.
@@ -1094,6 +1120,9 @@ ui:
     save: Salvează
     delete: Ștergeți
     undelete: Restabilește
+    list: List
+    unlist: Unlist
+    unlisted: Unlisted
     login: Autentifică-te
     signup: Înscrieți-vă
     logout: Deconectaţi-vă
@@ -1117,11 +1146,20 @@ ui:
     close: Închide
     reopen: Redeschide
     ok: OK
-    light: Light
-    dark: Dark
-    system_setting: System setting
+    light: Luminoasă
+    dark: Întunecată
+    system_setting: Setări de sistem
     default: Default
-    reset: Reset
+    reset: Resetează
+    tag: Tag
+    post_lowercase: post
+    filter: Filter
+    ignore: Ignore
+    submit: Submit
+    normal: Normal
+    closed: Closed
+    deleted: Deleted
+    pending: Pending
   search:
     title: Rezultatele căutării
     keywords: Cuvinte cheie
@@ -1368,7 +1406,8 @@ ui:
       votes: "Voturi:"
       users: "Utilizatori:"
       flags: "Marcaje:"
-      site_health_status: Setează starea sănătății
+      reviews: "Reviews:"
+      site_health: Site health
       version: "Versiune:"
       https: "HTTPS:"
       upload_folder: "Director încărcare:"
@@ -1383,11 +1422,12 @@ ui:
       database_size: "Dimensiune bază de date:"
       storage_used: "Spațiu utilizat:"
       uptime: "Timpul de funcționare:"
-      answer_links: Link-uri de răspuns
+      links: Links
       plugins: Pluginuri
       github: GitHub
       blog: Blog
       contact: Contact
+      forum: Forum
       documents: Ducumente
       feedback: Feedback
       support: Suport
@@ -1490,9 +1530,7 @@ ui:
         content: Un utilizator suspendat nu se poate autentifica.
     questions:
       page_title: Întrebări
-      normal: Normal
-      closed: Închise
-      deleted: Şterse
+      unlisted: Unlisted
       post: Postare
       votes: Voturi
       answers: Răspunsuri
@@ -1500,12 +1538,11 @@ ui:
       status: Stare
       action: Actiune
       change: Schimbare
+      pending: Pending
       filter:
         placeholder: "Filtrează după titlu, întrebare: id"
     answers:
       page_title: Răspunsuri
-      normal: Normal
-      deleted: Şters
       post: Postare
       votes: Voturi
       created: Creată
@@ -1538,6 +1575,9 @@ ui:
         msg: E-mailul de contact nu poate fi gol.
         validate: E-mailul de contact nu este valid.
         text: Adresa de e-mail a persoanei cheie responsabile pentru acest site.
+      check_update:
+        label: Software updates
+        text: Automatically check for updates
     interface:
       page_title: Interfață
       language:
@@ -1642,11 +1682,11 @@ ui:
         label: Teme
         text: Selectaţi o temă existentă.
       color_scheme:
-        label: Color scheme
+        label: Paletă de culori
       navbar_style:
         label: Navbar style
       primary_color:
-        label: Primary color
+        label: Culoare primară
         text: Modifică culorile folosite de temele tale
     css_and_html:
       page_title: CSS și HTML
@@ -1752,6 +1792,22 @@ ui:
     edit_answer: Editați răspunsul
     edit_tag: Editare etichetă
     empty: Nu au mai rămas sarcini de evaluare.
+    approve_revision_tip: Do you approve this revision?
+    approve_flag_tip: Do you approve this flag?
+    approve_post_tip: Do you approve this post?
+    approve_user_tip: Do you approve this user?
+    suggest_edits: Suggested edits
+    flag_post: Flag post
+    flag_user: Flag user
+    queued_post: Queued post
+    queued_user: Queued user
+    filter_label: Type
+    reputation: reputation
+    flag_post_type: Flagged this post as {{ type }}.
+    flag_user_type: Flagged this user as {{ type }}.
+    edit_post: Edit post
+    list_post: List post
+    unlist_post: Unlist post
   timeline:
     undeleted: restabilește
     deleted: şterse
@@ -1802,3 +1858,6 @@ ui:
     post_hide_list: Această postare a fost ascunsă din listă.
     post_show_list: Această postare a fost afișată în listă.
     post_reopen: Această postare a fost redeschisă.
+    post_list: This post has been listed.
+    post_unlist: This post has been unlisted.
+    post_pending: Your post is awaiting review. This is a preview, it will be visible after it has been approved.

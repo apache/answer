@@ -21,6 +21,8 @@ package collection
 
 import (
 	"context"
+
+	"github.com/apache/incubator-answer/internal/service/collection"
 	"xorm.io/xorm"
 
 	"github.com/apache/incubator-answer/internal/base/data"
@@ -28,7 +30,6 @@ import (
 	"github.com/apache/incubator-answer/internal/base/reason"
 	"github.com/apache/incubator-answer/internal/entity"
 	"github.com/apache/incubator-answer/internal/schema"
-	"github.com/apache/incubator-answer/internal/service"
 	"github.com/segmentfault/pacman/errors"
 )
 
@@ -38,7 +39,7 @@ type collectionGroupRepo struct {
 }
 
 // NewCollectionGroupRepo new repository
-func NewCollectionGroupRepo(data *data.Data) service.CollectionGroupRepo {
+func NewCollectionGroupRepo(data *data.Data) collection.CollectionGroupRepo {
 	return &collectionGroupRepo{
 		data: data,
 	}

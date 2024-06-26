@@ -53,8 +53,7 @@ func (rs *RevisionService) GetUnreviewedRevisionCount(ctx context.Context, req *
 	if len(req.GetCanReviewObjectTypes()) == 0 {
 		return 0, nil
 	}
-	_, count, err = rs.revisionRepo.GetUnreviewedRevisionPage(ctx, req.Page, 1, req.GetCanReviewObjectTypes())
-	return count, err
+	return rs.revisionRepo.CountUnreviewedRevision(ctx, req.GetCanReviewObjectTypes())
 }
 
 // AddRevision add revision

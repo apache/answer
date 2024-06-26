@@ -35,5 +35,6 @@ type RevisionRepo interface {
 	UpdateObjectRevisionId(ctx context.Context, revision *entity.Revision, session *xorm.Session) (err error)
 	ExistUnreviewedByObjectID(ctx context.Context, objectID string) (revision *entity.Revision, exist bool, err error)
 	GetUnreviewedRevisionPage(ctx context.Context, page, pageSize int, objectTypes []int) ([]*entity.Revision, int64, error)
+	CountUnreviewedRevision(ctx context.Context, objectTypeList []int) (count int64, err error)
 	UpdateStatus(ctx context.Context, id string, status int, reviewUserID string) (err error)
 }

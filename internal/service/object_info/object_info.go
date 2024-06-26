@@ -23,15 +23,14 @@ import (
 	"context"
 
 	"github.com/apache/incubator-answer/internal/base/constant"
-	"github.com/apache/incubator-answer/internal/base/handler"
 	"github.com/apache/incubator-answer/internal/base/reason"
 	"github.com/apache/incubator-answer/internal/schema"
 	answercommon "github.com/apache/incubator-answer/internal/service/answer_common"
 	"github.com/apache/incubator-answer/internal/service/comment_common"
 	questioncommon "github.com/apache/incubator-answer/internal/service/question_common"
 	tagcommon "github.com/apache/incubator-answer/internal/service/tag_common"
+	"github.com/apache/incubator-answer/pkg/checker"
 	"github.com/apache/incubator-answer/pkg/obj"
-	"github.com/apache/incubator-answer/pkg/uid"
 	"github.com/segmentfault/pacman/errors"
 )
 
@@ -71,9 +70,6 @@ func (os *ObjService) GetUnreviewedRevisionInfo(ctx context.Context, objectID st
 		if err != nil {
 			return nil, err
 		}
-		if handler.GetEnableShortID(ctx) {
-			questionInfo.ID = uid.EnShortID(questionInfo.ID)
-		}
 		if !exist {
 			break
 		}
@@ -87,11 +83,19 @@ func (os *ObjService) GetUnreviewedRevisionInfo(ctx context.Context, objectID st
 			return nil, err
 		}
 		objInfo = &schema.UnreviewedRevisionInfoInfo{
-			ObjectID: questionInfo.ID,
-			Title:    questionInfo.Title,
-			Content:  questionInfo.OriginalText,
-			Html:     questionInfo.ParsedText,
-			Tags:     tags,
+			CreatedAt:           questionInfo.CreatedAt.Unix(),
+			ObjectID:            questionInfo.ID,
+			QuestionID:          questionInfo.ID,
+			ObjectType:          objectType,
+			ObjectCreatorUserID: questionInfo.UserID,
+			Title:               questionInfo.Title,
+			Content:             questionInfo.OriginalText,
+			Html:                questionInfo.ParsedText,
+			AnswerCount:         questionInfo.AnswerCount,
+			AnswerAccepted:      !checker.IsNotZeroString(questionInfo.AcceptedAnswerID),
+			Tags:                tags,
+			Status:              questionInfo.Status,
+			ShowStatus:          questionInfo.Show,
 		}
 	case constant.AnswerObjectType:
 		answerInfo, exist, err := os.answerRepo.GetAnswer(ctx, objectID)
@@ -109,16 +113,19 @@ func (os *ObjService) GetUnreviewedRevisionInfo(ctx context.Context, objectID st
 		if !exist {
 			break
 		}
-		if handler.GetEnableShortID(ctx) {
-			questionInfo.ID = uid.EnShortID(questionInfo.ID)
-		}
 		objInfo = &schema.UnreviewedRevisionInfoInfo{
-			ObjectID: answerInfo.ID,
-			Title:    questionInfo.Title,
-			Content:  answerInfo.OriginalText,
-			Html:     answerInfo.ParsedText,
+			CreatedAt:           answerInfo.CreatedAt.Unix(),
+			ObjectID:            answerInfo.ID,
+			QuestionID:          answerInfo.QuestionID,
+			AnswerID:            answerInfo.ID,
+			ObjectType:          objectType,
+			ObjectCreatorUserID: answerInfo.UserID,
+			Title:               questionInfo.Title,
+			Content:             answerInfo.OriginalText,
+			Html:                answerInfo.ParsedText,
+			Status:              answerInfo.Status,
+			AnswerAccepted:      questionInfo.AcceptedAnswerID == answerInfo.ID,
 		}
-
 	case constant.TagObjectType:
 		tagInfo, exist, err := os.tagRepo.GetTagByID(ctx, objectID, true)
 		if err != nil {
@@ -128,10 +135,47 @@ func (os *ObjService) GetUnreviewedRevisionInfo(ctx context.Context, objectID st
 			break
 		}
 		objInfo = &schema.UnreviewedRevisionInfoInfo{
-			ObjectID: tagInfo.ID,
-			Title:    tagInfo.SlugName,
-			Content:  tagInfo.OriginalText,
-			Html:     tagInfo.ParsedText,
+			CreatedAt:  tagInfo.CreatedAt.Unix(),
+			ObjectID:   tagInfo.ID,
+			ObjectType: objectType,
+			Title:      tagInfo.SlugName,
+			Content:    tagInfo.OriginalText,
+			Html:       tagInfo.ParsedText,
+			Status:     tagInfo.Status,
+		}
+	case constant.CommentObjectType:
+		commentInfo, exist, err := os.commentRepo.GetCommentWithoutStatus(ctx, objectID)
+		if err != nil {
+			return nil, err
+		}
+		if !exist {
+			break
+		}
+		objInfo = &schema.UnreviewedRevisionInfoInfo{
+			CreatedAt:           commentInfo.CreatedAt.Unix(),
+			ObjectID:            commentInfo.ID,
+			CommentID:           commentInfo.ID,
+			ObjectType:          objectType,
+			ObjectCreatorUserID: commentInfo.UserID,
+			Content:             commentInfo.OriginalText,
+			Html:                commentInfo.ParsedText,
+			Status:              commentInfo.Status,
+		}
+		if len(commentInfo.QuestionID) > 0 {
+			questionInfo, exist, err := os.questionRepo.GetQuestion(ctx, commentInfo.QuestionID)
+			if err != nil {
+				return nil, err
+			}
+			if exist {
+				objInfo.QuestionID = questionInfo.ID
+			}
+			answerInfo, exist, err := os.answerRepo.GetAnswer(ctx, commentInfo.ObjectID)
+			if err != nil {
+				return nil, err
+			}
+			if exist {
+				objInfo.AnswerID = answerInfo.ID
+			}
 		}
 	}
 	if objInfo == nil {

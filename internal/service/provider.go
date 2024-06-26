@@ -26,10 +26,12 @@ import (
 	"github.com/apache/incubator-answer/internal/service/activity_queue"
 	answercommon "github.com/apache/incubator-answer/internal/service/answer_common"
 	"github.com/apache/incubator-answer/internal/service/auth"
+	"github.com/apache/incubator-answer/internal/service/collection"
 	collectioncommon "github.com/apache/incubator-answer/internal/service/collection_common"
 	"github.com/apache/incubator-answer/internal/service/comment"
 	"github.com/apache/incubator-answer/internal/service/comment_common"
 	"github.com/apache/incubator-answer/internal/service/config"
+	"github.com/apache/incubator-answer/internal/service/content"
 	"github.com/apache/incubator-answer/internal/service/dashboard"
 	"github.com/apache/incubator-answer/internal/service/export"
 	"github.com/apache/incubator-answer/internal/service/follow"
@@ -43,8 +45,8 @@ import (
 	"github.com/apache/incubator-answer/internal/service/rank"
 	"github.com/apache/incubator-answer/internal/service/reason"
 	"github.com/apache/incubator-answer/internal/service/report"
-	"github.com/apache/incubator-answer/internal/service/report_admin"
-	"github.com/apache/incubator-answer/internal/service/report_handle_admin"
+	"github.com/apache/incubator-answer/internal/service/report_handle"
+	"github.com/apache/incubator-answer/internal/service/review"
 	"github.com/apache/incubator-answer/internal/service/revision_common"
 	"github.com/apache/incubator-answer/internal/service/role"
 	"github.com/apache/incubator-answer/internal/service/search_parser"
@@ -65,16 +67,16 @@ var ProviderSetService = wire.NewSet(
 	comment.NewCommentService,
 	comment_common.NewCommentCommonService,
 	report.NewReportService,
-	NewVoteService,
+	content.NewVoteService,
 	tag.NewTagService,
 	follow.NewFollowService,
-	NewCollectionGroupService,
-	NewCollectionService,
+	collection.NewCollectionGroupService,
+	collection.NewCollectionService,
 	action.NewCaptchaService,
 	auth.NewAuthService,
-	NewUserService,
-	NewQuestionService,
-	NewAnswerService,
+	content.NewUserService,
+	content.NewQuestionService,
+	content.NewAnswerService,
 	export.NewEmailService,
 	tagcommon.NewTagCommonService,
 	usercommon.NewUserCommon,
@@ -83,14 +85,13 @@ var ProviderSetService = wire.NewSet(
 	uploader.NewUploaderService,
 	collectioncommon.NewCollectionCommon,
 	revision_common.NewRevisionService,
-	NewRevisionService,
+	content.NewRevisionService,
 	rank.NewRankService,
 	search_parser.NewSearchParser,
-	NewSearchService,
+	content.NewSearchService,
 	meta.NewMetaService,
 	object_info.NewObjService,
-	report_handle_admin.NewReportHandle,
-	report_admin.NewReportAdminService,
+	report_handle.NewReportHandle,
 	user_admin.NewUserAdminService,
 	reason.NewReasonService,
 	siteinfo_common.NewSiteInfoCommonService,
@@ -113,4 +114,5 @@ var ProviderSetService = wire.NewSet(
 	user_notification_config.NewUserNotificationConfigService,
 	notification.NewExternalNotificationService,
 	notice_queue.NewNewQuestionNotificationQueueService,
+	review.NewReviewService,
 )

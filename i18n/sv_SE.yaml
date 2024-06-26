@@ -140,6 +140,9 @@ backend:
   email_or_password_wrong_error:
     other: Email and password do not match.
   error:
+    common:
+      invalid_url:
+        other: Ogiltig URL.
     password:
       space_invalid:
         other: Password cannot contain spaces.
@@ -200,6 +203,8 @@ backend:
     question:
       already_deleted:
         other: This post has been deleted.
+      under_review:
+        other: Your post is awaiting review. It will be visible after it has been approved.
       not_found:
         other: Question not found.
       cannot_deleted:
@@ -414,11 +419,11 @@ backend:
       your_question_is_closed:
         other: Your question has been closed
       your_question_was_deleted:
-        other: Your question has been deleted
+        other: Din fråga har raderats
       your_answer_was_deleted:
-        other: Your answer has been deleted
+        other: Ditt svar har raderats
       your_comment_was_deleted:
-        other: Your comment has been deleted
+        other: Din kommentar har raderats
       up_voted_question:
         other: upvoted question
       down_voted_question:
@@ -485,6 +490,15 @@ backend:
       other: accept
     accepted:
       other: accepted
+    edit:
+      other: edit
+  review:
+    queued_post:
+      other: Queued post
+    flagged_post:
+      other: Flagged post
+    suggested_post_edit:
+      other: Suggested edits
 # The following fields are used for interface presentation(Front-end)
 ui:
   how_to_format:
@@ -497,14 +511,14 @@ ui:
   page_title:
     question: Fråga
     questions: Frågor
-    tag: Tag
-    tags: Tags
+    tag: Tagg
+    tags: Taggar
     tag_wiki: tag wiki
     create_tag: Create Tag
     edit_tag: Edit Tag
     ask_a_question: Add Question
-    edit_question: Edit Question
-    edit_answer: Edit Answer
+    edit_question: Redigera fråga
+    edit_answer: Redigera svar
     search: Sök
     posts_containing: Posts containing
     settings: Inställningar
@@ -594,8 +608,8 @@ ui:
       text: Horizontal rule
     image:
       text: Bild
-      add_image: Add image
-      tab_image: Upload image
+      add_image: Lägg till bild
+      tab_image: Ladda upp bild
       form_image:
         fields:
           file:
@@ -666,6 +680,8 @@ ui:
       empty: Cannot be empty.
     msg:
       empty: Please select a reason.
+      not_a_url: URL format is incorrect.
+      url_not_match: URL origin does not match the current website.
   tag_modal:
     title: Create new tag
     form:
@@ -712,18 +728,18 @@ ui:
       tip_with_synonyms: >-
         <p>We do not allowed <strong>deleting tag with synonyms</strong>.</p> <p>Please remove the synonyms from this tag first.</p>
       tip: Are you sure you wish to delete?
-      close: Close
+      close: Stäng
   edit_tag:
     title: Edit Tag
     default_reason: Edit tag
-    default_first_reason: Add tag
+    default_first_reason: Lägg till tagg
     btn_save_edits: Save edits
     btn_cancel: Avbryt
   dates:
     long_date: MMM D
     long_date_with_year: "MMM D, YYYY"
     long_date_with_time: "MMM D, YYYY [at] HH:mm"
-    now: now
+    now: nu
     x_seconds_ago: "{{count}} s sedan"
     x_minutes_ago: "{{count}} m sedan"
     x_hours_ago: "{{count}} t sedan"
@@ -870,7 +886,7 @@ ui:
         range: Name up to 30 characters.
         character: 'Must use the character set "a-z", "0-9", " - . _"'
     email:
-      label: Email
+      label: E-postadress
       msg:
         empty: Email cannot be empty.
     password:
@@ -884,7 +900,7 @@ ui:
     send_success: >-
       If an account matches <strong>{{mail}}</strong>, you should receive an email with instructions on how to reset your password shortly.
     email:
-      label: Email
+      label: E-postadress
       msg:
         empty: Email cannot be empty.
   change_email:
@@ -893,7 +909,7 @@ ui:
     send_success: >-
       If an account matches <strong>{{mail}}</strong>, you should receive an email with instructions on how to reset your password shortly.
     email:
-      label: New email
+      label: Ny e-postadress
       msg:
         empty: Email cannot be empty.
   oauth:
@@ -948,22 +964,22 @@ ui:
         msg_range: Username up to 30 characters.
         character: 'Must use the character set "a-z", "0-9", " - . _"'
       avatar:
-        label: Profile image
+        label: Profilbild
         gravatar: Gravatar
         gravatar_text: You can change image on
         custom: Custom
-        custom_text: You can upload your image.
+        custom_text: Du kan ladda upp din bild.
         default: System
         msg: Please upload an avatar
       bio:
-        label: About me
+        label: Om mig
       website:
-        label: Website
+        label: Webbplats
         placeholder: "https://example.com"
         msg: Website incorrect format
       location:
         label: Location
-        placeholder: "City, Country"
+        placeholder: "Stad, Land"
     notification:
       heading: Email Notifications
       turn_on: Turn on
@@ -983,7 +999,7 @@ ui:
       change_email_info: >-
         We've sent an email to that address. Please follow the confirmation instructions.
       email:
-        label: New email
+        label: Ny e-postadress
         msg: New email cannot be empty.
       pass:
         label: Nuvarande lösenord
@@ -1023,7 +1039,7 @@ ui:
     answers: answers
   invite_to_answer:
     title: People Asked
-    desc: Select people who you think might know the answer.
+    desc: Bjud in personer som du tror kan svara.
     invite: Invite to answer
     add: Add people
     search: Search people
@@ -1033,6 +1049,7 @@ ui:
     asked: asked
     update: Modified
     edit: edited
+    commented: commented
     Views: Viewed
     Follow: Follow
     Following: Following
@@ -1050,6 +1067,7 @@ ui:
       title: Answers
       score: Score
       newest: Newest
+      oldest: Oldest
       btn_accept: Accept
       btn_accepted: Accepted
     write_answer:
@@ -1073,6 +1091,14 @@ ui:
       confirm_btn: Reopen
       title: Reopen this post
       content: Are you sure you want to reopen?
+    list:
+      confirm_btn: List
+      title: List this post
+      content: Are you sure you want to list?
+    unlist:
+      confirm_btn: Unlist
+      title: Unlist this post
+      content: Are you sure you want to unlist?
     pin:
       title: Pin this post
       content: Are you sure you wish to pinned globally? This post will appear at the top of all post lists.
@@ -1094,6 +1120,9 @@ ui:
     save: Spara
     delete: Radera
     undelete: Undelete
+    list: List
+    unlist: Unlist
+    unlisted: Unlisted
     login: Logga in
     signup: Registrera dig
     logout: Logga ut
@@ -1101,7 +1130,7 @@ ui:
     add_question: Add question
     approve: Approve
     reject: Reject
-    skip: Skip
+    skip: Hoppa över
     discard_draft: Discard draft
     pinned: Pinned
     all: All
@@ -1117,11 +1146,20 @@ ui:
     close: Stäng
     reopen: Reopen
     ok: OK
-    light: Light
-    dark: Dark
+    light: Ljust
+    dark: Mörkt
     system_setting: System setting
-    default: Default
-    reset: Reset
+    default: Standard
+    reset: Återställ
+    tag: Tag
+    post_lowercase: post
+    filter: Filter
+    ignore: Ignorera
+    submit: Skicka
+    normal: Normal
+    closed: Closed
+    deleted: Deleted
+    pending: Pending
   search:
     title: Sökresultat
     keywords: Keywords
@@ -1160,7 +1198,7 @@ ui:
     link: Continue to homepage
     invalid: >-
       Sorry, this account confirmation link is no longer valid. Perhaps your account is already active?
-    confirm_new_email: Your email has been updated.
+    confirm_new_email: Din e-postadress har uppdaterats.
     confirm_new_email_invalid: >-
       Sorry, this confirmation link is no longer valid. Perhaps your email was already changed?
   unsubscribe:
@@ -1207,7 +1245,7 @@ ui:
     viewed: Viewed
     joined: Joined
     last_login: Seen
-    about_me: About Me
+    about_me: Om mig
     about_me_empty: "// Hello, World !"
     top_answers: Top Answers
     top_questions: Top Questions
@@ -1278,7 +1316,7 @@ ui:
         empty: Contact email cannot be empty.
         incorrect: Contact email incorrect format.
     login_required:
-      label: Private
+      label: Privat
       switch: Login required
       text: Only logged in users can access this community.
     admin_name:
@@ -1368,7 +1406,8 @@ ui:
       votes: "Röster:"
       users: "Användare:"
       flags: "Flags:"
-      site_health_status: Site health status
+      reviews: "Reviews:"
+      site_health: Site health
       version: "Version:"
       https: "HTTPS:"
       upload_folder: "Upload folder:"
@@ -1383,11 +1422,12 @@ ui:
       database_size: "Database size:"
       storage_used: "Storage used:"
       uptime: "Uptime:"
-      answer_links: Answer links
+      links: Länkar
       plugins: Plugins
       github: GitHub
       blog: Blogg
       contact: Kontakt
+      forum: Forum
       documents: Dokument
       feedback: Feedback
       support: Support
@@ -1459,7 +1499,7 @@ ui:
       role: Roll
       action: Action
       change: Ändra
-      all: All
+      all: Alla
       staff: Staff
       more: More
       inactive: Inactive
@@ -1490,28 +1530,25 @@ ui:
         content: A suspended user can't log in.
     questions:
       page_title: Questions
-      normal: Normal
-      closed: Closed
-      deleted: Deleted
+      unlisted: Unlisted
       post: Post
       votes: Votes
       answers: Answers
       created: Created
       status: Status
       action: Action
-      change: Change
+      change: Ändra
+      pending: Pending
       filter:
         placeholder: "Filter by title, question:id"
     answers:
       page_title: Answers
-      normal: Normal
-      deleted: Deleted
       post: Post
       votes: Votes
       created: Created
       status: Status
       action: Action
-      change: Change
+      change: Ändra
       filter:
         placeholder: "Filter by title, answer:id"
     general:
@@ -1538,6 +1575,9 @@ ui:
         msg: Contact email cannot be empty.
         validate: Contact email is not valid.
         text: Email address of key contact responsible for this site.
+      check_update:
+        label: Software updates
+        text: Automatically check for updates
     interface:
       page_title: Interface
       language:
@@ -1642,7 +1682,7 @@ ui:
         label: Teman
         text: Select an existing theme.
       color_scheme:
-        label: Color scheme
+        label: Färgschema
       navbar_style:
         label: Navbar style
       primary_color:
@@ -1693,9 +1733,9 @@ ui:
       title: Installed Plugins
       plugin_link: Plugins extend and expand the functionality of Answer. You may find plugins in the <1>Answer Plugin Repository</1>.
       filter:
-        all: All
-        active: Active
-        inactive: Inactive
+        all: Alla
+        active: Aktiv
+        inactive: Inaktiv
         outdated: Outdated
       plugins:
         label: Plugins
@@ -1705,7 +1745,7 @@ ui:
       status: Status
       action: Action
       deactivate: Deactivate
-      activate: Activate
+      activate: Aktivera
       settings: Inställningar
     settings_users:
       title: Användare
@@ -1752,6 +1792,22 @@ ui:
     edit_answer: Edit answer
     edit_tag: Redigera tagg
     empty: No review tasks left.
+    approve_revision_tip: Do you approve this revision?
+    approve_flag_tip: Do you approve this flag?
+    approve_post_tip: Do you approve this post?
+    approve_user_tip: Do you approve this user?
+    suggest_edits: Suggested edits
+    flag_post: Flag post
+    flag_user: Flag user
+    queued_post: Queued post
+    queued_user: Queued user
+    filter_label: Type
+    reputation: reputation
+    flag_post_type: Flagged this post as {{ type }}.
+    flag_user_type: Flagged this user as {{ type }}.
+    edit_post: Edit post
+    list_post: List post
+    unlist_post: Unlist post
   timeline:
     undeleted: undeleted
     deleted: deleted
@@ -1802,3 +1858,6 @@ ui:
     post_hide_list: This post has been hidden from list.
     post_show_list: This post has been shown to list.
     post_reopen: This post has been reopened.
+    post_list: This post has been listed.
+    post_unlist: This post has been unlisted.
+    post_pending: Your post is awaiting review. This is a preview, it will be visible after it has been approved.

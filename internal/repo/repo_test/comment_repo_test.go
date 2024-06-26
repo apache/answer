@@ -95,3 +95,19 @@ func Test_commentRepo_UpdateComment(t *testing.T) {
 	err = commentRepo.RemoveComment(context.TODO(), testCommentEntity.ID)
 	assert.NoError(t, err)
 }
+
+func Test_commentRepo_CannotGetDeletedComment(t *testing.T) {
+	uniqueIDRepo := unique.NewUniqueIDRepo(testDataSource)
+	commentRepo := comment.NewCommentRepo(testDataSource, uniqueIDRepo)
+	testCommentEntity := buildCommentEntity()
+
+	err := commentRepo.AddComment(context.TODO(), testCommentEntity)
+	assert.NoError(t, err)
+
+	err = commentRepo.RemoveComment(context.TODO(), testCommentEntity.ID)
+	assert.NoError(t, err)
+
+	_, exist, err := commentRepo.GetComment(context.TODO(), testCommentEntity.ID)
+	assert.NoError(t, err)
+	assert.False(t, exist)
+}

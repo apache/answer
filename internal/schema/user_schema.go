@@ -21,6 +21,7 @@ package schema
 
 import (
 	"encoding/json"
+
 	"github.com/apache/incubator-answer/internal/base/reason"
 	"github.com/apache/incubator-answer/internal/base/translator"
 	"github.com/segmentfault/pacman/errors"
@@ -279,6 +280,12 @@ func CustomAvatar(url string) *AvatarInfo {
 
 func (req *UpdateInfoRequest) Check() (errFields []*validator.FormErrorField, err error) {
 	req.BioHTML = converter.Markdown2BasicHTML(req.Bio)
+	if len(req.Website) > 0 && !checker.IsURL(req.Website) {
+		return append(errFields, &validator.FormErrorField{
+			ErrorField: "website",
+			ErrorMsg:   reason.InvalidURLError,
+		}), errors.BadRequest(reason.InvalidURLError)
+	}
 	return nil, nil
 }
 
@@ -355,6 +362,7 @@ type UserBasicInfo struct {
 type GetOtherUserInfoByUsernameReq struct {
 	Username string `validate:"required,gt=0,lte=500" form:"username"`
 	UserID   string `json:"-"`
+	IsAdmin  bool   `json:"-"`
 }
 
 type GetOtherUserInfoResp struct {

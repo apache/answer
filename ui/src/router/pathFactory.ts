@@ -41,7 +41,7 @@ const questionLanding = (questionId: string, slugTitle: string = '') => {
   }
   // @ts-ignore
   if (/[13]/.test(seo.permalink) && slugTitle) {
-    return `/questions/${questionId}/${slugTitle}`;
+    return `/questions/${questionId}/${encodeURIComponent(slugTitle)}`;
   }
 
   return `/questions/${questionId}`;

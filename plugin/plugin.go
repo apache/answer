@@ -89,6 +89,10 @@ func Register(p Base) {
 	if _, ok := p.(Notification); ok {
 		registerNotification(p.(Notification))
 	}
+
+	if _, ok := p.(Reviewer); ok {
+		registerReviewer(p.(Reviewer))
+	}
 }
 
 type Stack[T Base] struct {

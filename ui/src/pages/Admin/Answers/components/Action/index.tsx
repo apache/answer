@@ -19,6 +19,7 @@
 
 import { Dropdown } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 import { Icon, Modal } from '@/components';
 import { changeAnswerStatus } from '@/services';
@@ -57,6 +58,17 @@ const AnswerActions = ({ itemData, curFilter, refreshList }) => {
       });
     }
   };
+
+  if (curFilter === 'pending') {
+    return (
+      <Link
+        to={`/review?type=queued_post&objectId=${itemData.id}`}
+        className="btn btn-link p-0"
+        title={t('review', { keyPrefix: 'header.nav' })}>
+        <Icon name="three-dots-vertical" />
+      </Link>
+    );
+  }
 
   return (
     <Dropdown>

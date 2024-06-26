@@ -18,6 +18,7 @@
 # The following fields are used for back-end
 
 backend:
+
   base:
     success:
       other: Success.
@@ -141,6 +142,9 @@ backend:
   email_or_password_wrong_error:
     other: Email and password do not match.
   error:
+    common:
+      invalid_url:
+        other: Invalid URL.
     password:
       space_invalid:
         other: Password cannot contain spaces.
@@ -201,6 +205,8 @@ backend:
     question:
       already_deleted:
         other: This post has been deleted.
+      under_review:
+        other: Your post is awaiting review. It will be visible after it has been approved.
       not_found:
         other: Question not found.
       cannot_deleted:
@@ -490,6 +496,15 @@ backend:
       other: accept
     accepted:
       other: accepted
+    edit:
+      other: edit
+  review:
+    queued_post:
+      other: Queued post
+    flagged_post:
+      other: Flagged post
+    suggested_post_edit:
+      other: Suggested edits
 
 # The following fields are used for interface presentation(Front-end)
 ui:
@@ -680,6 +695,8 @@ ui:
       empty: Cannot be empty.
     msg:
       empty: Please select a reason.
+      not_a_url: URL format is incorrect.
+      url_not_match: URL origin does not match the current website.
   tag_modal:
     title: Create new tag
     form:
@@ -1051,8 +1068,8 @@ ui:
     title: Related Questions
     answers: answers
   invite_to_answer:
-    title: People Asked
-    desc: Select people who you think might know the answer.
+    title: Invite People
+    desc: Invite people you think can answer.
     invite: Invite to answer
     add: Add people
     search: Search people
@@ -1062,6 +1079,7 @@ ui:
     asked: asked
     update: Modified
     edit: edited
+    commented: commented
     Views: Viewed
     Follow: Follow
     Following: Following
@@ -1079,6 +1097,7 @@ ui:
       title: Answers
       score: Score
       newest: Newest
+      oldest: Oldest
       btn_accept: Accept
       btn_accepted: Accepted
     write_answer:
@@ -1103,6 +1122,14 @@ ui:
       confirm_btn: Reopen
       title: Reopen this post
       content: Are you sure you want to reopen?
+    list:
+      confirm_btn: List
+      title: List this post
+      content: Are you sure you want to list?
+    unlist:
+      confirm_btn: Unlist
+      title: Unlist this post
+      content: Are you sure you want to unlist?
     pin:
       title: Pin this post
       content: Are you sure you wish to pinned globally? This post will appear at the top of all post lists.
@@ -1130,6 +1157,9 @@ ui:
     save: Save
     delete: Delete
     undelete: Undelete
+    list: List
+    unlist: Unlist
+    unlisted: Unlisted
     login: Log in
     signup: Sign up
     logout: Log out
@@ -1158,6 +1188,15 @@ ui:
     system_setting: System setting
     default: Default
     reset: Reset
+    tag: Tag
+    post_lowercase: post
+    filter: Filter
+    ignore: Ignore
+    submit: Submit
+    normal: Normal
+    closed: Closed
+    deleted: Deleted
+    pending: Pending
   search:
     title: Search Results
     keywords: Keywords
@@ -1413,7 +1452,8 @@ ui:
       votes: "Votes:"
       users: "Users:"
       flags: "Flags:"
-      site_health_status: Site health status
+      reviews: "Reviews:"
+      site_health: Site health
       version: "Version:"
       https: "HTTPS:"
       upload_folder: "Upload folder:"
@@ -1428,11 +1468,12 @@ ui:
       database_size: "Database size:"
       storage_used: "Storage used:"
       uptime: "Uptime:"
-      answer_links: Answer links
+      links: Links
       plugins: Plugins
       github: GitHub
       blog: Blog
       contact: Contact
+      forum: Forum
       documents: Documents
       feedback: Feedback
       support: Support
@@ -1535,9 +1576,7 @@ ui:
         content: A suspended user can't log in.
     questions:
       page_title: Questions
-      normal: Normal
-      closed: Closed
-      deleted: Deleted
+      unlisted: Unlisted
       post: Post
       votes: Votes
       answers: Answers
@@ -1545,12 +1584,11 @@ ui:
       status: Status
       action: Action
       change: Change
+      pending: Pending
       filter:
         placeholder: "Filter by title, question:id"
     answers:
       page_title: Answers
-      normal: Normal
-      deleted: Deleted
       post: Post
       votes: Votes
       created: Created
@@ -1583,6 +1621,9 @@ ui:
         msg: Contact email cannot be empty.
         validate: Contact email is not valid.
         text: Email address of key contact responsible for this site.
+      check_update:
+        label: Software updates
+        text: Automatically check for updates
     interface:
       page_title: Interface
       language:
@@ -1661,8 +1702,8 @@ ui:
       page_title: Write
       restrict_answer:
         title: Restrict answer
-        label: Each user can only write one answer for each question
-        text: "They can use the edit link to refine and improve their existing answer, instead."
+        label: Each user can only write one answer for the same question
+        text: "Turn off to allow users to write multiple answers to the same question, which may cause answers to be unfocused."
       recommend_tags:
         label: Recommend tags
         text: "Please input tag slug above, one tag per line."
@@ -1796,6 +1837,22 @@ ui:
     edit_answer: Edit answer
     edit_tag: Edit tag
     empty: No review tasks left.
+    approve_revision_tip: Do you approve this revision?
+    approve_flag_tip: Do you approve this flag?
+    approve_post_tip: Do you approve this post?
+    approve_user_tip: Do you approve this user?
+    suggest_edits: Suggested edits
+    flag_post: Flag post
+    flag_user: Flag user
+    queued_post: Queued post
+    queued_user: Queued user
+    filter_label: Type
+    reputation: reputation
+    flag_post_type: Flagged this post as {{ type }}.
+    flag_user_type: Flagged this user as {{ type }}.
+    edit_post: Edit post
+    list_post: List post
+    unlist_post: Unlist post
   timeline:
     undeleted: undeleted
     deleted: deleted
@@ -1846,3 +1903,6 @@ ui:
     post_hide_list:  This post has been hidden from list.
     post_show_list: This post has been shown to list.
     post_reopen: This post has been reopened.
+    post_list: This post has been listed.
+    post_unlist: This post has been unlisted.
+    post_pending: Your post is awaiting review. This is a preview, it will be visible after it has been approved.

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package service
+package content
 
 import (
 	"context"
@@ -37,10 +37,12 @@ import (
 	"github.com/apache/incubator-answer/internal/service/notice_queue"
 	"github.com/apache/incubator-answer/internal/service/permission"
 	questioncommon "github.com/apache/incubator-answer/internal/service/question_common"
+	"github.com/apache/incubator-answer/internal/service/review"
 	"github.com/apache/incubator-answer/internal/service/revision_common"
 	"github.com/apache/incubator-answer/internal/service/role"
 	usercommon "github.com/apache/incubator-answer/internal/service/user_common"
 	"github.com/apache/incubator-answer/pkg/converter"
+	"github.com/apache/incubator-answer/pkg/htmltext"
 	"github.com/apache/incubator-answer/pkg/token"
 	"github.com/apache/incubator-answer/pkg/uid"
 	"github.com/segmentfault/pacman/errors"
@@ -64,6 +66,7 @@ type AnswerService struct {
 	notificationQueueService         notice_queue.NotificationQueueService
 	externalNotificationQueueService notice_queue.ExternalNotificationQueueService
 	activityQueueService             activity_queue.ActivityQueueService
+	reviewService                    *review.ReviewService
 }
 
 func NewAnswerService(
@@ -82,6 +85,7 @@ func NewAnswerService(
 	notificationQueueService notice_queue.NotificationQueueService,
 	externalNotificationQueueService notice_queue.ExternalNotificationQueueService,
 	activityQueueService activity_queue.ActivityQueueService,
+	reviewService *review.ReviewService,
 ) *AnswerService {
 	return &AnswerService{
 		answerRepo:                       answerRepo,
@@ -99,6 +103,7 @@ func NewAnswerService(
 		notificationQueueService:         notificationQueueService,
 		externalNotificationQueueService: externalNotificationQueueService,
 		activityQueueService:             activityQueueService,
+		reviewService:                    reviewService,
 	}
 }
 
@@ -165,6 +170,7 @@ func (as *AnswerService) RemoveAnswer(ctx context.Context, req *schema.RemoveAns
 	//}
 	as.activityQueueService.Send(ctx, &schema.ActivityMsg{
 		UserID:           req.UserID,
+		TriggerUserID:    converter.StringToInt64(req.UserID),
 		ObjectID:         answerInfo.ID,
 		OriginalObjectID: answerInfo.ID,
 		ActivityTypeKey:  constant.ActAnswerDeleted,
@@ -222,7 +228,7 @@ func (as *AnswerService) Insert(ctx context.Context, req *schema.AnswerAddReq) (
 		err = errors.BadRequest(reason.AnswerCannotAddByClosedQuestion)
 		return "", err
 	}
-	insertData := new(entity.Answer)
+	insertData := &entity.Answer{}
 	insertData.UserID = req.UserID
 	insertData.OriginalText = req.Content
 	insertData.ParsedText = req.HTML
@@ -230,10 +236,17 @@ func (as *AnswerService) Insert(ctx context.Context, req *schema.AnswerAddReq) (
 	insertData.QuestionID = req.QuestionID
 	insertData.RevisionID = "0"
 	insertData.LastEditUserID = "0"
-	insertData.Status = entity.AnswerStatusAvailable
+	insertData.Status = entity.AnswerStatusPending
 	//insertData.UpdatedAt = now
 	if err = as.answerRepo.AddAnswer(ctx, insertData); err != nil {
 		return "", err
+	}
+	if as.reviewService.AddAnswerReview(ctx, insertData) {
+		if err := as.answerRepo.UpdateAnswerStatus(ctx, insertData.ID, entity.AnswerStatusAvailable); err != nil {
+			return "", err
+		} else {
+			insertData.Status = entity.AnswerStatusAvailable
+		}
 	}
 	err = as.questionCommon.UpdateAnswerCount(ctx, req.QuestionID)
 	if err != nil {
@@ -267,8 +280,10 @@ func (as *AnswerService) Insert(ctx context.Context, req *schema.AnswerAddReq) (
 	if err != nil {
 		return insertData.ID, err
 	}
-	as.notificationAnswerTheQuestion(ctx, questionInfo.UserID, questionInfo.ID, insertData.ID, req.UserID, questionInfo.Title,
-		insertData.OriginalText)
+	if insertData.Status == entity.AnswerStatusAvailable {
+		as.notificationAnswerTheQuestion(ctx, questionInfo.UserID, questionInfo.ID, insertData.ID, req.UserID, questionInfo.Title,
+			htmltext.FetchExcerpt(insertData.ParsedText, "...", 240))
+	}
 
 	as.activityQueueService.Send(ctx, &schema.ActivityMsg{
 		UserID:           insertData.UserID,
@@ -448,7 +463,7 @@ func (as *AnswerService) updateAnswerRank(ctx context.Context, userID string,
 	}
 }
 
-func (as *AnswerService) Get(ctx context.Context, answerID, loginUserID string) (*schema.AnswerInfo, *schema.QuestionInfo, bool, error) {
+func (as *AnswerService) Get(ctx context.Context, answerID, loginUserID string) (*schema.AnswerInfo, *schema.QuestionInfoResp, bool, error) {
 	answerInfo, has, err := as.answerRepo.GetByID(ctx, answerID)
 	if err != nil {
 		return nil, nil, has, err
@@ -511,25 +526,15 @@ func (as *AnswerService) AdminSetAnswerStatus(ctx context.Context, req *schema.A
 	if !exist {
 		return errors.BadRequest(reason.AnswerNotFound)
 	}
-	err = as.answerRepo.UpdateAnswerStatus(ctx, answerInfo.ID, setStatus)
-	if err != nil {
-		return err
-	}
 
 	if setStatus == entity.AnswerStatusDeleted {
-		// #2372 In order to simplify the process and complexity, as well as to consider if it is in-house,
-		// facing the problem of recovery.
-		//err = as.answerActivityService.DeleteAnswer(ctx, answerInfo.ID, answerInfo.CreatedAt, answerInfo.VoteCount)
-		//if err != nil {
-		//	log.Errorf("admin delete question then rank rollback error %s", err.Error())
-		//}
-		as.activityQueueService.Send(ctx, &schema.ActivityMsg{
-			UserID:           req.UserID,
-			TriggerUserID:    converter.StringToInt64(req.UserID),
-			ObjectID:         answerInfo.ID,
-			OriginalObjectID: answerInfo.ID,
-			ActivityTypeKey:  constant.ActAnswerDeleted,
-		})
+		if err := as.RemoveAnswer(ctx, &schema.RemoveAnswerReq{
+			ID:        req.AnswerID,
+			UserID:    req.UserID,
+			CanDelete: true,
+		}); err != nil {
+			return err
+		}
 
 		msg := &schema.NotificationMsg{}
 		msg.ObjectID = answerInfo.ID
@@ -543,13 +548,12 @@ func (as *AnswerService) AdminSetAnswerStatus(ctx context.Context, req *schema.A
 
 	// recover
 	if setStatus == entity.QuestionStatusAvailable && answerInfo.Status == entity.QuestionStatusDeleted {
-		as.activityQueueService.Send(ctx, &schema.ActivityMsg{
-			UserID:           req.UserID,
-			TriggerUserID:    converter.StringToInt64(req.UserID),
-			ObjectID:         answerInfo.ID,
-			OriginalObjectID: answerInfo.ID,
-			ActivityTypeKey:  constant.ActAnswerUndeleted,
-		})
+		if err := as.RecoverAnswer(ctx, &schema.RecoverAnswerReq{
+			AnswerID: req.AnswerID,
+			UserID:   req.UserID,
+		}); err != nil {
+			return err
+		}
 	}
 	return nil
 }

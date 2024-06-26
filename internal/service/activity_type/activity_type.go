@@ -31,6 +31,7 @@ const (
 	AnswerAccepted    = "answer.accepted"
 	AnswerAccept      = "answer.accept"
 	CommentVoteUp     = "comment.vote_up"
+	EditAccepted      = "edit.accepted"
 )
 
 var (
@@ -70,5 +71,6 @@ var (
 		AnswerAccepted:    "action_activity_type.accepted",
 		AnswerAccept:      "action_activity_type.accept",
 		CommentVoteUp:     "action_activity_type.upvote",
+		EditAccepted:      "action_activity_type.edit",
 	}
 )

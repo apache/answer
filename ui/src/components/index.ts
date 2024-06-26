@@ -59,6 +59,7 @@ import CustomSidebar from './CustomSidebar';
 import ImgViewer from './ImgViewer';
 import SideNav from './SideNav';
 import PluginRender from './PluginRender';
+import HighlightText from './HighlightText';
 
 export {
   Avatar,
@@ -105,5 +106,6 @@ export {
   ImgViewer,
   SideNav,
   PluginRender,
+  HighlightText,
 };
 export type { EditorRef, JSONSchema, UISchema };

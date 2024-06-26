@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/apache/incubator-answer/internal/base/translator"
 	"github.com/apache/incubator-answer/internal/service/siteinfo_common"
 	"github.com/apache/incubator-answer/internal/service/user_external_login"
 	"github.com/apache/incubator-answer/pkg/display"
@@ -253,6 +254,11 @@ func (ns *NotificationCommon) syncNotificationToPlugin(ctx context.Context, objI
 		log.Errorf("get site seo info failed: %v", err)
 		return
 	}
+	interfaceInfo, err := ns.siteInfoService.GetSiteInterface(ctx)
+	if err != nil {
+		log.Errorf("get site interface info failed: %v", err)
+		return
+	}
 
 	objInfo.QuestionID = uid.DeShortID(objInfo.QuestionID)
 	objInfo.AnswerID = uid.DeShortID(objInfo.AnswerID)
@@ -293,6 +299,10 @@ func (ns *NotificationCommon) syncNotificationToPlugin(ctx context.Context, objI
 		userInfo, _, _ := ns.userCommon.GetUserBasicInfoByID(ctx, msg.ReceiverUserID)
 		if userInfo != nil {
 			pluginNotificationMsg.ReceiverLang = userInfo.Language
+		}
+		// If receiver not set language, use site default language.
+		if len(pluginNotificationMsg.ReceiverLang) == 0 || pluginNotificationMsg.ReceiverLang == translator.DefaultLangOption {
+			pluginNotificationMsg.ReceiverLang = interfaceInfo.Language
 		}
 	}
 

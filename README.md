@@ -1,6 +1,52 @@
 # 非必要兼容用官方的版本，这个我做了一定调整区兼容win11编译，同时build指令执行后保留了编译源码并没有删除，部分系统可能会导致目录过长无法删除源码
 # 另外就是针对企业微信插件做了修改
 
+
+
+开发环境启动
+
+添加和移除未使用的模块
+go mod tidy
+
+vs code 启动调试指令配置
+"configurations": [
+    {
+        "name": "调试",
+        "type": "go",
+        "request": "launch",
+        "mode": "debug",
+        "program": "cmd\\answer\\main.go",
+        "args": ["run", "-C", "E:\\www\\answer\\data_test"]
+    },
+    {
+        "name": "初始化",
+        "type": "go",
+        "request": "launch",
+        "mode": "debug",
+        "program": "cmd\\answer\\main.go",
+        "args": ["init", "-C", "E:\\www\\answer\\data_test"]
+    }
+]
+
+企业微信登录那边做了修改注意
+wecom_user_center.go
+166 line:
+	userInfo.Mobile = info.Mobile
+	// 新增语言
+	userInfo.Language = plugin.GetLangByCtx(ctx)
+
+user_center.go
+77 line:
+	Status      UserStatus `json:"status"`
+	// 新增语言
+	Language string `json:"language"`
+
+
+编译多环境版本 
+goreleaser release --skip-validate  --skip-publish --clean --snapshot
+
+
+
 <a href="https://answer.apache.org">
     <img alt="logo" src="docs/img/logo.svg" height="99px">
 </a>
@@ -26,7 +72,7 @@ To learn more about the project, visit [answer.apache.org](https://answer.apache
 ### Running with docker
 
 ```bash
-docker run -d -p 9080:80 -v answer-data:/data --name answer apache/answer:1.2.5
+docker run -d -p 9080:80 -v answer-data:/data --name answer apache/answer:1.3.0
 ```
 
 For more information, see [Installation](https://answer.apache.org/docs/installation).

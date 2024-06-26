@@ -54,7 +54,9 @@
       href="{{.siteinfo.Branding.SquareIcon}}"
       data-rh="true"
     />
-    <script defer="defer" src="{{.scriptPath}}"></script>
+    {{range $path := .scriptPath}}
+    <script defer="defer" src="{{$path}}"></script>
+    {{end}}
     {{if $.siteinfo.JsonLD }}{{ .siteinfo.JsonLD | templateHTML}}{{end}}
   </head>
 

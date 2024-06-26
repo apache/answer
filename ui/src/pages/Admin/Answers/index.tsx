@@ -40,7 +40,11 @@ import { pathFactory } from '@/router/pathFactory';
 
 import AnswerAction from './components/Action';
 
-const answerFilterItems: Type.AdminContentsFilterBy[] = ['normal', 'deleted'];
+const answerFilterItems: Type.AdminContentsFilterBy[] = [
+  'normal',
+  'pending',
+  'deleted',
+];
 
 const Answers: FC = () => {
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
@@ -77,7 +81,7 @@ const Answers: FC = () => {
           data={answerFilterItems}
           currentSort={curFilter}
           sortKey="status"
-          i18nKeyPrefix="admin.answers"
+          i18nKeyPrefix="btns"
         />
 
         <Form.Control
@@ -106,32 +110,28 @@ const Answers: FC = () => {
             return (
               <tr key={li.id}>
                 <td>
-                  <Stack>
-                    <Stack direction="horizontal" gap={2}>
-                      <a
-                        href={pathFactory.answerLanding({
-                          questionId: li.question_id,
-                          slugTitle: li.question_info.url_title,
-                          answerId: li.id,
-                        })}
-                        target="_blank"
-                        className="text-break text-wrap"
-                        rel="noreferrer">
-                        {li.question_info.title}
-                      </a>
-                      {li.accepted === 2 && (
-                        <Icon
-                          name="check-circle-fill"
-                          className="ms-2 text-success"
-                        />
-                      )}
-                    </Stack>
-                    <div
-                      className="text-truncate-2 small"
-                      style={{ maxWidth: '30rem' }}>
-                      {escapeRemove(li.description)}
-                    </div>
-                  </Stack>
+                  <a
+                    href={pathFactory.answerLanding({
+                      questionId: li.question_id,
+                      slugTitle: li.question_info.url_title,
+                      answerId: li.id,
+                    })}
+                    target="_blank"
+                    className="text-break text-wrap"
+                    rel="noreferrer">
+                    {li.question_info.title}
+                  </a>
+                  {li.accepted === 2 && (
+                    <Icon
+                      name="check-circle-fill"
+                      className="ms-2 text-success"
+                    />
+                  )}
+                  <div
+                    className="text-truncate-2 small"
+                    style={{ maxWidth: '30rem' }}>
+                    {escapeRemove(li.description)}
+                  </div>
                 </td>
                 <td>{li.vote_count}</td>
                 <td>
@@ -150,7 +150,9 @@ const Answers: FC = () => {
                       'badge',
                       ADMIN_LIST_STATUS[curFilter]?.variant,
                     )}>
-                    {t(ADMIN_LIST_STATUS[curFilter]?.name)}
+                    {t(ADMIN_LIST_STATUS[curFilter]?.name, {
+                      keyPrefix: 'btns',
+                    })}
                   </span>
                 </td>
                 <td className="text-end">

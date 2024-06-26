@@ -27,18 +27,17 @@ import { tryNormalLogged } from '@/utils/guard';
 import { escapeRemove } from '@/utils';
 import { pathFactory } from '@/router/pathFactory';
 import { PluginRender } from '@/components';
+import Pattern from '@/common/pattern';
 
 interface Props {
   data;
 }
 
-const reg =
-  /(\[.*\])|(is:answer)|(is:question)|(score:\d*)|(user:\S*)|(answers:\d*)/g;
 const Index: FC<Props> = ({ data }) => {
   const { t } = useTranslation('translation', { keyPrefix: 'search' });
   const [searchParams] = useSearchParams();
   const q = searchParams.get('q');
-  const options = q?.match(reg);
+  const options = q?.match(Pattern.search);
   const [followed, setFollowed] = useState(data?.is_follower);
 
   const follow = () => {
@@ -62,7 +61,7 @@ const Index: FC<Props> = ({ data }) => {
       </div>
       <p>
         <span className="text-secondary me-1">{t('keywords')}</span>
-        {q?.replace(reg, '')}
+        {q?.replace(Pattern.search, '')}
         <br />
         {options?.length && (
           <>

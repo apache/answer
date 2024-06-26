@@ -69,6 +69,11 @@ const General: FC = () => {
         title: t('contact_email.label'),
         description: t('contact_email.text'),
       },
+      check_update: {
+        type: 'boolean',
+        title: t('check_update.label'),
+        default: true,
+      },
     },
   };
   const uiSchema: UISchema = {
@@ -107,6 +112,12 @@ const General: FC = () => {
         },
       },
     },
+    check_update: {
+      'ui:widget': 'switch',
+      'ui:options': {
+        label: t('check_update.text'),
+      },
+    },
   };
   const [formData, setFormData] = useState<Type.FormDataType>(
     initFormData(schema),
@@ -121,6 +132,7 @@ const General: FC = () => {
       short_description: formData.short_description.value,
       site_url: formData.site_url.value,
       contact_email: formData.contact_email.value,
+      check_update: formData.check_update.value,
     };
 
     updateGeneralSetting(reqParams)
@@ -135,6 +147,7 @@ const General: FC = () => {
           formData.short_description.value = res.short_description;
           formData.site_url.value = res.site_url;
           formData.contact_email.value = res.contact_email;
+          formData.check_update.value = res.check_update;
         }
 
         setFormData({ ...formData });

@@ -22,11 +22,12 @@ package search_common
 import (
 	"context"
 	"fmt"
-	tagcommon "github.com/apache/incubator-answer/internal/service/tag_common"
-	"github.com/apache/incubator-answer/plugin"
 	"strconv"
 	"strings"
 	"time"
+
+	tagcommon "github.com/apache/incubator-answer/internal/service/tag_common"
+	"github.com/apache/incubator-answer/plugin"
 
 	"github.com/apache/incubator-answer/pkg/htmltext"
 
@@ -234,7 +235,7 @@ func (sr *searchRepo) SearchContents(ctx context.Context, words []string, tagIDs
 		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 		return
 	} else {
-		resp, err = sr.parseResult(ctx, res)
+		resp, err = sr.parseResult(ctx, res, words)
 		return
 	}
 }
@@ -342,7 +343,7 @@ func (sr *searchRepo) SearchQuestions(ctx context.Context, words []string, tagID
 	if len(tr) != 0 {
 		total = converter.StringToInt64(string(tr[0]["total"]))
 	}
-	resp, err = sr.parseResult(ctx, res)
+	resp, err = sr.parseResult(ctx, res, words)
 	if err != nil {
 		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
@@ -436,7 +437,7 @@ func (sr *searchRepo) SearchAnswers(ctx context.Context, words []string, tagIDs 
 	}
 
 	total = converter.StringToInt64(string(tr[0]["total"]))
-	resp, err = sr.parseResult(ctx, res)
+	resp, err = sr.parseResult(ctx, res, words)
 	if err != nil {
 		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
@@ -460,7 +461,7 @@ func (sr *searchRepo) parseOrder(ctx context.Context, order string) (res string)
 }
 
 // ParseSearchPluginResult parse search plugin result
-func (sr *searchRepo) ParseSearchPluginResult(ctx context.Context, sres []plugin.SearchResult) (resp []*schema.SearchResult, err error) {
+func (sr *searchRepo) ParseSearchPluginResult(ctx context.Context, sres []plugin.SearchResult, words []string) (resp []*schema.SearchResult, err error) {
 	var (
 		qres []map[string][]byte
 		res  = make([]map[string][]byte, 0)
@@ -483,11 +484,11 @@ func (sr *searchRepo) ParseSearchPluginResult(ctx context.Context, sres []plugin
 		}
 		res = append(res, qres[0])
 	}
-	return sr.parseResult(ctx, res)
+	return sr.parseResult(ctx, res, words)
 }
 
 // parseResult parse search result, return the data structure
-func (sr *searchRepo) parseResult(ctx context.Context, res []map[string][]byte) (resp []*schema.SearchResult, err error) {
+func (sr *searchRepo) parseResult(ctx context.Context, res []map[string][]byte, words []string) (resp []*schema.SearchResult, err error) {
 	questionIDs := make([]string, 0)
 	userIDs := make([]string, 0)
 	resultList := make([]*schema.SearchResult, 0)
@@ -508,7 +509,7 @@ func (sr *searchRepo) parseResult(ctx context.Context, res []map[string][]byte) 
 			QuestionID:      QuestionID,
 			Title:           string(r["title"]),
 			UrlTitle:        htmltext.UrlTitle(string(r["title"])),
-			Excerpt:         htmltext.FetchExcerpt(string(r["parsed_text"]), "...", 240),
+			Excerpt:         htmltext.FetchMatchedExcerpt(string(r["parsed_text"]), words, "...", 100),
 			CreatedAtParsed: tp.Unix(),
 			UserInfo: &schema.SearchObjectUser{
 				ID: string(r["user_id"]),

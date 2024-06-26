@@ -17,12 +17,13 @@
  * under the License.
  */
 
-package service
+package content
 
 import (
 	"context"
-	"github.com/apache/incubator-answer/internal/service/activity_common"
 	"strings"
+
+	"github.com/apache/incubator-answer/internal/service/activity_common"
 
 	"github.com/apache/incubator-answer/internal/base/constant"
 	"github.com/apache/incubator-answer/internal/base/handler"
