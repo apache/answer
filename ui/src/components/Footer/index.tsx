@@ -18,6 +18,7 @@
  */
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -34,20 +35,15 @@ const Footer = () => {
   return (
     <footer className="bg-light">
       <Container className="py-3">
-        <p className="text-center mb-0 small text-secondary">
-          <a
-            className="me-2"
-            href="/privacy"
-            target="_blank"
-            rel="noopener noreferrer">
-            {t('privacy')} {/* Fetch translated Privacy Policy text */}
-          </a>
-          <a href="/tos" target="_blank" rel="noopener noreferrer">
-            {t('terms_of_service')}{' '}
-            {/* Fetch translated Terms of Service text */}
-          </a>
+        <p className="text-center mb-0 p-3 small">
+          {/* Link to Privacy Policy with right margin for spacing */}
+          <Link to="/privacy" className="me-3">
+            {t('privacy')}
+          </Link>
+          {/* Link to Terms of Service with right margin */}
+          <Link to="/tos">{t('terms_of_service')}</Link>
         </p>
-        <p className="text-center mb-0 small text-secondary">
+        <p className="text-center mb-0 small">
           <Trans i18nKey="build_on" values={{ cc }}>
             Powered by{' '}
             <a
