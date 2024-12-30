@@ -1171,6 +1171,8 @@ ui:
     build_on: >-
       Powered by <1> Apache Answer </1>- the open-source software that powers Q&A
       communities.<br />Made with love © {{cc}}.
+    privacy: Privacy Policy
+    terms_of_service: Terms of Service
   upload_img:
     name: Change
     loading: loading...
