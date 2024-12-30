@@ -19,29 +19,46 @@
 
 import React from 'react';
 import { Container } from 'react-bootstrap';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
 import dayjs from 'dayjs';
 
 import { siteInfoStore } from '@/stores';
 
-const Index = () => {
+const Footer = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'footer' }); // Scoped translations for footer
   const fullYear = dayjs().format('YYYY');
   const siteName = siteInfoStore((state) => state.siteInfo.name);
   const cc = `${fullYear} ${siteName}`;
+
   return (
     <footer className="bg-light">
       <Container className="py-3">
         <p className="text-center mb-0 small text-secondary">
-          <Trans i18nKey="footer.build_on" values={{ cc }}>
-            Powered by
-            {/* eslint-disable-next-line react/jsx-no-target-blank */}
-            <a href="https://answer.apache.org" target="_blank">
+          <a
+            className="me-2"
+            href="/privacy"
+            target="_blank"
+            rel="noopener noreferrer">
+            {t('privacy')} {/* Fetch translated Privacy Policy text */}
+          </a>
+          <a href="/tos" target="_blank" rel="noopener noreferrer">
+            {t('terms_of_service')}{' '}
+            {/* Fetch translated Terms of Service text */}
+          </a>
+        </p>
+        <p className="text-center mb-0 small text-secondary">
+          <Trans i18nKey="build_on" values={{ cc }}>
+            Powered by{' '}
+            <a
+              href="https://answer.apache.org"
+              target="_blank"
+              rel="noopener noreferrer">
               Apache Answer
             </a>
             - the open-source software that powers Q&A communities.
             <br />
-            Made with love. © 2022 Answer.
+            Made with love © 2022 Answer.
           </Trans>
         </p>
       </Container>
@@ -49,4 +66,4 @@ const Index = () => {
   );
 };
 
-export default React.memo(Index);
+export default React.memo(Footer);
