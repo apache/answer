@@ -26,7 +26,7 @@ import dayjs from 'dayjs';
 
 import { siteInfoStore } from '@/stores';
 
-const Footer = () => {
+const Index = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'footer' }); // Scoped translations for footer
   const fullYear = dayjs().format('YYYY');
   const siteName = siteInfoStore((state) => state.siteInfo.name);
@@ -34,14 +34,17 @@ const Footer = () => {
 
   return (
     <footer className="bg-light">
-      <Container className="py-3">
-        <p className="text-center mb-0 p-3 small">
-          {/* Link to Privacy Policy with right margin for spacing */}
-          <Link to="/privacy" className="me-3">
-            {t('privacy')}
-          </Link>
+      <Container>
+        <p className="text-center mb-0 small">
           {/* Link to Terms of Service with right margin */}
-          <Link to="/tos">{t('terms_of_service')}</Link>
+          <Link to="/tos" className="me-3">
+            {t('label', { keyPrefix: 'admin.legal.terms_of_service' })}
+          </Link>
+
+          {/* Link to Privacy Policy with right margin for spacing */}
+          <Link to="/privacy">
+            {t('label', { keyPrefix: 'admin.legal.privacy_policy' })}
+          </Link>
         </p>
         <p className="text-center mb-0 small">
           <Trans i18nKey="build_on" values={{ cc }}>
@@ -62,4 +65,4 @@ const Footer = () => {
   );
 };
 
-export default React.memo(Footer);
+export default React.memo(Index);
