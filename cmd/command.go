@@ -72,7 +72,7 @@ func init() {
 
 	configCmd.Flags().StringSliceVarP(&configFields, "with", "w", []string{}, "the fields that need to be set to the default value, eg: -w allow_password_login")
 
-	i18nCmd.Flags().StringVarP(&i18nSourcePath, "source", "s", "", "i18n source path, eg: -f ./i18n/source")
+	i18nCmd.Flags().StringVarP(&i18nSourcePath, "source", "s", "", "i18n source path, eg: -s ./i18n/source")
 
 	i18nCmd.Flags().StringVarP(&i18nTargetPath, "target", "t", "", "i18n target path, eg: -t ./i18n/target")
 
