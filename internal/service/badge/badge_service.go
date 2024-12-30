@@ -45,6 +45,8 @@ type BadgeRepo interface {
 
 	UpdateStatus(ctx context.Context, id string, status int8) (err error)
 	UpdateAwardCount(ctx context.Context, badgeID string, awardCount int) (err error)
+
+	DeleteUserBadge(ctx context.Context, userID string) (err error)
 }
 
 type BadgeService struct {

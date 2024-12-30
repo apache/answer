@@ -27,8 +27,11 @@ import (
 	"github.com/apache/incubator-answer/internal/base/translator"
 	"github.com/apache/incubator-answer/internal/base/validator"
 	answercommon "github.com/apache/incubator-answer/internal/service/answer_common"
+	"github.com/apache/incubator-answer/internal/service/badge"
 	"github.com/apache/incubator-answer/internal/service/comment_common"
 	"github.com/apache/incubator-answer/internal/service/export"
+	notificationcommon "github.com/apache/incubator-answer/internal/service/notification_common"
+	"github.com/apache/incubator-answer/internal/service/plugin_common"
 	questioncommon "github.com/apache/incubator-answer/internal/service/question_common"
 	"github.com/apache/incubator-answer/pkg/token"
 	"net/mail"
@@ -79,6 +82,9 @@ type UserAdminService struct {
 	answerCommonRepo      answercommon.AnswerRepo
 	commentCommonRepo     comment_common.CommentCommonRepo
 	userExternalLoginRepo user_external_login.UserExternalLoginRepo
+	notificationRepo      notificationcommon.NotificationRepo
+	pluginUserConfigRepo  plugin_common.PluginUserConfigRepo
+	badgeRepo             badge.BadgeRepo
 }
 
 // NewUserAdminService new user admin service
@@ -94,6 +100,9 @@ func NewUserAdminService(
 	answerCommonRepo answercommon.AnswerRepo,
 	commentCommonRepo comment_common.CommentCommonRepo,
 	userExternalLoginRepo user_external_login.UserExternalLoginRepo,
+	notificationRepo notificationcommon.NotificationRepo,
+	pluginUserConfigRepo plugin_common.PluginUserConfigRepo,
+	badgeRepo badge.BadgeRepo,
 ) *UserAdminService {
 	return &UserAdminService{
 		userRepo:              userRepo,
@@ -107,6 +116,9 @@ func NewUserAdminService(
 		answerCommonRepo:      answerCommonRepo,
 		commentCommonRepo:     commentCommonRepo,
 		userExternalLoginRepo: userExternalLoginRepo,
+		notificationRepo:      notificationRepo,
+		pluginUserConfigRepo:  pluginUserConfigRepo,
+		badgeRepo:             badgeRepo,
 	}
 }
 
@@ -154,10 +166,7 @@ func (us *UserAdminService) UpdateUserStatus(ctx context.Context, req *schema.Up
 	}
 
 	if req.IsDeleted() {
-		err := us.userExternalLoginRepo.DeleteUserExternalLoginByUserID(ctx, userInfo.ID)
-		if err != nil {
-			log.Errorf("remove all user external login error: %v", err)
-		}
+		us.removeAllUserConfiguration(ctx, userInfo.ID)
 	}
 
 	// if user reputation is zero means this user is inactive, so try to activate this user.
@@ -165,6 +174,30 @@ func (us *UserAdminService) UpdateUserStatus(ctx context.Context, req *schema.Up
 		return us.userActivity.UserActive(ctx, userInfo.ID)
 	}
 	return nil
+}
+
+// removeAllUserConfiguration remove all user configuration
+func (us *UserAdminService) removeAllUserConfiguration(ctx context.Context, userID string) {
+	err := us.userExternalLoginRepo.DeleteUserExternalLoginByUserID(ctx, userID)
+	if err != nil {
+		log.Errorf("remove all user external login error: %v", err)
+	}
+	err = us.notificationRepo.DeleteNotification(ctx, userID)
+	if err != nil {
+		log.Errorf("remove all user notification error: %v", err)
+	}
+	err = us.notificationRepo.DeleteUserNotificationConfig(ctx, userID)
+	if err != nil {
+		log.Errorf("remove all user notification config error: %v", err)
+	}
+	err = us.pluginUserConfigRepo.DeleteUserPluginConfig(ctx, userID)
+	if err != nil {
+		log.Errorf("remove all user plugin config error: %v", err)
+	}
+	err = us.badgeRepo.DeleteUserBadge(ctx, userID)
+	if err != nil {
+		log.Errorf("remove all user badge error: %v", err)
+	}
 }
 
 // removeAllUserCreatedContent remove all user created content

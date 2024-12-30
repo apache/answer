@@ -97,3 +97,11 @@ func (ur *pluginUserConfigRepo) GetPluginUserConfigPage(ctx context.Context, pag
 	}
 	return
 }
+
+func (ur *pluginUserConfigRepo) DeleteUserPluginConfig(ctx context.Context, userID string) (err error) {
+	_, err = ur.data.DB.Context(ctx).Where("user_id = ?", userID).Delete(&entity.PluginUserConfig{})
+	if err != nil {
+		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	return
+}
