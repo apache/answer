@@ -240,6 +240,9 @@ func (vr *VoteRepo) setActivityRankToZeroIfUserReachLimit(ctx context.Context, s
 	op *schema.VoteOperationInfo, userInfoMapping map[string]*entity.User, maxDailyRank int) (err error) {
 	// check if user reach daily rank limit
 	for _, activity := range op.Activities {
+		if userInfoMapping[activity.ActivityUserID] == nil {
+			continue
+		}
 		if activity.Rank > 0 {
 			// check if reach max daily rank
 			reach, err := vr.userRankRepo.CheckReachLimit(ctx, session, activity.ActivityUserID, maxDailyRank)

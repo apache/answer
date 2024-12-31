@@ -22,34 +22,30 @@ package middleware
 import (
 	"github.com/apache/incubator-answer/internal/base/constant"
 	"github.com/apache/incubator-answer/internal/base/handler"
+	"github.com/apache/incubator-answer/internal/base/translator"
 	"github.com/gin-gonic/gin"
 	"github.com/segmentfault/pacman/i18n"
-)
-
-var (
-	langMapping = map[i18n.Language]bool{
-		i18n.LanguageChinese:            true,
-		i18n.LanguageChineseTraditional: true,
-		i18n.LanguageEnglish:            true,
-		i18n.LanguageGerman:             true,
-		i18n.LanguageSpanish:            true,
-		i18n.LanguageFrench:             true,
-		i18n.LanguageItalian:            true,
-		i18n.LanguageJapanese:           true,
-		i18n.LanguageKorean:             true,
-		i18n.LanguagePortuguese:         true,
-		i18n.LanguageRussian:            true,
-		i18n.LanguageVietnamese:         true,
-	}
+	"golang.org/x/text/language"
+	"strings"
 )
 
 // ExtractAndSetAcceptLanguage extract accept language from header and set to context
 func ExtractAndSetAcceptLanguage(ctx *gin.Context) {
 	// The language of our front-end configuration, like en_US
 	lang := handler.GetLang(ctx)
-	if langMapping[lang] {
-		ctx.Set(constant.AcceptLanguageFlag, lang)
+	tag, _, err := language.ParseAcceptLanguage(string(lang))
+	if err != nil || len(tag) == 0 {
+		ctx.Set(constant.AcceptLanguageFlag, i18n.LanguageEnglish)
 		return
+	}
+
+	acceptLang := strings.ReplaceAll(tag[0].String(), "-", "_")
+
+	for _, option := range translator.LanguageOptions {
+		if option.Value == acceptLang {
+			ctx.Set(constant.AcceptLanguageFlag, i18n.Language(acceptLang))
+			return
+		}
 	}
 
 	// default language

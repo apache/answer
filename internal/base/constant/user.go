@@ -30,6 +30,12 @@ const (
 	EmailStatusToBeVerified = 2
 )
 
+const (
+	DeletePermanentlyUsers     = "users"
+	DeletePermanentlyQuestions = "questions"
+	DeletePermanentlyAnswers   = "answers"
+)
+
 func ConvertUserStatus(status, mailStatus int) string {
 	switch status {
 	case 1:

@@ -20,6 +20,8 @@
 package schema
 
 import (
+	"github.com/apache/incubator-answer/internal/base/reason"
+	"github.com/segmentfault/pacman/errors"
 	"strings"
 	"time"
 
@@ -97,6 +99,12 @@ func (req *QuestionAdd) Check() (errFields []*validator.FormErrorField, err erro
 			tag.ParsedText = converter.Markdown2HTML(tag.OriginalText)
 		}
 	}
+	if req.HTML == "" {
+		return append(errFields, &validator.FormErrorField{
+			ErrorField: "content",
+			ErrorMsg:   reason.QuestionContentCannotEmpty,
+		}), errors.BadRequest(reason.QuestionContentCannotEmpty)
+	}
 	return nil, nil
 }
 
@@ -128,6 +136,21 @@ func (req *QuestionAddByAnswer) Check() (errFields []*validator.FormErrorField, 
 		if len(tag.OriginalText) > 0 {
 			tag.ParsedText = converter.Markdown2HTML(tag.OriginalText)
 		}
+	}
+	if req.HTML == "" {
+		errFields = append(errFields, &validator.FormErrorField{
+			ErrorField: "content",
+			ErrorMsg:   reason.QuestionContentCannotEmpty,
+		})
+	}
+	if req.AnswerHTML == "" {
+		errFields = append(errFields, &validator.FormErrorField{
+			ErrorField: "answer_content",
+			ErrorMsg:   reason.AnswerContentCannotEmpty,
+		})
+	}
+	if req.HTML == "" || req.AnswerHTML == "" {
+		return errFields, errors.BadRequest(reason.QuestionContentCannotEmpty)
 	}
 	return nil, nil
 }
@@ -203,6 +226,12 @@ type QuestionUpdateInviteUser struct {
 
 func (req *QuestionUpdate) Check() (errFields []*validator.FormErrorField, err error) {
 	req.HTML = converter.Markdown2HTML(req.Content)
+	if req.HTML == "" {
+		return append(errFields, &validator.FormErrorField{
+			ErrorField: "content",
+			ErrorMsg:   reason.QuestionContentCannotEmpty,
+		}), errors.BadRequest(reason.QuestionContentCannotEmpty)
+	}
 	return nil, nil
 }
 

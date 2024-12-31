@@ -63,6 +63,7 @@ type UserAdminRepo interface {
 	AddUser(ctx context.Context, user *entity.User) (err error)
 	AddUsers(ctx context.Context, users []*entity.User) (err error)
 	UpdateUserPassword(ctx context.Context, userID string, password string) (err error)
+	DeletePermanentlyUsers(ctx context.Context) (err error)
 }
 
 // UserAdminService user service
@@ -577,4 +578,16 @@ func (us *UserAdminService) SendUserActivation(ctx context.Context, req *schema.
 	}
 	go us.emailService.SendAndSaveCode(ctx, userInfo.ID, userInfo.EMail, title, body, code, data.ToJSONString())
 	return nil
+}
+
+func (us *UserAdminService) DeletePermanently(ctx context.Context, req *schema.DeletePermanentlyReq) (err error) {
+	if req.Type == constant.DeletePermanentlyUsers {
+		return us.userRepo.DeletePermanentlyUsers(ctx)
+	} else if req.Type == constant.DeletePermanentlyQuestions {
+		return us.questionCommonRepo.DeletePermanentlyQuestions(ctx)
+	} else if req.Type == constant.DeletePermanentlyAnswers {
+		return us.answerCommonRepo.DeletePermanentlyAnswers(ctx)
+	}
+
+	return errors.BadRequest(reason.RequestFormatError)
 }

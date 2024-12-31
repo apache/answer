@@ -63,6 +63,7 @@ type QuestionRepo interface {
 	GetRecommendQuestionPageByTags(ctx context.Context, userID string, tagIDs, followedQuestionIDs []string, page, pageSize int) (questionList []*entity.Question, total int64, err error)
 	UpdateQuestionStatus(ctx context.Context, questionID string, status int) (err error)
 	UpdateQuestionStatusWithOutUpdateTime(ctx context.Context, question *entity.Question) (err error)
+	DeletePermanentlyQuestions(ctx context.Context) (err error)
 	RecoverQuestion(ctx context.Context, questionID string) (err error)
 	UpdateQuestionOperation(ctx context.Context, question *entity.Question) (err error)
 	GetQuestionsByTitle(ctx context.Context, title string, pageSize int) (questionList []*entity.Question, err error)
@@ -383,6 +384,7 @@ func (qs *QuestionCommon) FormatQuestionsPage(
 			LastAnswerID:     questionInfo.LastAnswerID,
 			Pin:              questionInfo.Pin,
 			Show:             questionInfo.Show,
+			Operator:         &schema.QuestionPageRespOperator{ID: questionInfo.UserID},
 		}
 
 		questionIDs = append(questionIDs, questionInfo.ID)
@@ -456,7 +458,6 @@ func (qs *QuestionCommon) FormatQuestionsPage(
 				item.Operator.Status = userInfo.Status
 			}
 		}
-
 	}
 	return formattedQuestions, nil
 }

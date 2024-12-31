@@ -495,6 +495,17 @@ definitions:
       name:
         type: string
     type: object
+  schema.DeletePermanentlyReq:
+    properties:
+      type:
+        enum:
+        - users
+        - questions
+        - answers
+        type: string
+    required:
+    - type
+    type: object
   schema.EditUserProfileReq:
     properties:
       display_name:
@@ -3104,6 +3115,30 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: DashboardInfo
+      tags:
+      - admin
+  /answer/admin/api/delete/permanently:
+    delete:
+      consumes:
+      - application/json
+      description: delete permanently
+      parameters:
+      - description: DeletePermanentlyReq
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/schema.DeletePermanentlyReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.RespBody'
+      security:
+      - ApiKeyAuth: []
+      summary: delete permanently
       tags:
       - admin
   /answer/admin/api/language/options:

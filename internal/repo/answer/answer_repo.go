@@ -527,3 +527,11 @@ func (ar *answerRepo) updateSearch(ctx context.Context, answerID string) (err er
 	err = s.UpdateContent(ctx, content)
 	return
 }
+
+func (ar *answerRepo) DeletePermanentlyAnswers(ctx context.Context) error {
+	_, err := ar.data.DB.Context(ctx).Where("status = ?", entity.AnswerStatusDeleted).Delete(&entity.Answer{})
+	if err != nil {
+		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	return nil
+}

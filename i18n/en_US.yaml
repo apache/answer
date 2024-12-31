@@ -169,6 +169,8 @@ backend:
         other: No permission to update.
       question_closed_cannot_add:
         other: Questions are closed and cannot be added.
+      content_cannot_empty:
+        other: Answer content cannot be empty.
     comment:
       edit_without_permission:
         other: Comment are not allowed to edit.
@@ -176,6 +178,8 @@ backend:
         other: Comment not found.
       cannot_edit_after_deadline:
         other: The comment time has been too long to modify.
+      content_cannot_empty:
+        other: Comment content cannot be empty.
     email:
       duplicate:
         other: Email already exists.
@@ -225,6 +229,8 @@ backend:
         other: No permission to close.
       cannot_update:
         other: No permission to update.
+      content_cannot_empty:
+        other: Content cannot be empty.
     rank:
       fail_to_meet_the_condition:
         other: Reputation rank fail to meet the condition.
@@ -1498,6 +1504,7 @@ ui:
     normal: Normal
     closed: Closed
     deleted: Deleted
+    deleted_permanently: Deleted permanently
     pending: Pending
     more: More
   search:
@@ -1533,6 +1540,9 @@ ui:
   cannot_vote_for_self: You can't vote for your own post.
   modal_confirm:
     title: Error...
+  delete_permanently:
+    title: Delete permanently
+    content: Are you sure you want to delete permanently?
   account_result:
     success: Your new account is confirmed; you will be redirected to the home page.
     link: Continue to homepage
@@ -2291,5 +2301,6 @@ ui:
     user_deleted: This user has been deleted.
     badge_activated: This badge has been activated.
     badge_inactivated: This badge has been inactivated.
-
-
+    users_deleted: These users have been deleted.
+    posts_deleted: These questions have been deleted.
+    answers_deleted: These answers have been deleted.
