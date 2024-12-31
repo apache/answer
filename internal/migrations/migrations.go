@@ -99,7 +99,7 @@ var migrations = []Migration{
 	NewMigration("v1.3.6", "add hot score to question table", addQuestionHotScore, true),
 	NewMigration("v1.4.0", "add badge/badge_group/badge_award table", addBadges, true),
 	NewMigration("v1.4.1", "add question link", addQuestionLink, true),
-	NewMigration("v1.4.2", "add the number of question links", addQuestionLinkedCount, false),
+	NewMigration("v1.4.2", "add the number of question links", addQuestionLinkedCount, true),
 }
 
 func GetMigrations() []Migration {
