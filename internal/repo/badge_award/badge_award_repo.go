@@ -184,3 +184,12 @@ func (r *badgeAwardRepo) GetByUserIdAndBadgeIdAndAwardKey(ctx context.Context, u
 	}
 	return
 }
+
+// DeleteUserBadgeAward delete user badge award
+func (r *badgeAwardRepo) DeleteUserBadgeAward(ctx context.Context, userID string) (err error) {
+	_, err = r.data.DB.Context(ctx).Where("user_id = ?", userID).Delete(&entity.BadgeAward{})
+	if err != nil {
+		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	return
+}

@@ -84,7 +84,7 @@ type UserAdminService struct {
 	userExternalLoginRepo user_external_login.UserExternalLoginRepo
 	notificationRepo      notificationcommon.NotificationRepo
 	pluginUserConfigRepo  plugin_common.PluginUserConfigRepo
-	badgeRepo             badge.BadgeRepo
+	badgeAwardRepo        badge.BadgeAwardRepo
 }
 
 // NewUserAdminService new user admin service
@@ -102,7 +102,7 @@ func NewUserAdminService(
 	userExternalLoginRepo user_external_login.UserExternalLoginRepo,
 	notificationRepo notificationcommon.NotificationRepo,
 	pluginUserConfigRepo plugin_common.PluginUserConfigRepo,
-	badgeRepo badge.BadgeRepo,
+	badgeAwardRepo badge.BadgeAwardRepo,
 ) *UserAdminService {
 	return &UserAdminService{
 		userRepo:              userRepo,
@@ -118,7 +118,7 @@ func NewUserAdminService(
 		userExternalLoginRepo: userExternalLoginRepo,
 		notificationRepo:      notificationRepo,
 		pluginUserConfigRepo:  pluginUserConfigRepo,
-		badgeRepo:             badgeRepo,
+		badgeAwardRepo:        badgeAwardRepo,
 	}
 }
 
@@ -194,9 +194,9 @@ func (us *UserAdminService) removeAllUserConfiguration(ctx context.Context, user
 	if err != nil {
 		log.Errorf("remove all user plugin config error: %v", err)
 	}
-	err = us.badgeRepo.DeleteUserBadge(ctx, userID)
+	err = us.badgeAwardRepo.DeleteUserBadgeAward(ctx, userID)
 	if err != nil {
-		log.Errorf("remove all user badge error: %v", err)
+		log.Errorf("remove all user badge award error: %v", err)
 	}
 }
 
