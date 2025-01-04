@@ -180,7 +180,7 @@ func (ur *UserRankRepo) checkUserTodayRank(ctx context.Context,
 		LessVal: start,
 		MoreVal: end,
 	})
-	earned, err := session.Sum(&entity.Activity{}, "`rank`")
+	earned, err := session.SumInt(&entity.Activity{}, "`rank`")
 	if err != nil {
 		return false, err
 	}

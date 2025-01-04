@@ -226,7 +226,7 @@ func (ar *authRepo) RemoveUserTokens(ctx context.Context, userID string, remainT
 		if err := ar.RemoveUserCacheInfo(ctx, token); err != nil {
 			log.Error(err)
 		} else {
-			log.Debugf("del user %s token success")
+			log.Debugf("del user %s token success", userID)
 		}
 	}
 	if err := ar.RemoveUserStatus(ctx, userID); err != nil {
