@@ -23,11 +23,11 @@ import (
 	"context"
 	"testing"
 
-	"github.com/apache/incubator-answer/internal/base/pager"
-	"github.com/apache/incubator-answer/internal/entity"
-	"github.com/apache/incubator-answer/internal/repo/comment"
-	"github.com/apache/incubator-answer/internal/repo/unique"
-	commentService "github.com/apache/incubator-answer/internal/service/comment"
+	"github.com/apache/answer/internal/base/pager"
+	"github.com/apache/answer/internal/entity"
+	"github.com/apache/answer/internal/repo/comment"
+	"github.com/apache/answer/internal/repo/unique"
+	commentService "github.com/apache/answer/internal/service/comment"
 	"github.com/stretchr/testify/assert"
 )
 

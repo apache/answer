@@ -23,19 +23,19 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/apache/incubator-answer/internal/base/data"
-	"github.com/apache/incubator-answer/internal/repo/search_sync"
+	"github.com/apache/answer/internal/base/data"
+	"github.com/apache/answer/internal/repo/search_sync"
 
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
 
-	"github.com/apache/incubator-answer/internal/base/constant"
-	"github.com/apache/incubator-answer/internal/base/reason"
-	"github.com/apache/incubator-answer/internal/entity"
-	"github.com/apache/incubator-answer/internal/schema"
-	"github.com/apache/incubator-answer/internal/service/config"
-	"github.com/apache/incubator-answer/internal/service/importer"
-	"github.com/apache/incubator-answer/plugin"
+	"github.com/apache/answer/internal/base/constant"
+	"github.com/apache/answer/internal/base/reason"
+	"github.com/apache/answer/internal/entity"
+	"github.com/apache/answer/internal/schema"
+	"github.com/apache/answer/internal/service/config"
+	"github.com/apache/answer/internal/service/importer"
+	"github.com/apache/answer/plugin"
 )
 
 type PluginConfigRepo interface {

@@ -21,12 +21,12 @@ package badge
 
 import (
 	"context"
-	"github.com/apache/incubator-answer/internal/base/data"
-	"github.com/apache/incubator-answer/internal/base/pager"
-	"github.com/apache/incubator-answer/internal/base/reason"
-	"github.com/apache/incubator-answer/internal/entity"
-	"github.com/apache/incubator-answer/internal/service/badge"
-	"github.com/apache/incubator-answer/internal/service/unique"
+	"github.com/apache/answer/internal/base/data"
+	"github.com/apache/answer/internal/base/pager"
+	"github.com/apache/answer/internal/base/reason"
+	"github.com/apache/answer/internal/entity"
+	"github.com/apache/answer/internal/service/badge"
+	"github.com/apache/answer/internal/service/unique"
 	"github.com/segmentfault/pacman/errors"
 	"xorm.io/xorm"
 )

@@ -20,9 +20,9 @@
 package display
 
 import (
-	"github.com/apache/incubator-answer/internal/base/constant"
-	"github.com/apache/incubator-answer/pkg/htmltext"
-	"github.com/apache/incubator-answer/pkg/uid"
+	"github.com/apache/answer/internal/base/constant"
+	"github.com/apache/answer/pkg/htmltext"
+	"github.com/apache/answer/pkg/uid"
 )
 
 // QuestionURL get question url

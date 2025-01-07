@@ -22,15 +22,15 @@ package templaterender
 import (
 	"math"
 
-	"github.com/apache/incubator-answer/internal/service/content"
-	questioncommon "github.com/apache/incubator-answer/internal/service/question_common"
+	"github.com/apache/answer/internal/service/content"
+	questioncommon "github.com/apache/answer/internal/service/question_common"
 
-	"github.com/apache/incubator-answer/internal/service/comment"
-	"github.com/apache/incubator-answer/internal/service/siteinfo_common"
+	"github.com/apache/answer/internal/service/comment"
+	"github.com/apache/answer/internal/service/siteinfo_common"
 	"github.com/google/wire"
 
-	"github.com/apache/incubator-answer/internal/schema"
-	"github.com/apache/incubator-answer/internal/service/tag"
+	"github.com/apache/answer/internal/schema"
+	"github.com/apache/answer/internal/service/tag"
 )
 
 // ProviderSetTemplateRenderController is template render controller providers.

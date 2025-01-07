@@ -22,7 +22,7 @@ package handler
 import (
 	"context"
 
-	"github.com/apache/incubator-answer/internal/base/constant"
+	"github.com/apache/answer/internal/base/constant"
 	"github.com/gin-gonic/gin"
 	"github.com/segmentfault/pacman/i18n"
 )

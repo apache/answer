@@ -20,8 +20,8 @@
 package router
 
 import (
-	"github.com/apache/incubator-answer/internal/base/constant"
-	"github.com/apache/incubator-answer/internal/service/service_config"
+	"github.com/apache/answer/internal/base/constant"
+	"github.com/apache/answer/internal/service/service_config"
 	"github.com/gin-gonic/gin"
 	"path/filepath"
 	"strings"

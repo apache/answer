@@ -21,8 +21,8 @@ package content
 
 import (
 	"context"
-	"github.com/apache/incubator-answer/internal/entity"
-	"github.com/apache/incubator-answer/internal/schema"
+	"github.com/apache/answer/internal/entity"
+	"github.com/apache/answer/internal/schema"
 	"github.com/segmentfault/pacman/log"
 	"math"
 	"time"

@@ -22,10 +22,10 @@ package collection
 import (
 	"context"
 
-	"github.com/apache/incubator-answer/internal/entity"
-	"github.com/apache/incubator-answer/internal/schema"
-	collectioncommon "github.com/apache/incubator-answer/internal/service/collection_common"
-	questioncommon "github.com/apache/incubator-answer/internal/service/question_common"
+	"github.com/apache/answer/internal/entity"
+	"github.com/apache/answer/internal/schema"
+	collectioncommon "github.com/apache/answer/internal/service/collection_common"
+	questioncommon "github.com/apache/answer/internal/service/question_common"
 )
 
 // CollectionService user service

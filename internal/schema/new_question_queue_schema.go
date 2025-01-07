@@ -20,8 +20,8 @@
 package schema
 
 import (
-	"github.com/apache/incubator-answer/internal/entity"
-	"github.com/apache/incubator-answer/pkg/uid"
+	"github.com/apache/answer/internal/entity"
+	"github.com/apache/answer/pkg/uid"
 )
 
 type ExternalNotificationMsg struct {

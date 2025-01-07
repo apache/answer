@@ -20,8 +20,8 @@
 package schema
 
 import (
-	"github.com/apache/incubator-answer/internal/base/constant"
-	"github.com/apache/incubator-answer/internal/entity"
+	"github.com/apache/answer/internal/base/constant"
+	"github.com/apache/answer/internal/entity"
 )
 
 // SimpleObjectInfo simple object info

@@ -20,7 +20,7 @@
 package schema
 
 import (
-	"github.com/apache/incubator-answer/internal/base/translator"
+	"github.com/apache/answer/internal/base/translator"
 	"github.com/segmentfault/pacman/i18n"
 )
 

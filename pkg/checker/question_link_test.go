@@ -22,7 +22,7 @@ package checker_test
 import (
 	"testing"
 
-	"github.com/apache/incubator-answer/pkg/checker"
+	"github.com/apache/answer/pkg/checker"
 	"github.com/stretchr/testify/assert"
 )
 

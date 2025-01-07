@@ -22,7 +22,7 @@ package role
 import (
 	"context"
 
-	"github.com/apache/incubator-answer/internal/entity"
+	"github.com/apache/answer/internal/entity"
 )
 
 // PowerRepo power repository

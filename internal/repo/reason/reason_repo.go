@@ -24,10 +24,10 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/apache/incubator-answer/internal/base/handler"
-	"github.com/apache/incubator-answer/internal/schema"
-	"github.com/apache/incubator-answer/internal/service/config"
-	"github.com/apache/incubator-answer/internal/service/reason_common"
+	"github.com/apache/answer/internal/base/handler"
+	"github.com/apache/answer/internal/schema"
+	"github.com/apache/answer/internal/service/config"
+	"github.com/apache/answer/internal/service/reason_common"
 	"github.com/segmentfault/pacman/log"
 )
 

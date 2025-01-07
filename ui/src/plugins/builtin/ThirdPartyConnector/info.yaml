@@ -18,6 +18,6 @@
 slug_name: third_party_connector
 type: connector
 version: 0.0.1
-link: https://github.com/apache/incubator-answer-plugins/tree/main/connector-basic
+link: https://github.com/apache/answer-plugins/tree/main/connector-basic
 author: Answer
 

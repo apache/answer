@@ -19,7 +19,7 @@ version: 0.0.1
 achievements:
   - achievement:
       name: Visionary Architect
-      icon: https://raw.githubusercontent.com/apache/incubator-answer/main/.vaunt/enhancement.png
+      icon: https://raw.githubusercontent.com/apache/answer/main/.vaunt/enhancement.png
       description: Awarded for bringing up enhancement, dream big!
       triggers:
         - trigger:
@@ -28,7 +28,7 @@ achievements:
             condition: labels in ['enhancement'] & labels in ['LGTM']
   - achievement:
       name: Bug Hunter
-      icon: https://raw.githubusercontent.com/apache/incubator-answer/main/.vaunt/bug.png
+      icon: https://raw.githubusercontent.com/apache/answer/main/.vaunt/bug.png
       description: Awarded for identifying real bugs, well spotted!
       triggers:
         - trigger:

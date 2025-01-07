@@ -21,10 +21,10 @@ package badge
 
 import (
 	"context"
-	"github.com/apache/incubator-answer/internal/base/data"
-	"github.com/apache/incubator-answer/internal/entity"
-	"github.com/apache/incubator-answer/internal/schema"
-	"github.com/apache/incubator-answer/internal/service/event_queue"
+	"github.com/apache/answer/internal/base/data"
+	"github.com/apache/answer/internal/entity"
+	"github.com/apache/answer/internal/schema"
+	"github.com/apache/answer/internal/service/event_queue"
 	"github.com/segmentfault/pacman/log"
 )
 

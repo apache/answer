@@ -21,13 +21,13 @@ package export
 
 import (
 	"context"
-	"github.com/apache/incubator-answer/internal/base/constant"
+	"github.com/apache/answer/internal/base/constant"
 	"github.com/tidwall/gjson"
 	"time"
 
-	"github.com/apache/incubator-answer/internal/base/data"
-	"github.com/apache/incubator-answer/internal/base/reason"
-	"github.com/apache/incubator-answer/internal/service/export"
+	"github.com/apache/answer/internal/base/data"
+	"github.com/apache/answer/internal/base/reason"
+	"github.com/apache/answer/internal/service/export"
 	"github.com/segmentfault/pacman/errors"
 )
 

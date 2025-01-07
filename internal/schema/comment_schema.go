@@ -20,9 +20,9 @@
 package schema
 
 import (
-	"github.com/apache/incubator-answer/internal/base/validator"
-	"github.com/apache/incubator-answer/internal/entity"
-	"github.com/apache/incubator-answer/pkg/converter"
+	"github.com/apache/answer/internal/base/validator"
+	"github.com/apache/answer/internal/entity"
+	"github.com/apache/answer/pkg/converter"
 	"github.com/jinzhu/copier"
 )
 

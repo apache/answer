@@ -20,8 +20,8 @@
 package controller
 
 import (
-	"github.com/apache/incubator-answer/internal/base/handler"
-	"github.com/apache/incubator-answer/internal/service/dashboard"
+	"github.com/apache/answer/internal/base/handler"
+	"github.com/apache/answer/internal/service/dashboard"
 	"github.com/gin-gonic/gin"
 )
 

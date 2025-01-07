@@ -22,9 +22,9 @@ package migrations
 import (
 	"context"
 	"fmt"
-	"github.com/apache/incubator-answer/internal/base/data"
-	"github.com/apache/incubator-answer/internal/entity"
-	"github.com/apache/incubator-answer/internal/repo/unique"
+	"github.com/apache/answer/internal/base/data"
+	"github.com/apache/answer/internal/entity"
+	"github.com/apache/answer/internal/repo/unique"
 	"xorm.io/xorm"
 )
 

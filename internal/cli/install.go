@@ -25,10 +25,10 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/apache/incubator-answer/configs"
-	"github.com/apache/incubator-answer/i18n"
-	"github.com/apache/incubator-answer/pkg/dir"
-	"github.com/apache/incubator-answer/pkg/writer"
+	"github.com/apache/answer/configs"
+	"github.com/apache/answer/i18n"
+	"github.com/apache/answer/pkg/dir"
+	"github.com/apache/answer/pkg/writer"
 )
 
 const (

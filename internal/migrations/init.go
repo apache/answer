@@ -23,15 +23,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/apache/incubator-answer/internal/base/constant"
+	"github.com/apache/answer/internal/base/constant"
 	"time"
 
-	"github.com/apache/incubator-answer/internal/base/data"
-	"github.com/apache/incubator-answer/internal/repo/unique"
-	"github.com/apache/incubator-answer/internal/schema"
+	"github.com/apache/answer/internal/base/data"
+	"github.com/apache/answer/internal/repo/unique"
+	"github.com/apache/answer/internal/schema"
 	"github.com/segmentfault/pacman/log"
 
-	"github.com/apache/incubator-answer/internal/entity"
+	"github.com/apache/answer/internal/entity"
 	"golang.org/x/crypto/bcrypt"
 	"xorm.io/xorm"
 )

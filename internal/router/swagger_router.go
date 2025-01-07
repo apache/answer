@@ -22,7 +22,7 @@ package router
 import (
 	"fmt"
 
-	"github.com/apache/incubator-answer/docs"
+	"github.com/apache/answer/docs"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"

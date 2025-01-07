@@ -20,9 +20,9 @@
 package checker
 
 import (
-	"github.com/apache/incubator-answer/internal/base/constant"
-	"github.com/apache/incubator-answer/pkg/obj"
-	"github.com/apache/incubator-answer/pkg/uid"
+	"github.com/apache/answer/internal/base/constant"
+	"github.com/apache/answer/pkg/obj"
+	"github.com/apache/answer/pkg/uid"
 )
 
 const (

@@ -22,7 +22,7 @@ package reason_common
 import (
 	"context"
 
-	"github.com/apache/incubator-answer/internal/schema"
+	"github.com/apache/answer/internal/schema"
 )
 
 type ReasonRepo interface {

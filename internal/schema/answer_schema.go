@@ -20,8 +20,8 @@
 package schema
 
 import (
-	"github.com/apache/incubator-answer/internal/base/validator"
-	"github.com/apache/incubator-answer/pkg/converter"
+	"github.com/apache/answer/internal/base/validator"
+	"github.com/apache/answer/pkg/converter"
 )
 
 // RemoveAnswerReq delete answer request

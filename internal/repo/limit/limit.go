@@ -22,9 +22,9 @@ package limit
 import (
 	"context"
 	"fmt"
-	"github.com/apache/incubator-answer/internal/base/constant"
-	"github.com/apache/incubator-answer/internal/base/data"
-	"github.com/apache/incubator-answer/internal/base/reason"
+	"github.com/apache/answer/internal/base/constant"
+	"github.com/apache/answer/internal/base/data"
+	"github.com/apache/answer/internal/base/reason"
 	"github.com/segmentfault/pacman/errors"
 	"time"
 )

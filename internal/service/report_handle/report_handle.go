@@ -22,13 +22,13 @@ package report_handle
 import (
 	"context"
 
-	"github.com/apache/incubator-answer/internal/base/constant"
-	"github.com/apache/incubator-answer/internal/entity"
-	"github.com/apache/incubator-answer/internal/schema"
-	"github.com/apache/incubator-answer/internal/service/comment"
-	"github.com/apache/incubator-answer/internal/service/content"
-	"github.com/apache/incubator-answer/pkg/converter"
-	"github.com/apache/incubator-answer/pkg/obj"
+	"github.com/apache/answer/internal/base/constant"
+	"github.com/apache/answer/internal/entity"
+	"github.com/apache/answer/internal/schema"
+	"github.com/apache/answer/internal/service/comment"
+	"github.com/apache/answer/internal/service/content"
+	"github.com/apache/answer/pkg/converter"
+	"github.com/apache/answer/pkg/obj"
 )
 
 type ReportHandle struct {

@@ -24,10 +24,10 @@ import (
 	"io/fs"
 
 	brotli "github.com/anargu/gin-brotli"
-	"github.com/apache/incubator-answer/internal/base/middleware"
-	"github.com/apache/incubator-answer/internal/router"
-	"github.com/apache/incubator-answer/plugin"
-	"github.com/apache/incubator-answer/ui"
+	"github.com/apache/answer/internal/base/middleware"
+	"github.com/apache/answer/internal/router"
+	"github.com/apache/answer/plugin"
+	"github.com/apache/answer/ui"
 	"github.com/gin-gonic/gin"
 )
 

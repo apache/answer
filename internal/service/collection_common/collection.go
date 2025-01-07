@@ -22,7 +22,7 @@ package collectioncommon
 import (
 	"context"
 
-	"github.com/apache/incubator-answer/internal/entity"
+	"github.com/apache/answer/internal/entity"
 )
 
 // CollectionRepo collection repository

@@ -24,7 +24,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/apache/incubator-answer/pkg/converter"
+	"github.com/apache/answer/pkg/converter"
 )
 
 const (

@@ -22,9 +22,9 @@ package auth
 import (
 	"context"
 
-	"github.com/apache/incubator-answer/internal/entity"
-	"github.com/apache/incubator-answer/pkg/token"
-	"github.com/apache/incubator-answer/plugin"
+	"github.com/apache/answer/internal/entity"
+	"github.com/apache/answer/pkg/token"
+	"github.com/apache/answer/plugin"
 )
 
 // AuthRepo auth repository

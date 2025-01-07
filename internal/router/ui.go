@@ -22,16 +22,16 @@ package router
 import (
 	"embed"
 	"fmt"
-	"github.com/apache/incubator-answer/plugin"
+	"github.com/apache/answer/plugin"
 	"io/fs"
 	"net/http"
 	"os"
 	"strings"
 
-	"github.com/apache/incubator-answer/internal/controller"
-	"github.com/apache/incubator-answer/internal/service/siteinfo_common"
-	"github.com/apache/incubator-answer/pkg/htmltext"
-	"github.com/apache/incubator-answer/ui"
+	"github.com/apache/answer/internal/controller"
+	"github.com/apache/answer/internal/service/siteinfo_common"
+	"github.com/apache/answer/pkg/htmltext"
+	"github.com/apache/answer/ui"
 	"github.com/gin-gonic/gin"
 	"github.com/segmentfault/pacman/log"
 )

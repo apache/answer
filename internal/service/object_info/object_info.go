@@ -21,15 +21,15 @@ package object_info
 
 import (
 	"context"
-	"github.com/apache/incubator-answer/internal/base/constant"
-	"github.com/apache/incubator-answer/internal/base/reason"
-	"github.com/apache/incubator-answer/internal/schema"
-	answercommon "github.com/apache/incubator-answer/internal/service/answer_common"
-	"github.com/apache/incubator-answer/internal/service/comment_common"
-	questioncommon "github.com/apache/incubator-answer/internal/service/question_common"
-	tagcommon "github.com/apache/incubator-answer/internal/service/tag_common"
-	"github.com/apache/incubator-answer/pkg/checker"
-	"github.com/apache/incubator-answer/pkg/obj"
+	"github.com/apache/answer/internal/base/constant"
+	"github.com/apache/answer/internal/base/reason"
+	"github.com/apache/answer/internal/schema"
+	answercommon "github.com/apache/answer/internal/service/answer_common"
+	"github.com/apache/answer/internal/service/comment_common"
+	questioncommon "github.com/apache/answer/internal/service/question_common"
+	tagcommon "github.com/apache/answer/internal/service/tag_common"
+	"github.com/apache/answer/pkg/checker"
+	"github.com/apache/answer/pkg/obj"
 	"github.com/segmentfault/pacman/errors"
 )
 

@@ -22,8 +22,8 @@ package migrations
 import (
 	"context"
 	"fmt"
-	"github.com/apache/incubator-answer/internal/entity"
-	"github.com/apache/incubator-answer/internal/service/permission"
+	"github.com/apache/answer/internal/entity"
+	"github.com/apache/answer/internal/service/permission"
 	"github.com/segmentfault/pacman/log"
 	"xorm.io/xorm"
 )

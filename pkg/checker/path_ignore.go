@@ -22,7 +22,7 @@ package checker
 import (
 	"sync"
 
-	"github.com/apache/incubator-answer/configs"
+	"github.com/apache/answer/configs"
 	"github.com/segmentfault/pacman/log"
 	"gopkg.in/yaml.v3"
 )

@@ -24,7 +24,7 @@ ARG GOPROXY
 
 ENV GOPATH /go
 ENV GOROOT /usr/local/go
-ENV PACKAGE github.com/apache/incubator-answer
+ENV PACKAGE github.com/apache/answer
 ENV BUILD_DIR ${GOPATH}/src/${PACKAGE}
 ENV ANSWER_MODULE ${BUILD_DIR}
 

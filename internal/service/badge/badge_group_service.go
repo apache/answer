@@ -21,7 +21,7 @@ package badge
 
 import (
 	"context"
-	"github.com/apache/incubator-answer/internal/entity"
+	"github.com/apache/answer/internal/entity"
 )
 
 type BadgeGroupRepo interface {

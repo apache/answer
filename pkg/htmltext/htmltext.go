@@ -28,8 +28,8 @@ import (
 	"unicode/utf8"
 
 	"github.com/Machiel/slugify"
-	"github.com/apache/incubator-answer/pkg/checker"
-	"github.com/apache/incubator-answer/pkg/converter"
+	"github.com/apache/answer/pkg/checker"
+	"github.com/apache/answer/pkg/converter"
 	strip "github.com/grokify/html-strip-tags-go"
 	"github.com/mozillazg/go-pinyin"
 )

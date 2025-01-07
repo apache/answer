@@ -23,10 +23,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/apache/incubator-answer/plugin"
+	"github.com/apache/answer/plugin"
 	"github.com/segmentfault/pacman/log"
 
-	"github.com/apache/incubator-answer/internal/entity"
+	"github.com/apache/answer/internal/entity"
 )
 
 // ValidationStrategy

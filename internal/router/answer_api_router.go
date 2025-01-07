@@ -20,9 +20,9 @@
 package router
 
 import (
-	"github.com/apache/incubator-answer/internal/base/middleware"
-	"github.com/apache/incubator-answer/internal/controller"
-	"github.com/apache/incubator-answer/internal/controller_admin"
+	"github.com/apache/answer/internal/base/middleware"
+	"github.com/apache/answer/internal/controller"
+	"github.com/apache/answer/internal/controller_admin"
 	"github.com/gin-gonic/gin"
 )
 

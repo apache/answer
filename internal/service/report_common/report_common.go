@@ -22,8 +22,8 @@ package report_common
 import (
 	"context"
 
-	"github.com/apache/incubator-answer/internal/entity"
-	"github.com/apache/incubator-answer/internal/schema"
+	"github.com/apache/answer/internal/entity"
+	"github.com/apache/answer/internal/schema"
 )
 
 // ReportRepo report repository

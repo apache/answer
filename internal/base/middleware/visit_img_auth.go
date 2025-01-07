@@ -20,7 +20,7 @@
 package middleware
 
 import (
-	"github.com/apache/incubator-answer/internal/base/constant"
+	"github.com/apache/answer/internal/base/constant"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"

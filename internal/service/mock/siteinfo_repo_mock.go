@@ -32,8 +32,8 @@ import (
 	context "context"
 	reflect "reflect"
 
-	entity "github.com/apache/incubator-answer/internal/entity"
-	schema "github.com/apache/incubator-answer/internal/schema"
+	entity "github.com/apache/answer/internal/entity"
+	schema "github.com/apache/answer/internal/schema"
 	gomock "go.uber.org/mock/gomock"
 )
 

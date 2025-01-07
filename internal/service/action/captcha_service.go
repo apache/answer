@@ -22,10 +22,10 @@ package action
 import (
 	"context"
 
-	"github.com/apache/incubator-answer/internal/entity"
-	"github.com/apache/incubator-answer/internal/schema"
-	"github.com/apache/incubator-answer/pkg/token"
-	"github.com/apache/incubator-answer/plugin"
+	"github.com/apache/answer/internal/entity"
+	"github.com/apache/answer/internal/schema"
+	"github.com/apache/answer/pkg/token"
+	"github.com/apache/answer/plugin"
 	"github.com/segmentfault/pacman/log"
 )
 

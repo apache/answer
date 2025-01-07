@@ -24,7 +24,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/apache/incubator-answer/internal/repo/export"
+	"github.com/apache/answer/internal/repo/export"
 	"github.com/stretchr/testify/assert"
 )
 

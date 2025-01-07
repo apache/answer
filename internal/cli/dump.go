@@ -24,7 +24,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/apache/incubator-answer/internal/base/data"
+	"github.com/apache/answer/internal/base/data"
 	"xorm.io/xorm/schemas"
 )
 

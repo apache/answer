@@ -25,11 +25,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/apache/incubator-answer/internal/base/conf"
-	"github.com/apache/incubator-answer/internal/base/constant"
-	"github.com/apache/incubator-answer/internal/base/cron"
-	"github.com/apache/incubator-answer/internal/cli"
-	"github.com/apache/incubator-answer/internal/schema"
+	"github.com/apache/answer/internal/base/conf"
+	"github.com/apache/answer/internal/base/constant"
+	"github.com/apache/answer/internal/base/cron"
+	"github.com/apache/answer/internal/cli"
+	"github.com/apache/answer/internal/schema"
 	"github.com/gin-gonic/gin"
 	"github.com/segmentfault/pacman"
 	"github.com/segmentfault/pacman/contrib/log/zap"
@@ -37,7 +37,7 @@ import (
 	"github.com/segmentfault/pacman/log"
 )
 
-// go build -ldflags "-X github.com/apache/incubator-answer/cmd.Version=x.y.z"
+// go build -ldflags "-X github.com/apache/answer/cmd.Version=x.y.z"
 var (
 	// Name is the name of the project
 	Name = "answer"

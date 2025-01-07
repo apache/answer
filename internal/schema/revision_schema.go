@@ -22,7 +22,7 @@ package schema
 import (
 	"time"
 
-	"github.com/apache/incubator-answer/internal/base/constant"
+	"github.com/apache/answer/internal/base/constant"
 )
 
 // AddRevisionDTO add revision request

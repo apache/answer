@@ -22,8 +22,8 @@ package reason
 import (
 	"context"
 
-	"github.com/apache/incubator-answer/internal/schema"
-	"github.com/apache/incubator-answer/internal/service/reason_common"
+	"github.com/apache/answer/internal/schema"
+	"github.com/apache/answer/internal/service/reason_common"
 )
 
 type ReasonService struct {

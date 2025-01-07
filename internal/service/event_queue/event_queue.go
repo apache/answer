@@ -22,7 +22,7 @@ package event_queue
 import (
 	"context"
 
-	"github.com/apache/incubator-answer/internal/schema"
+	"github.com/apache/answer/internal/schema"
 	"github.com/segmentfault/pacman/log"
 )
 

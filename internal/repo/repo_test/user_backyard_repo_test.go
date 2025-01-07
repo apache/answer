@@ -23,9 +23,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/apache/incubator-answer/internal/entity"
-	"github.com/apache/incubator-answer/internal/repo/auth"
-	"github.com/apache/incubator-answer/internal/repo/user"
+	"github.com/apache/answer/internal/entity"
+	"github.com/apache/answer/internal/repo/auth"
+	"github.com/apache/answer/internal/repo/user"
 	"github.com/stretchr/testify/assert"
 )
 

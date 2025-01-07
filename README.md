@@ -8,10 +8,10 @@ A Q&A platform software for teams at any scales. Whether it’s a community foru
 
 To learn more about the project, visit [answer.apache.org](https://answer.apache.org).
 
-[![LICENSE](https://img.shields.io/github/license/apache/incubator-answer)](https://github.com/apache/incubator-answer/blob/main/LICENSE)
+[![LICENSE](https://img.shields.io/github/license/apache/answer)](https://github.com/apache/answer/blob/main/LICENSE)
 [![Language](https://img.shields.io/badge/language-go-blue.svg)](https://golang.org/)
 [![Language](https://img.shields.io/badge/language-react-blue.svg)](https://reactjs.org/)
-[![Go Report Card](https://goreportcard.com/badge/github.com/apache/incubator-answer)](https://goreportcard.com/report/github.com/apache/incubator-answer)
+[![Go Report Card](https://goreportcard.com/badge/github.com/apache/answer)](https://goreportcard.com/report/github.com/apache/answer)
 [![Discord](https://img.shields.io/badge/discord-chat-5865f2?logo=discord&logoColor=f5f5f5)](https://discord.gg/Jm7Y4cbUej)
 
 ## Screenshots
@@ -65,4 +65,4 @@ See [CONTRIBUTING](https://answer.apache.org/community/contributing) for ways to
 
 ## License
 
-[Apache License 2.0](https://github.com/apache/incubator-answer/blob/main/LICENSE)
+[Apache License 2.0](https://github.com/apache/answer/blob/main/LICENSE)
