@@ -37,6 +37,7 @@ Disallow: /users/oauth/*
 Disallow: /users/*/*
 Disallow: /answer/api
 Disallow: /*?code*
+Disallow: /swagger/*
 
 Sitemap: `
 )
