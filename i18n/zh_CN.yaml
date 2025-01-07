@@ -752,7 +752,7 @@ backend:
         name:
           other: 热门问题
         desc:
-          other: 问题有5,000个浏览量。
+          other: 问题有500个浏览量。
       notable_question:
         name:
           other: 值得关注问题
@@ -762,7 +762,7 @@ backend:
         name:
           other: 著名的问题
         desc:
-          other: 问题有5000的浏览量。
+          other: 问题有5,000个浏览量。
       popular_link:
         name:
           other: 热门链接
