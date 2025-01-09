@@ -49,7 +49,6 @@ func NewBadgeController(
 // @Tags api-badge
 // @Accept json
 // @Produce json
-// @Security ApiKeyAuth
 // @Success 200 {object} handler.RespBody{data=[]schema.GetBadgeListResp}
 // @Router /answer/api/v1/badges [get]
 func (b *BadgeController) GetBadgeList(ctx *gin.Context) {
@@ -64,7 +63,6 @@ func (b *BadgeController) GetBadgeList(ctx *gin.Context) {
 // @Tags api-badge
 // @Accept json
 // @Produce json
-// @Security ApiKeyAuth
 // @Param id query string true "id" default(string)
 // @Success 200 {object} handler.RespBody{data=schema.GetBadgeInfoResp}
 // @Router /answer/api/v1/badge [get]
@@ -83,7 +81,6 @@ func (b *BadgeController) GetBadgeInfo(ctx *gin.Context) {
 // @Tags api-badge
 // @Accept json
 // @Produce json
-// @Security ApiKeyAuth
 // @Param page query int false "page"
 // @Param page_size query int false "page size"
 // @Param badge_id query string true "badge id"
@@ -111,7 +108,6 @@ func (b *BadgeController) GetBadgeAwardList(ctx *gin.Context) {
 // @Tags api-badge
 // @Accept json
 // @Produce json
-// @Security ApiKeyAuth
 // @Param username query string true "user name"
 // @Success 200 {object} handler.RespBody{data=[]schema.GetUserBadgeAwardListResp}
 // @Router /answer/api/v1/badge/user/awards [get]
@@ -136,7 +132,6 @@ func (b *BadgeController) GetAllBadgeAwardListByUsername(ctx *gin.Context) {
 // @Tags api-badge
 // @Accept json
 // @Produce json
-// @Security ApiKeyAuth
 // @Param username query string true "user name"
 // @Success 200 {object} handler.RespBody{data=[]schema.GetUserBadgeAwardListResp}
 // @Router /answer/api/v1/badge/user/awards/recent [get]

@@ -1352,15 +1352,6 @@ definitions:
       slug_name:
         type: string
     type: object
-  schema.GetUserStaffReq:
-    properties:
-      page_size:
-        minimum: 1
-        type: integer
-      username:
-        maxLength: 500
-        type: string
-    type: object
   schema.GetUserStaffResp:
     properties:
       avatar:
@@ -3151,6 +3142,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/handler.RespBody'
+      security:
+      - ApiKeyAuth: []
       summary: Get language options
       tags:
       - Lang
@@ -3378,6 +3371,8 @@ paths:
                     $ref: '#/definitions/schema.GetRoleResp'
                   type: array
               type: object
+      security:
+      - ApiKeyAuth: []
       summary: get role list
       tags:
       - admin
@@ -4344,8 +4339,6 @@ paths:
           description: OK
           schema:
             type: string
-      security:
-      - ApiKeyAuth: []
       summary: AnswerList
       tags:
       - api-answer
@@ -4397,8 +4390,6 @@ paths:
                 data:
                   $ref: '#/definitions/schema.GetBadgeInfoResp'
               type: object
-      security:
-      - ApiKeyAuth: []
       summary: get badge info
       tags:
       - api-badge
@@ -4437,8 +4428,6 @@ paths:
                 data:
                   $ref: '#/definitions/schema.GetBadgeInfoResp'
               type: object
-      security:
-      - ApiKeyAuth: []
       summary: get badge award list
       tags:
       - api-badge
@@ -4467,8 +4456,6 @@ paths:
                     $ref: '#/definitions/schema.GetUserBadgeAwardListResp'
                   type: array
               type: object
-      security:
-      - ApiKeyAuth: []
       summary: get user badge award list
       tags:
       - api-badge
@@ -4497,8 +4484,6 @@ paths:
                     $ref: '#/definitions/schema.GetUserBadgeAwardListResp'
                   type: array
               type: object
-      security:
-      - ApiKeyAuth: []
       summary: get user badge award list
       tags:
       - api-badge
@@ -4521,8 +4506,6 @@ paths:
                     $ref: '#/definitions/schema.GetBadgeListResp'
                   type: array
               type: object
-      security:
-      - ApiKeyAuth: []
       summary: list all badges group by group
       tags:
       - api-badge
@@ -4966,8 +4949,6 @@ paths:
                 data:
                   $ref: '#/definitions/schema.ReactionRespItem'
               type: object
-      security:
-      - ApiKeyAuth: []
       summary: get reaction
       tags:
       - Meta
@@ -5329,8 +5310,6 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/handler.RespBody'
-      security:
-      - ApiKeyAuth: []
       summary: UserTop
       tags:
       - Question
@@ -5457,8 +5436,6 @@ paths:
                     $ref: '#/definitions/schema.GetPluginListResp'
                   type: array
               type: object
-      security:
-      - ApiKeyAuth: []
       summary: get all plugins status
       tags:
       - Plugin
@@ -5599,8 +5576,6 @@ paths:
           description: OK
           schema:
             type: string
-      security:
-      - ApiKeyAuth: []
       summary: get question details
       tags:
       - Question
@@ -5623,8 +5598,6 @@ paths:
           description: OK
           schema:
             type: string
-      security:
-      - ApiKeyAuth: []
       summary: get question invite user info
       tags:
       - Question
@@ -6390,6 +6363,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/handler.RespBody'
+      security:
+      - ApiKeyAuth: []
       summary: delete tag
       tags:
       - Tag
@@ -6441,6 +6416,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/handler.RespBody'
+      security:
+      - ApiKeyAuth: []
       summary: add tag
       tags:
       - Tag
@@ -6462,6 +6439,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/handler.RespBody'
+      security:
+      - ApiKeyAuth: []
       summary: update tag
       tags:
       - Tag
@@ -6484,6 +6463,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/handler.RespBody'
+      security:
+      - ApiKeyAuth: []
       summary: recover delete tag
       tags:
       - Tag
@@ -6506,6 +6487,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/handler.RespBody'
+      security:
+      - ApiKeyAuth: []
       summary: update tag
       tags:
       - Tag
@@ -6700,6 +6683,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/handler.RespBody'
+      security:
+      - ApiKeyAuth: []
       summary: send email to the user email then change their email
       tags:
       - User
@@ -6754,6 +6739,7 @@ paths:
           schema:
             type: string
       security:
+      - ApiKeyAuth: []
       - ApiKeyAuth: []
       summary: UserVerifyEmailSend
       tags:
@@ -6905,6 +6891,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/handler.RespBody'
+      security:
+      - ApiKeyAuth: []
       summary: user logout
       tags:
       - User
@@ -7133,8 +7121,6 @@ paths:
                 data:
                   $ref: '#/definitions/schema.UserRankingResp'
               type: object
-      security:
-      - ApiKeyAuth: []
       summary: get user ranking
       tags:
       - User
@@ -7171,12 +7157,16 @@ paths:
       - application/json
       description: get user staff
       parameters:
-      - description: GetUserStaffReq
-        in: body
-        name: data
+      - description: username
+        in: query
+        name: username
         required: true
-        schema:
-          $ref: '#/definitions/schema.GetUserStaffReq'
+        type: string
+      - description: page_size
+        in: query
+        name: page_size
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -7189,8 +7179,6 @@ paths:
                 data:
                   $ref: '#/definitions/schema.GetUserStaffResp'
               type: object
-      security:
-      - ApiKeyAuth: []
       summary: get user staff
       tags:
       - User

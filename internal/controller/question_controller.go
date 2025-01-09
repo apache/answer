@@ -224,7 +224,6 @@ func (qc *QuestionController) ReopenQuestion(ctx *gin.Context) {
 // @Summary get question details
 // @Description get question details
 // @Tags Question
-// @Security ApiKeyAuth
 // @Accept  json
 // @Produce  json
 // @Param id query string true "Question TagID"  default(1)
@@ -279,7 +278,6 @@ func (qc *QuestionController) GetQuestion(ctx *gin.Context) {
 // @Summary get question invite user info
 // @Description get question invite user info
 // @Tags Question
-// @Security ApiKeyAuth
 // @Accept  json
 // @Produce  json
 // @Param id query string true "Question ID"  default(1)
@@ -821,7 +819,6 @@ func (qc *QuestionController) GetSimilarQuestions(ctx *gin.Context) {
 // @Tags Question
 // @Accept json
 // @Produce json
-// @Security ApiKeyAuth
 // @Param username query string true "username"  default(string)
 // @Success 200 {object} handler.RespBody
 // @Router /answer/api/v1/personal/qa/top [get]

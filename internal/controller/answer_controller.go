@@ -365,7 +365,6 @@ func (ac *AnswerController) Update(ctx *gin.Context) {
 // @Summary AnswerList
 // @Description AnswerList <br> <b>order</b> (default or updated)
 // @Tags api-answer
-// @Security ApiKeyAuth
 // @Accept  json
 // @Produce  json
 // @Param question_id query string true "question_id"
