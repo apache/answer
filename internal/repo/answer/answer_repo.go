@@ -198,7 +198,7 @@ func (ar *answerRepo) GetAnswerList(ctx context.Context, answer *entity.Answer) 
 	answerList = make([]*entity.Answer, 0)
 	answer.ID = uid.DeShortID(answer.ID)
 	answer.QuestionID = uid.DeShortID(answer.QuestionID)
-	err = ar.data.DB.Context(ctx).Find(answerList, answer)
+	err = ar.data.DB.Context(ctx).Find(&answerList, answer)
 	if err != nil {
 		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
@@ -216,7 +216,7 @@ func (ar *answerRepo) GetAnswerPage(ctx context.Context, page, pageSize int, ans
 	answer.ID = uid.DeShortID(answer.ID)
 	answer.QuestionID = uid.DeShortID(answer.QuestionID)
 	answerList = make([]*entity.Answer, 0)
-	total, err = pager.Help(page, pageSize, answerList, answer, ar.data.DB.Context(ctx))
+	total, err = pager.Help(page, pageSize, &answerList, answer, ar.data.DB.Context(ctx))
 	if err != nil {
 		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}

@@ -264,7 +264,7 @@ func (qr *questionRepo) FindByID(ctx context.Context, id []string) (questionList
 func (qr *questionRepo) GetQuestionList(ctx context.Context, question *entity.Question) (questionList []*entity.Question, err error) {
 	question.ID = uid.DeShortID(question.ID)
 	questionList = make([]*entity.Question, 0)
-	err = qr.data.DB.Context(ctx).Find(questionList, question)
+	err = qr.data.DB.Context(ctx).Find(&questionList, question)
 	if err != nil {
 		return questionList, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
