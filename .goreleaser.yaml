@@ -65,8 +65,6 @@ archives:
         dst: NOTICE
       - src: "docs/release/licenses/*"
         dst: licenses/
-      - src: "DISCLAIMER"
-        dst: DISCLAIMER
     wrap_in_directory: true
 checksum:
   name_template: 'checksums.txt'
