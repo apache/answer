@@ -284,10 +284,6 @@ func (ac *AnswerController) Add(ctx *gin.Context) {
 	objectOwner := ac.rankService.CheckOperationObjectOwner(ctx, req.UserID, info.ID)
 	req.CanEdit = canList[0] || objectOwner
 	req.CanDelete = canList[1] || objectOwner
-	if !can {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
-		return
-	}
 	info.MemberActions = permission.GetAnswerPermission(ctx, req.UserID, info.UserID,
 		0, req.CanEdit, req.CanDelete, false)
 	handler.HandleResponse(ctx, nil, gin.H{
