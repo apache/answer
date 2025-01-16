@@ -20,8 +20,10 @@
 package schema
 
 import (
+	"github.com/apache/answer/internal/base/reason"
 	"github.com/apache/answer/internal/base/validator"
 	"github.com/apache/answer/pkg/converter"
+	"github.com/segmentfault/pacman/errors"
 )
 
 // RemoveAnswerReq delete answer request
@@ -60,6 +62,12 @@ type AnswerAddReq struct {
 
 func (req *AnswerAddReq) Check() (errFields []*validator.FormErrorField, err error) {
 	req.HTML = converter.Markdown2HTML(req.Content)
+	if req.HTML == "" {
+		return append(errFields, &validator.FormErrorField{
+			ErrorField: "content",
+			ErrorMsg:   reason.AnswerContentCannotEmpty,
+		}), errors.BadRequest(reason.AnswerContentCannotEmpty)
+	}
 	return nil, nil
 }
 
@@ -79,6 +87,12 @@ type AnswerUpdateReq struct {
 
 func (req *AnswerUpdateReq) Check() (errFields []*validator.FormErrorField, err error) {
 	req.HTML = converter.Markdown2HTML(req.Content)
+	if req.HTML == "" {
+		return append(errFields, &validator.FormErrorField{
+			ErrorField: "content",
+			ErrorMsg:   reason.AnswerContentCannotEmpty,
+		}), errors.BadRequest(reason.AnswerContentCannotEmpty)
+	}
 	return nil, nil
 }
 

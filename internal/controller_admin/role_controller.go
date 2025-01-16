@@ -39,6 +39,7 @@ func NewRoleController(roleService *service.RoleService) *RoleController {
 // GetRoleList get role list
 // @Summary get role list
 // @Description get role list
+// @Security ApiKeyAuth
 // @Tags admin
 // @Produce json
 // @Success 200 {object} handler.RespBody{data=[]schema.GetRoleResp}

@@ -133,6 +133,11 @@ type AddUsersReq struct {
 	Users    []*AddUserReq `json:"-"`
 }
 
+// DeletePermanentlyReq delete permanently request
+type DeletePermanentlyReq struct {
+	Type string `validate:"required,oneof=users questions answers" json:"type"`
+}
+
 type AddUsersErrorData struct {
 	// optional. error field name.
 	Field string `json:"field"`
