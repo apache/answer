@@ -19,12 +19,12 @@
 
 import { FC, FormEvent, useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
-import { Eye, EyeSlash } from 'react-bootstrap-icons';
 import { useTranslation } from 'react-i18next';
 
 import type { FormDataType } from '@/common/interface';
 import Pattern from '@/common/pattern';
 import Progress from '../Progress';
+import { Icon } from '@/components';
 
 interface Props {
   data: FormDataType;
@@ -317,20 +317,18 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
           />
           <button
             type="button"
-            className="position-absolute top-50 translate-middle-y bg-transparent border-0"
+            className="position-absolute top-50 translate-middle-y bg-transparent border-0 p-1"
             style={{
-              cursor: 'pointer',
               right: '12px',
-              padding: '4px',
             }}
             aria-label={showPassword ? t('hide_password') : t('show_password')}
             onMouseDown={() => setShowPassword(true)}
             onMouseUp={() => setShowPassword(false)}
             onMouseLeave={() => setShowPassword(false)}>
             {showPassword ? (
-              <Eye className="text-secondary" size={18} />
+              <Icon name="eye" className="text-secondary" size="18" />
             ) : (
-              <EyeSlash className="text-secondary" size={18} />
+              <Icon name="eye-slash" className="text-secondary" size="18" />
             )}
           </button>
         </div>

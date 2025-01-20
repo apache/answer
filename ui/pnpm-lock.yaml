@@ -77,9 +77,6 @@ importers:
       react-bootstrap:
         specifier: ^2.10.0
         version: 2.10.0(@types/react@18.0.20)(react-dom@18.2.0)(react@18.2.0)
-      react-bootstrap-icons:
-        specifier: ^1.11.5
-        version: 1.11.5(react@18.2.0)
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
@@ -9915,15 +9912,6 @@ packages:
       react-scripts: 5.0.1(@babel/plugin-syntax-flow@7.24.7)(@babel/plugin-transform-react-jsx@7.25.2)(eslint@8.53.0)(react@18.2.0)(sass@1.54.9)(ts-node@10.9.1)(typescript@4.9.5)
       semver: 5.7.1
     dev: true
-
-  /react-bootstrap-icons@1.11.5(react@18.2.0):
-    resolution: {integrity: sha512-eOhtFJMUqw98IJcfKJsSMZkFHCeNPTTwXZAe9V9d4mT22ARmbrISxPO9GmtWWuf72zQctLeZMGodX/q6wrbYYg==}
-    peerDependencies:
-      react: '>=16.8.6'
-    dependencies:
-      prop-types: 15.8.1
-      react: 18.2.0
-    dev: false
 
   /react-bootstrap@2.10.0(@types/react@18.0.20)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-87gRP69VAfeU2yKgp8RI3HvzhPNrnYIV2QNranYXataz3ef+k7OhvKGGdxQLQfUsQ2RTmlY66tn4pdFrZ94hNg==}
