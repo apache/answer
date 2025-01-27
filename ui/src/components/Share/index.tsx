@@ -88,7 +88,7 @@ const Index: FC<IProps> = ({ type, qid, aid, title }) => {
         style={{ lineHeight: '23px' }}>
         {t('share.name')}
       </Dropdown.Toggle>
-      <Dropdown.Menu style={{ width: '195px' }}>
+      <Dropdown.Menu style={{ minWidth: '195px' }}>
         <OverlayTrigger
           trigger="click"
           placement="left"
