@@ -137,6 +137,8 @@ backend:
     other: Chiave di accesso
   pass:
     other: Password
+  old_pass:
+    other: Current password
   original_text:
     other: Questo post
   email_or_password_wrong_error:
