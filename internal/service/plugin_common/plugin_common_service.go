@@ -49,6 +49,7 @@ type PluginUserConfigRepo interface {
 		pluginUserConfig *entity.PluginUserConfig, exist bool, err error)
 	GetPluginUserConfigPage(ctx context.Context, page, pageSize int) (
 		pluginUserConfigs []*entity.PluginUserConfig, total int64, err error)
+	DeleteUserPluginConfig(ctx context.Context, userID string) (err error)
 }
 
 // PluginCommonService user service

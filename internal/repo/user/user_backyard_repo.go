@@ -175,3 +175,12 @@ func (ur *userAdminRepo) GetUserPage(ctx context.Context, page, pageSize int, us
 	tryToDecorateUserListFromUserCenter(ctx, ur.data, users)
 	return
 }
+
+// DeletePermanentlyUsers delete permanently users
+func (ur *userAdminRepo) DeletePermanentlyUsers(ctx context.Context) (err error) {
+	_, err = ur.data.DB.Context(ctx).Where("status = ?", entity.UserStatusDeleted).Delete(&entity.User{})
+	if err != nil {
+		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	return
+}

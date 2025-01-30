@@ -23,3 +23,14 @@ package checker
 func IsNotZeroString(s string) bool {
 	return len(s) > 0 && s != "0"
 }
+
+// FilterEmptyString filter empty string from string slice
+func FilterEmptyString(strs []string) []string {
+	var result []string
+	for _, str := range strs {
+		if IsNotZeroString(str) {
+			result = append(result, str)
+		}
+	}
+	return result
+}

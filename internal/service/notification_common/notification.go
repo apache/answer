@@ -55,6 +55,8 @@ type NotificationRepo interface {
 	UpdateNotificationContent(ctx context.Context, notification *entity.Notification) (err error)
 	GetById(ctx context.Context, id string) (*entity.Notification, bool, error)
 	CountNotificationByUser(ctx context.Context, cond *entity.Notification) (int64, error)
+	DeleteNotification(ctx context.Context, userID string) (err error)
+	DeleteUserNotificationConfig(ctx context.Context, userID string) (err error)
 }
 
 type NotificationCommon struct {

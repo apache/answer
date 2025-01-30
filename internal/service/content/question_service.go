@@ -1445,7 +1445,7 @@ func (qs *QuestionService) GetRecommendQuestionPage(ctx context.Context, req *sc
 	if err != nil {
 		return nil, 0, err
 	}
-	activities, err := qs.activityRepo.GetUserActivitysByActivityType(ctx, req.LoginUserID, activityType)
+	activities, err := qs.activityRepo.GetUserActivitiesByActivityType(ctx, req.LoginUserID, activityType)
 	if err != nil {
 		return nil, 0, err
 	}

@@ -17,13 +17,14 @@
  * under the License.
  */
 
-import { FC, FormEvent } from 'react';
+import { FC, FormEvent, useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
 import type { FormDataType } from '@/common/interface';
 import Pattern from '@/common/pattern';
 import Progress from '../Progress';
+import { Icon } from '@/components';
 
 interface Props {
   data: FormDataType;
@@ -33,6 +34,8 @@ interface Props {
 }
 const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
   const { t } = useTranslation('translation', { keyPrefix: 'install' });
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const checkValidated = (): boolean => {
     let bol = true;
@@ -295,21 +298,40 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
 
       <Form.Group controlId="password" className="mb-3">
         <Form.Label>{t('admin_password.label')}</Form.Label>
-        <Form.Control
-          required
-          type="password"
-          value={data.password.value}
-          isInvalid={data.password.isInvalid}
-          onChange={(e) => {
-            changeCallback({
-              password: {
-                value: e.target.value,
-                isInvalid: false,
-                errorMsg: '',
-              },
-            });
-          }}
-        />
+        <div className="position-relative">
+          <Form.Control
+            required
+            type={showPassword ? 'text' : 'password'}
+            value={data.password.value}
+            isInvalid={data.password.isInvalid}
+            style={{ paddingRight: '45px' }}
+            onChange={(e) => {
+              changeCallback({
+                password: {
+                  value: e.target.value,
+                  isInvalid: false,
+                  errorMsg: '',
+                },
+              });
+            }}
+          />
+          <button
+            type="button"
+            className="position-absolute top-50 translate-middle-y bg-transparent border-0 p-1"
+            style={{
+              right: '12px',
+            }}
+            aria-label={showPassword ? t('hide_password') : t('show_password')}
+            onMouseDown={() => setShowPassword(true)}
+            onMouseUp={() => setShowPassword(false)}
+            onMouseLeave={() => setShowPassword(false)}>
+            {showPassword ? (
+              <Icon name="eye" className="text-secondary" size="18" />
+            ) : (
+              <Icon name="eye-slash" className="text-secondary" size="18" />
+            )}
+          </button>
+        </div>
         <Form.Text>{t('admin_password.text')}</Form.Text>
         <Form.Control.Feedback type="invalid">
           {data.password.errorMsg}

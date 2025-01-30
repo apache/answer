@@ -37,7 +37,7 @@ type ActivityRepo interface {
 	GetActivityTypeByObjectType(ctx context.Context, objectKey, action string) (activityType int, err error)
 	GetActivity(ctx context.Context, session *xorm.Session, objectID, userID string, activityType int) (
 		existsActivity *entity.Activity, exist bool, err error)
-	GetUserActivitysByActivityType(ctx context.Context, userID string, activityType int) (activityList []*entity.Activity, err error)
+	GetUserActivitiesByActivityType(ctx context.Context, userID string, activityType int) (activityList []*entity.Activity, err error)
 	GetUserIDObjectIDActivitySum(ctx context.Context, userID, objectID string) (int, error)
 	GetActivityTypeByConfigKey(ctx context.Context, configKey string) (activityType int, err error)
 	AddActivity(ctx context.Context, activity *entity.Activity) (err error)
