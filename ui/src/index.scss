@@ -251,6 +251,74 @@ img[src=""] {
     border-radius: 0.25rem;
     padding: 1rem;
     max-height: 38rem;
+    position: relative;
+    &:hover .copy-button {
+      opacity: 0.5;
+    }
+    .copy-button {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      border: var(--bs-border-width) solid var(--bs-border-color-translucent);
+      border-radius: 4px;
+      padding: 5px;
+      background-color: var(--bs-list-group-bg);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &:hover {
+        opacity: 1 !important;
+      }
+
+      &::before {
+        content: '';
+        width: 16px;
+        height: 16px;
+        background-color: var(--bs-body-color);
+        mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M19 21H8V7H19V21ZM19 5H8C6.89 5 6 5.89 6 7V21C6 22.1 6.89 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.89 20.1 5 19 5ZM16 1H4C2.89 1 2 1.89 2 3V17H4V3H16V1Z' fill='currentColor'/%3E%3C/svg%3E")
+          no-repeat center;
+        mask-size: cover;
+        transition:
+          transform 0.3s ease,
+          opacity 0.3s ease;
+      }
+
+      &.copied {
+        &::before {
+          transform: scale(0.2);
+          opacity: 0;
+        }
+
+        &::after {
+          content: '';
+          position: absolute;
+          width: 16px;
+          height: 16px;
+          background-color: var(--bs-primary);
+          mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z' fill='currentColor'/%3E%3C/svg%3E")
+            no-repeat center;
+          mask-size: cover;
+          transform: scale(0.2);
+          opacity: 0;
+          animation: scaleUp 0.3s ease forwards;
+        }
+      }
+    }
+
+    @keyframes scaleUp {
+      from {
+        transform: scale(0.2);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
   }
   blockquote {
     border-left: 0.25rem solid #ced4da;
