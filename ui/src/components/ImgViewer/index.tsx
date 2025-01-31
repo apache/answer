@@ -30,6 +30,7 @@ const Index: FC<{
   const [visible, setVisible] = useState(false);
   const [imgSrc, setImgSrc] = useState('');
   const ref = useRef<HTMLDivElement>(null);
+
   const onClose = () => {
     setVisible(false);
     setImgSrc('');

@@ -269,11 +269,9 @@ img[src=""] {
       display: flex;
       align-items: center;
       justify-content: center;
-
       &:hover {
         opacity: 1 !important;
       }
-
       &::before {
         content: '';
         width: 16px;
@@ -286,13 +284,11 @@ img[src=""] {
           transform 0.3s ease,
           opacity 0.3s ease;
       }
-
       &.copied {
         &::before {
           transform: scale(0.2);
           opacity: 0;
         }
-
         &::after {
           content: '';
           position: absolute;
