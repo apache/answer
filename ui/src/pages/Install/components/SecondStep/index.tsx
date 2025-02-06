@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { FC, FormEvent } from 'react';
+import { FC, FormEvent, useState  } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
@@ -113,6 +113,14 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
     nextCallback();
   };
 
+  //checkbox for sslmode enabled or not
+  const [checked, setChecked] = useState(false);
+
+  const handleChange = () => {
+    // Change state to the opposite when checkbox changes
+    setChecked(!checked);
+  };
+
   if (!visible) return null;
   return (
     <Form noValidate onSubmit={handleSubmit}>
@@ -183,6 +191,35 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
             <Form.Control.Feedback type="invalid">
               {data.db_password.errorMsg}
             </Form.Control.Feedback>
+              <div className='conditional-checkbox'>
+                <label htmlFor='sslMode' className='switch switch-default'>
+                  SSL Mode On
+                </label>
+                <input
+                  id='sslMode'
+                  type='checkbox'
+                  checked={checked}
+                  onChange={handleChange}
+                />
+
+                {/* Inline conditional if checked state is `true` will show the div, otherwise, it won't */}
+
+                {checked && (
+                  <div
+                    number-input
+                    id='sslmodeOptionsDropdown'
+                    className='form-group col-lg-2 col-md-4 col-sm-8'
+                  >
+                    <label htmlFor ='sslmodeOptions'>
+                      <span className='requiredAsterisk' />
+                    </label>
+                    <select id='sslmode' className='form-control'>
+                      <option>require</option>
+                      <option>verify-ca</option>
+                    </select>
+                  </div>
+                  )}
+                </div>
           </Form.Group>
 
           <Form.Group controlId="db_host" className="mb-3">
@@ -228,6 +265,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
               {data.db_name.errorMsg}
             </Form.Control.Feedback>
           </Form.Group>
+
         </>
       ) : (
         <Form.Group controlId="file" className="mb-3">

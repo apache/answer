@@ -21,12 +21,14 @@ package install
 
 import (
 	"fmt"
+	"log"
 	"net/url"
+	"os"
 	"strings"
 
-	"github.com/apache/answer/internal/base/reason"
-	"github.com/apache/answer/internal/base/validator"
-	"github.com/apache/answer/pkg/checker"
+	"github.com/apache/incubator-answer/internal/base/reason"
+	"github.com/apache/incubator-answer/internal/base/validator"
+	"github.com/apache/incubator-answer/pkg/checker"
 	"github.com/segmentfault/pacman/errors"
 	"xorm.io/xorm/schemas"
 )
@@ -40,12 +42,17 @@ type CheckConfigFileResp struct {
 
 // CheckDatabaseReq check database
 type CheckDatabaseReq struct {
-	DbType     string `validate:"required,oneof=postgres sqlite3 mysql" json:"db_type"`
-	DbUsername string `json:"db_username"`
-	DbPassword string `json:"db_password"`
-	DbHost     string `json:"db_host"`
-	DbName     string `json:"db_name"`
-	DbFile     string `json:"db_file"`
+	DbType       string `validate:"required,oneof=postgres sqlite3 mysql" json:"db_type"`
+	DbUsername   string `json:"db_username"`
+	DbPassword   string `json:"db_password"`
+	DbHost       string `json:"db_host"`
+	DbName       string `json:"db_name"`
+	DbFile       string `json:"db_file"`
+	Ssl          bool   `json:"ssl_enabled"`
+	SslMode      string `json:"ssl_mode"`
+	SslCrt       string `json:"server-ca.pem"`
+	SslKey       string `json:"client-cert.pem"`
+	SslCrtClient string `json:"client-key.pem"`
 }
 
 // GetConnection get connection string
@@ -59,8 +66,26 @@ func (r *CheckDatabaseReq) GetConnection() string {
 	}
 	if r.DbType == string(schemas.POSTGRES) {
 		host, port := parsePgSQLHostPort(r.DbHost)
-		return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-			host, port, r.DbUsername, r.DbPassword, r.DbName)
+		if !r.Ssl {
+			return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+				host, port, r.DbUsername, r.DbPassword, r.DbName)
+			//supporting two sslmodes (to be extended to all modes)
+		} else if r.SslMode == "require" {
+			return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+				host, port, r.DbUsername, r.DbPassword, r.DbName, r.SslMode)
+		} else if r.SslMode == "verify-ca" {
+			_, err_server_ca := os.Stat(r.SslCrt)
+			_, err_client_cert := os.Stat(r.SslKey)
+			_, err_client_key := os.Stat(r.SslCrtClient)
+			if err_server_ca != nil || err_client_cert != nil || err_client_key != nil {
+				if os.IsNotExist(err_server_ca) || os.IsNotExist(err_client_cert) || os.IsNotExist(err_client_key) {
+					log.Fatal("Certificate not Found !!")
+				}
+			}
+			return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s sslrootcert=%s  sslcert=%s sslkey=%s",
+				host, port, r.DbUsername, r.DbPassword, r.DbName, r.SslMode, r.SslCrt, r.SslKey, r.SslCrtClient)
+		}
+
 	}
 	return ""
 }
