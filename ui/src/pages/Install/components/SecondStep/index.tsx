@@ -243,8 +243,8 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                             }}>
                             {["require","verify-ca"].map((item) => {
                               return (
-                                <option value={item.value} key={item.value}>
-                                  {item.label}
+                                <option value={item} key={item}>
+                                  {item}
                                 </option>
                               );
                             })}
