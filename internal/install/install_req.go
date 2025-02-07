@@ -26,9 +26,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/apache/incubator-answer/internal/base/reason"
-	"github.com/apache/incubator-answer/internal/base/validator"
-	"github.com/apache/incubator-answer/pkg/checker"
+	"github.com/apache/answer/internal/base/reason"
+	"github.com/apache/answer/internal/base/validator"
+	"github.com/apache/answer/pkg/checker"
 	"github.com/segmentfault/pacman/errors"
 	"xorm.io/xorm/schemas"
 )

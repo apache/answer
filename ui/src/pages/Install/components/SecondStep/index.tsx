@@ -51,7 +51,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
 
   const checkValidated = (): boolean => {
     let bol = true;
-    const { db_type, db_username, db_password, db_host, db_name, db_file } =
+    const { db_type, db_username, db_password, db_host, db_name, db_file,ssl_enabled,ssl_mode } =
       data;
 
     if (db_type.value !== 'sqlite3') {
@@ -81,7 +81,23 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
           errorMsg: t('db_host.msg'),
         };
       }
-
+      if (!ssl_enabled.value) {
+        bol = false;
+        data.ssl_enabled = {
+          value: '',
+          isInvalid: true,
+          errorMsg: t('ssl_enabled.msg'),
+        };
+      }
+      if (!ssl_mode.value) {
+        bol = false;
+        data.ssl_mode = {
+          value: '',
+          isInvalid: true,
+          errorMsg: t('ssl_mode.msg'),
+        };
+      }
+      
       if (!db_name.value) {
         bol = false;
         data.db_name = {
@@ -191,6 +207,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
             <Form.Control.Feedback type="invalid">
               {data.db_password.errorMsg}
             </Form.Control.Feedback>
+            {data.db_type.value=== 'postgres' && (
               <div className='conditional-checkbox'>
                 <label htmlFor='sslMode' className='switch switch-default'>
                   SSL Mode On
@@ -199,12 +216,17 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                   id='sslMode'
                   type='checkbox'
                   checked={checked}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    changeCallback({
+                      ssl_enabled: {
+                        value: e.target.value,
+                        isInvalid: false,
+                        errorMsg: '',
+                      },
+                    });
+                  }}
                 />
-
-                {/* Inline conditional if checked state is `true` will show the div, otherwise, it won't */}
-
-                {checked && (
+                {checked &&  (
                   <div
                     number-input
                     id='sslmodeOptionsDropdown'
@@ -220,6 +242,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                   </div>
                   )}
                 </div>
+                )}
           </Form.Group>
 
           <Form.Group controlId="db_host" className="mb-3">

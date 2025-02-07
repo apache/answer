@@ -130,6 +130,16 @@ const Index: FC = () => {
       isInvalid: false,
       errorMsg: '',
     },
+    ssl_enabled: {
+      value: '',
+      isInvalid: false,
+      errorMsg: '',
+    },
+    ssl_mode: {
+      value: '',
+      isInvalid: false,
+      errorMsg: '',
+    },
   });
 
   const updateFormData = (params: FormDataType) => {
