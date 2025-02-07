@@ -209,11 +209,11 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
             </Form.Control.Feedback>
             {data.db_type.value=== 'postgres' && (
               <div className='conditional-checkbox'>
-                <label htmlFor='sslMode' className='switch switch-default'>
+                <label htmlFor='sslEnabled' className='switch switch-default'>
                   SSL Mode On
                 </label>
                 <input
-                  id='sslMode'
+                  id='sslEnabled'
                   type='checkbox'
                   checked={checked}
                   onChange={(e) => {
@@ -227,19 +227,29 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                   }}
                 />
                 {checked &&  (
-                  <div
-                    number-input
-                    id='sslmodeOptionsDropdown'
-                    className='form-group col-lg-2 col-md-4 col-sm-8'
-                  >
-                    <label htmlFor ='sslmodeOptions'>
-                      <span className='requiredAsterisk' />
-                    </label>
-                    <select id='sslmode' className='form-control'>
-                      <option>require</option>
-                      <option>verify-ca</option>
-                    </select>
-                  </div>
+                  <Form.Group controlId="sslmodeOptionsDropdown" className="mb-3">
+                          <Form.Label>{"SSL mode"}</Form.Label>
+                          <Form.Select
+                            value={data.value}
+                            isInvalid={data.isInvalid}
+                            onChange={(e) => {
+                              changeCallback({
+                                ssl_mode: {
+                                  value: e.target.value,
+                                  isInvalid: false,
+                                  errorMsg: '',
+                                },
+                              });
+                            }}>
+                            {["require","verify-ca"].map((item) => {
+                              return (
+                                <option value={item.value} key={item.value}>
+                                  {item.label}
+                                </option>
+                              );
+                            })}
+                          </Form.Select>
+                        </Form.Group>
                   )}
                 </div>
                 )}
