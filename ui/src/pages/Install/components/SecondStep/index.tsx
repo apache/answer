@@ -210,7 +210,6 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
               {data.db_password.errorMsg}
             </Form.Control.Feedback>
           </Form.Group>
-            
             {data.db_type.value=== 'postgres' && (
               <Form.Group controlId="ssl_enabled" className="conditional-checkbox">
                <Form.Label>{t('ssl_enabled.label')}</Form.Label>
@@ -232,8 +231,9 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                   }}
                 />
                 </Form.Group>
-                )}
-                {checked &&  (
+                )
+                }
+                {data.ssl_enabled.value && (
                   <Form.Group controlId="sslmodeOptionsDropdown" className="mb-3">
                       <Form.Label>{t('ssl_mode.label')}</Form.Label>
                           <Form.Select
