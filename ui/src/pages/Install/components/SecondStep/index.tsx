@@ -137,7 +137,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
     }
     nextCallback();
   };
-
+ 
 
 
   if (!visible) return null;
@@ -210,28 +210,27 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
               {data.db_password.errorMsg}
             </Form.Control.Feedback>
           </Form.Group>
-            {data.db_type.value=== 'postgres' && (
+            {data.db_type.value === 'postgres' && (
               <Form.Group controlId="ssl_enabled" className="conditional-checkbox">
-               <Form.Label>{t('ssl_enabled.label')}</Form.Label>
-               <Form.Check
-                  inline
-                  type={"checkbox"}
-                  label={`SSL Mode On`}
-                  id={"sslEnabled"}
-                  Value={data.ssl_enabled.value}
-                  onChange={(e) => {
+                <Form.Check type="checkbox" id="sslEnabled">
+                  <Form.Check.Input
+                    type="checkbox"
+                    value={data.ssl_enabled.value}
+                    onChange={(e) => {
                     changeCallback({
                       ssl_enabled: {
-                        value: e.target.value,
+                        value: e.target.checked,
                         isInvalid: false,
                         errorMsg: '',
                       },
                       });
-                  }}
-                />
-                </Form.Group>
-                )
-                }
+                    }}
+                  />
+                 <Form.Label>{t('ssl_enabled.label')}</Form.Label>
+                </Form.Check>
+              </Form.Group>
+              )
+              }
                 {data.ssl_enabled.value && (
                   <Form.Group controlId="sslmodeOptionsDropdown" className="mb-3">
                       <Form.Label>{t('ssl_mode.label')}</Form.Label>
