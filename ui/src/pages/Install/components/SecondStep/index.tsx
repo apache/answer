@@ -132,10 +132,6 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
   //checkbox for sslmode enabled or not
   const [checked, setChecked] = useState(false);
 
-  const handleChange = () => {
-    // Change state to the opposite when checkbox changes
-    setChecked(!checked);
-  };
 
   if (!visible) return null;
   return (
@@ -203,11 +199,14 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                 });
               }}
             />
-
             <Form.Control.Feedback type="invalid">
               {data.db_password.errorMsg}
             </Form.Control.Feedback>
+          </Form.Group>
+            
             {data.db_type.value=== 'postgres' && (
+              <Form.Group controlId="ssl_enabled" className="conditional-checkbox">
+               <Form.Label>{t('ssl_enabled.label')}</Form.Label>
               <div className='conditional-checkbox'>
                 <label htmlFor='sslEnabled' className='switch switch-default'>
                   SSL Mode On
@@ -226,6 +225,8 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                     });
                   }}
                 />
+                </div>
+                </Form.Group>
                 {checked &&  (
                   <Form.Group controlId="sslmodeOptionsDropdown" className="mb-3">
                           <Form.Label>{"SSL mode"}</Form.Label>
@@ -251,9 +252,9 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                           </Form.Select>
                         </Form.Group>
                   )}
-                </div>
+                
                 )}
-          </Form.Group>
+          
 
           <Form.Group controlId="db_host" className="mb-3">
             <Form.Label>{t('db_host.label')}</Form.Label>
