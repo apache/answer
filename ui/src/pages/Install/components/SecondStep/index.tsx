@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { FC, FormEvent, useState  } from 'react';
+import { FC, FormEvent} from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
@@ -43,6 +43,15 @@ const sqlData = [
   {
     value: 'postgres',
     label: 'PostgreSQL',
+  },
+];
+
+const sslModes = [
+  {
+    value: 'require',
+  },
+  {
+    value: 'verify-ca',
   },
 ];
 
@@ -129,8 +138,6 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
     nextCallback();
   };
 
-  //checkbox for sslmode enabled or not
-  const [checked, setChecked] = useState(false);
 
 
   if (!visible) return null;
@@ -207,14 +214,13 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
             {data.db_type.value=== 'postgres' && (
               <Form.Group controlId="ssl_enabled" className="conditional-checkbox">
                <Form.Label>{t('ssl_enabled.label')}</Form.Label>
-              <div className='conditional-checkbox'>
-                <label htmlFor='sslEnabled' className='switch switch-default'>
-                  SSL Mode On
-                </label>
-                <input
-                  id='sslEnabled'
-                  type='checkbox'
-                  checked={checked}
+               <Form.Check
+                  inline
+                  enabled
+                  type={"radio"}
+                  label={`SSL Mode On`}
+                  id={"sslEnabled"}
+                  Value={data.ssl_enabled.value}
                   onChange={(e) => {
                     changeCallback({
                       ssl_enabled: {
@@ -222,16 +228,16 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                         isInvalid: false,
                         errorMsg: '',
                       },
-                    });
+                      });
                   }}
                 />
-                </div>
                 </Form.Group>
+                )}
                 {checked &&  (
                   <Form.Group controlId="sslmodeOptionsDropdown" className="mb-3">
-                          <Form.Label>{"SSL mode"}</Form.Label>
+                      <Form.Label>{t('ssl_mode.label')}</Form.Label>
                           <Form.Select
-                            value={data.value}
+                            value={data.ssl_mode.value}
                             isInvalid={data.isInvalid}
                             onChange={(e) => {
                               changeCallback({
@@ -242,7 +248,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                                 },
                               });
                             }}>
-                            {["require","verify-ca"].map((item) => {
+                            {sslModes.map((item) => {
                               return (
                                 <option value={item} key={item}>
                                   {item}
@@ -252,10 +258,6 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                           </Form.Select>
                         </Form.Group>
                   )}
-                
-                )}
-          
-
           <Form.Group controlId="db_host" className="mb-3">
             <Form.Label>{t('db_host.label')}</Form.Label>
             <Form.Control
