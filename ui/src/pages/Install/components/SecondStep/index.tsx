@@ -106,7 +106,6 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
           errorMsg: t('ssl_mode.msg'),
         };
       }
-      
       if (!db_name.value) {
         bol = false;
         data.db_name = {
@@ -231,7 +230,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
               </Form.Group>
               )
               }
-                {data.ssl_enabled.value && (
+                {data.db_type.value === 'postgres' && data.ssl_enabled.value && (
                   <Form.Group controlId="sslmodeOptionsDropdown" className="mb-3">
                       <Form.Label>{t('ssl_mode.label')}</Form.Label>
                           <Form.Select
@@ -246,11 +245,11 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                               });
                             }}>
                             {sslModes.map((item) => {
-                              return (
-                                <option value={item.value} key={item.value}>
-                                  {item}
+                              
+                                <option value={item.value} >
+                                  {item.value}
                                 </option>
-                              );
+                              
                             })}
                           </Form.Select>
                         </Form.Group>
