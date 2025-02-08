@@ -217,7 +217,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                <Form.Check
                   inline
                   enabled
-                  type={"radio"}
+                  type={"checkbox"}
                   label={`SSL Mode On`}
                   id={"sslEnabled"}
                   Value={data.ssl_enabled.value}
