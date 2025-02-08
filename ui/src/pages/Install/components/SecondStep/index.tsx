@@ -215,7 +215,6 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                <Form.Label>{t('ssl_enabled.label')}</Form.Label>
                <Form.Check
                   inline
-                  enabled
                   type={"checkbox"}
                   label={`SSL Mode On`}
                   id={"sslEnabled"}
@@ -238,7 +237,6 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                       <Form.Label>{t('ssl_mode.label')}</Form.Label>
                           <Form.Select
                             value={data.ssl_mode.value}
-                            isInvalid={data.isInvalid}
                             onChange={(e) => {
                               changeCallback({
                                 ssl_mode: {
@@ -250,7 +248,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                             }}>
                             {sslModes.map((item) => {
                               return (
-                                <option value={item} key={item}>
+                                <option value={item.value} key={item.value}>
                                   {item}
                                 </option>
                               );
