@@ -18,7 +18,7 @@
  */
 
 import { FC, FormEvent} from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, InputGroup } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
 import Progress from '../Progress';
@@ -60,7 +60,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
 
   const checkValidated = (): boolean => {
     let bol = true;
-    const { db_type, db_username, db_password, db_host, db_name, db_file,ssl_enabled,ssl_mode } =
+    const { db_type, db_username, db_password, db_host, db_name, db_file,ssl_enabled,ssl_mode,key_file,cert_file,pem_file } =
       data;
 
     if (db_type.value !== 'sqlite3') {
@@ -106,6 +106,31 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
           errorMsg: t('ssl_mode.msg'),
         };
       }
+      if (!key_file.value) {
+        bol = false;
+        data.key_file = {
+          value: '',
+          isInvalid: true,
+          errorMsg: t('key_file.msg'),
+        };
+      }
+      if (!pem_file.value) {
+        bol = false;
+        data.pem_file = {
+          value: '',
+          isInvalid: true,
+          errorMsg: t('pem_file.msg'),
+        };
+      }
+      if (!cert_file.value) {
+        bol = false;
+        data.cert_file = {
+          value: '',
+          isInvalid: true,
+          errorMsg: t('cert_file.msg'),
+        };
+      }
+      
       if (!db_name.value) {
         bol = false;
         data.db_name = {
@@ -225,7 +250,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                       });
                     }}
                   />
-                 <Form.Label>{t('ssl_enabled.label')}</Form.Label>
+                 <Form.Label htmlFor="ssl_enabled">{t('ssl_enabled.label')}</Form.Label>
                 </Form.Check>
               </Form.Group>
               )
@@ -245,15 +270,70 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                               });
                             }}>
                             {sslModes.map((item) => {
-                              
+                              return(
                                 <option value={item.value} >
                                   {item.value}
                                 </option>
-                              
+                              );
                             })}
                           </Form.Select>
-                        </Form.Group>
+                          </Form.Group>
                   )}
+ <br/>
+                          {data.db_type.value === 'postgres' && data.ssl_enabled.value &&  data.ssl_mode.value === 'verify-ca'    && (
+                            
+                           <InputGroup className="mb-3">
+       
+                              <Form.Control
+                                placeholder="pem"
+                                aria-label="pem"
+                                aria-describedby="basic-addon1"
+                                // value={data.key_file.value}
+                                                  onChange={(e) => {
+                                                    changeCallback({
+                                                      key_file: {
+                                                        value: e.target.value,
+                                                        isInvalid: false,
+                                                        errorMsg: '',
+                                                      },
+                                                    });
+                                                  }}
+                              />
+                              
+                              <Form.Control
+                                placeholder="cert"
+                                aria-label="cert"
+                                aria-describedby="basic-addon1"
+                                // value={data.cert_file.value}
+                                                  onChange={(e) => {
+                                                    changeCallback({
+                                                      cert_file: {
+                                                        value: e.target.value,
+                                                        isInvalid: false,
+                                                        errorMsg: '',
+                                                      },
+                                                    });
+                                                  }}
+                              />
+                              
+                              <Form.Control
+                                placeholder="key"
+                                aria-label="key"
+                                aria-describedby="basic-addon1"
+                                // value={data.pem_file.value }
+                                                  onChange={(e) => {
+                                                    changeCallback({
+                                                      pem_file: {
+                                                        value: e.target.value,
+                                                        isInvalid: false,
+                                                        errorMsg: '',
+                                                      },
+                                                    });
+                                                  }}
+                              />
+                            </InputGroup>
+                
+                                               ) }
           <Form.Group controlId="db_host" className="mb-3">
             <Form.Label>{t('db_host.label')}</Form.Label>
             <Form.Control

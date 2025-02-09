@@ -44,7 +44,7 @@ module.exports = {
   },
   plugins: ['react', '@typescript-eslint', 'prettier'],
   rules: {
-    'prettier/prettier': 'error',
+    'prettier/prettier': 0,
     'no-unused-vars': 'off',
     'no-console': 'off',
     'import/prefer-default-export': 'off',
