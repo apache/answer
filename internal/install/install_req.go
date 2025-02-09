@@ -50,9 +50,9 @@ type CheckDatabaseReq struct {
 	DbFile       string `json:"db_file"`
 	Ssl          bool   `json:"ssl_enabled"`
 	SslMode      string `json:"ssl_mode"`
-	SslCrt       string `json:"server-ca.pem"`
-	SslKey       string `json:"client-cert.pem"`
-	SslCrtClient string `json:"client-key.pem"`
+	SslCrt       string `json:"pem_file"`
+	SslKey       string `json:"key_file"`
+	SslCrtClient string `json:"cert_file"`
 }
 
 // GetConnection get connection string
