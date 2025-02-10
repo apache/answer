@@ -1603,6 +1603,19 @@ ui:
       label: 数据库文件
       placeholder: /data/answer.db
       msg: 数据库文件不能为空。
+    ssl_enabled:
+      label: SSL 开/关
+    ssl_mode:
+      label: SSL 模式
+    key_file:
+      placeholder: Key 文件路径
+      msg: 文件路径不能为空
+    cert_file:
+      placeholder: Cert 文件路径
+      msg: 文件路径不能为空
+    pem_file:
+      placeholder: Pem 文件路径
+      msg: 文件路径不能为空
     config_yaml:
       title: 创建 config.yaml
       label: 已创建 config.yaml 文件。

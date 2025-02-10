@@ -95,7 +95,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
         data.ssl_enabled = {
           value: '',
           isInvalid: true,
-          errorMsg: t('ssl_enabled.msg'),
+       //   errorMsg: t('ssl_enabled.msg'),
         };
       }
       if (!ssl_mode.value) {
@@ -103,7 +103,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
         data.ssl_mode = {
           value: '',
           isInvalid: true,
-          errorMsg: t('ssl_mode.msg'),
+         errorMsg: '',
         };
       }
       if (!key_file.value) {
@@ -280,13 +280,12 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                           </Form.Group>
                   )}
  <br/>
-                          {data.db_type.value === 'postgres' && data.ssl_enabled.value &&  data.ssl_mode.value === 'verify-ca'    && (
+                          {data.db_type.value === 'postgres' && data.ssl_enabled.value &&  data.ssl_mode.value === 'verify-ca'   && (
                             
                            <InputGroup className="mb-3">
-       
                               <Form.Control
-                                placeholder="pem"
-                                aria-label="pem"
+                                placeholder={t('key_file.placeholder')}
+                                aria-label="key_file"
                                 aria-describedby="basic-addon1"
                                 // value={data.key_file.value}
                                                   onChange={(e) => {
@@ -301,8 +300,8 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                               />
                               
                               <Form.Control
-                                placeholder="cert"
-                                aria-label="cert"
+                                placeholder={t('cert_file.placeholder')} 
+                                aria-label="cert_file"
                                 aria-describedby="basic-addon1"
                                 // value={data.cert_file.value}
                                                   onChange={(e) => {
@@ -317,8 +316,8 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                               />
                               
                               <Form.Control
-                                placeholder="key"
-                                aria-label="key"
+                                placeholder={t('pem_file.placeholder')}
+                                aria-label="pem_file"
                                 aria-describedby="basic-addon1"
                                 // value={data.pem_file.value }
                                                   onChange={(e) => {
