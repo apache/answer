@@ -95,7 +95,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
         data.ssl_enabled = {
           value: '',
           isInvalid: true,
-       //   errorMsg: t('ssl_enabled.msg'),
+          errorMsg: t('ssl_enabled.msg'),
         };
       }
       if (!ssl_mode.value) {
@@ -106,6 +106,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
          errorMsg: '',
         };
       }
+    if (ssl_mode.value ==="verify-ca") {
       if (!key_file.value) {
         bol = false;
         data.key_file = {
@@ -130,7 +131,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
           errorMsg: t('cert_file.msg'),
         };
       }
-      
+    }
       if (!db_name.value) {
         bol = false;
         data.db_name = {

@@ -194,6 +194,8 @@ const Index: FC = () => {
       db_host: formData.db_host.value,
       db_name: formData.db_name.value,
       db_file: formData.db_file.value,
+      ssl_enabled: formData.ssl_enabled.value,
+      ssl_mode: formData.ssl_mode.value,
     };
     installInit(params)
       .then(() => {
@@ -213,6 +215,8 @@ const Index: FC = () => {
       db_host: formData.db_host.value,
       db_name: formData.db_name.value,
       db_file: formData.db_file.value,
+      ssl_enabled: formData.ssl_enabled.value,
+      ssl_mode: formData.ssl_mode.value,
     };
     dbCheck(params)
       .then(() => {
