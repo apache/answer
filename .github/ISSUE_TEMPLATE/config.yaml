@@ -15,8 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-blank_issues_enabled: true
+blank_issues_enabled: false
 contact_links:
-  - name: Support
-    url: https://answer.apache.org/community
-    about: Contact us if you have any questions while using.
+  - name: Questions & Discussions
+    url: https://meta.answer.dev
+    about: If you have any questions while using.
