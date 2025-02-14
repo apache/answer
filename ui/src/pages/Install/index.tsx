@@ -131,7 +131,7 @@ const Index: FC = () => {
       errorMsg: '',
     },
     ssl_enabled: {
-      value: '',
+      value: false,
       isInvalid: false,
       errorMsg: '',
     },

@@ -89,7 +89,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
           isInvalid: true,
           errorMsg: t('db_host.msg'),
         };
-      }
+      }  
       if (!ssl_enabled.value) {
         bol = false;
         data.ssl_enabled = {
