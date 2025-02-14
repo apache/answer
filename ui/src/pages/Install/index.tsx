@@ -130,6 +130,16 @@ const Index: FC = () => {
       isInvalid: false,
       errorMsg: '',
     },
+    ssl_enabled: {
+      value: false,
+      isInvalid: false,
+      errorMsg: '',
+    },
+    ssl_mode: {
+      value: '',
+      isInvalid: false,
+      errorMsg: '',
+    },
   });
 
   const updateFormData = (params: FormDataType) => {
@@ -148,6 +158,8 @@ const Index: FC = () => {
           db_username: { ...updatedFormData.db_username, value: 'postgres' },
           db_password: { ...updatedFormData.db_password, value: 'postgres' },
           db_host: { ...updatedFormData.db_host, value: 'db:5432' },
+          /* ssl_enabled: { ...updatedFormData.ssl_enabled, value: false },
+          ssl_mode: { ...updatedFormData.ssl_mode, value: '' }, */
         };
       }
       return updatedFormData;
@@ -184,6 +196,8 @@ const Index: FC = () => {
       db_host: formData.db_host.value,
       db_name: formData.db_name.value,
       db_file: formData.db_file.value,
+      ssl_enabled: formData.ssl_enabled.value,
+      ssl_mode: formData.ssl_mode.value,
     };
     installInit(params)
       .then(() => {
@@ -203,6 +217,8 @@ const Index: FC = () => {
       db_host: formData.db_host.value,
       db_name: formData.db_name.value,
       db_file: formData.db_file.value,
+      ssl_enabled: formData.ssl_enabled.value,
+      ssl_mode: formData.ssl_mode.value,
     };
     dbCheck(params)
       .then(() => {
