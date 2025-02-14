@@ -109,7 +109,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
          errorMsg: '',
         };
       }
-    if (ssl_mode.value ==="verify-ca") {
+    if (ssl_mode.value ==="verify-ca" || ssl_mode.value ==="verify-all") {
       if (!key_file.value) {
         bol = false;
         data.key_file = {
