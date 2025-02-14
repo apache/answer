@@ -462,7 +462,7 @@ const TagSelector: FC<IProps> = ({
         </Dropdown.Menu>
       </div>
       {!hiddenDescription && <Form.Text>{formText || t('hint')}</Form.Text>}
-      <Form.Control.Feedback type="invalid">{errMsg}</Form.Control.Feedback>
+      {isInvalid && <Form.Control.Feedback type="invalid">{errMsg}</Form.Control.Feedback>}
     </div>
   );
 };

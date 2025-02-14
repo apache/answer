@@ -1,22 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Row, Col, Form, Button, Card } from 'react-bootstrap';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
@@ -54,16 +35,16 @@ import SearchQuestion from './components/SearchQuestion';
 
 interface FormDataItem {
   title: Type.FormValue<string>;
-  tags: Type.FormValue<Type.Tag[]>;
-  content: Type.FormValue<string>;
-  answer_content: Type.FormValue<string>;
+  tags?: Type.FormValue<Type.Tag[]>;
+  content?: Type.FormValue<string>;
+  answer_content?: Type.FormValue<string>;
   edit_summary: Type.FormValue<string>;
 }
 
 const saveDraft = new SaveDraft({ type: 'question' });
 
 const Ask = () => {
-  const initFormData = {
+  const initFormData: FormDataItem = {
     title: {
       value: '',
       isInvalid: false,
@@ -90,6 +71,7 @@ const Ask = () => {
       errorMsg: '',
     },
   };
+
   const { t } = useTranslation('translation', { keyPrefix: 'ask' });
   const [formData, setFormData] = useState<FormDataItem>(initFormData);
   const [immData, setImmData] = useState<FormDataItem>(initFormData);
@@ -134,7 +116,6 @@ const Ask = () => {
 
   useEffect(() => {
     if (!qid) {
-      // order: 1. tags query. 2. prefill query. 3. draft
       const queryTags = searchParams.get('tags');
       if (queryTags) {
         updateTags(queryTags);
@@ -148,7 +129,6 @@ const Ask = () => {
           formData.title.value = file.attributes?.title;
           formData.content.value = file.body;
           if (!queryTags && file.attributes?.tags) {
-            // Remove spaces in file.attributes.tags
             const filterTags = file.attributes.tags
               .split(',')
               .map((tag) => tag.trim())
@@ -178,14 +158,13 @@ const Ask = () => {
     const { title, tags, content, answer_content } = formData;
     const { title: editTitle, tags: editTags, content: editContent } = immData;
 
-    // edited
     if (qid) {
       if (
         editTitle.value !== title.value ||
-        editContent.value !== content.value ||
+        editContent.value !== content?.value ||
         !isEqual(
-          editTags.value.map((v) => v.slug_name),
-          tags.value.map((v) => v.slug_name),
+          editTags?.value?.map((v) => v.slug_name),
+          tags?.value?.map((v) => v.slug_name),
         )
       ) {
         setBlockState(true);
@@ -194,20 +173,13 @@ const Ask = () => {
       }
       return;
     }
-    // write
-    if (
-      title.value ||
-      tags.value.length > 0 ||
-      content.value ||
-      answer_content.value
-    ) {
-      // save draft
+    if (title.value || tags?.value?.length > 0 || content?.value || answer_content?.value) {
       saveDraft.save({
         params: {
           title: title.value,
-          tags: tags.value,
-          content: content.value,
-          answer_content: answer_content.value,
+          tags: tags?.value?.length > 0 ? tags.value : [],
+          content: content?.value || '',
+          answer_content: answer_content?.value || '',
         },
         callback: () => setHasDraft(true),
       });
@@ -340,7 +312,7 @@ const Ask = () => {
     if (checked) {
       res = await saveQuestionWithAnswer({
         ...params,
-        answer_content: formData.answer_content.value,
+        answer_content: formData.answer_content?.value || '',
       }).catch((err) => {
         if (err.isError) {
           const captchaErr = saveCaptcha?.handleCaptchaError(err.list);
@@ -382,10 +354,15 @@ const Ask = () => {
     event.preventDefault();
     event.stopPropagation();
 
+    setFormData({
+      ...formData,
+      content: { value: formData.content?.value || '', errorMsg: '', isInvalid: false },
+    });
+
     const params: Type.QuestionParams = {
       title: formData.title.value,
-      content: formData.content.value,
-      tags: formData.tags.value,
+      content: formData.content?.value || '',
+      tags: formData.tags?.value || [],
     };
 
     if (isEdit) {
@@ -472,12 +449,12 @@ const Ask = () => {
             <Form.Group controlId="content">
               <Form.Label>{t('form.fields.body.label')}</Form.Label>
               <Editor
-                value={formData.content.value}
+                value={formData.content?.value || ''}
                 onChange={handleContentChange}
                 className={classNames(
                   'form-control p-0',
                   focusType === 'content' && 'focus',
-                  formData.content.isInvalid && 'is-invalid',
+                  formData.content?.isInvalid && 'is-invalid',
                 )}
                 onFocus={() => {
                   setForceType('content');
@@ -488,19 +465,19 @@ const Ask = () => {
                 ref={editorRef}
               />
               <Form.Control.Feedback type="invalid">
-                {formData.content.errorMsg}
+                {formData.content?.errorMsg}
               </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group controlId="tags" className="my-3">
               <Form.Label>{t('form.fields.tags.label')}</Form.Label>
               <TagSelector
-                value={formData.tags.value}
+                value={formData.tags?.value || []}
                 onChange={handleTagsChange}
-                showRequiredTag
                 maxTagLength={5}
-                isInvalid={formData.tags.isInvalid}
-                errMsg={formData.tags.errorMsg}
+                showRequiredTag={false}
+                isInvalid={formData.tags?.isInvalid}
+                errMsg={formData.tags?.errorMsg}
               />
             </Form.Group>
 
@@ -517,13 +494,13 @@ const Ask = () => {
                   <Form.Group controlId="answer" className="mt-3">
                     <Form.Label>{t('form.fields.answer.label')}</Form.Label>
                     <Editor
-                      value={formData.answer_content.value}
+                      value={formData.answer_content?.value || ''}
                       onChange={handleAnswerChange}
                       ref={editorRef2}
                       className={classNames(
                         'form-control p-0',
                         focusType === 'answer' && 'focus',
-                        formData.answer_content.isInvalid && 'is-invalid',
+                        formData.answer_content?.isInvalid && 'is-invalid',
                       )}
                       onFocus={() => {
                         setForceType('answer');
@@ -534,11 +511,11 @@ const Ask = () => {
                     />
                     <Form.Control
                       type="text"
-                      isInvalid={formData.answer_content.isInvalid}
+                      isInvalid={formData.answer_content?.isInvalid}
                       hidden
                     />
                     <Form.Control.Feedback type="invalid">
-                      {formData.answer_content.errorMsg}
+                      {formData.answer_content?.errorMsg}
                     </Form.Control.Feedback>
                   </Form.Group>
                 )}

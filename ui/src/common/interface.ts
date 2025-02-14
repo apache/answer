@@ -1,22 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-
 export interface FormValue<T = any> {
   value: T;
   isInvalid: boolean;
@@ -81,12 +62,12 @@ export interface TagInfo extends TagBase {
 export interface QuestionParams extends ImgCodeReq {
   title: string;
   url_title?: string;
-  content: string;
-  tags: Tag[];
+  content?: string;
+  tags?: Tag[];
 }
 
 export interface QuestionWithAnswer extends QuestionParams {
-  answer_content: string;
+  answer_content?: string;
 }
 
 export interface ListResult<T = any> {
@@ -95,8 +76,8 @@ export interface ListResult<T = any> {
 }
 
 export interface AnswerParams extends ImgCodeReq {
-  content: string;
-  html: string;
+  content?: string;
+  html?: string;
   question_id: string;
   id: string;
   edit_summary?: string;
@@ -124,10 +105,10 @@ export interface ModifyUserReq {
   display_name: string;
   username?: string;
   avatar: any;
-  bio: string;
+  bio?: string;
   bio_html?: string;
-  location: string;
-  website: string;
+  location?: string;
+  website?: string;
 }
 
 enum RoleId {
@@ -150,8 +131,8 @@ export interface UserInfoBase {
   username: string;
   display_name: string;
   rank: number;
-  website: string;
-  location: string;
+  website?: string;
+  location?: string;
   ip_info?: string;
   status?: 'normal' | 'suspended' | 'deleted' | 'inactive';
   /** roles */
@@ -159,8 +140,8 @@ export interface UserInfoBase {
 }
 
 export interface UserInfoRes extends UserInfoBase {
-  bio: string;
-  bio_html: string;
+  bio?: string;
+  bio_html?: string;
   create_time?: string;
   /**
    * value = 1 active;
@@ -238,9 +219,9 @@ export interface NotificationStatus {
 export interface QuestionDetailRes {
   id: string;
   title: string;
-  content: string;
+  content?: string;
   html: string;
-  tags: any[];
+  tags?: any[];
   view_count: number;
   unique_view_count?: number;
   answer_count: number;
@@ -266,7 +247,7 @@ export interface AnswersReq extends Paging {
 export interface AnswerItem {
   id: string;
   question_id: string;
-  content: string;
+  content?: string;
   html: string;
   create_time: string;
   update_time: string;
@@ -275,7 +256,7 @@ export interface AnswerItem {
 }
 
 export interface PostAnswerReq extends ImgCodeReq {
-  content: string;
+  content?: string;
   html?: string;
   question_id: string;
 }
@@ -519,7 +500,7 @@ export interface SearchResItem {
     vote_count: number;
     answer_count: number;
     accepted: boolean;
-    tags: TagBase[];
+    tags?: TagBase[];
     status?: string;
   };
 }
@@ -595,9 +576,9 @@ export interface SuggestReviewItem {
     url_title?: string;
     object_id: string;
     title: string;
-    content: string;
+    content?: string;
     html: string;
-    tags: Tag[];
+    tags?: Tag[];
   };
   unreviewed_info: {
     id: string;
@@ -608,7 +589,7 @@ export interface SuggestReviewItem {
     create_at: number;
     user_info: UserInfoBase;
     reason: string;
-    content: Tag | QuestionDetailRes | AnswerItem;
+    content?: Tag | QuestionDetailRes | AnswerItem;
   };
 }
 export interface SuggestReviewResp {
@@ -629,9 +610,9 @@ export interface BaseReviewItem {
   object_id: string;
   object_show_status: number;
   object_status: number;
-  tags: Tag[];
+  tags?: Tag[];
   title: string;
-  original_text: string;
+  original_text?: string;
   author_user_info: UserInfoBase;
   created_at: number;
   submit_at: number;
@@ -642,12 +623,12 @@ export interface BaseReviewItem {
   answer_accepted?: boolean;
   flag_id: string;
   url_title: string;
-  parsed_text: string;
+  parsed_text?: string;
 }
 
 export interface FlagReviewItem extends BaseReviewItem {
   reason: ReasonItem;
-  reason_content: string;
+  reason_content?: string;
   submitter_user: UserInfoBase;
 }
 
@@ -736,13 +717,12 @@ export interface PutFlagReviewParams {
   title?: string;
   content?: string;
   tags?: Tag[];
-  // mention_username_list?: any;
   captcha_code?: any;
   captcha_id?: any;
 }
 
 /**
- * @description response for reaction
+ * @description response
  */
 export interface ReactionItems {
   reaction_summary: ReactionItem[];
