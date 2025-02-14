@@ -2,7 +2,8 @@
 name: Feature request
 about: Suggest an idea or possible new feature for this project.
 title: ''
-labels: feature
+labels: new-feature
+type: 'Feature'
 assignees: ''
 
 ---

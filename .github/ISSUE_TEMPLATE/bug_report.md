@@ -3,6 +3,7 @@ name: Bug report
 about: Report an issue to help the project improve.
 title: ''
 labels: bug
+type: 'Bug'
 assignees: ''
 
 ---
