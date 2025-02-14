@@ -254,7 +254,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                       });
                     }}
                   />
-                 <Form.Label htmlFor="ssl_enabled">{t('ssl_enabled.label')}</Form.Label>
+                 <Form.Label className="ms-1"  htmlFor="ssl_enabled">{t('ssl_enabled.label')}</Form.Label>
                 </Form.Check>
               </Form.Group>
               )
@@ -283,7 +283,6 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                           </Form.Select>
                           </Form.Group>
                   )}
- <br/>
                           {data.db_type.value === 'postgres' && data.ssl_enabled.value &&  (data.ssl_mode.value === 'verify-ca' || data.ssl_mode.value === 'verify-all')  && (
                             
                            <InputGroup className="mb-3">
