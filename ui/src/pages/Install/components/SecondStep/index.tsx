@@ -53,6 +53,9 @@ const sslModes = [
   {
     value: 'verify-ca',
   },
+  {
+    value: 'verify-all',
+  },
 ];
 
 const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
@@ -93,7 +96,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
       if (!ssl_enabled.value) {
         bol = false;
         data.ssl_enabled = {
-          value: '',
+          value: false,
           isInvalid: true,
           errorMsg: t('ssl_enabled.msg'),
         };
@@ -281,7 +284,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                           </Form.Group>
                   )}
  <br/>
-                          {data.db_type.value === 'postgres' && data.ssl_enabled.value &&  data.ssl_mode.value === 'verify-ca'   && (
+                          {data.db_type.value === 'postgres' && data.ssl_enabled.value &&  (data.ssl_mode.value === 'verify-ca' || data.ssl_mode.value === 'verify-all')  && (
                             
                            <InputGroup className="mb-3">
                               <Form.Control
