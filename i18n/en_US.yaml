@@ -1692,6 +1692,10 @@ ui:
       msg: Password cannot be empty.
       msg_min_length: Password must be at least 8 characters in length.
       msg_max_length: Password must be at maximum 32 characters in length.
+    admin_confirm_password:
+      label: "Confirm Password"
+      text: "Please re-enter your password to confirm."
+      msg: "Confirm password does not match."
     admin_email:
       label: Email
       text: You will need this email to log in.
@@ -2303,6 +2307,5 @@ ui:
     user_deleted: This user has been deleted.
     badge_activated: This badge has been activated.
     badge_inactivated: This badge has been inactivated.
-    users_deleted: These users have been deleted.
-    posts_deleted: These questions have been deleted.
-    answers_deleted: These answers have been deleted.
+
+

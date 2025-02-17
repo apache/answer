@@ -125,6 +125,11 @@ const Index: FC = () => {
       isInvalid: false,
       errorMsg: '',
     },
+    confirm_password: {
+      value: '',
+      isInvalid: false,
+      errorMsg: '',
+    },
     email: {
       value: '',
       isInvalid: false,
