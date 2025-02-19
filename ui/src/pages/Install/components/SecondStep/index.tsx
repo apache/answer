@@ -101,14 +101,14 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
           errorMsg: t('ssl_enabled.msg'),
         };
       }
-      if (!ssl_mode.value) {
-        bol = false;
-        data.ssl_mode = {
-          value: '',
-          isInvalid: true,
-         errorMsg: '',
-        };
-      }
+      else if (!ssl_mode.value) {
+          bol = false;
+          data.ssl_mode = {
+            value: 'require',
+            isInvalid: true,
+           errorMsg: '',
+          };
+        }
     if (ssl_mode.value ==="verify-ca" || ssl_mode.value ==="verify-all") {
       if (!key_file.value) {
         bol = false;
@@ -242,8 +242,8 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
               <Form.Group controlId="ssl_enabled" className="conditional-checkbox">
                 <Form.Check type="checkbox" id="sslEnabled">
                   <Form.Check.Input
-                    type="checkbox"
                     value={data.ssl_enabled.value}
+                    type="checkbox"
                     onChange={(e) => {
                     changeCallback({
                       ssl_enabled: {
@@ -253,7 +253,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                       },
                       });
                     }}
-                  />
+                   />
                  <Form.Label className="ms-1"  htmlFor="ssl_enabled">{t('ssl_enabled.label')}</Form.Label>
                 </Form.Check>
               </Form.Group>
@@ -263,7 +263,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                   <Form.Group controlId="sslmodeOptionsDropdown" className="mb-3">
                       <Form.Label>{t('ssl_mode.label')}</Form.Label>
                           <Form.Select
-                            value={data.ssl_mode.value}
+                            value={data.ssl_mode.value}          
                             onChange={(e) => {
                               changeCallback({
                                 ssl_mode: {
