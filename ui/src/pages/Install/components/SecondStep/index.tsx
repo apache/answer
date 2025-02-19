@@ -94,7 +94,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
         };
       }  
       if (!ssl_enabled.value) {
-        bol = false;
+        bol = true;
         data.ssl_enabled = {
           value: false,
           isInvalid: true,
@@ -102,7 +102,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
         };
       }
       else if (!ssl_mode.value) {
-          bol = false;
+          bol = true;
           data.ssl_mode = {
             value: 'require',
             isInvalid: true,
