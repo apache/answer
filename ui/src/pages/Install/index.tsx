@@ -22,6 +22,8 @@ import { Container, Row, Col, Card, Alert } from 'react-bootstrap';
 import { useTranslation, Trans } from 'react-i18next';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
+import { useStore } from 'zustand';
+
 import type { FormDataType } from '@/common/interface';
 import {
   dbCheck,
@@ -38,6 +40,7 @@ import {
 import { CURRENT_LANG_STORAGE_KEY } from '@/common/constants';
 import { BASE_ORIGIN } from '@/router/alias';
 import { setupInstallLanguage } from '@/utils/localize';
+import { loggedUserInfoStore } from '@/stores';
 
 import {
   FirstStep,
@@ -131,6 +134,8 @@ const Index: FC = () => {
       errorMsg: '',
     },
   });
+
+  const { update, user } = useStore(loggedUserInfoStore);
 
   const updateFormData = (params: FormDataType) => {
     if (Object.keys(params)?.[0] === 'db_type') {
@@ -243,6 +248,10 @@ const Index: FC = () => {
   const handleStep = () => {
     if (step === 1) {
       Storage.set(CURRENT_LANG_STORAGE_KEY, formData.lang.value);
+      update({
+        ...user,
+        language: formData.lang.value,
+      });
       handleNext();
     }
     if (step === 2) {
