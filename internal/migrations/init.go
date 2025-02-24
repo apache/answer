@@ -23,8 +23,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/apache/answer/internal/base/constant"
 	"time"
+
+	"github.com/apache/answer/internal/base/constant"
 
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/repo/unique"
@@ -253,11 +254,15 @@ func (m *Mentor) initSiteInfoPrivilegeRank() {
 
 func (m *Mentor) initSiteInfoWrite() {
 	writeData := map[string]interface{}{
-		"restrict_answer":       true,
-		"max_image_size":        4,
-		"max_attachment_size":   8,
-		"max_image_megapixel":   40,
-		"authorized_extensions": []string{"jpg", "jpeg", "png", "gif", "webp"},
+		"restrict_answer":                  true,
+		"required_tag":                     false,
+		"recommend_tags":                   []string{},
+		"reserved_tags":                    []string{},
+		"max_image_size":                   4,
+		"max_attachment_size":              8,
+		"max_image_megapixel":              40,
+		"authorized_image_extensions":      []string{"jpg", "jpeg", "png", "gif", "webp"},
+		"authorized_attachment_extensions": []string{},
 	}
 	writeDataBytes, _ := json.Marshal(writeData)
 	_, m.err = m.engine.Context(m.ctx).Insert(&entity.SiteInfo{
