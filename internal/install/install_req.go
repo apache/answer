@@ -69,11 +69,10 @@ func (r *CheckDatabaseReq) GetConnection() string {
 		if !r.Ssl {
 			return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 				host, port, r.DbUsername, r.DbPassword, r.DbName)
-			//supporting two sslmodes (to be extended to all modes)
 		} else if r.SslMode == "require" {
 			return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 				host, port, r.DbUsername, r.DbPassword, r.DbName, r.SslMode)
-		} else if r.SslMode == "verify-ca" {
+		} else if r.SslMode == "verify-ca" || r.SslMode == "verify-full" {
 			_, err_server_ca := os.Stat(r.SslCrt)
 			_, err_client_cert := os.Stat(r.SslKey)
 			_, err_client_key := os.Stat(r.SslCrtClient)

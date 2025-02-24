@@ -54,7 +54,7 @@ const sslModes = [
     value: 'verify-ca',
   },
   {
-    value: 'verify-all',
+    value: 'verify-full',
   },
 ];
 
@@ -109,7 +109,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
            errorMsg: '',
           };
         }
-    if (ssl_mode.value ==="verify-ca" || ssl_mode.value ==="verify-all") {
+    if (ssl_mode.value ==="verify-ca" || ssl_mode.value ==="verify-full") {
       if (!key_file.value) {
         bol = false;
         data.key_file = {
@@ -283,7 +283,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                           </Form.Select>
                           </Form.Group>
                   )}
-                          {data.db_type.value === 'postgres' && data.ssl_enabled.value &&  (data.ssl_mode.value === 'verify-ca' || data.ssl_mode.value === 'verify-all')  && (
+                          {data.db_type.value === 'postgres' && data.ssl_enabled.value &&  (data.ssl_mode.value === 'verify-ca' || data.ssl_mode.value === 'verify-full')  && (
                             
                            <InputGroup className="mb-3">
                               <Form.Control
@@ -301,7 +301,6 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                                                     });
                                                   }}
                               />
-                              
                               <Form.Control
                                 placeholder={t('cert_file.placeholder')} 
                                 aria-label="cert_file"
