@@ -76,15 +76,15 @@ func (r *CheckDatabaseReq) GetConnection() string {
 			_, err_server_ca := os.Stat(r.SslCrt)
 			_, err_client_cert := os.Stat(r.SslKey)
 			_, err_client_key := os.Stat(r.SslCrtClient)
-			if err_server_ca != nil || err_client_cert != nil || err_client_key != nil {
-				if os.IsNotExist(err_server_ca) || os.IsNotExist(err_client_cert) || os.IsNotExist(err_client_key) {
-					log.Fatal("Certificate not Found !!")
-				}
+			if err_server_ca == nil || err_client_cert == nil || err_client_key == nil {
+				/*if err_server_ca && stats_server_ca || os.IsNotExist(err_client_cert) || os.IsNotExist(err_client_key) {*/
+				return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s sslrootcert=%s  sslcert=%s sslkey=%s",
+					host, port, r.DbUsername, r.DbPassword, r.DbName, r.SslMode, r.SslCrt, r.SslKey, r.SslCrtClient)
 			}
-			return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s sslrootcert=%s  sslcert=%s sslkey=%s",
-				host, port, r.DbUsername, r.DbPassword, r.DbName, r.SslMode, r.SslCrt, r.SslKey, r.SslCrtClient)
+			log.Fatal("Certificate not Found !!")
 		}
-
+		/*return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s sslrootcert=%s  sslcert=%s sslkey=%s",
+		host, port, r.DbUsername, r.DbPassword, r.DbName, r.SslMode, r.SslCrt, r.SslKey, r.SslCrtClient)*/
 	}
 	return ""
 }
