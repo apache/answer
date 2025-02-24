@@ -63,7 +63,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
 
   const checkValidated = (): boolean => {
     let bol = true;
-    const { db_type, db_username, db_password, db_host, db_name, db_file,ssl_enabled,ssl_mode,key_file,cert_file,pem_file } =
+    const { db_type, db_username, db_password, db_host, db_name, db_file,ssl_enabled,ssl_mode,key_file,cert_file,pem_file} =
       data;
 
     if (db_type.value !== 'sqlite3') {
