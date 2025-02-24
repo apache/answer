@@ -22,8 +22,6 @@ import { Container, Row, Col, Card, Alert } from 'react-bootstrap';
 import { useTranslation, Trans } from 'react-i18next';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
-import { useStore } from 'zustand';
-
 import type { FormDataType } from '@/common/interface';
 import {
   dbCheck,
@@ -140,7 +138,7 @@ const Index: FC = () => {
     },
   });
 
-  const { update, user } = useStore(loggedUserInfoStore);
+  const { update, user } = loggedUserInfoStore();
 
   const updateFormData = (params: FormDataType) => {
     if (Object.keys(params)?.[0] === 'db_type') {
