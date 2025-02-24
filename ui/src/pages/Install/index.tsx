@@ -140,6 +140,21 @@ const Index: FC = () => {
       isInvalid: false,
       errorMsg: '',
     },
+    pem_file: {
+      value: '',
+      isInvalid: false,
+      errorMsg: '',
+    },
+    key_file: {
+      value: '',
+      isInvalid: false,
+      errorMsg: '',
+    },
+    cert_file: {
+      value: '',
+      isInvalid: false,
+      errorMsg: '',
+    },
   });
 
   const updateFormData = (params: FormDataType) => {
@@ -198,6 +213,9 @@ const Index: FC = () => {
       db_file: formData.db_file.value,
       ssl_enabled: formData.ssl_enabled.value,
       ssl_mode: formData.ssl_mode.value,
+      pem_file: formData.pem_file.value,
+      key_file: formData.key_file.value,
+      cert_file: formData.cert_file.value,
     };
     installInit(params)
       .then(() => {
@@ -219,6 +237,9 @@ const Index: FC = () => {
       db_file: formData.db_file.value,
       ssl_enabled: formData.ssl_enabled.value,
       ssl_mode: formData.ssl_mode.value,
+      pem_file: formData.pem_file.value,
+      key_file: formData.key_file.value,
+      cert_file: formData.cert_file.value,
     };
     dbCheck(params)
       .then(() => {
