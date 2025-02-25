@@ -27,9 +27,9 @@ data:
   ssl:
     enabled: "no"
     mode: "require"
-    ssl_cert_file: "/data/cache/ssl/certs/server-ca.pem"           
-    ssl_key_file: "/data/cache/ssl/certs/client-cert.pem"
-    ssl_client_cert_file: "/data/cache/ssl/certs/client-key.pem"             
+    cert_file: "/data/cache/ssl/certs/server-ca.pem"           
+    key_file: "/data/cache/ssl/certs/client-cert.pem"
+    pem_file: "/data/cache/ssl/certs/client-key.pem"             
 i18n:
   bundle_dir: "/data/i18n"
 swaggerui:
