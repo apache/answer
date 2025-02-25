@@ -101,6 +101,7 @@ var migrations = []Migration{
 	NewMigration("v1.4.1", "add question link", addQuestionLink, true),
 	NewMigration("v1.4.2", "add the number of question links", addQuestionLinkedCount, true),
 	NewMigration("v1.4.5", "add file record", addFileRecord, true),
+	NewMigration("v1.4.6", "add plugin kv storage", addPluginKVStorage, true),
 }
 
 func GetMigrations() []Migration {
