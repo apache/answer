@@ -174,7 +174,7 @@ const Index: FC = () => {
           db_password: { ...updatedFormData.db_password, value: 'postgres' },
           db_host: { ...updatedFormData.db_host, value: 'db:5432' },
           ssl_enabled: { ...updatedFormData.ssl_enabled, value: false },
-          ssl_mode: { ...updatedFormData.ssl_mode, value: '' }, 
+          ssl_mode: { ...updatedFormData.ssl_mode, value: '' } ,
         };
       }
       return updatedFormData;
