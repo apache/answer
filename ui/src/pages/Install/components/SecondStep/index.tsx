@@ -250,24 +250,21 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
             <Form.Group
               controlId="ssl_enabled"
               className="conditional-checkbox">
-              <Form.Check type="checkbox" id="sslEnabled">
-                <Form.Check.Input
-                  value={data.ssl_enabled.value}
-                  type="checkbox"
-                  onChange={(e) => {
-                    changeCallback({
-                      ssl_enabled: {
-                        value: e.target.checked,
-                        isInvalid: false,
-                        errorMsg: '',
-                      },
-                    });
-                  }}
-                />
-                <Form.Label className="ms-1" htmlFor="ssl_enabled">
-                  {t('ssl_enabled.label')}
-                </Form.Label>
-              </Form.Check>
+              <Form.Check
+                type="switch"
+                id="sslEnabled"
+                checked={data.ssl_enabled.value}
+                label={t('ssl_enabled.label')}
+                onChange={(e) => {
+                  changeCallback({
+                    ssl_enabled: {
+                      value: e.target.checked,
+                      isInvalid: false,
+                      errorMsg: '',
+                    },
+                  });
+                }}
+              />
             </Form.Group>
           )}
           {data.db_type.value === 'postgres' && data.ssl_enabled.value && (
@@ -325,7 +322,6 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                     });
                   }}
                 />
-
                 <Form.Control
                   placeholder={t('pem_file.placeholder')}
                   aria-label="pem_file"
@@ -364,7 +360,6 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
               {data.db_host.errorMsg}
             </Form.Control.Feedback>
           </Form.Group>
-
           <Form.Group controlId="name" className="mb-3">
             <Form.Label>{t('db_name.label')}</Form.Label>
             <Form.Control
