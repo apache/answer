@@ -312,6 +312,9 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                   }}
                   required
                 />
+                <Form.Control.Feedback type="invalid">
+                  {`${data.key_file.errorMsg}`}
+                </Form.Control.Feedback>
                 <Form.Control
                   placeholder={t('cert_file.placeholder')}
                   aria-label="cert_file"
@@ -328,6 +331,9 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                   }}
                   required
                 />
+                <Form.Control.Feedback type="invalid">
+                  {`${data.cert_file.errorMsg}`}
+                </Form.Control.Feedback>
                 <Form.Control
                   placeholder={t('pem_file.placeholder')}
                   aria-label="pem_file"
@@ -345,7 +351,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                   required
                 />
                 <Form.Control.Feedback type="invalid">
-                  {`${data.key_file.errorMsg}    ${data.cert_file.errorMsg}    ${data.pem_file.errorMsg}`}
+                  {`${data.pem_file.errorMsg}`}
                 </Form.Control.Feedback>
               </InputGroup>
             )}
