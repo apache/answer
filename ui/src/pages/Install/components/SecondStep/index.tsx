@@ -295,12 +295,12 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
             data.ssl_enabled.value &&
             (data.ssl_mode.value === 'verify-ca' ||
               data.ssl_mode.value === 'verify-full') && (
-              <InputGroup className="mb-3">
+              <InputGroup className="mb-3" hasValidation>
                 <Form.Control
                   placeholder={t('key_file.placeholder')}
                   aria-label="key_file"
                   aria-describedby="basic-addon1"
-                  // value={data.key_file.value}
+                  isInvalid={data.key_file.isInvalid}
                   onChange={(e) => {
                     changeCallback({
                       key_file: {
@@ -310,12 +310,13 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                       },
                     });
                   }}
+                  required
                 />
                 <Form.Control
                   placeholder={t('cert_file.placeholder')}
                   aria-label="cert_file"
                   aria-describedby="basic-addon1"
-                  // value={data.cert_file.value}
+                  isInvalid={data.cert_file.isInvalid}
                   onChange={(e) => {
                     changeCallback({
                       cert_file: {
@@ -325,12 +326,13 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                       },
                     });
                   }}
+                  required
                 />
                 <Form.Control
                   placeholder={t('pem_file.placeholder')}
                   aria-label="pem_file"
                   aria-describedby="basic-addon1"
-                  // value={data.pem_file.value }
+                  isInvalid={data.pem_file.isInvalid}
                   onChange={(e) => {
                     changeCallback({
                       pem_file: {
@@ -340,7 +342,11 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                       },
                     });
                   }}
+                  required
                 />
+                <Form.Control.Feedback type="invalid">
+                  {`${data.key_file.errorMsg}    ${data.cert_file.errorMsg}    ${data.pem_file.errorMsg}`}
+                </Form.Control.Feedback>
               </InputGroup>
             )}
           <Form.Group controlId="db_host" className="mb-3">
