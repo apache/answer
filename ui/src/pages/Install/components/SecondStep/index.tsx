@@ -105,21 +105,21 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
         };
       }
       if (!ssl_enabled.value) {
-        bol = true;
         data.ssl_enabled = {
           value: false,
           isInvalid: true,
           errorMsg: t('ssl_enabled.msg'),
         };
       } else if (!ssl_mode.value) {
-        bol = true;
         data.ssl_mode = {
           value: 'require',
           isInvalid: true,
           errorMsg: '',
         };
-      }
-      if (ssl_mode.value === 'verify-ca' || ssl_mode.value === 'verify-full') {
+      } else if (
+        ssl_mode.value === 'verify-ca' ||
+        ssl_mode.value === 'verify-full'
+      ) {
         if (!key_file.value) {
           bol = false;
           data.key_file = {
@@ -282,7 +282,11 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                   });
                 }}>
                 {sslModes.map((item) => {
-                  return <option value={item.value}>{item.value}</option>;
+                  return (
+                    <option value={item.value} key={item.value}>
+                      {item.value}
+                    </option>
+                  );
                 })}
               </Form.Select>
             </Form.Group>
