@@ -323,22 +323,16 @@ type KVStorage interface {
 }
 
 var (
-	_,
-	registerPluginKVStorage = func() (CallFn[KVStorage], RegisterFn[KVStorage]) {
-		callFn, registerFn := MakePlugin[KVStorage](false)
-		return callFn, func(p KVStorage) {
-			registerFn(p)
-			kvStoragePluginStack.plugins = append(kvStoragePluginStack.plugins, p)
-		}
-	}()
-	kvStoragePluginStack = &Stack[KVStorage]{}
+	CallKVStorage,
+	registerKVStorage = MakePlugin[KVStorage](true)
 )
 
-func SetKVStorageDB(data *Data) {
-	for _, p := range kvStoragePluginStack.plugins {
-		p.SetOperator(&KVOperator{
-			data:           data,
-			pluginSlugName: p.Info().SlugName,
-		})
+// NewKVOperator creates a new KV storage operator with the specified database engine, cache and plugin name.
+// It returns a KVOperator instance that can be used to interact with the plugin's storage.
+func NewKVOperator(db *xorm.Engine, cache cache.Cache, pluginSlugName string) *KVOperator {
+	return &KVOperator{
+		data:           &Data{DB: db, Cache: cache},
+		pluginSlugName: pluginSlugName,
+		cacheTTL:       30 * time.Minute,
 	}
 }
