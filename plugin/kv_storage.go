@@ -48,18 +48,18 @@ type KVOperator struct {
 	pluginSlugName string
 }
 
-func (kv *KVOperator) getSession(ctx context.Context) (session *xorm.Session, close func()) {
-	if kv.session != nil {
-		session = kv.session
-	} else {
+func (kv *KVOperator) getSession(ctx context.Context) (*xorm.Session, func()) {
+	session := kv.session
+	cleanup := func() {}
+	if session == nil {
 		session = kv.data.DB.NewSession().Context(ctx)
-		close = func() {
+		cleanup = func() {
 			if session != nil {
 				session.Close()
 			}
 		}
 	}
-	return
+	return session, cleanup
 }
 
 func (kv *KVOperator) getCacheTTL() time.Duration {
@@ -89,8 +89,8 @@ func (kv *KVOperator) Get(ctx context.Context, group, key string) (string, error
 
 	// query
 	data := entity.PluginKVStorage{}
-	query, close := kv.getSession(ctx)
-	defer close()
+	query, cleanup := kv.getSession(ctx)
+	defer cleanup()
 
 	query.Where(builder.Eq{
 		"plugin_slug_name": kv.pluginSlugName,
@@ -118,10 +118,8 @@ func (kv *KVOperator) Set(ctx context.Context, group, key, value string) error {
 		return ErrKVKeyEmpty
 	}
 
-	query, close := kv.getSession(ctx)
-	if close != nil {
-		defer close()
-	}
+	query, cleanup := kv.getSession(ctx)
+	defer cleanup()
 
 	data := &entity.PluginKVStorage{
 		PluginSlugName: kv.pluginSlugName,
@@ -157,8 +155,8 @@ func (kv *KVOperator) Del(ctx context.Context, group, key string) error {
 
 	kv.cleanCache(ctx, group, key)
 
-	session, close := kv.getSession(ctx)
-	defer close()
+	session, cleanup := kv.getSession(ctx)
+	defer cleanup()
 
 	session.Where(builder.Eq{
 		"plugin_slug_name": kv.pluginSlugName,
@@ -214,8 +212,8 @@ func (kv *KVOperator) GetByGroup(ctx context.Context, group string, page, pageSi
 		}
 	}
 
-	query, close := kv.getSession(ctx)
-	defer close()
+	query, cleanup := kv.getSession(ctx)
+	defer cleanup()
 
 	var items []entity.PluginKVStorage
 	err := query.Where(builder.Eq{"plugin_slug_name": kv.pluginSlugName, "`group`": group}).
