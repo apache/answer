@@ -124,7 +124,7 @@ func Register(p Base) {
 	}
 
 	if _, ok := p.(KVStorage); ok {
-		registerPluginKVStorage(p.(KVStorage))
+		registerKVStorage(p.(KVStorage))
 	}
 }
 
