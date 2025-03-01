@@ -48,16 +48,6 @@ type KVOperator struct {
 	pluginSlugName string
 }
 
-func (kv *KVOperator) checkDB() error {
-	if kv.data == nil {
-		return ErrKVDataNotInitialized
-	}
-	if kv.data.DB == nil {
-		return ErrKVDBNotInitialized
-	}
-	return nil
-}
-
 func (kv *KVOperator) getSession(ctx context.Context) (session *xorm.Session, close func()) {
 	if kv.session != nil {
 		session = kv.session
@@ -88,9 +78,6 @@ func (kv *KVOperator) getCacheKey(group, key string) string {
 
 func (kv *KVOperator) Get(ctx context.Context, group, key string) (string, error) {
 	// validate
-	if err := kv.checkDB(); err != nil {
-		return "", err
-	}
 	if key == "" {
 		return "", ErrKVKeyEmpty
 	}
@@ -127,10 +114,6 @@ func (kv *KVOperator) Get(ctx context.Context, group, key string) (string, error
 }
 
 func (kv *KVOperator) Set(ctx context.Context, group, key, value string) error {
-	if err := kv.checkDB(); err != nil {
-		return err
-	}
-
 	if key == "" {
 		return ErrKVKeyEmpty
 	}
@@ -168,10 +151,6 @@ func (kv *KVOperator) Set(ctx context.Context, group, key, value string) error {
 }
 
 func (kv *KVOperator) Del(ctx context.Context, group, key string) error {
-	if err := kv.checkDB(); err != nil {
-		return err
-	}
-
 	if key == "" && group == "" {
 		return ErrKVKeyAndGroupEmpty
 	}
@@ -216,10 +195,6 @@ func (kv *KVOperator) cleanCache(ctx context.Context, group, key string) {
 }
 
 func (kv *KVOperator) GetByGroup(ctx context.Context, group string, page, pageSize int) (map[string]string, error) {
-	if err := kv.checkDB(); err != nil {
-		return nil, err
-	}
-
 	if group == "" {
 		return nil, ErrKVGroupEmpty
 	}
@@ -229,10 +204,6 @@ func (kv *KVOperator) GetByGroup(ctx context.Context, group string, page, pageSi
 	}
 	if pageSize < 1 {
 		pageSize = 10
-	}
-
-	if pageSize > 100 {
-		pageSize = 100
 	}
 
 	cacheKey := kv.getCacheKey(group, "")
@@ -271,10 +242,6 @@ func (kv *KVOperator) GetByGroup(ctx context.Context, group string, page, pageSi
 }
 
 func (kv *KVOperator) Tx(ctx context.Context, fn func(ctx context.Context, kv *KVOperator) error) error {
-	if err := kv.checkDB(); err != nil {
-		return fmt.Errorf("%w: %v", ErrKVTransactionFailed, err)
-	}
-
 	var (
 		txKv         = kv
 		shouldCommit bool
