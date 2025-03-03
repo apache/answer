@@ -377,6 +377,7 @@ const (
 	QuestionOrderCondScore      = "score"
 	QuestionOrderCondUnanswered = "unanswered"
 	QuestionOrderCondRecommend  = "recommend"
+	QuestionOrderCondFrequent   = "frequent"
 
 	// HotInDays limit max days of the hottest question
 	HotInDays = 90
