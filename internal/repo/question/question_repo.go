@@ -417,6 +417,7 @@ func (qr *questionRepo) GetQuestionPage(ctx context.Context, page, pageSize int,
 		session.OrderBy("question.pin desc,question.vote_count DESC, question.view_count DESC")
 	case "unanswered":
 		session.Where("question.answer_count = 0")
+		session.And("question.status = ?", entity.QuestionStatusAvailable)
 		session.OrderBy("question.pin desc,question.created_at DESC")
 	case "frequent":
 		session.OrderBy("question.pin DESC, question.linked_count DESC, question.updated_at DESC")
