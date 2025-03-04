@@ -86,7 +86,6 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
           errorMsg: t('db_username.msg'),
         };
       }
-
       if (!db_password.value) {
         bol = false;
         data.db_password = {
@@ -104,47 +103,6 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
           errorMsg: t('db_host.msg'),
         };
       }
-      if (!ssl_enabled.value) {
-        data.ssl_enabled = {
-          value: false,
-          isInvalid: true,
-          errorMsg: t('ssl_enabled.msg'),
-        };
-      } else if (!ssl_mode.value) {
-        data.ssl_mode = {
-          value: 'require',
-          isInvalid: true,
-          errorMsg: '',
-        };
-      } else if (
-        ssl_mode.value === 'verify-ca' ||
-        ssl_mode.value === 'verify-full'
-      ) {
-        if (!key_file.value) {
-          bol = false;
-          data.key_file = {
-            value: '',
-            isInvalid: true,
-            errorMsg: t('key_file.msg'),
-          };
-        }
-        if (!pem_file.value) {
-          bol = false;
-          data.pem_file = {
-            value: '',
-            isInvalid: true,
-            errorMsg: t('pem_file.msg'),
-          };
-        }
-        if (!cert_file.value) {
-          bol = false;
-          data.cert_file = {
-            value: '',
-            isInvalid: true,
-            errorMsg: t('cert_file.msg'),
-          };
-        }
-      }
       if (!db_name.value) {
         bol = false;
         data.db_name = {
@@ -152,6 +110,49 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
           isInvalid: true,
           errorMsg: t('db_name.msg'),
         };
+      }
+      if (db_type.value === 'postgres') {
+        if (!ssl_enabled.value) {
+          data.ssl_enabled = {
+            value: false,
+            isInvalid: false,
+            errorMsg: t('ssl_enabled.msg'),
+          };
+        } else if (!ssl_mode.value) {
+          data.ssl_mode = {
+            value: 'require',
+            isInvalid: false,
+            errorMsg: '',
+          };
+        } else if (
+          ssl_mode.value === 'verify-ca' ||
+          ssl_mode.value === 'verify-full'
+        ) {
+          if (!key_file.value) {
+            bol = false;
+            data.key_file = {
+              value: '',
+              isInvalid: true,
+              errorMsg: t('key_file.msg'),
+            };
+          }
+          if (!pem_file.value) {
+            bol = false;
+            data.pem_file = {
+              value: '',
+              isInvalid: true,
+              errorMsg: t('pem_file.msg'),
+            };
+          }
+          if (!cert_file.value) {
+            bol = false;
+            data.cert_file = {
+              value: '',
+              isInvalid: true,
+              errorMsg: t('cert_file.msg'),
+            };
+          }
+        }
       }
     } else if (!db_file.value) {
       bol = false;
