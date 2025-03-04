@@ -409,19 +409,18 @@ func (qs *QuestionCommon) FormatQuestionsPage(
 			}
 		}
 
-		// if order condition is newest or nobody edited or nobody answered, only show question author
-		if orderCond == schema.QuestionOrderCondNewest || (!haveEdited && !haveAnswered) {
-			t.OperationType = schema.QuestionPageRespOperationTypeAsked
-			t.OperatedAt = questionInfo.CreatedAt.Unix()
-			t.Operator = &schema.QuestionPageRespOperator{ID: questionInfo.UserID}
-		} else {
-			// if no one
+		// The default operation is to ask questions
+		t.OperationType = schema.QuestionPageRespOperationTypeAsked
+		t.OperatedAt = questionInfo.CreatedAt.Unix()
+		t.Operator = &schema.QuestionPageRespOperator{ID: questionInfo.UserID}
+
+		// If the order is active, the last operation time is the last edit or answer time if it exists
+		if orderCond == schema.QuestionOrderCondActive {
 			if haveEdited {
 				t.OperationType = schema.QuestionPageRespOperationTypeModified
 				t.OperatedAt = questionInfo.UpdatedAt.Unix()
 				t.Operator = &schema.QuestionPageRespOperator{ID: questionInfo.LastEditUserID}
 			}
-
 			if haveAnswered {
 				if t.LastAnsweredAt.Unix() > t.OperatedAt {
 					t.OperationType = schema.QuestionPageRespOperationTypeAnswered
@@ -430,6 +429,7 @@ func (qs *QuestionCommon) FormatQuestionsPage(
 				}
 			}
 		}
+
 		formattedQuestions = append(formattedQuestions, t)
 	}
 
