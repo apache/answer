@@ -251,11 +251,11 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
             <Form.Group
               controlId="ssl_enabled"
               className="conditional-checkbox">
+              <Form.Label>{t('ssl_enabled.label')}</Form.Label>
               <Form.Check
                 type="switch"
                 id="sslEnabled"
                 checked={data.ssl_enabled.value}
-                label={t('ssl_enabled.label')}
                 onChange={(e) => {
                   changeCallback({
                     ssl_enabled: {
