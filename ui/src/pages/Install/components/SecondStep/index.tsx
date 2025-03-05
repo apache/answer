@@ -18,7 +18,7 @@
  */
 
 import { FC, FormEvent } from 'react';
-import { Form, Button, InputGroup } from 'react-bootstrap';
+import { Form, Button, Row, Col } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
 import Progress from '../Progress';
@@ -296,65 +296,74 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
             data.ssl_enabled.value &&
             (data.ssl_mode.value === 'verify-ca' ||
               data.ssl_mode.value === 'verify-full') && (
-              <InputGroup className="mb-3" hasValidation>
-                <Form.Control
-                  placeholder={t('key_file.placeholder')}
-                  aria-label="key_file"
-                  aria-describedby="basic-addon1"
-                  isInvalid={data.key_file.isInvalid}
-                  onChange={(e) => {
-                    changeCallback({
-                      key_file: {
-                        value: e.target.value,
-                        isInvalid: false,
-                        errorMsg: '',
-                      },
-                    });
-                  }}
-                  required
-                />
-                <Form.Control.Feedback type="invalid">
-                  {`${data.key_file.errorMsg}`}
-                </Form.Control.Feedback>
-                <Form.Control
-                  placeholder={t('cert_file.placeholder')}
-                  aria-label="cert_file"
-                  aria-describedby="basic-addon1"
-                  isInvalid={data.cert_file.isInvalid}
-                  onChange={(e) => {
-                    changeCallback({
-                      cert_file: {
-                        value: e.target.value,
-                        isInvalid: false,
-                        errorMsg: '',
-                      },
-                    });
-                  }}
-                  required
-                />
-                <Form.Control.Feedback type="invalid">
-                  {`${data.cert_file.errorMsg}`}
-                </Form.Control.Feedback>
-                <Form.Control
-                  placeholder={t('pem_file.placeholder')}
-                  aria-label="pem_file"
-                  aria-describedby="basic-addon1"
-                  isInvalid={data.pem_file.isInvalid}
-                  onChange={(e) => {
-                    changeCallback({
-                      pem_file: {
-                        value: e.target.value,
-                        isInvalid: false,
-                        errorMsg: '',
-                      },
-                    });
-                  }}
-                  required
-                />
-                <Form.Control.Feedback type="invalid">
-                  {`${data.pem_file.errorMsg}`}
-                </Form.Control.Feedback>
-              </InputGroup>
+              <Row className="mb-3">
+                <Form.Group as={Col} controlId="key_file" className="mb-3 me-1">
+                  <Form.Control
+                    placeholder={t('key_file.placeholder')}
+                    aria-label="key_file"
+                    aria-describedby="basic-addon1"
+                    isInvalid={data.key_file.isInvalid}
+                    onChange={(e) => {
+                      changeCallback({
+                        key_file: {
+                          value: e.target.value,
+                          isInvalid: false,
+                          errorMsg: '',
+                        },
+                      });
+                    }}
+                    required
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {`${data.key_file.errorMsg}`}
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group
+                  as={Col}
+                  controlId="cert_file"
+                  className="mb-3 me-1">
+                  <Form.Control
+                    placeholder={t('cert_file.placeholder')}
+                    aria-label="cert_file"
+                    aria-describedby="basic-addon1"
+                    isInvalid={data.cert_file.isInvalid}
+                    onChange={(e) => {
+                      changeCallback({
+                        cert_file: {
+                          value: e.target.value,
+                          isInvalid: false,
+                          errorMsg: '',
+                        },
+                      });
+                    }}
+                    required
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {`${data.cert_file.errorMsg}`}
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group as={Col} controlId="pem_file" className="mb-3 me-1">
+                  <Form.Control
+                    placeholder={t('pem_file.placeholder')}
+                    aria-label="pem_file"
+                    aria-describedby="basic-addon1"
+                    isInvalid={data.pem_file.isInvalid}
+                    onChange={(e) => {
+                      changeCallback({
+                        pem_file: {
+                          value: e.target.value,
+                          isInvalid: false,
+                          errorMsg: '',
+                        },
+                      });
+                    }}
+                    required
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {`${data.pem_file.errorMsg}`}
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Row>
             )}
           <Form.Group controlId="db_host" className="mb-3">
             <Form.Label>{t('db_host.label')}</Form.Label>
