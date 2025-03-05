@@ -112,22 +112,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
         };
       }
       if (db_type.value === 'postgres') {
-        if (!ssl_enabled.value) {
-          data.ssl_enabled = {
-            value: false,
-            isInvalid: false,
-            errorMsg: t('ssl_enabled.msg'),
-          };
-        } else if (!ssl_mode.value) {
-          data.ssl_mode = {
-            value: 'require',
-            isInvalid: false,
-            errorMsg: '',
-          };
-        } else if (
-          ssl_mode.value === 'verify-ca' ||
-          ssl_mode.value === 'verify-full'
-        ) {
+        if (ssl_enabled.value && ssl_mode.value !== 'require') {
           if (!key_file.value) {
             bol = false;
             data.key_file = {
@@ -260,6 +245,26 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                   changeCallback({
                     ssl_enabled: {
                       value: e.target.checked,
+                      isInvalid: false,
+                      errorMsg: '',
+                    },
+                    ssl_mode: {
+                      value: 'require',
+                      isInvalid: false,
+                      errorMsg: '',
+                    },
+                    key_file: {
+                      value: '',
+                      isInvalid: false,
+                      errorMsg: '',
+                    },
+                    cert_file: {
+                      value: '',
+                      isInvalid: false,
+                      errorMsg: '',
+                    },
+                    pem_file: {
+                      value: '',
                       isInvalid: false,
                       errorMsg: '',
                     },
