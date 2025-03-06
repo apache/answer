@@ -233,13 +233,11 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
             </Form.Control.Feedback>
           </Form.Group>
           {data.db_type.value === 'postgres' && (
-            <Form.Group
-              controlId="ssl_enabled"
-              className="conditional-checkbox">
+            <Form.Group controlId="ssl_enabled" className="mb-3">
               <Form.Label>{t('ssl_enabled.label')}</Form.Label>
               <Form.Check
                 type="switch"
-                id="sslEnabled"
+                label={`${data.ssl_enabled.value ? 'ON' : 'OFF'}`}
                 checked={data.ssl_enabled.value}
                 onChange={(e) => {
                   changeCallback({
@@ -302,7 +300,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
             (data.ssl_mode.value === 'verify-ca' ||
               data.ssl_mode.value === 'verify-full') && (
               <Row className="mb-3">
-                <Form.Group as={Col} controlId="key_file" className="mb-3 me-1">
+                <Form.Group as={Col} controlId="key_file">
                   <Form.Control
                     placeholder={t('key_file.placeholder')}
                     aria-label="key_file"
