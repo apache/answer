@@ -237,7 +237,11 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
               <Form.Label>{t('ssl_enabled.label')}</Form.Label>
               <Form.Check
                 type="switch"
-                label={`${data.ssl_enabled.value ? 'ON' : 'OFF'}`}
+                label={`${
+                  data.ssl_enabled.value
+                    ? t('ssl_enabled_on.label')
+                    : t('ssl_enabled_off.label')
+                }`}
                 checked={data.ssl_enabled.value}
                 onChange={(e) => {
                   changeCallback({

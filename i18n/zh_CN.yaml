@@ -1605,6 +1605,10 @@ ui:
       msg: 数据库文件不能为空。
     ssl_enabled:
       label: SSL 开/关
+    ssl_enabled_on:
+      label: 开
+    ssl_enabled_off:
+      label: 关
     ssl_mode:
       label: SSL 模式
     key_file:

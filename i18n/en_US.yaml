@@ -1639,6 +1639,10 @@ ui:
       msg: Database file cannot be empty.
     ssl_enabled:
       label: SSL On/Off 
+    ssl_enabled_on:
+      label: On
+    ssl_enabled_off:
+      label: Off
     ssl_mode:
       label: SSL Mode
     key_file:
