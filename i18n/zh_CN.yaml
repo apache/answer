@@ -1604,7 +1604,7 @@ ui:
       placeholder: /data/answer.db
       msg: 数据库文件不能为空。
     ssl_enabled:
-      label: SSL 开/关
+      label: 使能够 SSL
     ssl_enabled_on:
       label: 开
     ssl_enabled_off:

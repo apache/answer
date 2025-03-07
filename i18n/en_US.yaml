@@ -1638,7 +1638,7 @@ ui:
       placeholder: /data/answer.db
       msg: Database file cannot be empty.
     ssl_enabled:
-      label: SSL On/Off 
+      label: Enable SSL
     ssl_enabled_on:
       label: On
     ssl_enabled_off:

@@ -325,10 +325,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                     {`${data.key_file.errorMsg}`}
                   </Form.Control.Feedback>
                 </Form.Group>
-                <Form.Group
-                  as={Col}
-                  controlId="cert_file"
-                  className="mb-3 me-1">
+                <Form.Group as={Col} controlId="cert_file">
                   <Form.Control
                     placeholder={t('cert_file.placeholder')}
                     aria-label="cert_file"
@@ -349,7 +346,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                     {`${data.cert_file.errorMsg}`}
                   </Form.Control.Feedback>
                 </Form.Group>
-                <Form.Group as={Col} controlId="pem_file" className="mb-3 me-1">
+                <Form.Group as={Col} controlId="pem_file">
                   <Form.Control
                     placeholder={t('pem_file.placeholder')}
                     aria-label="pem_file"
