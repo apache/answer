@@ -135,6 +135,15 @@ func (ps *PluginCommonService) GetUserPluginConfig(ctx context.Context, req *sch
 }
 
 func (ps *PluginCommonService) initPluginData() {
+	_ = plugin.CallKVStorage(func(k plugin.KVStorage) error {
+		k.SetOperator(plugin.NewKVOperator(
+			ps.data.DB,
+			ps.data.Cache,
+			k.Info().SlugName,
+		))
+		return nil
+	})
+
 	// init plugin status
 	pluginStatus, err := ps.configService.GetStringValue(context.TODO(), constant.PluginStatus)
 	if err != nil {
