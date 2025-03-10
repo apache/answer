@@ -21,15 +21,15 @@ package install
 
 import (
 	"fmt"
-	"log"
 	"net/url"
-	"os"
 	"strings"
 
 	"github.com/apache/answer/internal/base/reason"
 	"github.com/apache/answer/internal/base/validator"
 	"github.com/apache/answer/pkg/checker"
+	"github.com/apache/answer/pkg/dir"
 	"github.com/segmentfault/pacman/errors"
+	"github.com/segmentfault/pacman/log"
 	"xorm.io/xorm/schemas"
 )
 
@@ -73,14 +73,17 @@ func (r *CheckDatabaseReq) GetConnection() string {
 			return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 				host, port, r.DbUsername, r.DbPassword, r.DbName, r.SslMode)
 		} else if r.SslMode == "verify-ca" || r.SslMode == "verify-full" {
-			_, err_server_ca := os.Stat(r.SslCrt)
-			_, err_client_cert := os.Stat(r.SslKey)
-			_, err_client_key := os.Stat(r.SslCrtClient)
-			if err_server_ca == nil || err_client_cert == nil || err_client_key == nil {
-				return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s sslrootcert=%s sslcert=%s sslkey=%s",
-					host, port, r.DbUsername, r.DbPassword, r.DbName, r.SslMode, r.SslCrt, r.SslCrtClient, r.SslKey)
+			if dir.CheckFileExist(r.SslCrt) {
+				log.Warnf("ssl crt file not exist: %s", r.SslCrt)
 			}
-			log.Fatal("Certificate not Found !!")
+			if dir.CheckFileExist(r.SslCrtClient) {
+				log.Warnf("ssl crt client file not exist: %s", r.SslCrtClient)
+			}
+			if dir.CheckFileExist(r.SslKey) {
+				log.Warnf("ssl key file not exist: %s", r.SslKey)
+			}
+			return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s sslrootcert=%s sslcert=%s sslkey=%s",
+				host, port, r.DbUsername, r.DbPassword, r.DbName, r.SslMode, r.SslCrt, r.SslCrtClient, r.SslKey)
 		}
 	}
 	return ""
