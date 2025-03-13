@@ -117,6 +117,7 @@ export const modifyQuestion = (
   return request.put(`/answer/api/v1/question`, params);
 };
 
+
 export const modifyAnswer = (params: Type.AnswerParams) => {
   return request.put(`/answer/api/v1/answer`, params);
 };
@@ -189,8 +190,10 @@ export const setNotice = (params: Type.SetNoticeReq) => {
 };
 
 export const saveQuestion = (params: Type.QuestionParams) => {
+  params.tags = params.tags || []; 
+  params.content = params.content || ''; 
   return request.post('/answer/api/v1/question', params);
-};
+}
 
 export const questionDetail = (id: string) => {
   return request.get<Type.QuestionDetailRes>(
@@ -332,6 +335,8 @@ export const markdownToHtml = (content: string) => {
 };
 
 export const saveQuestionWithAnswer = (params: Type.QuestionWithAnswer) => {
+  params.tags = params.tags || []; 
+  params.content = params.content || ''; 
   return request.post('/answer/api/v1/question/answer', params);
 };
 
