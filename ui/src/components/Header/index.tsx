@@ -222,13 +222,6 @@ const Header: FC = () => {
             </Form>
           </Col>
 
-          <Nav.Item className="lg-none mt-3 pb-1">
-            <Link
-              to={askUrl}
-              className="text-capitalize text-nowrap btn btn-light">
-              {t('btns.add_question')}
-            </Link>
-          </Nav.Item>
           {/* pc nav */}
           <Col
             lg={4}
