@@ -40,7 +40,7 @@ import (
 // Markdown2HTML convert markdown to html
 func Markdown2HTML(source string) string {
 	mdConverter := goldmark.New(
-		goldmark.WithExtensions(&DangerousHTMLFilterExtension{}, extension.GFM),
+		goldmark.WithExtensions(&DangerousHTMLFilterExtension{}, extension.GFM, extension.Footnote),
 		goldmark.WithParserOptions(
 			parser.WithAutoHeadingID(),
 		),
