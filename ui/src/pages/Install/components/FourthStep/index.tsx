@@ -45,6 +45,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
       password,
       email,
     } = data;
+    const nameRegex = /^[\w.-\s]{2,30}$/;
 
     if (!site_name.value) {
       bol = false;
@@ -115,19 +116,19 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
         isInvalid: true,
         errorMsg: t('admin_name.msg'),
       };
-    } else if (/[^a-z0-9\-._]/.test(name.value)) {
+    } else if (name.value.length < 2 || name.value.length > 30) {
+      bol = false;
+      data.name = {
+        value: name.value,
+        isInvalid: true,
+        errorMsg: t('admin_name.msg_max_length'),
+      };
+    } else if (!nameRegex.test(name.value)) {
       bol = false;
       data.name = {
         value: name.value,
         isInvalid: true,
         errorMsg: t('admin_name.character'),
-      };
-    } else if (data.name.value.length > 30) {
-      bol = false;
-      data.name = {
-        value: data.name.value,
-        isInvalid: true,
-        errorMsg: t('admin_name.msg_max_length'),
       };
     }
 

@@ -1699,7 +1699,7 @@ ui:
     admin_name:
       label: Name
       msg: Name cannot be empty.
-      character: 'Must use the character set "a-z", "0-9", " - . _"'
+      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
       msg_max_length: Name must be at maximum 30 characters in length.
     admin_password:
       label: Password
