@@ -1496,7 +1496,7 @@ ui:
     via: 포스트 공유하기...
     copied: 복사됨
     facebook: Facebook에 공유
-    twitter: Twitter에 공유
+    twitter: X에 공유
   cannot_vote_for_self: 자신의 글에 투표할 수 없습니다.
   modal_confirm:
     title: 오류...
@@ -2253,5 +2253,3 @@ ui:
     user_deleted: This user has been deleted.
     badge_activated: This badge has been activated.
     badge_inactivated: This badge has been inactivated.
-
-

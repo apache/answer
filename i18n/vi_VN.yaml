@@ -1496,7 +1496,7 @@ ui:
     via: Chia sẻ bài đăng qua...
     copied: Đã sao chép
     facebook: Chia sẻ lên Facebook
-    twitter: Chia sẻ lên Twitter
+    twitter: Chia sẻ lên X
   cannot_vote_for_self: Bạn không thể bỏ phiếu cho bài đăng của chính mình.
   modal_confirm:
     title: Lỗi...
@@ -2253,5 +2253,3 @@ ui:
     user_deleted: This user has been deleted.
     badge_activated: This badge has been activated.
     badge_inactivated: This badge has been inactivated.
-
-

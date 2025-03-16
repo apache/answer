@@ -1496,7 +1496,7 @@ ui:
     via: Beitrag teilen über...
     copied: Kopiert
     facebook: Auf Facebook teilen
-    twitter: Auf Twitter teilen
+    twitter: Auf X teilen
   cannot_vote_for_self: Du kannst nicht für deinen eigenen Beitrag stimmen.
   modal_confirm:
     title: Fehler...
@@ -2253,5 +2253,3 @@ ui:
     user_deleted: This user has been deleted.
     badge_activated: This badge has been activated.
     badge_inactivated: This badge has been inactivated.
-
-

@@ -1496,7 +1496,7 @@ ui:
     via: اشتراک گذاری پست با...
     copied: کپی انجام شد
     facebook: اشتراک گذاری در فیس بوک
-    twitter: اشتراک گذاری در Twitter
+    twitter: اشتراک گذاری در X
   cannot_vote_for_self: شما نمی توانید به پست خودتان رای دهید.
   modal_confirm:
     title: خطا...
@@ -2253,5 +2253,3 @@ ui:
     user_deleted: This user has been deleted.
     badge_activated: This badge has been activated.
     badge_inactivated: This badge has been inactivated.
-
-

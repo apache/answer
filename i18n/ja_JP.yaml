@@ -1498,7 +1498,7 @@ ui:
     via: 投稿を共有...
     copied: コピーしました
     facebook: Facebookで共有
-    twitter: Twitterで共有
+    twitter: Xで共有
   cannot_vote_for_self: 自分の投稿には投票できません。
   modal_confirm:
     title: エラー...
@@ -2255,5 +2255,3 @@ ui:
     user_deleted: This user has been deleted.
     badge_activated: This badge has been activated.
     badge_inactivated: This badge has been inactivated.
-
-

@@ -824,7 +824,7 @@ ui:
     via: Compartilhar postagem via...
     copied: Copiado
     facebook: Compartilhar no Facebook
-    twitter: Compartilhar no Twitter
+    twitter: Compartilhar no X
   cannot_vote_for_self: Você não pode votar na sua própria postagem
   modal_confirm:
     title: Erro...
@@ -1379,5 +1379,3 @@ ui:
     staffs: Our community staff
     reputation: reputation
     Votos: Votos
-
-

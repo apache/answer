@@ -1496,7 +1496,7 @@ ui:
     via: Distribuie postarea prin...
     copied: Copiat
     facebook: Partajează pe Facebook
-    twitter: Partajați pe Twitter
+    twitter: Partajați pe X
   cannot_vote_for_self: Nu poți vota pentru propria ta postare.
   modal_confirm:
     title: Eroare...
@@ -2253,5 +2253,3 @@ ui:
     user_deleted: This user has been deleted.
     badge_activated: This badge has been activated.
     badge_inactivated: This badge has been inactivated.
-
-

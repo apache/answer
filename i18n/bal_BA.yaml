@@ -819,7 +819,7 @@ ui:
     via: Share post via...
     copied: Copied
     facebook: Share to Facebook
-    twitter: Share to Twitter
+    twitter: Share to X
   cannot_vote_for_self: You can't vote for your own post
   modal_confirm:
     title: Error...
@@ -1369,5 +1369,3 @@ ui:
     staffs: Our community staff
     reputation: reputation
     votes: votes
-
-

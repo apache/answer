@@ -1496,7 +1496,7 @@ ui:
     via: Поділитися дописом через...
     copied: Скопійовано
     facebook: Поділитись на Facebook
-    twitter: Поділитися в Twitter
+    twitter: Поділитися в X
   cannot_vote_for_self: Ви не можете проголосувати за власну публікацію.
   modal_confirm:
     title: Помилка...
@@ -2253,5 +2253,3 @@ ui:
     user_deleted: This user has been deleted.
     badge_activated: This badge has been activated.
     badge_inactivated: This badge has been inactivated.
-
-

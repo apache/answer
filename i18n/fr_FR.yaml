@@ -1496,7 +1496,7 @@ ui:
     via: Partager via...
     copied: Copié
     facebook: Partager sur Facebook
-    twitter: Partager sur Twitter
+    twitter: Partager sur X
   cannot_vote_for_self: Vous ne pouvez pas voter pour votre propre message.
   modal_confirm:
     title: Erreur...
@@ -2253,5 +2253,3 @@ ui:
     user_deleted: This user has been deleted.
     badge_activated: This badge has been activated.
     badge_inactivated: This badge has been inactivated.
-
-
