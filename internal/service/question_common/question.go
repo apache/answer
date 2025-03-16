@@ -707,7 +707,7 @@ func (qs *QuestionCommon) UpdateQuestionLink(ctx context.Context, questionID, an
 		return parsedText, err
 	}
 	// Update the number of question links that have been removed
-	linkedQuestionIDs, err := qs.questionRepo.GetLinkedQuestionIDs(ctx, questionID, entity.QuestionLinkStatusDeleted)
+	linkedQuestionIDs, err := qs.questionRepo.GetLinkedQuestionIDs(ctx, uid.DeShortID(questionID), entity.QuestionLinkStatusDeleted)
 	if err != nil {
 		log.Errorf("get linked question ids error %v", err)
 	} else {
