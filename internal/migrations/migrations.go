@@ -100,6 +100,7 @@ var migrations = []Migration{
 	NewMigration("v1.4.0", "add badge/badge_group/badge_award table", addBadges, true),
 	NewMigration("v1.4.1", "add question link", addQuestionLink, true),
 	NewMigration("v1.4.2", "add the number of question links", addQuestionLinkedCount, true),
+	NewMigration("v1.4.3", "add plugin kv storage", addPluginKVStorage, true),
 }
 
 func GetMigrations() []Migration {
