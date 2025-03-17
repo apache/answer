@@ -88,6 +88,7 @@ func (tc *TagController) GetTagsBySlugName(ctx *gin.Context) {
 // RemoveTag delete tag
 // @Summary delete tag
 // @Description delete tag
+// @Security ApiKeyAuth
 // @Tags Tag
 // @Accept json
 // @Produce json
@@ -117,6 +118,7 @@ func (tc *TagController) RemoveTag(ctx *gin.Context) {
 // AddTag add tag
 // @Summary add tag
 // @Description add tag
+// @Security ApiKeyAuth
 // @Tags Tag
 // @Accept json
 // @Produce json
@@ -149,6 +151,7 @@ func (tc *TagController) AddTag(ctx *gin.Context) {
 // UpdateTag update tag
 // @Summary update tag
 // @Description update tag
+// @Security ApiKeyAuth
 // @Tags Tag
 // @Accept json
 // @Produce json
@@ -187,6 +190,7 @@ func (tc *TagController) UpdateTag(ctx *gin.Context) {
 // RecoverTag recover delete tag
 // @Summary recover delete tag
 // @Description recover delete tag
+// @Security ApiKeyAuth
 // @Tags Tag
 // @Accept json
 // @Produce json
@@ -320,6 +324,7 @@ func (tc *TagController) GetTagSynonyms(ctx *gin.Context) {
 // UpdateTagSynonym update tag
 // @Summary update tag
 // @Description update tag
+// @Security ApiKeyAuth
 // @Tags Tag
 // @Accept json
 // @Produce json

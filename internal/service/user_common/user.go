@@ -141,6 +141,7 @@ func (us *UserCommon) UpdateQuestionCount(ctx context.Context, userID string, nu
 }
 
 func (us *UserCommon) BatchUserBasicInfoByID(ctx context.Context, userIDs []string) (map[string]*schema.UserBasicInfo, error) {
+	userIDs = checker.FilterEmptyString(userIDs)
 	userMap := make(map[string]*schema.UserBasicInfo)
 	if len(userIDs) == 0 {
 		return userMap, nil
@@ -154,6 +155,15 @@ func (us *UserCommon) BatchUserBasicInfoByID(ctx context.Context, userIDs []stri
 		info := us.FormatUserBasicInfo(ctx, user)
 		info.Avatar = avatarMapping[user.ID].GetURL()
 		userMap[user.ID] = info
+	}
+	for _, id := range userIDs {
+		if _, ok := userMap[id]; !ok {
+			userMap[id] = &schema.UserBasicInfo{
+				ID:          id,
+				DisplayName: "user" + converter.DeleteUserDisplay(id),
+				Status:      constant.UserDeleted,
+			}
+		}
 	}
 	return userMap, nil
 }

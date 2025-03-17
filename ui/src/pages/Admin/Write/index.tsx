@@ -53,22 +53,22 @@ const initFormData = {
     isInvalid: false,
   },
   max_image_size: {
-    value: 4,
+    value: 0,
     errorMsg: '',
     isInvalid: false,
   },
   max_attachment_size: {
-    value: 8,
+    value: 0,
     errorMsg: '',
     isInvalid: false,
   },
   max_image_megapixel: {
-    value: 40,
+    value: 0,
     errorMsg: '',
     isInvalid: false,
   },
   authorized_image_extensions: {
-    value: 'jpg, jpeg, png, gif, webp',
+    value: '',
     errorMsg: '',
     isInvalid: false,
   },

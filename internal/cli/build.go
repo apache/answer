@@ -125,6 +125,7 @@ func BuildNewAnswer(buildDir, outputPath string, plugins []string, originalAnswe
 	builder := newAnswerBuilder(buildDir, outputPath, plugins, originalAnswerInfo)
 	builder.DoTask(createMainGoFile)
 	builder.DoTask(downloadGoModFile)
+	builder.DoTask(movePluginToVendor)
 	builder.DoTask(copyUIFiles)
 	builder.DoTask(buildUI)
 	builder.DoTask(mergeI18nFiles)
@@ -219,6 +220,24 @@ func downloadGoModFile(b *buildingMaterial) (err error) {
 		return err
 	}
 	return
+}
+
+// movePluginToVendor move plugin to vendor dir
+// Traverse the plugins, and if the plugin path is not github.com/apache/answer-plugins, move the contents of the current plugin to the vendor/github.com/apache/answer-plugins/ directory.
+func movePluginToVendor(b *buildingMaterial) (err error) {
+	pluginsDir := filepath.Join(b.tmpDir, "vendor/github.com/apache/answer-plugins/")
+	for _, p := range b.plugins {
+		pluginDir := filepath.Join(b.tmpDir, "vendor/", p.Name)
+		pluginName := filepath.Base(p.Name)
+		if !strings.HasPrefix(p.Name, "github.com/apache/answer-plugins/") {
+			fmt.Printf("try to copy dir from %s to %s\n", pluginDir, filepath.Join(pluginsDir, pluginName))
+			err = copyDirEntries(os.DirFS(pluginDir), ".", filepath.Join(pluginsDir, pluginName), "node_modules")
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 // copyUIFiles copy ui files from answer module to tmp dir

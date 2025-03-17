@@ -167,6 +167,14 @@ func (qr *questionRepo) UpdateQuestionStatusWithOutUpdateTime(ctx context.Contex
 	return nil
 }
 
+func (qr *questionRepo) DeletePermanentlyQuestions(ctx context.Context) (err error) {
+	_, err = qr.data.DB.Context(ctx).Where("status = ?", entity.QuestionStatusDeleted).Delete(&entity.Question{})
+	if err != nil {
+		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	return nil
+}
+
 func (qr *questionRepo) RecoverQuestion(ctx context.Context, questionID string) (err error) {
 	questionID = uid.DeShortID(questionID)
 	_, err = qr.data.DB.Context(ctx).ID(questionID).Cols("status").Update(&entity.Question{Status: entity.QuestionStatusAvailable})
@@ -264,7 +272,7 @@ func (qr *questionRepo) FindByID(ctx context.Context, id []string) (questionList
 func (qr *questionRepo) GetQuestionList(ctx context.Context, question *entity.Question) (questionList []*entity.Question, err error) {
 	question.ID = uid.DeShortID(question.ID)
 	questionList = make([]*entity.Question, 0)
-	err = qr.data.DB.Context(ctx).Find(questionList, question)
+	err = qr.data.DB.Context(ctx).Find(&questionList, question)
 	if err != nil {
 		return questionList, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
@@ -372,7 +380,10 @@ func (qr *questionRepo) GetQuestionPage(ctx context.Context, page, pageSize int,
 	questionList []*entity.Question, total int64, err error) {
 	questionList = make([]*entity.Question, 0)
 	session := qr.data.DB.Context(ctx)
-	status := []int{entity.QuestionStatusAvailable, entity.QuestionStatusClosed}
+	status := []int{entity.QuestionStatusAvailable}
+	if orderCond != "unanswered" {
+		status = append(status, entity.QuestionStatusClosed)
+	}
 	if showPending {
 		status = append(status, entity.QuestionStatusPending)
 	}

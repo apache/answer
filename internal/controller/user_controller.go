@@ -226,6 +226,7 @@ func (uc *UserController) UseRePassWord(ctx *gin.Context) {
 // UserLogout user logout
 // @Summary user logout
 // @Description user logout
+// @Security ApiKeyAuth
 // @Tags User
 // @Accept json
 // @Produce json
@@ -334,6 +335,7 @@ func (uc *UserController) UserVerifyEmail(ctx *gin.Context) {
 // UserVerifyEmailSend godoc
 // @Summary UserVerifyEmailSend
 // @Description UserVerifyEmailSend
+// @Security ApiKeyAuth
 // @Tags User
 // @Accept json
 // @Produce json
@@ -548,6 +550,7 @@ func (uc *UserController) UpdateUserNotificationConfig(ctx *gin.Context) {
 // UserChangeEmailSendCode send email to the user email then change their email
 // @Summary send email to the user email then change their email
 // @Description send email to the user email then change their email
+// @Security ApiKeyAuth
 // @Tags User
 // @Accept json
 // @Produce json
@@ -636,7 +639,6 @@ func (uc *UserController) UserChangeEmailVerify(ctx *gin.Context) {
 // @Tags User
 // @Accept json
 // @Produce json
-// @Security ApiKeyAuth
 // @Success 200 {object} handler.RespBody{data=schema.UserRankingResp}
 // @Router /answer/api/v1/user/ranking [get]
 func (uc *UserController) UserRanking(ctx *gin.Context) {
@@ -650,8 +652,8 @@ func (uc *UserController) UserRanking(ctx *gin.Context) {
 // @Tags User
 // @Accept json
 // @Produce json
-// @Security ApiKeyAuth
-// @Param data body schema.GetUserStaffReq true "GetUserStaffReq"
+// @Param username query string true "username"
+// @Param page_size query string true "page_size"
 // @Success 200 {object} handler.RespBody{data=schema.GetUserStaffResp}
 // @Router /answer/api/v1/user/staff [get]
 func (uc *UserController) UserStaff(ctx *gin.Context) {
