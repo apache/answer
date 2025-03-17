@@ -18,7 +18,7 @@
  */
 
 import { FC } from 'react';
-import { Form, Table, Stack } from 'react-bootstrap';
+import { Form, Table, Stack, Button } from 'react-bootstrap';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -31,11 +31,13 @@ import {
   BaseUserCard,
   Empty,
   QueryGroup,
+  Modal,
 } from '@/components';
 import { ADMIN_LIST_STATUS } from '@/common/constants';
 import * as Type from '@/common/interface';
-import { useQuestionSearch } from '@/services';
+import { deletePermanently, useQuestionSearch } from '@/services';
 import { pathFactory } from '@/router/pathFactory';
+import { toastStore } from '@/stores';
 
 import Action from './components/Action';
 
@@ -66,6 +68,24 @@ const Questions: FC = () => {
   });
   const count = listData?.count || 0;
 
+  const handleDeletePermanently = () => {
+    Modal.confirm({
+      title: t('title', { keyPrefix: 'delete_permanently' }),
+      content: t('content', { keyPrefix: 'delete_permanently' }),
+      cancelBtnVariant: 'link',
+      confirmText: t('ok', { keyPrefix: 'btns' }),
+      onConfirm: () => {
+        deletePermanently('questions').then(() => {
+          toastStore.getState().show({
+            msg: t('posts_deleted', { keyPrefix: 'messages' }),
+            variant: 'success',
+          });
+          refreshList();
+        });
+      },
+    });
+  };
+
   const handleFilter = (e) => {
     urlSearchParams.set('query', e.target.value);
     urlSearchParams.delete('page');
@@ -75,12 +95,22 @@ const Questions: FC = () => {
     <>
       <h3 className="mb-4">{t('page_title')}</h3>
       <div className="d-flex flex-wrap justify-content-between align-items-center mb-3">
-        <QueryGroup
-          data={questionFilterItems}
-          currentSort={curFilter}
-          sortKey="status"
-          i18nKeyPrefix="btns"
-        />
+        <Stack direction="horizontal" gap={3}>
+          <QueryGroup
+            data={questionFilterItems}
+            currentSort={curFilter}
+            sortKey="status"
+            i18nKeyPrefix="btns"
+          />
+          {curFilter === 'deleted' ? (
+            <Button
+              variant="outline-danger"
+              size="sm"
+              onClick={() => handleDeletePermanently()}>
+              {t('deleted_permanently', { keyPrefix: 'btns' })}
+            </Button>
+          ) : null}
+        </Stack>
 
         <Form.Control
           value={curQuery}

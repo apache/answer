@@ -328,6 +328,8 @@ func (a *AnswerAPIRouter) RegisterAnswerAdminAPIRouter(r *gin.RouterGroup) {
 	r.PUT("/user/password", a.adminUserController.UpdateUserPassword)
 	r.PUT("/user/profile", a.adminUserController.EditUserProfile)
 
+	r.DELETE("/delete/permanently", a.adminUserController.DeletePermanently)
+
 	// reason
 	r.GET("/reasons", a.reasonController.Reasons)
 

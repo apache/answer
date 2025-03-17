@@ -108,7 +108,7 @@ func (cr *collectionRepo) GetCollection(ctx context.Context, id int) (collection
 // GetCollectionList get collection list all
 func (cr *collectionRepo) GetCollectionList(ctx context.Context, collection *entity.Collection) (collectionList []*entity.Collection, err error) {
 	collectionList = make([]*entity.Collection, 0)
-	err = cr.data.DB.Context(ctx).Find(collectionList, collection)
+	err = cr.data.DB.Context(ctx).Find(&collectionList, collection)
 	err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	return
 }

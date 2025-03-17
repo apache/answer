@@ -57,6 +57,7 @@ func (u *LangController) GetLangMapping(ctx *gin.Context) {
 // GetAdminLangOptions Get language options
 // @Summary Get language options
 // @Description Get language options
+// @Security ApiKeyAuth
 // @Tags Lang
 // @Produce json
 // @Success 200 {object} handler.RespBody{}

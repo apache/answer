@@ -52,6 +52,8 @@ type BadgeAwardRepo interface {
 
 	GetByUserIdAndBadgeId(ctx context.Context, userID string, badgeID string) (badgeAward *entity.BadgeAward, exists bool, err error)
 	GetByUserIdAndBadgeIdAndAwardKey(ctx context.Context, userID string, badgeID string, awardKey string) (badgeAward *entity.BadgeAward, exists bool, err error)
+
+	DeleteUserBadgeAward(ctx context.Context, userID string) (err error)
 }
 
 type BadgeAwardService struct {

@@ -18,7 +18,7 @@
  */
 
 import { FC, FormEvent } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Row, Col } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
 import Progress from '../Progress';
@@ -46,6 +46,18 @@ const sqlData = [
   },
 ];
 
+const sslModes = [
+  {
+    value: 'require',
+  },
+  {
+    value: 'verify-ca',
+  },
+  {
+    value: 'verify-full',
+  },
+];
+
 const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
   const { t } = useTranslation('translation', { keyPrefix: 'install' });
 
@@ -63,7 +75,6 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
           errorMsg: t('db_username.msg'),
         };
       }
-
       if (!db_password.value) {
         bol = false;
         data.db_password = {
@@ -81,7 +92,6 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
           errorMsg: t('db_host.msg'),
         };
       }
-
       if (!db_name.value) {
         bol = false;
         data.db_name = {
@@ -179,12 +189,147 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
                 });
               }}
             />
-
             <Form.Control.Feedback type="invalid">
               {data.db_password.errorMsg}
             </Form.Control.Feedback>
           </Form.Group>
-
+          {data.db_type.value === 'postgres' && (
+            <Form.Group controlId="ssl_enabled" className="mb-3">
+              <Form.Label>{t('ssl_enabled.label')}</Form.Label>
+              <Form.Check
+                type="switch"
+                label={`${
+                  data.ssl_enabled.value
+                    ? t('ssl_enabled_on.label')
+                    : t('ssl_enabled_off.label')
+                }`}
+                checked={data.ssl_enabled.value}
+                onChange={(e) => {
+                  changeCallback({
+                    ssl_enabled: {
+                      value: e.target.checked,
+                      isInvalid: false,
+                      errorMsg: '',
+                    },
+                    ssl_mode: {
+                      value: 'require',
+                      isInvalid: false,
+                      errorMsg: '',
+                    },
+                    ssl_root_cert: {
+                      value: '',
+                      isInvalid: false,
+                      errorMsg: '',
+                    },
+                    ssl_cert: {
+                      value: '',
+                      isInvalid: false,
+                      errorMsg: '',
+                    },
+                    ssl_key: {
+                      value: '',
+                      isInvalid: false,
+                      errorMsg: '',
+                    },
+                  });
+                }}
+              />
+            </Form.Group>
+          )}
+          {data.db_type.value === 'postgres' && data.ssl_enabled.value && (
+            <Form.Group controlId="sslmodeOptionsDropdown" className="mb-3">
+              <Form.Label>{t('ssl_mode.label')}</Form.Label>
+              <Form.Select
+                value={data.ssl_mode.value}
+                onChange={(e) => {
+                  changeCallback({
+                    ssl_mode: {
+                      value: e.target.value,
+                      isInvalid: false,
+                      errorMsg: '',
+                    },
+                  });
+                }}>
+                {sslModes.map((item) => {
+                  return (
+                    <option value={item.value} key={item.value}>
+                      {item.value}
+                    </option>
+                  );
+                })}
+              </Form.Select>
+            </Form.Group>
+          )}
+          {data.db_type.value === 'postgres' &&
+            data.ssl_enabled.value &&
+            (data.ssl_mode.value === 'verify-ca' ||
+              data.ssl_mode.value === 'verify-full') && (
+              <Row className="mb-3">
+                <Form.Group as={Col} controlId="ssl_root_cert">
+                  <Form.Control
+                    placeholder={t('ssl_root_cert.placeholder')}
+                    aria-label="ssl_root_cert"
+                    aria-describedby="basic-addon1"
+                    isInvalid={data.ssl_root_cert.isInvalid}
+                    onChange={(e) => {
+                      changeCallback({
+                        ssl_root_cert: {
+                          value: e.target.value,
+                          isInvalid: false,
+                          errorMsg: '',
+                        },
+                      });
+                    }}
+                    required
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {`${data.ssl_root_cert.errorMsg}`}
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group as={Col} controlId="ssl_cert">
+                  <Form.Control
+                    placeholder={t('ssl_cert.placeholder')}
+                    aria-label="ssl_cert"
+                    aria-describedby="basic-addon1"
+                    isInvalid={data.ssl_cert.isInvalid}
+                    onChange={(e) => {
+                      changeCallback({
+                        ssl_cert: {
+                          value: e.target.value,
+                          isInvalid: false,
+                          errorMsg: '',
+                        },
+                      });
+                    }}
+                    required
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {`${data.ssl_cert.errorMsg}`}
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group as={Col} controlId="ssl_key">
+                  <Form.Control
+                    placeholder={t('ssl_key.placeholder')}
+                    aria-label="ssl_key"
+                    aria-describedby="basic-addon1"
+                    isInvalid={data.ssl_key.isInvalid}
+                    onChange={(e) => {
+                      changeCallback({
+                        ssl_key: {
+                          value: e.target.value,
+                          isInvalid: false,
+                          errorMsg: '',
+                        },
+                      });
+                    }}
+                    required
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {`${data.ssl_key.errorMsg}`}
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Row>
+            )}
           <Form.Group controlId="db_host" className="mb-3">
             <Form.Label>{t('db_host.label')}</Form.Label>
             <Form.Control
@@ -206,7 +351,6 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
               {data.db_host.errorMsg}
             </Form.Control.Feedback>
           </Form.Group>
-
           <Form.Group controlId="name" className="mb-3">
             <Form.Label>{t('db_name.label')}</Form.Label>
             <Form.Control

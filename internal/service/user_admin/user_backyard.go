@@ -27,8 +27,11 @@ import (
 	"github.com/apache/answer/internal/base/translator"
 	"github.com/apache/answer/internal/base/validator"
 	answercommon "github.com/apache/answer/internal/service/answer_common"
+	"github.com/apache/answer/internal/service/badge"
 	"github.com/apache/answer/internal/service/comment_common"
 	"github.com/apache/answer/internal/service/export"
+	notificationcommon "github.com/apache/answer/internal/service/notification_common"
+	"github.com/apache/answer/internal/service/plugin_common"
 	questioncommon "github.com/apache/answer/internal/service/question_common"
 	"github.com/apache/answer/pkg/token"
 	"net/mail"
@@ -63,6 +66,7 @@ type UserAdminRepo interface {
 	AddUser(ctx context.Context, user *entity.User) (err error)
 	AddUsers(ctx context.Context, users []*entity.User) (err error)
 	UpdateUserPassword(ctx context.Context, userID string, password string) (err error)
+	DeletePermanentlyUsers(ctx context.Context) (err error)
 }
 
 // UserAdminService user service
@@ -78,6 +82,9 @@ type UserAdminService struct {
 	answerCommonRepo      answercommon.AnswerRepo
 	commentCommonRepo     comment_common.CommentCommonRepo
 	userExternalLoginRepo user_external_login.UserExternalLoginRepo
+	notificationRepo      notificationcommon.NotificationRepo
+	pluginUserConfigRepo  plugin_common.PluginUserConfigRepo
+	badgeAwardRepo        badge.BadgeAwardRepo
 }
 
 // NewUserAdminService new user admin service
@@ -93,6 +100,9 @@ func NewUserAdminService(
 	answerCommonRepo answercommon.AnswerRepo,
 	commentCommonRepo comment_common.CommentCommonRepo,
 	userExternalLoginRepo user_external_login.UserExternalLoginRepo,
+	notificationRepo notificationcommon.NotificationRepo,
+	pluginUserConfigRepo plugin_common.PluginUserConfigRepo,
+	badgeAwardRepo badge.BadgeAwardRepo,
 ) *UserAdminService {
 	return &UserAdminService{
 		userRepo:              userRepo,
@@ -106,6 +116,9 @@ func NewUserAdminService(
 		answerCommonRepo:      answerCommonRepo,
 		commentCommonRepo:     commentCommonRepo,
 		userExternalLoginRepo: userExternalLoginRepo,
+		notificationRepo:      notificationRepo,
+		pluginUserConfigRepo:  pluginUserConfigRepo,
+		badgeAwardRepo:        badgeAwardRepo,
 	}
 }
 
@@ -153,10 +166,7 @@ func (us *UserAdminService) UpdateUserStatus(ctx context.Context, req *schema.Up
 	}
 
 	if req.IsDeleted() {
-		err := us.userExternalLoginRepo.DeleteUserExternalLoginByUserID(ctx, userInfo.ID)
-		if err != nil {
-			log.Errorf("remove all user external login error: %v", err)
-		}
+		us.removeAllUserConfiguration(ctx, userInfo.ID)
 	}
 
 	// if user reputation is zero means this user is inactive, so try to activate this user.
@@ -164,6 +174,30 @@ func (us *UserAdminService) UpdateUserStatus(ctx context.Context, req *schema.Up
 		return us.userActivity.UserActive(ctx, userInfo.ID)
 	}
 	return nil
+}
+
+// removeAllUserConfiguration remove all user configuration
+func (us *UserAdminService) removeAllUserConfiguration(ctx context.Context, userID string) {
+	err := us.userExternalLoginRepo.DeleteUserExternalLoginByUserID(ctx, userID)
+	if err != nil {
+		log.Errorf("remove all user external login error: %v", err)
+	}
+	err = us.notificationRepo.DeleteNotification(ctx, userID)
+	if err != nil {
+		log.Errorf("remove all user notification error: %v", err)
+	}
+	err = us.notificationRepo.DeleteUserNotificationConfig(ctx, userID)
+	if err != nil {
+		log.Errorf("remove all user notification config error: %v", err)
+	}
+	err = us.pluginUserConfigRepo.DeleteUserPluginConfig(ctx, userID)
+	if err != nil {
+		log.Errorf("remove all user plugin config error: %v", err)
+	}
+	err = us.badgeAwardRepo.DeleteUserBadgeAward(ctx, userID)
+	if err != nil {
+		log.Errorf("remove all user badge award error: %v", err)
+	}
 }
 
 // removeAllUserCreatedContent remove all user created content
@@ -577,4 +611,16 @@ func (us *UserAdminService) SendUserActivation(ctx context.Context, req *schema.
 	}
 	go us.emailService.SendAndSaveCode(ctx, userInfo.ID, userInfo.EMail, title, body, code, data.ToJSONString())
 	return nil
+}
+
+func (us *UserAdminService) DeletePermanently(ctx context.Context, req *schema.DeletePermanentlyReq) (err error) {
+	if req.Type == constant.DeletePermanentlyUsers {
+		return us.userRepo.DeletePermanentlyUsers(ctx)
+	} else if req.Type == constant.DeletePermanentlyQuestions {
+		return us.questionCommonRepo.DeletePermanentlyQuestions(ctx)
+	} else if req.Type == constant.DeletePermanentlyAnswers {
+		return us.answerCommonRepo.DeletePermanentlyAnswers(ctx)
+	}
+
+	return errors.BadRequest(reason.RequestFormatError)
 }

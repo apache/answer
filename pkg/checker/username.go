@@ -22,7 +22,7 @@ package checker
 import "regexp"
 
 var (
-	usernameReg = regexp.MustCompile(`^[a-z0-9._-]{2,30}$`)
+	usernameReg = regexp.MustCompile(`^[\w.\- ]{2,30}$`)
 )
 
 func IsInvalidUsername(username string) bool {

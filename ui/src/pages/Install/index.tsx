@@ -38,6 +38,7 @@ import {
 import { CURRENT_LANG_STORAGE_KEY } from '@/common/constants';
 import { BASE_ORIGIN } from '@/router/alias';
 import { setupInstallLanguage } from '@/utils/localize';
+import { loggedUserInfoStore } from '@/stores';
 
 import {
   FirstStep,
@@ -125,12 +126,44 @@ const Index: FC = () => {
       isInvalid: false,
       errorMsg: '',
     },
+    confirm_password: {
+      value: '',
+      isInvalid: false,
+      errorMsg: '',
+    },
     email: {
       value: '',
       isInvalid: false,
       errorMsg: '',
     },
+    ssl_enabled: {
+      value: false,
+      isInvalid: false,
+      errorMsg: '',
+    },
+    ssl_mode: {
+      value: '',
+      isInvalid: false,
+      errorMsg: '',
+    },
+    ssl_key: {
+      value: '',
+      isInvalid: false,
+      errorMsg: '',
+    },
+    ssl_root_cert: {
+      value: '',
+      isInvalid: false,
+      errorMsg: '',
+    },
+    ssl_cert: {
+      value: '',
+      isInvalid: false,
+      errorMsg: '',
+    },
   });
+
+  const { update, user } = loggedUserInfoStore();
 
   const updateFormData = (params: FormDataType) => {
     if (Object.keys(params)?.[0] === 'db_type') {
@@ -148,6 +181,8 @@ const Index: FC = () => {
           db_username: { ...updatedFormData.db_username, value: 'postgres' },
           db_password: { ...updatedFormData.db_password, value: 'postgres' },
           db_host: { ...updatedFormData.db_host, value: 'db:5432' },
+          ssl_enabled: { ...updatedFormData.ssl_enabled, value: false },
+          ssl_mode: { ...updatedFormData.ssl_mode, value: '' },
         };
       }
       return updatedFormData;
@@ -184,6 +219,11 @@ const Index: FC = () => {
       db_host: formData.db_host.value,
       db_name: formData.db_name.value,
       db_file: formData.db_file.value,
+      ssl_enabled: formData.ssl_enabled.value,
+      ssl_mode: formData.ssl_mode.value,
+      ssl_key: formData.ssl_key.value,
+      ssl_root_cert: formData.ssl_root_cert.value,
+      ssl_cert: formData.ssl_cert.value,
     };
     installInit(params)
       .then(() => {
@@ -203,6 +243,11 @@ const Index: FC = () => {
       db_host: formData.db_host.value,
       db_name: formData.db_name.value,
       db_file: formData.db_file.value,
+      ssl_enabled: formData.ssl_enabled.value,
+      ssl_mode: formData.ssl_mode.value,
+      ssl_key: formData.ssl_key.value,
+      ssl_root_cert: formData.ssl_root_cert.value,
+      ssl_cert: formData.ssl_cert.value,
     };
     dbCheck(params)
       .then(() => {
@@ -243,6 +288,10 @@ const Index: FC = () => {
   const handleStep = () => {
     if (step === 1) {
       Storage.set(CURRENT_LANG_STORAGE_KEY, formData.lang.value);
+      update({
+        ...user,
+        language: formData.lang.value,
+      });
       handleNext();
     }
     if (step === 2) {

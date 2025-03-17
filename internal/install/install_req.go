@@ -27,6 +27,7 @@ import (
 	"github.com/apache/answer/internal/base/reason"
 	"github.com/apache/answer/internal/base/validator"
 	"github.com/apache/answer/pkg/checker"
+	"github.com/apache/answer/pkg/dir"
 	"github.com/segmentfault/pacman/errors"
 	"xorm.io/xorm/schemas"
 )
@@ -40,12 +41,17 @@ type CheckConfigFileResp struct {
 
 // CheckDatabaseReq check database
 type CheckDatabaseReq struct {
-	DbType     string `validate:"required,oneof=postgres sqlite3 mysql" json:"db_type"`
-	DbUsername string `json:"db_username"`
-	DbPassword string `json:"db_password"`
-	DbHost     string `json:"db_host"`
-	DbName     string `json:"db_name"`
-	DbFile     string `json:"db_file"`
+	DbType      string `validate:"required,oneof=postgres sqlite3 mysql" json:"db_type"`
+	DbUsername  string `json:"db_username"`
+	DbPassword  string `json:"db_password"`
+	DbHost      string `json:"db_host"`
+	DbName      string `json:"db_name"`
+	DbFile      string `json:"db_file"`
+	Ssl         bool   `json:"ssl_enabled"`
+	SslMode     string `json:"ssl_mode"`
+	SslRootCert string `json:"ssl_root_cert"`
+	SslKey      string `json:"ssl_key"`
+	SslCert     string `json:"ssl_cert"`
 }
 
 // GetConnection get connection string
@@ -59,8 +65,26 @@ func (r *CheckDatabaseReq) GetConnection() string {
 	}
 	if r.DbType == string(schemas.POSTGRES) {
 		host, port := parsePgSQLHostPort(r.DbHost)
-		return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-			host, port, r.DbUsername, r.DbPassword, r.DbName)
+		if !r.Ssl {
+			return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+				host, port, r.DbUsername, r.DbPassword, r.DbName)
+		} else if r.SslMode == "require" {
+			return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+				host, port, r.DbUsername, r.DbPassword, r.DbName, r.SslMode)
+		} else if r.SslMode == "verify-ca" || r.SslMode == "verify-full" {
+			connection := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+				host, port, r.DbUsername, r.DbPassword, r.DbName, r.SslMode)
+			if len(r.SslRootCert) > 0 && dir.CheckFileExist(r.SslRootCert) {
+				connection += fmt.Sprintf(" sslrootcert=%s", r.SslRootCert)
+			}
+			if len(r.SslCert) > 0 && dir.CheckFileExist(r.SslCert) {
+				connection += fmt.Sprintf(" sslcert=%s", r.SslCert)
+			}
+			if len(r.SslKey) > 0 && dir.CheckFileExist(r.SslKey) {
+				connection += fmt.Sprintf(" sslkey=%s", r.SslKey)
+			}
+			return connection
+		}
 	}
 	return ""
 }
@@ -100,7 +124,7 @@ type InitBaseInfoReq struct {
 	SiteName      string `validate:"required,sanitizer,gt=0,lte=30" json:"site_name"`
 	SiteURL       string `validate:"required,gt=0,lte=512,url" json:"site_url"`
 	ContactEmail  string `validate:"required,email,gt=0,lte=500" json:"contact_email"`
-	AdminName     string `validate:"required,gt=3,lte=30" json:"name"`
+	AdminName     string `validate:"required,gte=2,lte=30" json:"name"`
 	AdminPassword string `validate:"required,gte=8,lte=32" json:"password"`
 	AdminEmail    string `validate:"required,email,gt=0,lte=500" json:"email"`
 	LoginRequired bool   `json:"login_required"`

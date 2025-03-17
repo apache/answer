@@ -107,7 +107,7 @@ func (ar *ActivityRepo) GetActivity(ctx context.Context, session *xorm.Session,
 	return
 }
 
-func (ar *ActivityRepo) GetUserActivitysByActivityType(ctx context.Context, userID string, activityType int) (
+func (ar *ActivityRepo) GetUserActivitiesByActivityType(ctx context.Context, userID string, activityType int) (
 	activityList []*entity.Activity, err error) {
 	activityList = make([]*entity.Activity, 0)
 	err = ar.data.DB.Context(ctx).Where("user_id = ?", userID).

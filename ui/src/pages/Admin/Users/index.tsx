@@ -30,6 +30,7 @@ import {
   BaseUserCard,
   Empty,
   QueryGroup,
+  Modal,
 } from '@/components';
 import * as Type from '@/common/interface';
 import { useUserModal } from '@/hooks';
@@ -40,6 +41,7 @@ import {
   getAdminUcAgent,
   AdminUcAgent,
   changeUserStatus,
+  deletePermanently,
 } from '@/services';
 import { formatCount } from '@/utils';
 
@@ -151,6 +153,24 @@ const Users: FC = () => {
     });
   };
 
+  const handleDeletePermanently = () => {
+    Modal.confirm({
+      title: t('title', { keyPrefix: 'delete_permanently' }),
+      content: t('content', { keyPrefix: 'delete_permanently' }),
+      cancelBtnVariant: 'link',
+      confirmText: t('ok', { keyPrefix: 'btns' }),
+      onConfirm: () => {
+        deletePermanently('users').then(() => {
+          toastStore.getState().show({
+            msg: t('users_deleted', { keyPrefix: 'messages' }),
+            variant: 'success',
+          });
+          refreshUsers();
+        });
+      },
+    });
+  };
+
   const showAddUser =
     !ucAgent?.enabled || (ucAgent?.enabled && adminUcAgent?.allow_create_user);
   const showActionPassword =
@@ -177,6 +197,14 @@ const Users: FC = () => {
             sortKey="filter"
             i18nKeyPrefix="admin.users"
           />
+          {curFilter === 'deleted' ? (
+            <Button
+              variant="outline-danger"
+              size="sm"
+              onClick={() => handleDeletePermanently()}>
+              {t('deleted_permanently', { keyPrefix: 'btns' })}
+            </Button>
+          ) : null}
           {showAddUser ? (
             <Button
               variant="outline-primary"
