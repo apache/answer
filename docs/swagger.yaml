@@ -84,6 +84,16 @@ definitions:
         type: string
       db_username:
         type: string
+      ssl_cert:
+        type: string
+      ssl_enabled:
+        type: boolean
+      ssl_key:
+        type: string
+      ssl_mode:
+        type: string
+      ssl_root_cert:
+        type: string
     required:
     - db_type
     type: object
@@ -95,6 +105,11 @@ definitions:
       email:
         maxLength: 500
         type: string
+      external_content_display:
+        enum:
+        - always_display
+        - ask_before_display
+        type: string
       lang:
         maxLength: 30
         type: string
@@ -102,6 +117,7 @@ definitions:
         type: boolean
       name:
         maxLength: 30
+        minLength: 2
         type: string
       password:
         maxLength: 32
@@ -116,6 +132,7 @@ definitions:
     required:
     - contact_email
     - email
+    - external_content_display
     - lang
     - name
     - password
@@ -1625,6 +1642,8 @@ definitions:
     type: object
   schema.QuestionPageRespOperator:
     properties:
+      avatar:
+        type: string
       display_name:
         type: string
       id:
@@ -2035,6 +2054,8 @@ definitions:
         $ref: '#/definitions/schema.SiteLoginResp'
       revision:
         type: string
+      site_legal:
+        $ref: '#/definitions/schema.SiteLegalSimpleResp'
       site_seo:
         $ref: '#/definitions/schema.SiteSeoResp'
       site_users:
@@ -2072,6 +2093,11 @@ definitions:
     type: object
   schema.SiteLegalReq:
     properties:
+      external_content_display:
+        enum:
+        - always_display
+        - ask_before_display
+        type: string
       privacy_policy_original_text:
         type: string
       privacy_policy_parsed_text:
@@ -2080,9 +2106,16 @@ definitions:
         type: string
       terms_of_service_parsed_text:
         type: string
+    required:
+    - external_content_display
     type: object
   schema.SiteLegalResp:
     properties:
+      external_content_display:
+        enum:
+        - always_display
+        - ask_before_display
+        type: string
       privacy_policy_original_text:
         type: string
       privacy_policy_parsed_text:
@@ -2091,6 +2124,18 @@ definitions:
         type: string
       terms_of_service_parsed_text:
         type: string
+    required:
+    - external_content_display
+    type: object
+  schema.SiteLegalSimpleResp:
+    properties:
+      external_content_display:
+        enum:
+        - always_display
+        - ask_before_display
+        type: string
+    required:
+    - external_content_display
     type: object
   schema.SiteLoginReq:
     properties:

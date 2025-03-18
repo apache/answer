@@ -7589,6 +7589,21 @@ const docTemplate = `{
                 },
                 "db_username": {
                     "type": "string"
+                },
+                "ssl_cert": {
+                    "type": "string"
+                },
+                "ssl_enabled": {
+                    "type": "boolean"
+                },
+                "ssl_key": {
+                    "type": "string"
+                },
+                "ssl_mode": {
+                    "type": "string"
+                },
+                "ssl_root_cert": {
+                    "type": "string"
                 }
             }
         },
@@ -7597,6 +7612,7 @@ const docTemplate = `{
             "required": [
                 "contact_email",
                 "email",
+                "external_content_display",
                 "lang",
                 "name",
                 "password",
@@ -7612,6 +7628,13 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 500
                 },
+                "external_content_display": {
+                    "type": "string",
+                    "enum": [
+                        "always_display",
+                        "ask_before_display"
+                    ]
+                },
                 "lang": {
                     "type": "string",
                     "maxLength": 30
@@ -7621,7 +7644,8 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string",
-                    "maxLength": 30
+                    "maxLength": 30,
+                    "minLength": 2
                 },
                 "password": {
                     "type": "string",
@@ -9796,6 +9820,9 @@ const docTemplate = `{
         "schema.QuestionPageRespOperator": {
             "type": "object",
             "properties": {
+                "avatar": {
+                    "type": "string"
+                },
                 "display_name": {
                     "type": "string"
                 },
@@ -10393,6 +10420,9 @@ const docTemplate = `{
                 "revision": {
                     "type": "string"
                 },
+                "site_legal": {
+                    "$ref": "#/definitions/schema.SiteLegalSimpleResp"
+                },
                 "site_seo": {
                     "$ref": "#/definitions/schema.SiteSeoResp"
                 },
@@ -10446,7 +10476,17 @@ const docTemplate = `{
         },
         "schema.SiteLegalReq": {
             "type": "object",
+            "required": [
+                "external_content_display"
+            ],
             "properties": {
+                "external_content_display": {
+                    "type": "string",
+                    "enum": [
+                        "always_display",
+                        "ask_before_display"
+                    ]
+                },
                 "privacy_policy_original_text": {
                     "type": "string"
                 },
@@ -10463,7 +10503,17 @@ const docTemplate = `{
         },
         "schema.SiteLegalResp": {
             "type": "object",
+            "required": [
+                "external_content_display"
+            ],
             "properties": {
+                "external_content_display": {
+                    "type": "string",
+                    "enum": [
+                        "always_display",
+                        "ask_before_display"
+                    ]
+                },
                 "privacy_policy_original_text": {
                     "type": "string"
                 },
@@ -10475,6 +10525,21 @@ const docTemplate = `{
                 },
                 "terms_of_service_parsed_text": {
                     "type": "string"
+                }
+            }
+        },
+        "schema.SiteLegalSimpleResp": {
+            "type": "object",
+            "required": [
+                "external_content_display"
+            ],
+            "properties": {
+                "external_content_display": {
+                    "type": "string",
+                    "enum": [
+                        "always_display",
+                        "ask_before_display"
+                    ]
                 }
             }
         },
