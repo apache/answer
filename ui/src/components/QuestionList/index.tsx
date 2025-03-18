@@ -173,17 +173,21 @@ const QuestionList: FC<Props> = ({
                   <h5 className="text-wrap text-break">
                     <NavLink
                       className="link-dark d-block"
+                      onClick={(e) => e.stopPropagation()}
                       to={pathFactory.questionLanding(li.id, li.url_title)}>
                       {li.title}
                       {li.status === 2 ? ` [${t('closed')}]` : ''}
                     </NavLink>
                   </h5>
                   {viewType === 'card' && (
-                    <NavLink
-                      to={pathFactory.questionLanding(li.id, li.url_title)}
-                      className="d-block mb-2 small text-body text-truncate-2"
-                      dangerouslySetInnerHTML={{ __html: li.description }}
-                    />
+                    <div className="text-truncate-2 mb-2">
+                      <NavLink
+                        to={pathFactory.questionLanding(li.id, li.url_title)}
+                        className="d-block small text-body"
+                        dangerouslySetInnerHTML={{ __html: li.description }}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                    </div>
                   )}
 
                   <div className="question-tags mb-12">

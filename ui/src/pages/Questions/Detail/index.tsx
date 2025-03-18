@@ -242,6 +242,77 @@ const Index = () => {
     }
   }
 
+  useEffect(() => {
+    // handle footnote links
+    const fixFootnoteLinks = () => {
+      const footnoteLinks = document.querySelectorAll(
+        'a[href^="#"]:not([data-footnote-fixed])',
+      );
+
+      footnoteLinks.forEach((link) => {
+        link.setAttribute('data-footnote-fixed', 'true');
+        const href = link.getAttribute('href');
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = href?.substring(1) || '';
+          const targetElement = document.getElementById(targetId);
+
+          if (targetElement) {
+            window.history.pushState(null, '', `${location.pathname}${href}`);
+
+            scrollToElementTop(targetElement);
+          }
+        });
+      });
+
+      // 检查当前URL是否包含锚点，如果有，自动滚动到正确位置
+      if (window.location.hash) {
+        const { hash } = window.location;
+        const targetElement = document.getElementById(hash.substring(1));
+
+        if (targetElement) {
+          // 给浏览器一点时间来完成渲染
+          setTimeout(() => {
+            scrollToElementTop(targetElement);
+          }, 100);
+        }
+      }
+    };
+    fixFootnoteLinks();
+
+    const observer = new MutationObserver(() => {
+      fixFootnoteLinks();
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['id', 'href'],
+    });
+
+    // 监听 URL hash 变化
+    const handleHashChange = () => {
+      if (window.location.hash) {
+        const { hash } = window.location;
+        const targetElement = document.getElementById(hash.substring(1));
+
+        if (targetElement) {
+          setTimeout(() => {
+            scrollToElementTop(targetElement);
+          }, 100);
+        }
+      }
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('hashchange', handleHashChange);
+    };
+  }, [location.pathname]);
+
   return (
     <Row className="questionDetailPage pt-4 mb-5">
       <Col className="page-main flex-auto">
