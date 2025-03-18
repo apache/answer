@@ -137,6 +137,8 @@ backend:
     other: Hasło
   pass:
     other: Hasło
+  old_pass:
+    other: Current password
   original_text:
     other: Ten wpis
   email_or_password_wrong_error:
@@ -168,6 +170,8 @@ backend:
         other: Brak uprawnień do aktualizacji.
       question_closed_cannot_add:
         other: Pytania są zamknięte i nie można ich dodawać.
+      content_cannot_empty:
+        other: Answer content cannot be empty.
     comment:
       edit_without_permission:
         other: Komentarz nie może edytować.
@@ -175,6 +179,8 @@ backend:
         other: Komentarz nie został odnaleziony.
       cannot_edit_after_deadline:
         other: Czas komentowania był zbyt długi, aby go zmodyfikować.
+      content_cannot_empty:
+        other: Comment content cannot be empty.
     email:
       duplicate:
         other: E-mail już istnieje.
@@ -224,6 +230,8 @@ backend:
         other: Brak uprawnień do zamknięcia.
       cannot_update:
         other: Brak uprawnień do edycji.
+      content_cannot_empty:
+        other: Content cannot be empty.
     rank:
       fail_to_meet_the_condition:
         other: Ranga nie spełnia warunku.
@@ -484,7 +492,7 @@ backend:
       title:
         other: "[{{.SiteName}}] Nowe pytanie: {{.QuestionTitle}}"
       body:
-        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
     pass_reset:
       title:
         other: "[{{.SiteName }}] Reset hasła"
@@ -1465,8 +1473,15 @@ ui:
     normal: Normalny
     closed: Zamknięty
     deleted: Usunięty
+    deleted_permanently: Deleted permanently
     pending: Oczekujący
     more: Więcej
+    view: View
+    card: Card
+    compact: Compact
+    display_below: Display below
+    always_display: Always display
+    or: or
   search:
     title: Wyniki wyszukiwania
     keywords: Słowa kluczowe
@@ -1496,10 +1511,13 @@ ui:
     via: Udostępnij post za pośrednictwem...
     copied: Skopiowano
     facebook: Udostępnij na Facebooku
-    twitter: Udostępnij na Twitterze
+    twitter: Share to X
   cannot_vote_for_self: Nie możesz głosować na własne posty.
   modal_confirm:
     title: Błąd...
+  delete_permanently:
+    title: Delete permanently
+    content: Are you sure you want to delete permanently?
   account_result:
     success: Twoje nowe konto zostało potwierdzone; zostaniesz przekierowany na stronę główną.
     link: Kontynuuj do strony głównej
@@ -1603,6 +1621,23 @@ ui:
       label: Plik bazy danych
       placeholder: /data/answer.db
       msg: Plik bazy danych nie może być pusty.
+    ssl_enabled:
+      label: Enable SSL
+    ssl_enabled_on:
+      label: On
+    ssl_enabled_off:
+      label: Off
+    ssl_mode:
+      label: SSL Mode
+    ssl_root_cert:
+      placeholder: sslrootcert file path
+      msg: Path to sslrootcert file cannot be empty
+    ssl_cert:
+      placeholder: sslcert file path
+      msg: Path to sslcert file cannot be empty
+    ssl_key:
+      placeholder: sslkey file path
+      msg: Path to sslkey file cannot be empty
     config_yaml:
       title: Utwórz plik config.yaml
       label: Plik config.yaml utworzony.
@@ -1635,8 +1670,8 @@ ui:
     admin_name:
       label: Imię
       msg: Imię nie może być puste.
-      character: 'Należy używać zestawu znaków "a-z", "0-9", " - . _"'
-      msg_max_length: Nazwa musi mieć maksymalnie 30 znaków.
+      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      msg_max_length: Name must be between 2 to 30 characters in length.
     admin_password:
       label: Hasło
       text: >-
@@ -1644,6 +1679,10 @@ ui:
       msg: Hasło nie może być puste.
       msg_min_length: Hasło musi mieć co najmniej 8 znaków.
       msg_max_length: Hasło musi mieć maksymalnie 32 znaki.
+    admin_confirm_password:
+      label: "Confirm Password"
+      text: "Please re-enter your password to confirm."
+      msg: "Confirm password does not match."
     admin_email:
       label: Email
       text: Będziesz potrzebować tego adresu e-mail do logowania.
@@ -1822,7 +1861,7 @@ ui:
             msg: "Podaj adresy e-mail użytkowników, jeden w każdej linii."
           display_name:
             label: Nazwa wyświetlana
-            msg: Wyświetlana nazwa musi mieć od 2 do 30 znaków.
+            msg: Display name must be 2-30 characters in length.
           email:
             label: E-mail
             msg: Email nie jest prawidłowy.
@@ -1998,6 +2037,11 @@ ui:
       privacy_policy:
         label: Polityka prywatności
         text: "Możesz tutaj dodać treść polityki prywatności. Jeśli masz dokument hostowany gdzie indziej, podaj tutaj pełny URL."
+      external_content_display:
+        label: External content
+        text: "Content includes images, videos, and media embedded from external websites."
+        always_display: Always display external content
+        ask_before_display: Ask before displaying external content
     write:
       page_title: Pisanie
       restrict_answer:
@@ -2253,5 +2297,11 @@ ui:
     user_deleted: This user has been deleted.
     badge_activated: This badge has been activated.
     badge_inactivated: This badge has been inactivated.
+    users_deleted: These users have been deleted.
+    posts_deleted: These questions have been deleted.
+    answers_deleted: These answers have been deleted.
+    copy: Copy to clipboard
+    copied: Copied
+    external_content_warning: External images/media are not displayed.
 
 

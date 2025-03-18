@@ -22,7 +22,7 @@ language_options:
     progress: 100
   - label: "Español"
     value: "es_ES"
-    progress: 83
+    progress: 96
   - label: "Português(BR)"
     value: "pt_BR"
     progress: 96
@@ -31,16 +31,16 @@ language_options:
     progress: 96
   - label: "Deutsch"
     value: "de_DE"
-    progress: 83
+    progress: 96
   - label: "Français"
     value: "fr_FR"
-    progress: 78
+    progress: 96
   - label: "日本語"
     value: "ja_JP"
-    progress: 11
+    progress: 96
   - label: "Italiano"
     value: "it_IT"
-    progress: 89
+    progress: 96
   - label: "Русский"
     value: "ru_RU"
     progress: 80
@@ -52,7 +52,7 @@ language_options:
     progress: 47
   - label: "한국어"
     value: "ko_KR"
-    progress: 84
+    progress: 73
   - label: "Tiếng Việt"
     value: "vi_VN"
     progress: 96

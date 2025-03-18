@@ -36,13 +36,13 @@ backend:
     report:
       other: Flag
     edit:
-      other: Edit
+      other: Ubah
     delete:
-      other: Delete
+      other: Hapus
     close:
-      other: Close
+      other: Tutup
     reopen:
-      other: Reopen
+      other: Buka kembali
     forbidden_error:
       other: Forbidden.
     pin:
@@ -52,9 +52,9 @@ backend:
     unpin:
       other: Unpin
     show:
-      other: List
+      other: Daftar
     invite_someone_to_answer:
-      other: Edit
+      other: Undang seseorang untuk menjawab
     undelete:
       other: Undelete
   role:
@@ -62,16 +62,16 @@ backend:
       user:
         other: Pengguna
       admin:
-        other: Admin
+        other: Administrator
       moderator:
         other: Moderator
     description:
       user:
         other: Default tanpa akses khusus.
       admin:
-        other: Memiliki hak penuh untuk mengakses website.
+        other: Memiliki kontrol penuh atas situs.
       moderator:
-        other: Memiliki hak penuh pada semua pertanyaan, kecuali pengaturan Admin.
+        other: Memiliki kendali atas semua kiriman kecuali pengaturan administrator.
   privilege:
     level_1:
       description:
@@ -86,17 +86,17 @@ backend:
       description:
         other: Custom Level
     rank_question_add_label:
-      other: Ask question
+      other: Tanyakan sesuatu
     rank_answer_add_label:
-      other: Write answer
+      other: Tulis jawaban
     rank_comment_add_label:
-      other: Write comment
+      other: Tulis komentar
     rank_report_add_label:
       other: Flag
     rank_comment_vote_up_label:
       other: Upvote comment
     rank_link_url_limit_label:
-      other: Post more than 2 links at a time
+      other: Kirim lebih dari 2 tautan secara bersamaan
     rank_question_vote_up_label:
       other: Upvote question
     rank_answer_vote_up_label:
@@ -106,9 +106,9 @@ backend:
     rank_answer_vote_down_label:
       other: Downvote answer
     rank_invite_someone_to_answer_label:
-      other: Invite someone to answer
+      other: Undang seseorang untuk menjawab
     rank_tag_add_label:
-      other: Create new tag
+      other:
     rank_tag_edit_label:
       other: Edit tag description (need to review)
     rank_question_edit_label:
@@ -130,11 +130,11 @@ backend:
     rank_tag_synonym_label:
       other: Manage tag synonyms
   email:
-    other: Email
+    other:
   e_mail:
     other: Email
   password:
-    other: Password
+    other: Kata sandi
   pass:
     other: Password
   old_pass:
@@ -142,16 +142,16 @@ backend:
   original_text:
     other: This post
   email_or_password_wrong_error:
-    other: Email dan kata sandi tidak cocok.
+    other: '"Email" dan kata sandi tidak cocok.'
   error:
     common:
       invalid_url:
-        other: Invalid URL.
+        other: URL salah.
       status_invalid:
         other: Invalid status.
     password:
       space_invalid:
-        other: Password cannot contain spaces.
+        other: Password tidak boleh mengandung spasi.
     admin:
       cannot_update_their_password:
         other: You cannot modify your password.
@@ -167,16 +167,20 @@ backend:
       cannot_deleted:
         other: Tidak memiliki izin untuk menghapus.
       cannot_update:
-        other: Tidak memiliki izin untuk memperbaharui.
+        other: Tidak memiliki izin untuk memperbarui.
       question_closed_cannot_add:
         other: Questions are closed and cannot be added.
+      content_cannot_empty:
+        other: Answer content cannot be empty.
     comment:
       edit_without_permission:
-        other: Komentar tidak boleh diedit.
+        other: Tidak diizinkan untuk mengubah komentar.
       not_found:
         other: Komentar tidak ditemukan.
       cannot_edit_after_deadline:
         other: The comment time has been too long to modify.
+      content_cannot_empty:
+        other: Comment content cannot be empty.
     email:
       duplicate:
         other: Email telah terdaftar.
@@ -195,7 +199,7 @@ backend:
       disallow_follow:
         other: Anda tidak diizinkan untuk mengikuti.
       disallow_vote:
-        other: Anda tidak diizinkan untuk melakukan voring.
+        other: Anda tisak diizinkan untuk melakukan vote.
       disallow_vote_your_self:
         other: Anda tidak dapat melakukan voting untuk ulasan Anda sendiri.
       not_found:
@@ -207,7 +211,7 @@ backend:
       old_password_verification_failed:
         other: Verifikasi password lama, gagal
       new_password_same_as_previous_setting:
-        other: Password baru sama dengan password yang sebelumnya.
+        other: Kata sandi baru sama dengan kata sandi yang sebelumnya.
       already_deleted:
         other: This post has been deleted.
     meta:
@@ -223,9 +227,11 @@ backend:
       cannot_deleted:
         other: Tidak memiliki izin untuk menghapus.
       cannot_close:
-        other: Tidak memiliki izin untuk menutup.
+        other: Tidak diizinkan untuk menutup.
       cannot_update:
-        other: Tidak memiliki izin untuk memperbaharui.
+        other: Tidak diizinkan untuk memperbarui.
+      content_cannot_empty:
+        other: Content cannot be empty.
     rank:
       fail_to_meet_the_condition:
         other: Reputation rank fail to meet the condition.
@@ -279,13 +285,13 @@ backend:
       suspended:
         other: Pengguna ini telah ditangguhkan.
       username_invalid:
-        other: Nama pengguna tidak valid.
+        other: Nama pengguna tidak sesuai.
       username_duplicate:
         other: Nama pengguna sudah digunakan.
       set_avatar:
         other: Set avatar gagal.
       cannot_update_your_role:
-        other: Anda tidak dapat memodifikasi role anda sendiri.
+        other: Anda tidak dapat mengubah peran anda sendiri.
       not_allowed_registration:
         other: Currently the site is not open for registration.
       not_allowed_login_via_password:
@@ -486,7 +492,7 @@ backend:
       title:
         other: "[{{.SiteName}}] New question: {{.QuestionTitle}}"
       body:
-        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
     pass_reset:
       title:
         other: "[{{.SiteName }}] Password reset"
@@ -1467,8 +1473,15 @@ ui:
     normal: Normal
     closed: Closed
     deleted: Deleted
+    deleted_permanently: Deleted permanently
     pending: Pending
     more: More
+    view: View
+    card: Card
+    compact: Compact
+    display_below: Display below
+    always_display: Always display
+    or: or
   search:
     title: Search Results
     keywords: Keywords
@@ -1502,6 +1515,9 @@ ui:
   cannot_vote_for_self: You can't vote for your own post.
   modal_confirm:
     title: Error...
+  delete_permanently:
+    title: Delete permanently
+    content: Are you sure you want to delete permanently?
   account_result:
     success: Your new account is confirmed; you will be redirected to the home page.
     link: Continue to homepage
@@ -1605,6 +1621,23 @@ ui:
       label: Database file
       placeholder: /data/answer.db
       msg: Database file cannot be empty.
+    ssl_enabled:
+      label: Enable SSL
+    ssl_enabled_on:
+      label: On
+    ssl_enabled_off:
+      label: Off
+    ssl_mode:
+      label: SSL Mode
+    ssl_root_cert:
+      placeholder: sslrootcert file path
+      msg: Path to sslrootcert file cannot be empty
+    ssl_cert:
+      placeholder: sslcert file path
+      msg: Path to sslcert file cannot be empty
+    ssl_key:
+      placeholder: sslkey file path
+      msg: Path to sslkey file cannot be empty
     config_yaml:
       title: Create config.yaml
       label: The config.yaml file created.
@@ -1637,8 +1670,8 @@ ui:
     admin_name:
       label: Name
       msg: Name cannot be empty.
-      character: 'Must use the character set "a-z", "0-9", " - . _"'
-      msg_max_length: Name must be at maximum 30 characters in length.
+      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      msg_max_length: Name must be between 2 to 30 characters in length.
     admin_password:
       label: Password
       text: >-
@@ -1646,6 +1679,10 @@ ui:
       msg: Password cannot be empty.
       msg_min_length: Password must be at least 8 characters in length.
       msg_max_length: Password must be at maximum 32 characters in length.
+    admin_confirm_password:
+      label: "Confirm Password"
+      text: "Please re-enter your password to confirm."
+      msg: "Confirm password does not match."
     admin_email:
       label: Email
       text: You will need this email to log in.
@@ -2000,6 +2037,11 @@ ui:
       privacy_policy:
         label: Privacy policy
         text: "You can add privacy policy content here. If you already have a document hosted elsewhere, provide the full URL here."
+      external_content_display:
+        label: External content
+        text: "Content includes images, videos, and media embedded from external websites."
+        always_display: Always display external content
+        ask_before_display: Ask before displaying external content
     write:
       page_title: Write
       restrict_answer:
@@ -2255,3 +2297,11 @@ ui:
     user_deleted: This user has been deleted.
     badge_activated: This badge has been activated.
     badge_inactivated: This badge has been inactivated.
+    users_deleted: These users have been deleted.
+    posts_deleted: These questions have been deleted.
+    answers_deleted: These answers have been deleted.
+    copy: Copy to clipboard
+    copied: Copied
+    external_content_warning: External images/media are not displayed.
+
+

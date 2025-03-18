@@ -137,8 +137,10 @@ backend:
     other: Пароль
   pass:
     other: Пароль
+  old_pass:
+    other: Current password
   original_text:
-    other: This post
+    other: Это сообщение
   email_or_password_wrong_error:
     other: Неверное имя пользователя или пароль.
   error:
@@ -146,7 +148,7 @@ backend:
       invalid_url:
         other: Неверная URL.
       status_invalid:
-        other: Invalid status.
+        other: Неверный статус.
     password:
       space_invalid:
         other: Пароль не должен содержать пробелы.
@@ -154,7 +156,7 @@ backend:
       cannot_update_their_password:
         other: Вы не можете изменить свой пароль.
       cannot_edit_their_profile:
-        other: You cannot modify your profile.
+        other: Вы не можете изменять свой профиль.
       cannot_modify_self_status:
         other: Вы не можете изменить свой статус.
       email_or_password_wrong:
@@ -168,6 +170,8 @@ backend:
         other: Нет прав для обновления.
       question_closed_cannot_add:
         other: Вопросы закрыты и не могут быть добавлены.
+      content_cannot_empty:
+        other: Answer content cannot be empty.
     comment:
       edit_without_permission:
         other: Комментарий не может редактироваться.
@@ -175,6 +179,8 @@ backend:
         other: Комментарий не найден.
       cannot_edit_after_deadline:
         other: Невозможно редактировать комментарий из-за того, что он был создан слишком давно.
+      content_cannot_empty:
+        other: Comment content cannot be empty.
     email:
       duplicate:
         other: Адрес электронной почты уже существует.
@@ -207,10 +213,10 @@ backend:
       new_password_same_as_previous_setting:
         other: Пароль не может быть таким же как прежний.
       already_deleted:
-        other: This post has been deleted.
+        other: Этот пост был удален.
     meta:
       object_not_found:
-        other: Meta object not found
+        other: Объект мета не найден
     question:
       already_deleted:
         other: Этот пост был удалён.
@@ -224,6 +230,8 @@ backend:
         other: Нет разрешения на закрытие.
       cannot_update:
         other: Нет разрешения на обновление.
+      content_cannot_empty:
+        other: Content cannot be empty.
     rank:
       fail_to_meet_the_condition:
         other: Ранг репутации не соответствует условию.
@@ -315,7 +323,7 @@ backend:
         other: Конфигурация сайта не найдена.
     badge:
       object_not_found:
-        other: Badge object not found
+        other: Объект бейджа не найден
   reason:
     spam:
       name:
@@ -326,7 +334,7 @@ backend:
       name:
         other: Грубость или оскорбления
       desc:
-        other: "A reasonable person would find this content inappropriate for respectful discourse."
+        other: "Человек может посчитать такое содержимое неподходящим для уважительной беседы."
     a_duplicate:
       name:
         other: дубликат
@@ -338,7 +346,7 @@ backend:
       name:
         other: это не ответ
       desc:
-        other: "This was posted as an answer, but it does not attempt to answer the question. It should possibly be an edit, a comment, another question,or deleted altogether."
+        other: "Это сообщение было опубликовано в качестве ответа, но оно не пытается ответить на вопрос. Возможно, оно должно быть отредактировано, дополнено, быть другим вопросом или удалено навсегда."
     no_longer_needed:
       name:
         other: Не актуально
@@ -397,7 +405,7 @@ backend:
         name:
           other: нуждается в деталях или ясности
         desc:
-          other: This question currently includes multiple questions in one. It should focus on one problem only.
+          other: В настоящее время этот вопрос включает в себя несколько вопросов в одном. Он должен быть сосредоточен только на одной проблеме.
       other:
         name:
           other: прочее
@@ -413,12 +421,12 @@ backend:
     deleted_title:
       other: Удаленные вопросы
     questions_title:
-      other: Questions
+      other: Вопросы
   tag:
     tags_title:
-      other: Tags
+      other: Теги
     no_description:
-      other: The tag has no description.
+      other: Тег не имеет описания.
   notification:
     action:
       update_question:
@@ -458,48 +466,48 @@ backend:
       invited_you_to_answer:
         other: пригласил вас ответить
       earned_badge:
-        other: You've earned the "{{.BadgeName}}" badge
+        other: Вы заработали значок "{{.BadgeName}}"
   email_tpl:
     change_email:
       title:
         other: "[{{.SiteName}}] Подтвердите новый адрес электронной почты"
       body:
-        other: "Confirm your new email address for {{.SiteName}} by clicking on the following link:<br>\n<a href='{{.ChangeEmailUrl}}' target='_blank'>{{.ChangeEmailUrl}}</a><br><br>\n\nIf you did not request this change, please ignore this email.<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+        other: "Подтвердите свой новый адрес электронной почты для {{.SiteName}}, перейдя по следующей ссылке:<br> <a href='{{.ChangeEmailUrl}}' target='_blank'>{{.ChangeEmailUrl}}</a><br><br> Если вы не запрашивали это изменение, пожалуйста, проигнорируйте это электронное письмо. <br><br> - <br> Примечание: Данное сообщение является автоматическим, отвечать на него не нужно."
     new_answer:
       title:
         other: "[{{.SiteName}}] {{.DisplayName}} ответил на ваш вопрос"
       body:
-        other: "<a href='{{.AnswerUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.AnswerSummary}}</blockquote><br>\n<a href='{{.AnswerUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.AnswerUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.AnswerSummary}}</blockquote><br>\n<a href='{{.AnswerUrl}}'>Открыть {{.SiteName}}</a><br><br>\n\n--<br>\nПримечание: Данное сообщение является автоматическим, отвечать на него не нужно.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Отписаться.</a></small>"
     invited_you_to_answer:
       title:
         other: "[{{.SiteName}}] {{.DisplayName}} приглашает вас в Answer"
       body:
-        other: "<a href='{{.InviteUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>I think you may know the answer.</blockquote><br>\n<a href='{{.InviteUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.InviteUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>Я думаю, что вы можете знать ответ.</blockquote><br>\n<a href='{{.InviteUrl}}'>Открыть {{.SiteName}}</a><br><br>\n\n--<br>\nПримечание: Данное сообщение является автоматическим, отвечать на него не нужно.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Отписаться</a></small>"
     new_comment:
       title:
         other: "[{{.SiteName}}] {{.DisplayName}} прокомментировал под вашей публикацией"
       body:
-        other: "<a href='{{.CommentUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.CommentSummary}}</blockquote><br>\n<a href='{{.CommentUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.CommentUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.CommentSummary}}</blockquote><br>\n<a href='{{.CommentUrl}}'>Открыть {{.SiteName}}</a><br><br>\n\n--<br>\nПримечание: Данное сообщение является автоматическим, отвечать на него не нужно.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Отписаться</a></small>"
     new_question:
       title:
         other: "[{{.SiteName}}] Новый вопрос: {{.QuestionTitle}}"
       body:
-        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
     pass_reset:
       title:
         other: "[{{.SiteName }}] Пароль сброшен"
       body:
-        other: "Somebody asked to reset your password on {{.SiteName}}.<br><br>\n\nIf it was not you, you can safely ignore this email.<br><br>\n\nClick the following link to choose a new password:<br>\n<a href='{{.PassResetUrl}}' target='_blank'>{{.PassResetUrl}}</a>\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+        other: "Кто-то попросил сбросить ваш пароль на {{.SiteName}}.<br><br>\n\nЕсли это не вы, вы можете проигнорировать это письмо.<br><br>\n\nПерейдите по следующей ссылке, чтобы выбрать новый пароль:<br>\n<a href='{{.PassResetUrl}}' target='_blank'>{{.PassResetUrl}}</a>\n<br><br>\n\n--<br>\nПримечание: Данное сообщение является автоматическим, отвечать на него не нужно."
     register:
       title:
         other: "[{{.SiteName}}] Подтвердите Ваш новый аккаунт"
       body:
-        other: "Welcome to {{.SiteName}}!<br><br>\n\nClick the following link to confirm and activate your new account:<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\nIf the above link is not clickable, try copying and pasting it into the address bar of your web browser.\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+        other: "Добро пожаловать в {{.SiteName}}!<br><br>\n\nПерейдите по следующей ссылке для подтверждения и активации вашей новой учетной записи:<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\nЕсли ссылка выше не нажата, попробуйте скопировать и вставить её в адресную строку вашего браузера.\n<br><br>\n\n--<br>\nПримечание: Данное сообщение является автоматическим, отвечать на него не нужно."
     test:
       title:
         other: "[{{.SiteName}}] Проверочное электронное письмо"
       body:
-        other: "This is a test email.\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+        other: "Это тестовое сообщение.\n<br><br>\n\n--<br>\nПримечание: Данное сообщение является автоматическим, отвечать на него не нужно."
   action_activity_type:
     upvote:
       other: проголосовать за
@@ -517,41 +525,41 @@ backend:
       other: редактировать
   review:
     queued_post:
-      other: Queued post
+      other: Задан вопрос
     flagged_post:
-      other: Flagged post
+      other: Отмеченный пост
     suggested_post_edit:
       other: Предложенные исправления
   reaction:
     tooltip:
-      other: "{{ .Names }} and {{ .Count }} more..."
+      other: "{{ .Names }} и {{ .Count }} еще..."
   badge:
     default_badges:
       autobiographer:
         name:
-          other: Autobiographer
+          other: Автобиограф
         desc:
-          other: Filled out <a href="{{ .ProfileURL }}" target="_blank">profile</a> information.
+          other: Заполнена информация об <a href="{{ .ProfileURL }}" target="_blank">профиле</a>.
       certified:
         name:
-          other: Certified
+          other: Сертифицированный
         desc:
-          other: Completed our new user tutorial.
+          other: Завершил наше новое руководство пользователя.
       editor:
         name:
-          other: Editor
+          other: Редактор
         desc:
-          other: First post edit.
+          other: Впервые отредактировать сообщение
       first_flag:
         name:
-          other: First Flag
+          other: Первый флаг
         desc:
-          other: First flagged a post.
+          other: Впервые проставить флаг в сообщения
       first_upvote:
         name:
-          other: First Upvote
+          other: Первый голос
         desc:
-          other: First up voted a post.
+          other: Впервые добавить голос в сообщении.
       first_link:
         name:
           other: First Link
@@ -576,7 +584,7 @@ backend:
         name:
           other: Commentator
         desc:
-          other: Leave 5 comments.
+          other: Оставить 5 комментариев.
       new_user_of_the_month:
         name:
           other: New User of the Month
@@ -586,20 +594,20 @@ backend:
         name:
           other: Read Guidelines
         desc:
-          other: Read the [community guidelines].
+          other: Прочтите [правила сообщества].
       reader:
         name:
-          other: Reader
+          other: Читатель
         desc:
-          other: Read every answers in a topic with more than 10 answers.
+          other: Прочитать каждый ответ в разделе с более чем 10 ответами.
       welcome:
         name:
-          other: Welcome
+          other: Добро пожаловать
         desc:
-          other: Received a up vote.
+          other: Получен голос «за».
       nice_share:
         name:
-          other: Nice Share
+          other: Неплохо поделился
         desc:
           other: Shared a post with 25 unique visitors.
       good_share:
@@ -644,7 +652,7 @@ backend:
           other: Invited 5 members.
       thank_you:
         name:
-          other: Thank You
+          other: Спасибо
         desc:
           other: Has 20 up voted posts and gave 10 up votes.
       gives_back:
@@ -836,9 +844,9 @@ ui:
       posts: Посты
       invites: Приглашения
       votes: Голоса
-    answer: Answer
-    question: Question
-    badge_award: Badge
+    answer: Ответ
+    question: Вопрос
+    badge_award: Значок
   suspended:
     title: Ваш аккаунт заблокирован
     until_time: "Ваша учетная запись была заблокирована до {{ time }}."
@@ -904,7 +912,7 @@ ui:
             msg:
               empty: Файл не может быть пустым.
               only_image: Разрешены только изображения.
-              max_size: File size cannot exceed {{size}} MB.
+              max_size: Размер файла не может превышать {{size}} МБ.
           desc:
             label: Описание
       tab_url: URL изображения
@@ -947,7 +955,7 @@ ui:
       heading: Заголовок
       cell: Ячейка
     file:
-      text: Attach files
+      text: Прикрепить файлы
       not_supported: "Don’t support that file type. Try again with {{file_type}}."
       max_size: "Attach files size cannot exceed {{size}} MB."
   close_modal:
@@ -1038,11 +1046,11 @@ ui:
     hours: часов
     days: дней
   reaction:
-    heart: heart
+    heart: сердечко
     smile: smile
     frown: frown
-    btn_label: add or remove reactions
-    undo_emoji: undo {{ emoji }} reaction
+    btn_label: добавить или удалить реакции
+    undo_emoji: отменить реакцию {{ emoji }}
     react_emoji: react with {{ emoji }}
     unreact_emoji: unreact with {{ emoji }}
   comment:
@@ -1139,7 +1147,7 @@ ui:
       question: Вопросы
       tag: Теги
       user: Пользователи
-      badges: Badges
+      badges: Значки
       profile: Профиль
       setting: Настройки
       logout: Выйти
@@ -1156,7 +1164,7 @@ ui:
     name: Изменить
     loading: загрузка...
   pic_auth_code:
-    title: Captcha
+    title: Капча
     placeholder: Введите текст выше
     msg:
       empty: Капча не может быть пустой.
@@ -1301,8 +1309,8 @@ ui:
       email:
         label: Email
       new_email:
-        label: New email
-        msg: New email cannot be empty.
+        label: Новый email
+        msg: Новый email не может быть пустым.
       pass:
         label: Текущий пароль
         msg: Пароль не может быть пустым.
@@ -1340,7 +1348,7 @@ ui:
     title: Похожие вопросы
     answers: ответы
   linked_question:
-    title: Linked Questions
+    title: Связанные вопросы
     description: Questions linked to
     no_linked_question: No questions linked from this question.
   invite_to_answer:
@@ -1398,12 +1406,12 @@ ui:
       title: Открыть повторно этот пост
       content: Вы уверены, что хотите открыть заново?
     list:
-      confirm_btn: List
+      confirm_btn: Список
       title: List this post
       content: Are you sure you want to list?
     unlist:
-      confirm_btn: Unlist
-      title: Unlist this post
+      confirm_btn: Убрать из списка
+      title:
       content: Are you sure you want to unlist?
     pin:
       title: Закрепить сообщение
@@ -1465,8 +1473,15 @@ ui:
     normal: Normal
     closed: Closed
     deleted: Deleted
+    deleted_permanently: Deleted permanently
     pending: Pending
     more: More
+    view: View
+    card: Card
+    compact: Compact
+    display_below: Display below
+    always_display: Always display
+    or: or
   search:
     title: Результаты поиска
     keywords: Ключевые слова
@@ -1496,10 +1511,13 @@ ui:
     via: Поделитесь постом через...
     copied: Скопировано
     facebook: Поделиться на Facebook
-    twitter: Поделиться в X
+    twitter: Share to X
   cannot_vote_for_self: Вы не можете проголосовать за свой собственный пост.
   modal_confirm:
     title: Ошибка...
+  delete_permanently:
+    title: Delete permanently
+    content: Are you sure you want to delete permanently?
   account_result:
     success: Ваша новая учетная запись подтверждена; вы будете перенаправлены на главную страницу.
     link: Перейти на главную
@@ -1603,6 +1621,23 @@ ui:
       label: Файл базы данных
       placeholder: /data/answer.db
       msg: Файл базы данных не может быть пустым.
+    ssl_enabled:
+      label: Enable SSL
+    ssl_enabled_on:
+      label: On
+    ssl_enabled_off:
+      label: Off
+    ssl_mode:
+      label: SSL Mode
+    ssl_root_cert:
+      placeholder: sslrootcert file path
+      msg: Path to sslrootcert file cannot be empty
+    ssl_cert:
+      placeholder: sslcert file path
+      msg: Path to sslcert file cannot be empty
+    ssl_key:
+      placeholder: sslkey file path
+      msg: Path to sslkey file cannot be empty
     config_yaml:
       title: Создайте файл config.yaml
       label: Файл config.yaml создан.
@@ -1635,8 +1670,8 @@ ui:
     admin_name:
       label: Имя
       msg: Имя не может быть пустым.
-      character: 'Необходимо использовать набор символов "a-z", "0-9", " - . _"'
-      msg_max_length: Длина имени должна составлять не более 30 символов.
+      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      msg_max_length: Name must be between 2 to 30 characters in length.
     admin_password:
       label: Пароль
       text: >-
@@ -1644,6 +1679,10 @@ ui:
       msg: Пароль не может быть пустым.
       msg_min_length: Длина пароля должна составлять не менее 8 символов.
       msg_max_length: Длина пароля должна составлять не более 32 символов.
+    admin_confirm_password:
+      label: "Confirm Password"
+      text: "Please re-enter your password to confirm."
+      msg: "Confirm password does not match."
     admin_email:
       label: Email
       text: Вам понадобится этот адрес электронной почты для входа в систему.
@@ -1998,6 +2037,11 @@ ui:
       privacy_policy:
         label: Условия конфиденциальности
         text: "Вы можете добавить содержание политики конфиденциальности здесь. Если у вас уже есть документ, размещенный в другом месте, укажите полный URL-адрес здесь."
+      external_content_display:
+        label: External content
+        text: "Content includes images, videos, and media embedded from external websites."
+        always_display: Always display external content
+        ask_before_display: Ask before displaying external content
     write:
       page_title: Написать
       restrict_answer:
@@ -2253,3 +2297,11 @@ ui:
     user_deleted: This user has been deleted.
     badge_activated: This badge has been activated.
     badge_inactivated: This badge has been inactivated.
+    users_deleted: These users have been deleted.
+    posts_deleted: These questions have been deleted.
+    answers_deleted: These answers have been deleted.
+    copy: Copy to clipboard
+    copied: Copied
+    external_content_warning: External images/media are not displayed.
+
+

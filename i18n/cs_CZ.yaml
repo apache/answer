@@ -137,6 +137,8 @@ backend:
     other: Heslo
   pass:
     other: Heslo
+  old_pass:
+    other: Current password
   original_text:
     other: Tento příspěvek
   email_or_password_wrong_error:
@@ -168,6 +170,8 @@ backend:
         other: Nemáte právo aktualizovat.
       question_closed_cannot_add:
         other: Dotazy jsou uzavřené a není možno je přidávat.
+      content_cannot_empty:
+        other: Answer content cannot be empty.
     comment:
       edit_without_permission:
         other: Nejsou povoleny úpravy komentáře.
@@ -175,6 +179,8 @@ backend:
         other: Komentář nebyl nalezen.
       cannot_edit_after_deadline:
         other: Tento komentář byl pro úpravy příliš dlouhý.
+      content_cannot_empty:
+        other: Comment content cannot be empty.
     email:
       duplicate:
         other: Email už existuje.
@@ -224,6 +230,8 @@ backend:
         other: Nemáte oprávnění k uzavření.
       cannot_update:
         other: Nemáte oprávnění pro aktualizaci.
+      content_cannot_empty:
+        other: Content cannot be empty.
     rank:
       fail_to_meet_the_condition:
         other: Hodnost reputace nesplňuje podmínku.
@@ -484,7 +492,7 @@ backend:
       title:
         other: "[{{.SiteName}}] New question: {{.QuestionTitle}}"
       body:
-        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
     pass_reset:
       title:
         other: "[{{.SiteName }}] Obnova hesla"
@@ -1465,8 +1473,15 @@ ui:
     normal: Normal
     closed: Closed
     deleted: Deleted
+    deleted_permanently: Deleted permanently
     pending: Pending
     more: More
+    view: View
+    card: Card
+    compact: Compact
+    display_below: Display below
+    always_display: Always display
+    or: or
   search:
     title: Search Results
     keywords: Keywords
@@ -1500,6 +1515,9 @@ ui:
   cannot_vote_for_self: You can't vote for your own post.
   modal_confirm:
     title: Error...
+  delete_permanently:
+    title: Delete permanently
+    content: Are you sure you want to delete permanently?
   account_result:
     success: Your new account is confirmed; you will be redirected to the home page.
     link: Continue to homepage
@@ -1603,6 +1621,23 @@ ui:
       label: Database file
       placeholder: /data/answer.db
       msg: Database file cannot be empty.
+    ssl_enabled:
+      label: Enable SSL
+    ssl_enabled_on:
+      label: On
+    ssl_enabled_off:
+      label: Off
+    ssl_mode:
+      label: SSL Mode
+    ssl_root_cert:
+      placeholder: sslrootcert file path
+      msg: Path to sslrootcert file cannot be empty
+    ssl_cert:
+      placeholder: sslcert file path
+      msg: Path to sslcert file cannot be empty
+    ssl_key:
+      placeholder: sslkey file path
+      msg: Path to sslkey file cannot be empty
     config_yaml:
       title: Create config.yaml
       label: The config.yaml file created.
@@ -1635,8 +1670,8 @@ ui:
     admin_name:
       label: Name
       msg: Name cannot be empty.
-      character: 'Must use the character set "a-z", "0-9", " - . _"'
-      msg_max_length: Name must be at maximum 30 characters in length.
+      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      msg_max_length: Name must be between 2 to 30 characters in length.
     admin_password:
       label: Password
       text: >-
@@ -1644,6 +1679,10 @@ ui:
       msg: Password cannot be empty.
       msg_min_length: Password must be at least 8 characters in length.
       msg_max_length: Password must be at maximum 32 characters in length.
+    admin_confirm_password:
+      label: "Confirm Password"
+      text: "Please re-enter your password to confirm."
+      msg: "Confirm password does not match."
     admin_email:
       label: Email
       text: You will need this email to log in.
@@ -1998,6 +2037,11 @@ ui:
       privacy_policy:
         label: Privacy policy
         text: "You can add privacy policy content here. If you already have a document hosted elsewhere, provide the full URL here."
+      external_content_display:
+        label: External content
+        text: "Content includes images, videos, and media embedded from external websites."
+        always_display: Always display external content
+        ask_before_display: Ask before displaying external content
     write:
       page_title: Write
       restrict_answer:
@@ -2253,3 +2297,11 @@ ui:
     user_deleted: This user has been deleted.
     badge_activated: This badge has been activated.
     badge_inactivated: This badge has been inactivated.
+    users_deleted: These users have been deleted.
+    posts_deleted: These questions have been deleted.
+    answers_deleted: These answers have been deleted.
+    copy: Copy to clipboard
+    copied: Copied
+    external_content_warning: External images/media are not displayed.
+
+

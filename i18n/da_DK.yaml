@@ -137,6 +137,8 @@ backend:
     other: Adgangskode
   pass:
     other: Adgangskode
+  old_pass:
+    other: Current password
   original_text:
     other: Dette indlæg
   email_or_password_wrong_error:
@@ -168,6 +170,8 @@ backend:
         other: Ingen tilladelse til at opdatere.
       question_closed_cannot_add:
         other: Spørgsmål er lukket og kan ikke tilføjes.
+      content_cannot_empty:
+        other: Answer content cannot be empty.
     comment:
       edit_without_permission:
         other: Kommentar er ikke tilladt at redigere.
@@ -175,6 +179,8 @@ backend:
         other: Kommentar ikke fundet.
       cannot_edit_after_deadline:
         other: Kommentaren er for gammel til at blive redigeret.
+      content_cannot_empty:
+        other: Comment content cannot be empty.
     email:
       duplicate:
         other: Email eksisterer allerede.
@@ -224,6 +230,8 @@ backend:
         other: Ingen tilladelse til at lukke.
       cannot_update:
         other: Ingen tilladelse til at opdatere.
+      content_cannot_empty:
+        other: Content cannot be empty.
     rank:
       fail_to_meet_the_condition:
         other: Omdømmelse rang opfylder ikke betingelsen.
@@ -484,7 +492,7 @@ backend:
       title:
         other: "[{{.SiteName}}] Nyt spørgsmål: {{.QuestionTitle}}"
       body:
-        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
     pass_reset:
       title:
         other: "[{{.SiteName }}] Nulstilling af adgangskode"
@@ -1183,7 +1191,7 @@ ui:
       label: Navn
       msg:
         empty: Navn må ikke være tomt.
-        range: Navnet skal være mellem 2 og 30 tegn.
+        range: Name must be between 2 to 30 characters in length.
         character: 'Skal bruge tegnsættet "a-z", "A-Z", "0-9", " - . _"'
     email:
       label: E-mail
@@ -1465,8 +1473,15 @@ ui:
     normal: Normal
     closed: Lukket
     deleted: Slettet
+    deleted_permanently: Deleted permanently
     pending: Ventende
     more: Mere
+    view: View
+    card: Card
+    compact: Compact
+    display_below: Display below
+    always_display: Always display
+    or: or
   search:
     title: Søgeresultater
     keywords: Nøgleord
@@ -1500,6 +1515,9 @@ ui:
   cannot_vote_for_self: Du kan ikke stemme på dit eget indlæg.
   modal_confirm:
     title: Fejl...
+  delete_permanently:
+    title: Delete permanently
+    content: Are you sure you want to delete permanently?
   account_result:
     success: Din nye konto er bekræftet. Du vil blive omdirigeret til hjemmesiden.
     link: Fortsæt til startside
@@ -1603,6 +1621,23 @@ ui:
       label: Databasefil
       placeholder: /data/answer.db
       msg: Databasefil skal udfyldes.
+    ssl_enabled:
+      label: Enable SSL
+    ssl_enabled_on:
+      label: On
+    ssl_enabled_off:
+      label: Off
+    ssl_mode:
+      label: SSL Mode
+    ssl_root_cert:
+      placeholder: sslrootcert file path
+      msg: Path to sslrootcert file cannot be empty
+    ssl_cert:
+      placeholder: sslcert file path
+      msg: Path to sslcert file cannot be empty
+    ssl_key:
+      placeholder: sslkey file path
+      msg: Path to sslkey file cannot be empty
     config_yaml:
       title: Opret config.yaml
       label: Filen config.yaml blev oprettet.
@@ -1635,8 +1670,8 @@ ui:
     admin_name:
       label: Navn
       msg: Navn skal udfyldes.
-      character: 'Skal bruge tegnsættet "a-z", "0-9", " - . _"'
-      msg_max_length: Navn kan ikke være længere end 30 tegn.
+      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      msg_max_length: Name must be between 2 to 30 characters in length.
     admin_password:
       label: Adgangskode
       text: >-
@@ -1644,6 +1679,10 @@ ui:
       msg: Adgangskoden skal udfyldes.
       msg_min_length: Adgangskoden skal være mindst 8 tegn.
       msg_max_length: Adgangskoden skal højst udgøre 32 tegn.
+    admin_confirm_password:
+      label: "Confirm Password"
+      text: "Please re-enter your password to confirm."
+      msg: "Confirm password does not match."
     admin_email:
       label: E-mail
       text: Du skal bruge denne e-mail for at logge ind.
@@ -1822,7 +1861,7 @@ ui:
             msg: "Indtast venligst brugerens e-mail, en pr. linje."
           display_name:
             label: Visnings-navn
-            msg: Vis navn skal være på 2-30 tegn.
+            msg: Display name must be 2-30 characters in length.
           email:
             label: E-mail
             msg: E-mail er ugyldig.
@@ -1998,6 +2037,11 @@ ui:
       privacy_policy:
         label: Privatlivspolitik
         text: "Du kan tilføje privatlivspolitik indhold her. Hvis du allerede har et dokument hostet et andet sted, så angiv den fulde URL her."
+      external_content_display:
+        label: External content
+        text: "Content includes images, videos, and media embedded from external websites."
+        always_display: Always display external content
+        ask_before_display: Ask before displaying external content
     write:
       page_title: Skriv
       restrict_answer:
@@ -2253,3 +2297,11 @@ ui:
     user_deleted: This user has been deleted.
     badge_activated: This badge has been activated.
     badge_inactivated: This badge has been inactivated.
+    users_deleted: These users have been deleted.
+    posts_deleted: These questions have been deleted.
+    answers_deleted: These answers have been deleted.
+    copy: Copy to clipboard
+    copied: Copied
+    external_content_warning: External images/media are not displayed.
+
+

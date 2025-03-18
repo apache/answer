@@ -137,6 +137,8 @@ backend:
     other: パスワード
   pass:
     other: パスワード
+  old_pass:
+    other: Current password
   original_text:
     other: 投稿
   email_or_password_wrong_error:
@@ -168,6 +170,8 @@ backend:
         other: 更新する権限がありません。
       question_closed_cannot_add:
         other: 質問はクローズされて、追加できません。
+      content_cannot_empty:
+        other: Answer content cannot be empty.
     comment:
       edit_without_permission:
         other: コメントを編集することはできません。
@@ -175,6 +179,8 @@ backend:
         other: コメントが見つかりません。
       cannot_edit_after_deadline:
         other: コメント時間が長すぎて変更できません。
+      content_cannot_empty:
+        other: Comment content cannot be empty.
     email:
       duplicate:
         other: メールアドレスは既に存在しています。
@@ -224,6 +230,8 @@ backend:
         other: クローズする権限がありません。
       cannot_update:
         other: 更新する権限がありません。
+      content_cannot_empty:
+        other: Content cannot be empty.
     rank:
       fail_to_meet_the_condition:
         other: 評判ランクが条件を満たしていません
@@ -464,42 +472,42 @@ backend:
       title:
         other: "[{{.SiteName}}] 新しいメールアドレスを確認してください"
       body:
-        other: "Confirm your new email address for {{.SiteName}} by clicking on the following link:<br>\n<a href='{{.ChangeEmailUrl}}' target='_blank'>{{.ChangeEmailUrl}}</a><br><br>\n\nIf you did not request this change, please ignore this email.<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+        other: "{{.SiteName}}の新しいメールアドレスを確認しリンクをクリックしてください。<br>\n<a href='{{.ChangeEmailUrl}}' target='_blank'>{{.ChangeEmailUrl}}</a><br><br>\n\n身に覚えがない場合はこのメールを無視してください。\n\n--<br>\n注: これはシステムからの自動メールです。このメッセージに返信しないでください。"
     new_answer:
       title:
         other: "[{{.SiteName}}] {{.DisplayName}} があなたの質問に回答しました"
       body:
-        other: "<a href='{{.AnswerUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.AnswerSummary}}</blockquote><br>\n<a href='{{.AnswerUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.AnswerUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.AnswerSummary}}</blockquote><br>\n<a href='{{.AnswerUrl}}'>{{.SiteName}}で確認</a><br><br>\n\n--<br>\n注: これはシステムからの自動メールです。このメッセージに返信しないでください。<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
     invited_you_to_answer:
       title:
         other: "[{{.SiteName}}] {{.DisplayName}} があなたを回答に招待しました"
       body:
-        other: "<a href='{{.InviteUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>I think you may know the answer.</blockquote><br>\n<a href='{{.InviteUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.InviteUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>あなたなら答えを知っているかもしれません。</blockquote><br>\n<a href='{{.InviteUrl}}'>{{.SiteName}}で確認</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n注: これはシステムからの自動メールです。このメッセージに返信しないでください。<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>配信停止</a></small>\n"
     new_comment:
       title:
         other: "[{{.SiteName}}] {{.DisplayName}} があなたの投稿にコメントしました"
       body:
-        other: "<a href='{{.CommentUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.CommentSummary}}</blockquote><br>\n<a href='{{.CommentUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.CommentUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.CommentSummary}}</blockquote><br>\n<a href='{{.CommentUrl}}'>で確認{{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n注: これはシステムからの自動メールです。このメッセージに返信しないでください。<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>配信停止</a></small>"
     new_question:
       title:
         other: "[{{.SiteName}}] 新しい質問： {{.QuestionTitle}}"
       body:
-        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
     pass_reset:
       title:
         other: "[{{.SiteName }}] パスワードリセット"
       body:
-        other: "Somebody asked to reset your password on {{.SiteName}}.<br><br>\n\nIf it was not you, you can safely ignore this email.<br><br>\n\nClick the following link to choose a new password:<br>\n<a href='{{.PassResetUrl}}' target='_blank'>{{.PassResetUrl}}</a>\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+        other: "{{.SiteName}}であなたのパスワードをリセットしようとしました。<br><br>\n\nもしお心当たりがない場合は、このメールを無視してください。<br><br>\n\n新しいパスワードを設定するには、以下のリンクをクリックしてください。<br>\n<a href='{{.PassResetUrl}}' target='_blank'>{{.PassResetUrl}}</a>\n\n--<br>\n注: これはシステムからの自動メールです。このメッセージに返信しないでください。<br><br>\n"
     register:
       title:
         other: "[{{.SiteName}}] 新しいアカウントを確認"
       body:
-        other: "Welcome to {{.SiteName}}!<br><br>\n\nClick the following link to confirm and activate your new account:<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\nIf the above link is not clickable, try copying and pasting it into the address bar of your web browser.\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+        other: "{{.SiteName}}へようこそ！<br><br>\n\n以下のリンクをクリックして、新しいアカウントを確認・有効化してください。<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\n上記のリンクがクリックできない場合は、リンクをコピーしてブラウザのアドレスバーに貼り付けてみてください。\n\n--<br>\n注: これはシステムからの自動メールです。このメッセージに返信しないでください。<br><br>"
     test:
       title:
         other: "[{{.SiteName}}] テストメール"
       body:
-        other: "This is a test email.\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+        other: "これはテストメールです。\n<br><br>\n\n--<br>\n注: これはシステムからの自動メールです。このメッセージに返信しないでください。<br><br>"
   action_activity_type:
     upvote:
       other: 高評価
@@ -556,7 +564,7 @@ backend:
         name:
           other: はじめてのリンク
         desc:
-          other: "初めて別の記事へのリンクを追加した。\n"
+          other: 初めて別の記事へのリンクを追加した。
       first_reaction:
         name:
           other: 初めてのリアクション
@@ -904,7 +912,7 @@ ui:
             msg:
               empty: ファイルは空にできません。
               only_image: 画像ファイルのみが許可されています。
-              max_size: File size cannot exceed {{size}} MB.
+              max_size: ファイルサイズは {{size}} MBを超えることはできません。
           desc:
             label: 説明
       tab_url: 画像URL
@@ -943,13 +951,13 @@ ui:
     unordered_list:
       text: 箇条書きリスト
     table:
-      text: ' テーブル'
+      text: 'テーブル'
       heading: 見出し
       cell: セル
     file:
-      text: Attach files
-      not_supported: "Don’t support that file type. Try again with {{file_type}}."
-      max_size: "Attach files size cannot exceed {{size}} MB."
+      text: ファイルを添付
+      not_supported: "そのファイルタイプをサポートしていません。 {{file_type}} でもう一度お試しください。"
+      max_size: "添付ファイルサイズは {{size}} MB を超えることはできません。"
   close_modal:
     title: この投稿を次のように閉じます...
     btn_cancel: キャンセル
@@ -1467,8 +1475,15 @@ ui:
     normal: 通常
     closed: クローズ済み
     deleted: 削除済み
+    deleted_permanently: Deleted permanently
     pending: 処理待ち
     more: もっと見る
+    view: View
+    card: Card
+    compact: Compact
+    display_below: Display below
+    always_display: Always display
+    or: or
   search:
     title: 検索結果
     keywords: キーワード
@@ -1498,10 +1513,13 @@ ui:
     via: 投稿を共有...
     copied: コピーしました
     facebook: Facebookで共有
-    twitter: Xで共有
+    twitter: Share to X
   cannot_vote_for_self: 自分の投稿には投票できません。
   modal_confirm:
     title: エラー...
+  delete_permanently:
+    title: Delete permanently
+    content: Are you sure you want to delete permanently?
   account_result:
     success: 新しいアカウントが確認されました。ホームページにリダイレクトされます。
     link: ホームページへ
@@ -1605,6 +1623,23 @@ ui:
       label: データベースファイル
       placeholder: /data/answer.db
       msg: データベースファイルは空にできません。
+    ssl_enabled:
+      label: Enable SSL
+    ssl_enabled_on:
+      label: On
+    ssl_enabled_off:
+      label: Off
+    ssl_mode:
+      label: SSL Mode
+    ssl_root_cert:
+      placeholder: sslrootcert file path
+      msg: Path to sslrootcert file cannot be empty
+    ssl_cert:
+      placeholder: sslcert file path
+      msg: Path to sslcert file cannot be empty
+    ssl_key:
+      placeholder: sslkey file path
+      msg: Path to sslkey file cannot be empty
     config_yaml:
       title: config.yamlを作成
       label: config.yaml ファイルが作成されました。
@@ -1637,8 +1672,8 @@ ui:
     admin_name:
       label: 名前
       msg: 名前を空にすることはできません。
-      character: '文字セット "a-z", "0-9", " - . _" を使用してください。'
-      msg_max_length: 名前は最大30文字でなければなりません。
+      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      msg_max_length: Name must be between 2 to 30 characters in length.
     admin_password:
       label: パスワード
       text: >-
@@ -1646,6 +1681,10 @@ ui:
       msg: パスワードは空白にできません
       msg_min_length: パスワードは8文字以上でなければなりません。
       msg_max_length: パスワードは最大 32 文字でなければなりません。
+    admin_confirm_password:
+      label: "Confirm Password"
+      text: "Please re-enter your password to confirm."
+      msg: "Confirm password does not match."
     admin_email:
       label: メールアドレス
       text: ログインするにはこのメールアドレスが必要です。
@@ -1729,8 +1768,8 @@ ui:
       welcome: Adminへようこそ！
       site_statistics: サイト統計
       questions: "質問："
-      resolved: "Resolved:"
-      unanswered: "Unanswered:"
+      resolved: "解決済み:"
+      unanswered: "未回答:"
       answers: "回答："
       comments: "評論："
       votes: "投票："
@@ -2000,6 +2039,11 @@ ui:
       privacy_policy:
         label: プライバシーポリシー
         text: "ここにプライバシーポリシーの内容を追加できます。すでに他の場所でホストされているドキュメントを持っている場合は、こちらにフルURLを入力してください。"
+      external_content_display:
+        label: External content
+        text: "Content includes images, videos, and media embedded from external websites."
+        always_display: Always display external content
+        ask_before_display: Ask before displaying external content
     write:
       page_title: 編集
       restrict_answer:
@@ -2019,20 +2063,20 @@ ui:
         label: 予約済みタグ
         text: "予約済みのタグはモデレータのみ使用できます。"
       image_size:
-        label: Max image size (MB)
-        text: "The maximum image upload size."
+        label: 画像ファイルの最大サイズ（MB）
+        text: "画像ファイルの最大アップロードサイズ。"
       attachment_size:
-        label: Max attachment size (MB)
-        text: "The maximum attachment files upload size."
+        label: 添付ファイルの最大サイズ (MB)
+        text: "添付ファイルの最大アップロードサイズ。"
       image_megapixels:
-        label: Max image megapixels
-        text: "Maximum number of megapixels allowed for an image."
+        label: 画像の最大解像度
+        text: "画像ファイルに許可する最大メガピクセル数。"
       image_extensions:
-        label: Authorized image extensions
-        text: "A list of file extensions allowed for image display, separate with commas."
+        label: 認可された画像ファイルの拡張子
+        text: "イメージ表示に許可されるファイル拡張子のリスト(コンマで区切り)"
       attachment_extensions:
-        label: Authorized attachment extensions
-        text: "A list of file extensions allowed for upload, separate with commas. WARNING: Allowing uploads may cause security issues."
+        label: 認可された添付ファイルの拡張子
+        text: "アップロードを許可するファイル拡張子のリスト(カンマ区切り)\n警告: アップロードを許可するとセキュリティ上の問題が発生する可能性があります。"
     seo:
       page_title: SEO
       permalink:
@@ -2236,7 +2280,7 @@ ui:
     discard_confirm: 下書きを破棄してもよろしいですか？
   messages:
     post_deleted: この投稿は削除されました。
-    post_cancel_deleted: This post has been undeleted.
+    post_cancel_deleted: この投稿の削除が取り消されました。
     post_pin: この投稿はピン留めされています。
     post_unpin: この投稿のピン留めが解除されました。
     post_hide_list: この投稿は一覧から非表示になっています。
@@ -2245,13 +2289,21 @@ ui:
     post_list: この投稿は一覧に表示されています。
     post_unlist: この投稿は一覧に登録されていません。
     post_pending: Your post is awaiting review. This is a preview, it will be visible after it has been approved.
-    post_closed: This post has been closed.
-    answer_deleted: This answer has been deleted.
-    answer_cancel_deleted: This answer has been undeleted.
-    change_user_role: This user's role has been changed.
-    user_inactive: This user is already inactive.
-    user_normal: This user is already normal.
-    user_suspended: This user has been suspended.
-    user_deleted: This user has been deleted.
-    badge_activated: This badge has been activated.
-    badge_inactivated: This badge has been inactivated.
+    post_closed: この投稿はクローズされました。
+    answer_deleted: この回答は削除されました。
+    answer_cancel_deleted: この回答の削除が取り消されました。
+    change_user_role: このユーザーのロールが変更されました。
+    user_inactive: このユーザーは既に無効です。
+    user_normal: このユーザーは既に有効です。
+    user_suspended: このユーザーは凍結されています。
+    user_deleted: このユーザーは削除されました。
+    badge_activated: このバッジは有効化されました。
+    badge_inactivated: このバッジは無効化されています。
+    users_deleted: These users have been deleted.
+    posts_deleted: These questions have been deleted.
+    answers_deleted: These answers have been deleted.
+    copy: Copy to clipboard
+    copied: Copied
+    external_content_warning: External images/media are not displayed.
+
+

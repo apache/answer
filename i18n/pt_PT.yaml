@@ -137,6 +137,8 @@ backend:
     other: Senha
   pass:
     other: Senha
+  old_pass:
+    other: Current password
   original_text:
     other: Esta publicação
   email_or_password_wrong_error:
@@ -168,6 +170,8 @@ backend:
         other: Sem permissão para atualizar.
       question_closed_cannot_add:
         other: Perguntas são fechadas e não podem ser adicionadas.
+      content_cannot_empty:
+        other: Answer content cannot be empty.
     comment:
       edit_without_permission:
         other: Não é possível alterar comentários.
@@ -175,6 +179,8 @@ backend:
         other: Comentário não encontrado.
       cannot_edit_after_deadline:
         other: O tempo do comentário foi muito longo para ser modificado.
+      content_cannot_empty:
+        other: Comment content cannot be empty.
     email:
       duplicate:
         other: O e-mail já existe.
@@ -224,6 +230,8 @@ backend:
         other: Sem permissão para fechar.
       cannot_update:
         other: Sem permissão para atualizar.
+      content_cannot_empty:
+        other: Content cannot be empty.
     rank:
       fail_to_meet_the_condition:
         other: A classificação não atende à condição.
@@ -338,7 +346,7 @@ backend:
       name:
         other: não é uma resposta
       desc:
-        other: "Foi apresentada como resposta, mas não tenta responder à pergunta. Talvez deva ser uma edição, um comentário, outra pergunta ou totalmente apagada."
+        other: "Foi apresentada como uma resposta, mas não tenta responder à pergunta. Talvez deva ser uma edição, um comentário, outra pergunta ou totalmente apagada."
     no_longer_needed:
       name:
         other: não é mais necessário
@@ -397,7 +405,7 @@ backend:
         name:
           other: precisa de detalhes ou clareza
         desc:
-          other: Esta pergunta atualmente inclui várias perguntas em uma. Deve se concentrar em apenas um problema.
+          other: Esta pergunta atualmente inclui várias perguntas em uma só. Por isso, deve focar em apenas um problema.
       other:
         name:
           other: algo mais
@@ -464,42 +472,42 @@ backend:
       title:
         other: "[{{.SiteName}}] Confirme seu novo endereço de e-mail"
       body:
-        other: "Confirm your new email address for {{.SiteName}} by clicking on the following link:<br>\n<a href='{{.ChangeEmailUrl}}' target='_blank'>{{.ChangeEmailUrl}}</a><br><br>\n\nIf you did not request this change, please ignore this email.<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+        other: "Confirme seu novo endereço de e-mail para {{.SiteName}} clicando no seguinte link:<br>\n<a href='{{.ChangeEmailUrl}}' target='_blank'>{{.ChangeEmailUrl}}</a><br><br>\n\nSe você não solicitou esta alteração, por favor, ignore este email.<br><br>\n\n--<br>\nNota: Este é um e-mail automático do sistema, por favor, não responda a esta mensagem, pois a sua resposta não será vista."
     new_answer:
       title:
         other: "[{{.SiteName}}] {{.DisplayName}} respondeu à sua pergunta"
       body:
-        other: "<a href='{{.AnswerUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.AnswerSummary}}</blockquote><br>\n<a href='{{.AnswerUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.AnswerUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.AnswerSummary}}</blockquote><br>\n<a href='{{.AnswerUrl}}'>Visualizar no {{.SiteName}}</a><br><br>\n\n--<br>\nNota: Este é um e-mail de sistema automático, por favor, não responda a esta mensagem, pois a sua resposta não será vista.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Cancelar inscrição</a></small>"
     invited_you_to_answer:
       title:
         other: "[{{.SiteName}}] {{.DisplayName}} convidou-lhe para responder"
       body:
-        other: "<a href='{{.InviteUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>I think you may know the answer.</blockquote><br>\n<a href='{{.InviteUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.InviteUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>acho que você pode saber a resposta.</blockquote><br>\n<a href='{{.InviteUrl}}'>Visualizar na {{.SiteName}}</a><br><br>\n\n--<br>\nNota: Este é um e-mail de sistema automático, por favor, não responda a esta mensagem, pois a sua resposta não será vista.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Cancelar Inscrição</a></small>"
     new_comment:
       title:
         other: "[{{.SiteName}}] {{.DisplayName}} comentou em sua publicação"
       body:
-        other: "<a href='{{.CommentUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.CommentSummary}}</blockquote><br>\n<a href='{{.CommentUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.CommentUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.CommentSummary}}</blockquote><br>\n<a href='{{.CommentUrl}}'>Visualizar no {{.SiteName}}</a><br><br>\n\n--<br>\nNota: Este é um e-mail de sistema automático, por favor, não responda a esta mensagem, pois a sua resposta não será vista.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Cancelar inscrição</a></small>"
     new_question:
       title:
         other: "[{{.SiteName}}] Nova pergunta: {{.QuestionTitle}}"
       body:
-        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
     pass_reset:
       title:
         other: "[{{.SiteName }}] Redefinição de senha"
       body:
-        other: "Somebody asked to reset your password on {{.SiteName}}.<br><br>\n\nIf it was not you, you can safely ignore this email.<br><br>\n\nClick the following link to choose a new password:<br>\n<a href='{{.PassResetUrl}}' target='_blank'>{{.PassResetUrl}}</a>\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+        other: "Alguém pediu para redefinir a sua senha em {{.SiteName}}.<br><br>\n\nSe não foi você, você pode ignorar este e-mail.<br><br>\n\nClique no seguinte link para escolher uma nova senha:<br>\n<a href='{{.PassResetUrl}}' target='_blank'>{{.PassResetUrl}}</a><br><br>\n\n--<br>\nNota: Este é um e-mail de sistema automático, por favor, não responda a esta mensagem, pois a sua resposta não será vista."
     register:
       title:
         other: "[{{.SiteName}}] Confirme seu novo endereço de e-mail"
       body:
-        other: "Bem-vindo ao {{.SiteName}}!<br><br>\n\nClique no seguinte link para confirmar e ativar sua nova conta:<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\nSe o link acima não é clicável, tente copiar e colá-lo na barra de endereços do seu navegador da web.\n"
+        other: "Bem-vindo a {{.SiteName}}!<br><br>\n\nClique no seguinte link para confirmar e ativar sua nova conta:<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\nSe o link acima não for clicável, tente copiá-lo e colá-lo na barra de endereços do seu navegador web.\n<br><br>\n\n--<br>\nNota: Este é um e-mail de sistema automático. por favor, não responda a esta mensagem, pois a sua resposta não será vista."
     test:
       title:
         other: "[{{.SiteName}}] E-mail de teste"
       body:
-        other: "This is a test email.\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+        other: "Este é um e-mail de teste.\n<br><br>\n\n--<br>\nNota: Este é um e-mail automático do sistema, por favor, não responda a esta mensagem, pois a sua resposta não será vista."
   action_activity_type:
     upvote:
       other: voto positivo
@@ -787,7 +795,7 @@ ui:
   how_to_format:
     title: Como formatar
     desc: >-
-      <ul class="mb-0"><li><p class="mb-2">mention a post: <code>#post_id</code></p></li> <li><p class="mb-2">to make links</p><pre class="mb-2"><code>&lt;https://url.com&gt;<br/><br/>[Title](https://url.com)</code></pre></li><li><p class="mb-2">put returns between paragraphs</p></li><li><p class="mb-2"><em>_italic_</em> or **<strong>bold</strong>**</p></li><li><p class="mb-2">indent code by 4 spaces</p></li><li><p class="mb-2">quote by placing <code>&gt;</code> at start of line</p></li><li><p class="mb-2">backtick escapes <code>`like _this_`</code></p></li><li><p class="mb-2">create code fences with backticks <code>`</code></p><pre class="mb-0"><code>```<br/>code here<br/>```</code></pre></li></ul>
+      <ul class="mb-0"><li><p class="mb-2">mencionar uma postagem: <code>#post_id</code></p></li><li><p class="mb-2">para mais links</p><pre class="mb-2"><code>&lt;https://url.com&gt;<br/><br/>[Título](https://url.com)</code></pre></li><li><p class="mb-2">colocar retornos entre parágrafos</p></li><li><p class="mb-2"><em>_italic_</em> ou **<strong>bold</strong>**</p></li><li><p class="mb-2">identar código por 4 espaços</p></li><li><p class="mb-2">cotação colocando <code>&gt;</code> no início da linha</p></li><li><p class="mb-2">aspas invertidas <code>`tipo_isso`</code></p></li><li><p class="mb-2">criar cercas de código com aspas invertidas <code>`</code></p><pre class="mb-0"><code>```<br/>código aqui<br/>```</code></pre></li></ul>
   pagination:
     prev: Anterior
     next: Próximo
@@ -904,7 +912,7 @@ ui:
             msg:
               empty: Arquivo não pode ser vazio.
               only_image: Somente um arquivo de imagem é permitido.
-              max_size: File size cannot exceed {{size}} MB.
+              max_size: O tamanho do arquivo não pode exceder {{size}} MB.
           desc:
             label: Descrição (opcional)
       tab_url: URL da imagem
@@ -947,9 +955,9 @@ ui:
       heading: heading
       cell: Célula
     file:
-      text: Attach files
-      not_supported: "Don’t support that file type. Try again with {{file_type}}."
-      max_size: "Attach files size cannot exceed {{size}} MB."
+      text: Anexar arquivos
+      not_supported: "Não suporta esse tipo de arquivo. Tente novamente com {{file_type}}."
+      max_size: "Anexar arquivos não pode exceder {{size}} MB."
   close_modal:
     title: Estou fechando este post como...
     btn_cancel: Cancelar
@@ -1151,7 +1159,7 @@ ui:
       placeholder: Procurar
   footer:
     build_on: >-
-      Powered by <1> Apache Answer </1>- the open-source software that powers Q&A communities.<br />Made with love © {{cc}}.
+      Construído com <1> Apache answer </1> o software de código aberto que ajuda comunidades de Q&A.<br />Feito com amor © {{cc}}.
   upload_img:
     name: Mudar
     loading: carregando...
@@ -1183,7 +1191,7 @@ ui:
       label: Nome
       msg:
         empty: Nome não pode ser vazio.
-        range: Name must be between 2 to 30 characters in length.
+        range: O nome deve ter entre 2 e 30 caracteres.
         character: 'Deve usar o conjunto de caracteres "a-z", "0-9", " - . _"'
     email:
       label: E-mail
@@ -1465,8 +1473,15 @@ ui:
     normal: Normal
     closed: Fechado
     deleted: Removido
+    deleted_permanently: Deleted permanently
     pending: Pendente
     more: Mais
+    view: View
+    card: Card
+    compact: Compact
+    display_below: Display below
+    always_display: Always display
+    or: or
   search:
     title: Procurar Resultados
     keywords: Palavras-chave
@@ -1496,10 +1511,13 @@ ui:
     via: Compartilhar postagem via...
     copied: Copiado
     facebook: Compartilhar no Facebook
-    twitter: Compartilhar no X
+    twitter: Share to X
   cannot_vote_for_self: Você não pode votar na sua própria postagem
   modal_confirm:
     title: Erro...
+  delete_permanently:
+    title: Delete permanently
+    content: Are you sure you want to delete permanently?
   account_result:
     success: A sua nova conta está confirmada; você será redirecionado para a página inicial.
     link: Continuar para a página inicial.
@@ -1527,7 +1545,7 @@ ui:
     newest: Mais recente
     active: Ativo
     hot: Popular
-    frequent: Frequent
+    frequent: Frequente
     recommend: Recomendado
     score: Pontuação
     unanswered: Não Respondido
@@ -1603,6 +1621,23 @@ ui:
       label: Database File
       placeholder: /data/answer.db
       msg: Database File não pode ser vazio.
+    ssl_enabled:
+      label: Enable SSL
+    ssl_enabled_on:
+      label: On
+    ssl_enabled_off:
+      label: Off
+    ssl_mode:
+      label: SSL Mode
+    ssl_root_cert:
+      placeholder: sslrootcert file path
+      msg: Path to sslrootcert file cannot be empty
+    ssl_cert:
+      placeholder: sslcert file path
+      msg: Path to sslcert file cannot be empty
+    ssl_key:
+      placeholder: sslkey file path
+      msg: Path to sslkey file cannot be empty
     config_yaml:
       title: Criar config.yaml
       label: Arquivo config.yaml criado.
@@ -1635,8 +1670,8 @@ ui:
     admin_name:
       label: Nome
       msg: Nome não pode ser vazio.
-      character: 'Deve usar o conjunto de caracteres "a-z", "0-9", " - . _"'
-      msg_max_length: O nome deve ter no máximo 30 caracteres.
+      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      msg_max_length: Name must be between 2 to 30 characters in length.
     admin_password:
       label: Senha
       text: >-
@@ -1644,6 +1679,10 @@ ui:
       msg: Senha não pode ser vazio.
       msg_min_length: A senha deve ser ter pelo menos 8 caracteres.
       msg_max_length: A senha deve ter no máximo 32 caracteres.
+    admin_confirm_password:
+      label: "Confirm Password"
+      text: "Please re-enter your password to confirm."
+      msg: "Confirm password does not match."
     admin_email:
       label: E-mail
       text: Você precisará deste e-mail para efetuar o login.
@@ -1727,8 +1766,8 @@ ui:
       welcome: Bem-vindo ao Admin!
       site_statistics: Estatísticas do site
       questions: "Perguntas:"
-      resolved: "Resolved:"
-      unanswered: "Unanswered:"
+      resolved: "Resolvido:"
+      unanswered: "Não Respondido:"
       answers: "Respostas:"
       comments: "Comentários:"
       votes: "Votos:"
@@ -1822,7 +1861,7 @@ ui:
             msg: "Por favor insira o e-mail do usuário, um por linha."
           display_name:
             label: Nome de exibição
-            msg: O nome de exibição deve ter de 2-30 caracteres.
+            msg: O nome de exibição deve ter entre 2 e 30 caracteres.
           email:
             label: E-mail
             msg: E-mail inválido.
@@ -1998,6 +2037,11 @@ ui:
       privacy_policy:
         label: Privacy Policy
         text: "Você pode adicionar termos de conteúdo de serviço aqui. Se você já tem um documento hospedado em outro lugar, forneça a URL completa aqui."
+      external_content_display:
+        label: External content
+        text: "Content includes images, videos, and media embedded from external websites."
+        always_display: Always display external content
+        ask_before_display: Ask before displaying external content
     write:
       page_title: Escrever
       restrict_answer:
@@ -2017,20 +2061,20 @@ ui:
         label: Reserved Marcadores
         text: "Tags reservadas só podem ser usadas pelo moderador."
       image_size:
-        label: Max image size (MB)
-        text: "The maximum image upload size."
+        label: Tamanho máximo da imagem (MB)
+        text: "O tamanho máximo para upload de imagem."
       attachment_size:
-        label: Max attachment size (MB)
-        text: "The maximum attachment files upload size."
+        label: Tamanho máximo do anexo (MB)
+        text: "O tamanho máximo para o carregamento de arquivos anexados."
       image_megapixels:
-        label: Max image megapixels
-        text: "Maximum number of megapixels allowed for an image."
+        label: Máximo megapíxels da imagem
+        text: "Número máximo de megapixels permitido para uma imagem."
       image_extensions:
-        label: Authorized image extensions
-        text: "A list of file extensions allowed for image display, separate with commas."
+        label: Extensões de imagens autorizadas
+        text: "Uma lista de extensões de arquivo permitidas para exibição de imagens, separadas por vírgula."
       attachment_extensions:
-        label: Authorized attachment extensions
-        text: "A list of file extensions allowed for upload, separate with commas. WARNING: Allowing uploads may cause security issues."
+        label: Extensões autorizadas para anexos
+        text: "Uma lista de extensões de arquivo permitidas para carregamento, separar por vírgula. AVISO: permitir o carregamento pode causar problemas de segurança."
     seo:
       page_title: SEO
       permalink:
@@ -2234,7 +2278,7 @@ ui:
     discard_confirm: Tem certeza que deseja descartar o rascunho?
   messages:
     post_deleted: Esta publicação foi removida.
-    post_cancel_deleted: This post has been undeleted.
+    post_cancel_deleted: Esta postagem foi restaurada.
     post_pin: Esta publicação foi fixada.
     post_unpin: Esta postagem foi desafixada.
     post_hide_list: Esta postagem foi ocultada da lista.
@@ -2243,13 +2287,21 @@ ui:
     post_list: Esta postagem foi listada.
     post_unlist: Esta publicação foi removida da lista.
     post_pending: A sua postagem está aguardando revisão. Ela ficará visível depois que for aprovada.
-    post_closed: This post has been closed.
-    answer_deleted: This answer has been deleted.
-    answer_cancel_deleted: This answer has been undeleted.
-    change_user_role: This user's role has been changed.
-    user_inactive: This user is already inactive.
-    user_normal: This user is already normal.
-    user_suspended: This user has been suspended.
-    user_deleted: This user has been deleted.
-    badge_activated: This badge has been activated.
-    badge_inactivated: This badge has been inactivated.
+    post_closed: Esta postagem foi fechada.
+    answer_deleted: Esta resposta foi excluída.
+    answer_cancel_deleted: Esta resposta foi restaurada.
+    change_user_role: O papel deste usuário foi alterado.
+    user_inactive: Este usuário já está inativo.
+    user_normal: Este usuário já está normal.
+    user_suspended: Este usuário foi suspenso.
+    user_deleted: Este usuário foi removido.
+    badge_activated: Este emblema foi ativado.
+    badge_inactivated: Este emblema foi desativado.
+    users_deleted: These users have been deleted.
+    posts_deleted: These questions have been deleted.
+    answers_deleted: These answers have been deleted.
+    copy: Copy to clipboard
+    copied: Copied
+    external_content_warning: External images/media are not displayed.
+
+

@@ -137,6 +137,8 @@ backend:
     other: Пароль
   pass:
     other: Пароль
+  old_pass:
+    other: Current password
   original_text:
     other: Цей допис
   email_or_password_wrong_error:
@@ -168,6 +170,8 @@ backend:
         other: Немає дозволу на оновлення.
       question_closed_cannot_add:
         other: Питання закриті й не можуть бути додані.
+      content_cannot_empty:
+        other: Answer content cannot be empty.
     comment:
       edit_without_permission:
         other: Коментарі не можна редагувати.
@@ -175,6 +179,8 @@ backend:
         other: Коментар не знайдено.
       cannot_edit_after_deadline:
         other: Час коментаря був занадто довгим, щоб його можна було змінити.
+      content_cannot_empty:
+        other: Comment content cannot be empty.
     email:
       duplicate:
         other: Такий E-mail вже існує.
@@ -224,6 +230,8 @@ backend:
         other: Немає дозволу на закриття.
       cannot_update:
         other: Немає дозволу на оновлення.
+      content_cannot_empty:
+        other: Content cannot be empty.
     rank:
       fail_to_meet_the_condition:
         other: Ранг репутації не відповідає умові.
@@ -464,42 +472,42 @@ backend:
       title:
         other: "[{{.SiteName}}] Підтвердіть нову адресу електронної пошти"
       body:
-        other: "Confirm your new email address for {{.SiteName}} by clicking on the following link:<br>\n<a href='{{.ChangeEmailUrl}}' target='_blank'>{{.ChangeEmailUrl}}</a><br><br>\n\nIf you did not request this change, please ignore this email.<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+        other: "Підтвердьте свою нову адресу електронної пошти для {{.SiteName}} натиснувши на наступне посилання:<br>\n<a href='{{.ChangeEmailUrl}}' target='_blank'>{{.ChangeEmailUrl}}</a><br><br>\n\nЯкщо ви не запитували цю зміну, будь ласка, ігноруйте цей лист.<br><br>\n\n--<br>\nПримітка: Це автоматичний системний електронний лист, будь ласка, не відповідайте на це повідомлення, оскільки ваша відповідь не буде побачена."
     new_answer:
       title:
         other: "[{{.SiteName}}] {{.DisplayName}} відповів(-ла) на ваше запитання"
       body:
-        other: "<a href='{{.AnswerUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.AnswerSummary}}</blockquote><br>\n<a href='{{.AnswerUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.AnswerUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.AnswerSummary}}</blockquote><br>\n<a href='{{.AnswerUrl}}'>Переглянути на {{.SiteName}}</a><br><br>\n\n--<br>\nПримітка: Це автоматичний системний електронний лист, будь ласка, не відповідайте на це повідомлення, оскільки ваша відповідь не буде побачена.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Відписатися</a></small>"
     invited_you_to_answer:
       title:
         other: "[{{.SiteName}}] {{.DisplayName}} запросив(-ла) вас відповісти"
       body:
-        other: "<a href='{{.InviteUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>I think you may know the answer.</blockquote><br>\n<a href='{{.InviteUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.InviteUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>Думаю, ви можете знати відповідь.</blockquote><br>\n<a href='{{.InviteUrl}}'>Переглянути на {{.SiteName}}</a><br><br>\n\n--<br>\nПримітка: Це автоматичний системний електронний лист, будь ласка, не відповідайте на це повідомлення, оскільки ваша відповідь не буде побачена.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Відписатися</a></small>"
     new_comment:
       title:
         other: "[{{.SiteName}}] {{.DisplayName}} прокоментували ваш допис"
       body:
-        other: "<a href='{{.CommentUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.CommentSummary}}</blockquote><br>\n<a href='{{.CommentUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.CommentUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.CommentSummary}}</blockquote><br>\n<a href='{{.CommentUrl}}'>Переглянути на {{.SiteName}}</a><br><br>\n\n--<br>\nПримітка: Це автоматичний системний електронний лист, будь ласка, не відповідайте на це повідомлення, оскільки ваша відповідь не буде побачена.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Відписатися</a></small>"
     new_question:
       title:
         other: "[{{.SiteName}}] Нове питання: {{.QuestionTitle}}"
       body:
-        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
     pass_reset:
       title:
         other: "[{{.SiteName }}] Скидання пароля"
       body:
-        other: "Somebody asked to reset your password on {{.SiteName}}.<br><br>\n\nIf it was not you, you can safely ignore this email.<br><br>\n\nClick the following link to choose a new password:<br>\n<a href='{{.PassResetUrl}}' target='_blank'>{{.PassResetUrl}}</a>\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+        other: "Хтось попросив скинути ваш пароль на {{.SiteName}}.<br><br>\n\nЯкщо це не ви, можете сміливо ігнорувати цей лист.<br><br>\n\nПерейдіть за наступним посиланням, щоб вибрати новий пароль:<br>\n<a href='{{.PassResetUrl}}' target='_blank'>{{.PassResetUrl}}</a>\n<br><br>\n\n--<br>\nПримітка: Це автоматичний системний електронний лист, будь ласка, не відповідайте на це повідомлення, оскільки ваша відповідь не буде побачена."
     register:
       title:
         other: "[{{.SiteName}}] Підтвердьте свій новий обліковий запис"
       body:
-        other: "Welcome to {{.SiteName}}!<br><br>\n\nClick the following link to confirm and activate your new account:<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\nIf the above link is not clickable, try copying and pasting it into the address bar of your web browser.\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+        other: "Ласкаво просимо до {{.SiteName}}!<br><br>\n\nПерейдіть за наступним посиланням, щоб підтвердити та активувати свій новий обліковий запис:<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\nЯкщо наведене вище посилання не відкривається, спробуйте скопіювати і вставити його в адресний рядок вашого веб-браузера.\n<br><br>\n\n--<br>\nПримітка: Це автоматичний системний електронний лист, будь ласка, не відповідайте на це повідомлення, оскільки ваша відповідь не буде побачена."
     test:
       title:
         other: "[{{.SiteName}}] Тестовий електронний лист"
       body:
-        other: "This is a test email.\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+        other: "Це тестовий електронний лист.\n<br><br>\n\n--<br>\nПримітка: Це автоматичний системний електронний лист, будь ласка, не відповідайте на це повідомлення, оскільки ваша відповідь не буде побачена."
   action_activity_type:
     upvote:
       other: підтримати
@@ -904,7 +912,7 @@ ui:
             msg:
               empty: Файл не може бути порожнім.
               only_image: Допустимі лише файли зображень.
-              max_size: File size cannot exceed {{size}} MB.
+              max_size: Розмір файлу не може перевищувати {{size}} МБ.
           desc:
             label: Опис
       tab_url: URL зображення
@@ -947,9 +955,9 @@ ui:
       heading: Заголовок
       cell: Клітинка
     file:
-      text: Attach files
-      not_supported: "Don’t support that file type. Try again with {{file_type}}."
-      max_size: "Attach files size cannot exceed {{size}} MB."
+      text: Прикріпити файли
+      not_supported: "Не підтримується цей тип файлу. Спробуйте ще раз з {{file_type}}."
+      max_size: "Розмір прикріплених файлів не може перевищувати {{size}} МБ."
   close_modal:
     title: Я закриваю цей пост, оскільки...
     btn_cancel: Скасувати
@@ -1090,7 +1098,7 @@ ui:
     search_placeholder: Фільтрувати за назвою теґу
     no_desc: Цей теґ не має опису.
     more: Більше
-    wiki: Wiki
+    wiki: Вікі
   ask:
     title: Додати питання
     edit_title: Редагувати питання
@@ -1465,8 +1473,15 @@ ui:
     normal: Нормальний
     closed: Закриті
     deleted: Видалені
+    deleted_permanently: Deleted permanently
     pending: Очікування
     more: Більше
+    view: View
+    card: Card
+    compact: Compact
+    display_below: Display below
+    always_display: Always display
+    or: or
   search:
     title: Результати пошуку
     keywords: Ключові слова
@@ -1496,10 +1511,13 @@ ui:
     via: Поділитися дописом через...
     copied: Скопійовано
     facebook: Поділитись на Facebook
-    twitter: Поділитися в X
+    twitter: Share to X
   cannot_vote_for_self: Ви не можете проголосувати за власну публікацію.
   modal_confirm:
     title: Помилка...
+  delete_permanently:
+    title: Delete permanently
+    content: Are you sure you want to delete permanently?
   account_result:
     success: Ваш новий обліковий запис підтверджено; вас буде перенаправлено на головну сторінку.
     link: Перейти на головну сторінку
@@ -1527,7 +1545,7 @@ ui:
     newest: Найновіші
     active: Активні
     hot: Гаряче
-    frequent: Frequent
+    frequent: Часто
     recommend: Рекомендовано
     score: Оцінка
     unanswered: Без відповідей
@@ -1603,6 +1621,23 @@ ui:
       label: Файл бази даних
       placeholder: /data/answer.db
       msg: Файл бази даних не може бути порожнім.
+    ssl_enabled:
+      label: Enable SSL
+    ssl_enabled_on:
+      label: On
+    ssl_enabled_off:
+      label: Off
+    ssl_mode:
+      label: SSL Mode
+    ssl_root_cert:
+      placeholder: sslrootcert file path
+      msg: Path to sslrootcert file cannot be empty
+    ssl_cert:
+      placeholder: sslcert file path
+      msg: Path to sslcert file cannot be empty
+    ssl_key:
+      placeholder: sslkey file path
+      msg: Path to sslkey file cannot be empty
     config_yaml:
       title: Створити config.yaml
       label: Файл config.yaml створено.
@@ -1635,8 +1670,8 @@ ui:
     admin_name:
       label: Ім’я
       msg: Ім'я не може бути порожнім.
-      character: 'Необхідно використовувати набір символів "a-z", "0-9", "-. _"'
-      msg_max_length: Довжина імені має бути не більше 30 символів.
+      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      msg_max_length: Name must be between 2 to 30 characters in length.
     admin_password:
       label: Пароль
       text: >-
@@ -1644,6 +1679,10 @@ ui:
       msg: Поле паролю не може бути порожнім.
       msg_min_length: Пароль має бути не менше 8 символів.
       msg_max_length: Пароль має бути не менше 32 символів.
+    admin_confirm_password:
+      label: "Confirm Password"
+      text: "Please re-enter your password to confirm."
+      msg: "Confirm password does not match."
     admin_email:
       label: Електронна пошта
       text: Вам знадобиться ця електронна адреса для входу.
@@ -1727,8 +1766,8 @@ ui:
       welcome: Ласкаво просимо до адміністратора!
       site_statistics: Статистика сайту
       questions: "Запитання:"
-      resolved: "Resolved:"
-      unanswered: "Unanswered:"
+      resolved: "Вирішено:"
+      unanswered: "Без відповідей:"
       answers: "Відповіді:"
       comments: "Коментарі:"
       votes: "Голоси:"
@@ -1998,6 +2037,11 @@ ui:
       privacy_policy:
         label: Політика конфіденційности
         text: "Ви можете додати вміст політики конфіденційності тут. Якщо у вас уже є документ, розміщений деінде, надайте тут повну URL-адресу."
+      external_content_display:
+        label: External content
+        text: "Content includes images, videos, and media embedded from external websites."
+        always_display: Always display external content
+        ask_before_display: Ask before displaying external content
     write:
       page_title: Написати
       restrict_answer:
@@ -2017,20 +2061,20 @@ ui:
         label: Зарезервовані теги
         text: "Зарезервовані теги можуть використовуватися лише модератором."
       image_size:
-        label: Max image size (MB)
-        text: "The maximum image upload size."
+        label: Максимальний розмір зображення (МБ)
+        text: "Максимальний розмір вивантаженого зображення."
       attachment_size:
-        label: Max attachment size (MB)
-        text: "The maximum attachment files upload size."
+        label: Максимальний розмір вкладення (МБ)
+        text: "Максимальний розмір вкладених файлів для вивантаження."
       image_megapixels:
-        label: Max image megapixels
-        text: "Maximum number of megapixels allowed for an image."
+        label: Максимальна кількість мегапікселів зображення
+        text: "Максимальна кількість мегапікселів, дозволена для зображення."
       image_extensions:
-        label: Authorized image extensions
-        text: "A list of file extensions allowed for image display, separate with commas."
+        label: Дозволені розширення зображень
+        text: "Список розширень файлів, дозволених для показу зображень, через кому."
       attachment_extensions:
-        label: Authorized attachment extensions
-        text: "A list of file extensions allowed for upload, separate with commas. WARNING: Allowing uploads may cause security issues."
+        label: Авторизовані розширення вкладень
+        text: "Список дозволених для вивантаження розширень файлів, розділених комами. ПОПЕРЕДЖЕННЯ: Дозвіл на вивантаження може спричинити проблеми з безпекою."
     seo:
       page_title: SEO
       permalink:
@@ -2234,7 +2278,7 @@ ui:
     discard_confirm: Ви дійсно бажаєте скасувати чернетку?
   messages:
     post_deleted: Цей допис було видалено.
-    post_cancel_deleted: This post has been undeleted.
+    post_cancel_deleted: Цей допис було не видалено.
     post_pin: Цей допис було закріплено.
     post_unpin: Цей допис було відкріплено.
     post_hide_list: Цей допис було приховано зі списку.
@@ -2243,13 +2287,21 @@ ui:
     post_list: Цей допис було додано до списку.
     post_unlist: Цей допис було приховано.
     post_pending: Ваш допис очікує на розгляд. Це попередній перегляд, його буде видно після того, як його буде схвалено.
-    post_closed: This post has been closed.
-    answer_deleted: This answer has been deleted.
-    answer_cancel_deleted: This answer has been undeleted.
-    change_user_role: This user's role has been changed.
-    user_inactive: This user is already inactive.
-    user_normal: This user is already normal.
-    user_suspended: This user has been suspended.
-    user_deleted: This user has been deleted.
-    badge_activated: This badge has been activated.
-    badge_inactivated: This badge has been inactivated.
+    post_closed: Ця публікація була закрита.
+    answer_deleted: Ця відповідь була видалена.
+    answer_cancel_deleted: Ця відповідь була не видалена.
+    change_user_role: Роль цього користувача було змінено.
+    user_inactive: Цей користувач вже неактивний.
+    user_normal: Цей користувач вже нормальний.
+    user_suspended: Цього користувача було відсторонено.
+    user_deleted: Цього користувача було видалено.
+    badge_activated: Цей бейдж було активовано.
+    badge_inactivated: Цей бейдж було деактивовано.
+    users_deleted: These users have been deleted.
+    posts_deleted: These questions have been deleted.
+    answers_deleted: These answers have been deleted.
+    copy: Copy to clipboard
+    copied: Copied
+    external_content_warning: External images/media are not displayed.
+
+

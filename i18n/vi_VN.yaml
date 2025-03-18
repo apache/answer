@@ -137,6 +137,8 @@ backend:
     other: Mật khẩu
   pass:
     other: Mật khẩu
+  old_pass:
+    other: Current password
   original_text:
     other: Bài viết này
   email_or_password_wrong_error:
@@ -168,6 +170,8 @@ backend:
         other: Không có quyền cập nhật.
       question_closed_cannot_add:
         other: Câu hỏi đã đóng và không thể thêm.
+      content_cannot_empty:
+        other: Answer content cannot be empty.
     comment:
       edit_without_permission:
         other: Không được phép chỉnh sửa bình luận.
@@ -175,6 +179,8 @@ backend:
         other: Không tìm thấy bình luận.
       cannot_edit_after_deadline:
         other: Thời gian bình luận đã quá lâu để chỉnh sửa.
+      content_cannot_empty:
+        other: Comment content cannot be empty.
     email:
       duplicate:
         other: Email đã được dùng.
@@ -224,6 +230,8 @@ backend:
         other: Không có quyền đóng.
       cannot_update:
         other: Không có quyền cập nhật.
+      content_cannot_empty:
+        other: Content cannot be empty.
     rank:
       fail_to_meet_the_condition:
         other: Xếp hạng danh tiếng không đạt được điều kiện.
@@ -326,7 +334,7 @@ backend:
       name:
         other: thô lỗ hoặc lạm dụng
       desc:
-        other: "A reasonable person would find this content inappropriate for respectful discourse."
+        other: "Một người hợp lý sẽ thấy nội dung này không phù hợp để diễn thuyết một cách tôn trọng."
     a_duplicate:
       name:
         other: một bản sao
@@ -338,7 +346,7 @@ backend:
       name:
         other: không phải câu trả lời
       desc:
-        other: "This was posted as an answer, but it does not attempt to answer the question. It should possibly be an edit, a comment, another question,or deleted altogether."
+        other: "Điều này đã được đăng dưới dạng câu trả lời nhưng nó không cố gắng trả lời câu hỏi. Nó có thể là một bản chỉnh sửa, một nhận xét, một câu hỏi khác hoặc bị xóa hoàn toàn."
     no_longer_needed:
       name:
         other: không còn cần thiết
@@ -397,7 +405,7 @@ backend:
         name:
           other: cần chi tiết hoặc rõ ràng
         desc:
-          other: This question currently includes multiple questions in one. It should focus on one problem only.
+          other: Câu hỏi này hiện bao gồm nhiều câu hỏi trong một. Nó chỉ nên tập trung vào một vấn đề.
       other:
         name:
           other: điều gì đó khác
@@ -464,42 +472,42 @@ backend:
       title:
         other: "[{{.SiteName}}] Xác nhận địa chỉ email mới của bạn"
       body:
-        other: "Confirm your new email address for {{.SiteName}} by clicking on the following link:<br>\n<a href='{{.ChangeEmailUrl}}' target='_blank'>{{.ChangeEmailUrl}}</a><br><br>\n\nIf you did not request this change, please ignore this email.<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+        other: "Xác nhận địa chỉ email mới của bạn cho {{.SiteName}} bằng cách nhấp vào liên kết sau:<br>\n<a href='{{.ChangeEmailUrl}}' target='_blank'>{{.ChangeEmailUrl}}</a><br><br>\n\nNếu bạn không yêu cầu thay đổi này, vui lòng bỏ qua email này.<br><br>\n\n--<br>\nLưu ý: Đây là email hệ thống tự động, vui lòng không trả lời tin nhắn này vì chúng tôi sẽ không nhìn thấy phản hồi của bạn."
     new_answer:
       title:
         other: "[{{.SiteName}}] {{.DisplayName}} đã trả lời câu hỏi của bạn"
       body:
-        other: "<a href='{{.AnswerUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.AnswerSummary}}</blockquote><br>\n<a href='{{.AnswerUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.AnswerUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.AnswerSummary}}</blockquote><br>\n<a href='{{.AnswerUrl}}'>Xem trên {{.SiteName}}</a><br><br>\n\n--<br>\nLưu ý: Đây là email hệ thống tự động, vui lòng không trả lời thư này vì chúng tôi sẽ không nhìn thấy phản hồi của bạn.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Hủy đăng ký</a></small>"
     invited_you_to_answer:
       title:
         other: "[{{.SiteName}}] {{.DisplayName}} mời bạn trả lời"
       body:
-        other: "<a href='{{.InviteUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>I think you may know the answer.</blockquote><br>\n<a href='{{.InviteUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.InviteUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>Tôi nghĩ bạn có thể biết câu trả lời.</blockquote><br>\n<a href='{{.InviteUrl}}'>Xem trên {{.SiteName}}</a><br><br>\n\n--<br>\nLưu ý: Đây là email hệ thống tự động, vui lòng không trả lời thư này vì chúng tôi sẽ không nhìn thấy phản hồi của bạn.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Hủy đăng ký</a></small>"
     new_comment:
       title:
         other: "[{{.SiteName}}] {{.DisplayName}} đã bình luận về bài đăng của bạn"
       body:
-        other: "<a href='{{.CommentUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.CommentSummary}}</blockquote><br>\n<a href='{{.CommentUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.CommentUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.CommentSummary}}</blockquote><br>\n<a href='{{.CommentUrl}}'>Xem trên {{.SiteName}}</a><br><br>\n\n--<br>\nLưu ý: Đây là email hệ thống tự động, vui lòng không trả lời thư này vì chúng tôi sẽ không nhìn thấy phản hồi của bạn.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Hủy đăng ký</a></small>"
     new_question:
       title:
         other: "[{{.SiteName}}] Câu hỏi mới: {{.QuestionTitle}}"
       body:
-        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
     pass_reset:
       title:
         other: "[{{.SiteName}}] Đặt lại mật khẩu"
       body:
-        other: "Somebody asked to reset your password on {{.SiteName}}.<br><br>\n\nIf it was not you, you can safely ignore this email.<br><br>\n\nClick the following link to choose a new password:<br>\n<a href='{{.PassResetUrl}}' target='_blank'>{{.PassResetUrl}}</a>\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+        other: "Ai đó đã yêu cầu đặt lại mật khẩu của bạn trên {{.SiteName}}.<br><br>\n\nNếu người đó không phải là bạn thì bạn có thể yên tâm bỏ qua email này.<br><br>\n\nNhấp vào liên kết sau để chọn mật khẩu mới:<br>\n<a href='{{.PassResetUrl}}' target='_blank'>{{.PassResetUrl}}</a>\n<br><br>\n\n--<br>\nLưu ý: Đây là email hệ thống tự động, vui lòng không trả lời tin nhắn này vì chúng tôi sẽ không nhìn thấy phản hồi của bạn."
     register:
       title:
         other: "[{{.SiteName}}] Xác nhận tài khoản mới của bạn"
       body:
-        other: "Welcome to {{.SiteName}}!<br><br>\n\nClick the following link to confirm and activate your new account:<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\nIf the above link is not clickable, try copying and pasting it into the address bar of your web browser.\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+        other: "Chào mừng bạn đến với {{.SiteName}}!<br><br>\n\nNhấp vào liên kết sau để xác nhận và kích hoạt tài khoản mới của bạn:<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\nNếu liên kết trên không nhấp vào được, hãy thử sao chép và dán nó vào thanh địa chỉ trình duyệt web của bạn.\n<br><br>\n\n--<br>\nLưu ý: Đây là email hệ thống tự động, vui lòng không trả lời tin nhắn này vì chúng tôi sẽ không nhìn thấy phản hồi của bạn."
     test:
       title:
         other: "[{{.SiteName}}] Email kiểm tra"
       body:
-        other: "This is a test email.\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+        other: "Đây là một email thử nghiệm.\n<br><br>\n\n--<br>\nLưu ý: Đây là email hệ thống tự động, vui lòng không trả lời tin nhắn này vì chúng tôi sẽ không nhìn thấy phản hồi của bạn."
   action_activity_type:
     upvote:
       other: bình chọn lên
@@ -787,7 +795,7 @@ ui:
   how_to_format:
     title: Cách định dạng
     desc: >-
-      <ul class="mb-0"><li><p class="mb-2">mention a post: <code>#post_id</code></p></li> <li><p class="mb-2">to make links</p><pre class="mb-2"><code>&lt;https://url.com&gt;<br/><br/>[Title](https://url.com)</code></pre></li><li><p class="mb-2">put returns between paragraphs</p></li><li><p class="mb-2"><em>_italic_</em> or **<strong>bold</strong>**</p></li><li><p class="mb-2">indent code by 4 spaces</p></li><li><p class="mb-2">quote by placing <code>&gt;</code> at start of line</p></li><li><p class="mb-2">backtick escapes <code>`like _this_`</code></p></li><li><p class="mb-2">create code fences with backticks <code>`</code></p><pre class="mb-0"><code>```<br/>code here<br/>```</code></pre></li></ul>
+      <ul class="mb-0"><li><p class="mb-2">đề cập đến bài đăng: <code>#post_id</code></p></li> <li><p class ="mb-2">để tạo liên kết</p><pre class="mb-2"><code>&lt;https://url.com&gt;<br/><br/>[Title](https://url.com)</code></pre></li><li><p class="mb-2">đặt trả về giữa đoạn văn</p></li><li><p class="mb-2"><em>_italic_</em> hoặc **<strong>in đậm</strong>**</p></li ><li><p class="mb-2">mã thụt lề 4 dấu cách</p></li><li><p class="mb-2">trích dẫn bằng cách đặt <code>&gt;</ code> ở đầu dòng</p></li><li><p class="mb-2">backtick thoát <code>`like _this_`</code></p></li><li><p class="mb-2">tạo hàng rào mã bằng dấu backticks <code>`</code></p><pre class="mb -0"><code>```<br/>mã vào đây<br/>```</code></pre></li></ul>
   pagination:
     prev: Trước
     next: Tiếp
@@ -904,7 +912,7 @@ ui:
             msg:
               empty: Tệp không thể trống.
               only_image: Chỉ cho phép tệp hình ảnh.
-              max_size: File size cannot exceed {{size}} MB.
+              max_size: Kích thước tệp không được vượt quá {{size}} MB.
           desc:
             label: Mô tả
       tab_url: URL hình ảnh
@@ -947,9 +955,9 @@ ui:
       heading: Tiêu đề
       cell: Ô
     file:
-      text: Attach files
-      not_supported: "Don’t support that file type. Try again with {{file_type}}."
-      max_size: "Attach files size cannot exceed {{size}} MB."
+      text: Đính kèm tập tin
+      not_supported: "Không hỗ trợ loại tệp đó. Hãy thử lại với {{file_type}}."
+      max_size: "Kích thước tệp đính kèm không được vượt quá {{size}} MB."
   close_modal:
     title: Tôi đang đóng bài đăng này với lý do...
     btn_cancel: Hủy
@@ -1183,7 +1191,7 @@ ui:
       label: Tên
       msg:
         empty: Tên không thể trống.
-        range: Độ dài của tên phải từ 2 đến 30 ký tự.
+        range: Tên phải có độ dài từ 2 đến 30 ký tự.
         character: 'Chỉ sử dụng bộ ký tự "a-z", "0-9", , "A-Z", " - . _"'
     email:
       label: Email
@@ -1340,9 +1348,9 @@ ui:
     title: Các câu hỏi liên quan
     answers: câu trả lời
   linked_question:
-    title: Linked Questions
-    description: Questions linked to
-    no_linked_question: No questions linked from this question.
+    title: Câu hỏi được liên kết
+    description: Câu hỏi liên quan đến
+    no_linked_question: Không có câu hỏi nào được liên kết từ câu hỏi này.
   invite_to_answer:
     title: Mời mọi người
     desc: Mời những người bạn nghĩ có thể trả lời.
@@ -1465,8 +1473,15 @@ ui:
     normal: Bình thường
     closed: Đã đóng
     deleted: Đã xóa
+    deleted_permanently: Deleted permanently
     pending: Đang chờ xử lý
     more: Thêm
+    view: View
+    card: Card
+    compact: Compact
+    display_below: Display below
+    always_display: Always display
+    or: or
   search:
     title: Kết quả tìm kiếm
     keywords: Từ khóa
@@ -1496,10 +1511,13 @@ ui:
     via: Chia sẻ bài đăng qua...
     copied: Đã sao chép
     facebook: Chia sẻ lên Facebook
-    twitter: Chia sẻ lên X
+    twitter: Share to X
   cannot_vote_for_self: Bạn không thể bỏ phiếu cho bài đăng của chính mình.
   modal_confirm:
     title: Lỗi...
+  delete_permanently:
+    title: Delete permanently
+    content: Are you sure you want to delete permanently?
   account_result:
     success: Tài khoản mới của bạn đã được xác nhận; bạn sẽ được chuyển hướng đến trang chủ.
     link: Tiếp tục đến trang chủ
@@ -1527,7 +1545,7 @@ ui:
     newest: Mới nhất
     active: Hoạt động
     hot: Được nhiều quan tâm
-    frequent: Frequent
+    frequent: Thường xuyên
     recommend: Đề xuất
     score: Điểm
     unanswered: Chưa được trả lời
@@ -1562,7 +1580,7 @@ ui:
     top_questions: Câu hỏi hàng đầu
     stats: Thống kê
     list_empty: Không tìm thấy bài đăng.<br />Có thể bạn muốn chọn một thẻ khác?
-    content_empty: No posts found.
+    content_empty: Không tìm thấy bài viết nào.
     accepted: Đã chấp nhận
     answered: đã trả lời
     asked: đã hỏi
@@ -1603,6 +1621,23 @@ ui:
       label: Tệp tin Database
       placeholder: /data/answer.db
       msg: Tệp cơ sở dữ liệu không thể trống.
+    ssl_enabled:
+      label: Enable SSL
+    ssl_enabled_on:
+      label: On
+    ssl_enabled_off:
+      label: Off
+    ssl_mode:
+      label: SSL Mode
+    ssl_root_cert:
+      placeholder: sslrootcert file path
+      msg: Path to sslrootcert file cannot be empty
+    ssl_cert:
+      placeholder: sslcert file path
+      msg: Path to sslcert file cannot be empty
+    ssl_key:
+      placeholder: sslkey file path
+      msg: Path to sslkey file cannot be empty
     config_yaml:
       title: Tạo config.yaml
       label: Tệp config.yaml đã được tạo.
@@ -1635,8 +1670,8 @@ ui:
     admin_name:
       label: Tên
       msg: Tên không thể trống.
-      character: 'Chỉ sử dụng bộ ký tự "a-z", "0-9", " - . _"'
-      msg_max_length: Tên phải có tối đa 30 ký tự.
+      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      msg_max_length: Name must be between 2 to 30 characters in length.
     admin_password:
       label: Mật khẩu
       text: >-
@@ -1644,6 +1679,10 @@ ui:
       msg: Mật khẩu không thể trống.
       msg_min_length: Mật khẩu phải có ít nhất 8 ký tự.
       msg_max_length: Mật khẩu phải có tối đa 32 ký tự.
+    admin_confirm_password:
+      label: "Confirm Password"
+      text: "Please re-enter your password to confirm."
+      msg: "Confirm password does not match."
     admin_email:
       label: Email
       text: Bạn sẽ cần email này để đăng nhập.
@@ -1727,8 +1766,8 @@ ui:
       welcome: Chào mừng bạn đến với Answer Admin!
       site_statistics: Thống kê trang
       questions: "Câu hỏi:"
-      resolved: "Resolved:"
-      unanswered: "Unanswered:"
+      resolved: "Đã giải quyết:"
+      unanswered: "Chưa được trả lời:"
       answers: "Câu trả lời:"
       comments: "Bình luận:"
       votes: "Phiếu bầu:"
@@ -1822,7 +1861,7 @@ ui:
             msg: "Vui lòng nhập email của người dùng, một dòng mỗi người."
           display_name:
             label: Tên hiển thị
-            msg: Tên hiển thị phải có từ 2 đến 30 ký tự.
+            msg: Tên hiển thị phải dài từ 2-30 ký tự.
           email:
             label: Email
             msg: Email không hợp lệ.
@@ -1998,6 +2037,11 @@ ui:
       privacy_policy:
         label: Chính sách bảo mật
         text: "Bạn có thể thêm nội dung chính sách bảo mật ở đây. Nếu bạn đã có một tài liệu được lưu trữ ở nơi khác, cung cấp URL đầy đủ ở đây."
+      external_content_display:
+        label: External content
+        text: "Content includes images, videos, and media embedded from external websites."
+        always_display: Always display external content
+        ask_before_display: Ask before displaying external content
     write:
       page_title: Viết
       restrict_answer:
@@ -2017,20 +2061,20 @@ ui:
         label: Thẻ dành riêng
         text: "Thẻ dành riêng chỉ có thể được thêm vào một bài đăng bởi điều hành viên."
       image_size:
-        label: Max image size (MB)
-        text: "The maximum image upload size."
+        label: Kích thước hình ảnh tối đa (MB)
+        text: "Kích thước tải lên hình ảnh tối đa."
       attachment_size:
-        label: Max attachment size (MB)
-        text: "The maximum attachment files upload size."
+        label: Kích thước tệp đính kèm tối đa (MB)
+        text: "Kích thước tải lên tệp đính kèm tối đa."
       image_megapixels:
-        label: Max image megapixels
-        text: "Maximum number of megapixels allowed for an image."
+        label: Megapixel hình ảnh tối đa
+        text: "Số megapixel tối đa được phép cho một hình ảnh."
       image_extensions:
-        label: Authorized image extensions
-        text: "A list of file extensions allowed for image display, separate with commas."
+        label: Tiện ích mở rộng hình ảnh được ủy quyền
+        text: "Danh sách đuôi file được phép hiển thị hình ảnh, phân cách bằng dấu phẩy."
       attachment_extensions:
-        label: Authorized attachment extensions
-        text: "A list of file extensions allowed for upload, separate with commas. WARNING: Allowing uploads may cause security issues."
+        label: Các loại tệp đính kèm được phép tải lên
+        text: "Danh sách các đuôi file được phép tải lên, phân cách bằng dấu phẩy. CẢNH BÁO: Cho phép tải lên có thể gây ra vấn đề bảo mật."
     seo:
       page_title: SEO
       permalink:
@@ -2234,7 +2278,7 @@ ui:
     discard_confirm: Bạn có chắc chắn muốn hủy bản nháp của mình không?
   messages:
     post_deleted: Bài đăng này đã bị xóa.
-    post_cancel_deleted: This post has been undeleted.
+    post_cancel_deleted: Bài đăng này đã được phục hồi.
     post_pin: Bài đăng này đã được ghim.
     post_unpin: Bài đăng này đã bị bỏ ghim.
     post_hide_list: Bài đăng này đã được ẩn khỏi danh sách.
@@ -2243,13 +2287,21 @@ ui:
     post_list: Bài đăng này đã được liệt kê.
     post_unlist: Bài đăng này đã được gỡ bỏ khỏi danh sách.
     post_pending: Bài đăng của bạn đang chờ xem xét. Đây là bản xem trước, nó sẽ được hiển thị sau khi được phê duyệt.
-    post_closed: This post has been closed.
-    answer_deleted: This answer has been deleted.
-    answer_cancel_deleted: This answer has been undeleted.
-    change_user_role: This user's role has been changed.
-    user_inactive: This user is already inactive.
-    user_normal: This user is already normal.
-    user_suspended: This user has been suspended.
-    user_deleted: This user has been deleted.
-    badge_activated: This badge has been activated.
-    badge_inactivated: This badge has been inactivated.
+    post_closed: Bài đăng này đã bị đóng.
+    answer_deleted: Câu trả lời này đã bị xóa.
+    answer_cancel_deleted: Câu trả lời này đã được phục hồi.
+    change_user_role: Vai trò của người dùng này đã được thay đổi.
+    user_inactive: Người dùng này đã không hoạt động.
+    user_normal: Người dùng này đã bình thường.
+    user_suspended: Người dùng này đã bị đình chỉ.
+    user_deleted: Người dùng này đã bị xóa.
+    badge_activated: Huy hiệu này đã được kích hoạt.
+    badge_inactivated: Huy hiệu này đã bị vô hiệu hóa.
+    users_deleted: These users have been deleted.
+    posts_deleted: These questions have been deleted.
+    answers_deleted: These answers have been deleted.
+    copy: Copy to clipboard
+    copied: Copied
+    external_content_warning: External images/media are not displayed.
+
+

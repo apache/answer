@@ -137,6 +137,8 @@ backend:
     other: Parolă
   pass:
     other: Parolă
+  old_pass:
+    other: Current password
   original_text:
     other: This post
   email_or_password_wrong_error:
@@ -168,6 +170,8 @@ backend:
         other: Nu există permisiunea de ștergere.
       question_closed_cannot_add:
         other: Întrebările sunt închise şi nu pot fi adăugate.
+      content_cannot_empty:
+        other: Answer content cannot be empty.
     comment:
       edit_without_permission:
         other: Comentariul nu poate fi editat.
@@ -175,6 +179,8 @@ backend:
         other: Comentariul nu a fost găsit.
       cannot_edit_after_deadline:
         other: Comentariul a durat prea mult pentru a fi modificat.
+      content_cannot_empty:
+        other: Comment content cannot be empty.
     email:
       duplicate:
         other: Email-ul există deja.
@@ -224,6 +230,8 @@ backend:
         other: Nu există permisiunea de a închide.
       cannot_update:
         other: Nu aveți permisiunea de a actualiza.
+      content_cannot_empty:
+        other: Content cannot be empty.
     rank:
       fail_to_meet_the_condition:
         other: Rangul de reputaţie nu îndeplineşte condiţia.
@@ -484,7 +492,7 @@ backend:
       title:
         other: "[{{.SiteName}}] Întrebare nouă: {{.QuestionTitle}}"
       body:
-        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
     pass_reset:
       title:
         other: "[{{.SiteName }}] Resetare parolă"
@@ -1465,8 +1473,15 @@ ui:
     normal: Normal
     closed: Closed
     deleted: Deleted
+    deleted_permanently: Deleted permanently
     pending: Pending
     more: More
+    view: View
+    card: Card
+    compact: Compact
+    display_below: Display below
+    always_display: Always display
+    or: or
   search:
     title: Rezultatele căutării
     keywords: Cuvinte cheie
@@ -1496,10 +1511,13 @@ ui:
     via: Distribuie postarea prin...
     copied: Copiat
     facebook: Partajează pe Facebook
-    twitter: Partajați pe X
+    twitter: Share to X
   cannot_vote_for_self: Nu poți vota pentru propria ta postare.
   modal_confirm:
     title: Eroare...
+  delete_permanently:
+    title: Delete permanently
+    content: Are you sure you want to delete permanently?
   account_result:
     success: Noul tău cont este confirmat; vei fi redirecționat către pagina de pornire.
     link: Continuă la pagina principală
@@ -1603,6 +1621,23 @@ ui:
       label: Fișierul bazei de date
       placeholder: /data/answer.db
       msg: Fişierul bazei de date nu poate fi gol.
+    ssl_enabled:
+      label: Enable SSL
+    ssl_enabled_on:
+      label: On
+    ssl_enabled_off:
+      label: Off
+    ssl_mode:
+      label: SSL Mode
+    ssl_root_cert:
+      placeholder: sslrootcert file path
+      msg: Path to sslrootcert file cannot be empty
+    ssl_cert:
+      placeholder: sslcert file path
+      msg: Path to sslcert file cannot be empty
+    ssl_key:
+      placeholder: sslkey file path
+      msg: Path to sslkey file cannot be empty
     config_yaml:
       title: Crează config.yaml
       label: Fișierul config.yaml a fost creat.
@@ -1635,8 +1670,8 @@ ui:
     admin_name:
       label: Nume
       msg: Câmpul Nume trebuie completat.
-      character: 'Trebuie să utilizați setul de caractere "a-z", "0-9", " - . _"'
-      msg_max_length: Numele trebuie să aibă maximum 30 de caractere.
+      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      msg_max_length: Name must be between 2 to 30 characters in length.
     admin_password:
       label: Parolă
       text: >-
@@ -1644,6 +1679,10 @@ ui:
       msg: Parola nu poate fi goală.
       msg_min_length: Parola trebuie să aibă cel puțin 8 caractere.
       msg_max_length: Parola trebuie să aibă cel puțin 32 caractere.
+    admin_confirm_password:
+      label: "Confirm Password"
+      text: "Please re-enter your password to confirm."
+      msg: "Confirm password does not match."
     admin_email:
       label: E-mail
       text: Veţi avea nevoie de acest e-mail pentru a vă autentifica.
@@ -1998,6 +2037,11 @@ ui:
       privacy_policy:
         label: Politică de confidențialitate
         text: "Puteți adăuga aici termeni politicii de confidențialitate. Dacă aveți deja un document găzduit în altă parte, furnizați URL-ul complet aici."
+      external_content_display:
+        label: External content
+        text: "Content includes images, videos, and media embedded from external websites."
+        always_display: Always display external content
+        ask_before_display: Ask before displaying external content
     write:
       page_title: Scrie
       restrict_answer:
@@ -2253,3 +2297,11 @@ ui:
     user_deleted: This user has been deleted.
     badge_activated: This badge has been activated.
     badge_inactivated: This badge has been inactivated.
+    users_deleted: These users have been deleted.
+    posts_deleted: These questions have been deleted.
+    answers_deleted: These answers have been deleted.
+    copy: Copy to clipboard
+    copied: Copied
+    external_content_warning: External images/media are not displayed.
+
+

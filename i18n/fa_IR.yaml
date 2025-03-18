@@ -137,6 +137,8 @@ backend:
     other: رمز
   pass:
     other: رمز
+  old_pass:
+    other: Current password
   original_text:
     other: پست جاری
   email_or_password_wrong_error:
@@ -168,6 +170,8 @@ backend:
         other: اجازه بروزرسانی ندارید.
       question_closed_cannot_add:
         other: سوالات بسته شده اند و نمیتوان سوالی اضافه کرد.
+      content_cannot_empty:
+        other: Answer content cannot be empty.
     comment:
       edit_without_permission:
         other: نظرات قابل ویرایش نیستند.
@@ -175,6 +179,8 @@ backend:
         other: نظر پیدا نشد.
       cannot_edit_after_deadline:
         other: زمان زیادی برای ویرایش نظر گذشته است.
+      content_cannot_empty:
+        other: Comment content cannot be empty.
     email:
       duplicate:
         other: ایمیل تکراری.
@@ -224,6 +230,8 @@ backend:
         other: اجاره بستن ندارید.
       cannot_update:
         other: اجازه بروزرسانی ندارید.
+      content_cannot_empty:
+        other: Content cannot be empty.
     rank:
       fail_to_meet_the_condition:
         other: شهرت ناکافی.
@@ -484,7 +492,7 @@ backend:
       title:
         other: "[{{.SiteName}}] سؤال جدید: {{.QuestionTitle}}"
       body:
-        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
     pass_reset:
       title:
         other: "[{{.SiteName }}] گذرواژه بازنشانی شد"
@@ -1465,8 +1473,15 @@ ui:
     normal: Normal
     closed: Closed
     deleted: Deleted
+    deleted_permanently: Deleted permanently
     pending: Pending
     more: More
+    view: View
+    card: Card
+    compact: Compact
+    display_below: Display below
+    always_display: Always display
+    or: or
   search:
     title: نتایج جستجو
     keywords: کلیدواژه ها
@@ -1500,6 +1515,9 @@ ui:
   cannot_vote_for_self: شما نمی توانید به پست خودتان رای دهید.
   modal_confirm:
     title: خطا...
+  delete_permanently:
+    title: Delete permanently
+    content: Are you sure you want to delete permanently?
   account_result:
     success: اکانت جدید شما تایید شده است، به صفحه خانه منتقل خواهید شد.
     link: ادامه بدهید تا به صفحه خانه برسید
@@ -1603,6 +1621,23 @@ ui:
       label: فایل پایگاه داده
       placeholder: /data/answer.db
       msg: فایل پایگاه داده نمیتواند خالی باشد.
+    ssl_enabled:
+      label: Enable SSL
+    ssl_enabled_on:
+      label: On
+    ssl_enabled_off:
+      label: Off
+    ssl_mode:
+      label: SSL Mode
+    ssl_root_cert:
+      placeholder: sslrootcert file path
+      msg: Path to sslrootcert file cannot be empty
+    ssl_cert:
+      placeholder: sslcert file path
+      msg: Path to sslcert file cannot be empty
+    ssl_key:
+      placeholder: sslkey file path
+      msg: Path to sslkey file cannot be empty
     config_yaml:
       title: Config.yaml را بسازید
       label: فایل config.yaml ساخته شد.
@@ -1635,8 +1670,8 @@ ui:
     admin_name:
       label: نام
       msg: نام نمی‌تواند خالی باشد.
-      character: 'باید از حروف "a-z", "0-9", " - . _" استفاده شود'
-      msg_max_length: Name must be at maximum 30 characters in length.
+      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      msg_max_length: Name must be between 2 to 30 characters in length.
     admin_password:
       label: رمز عبور
       text: >-
@@ -1644,6 +1679,10 @@ ui:
       msg: رمز عبور نمی تواند خالی باشد.
       msg_min_length: Password must be at least 8 characters in length.
       msg_max_length: Password must be at maximum 32 characters in length.
+    admin_confirm_password:
+      label: "Confirm Password"
+      text: "Please re-enter your password to confirm."
+      msg: "Confirm password does not match."
     admin_email:
       label: ایمیل
       text: شما به این ایمیل برای ورود نیاز خواهید داشت.
@@ -1822,7 +1861,7 @@ ui:
             msg: "لطفا ایمیل کاربر را در هر خط یکی وارد کنید."
           display_name:
             label: نمایش نام
-            msg: نام نمایشی باید 2 تا 30 کاراکتر باشد.
+            msg: Display name must be 2-30 characters in length.
           email:
             label: ایمیل
             msg: ایمیل معتبر نمی‌باشد
@@ -1998,6 +2037,11 @@ ui:
       privacy_policy:
         label: حریم خصوصی
         text: "You can add privacy policy content here. If you already have a document hosted elsewhere, provide the full URL here."
+      external_content_display:
+        label: External content
+        text: "Content includes images, videos, and media embedded from external websites."
+        always_display: Always display external content
+        ask_before_display: Ask before displaying external content
     write:
       page_title: نوشتن
       restrict_answer:
@@ -2253,3 +2297,11 @@ ui:
     user_deleted: This user has been deleted.
     badge_activated: This badge has been activated.
     badge_inactivated: This badge has been inactivated.
+    users_deleted: These users have been deleted.
+    posts_deleted: These questions have been deleted.
+    answers_deleted: These answers have been deleted.
+    copy: Copy to clipboard
+    copied: Copied
+    external_content_warning: External images/media are not displayed.
+
+

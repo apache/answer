@@ -137,6 +137,8 @@ backend:
     other: 密码
   pass:
     other: 密码
+  old_pass:
+    other: 当前密码
   original_text:
     other: 本帖
   email_or_password_wrong_error:
@@ -622,17 +624,17 @@ backend:
         name:
           other: 出于爱
         desc:
-          other: 一天内使用了50张选票。
+          other: 一天内使用了 50 个赞。
       higher_love:
         name:
           other: 更高的爱好
         desc:
-          other: 一天内使用了50张选票。
+          other: 一天内使用了 50 个赞 5 次。
       crazy_in_love:
         name:
           other: 爱情疯狂的
         desc:
-          other: 在 20 天内使用了50张选票。
+          other: 一天内使用了 50 个赞 20 次。
       promoter:
         name:
           other: 推荐人
@@ -752,17 +754,17 @@ backend:
         name:
           other: 热门问题
         desc:
-          other: 问题有500个浏览量。
+          other: 问题有 500 个浏览量。
       notable_question:
         name:
           other: 值得关注问题
         desc:
-          other: 问题有1,000个浏览量。
+          other: 问题有1,000 个浏览量。
       famous_question:
         name:
           other: 著名的问题
         desc:
-          other: 问题有5,000个浏览量。
+          other: 问题有 5,000 个浏览量。
       popular_link:
         name:
           other: 热门链接
@@ -1232,9 +1234,6 @@ ui:
     modal_content: 该电子邮件地址已经注册。你确定要连接到已有账户吗？
     modal_cancel: 更改邮箱
     modal_confirm: 连接到已有账户
-  delete_permanently:
-    title: 永久删除
-    content: 你确定要永久删除吗？
   password_reset:
     page_title: 密码重置
     btn_name: 重置我的密码
@@ -1516,6 +1515,9 @@ ui:
   cannot_vote_for_self: 你不能给自己的帖子投票。
   modal_confirm:
     title: 发生错误...
+  delete_permanently:
+    title: 永久删除
+    content: 您确定要永久删除吗？
   account_result:
     success: 你的账号已通过验证，即将返回首页。
     link: 返回首页
@@ -1669,7 +1671,7 @@ ui:
       label: 名字
       msg: 名字不能为空。
       character: '只能由 "a-z"、"A-Z"、"0-9"、" - . _" 组成'
-      msg_max_length: 名字长度必须在 2 至 30 个字符之间。
+      msg_max_length: 名称长度必须在 2 至 30 个字符之间。
     admin_password:
       label: 密码
       text: >-
@@ -1677,6 +1679,10 @@ ui:
       msg: 密码不能为空。
       msg_min_length: 密码必须至少 8 个字符长。
       msg_max_length: 密码长度不能超过 32 个字符。
+    admin_confirm_password:
+      label: "确认密码"
+      text: "请重新输入您的密码以确认。"
+      msg: "确认密码不一致。"
     admin_email:
       label: 邮箱
       text: 您需要此电子邮件才能登录。
@@ -1747,7 +1753,7 @@ ui:
       close: 关闭
       confirm: 查看徽章
     title: 徽章
-    awarded: 授予的
+    awarded: 授予
     earned_×: 以获得 ×{{ number }}
     ×_awarded: "{{ number }} 得到"
     can_earn_multiple: 你可以多次获得
@@ -2105,7 +2111,7 @@ ui:
 
       footer:
         label: 页脚
-        text: 这将在 </body> 之前插入.
+        text: 这将在 &lt;/body> 之前插入。
       sidebar:
         label: 侧边栏
         text: 这将插入侧边栏中。
@@ -2292,9 +2298,10 @@ ui:
     badge_activated: 此徽章已被激活。
     badge_inactivated: 此徽章已被禁用。
     users_deleted: 这些用户已被删除。
-    posts_deleted: 这些帖子已被删除。
-    answers_deleted: 这些回答已被删除。
-    copy: 复制
+    posts_deleted: 这些问题已被删除。
+    answers_deleted: 这些答案已被删除。
+    copy: 复制到剪贴板
     copied: 已复制
-    external_content_warning: 不显示外部图像/媒体。
+    external_content_warning: 外部图像/媒体未显示。
+
 
