@@ -20,7 +20,7 @@
 import { FC, memo } from 'react';
 import { Nav, Dropdown } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useMatch, useNavigate } from 'react-router-dom';
 
 import type * as Type from '@/common/interface';
 import { Avatar, Icon } from '@/components';
@@ -48,13 +48,27 @@ const Index: FC<Props> = ({ redDot, userInfo, logOut }) => {
       });
     }
   };
+  /**
+   * Automatically append `tag` information when creating a question
+   */
+  const tagMatch = useMatch('/tags/:slugName');
+  let askUrl = '/questions/ask';
+  if (tagMatch && tagMatch.params.slugName) {
+    askUrl = `${askUrl}?tags=${encodeURIComponent(tagMatch.params.slugName)}`;
+  }
   return (
     <>
       <Nav className="flex-row">
         <NavLink
+          to={askUrl}
+          title={t('btns.add_question')}
+          className="d-flex lg-none icon-link nav-link d-flex align-items-center justify-content-center p-0 me-2 position-relative">
+          <Icon name="plus-circle-fill" className="fs-4" />
+        </NavLink>
+        <NavLink
           to="/users/notifications/inbox"
           title={t('inbox', { keyPrefix: 'notifications' })}
-          className="icon-link nav-link d-flex align-items-center justify-content-center p-0 me-3 position-relative">
+          className="icon-link nav-link d-flex align-items-center justify-content-center p-0 me-2 position-relative">
           <Icon name="bell-fill" className="fs-4" />
           {(redDot?.inbox || 0) > 0 && (
             <div className="unread-dot bg-danger">
@@ -68,7 +82,7 @@ const Index: FC<Props> = ({ redDot, userInfo, logOut }) => {
         <NavLink
           to="/users/notifications/achievement"
           title={t('achievement', { keyPrefix: 'notifications' })}
-          className="icon-link nav-link d-flex align-items-center justify-content-center p-0 me-3 position-relative">
+          className="icon-link nav-link d-flex align-items-center justify-content-center p-0 me-2 position-relative">
           <Icon name="trophy-fill" className="fs-4" />
           {(redDot?.achievement || 0) > 0 && (
             <div className="unread-dot bg-danger">
