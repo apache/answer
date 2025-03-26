@@ -93,7 +93,6 @@ type QuestionService struct {
 	configService                    *config.ConfigService
 	eventQueueService                event_queue.EventQueueService
 	reviewRepo                       review.ReviewRepo
-	searchService                    *SearchService
 }
 
 func NewQuestionService(
@@ -120,7 +119,6 @@ func NewQuestionService(
 	configService *config.ConfigService,
 	eventQueueService event_queue.EventQueueService,
 	reviewRepo review.ReviewRepo,
-	serviceService *SearchService,
 ) *QuestionService {
 	return &QuestionService{
 		activityRepo:                     activityRepo,
@@ -146,7 +144,6 @@ func NewQuestionService(
 		configService:                    configService,
 		eventQueueService:                eventQueueService,
 		reviewRepo:                       reviewRepo,
-		searchService:                    serviceService,
 	}
 }
 
