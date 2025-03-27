@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { FC, MouseEvent, ReactNode, useEffect, useState } from 'react';
+import { FC, MouseEvent, ReactNode, useEffect, useRef, useState } from 'react';
 import { Modal } from 'react-bootstrap';
 
 import './index.css';
@@ -29,6 +29,8 @@ const Index: FC<{
 }> = ({ children, className }) => {
   const [visible, setVisible] = useState(false);
   const [imgSrc, setImgSrc] = useState('');
+  const ref = useRef<HTMLDivElement>(null);
+
   const onClose = () => {
     setVisible(false);
     setImgSrc('');
@@ -65,6 +67,34 @@ const Index: FC<{
     }
   };
 
+  const handleCopy = (text: string, button: Element) => {
+    navigator.clipboard.writeText(text).then(() => {
+      button.classList.add('copied');
+      setTimeout(() => {
+        button.classList.remove('copied');
+      }, 1000);
+    });
+  };
+
+  useEffect(() => {
+    if (ref.current) {
+      const preElements = ref.current.querySelectorAll('pre');
+      preElements.forEach((pre) => {
+        let button = pre.querySelector('.copy-button');
+        if (!button) {
+          button = document.createElement('button');
+          button.className = 'copy-button';
+          button.addEventListener('click', () => {
+            if (button) {
+              handleCopy(pre.innerText, button);
+            }
+          });
+          pre.appendChild(button);
+        }
+      });
+    }
+  }, [children]);
+
   useEffect(() => {
     return () => {
       onClose();
@@ -74,6 +104,7 @@ const Index: FC<{
   return (
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events
     <div
+      ref={ref}
       className={classnames('img-viewer', className)}
       onClick={checkClickForImgView}>
       {children}
