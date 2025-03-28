@@ -274,6 +274,10 @@ func (tc *TagController) GetTagWithPage(ctx *gin.Context) {
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
 
 	resp, err := tc.tagService.GetTagWithPage(ctx, req)
+	if err != nil {
+		handler.HandleResponse(ctx, err, nil)
+		return
+	}
 	if pager.ValPageOutOfRange(resp.Count, req.Page, req.PageSize) {
 		handler.HandleResponse(ctx, errors.NotFound(reason.RequestFormatError), nil)
 		return
