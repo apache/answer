@@ -59,7 +59,6 @@ func NewReportController(
 // AddReport add report
 // @Summary add report
 // @Description add report <br> source (question, answer, comment, user)
-// @Security ApiKeyAuth
 // @Tags Report
 // @Accept json
 // @Produce json
@@ -130,7 +129,6 @@ func (rc *ReportController) GetUnreviewedReportPostPage(ctx *gin.Context) {
 // ReviewReport review report
 // @Summary review report
 // @Description review report
-// @Security ApiKeyAuth
 // @Tags Report
 // @Accept json
 // @Produce json

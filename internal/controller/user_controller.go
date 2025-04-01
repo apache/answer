@@ -335,7 +335,6 @@ func (uc *UserController) UserVerifyEmail(ctx *gin.Context) {
 // UserVerifyEmailSend godoc
 // @Summary UserVerifyEmailSend
 // @Description UserVerifyEmailSend
-// @Security ApiKeyAuth
 // @Tags User
 // @Accept json
 // @Produce json
