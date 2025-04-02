@@ -29,3 +29,43 @@ var (
 	Revision  = ""
 	GoVersion = ""
 )
+
+var Timezones = []string{
+	// Americas
+	"America/New_York",
+	"America/Chicago",
+	"America/Los_Angeles",
+	"America/Toronto",
+	"America/Vancouver",
+	"America/Mexico_City",
+	"America/Sao_Paulo",
+	"America/Buenos_Aires",
+
+	// Europe
+	"Europe/London",
+	"Europe/Paris",
+	"Europe/Berlin",
+	"Europe/Madrid",
+	"Europe/Rome",
+	"Europe/Moscow",
+
+	// Asia
+	"Asia/Shanghai",
+	"Asia/Tokyo",
+	"Asia/Singapore",
+	"Asia/Dubai",
+	"Asia/Hong_Kong",
+	"Asia/Seoul",
+	"Asia/Bangkok",
+	"Asia/Kolkata",
+
+	// Pacific
+	"Australia/Sydney",
+	"Australia/Melbourne",
+	"Pacific/Auckland",
+
+	// Africa
+	"Africa/Cairo",
+	"Africa/Johannesburg",
+	"Africa/Lagos",
+}

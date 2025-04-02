@@ -160,9 +160,28 @@ func (m *Mentor) initAdminUserRoleRel() {
 }
 
 func (m *Mentor) initSiteInfoInterface() {
+	now := time.Now()
+	zoneName, offset := now.In(time.Local).Zone()
+
+	localTimezone := "UTC"
+	for _, tz := range constant.Timezones {
+		loc, err := time.LoadLocation(tz)
+		if err != nil {
+			continue
+		}
+
+		tzNow := now.In(loc)
+		tzName, tzOffset := tzNow.Zone()
+
+		if tzName == zoneName && tzOffset == offset {
+			localTimezone = tz
+			break
+		}
+	}
+
 	interfaceData := map[string]string{
 		"language":  m.userData.Language,
-		"time_zone": "UTC",
+		"time_zone": localTimezone,
 	}
 	interfaceDataBytes, _ := json.Marshal(interfaceData)
 	_, m.err = m.engine.Context(m.ctx).Insert(&entity.SiteInfo{
@@ -452,5 +471,4 @@ func (m *Mentor) initDefaultBadges() {
 			return
 		}
 	}
-	return
 }
