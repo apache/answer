@@ -24,6 +24,9 @@
       border-color: transparent;
 
       &:hover {
+        [data-bs-theme='dark'] & {
+          background-color: var(--bs-gray-800);
+        }
         background-color: var(--bs-gray-100);
       }
 
