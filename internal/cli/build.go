@@ -105,7 +105,7 @@ func newAnswerBuilder(buildDir, outputPath string, plugins []string, originalAns
 	if len(outputPath) == 0 {
 		outputPath = filepath.Join(parentDir, "new_answer")
 	}
-	material.outputPath = outputPath
+	material.outputPath, _ = filepath.Abs(outputPath)
 	material.plugins = formatPlugins(plugins)
 	material.answerModuleReplacement = os.Getenv("ANSWER_MODULE")
 	return &answerBuilder{
