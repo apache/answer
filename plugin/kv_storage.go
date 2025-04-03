@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package plugin
 
 import (
@@ -233,6 +234,8 @@ func (kv *KVOperator) Del(ctx context.Context, params KVParams) error {
 	return err
 }
 
+// GetByGroup retrieves all key-value pairs for a specific group with pagination support.
+// Returns a map of keys to values or an error if the group is empty or not found.
 func (kv *KVOperator) GetByGroup(ctx context.Context, params KVParams) (map[string]string, error) {
 	if params.Group == "" {
 		return nil, ErrKVGroupEmpty
@@ -265,6 +268,9 @@ func (kv *KVOperator) GetByGroup(ctx context.Context, params KVParams) (map[stri
 	return result, nil
 }
 
+// Tx executes a function within a transaction context. If the KVOperator already has a session,
+// it will use that session. Otherwise, it creates a new transaction session.
+// The transaction will be committed if the function returns nil, or rolled back if it returns an error.
 func (kv *KVOperator) Tx(ctx context.Context, fn func(ctx context.Context, kv *KVOperator) error) error {
 	var (
 		txKv         = kv
@@ -307,7 +313,7 @@ func (kv *KVOperator) Tx(ctx context.Context, fn func(ctx context.Context, kv *K
 	return nil
 }
 
-// PluginData defines the interface for plugins that need data storage capabilities
+// KVStorage defines the interface for plugins that need data storage capabilities
 type KVStorage interface {
 	Info() Info
 	SetOperator(operator *KVOperator)
