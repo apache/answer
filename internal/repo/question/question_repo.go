@@ -404,6 +404,7 @@ func (qr *questionRepo) GetQuestionPage(ctx context.Context, page, pageSize int,
 	if showPending {
 		status = append(status, entity.QuestionStatusPending)
 	}
+	session.Select("question.*")
 	session.In("question.status", status)
 	if len(tagIDs) > 0 {
 		session.Join("LEFT", "tag_rel", "question.id = tag_rel.object_id")
@@ -442,6 +443,7 @@ func (qr *questionRepo) GetQuestionPage(ctx context.Context, page, pageSize int,
 		session.OrderBy("question.pin DESC, question.linked_count DESC, question.updated_at DESC")
 	}
 
+	session.GroupBy("question.id")
 	total, err = pager.Help(page, pageSize, &questionList, &entity.Question{}, session)
 	if err != nil {
 		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
