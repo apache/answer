@@ -11050,7 +11050,8 @@ const docTemplate = `{
                 },
                 "username": {
                     "type": "string",
-                    "maxLength": 30
+                    "maxLength": 30,
+                    "minLength": 2
                 },
                 "website": {
                     "type": "string",

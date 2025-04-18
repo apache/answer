@@ -2489,6 +2489,7 @@ definitions:
         type: string
       username:
         maxLength: 30
+        minLength: 2
         type: string
       website:
         maxLength: 500
