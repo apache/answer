@@ -436,6 +436,54 @@ func (ts *TagService) GetTagWithPage(ctx context.Context, req *schema.GetTagWith
 	return pager.NewPageModel(total, resp), nil
 }
 
+// MergeTag merge tag
+func (ts *TagService) MergeTag(ctx context.Context, req *schema.MergeTagReq) (err error) {
+	// 1. get source tag and its synonyms
+	sourceTag, exist, err := ts.tagCommonService.GetTagByID(ctx, req.SourceTagID)
+	if err != nil {
+		return err
+	}
+	if !exist {
+		return errors.BadRequest(reason.TagNotFound)
+	}
+
+	sourceTagSynonyms, err := ts.tagRepo.GetTagList(ctx, &entity.Tag{MainTagID: converter.StringToInt64(sourceTag.ID)})
+	if err != nil {
+		return err
+	}
+
+	addSynonymTagList := make([]string, 0)
+	addSynonymTagList = append(addSynonymTagList, sourceTag.SlugName)
+	for _, tag := range sourceTagSynonyms {
+		addSynonymTagList = append(addSynonymTagList, tag.SlugName)
+	}
+
+	// 2. get target tag
+	targetTagInfo, exist, err := ts.tagCommonService.GetTagByID(ctx, req.TargetTagID)
+	if err != nil {
+		return err
+	}
+	if !exist {
+		return errors.BadRequest(reason.TagNotFound)
+	}
+
+	// 3. update source tag and its synonyms as synonyms of target tag
+	if len(addSynonymTagList) > 0 {
+		err = ts.tagRepo.UpdateTagSynonym(ctx, addSynonymTagList, converter.StringToInt64(targetTagInfo.ID), targetTagInfo.SlugName)
+		if err != nil {
+			return err
+		}
+	}
+
+	// 4. update tag followers
+	ts.followCommon.MigrateFollowers(ctx, sourceTag.ID, targetTagInfo.ID, "follow")
+
+	// 5. update question tags
+	// todo, confirm whether transfer questions
+
+	return nil
+}
+
 // checkTagIsFollow get tag list page
 func (ts *TagService) checkTagIsFollow(ctx context.Context, userID, tagID string) bool {
 	if len(userID) == 0 {

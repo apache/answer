@@ -305,3 +305,17 @@ type GetTagBasicResp struct {
 	Recommend   bool   `json:"recommend"`
 	Reserved    bool   `json:"reserved"`
 }
+
+// MergeTagReq merge tag request
+type MergeTagReq struct {
+	// source tag id
+	SourceTagID string `validate:"required" json:"source_tag_id"`
+	// target tag id
+	TargetTagID string `validate:"required" json:"target_tag_id"`
+	// user id
+	UserID string `json:"-"`
+}
+
+// MergeTagResp merge tag response
+type MergeTagResp struct {
+}

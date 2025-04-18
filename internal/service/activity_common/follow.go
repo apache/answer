@@ -26,4 +26,5 @@ type FollowRepo interface {
 	GetFollowAmount(ctx context.Context, objectID string) (followAmount int, err error)
 	GetFollowUserIDs(ctx context.Context, objectID string) (userIDs []string, err error)
 	IsFollowed(ctx context.Context, userId, objectId string) (bool, error)
+	MigrateFollowers(ctx context.Context, sourceObjectID, targetObjectID, action string) error
 }

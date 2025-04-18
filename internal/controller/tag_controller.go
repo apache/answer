@@ -355,3 +355,31 @@ func (tc *TagController) UpdateTagSynonym(ctx *gin.Context) {
 	err = tc.tagService.UpdateTagSynonym(ctx, req)
 	handler.HandleResponse(ctx, err, nil)
 }
+
+// MergeTag merge tag
+// @Summary merge tag
+// @Description merge tag
+// @Security ApiKeyAuth
+// @Tags Tag
+// @Accept json
+// @Produce json
+// @Param data body schema.AddTagReq true "tag"
+// @Success 200 {object} handler.RespBody
+// @Router /answer/api/v1/tag/merge [post]
+func (tc *TagController) MergeTag(ctx *gin.Context) {
+	req := &schema.MergeTagReq{}
+	if handler.BindAndCheck(ctx, req) {
+		return
+	}
+
+	isAdminModerator := middleware.GetUserIsAdminModerator(ctx)
+	if !isAdminModerator {
+		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
+		return
+	}
+
+	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
+	err := tc.tagService.MergeTag(ctx, req)
+
+	handler.HandleResponse(ctx, err, nil)
+}

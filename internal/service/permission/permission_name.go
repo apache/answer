@@ -53,6 +53,7 @@ const (
 	TagEditWithoutReview        = "tag.edit_without_review"
 	TagDelete                   = "tag.delete"
 	TagSynonym                  = "tag.synonym"
+	TagMerge                    = "tag.merge"
 	LinkUrlLimit                = "link.url_limit"
 	VoteDetail                  = "vote.detail"
 	AnswerAudit                 = "answer.audit"

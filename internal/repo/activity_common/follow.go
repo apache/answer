@@ -21,6 +21,7 @@ package activity_common
 
 import (
 	"context"
+	"time"
 
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/base/reason"
@@ -30,6 +31,7 @@ import (
 	"github.com/apache/answer/pkg/obj"
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
+	"xorm.io/builder"
 )
 
 // FollowRepo follow repository
@@ -155,4 +157,50 @@ func (ar *FollowRepo) IsFollowed(ctx context.Context, userID, objectID string) (
 	} else {
 		return true, nil
 	}
+}
+
+func (ar *FollowRepo) MigrateFollowers(ctx context.Context, sourceObjectID, targetObjectID, action string) error {
+	// if source object id and target object id are same type
+	sourceObjectTypeStr, err := obj.GetObjectTypeStrByObjectID(sourceObjectID)
+	if err != nil {
+		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	targetObjectTypeStr, err := obj.GetObjectTypeStrByObjectID(targetObjectID)
+	if err != nil {
+		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	if sourceObjectTypeStr != targetObjectTypeStr {
+		return errors.InternalServer(reason.DisallowFollow).WithMsg("not same object type")
+	}
+	activityType, err := ar.activityRepo.GetActivityTypeByObjectType(ctx, sourceObjectTypeStr, action)
+	if err != nil {
+		return err
+	}
+
+	// 1. Construct the subquery using builder
+	subQueryBuilder := builder.Select("user_id").From(entity.Activity{}.TableName()).
+		Where(builder.Eq{
+			"object_id":     targetObjectID,
+			"activity_type": activityType,
+			"cancelled":     entity.ActivityAvailable, // Ensure only active follows are considered
+		})
+
+	// 2. Use the subquery builder in the main query's Where clause
+	_, err = ar.data.DB.Context(ctx).Table(entity.Activity{}.TableName()).
+		Where(builder.Eq{
+			"object_id":     sourceObjectID,
+			"activity_type": activityType,
+		}).
+		And(builder.NotIn("user_id", subQueryBuilder)). // Pass the builder here
+		Update(&entity.Activity{
+			ObjectID:  targetObjectID,
+			UpdatedAt: time.Now(),
+		})
+
+	if err != nil {
+		log.Errorf("MigrateFollowers: failed to update followers from %s to %s: %v", sourceObjectID, targetObjectID, err)
+		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+
+	return nil
 }

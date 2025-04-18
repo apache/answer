@@ -246,6 +246,7 @@ func (a *AnswerAPIRouter) RegisterAnswerAPIRouter(r *gin.RouterGroup) {
 	r.POST("/tag/recover", a.tagController.RecoverTag)
 	r.DELETE("/tag", a.tagController.RemoveTag)
 	r.PUT("/tag/synonym", a.tagController.UpdateTagSynonym)
+	r.POST("/tag/merge", a.tagController.MergeTag)
 
 	// collection
 	r.POST("/collection/switch", a.collectionController.CollectionSwitch)
