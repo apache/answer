@@ -249,6 +249,7 @@ func (tc *TagController) GetTagInfo(ctx *gin.Context) {
 	req.CanEdit = canList[0]
 	req.CanDelete = canList[1]
 	req.CanRecover = canList[2]
+	req.CanMerge = middleware.GetUserIsAdminModerator(ctx)
 
 	resp, err := tc.tagService.GetTagInfo(ctx, req)
 	handler.HandleResponse(ctx, err, resp)

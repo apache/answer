@@ -48,6 +48,7 @@ type GetTagInfoReq struct {
 	UserID     string `json:"-"`
 	CanEdit    bool   `json:"-"`
 	CanDelete  bool   `json:"-"`
+	CanMerge   bool   `json:"-"`
 	CanRecover bool   `json:"-"`
 }
 
@@ -300,6 +301,7 @@ type GetFollowingTagsResp struct {
 
 // GetTagBasicResp get tag basic response
 type GetTagBasicResp struct {
+	TagID       string `json:"tag_id"`
 	SlugName    string `json:"slug_name"`
 	DisplayName string `json:"display_name"`
 	Recommend   bool   `json:"recommend"`

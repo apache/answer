@@ -137,6 +137,7 @@ func (ts *TagCommonService) SearchTagLike(ctx context.Context, req *schema.Searc
 		}
 		mainTagID := converter.IntToString(tag.MainTagID)
 		if _, ok := mainTagMap[mainTagID]; ok {
+			tag.ID = mainTagMap[mainTagID].ID
 			tag.SlugName = mainTagMap[mainTagID].SlugName
 			tag.DisplayName = mainTagMap[mainTagID].DisplayName
 			tag.Reserved = mainTagMap[mainTagID].Reserved
@@ -148,6 +149,7 @@ func (ts *TagCommonService) SearchTagLike(ctx context.Context, req *schema.Searc
 	for _, tag := range tags {
 		if _, ok := repetitiveTag[tag.SlugName]; !ok {
 			item := schema.GetTagBasicResp{}
+			item.TagID = tag.ID
 			item.SlugName = tag.SlugName
 			item.DisplayName = tag.DisplayName
 			item.Recommend = tag.Recommend

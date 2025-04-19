@@ -21,6 +21,7 @@ import DefaultModal from './Modal';
 import confirm, { Config } from './Confirm';
 import LoginToContinueModal from './LoginToContinueModal';
 import BadgeModal from './BadgeModal';
+import MergeTagModal from './MergeTagModal';
 
 type ModalType = typeof DefaultModal & {
   confirm: (config: Config) => void;
@@ -33,4 +34,4 @@ Modal.confirm = function (props: Config) {
 
 export default Modal;
 
-export { LoginToContinueModal, BadgeModal };
+export { LoginToContinueModal, BadgeModal, MergeTagModal };
