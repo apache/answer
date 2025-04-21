@@ -20,6 +20,8 @@
 package obj
 
 import (
+	"strconv"
+
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/reason"
 	"github.com/apache/answer/pkg/converter"
@@ -45,6 +47,16 @@ func GetObjectTypeNumberByObjectID(objectID string) (objectTypeNumber int, err e
 		return 0, err
 	}
 	return converter.StringToInt(objectID[1:4]), nil
+}
+
+// GetObjectIDPrefixByObjectType get object id prefix by object type
+func GetObjectIDPrefixByObjectType(objectType string) (objectIDPrefix string, err error) {
+	objectTypeNumber, ok := constant.ObjectTypeStrMapping[objectType]
+	if !ok {
+		return "", errors.BadRequest(reason.ObjectNotFound)
+	}
+	objectIDPrefixNum := 0b1000 | objectTypeNumber
+	return strconv.FormatUint(uint64(objectIDPrefixNum), 2), nil
 }
 
 func checkObjectID(objectID string) (err error) {

@@ -476,10 +476,20 @@ func (ts *TagService) MergeTag(ctx context.Context, req *schema.MergeTagReq) (er
 	}
 
 	// 4. update tag followers
-	ts.followCommon.MigrateFollowers(ctx, sourceTag.ID, targetTagInfo.ID, "follow")
+	err = ts.followCommon.MigrateFollowers(ctx, sourceTag.ID, targetTagInfo.ID, "follow")
+	if err != nil {
+		return err
+	}
 
 	// 5. update question tags
-	// todo, confirm whether transfer questions
+	err = ts.tagCommonService.MigrateTagQuestions(ctx, sourceTag.ID, targetTagInfo.ID)
+	if err != nil {
+		return err
+	}
+	err = ts.tagCommonService.RefreshTagQuestionCount(ctx, []string{targetTagInfo.ID, sourceTag.ID})
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

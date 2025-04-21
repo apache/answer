@@ -30,6 +30,7 @@ import (
 	"github.com/apache/answer/internal/service/unique"
 	"github.com/apache/answer/pkg/uid"
 	"github.com/segmentfault/pacman/errors"
+	"xorm.io/builder"
 )
 
 // tagRelRepo tag rel repository
@@ -202,4 +203,21 @@ func (tr *tagRelRepo) GetTagRelDefaultStatusByObjectID(ctx context.Context, obje
 		return entity.TagRelStatusHide, nil
 	}
 	return entity.TagRelStatusAvailable, nil
+}
+
+// MigrateTagObjects migrate tag objects
+func (tr *tagRelRepo) MigrateTagObjects(ctx context.Context, sourceTagId, targetTagId, objectTypePrefix string) error {
+	_, err := tr.data.DB.Context(ctx).
+		Where("tag_id = ?", sourceTagId).
+		And("object_id LIKE ?", objectTypePrefix+"%").
+		And(builder.NotIn(
+			"object_id", builder.Select("object_id").From(entity.TagRel{}.TableName()).
+				Where(builder.Eq{"tag_id": targetTagId}).
+				And(builder.Like{"object_id", objectTypePrefix + "%"}),
+		)).
+		Update(&entity.TagRel{TagID: targetTagId})
+	if err != nil {
+		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	return nil
 }
