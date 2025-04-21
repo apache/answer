@@ -56,6 +56,7 @@ const MergeTagModal: FC<Props> = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const searchTags = async (search: string) => {
@@ -71,12 +72,14 @@ const MergeTagModal: FC<Props> = ({
         (tag) => tag.slug_name !== sourceTag.slug_name,
       );
       setTags(filteredTags);
+      setHasSearched(true);
       if (filteredTags.length > 0 && isFocused) {
         setDropdownVisible(true);
       }
     } catch (error) {
       console.error('Failed to search tags:', error);
       setTags([]);
+      setHasSearched(true);
     }
   };
 
@@ -104,6 +107,7 @@ const MergeTagModal: FC<Props> = ({
       setCurrentIndex(0);
       setDropdownVisible(false);
       setIsFocused(false);
+      setHasSearched(false);
     }
   }, [visible]);
 
@@ -123,10 +127,9 @@ const MergeTagModal: FC<Props> = ({
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setSearchValue(value);
+    setHasSearched(false);
     if (value) {
       debouncedSearch(value);
-    } else {
-      searchTags('');
     }
   };
 
@@ -207,19 +210,23 @@ const MergeTagModal: FC<Props> = ({
               onBlur={handleBlur}
               autoComplete="off"
             />
-            <Dropdown.Menu className="w-100">
-              {tags.map((tag, index) => (
-                <Dropdown.Item
-                  key={tag.slug_name}
-                  active={index === currentIndex}
-                  onClick={() => handleSelect(tag)}>
-                  {tag.display_name}
-                </Dropdown.Item>
-              ))}
-              {tags.length === 0 && searchValue && (
+            {tags.length !== 0 && (
+              <Dropdown.Menu className="w-100">
+                {tags.map((tag, index) => (
+                  <Dropdown.Item
+                    key={tag.slug_name}
+                    active={index === currentIndex}
+                    onClick={() => handleSelect(tag)}>
+                    {tag.display_name}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            )}
+            {tags.length === 0 && searchValue && hasSearched && (
+              <Dropdown.Menu className="w-100">
                 <Dropdown.Item disabled>{t('no_results')}</Dropdown.Item>
-              )}
-            </Dropdown.Menu>
+              </Dropdown.Menu>
+            )}
           </Dropdown>
           <Form.Text className="text-muted">
             {t('target_tag_description')}

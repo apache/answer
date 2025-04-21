@@ -1049,6 +1049,7 @@ ui:
       source_tag_description: The source tag and its associated data will be remapped to the target tag.
       target_tag_title: Target tag
       target_tag_description: A synonym between these two tags will be created after merging.
+      no_results: No tags matched
       btn_submit: Submit
       btn_close: Close
   edit_tag:
