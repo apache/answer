@@ -17,14 +17,18 @@
  * under the License.
  */
 
-import { FC, useState, useEffect, useCallback, useRef } from 'react';
+import { FC, useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form, Dropdown } from 'react-bootstrap';
 
+import debounce from 'lodash/debounce';
+
 import { TagInfo } from '@/common/interface';
-import request from '@/utils/request';
+import { queryTags } from '@/services';
 
 import Modal from './Modal';
+
+const DEBOUNCE_DELAY = 300;
 
 interface Props {
   visible: boolean;
@@ -59,44 +63,99 @@ const MergeTagModal: FC<Props> = ({
   const [hasSearched, setHasSearched] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const searchTags = async (search: string) => {
+  const filteredTags = useMemo(() => {
+    return tags.filter((tag) => tag.slug_name !== sourceTag.slug_name);
+  }, [tags, sourceTag.slug_name]);
+
+  const searchTags = useCallback(async (search: string) => {
     try {
-      const res = await request.get<SearchTagResp[]>(
-        '/answer/api/v1/question/tags',
-        {
-          params: { tag: search },
-        },
-      );
-      // Filter out the source tag from results
-      const filteredTags = res.filter(
-        (tag) => tag.slug_name !== sourceTag.slug_name,
-      );
-      setTags(filteredTags);
+      const res = await queryTags(search);
+      setTags(res || []);
       setHasSearched(true);
-      if (filteredTags.length > 0 && isFocused) {
-        setDropdownVisible(true);
-      }
     } catch (error) {
       console.error('Failed to search tags:', error);
       setTags([]);
       setHasSearched(true);
     }
-  };
+  }, []);
 
-  // Debounced search function
-  const debouncedSearch = useCallback(
-    (() => {
-      let timeout: number | undefined;
-      return (search: string) => {
-        if (timeout) {
-          clearTimeout(timeout);
-        }
-        timeout = window.setTimeout(() => {
-          searchTags(search);
-        }, 1000);
-      };
-    })(),
-    [isFocused],
+  const debouncedSearch = useMemo(
+    () => debounce(searchTags, DEBOUNCE_DELAY),
+    [searchTags],
+  );
+
+  const handleConfirm = useCallback(() => {
+    if (!targetTag) return;
+    onConfirm(sourceTag.tag_id, targetTag.tag_id);
+  }, [targetTag, sourceTag.tag_id, onConfirm]);
+
+  const handleSelect = useCallback((tag: SearchTagResp) => {
+    setTargetTag(tag);
+    setDropdownVisible(false);
+    setSearchValue(tag.display_name);
+    setIsFocused(false);
+    inputRef.current?.blur();
+  }, []);
+
+  const handleSearch = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = e.target;
+      setSearchValue(value);
+      setHasSearched(false);
+      if (value) {
+        debouncedSearch(value);
+      } else {
+        searchTags('');
+      }
+    },
+    [debouncedSearch, searchTags],
+  );
+
+  const handleFocus = useCallback(() => {
+    setIsFocused(true);
+    setDropdownVisible(true);
+  }, []);
+
+  const handleBlur = useCallback(() => {
+    setTimeout(() => {
+      setIsFocused(false);
+      if (!targetTag) {
+        setDropdownVisible(false);
+      }
+    }, 200);
+  }, [targetTag]);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (!filteredTags.length) return;
+
+      switch (e.key) {
+        case 'ArrowDown':
+          e.preventDefault();
+          setCurrentIndex((prev) =>
+            prev < filteredTags.length - 1 ? prev + 1 : prev,
+          );
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          setCurrentIndex((prev) => (prev > 0 ? prev - 1 : prev));
+          break;
+        case 'Enter':
+          e.preventDefault();
+          if (currentIndex >= 0 && currentIndex < filteredTags.length) {
+            handleSelect(filteredTags[currentIndex]);
+          }
+          break;
+        case 'Escape':
+          e.preventDefault();
+          inputRef.current?.blur();
+          setDropdownVisible(false);
+          break;
+        default:
+          break;
+      }
+    },
+    [filteredTags, currentIndex, handleSelect],
   );
 
   useEffect(() => {
@@ -109,72 +168,16 @@ const MergeTagModal: FC<Props> = ({
       setIsFocused(false);
       setHasSearched(false);
     }
-  }, [visible]);
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [visible, searchTags, debouncedSearch]);
 
-  const handleConfirm = () => {
-    if (!targetTag) return;
-    onConfirm(sourceTag.tag_id, targetTag.tag_id);
-  };
-
-  const handleSelect = (tag: SearchTagResp) => {
-    setTargetTag(tag);
-    setDropdownVisible(false);
-    setSearchValue(tag.display_name);
-    setIsFocused(false);
-    inputRef.current?.blur();
-  };
-
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setSearchValue(value);
-    setHasSearched(false);
-    if (value) {
-      debouncedSearch(value);
+  useEffect(() => {
+    if (filteredTags.length > 0 && isFocused) {
+      setDropdownVisible(true);
     }
-  };
-
-  const handleFocus = () => {
-    setIsFocused(true);
-    setDropdownVisible(true);
-  };
-
-  const handleBlur = () => {
-    // Use setTimeout to allow click events on dropdown items to fire before closing
-    setTimeout(() => {
-      setIsFocused(false);
-      if (!targetTag) {
-        setDropdownVisible(false);
-      }
-    }, 200);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (!tags.length) return;
-
-    switch (e.key) {
-      case 'ArrowDown':
-        e.preventDefault();
-        setCurrentIndex((prev) => (prev < tags.length - 1 ? prev + 1 : prev));
-        break;
-      case 'ArrowUp':
-        e.preventDefault();
-        setCurrentIndex((prev) => (prev > 0 ? prev - 1 : prev));
-        break;
-      case 'Enter':
-        e.preventDefault();
-        if (currentIndex >= 0 && currentIndex < tags.length) {
-          handleSelect(tags[currentIndex]);
-        }
-        break;
-      case 'Escape':
-        e.preventDefault();
-        inputRef.current?.blur();
-        setDropdownVisible(false);
-        break;
-      default:
-        break;
-    }
-  };
+  }, [filteredTags, isFocused]);
 
   return (
     <Modal
@@ -197,37 +200,42 @@ const MergeTagModal: FC<Props> = ({
         </Form.Group>
         <Form.Group>
           <Form.Label>{t('target_tag_title')}</Form.Label>
-          <Dropdown
-            show={dropdownVisible && (tags.length > 0 || Boolean(searchValue))}
-            onToggle={setDropdownVisible}>
-            <Form.Control
-              ref={inputRef}
-              type="text"
-              value={searchValue}
-              onChange={handleSearch}
-              onKeyDown={handleKeyDown}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
-              autoComplete="off"
-            />
-            {tags.length !== 0 && (
-              <Dropdown.Menu className="w-100">
-                {tags.map((tag, index) => (
-                  <Dropdown.Item
-                    key={tag.slug_name}
-                    active={index === currentIndex}
-                    onClick={() => handleSelect(tag)}>
-                    {tag.display_name}
-                  </Dropdown.Item>
-                ))}
-              </Dropdown.Menu>
-            )}
-            {tags.length === 0 && searchValue && hasSearched && (
-              <Dropdown.Menu className="w-100">
-                <Dropdown.Item disabled>{t('no_results')}</Dropdown.Item>
-              </Dropdown.Menu>
-            )}
-          </Dropdown>
+          <div className="position-relative">
+            <Dropdown
+              show={
+                dropdownVisible &&
+                (filteredTags.length > 0 || Boolean(searchValue))
+              }
+              onToggle={setDropdownVisible}>
+              <Form.Control
+                ref={inputRef}
+                type="text"
+                value={searchValue}
+                onChange={handleSearch}
+                onKeyDown={handleKeyDown}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                autoComplete="off"
+              />
+              {filteredTags.length !== 0 && (
+                <Dropdown.Menu className="w-100">
+                  {filteredTags.map((tag, index) => (
+                    <Dropdown.Item
+                      key={tag.slug_name}
+                      active={index === currentIndex}
+                      onClick={() => handleSelect(tag)}>
+                      {tag.display_name}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              )}
+              {filteredTags.length === 0 && searchValue && hasSearched && (
+                <Dropdown.Menu className="w-100">
+                  <Dropdown.Item disabled>{t('no_results')}</Dropdown.Item>
+                </Dropdown.Menu>
+              )}
+            </Dropdown>
+          </div>
           <Form.Text className="text-muted">
             {t('target_tag_description')}
           </Form.Text>
