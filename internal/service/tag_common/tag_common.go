@@ -35,7 +35,6 @@ import (
 	"github.com/apache/answer/internal/service/revision_common"
 	"github.com/apache/answer/internal/service/siteinfo_common"
 	"github.com/apache/answer/pkg/converter"
-	"github.com/apache/answer/pkg/obj"
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
 )
@@ -78,7 +77,7 @@ type TagRelRepo interface {
 	BatchGetObjectTagRelList(ctx context.Context, objectIds []string) (tagListList []*entity.TagRel, err error)
 	CountTagRelByTagID(ctx context.Context, tagID string) (count int64, err error)
 	GetTagRelDefaultStatusByObjectID(ctx context.Context, objectID string) (status int, err error)
-	MigrateTagObjects(ctx context.Context, sourceTagId, targetTagId, objectTypePrefix string) error
+	MigrateTagObjects(ctx context.Context, sourceTagId, targetTagId string) error
 }
 
 // TagCommonService user service
@@ -935,10 +934,5 @@ func (ts *TagCommonService) UpdateTag(ctx context.Context, req *schema.UpdateTag
 
 // MigrateTagQuestions migrate tag question
 func (ts *TagCommonService) MigrateTagQuestions(ctx context.Context, sourceTagID, targetTagID string) (err error) {
-	questionPrefix, err := obj.GetObjectIDPrefixByObjectType(constant.QuestionObjectType)
-	if err != nil {
-		return err
-	}
-
-	return ts.tagRelRepo.MigrateTagObjects(ctx, sourceTagID, targetTagID, questionPrefix)
+	return ts.tagRelRepo.MigrateTagObjects(ctx, sourceTagID, targetTagID)
 }

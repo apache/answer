@@ -188,17 +188,13 @@ func (ar *FollowRepo) MigrateFollowers(ctx context.Context, sourceObjectID, targ
 
 	_, err = ar.data.DB.Transaction(func(session *xorm.Session) (result any, err error) {
 		session = session.Context(ctx)
-		// 1. cancel all follows of the source object
+		// 1. delete all follows of the source object
 		_, err = session.Table(entity.Activity{}.TableName()).
 			Where(builder.Eq{
 				"object_id":     sourceObjectID,
 				"activity_type": activityType,
 			}).
-			Cols("cancelled", "cancelled_at").
-			Update(&entity.Activity{
-				Cancelled:   entity.ActivityCancelled,
-				CancelledAt: time.Now(),
-			})
+			Delete(&entity.Activity{})
 		if err != nil {
 			return nil, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 		}
@@ -210,10 +206,9 @@ func (ar *FollowRepo) MigrateFollowers(ctx context.Context, sourceObjectID, targ
 				"activity_type": activityType,
 			}).
 			And(builder.In("user_id", userIDs)).
-			Cols("cancelled", "cancelled_at").
+			Cols("cancelled").
 			Update(&entity.Activity{
-				Cancelled:   entity.ActivityAvailable,
-				CancelledAt: time.Now(),
+				Cancelled: entity.ActivityAvailable,
 			})
 		if err != nil {
 			return nil, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
