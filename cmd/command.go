@@ -227,10 +227,11 @@ To run answer, use:
 				Time:     Time,
 			})
 			if err != nil {
-				fmt.Printf("build failed %v", err)
-			} else {
-				fmt.Printf("build new answer successfully %s\n", buildOutput)
+				fmt.Printf("build failed %v\n", err)
+				os.Exit(1)
 			}
+
+			fmt.Printf("build new answer successfully %s\n", buildOutput)
 		},
 	}
 
@@ -292,7 +293,7 @@ To run answer, use:
 		Long:  `Merge i18n files from plugins to original i18n files. It will overwrite the original i18n files`,
 		Run: func(_ *cobra.Command, _ []string) {
 			if err := cli.ReplaceI18nFilesLocal(i18nTargetPath); err != nil {
-				fmt.Printf("replace i18n files failed %v", err)
+				fmt.Printf("replace i18n files failed %v\n", err)
 			} else {
 				fmt.Printf("replace i18n files successfully\n")
 			}
@@ -300,7 +301,7 @@ To run answer, use:
 			fmt.Printf("try to merge i18n files from %q to %q\n", i18nSourcePath, i18nTargetPath)
 
 			if err := cli.MergeI18nFilesLocal(i18nTargetPath, i18nSourcePath); err != nil {
-				fmt.Printf("merge i18n files failed %v", err)
+				fmt.Printf("merge i18n files failed %v\n", err)
 			} else {
 				fmt.Printf("merge i18n files successfully\n")
 			}
