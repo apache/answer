@@ -36,9 +36,22 @@
         background-color: var(--bs-gray-200);
 
         [data-bs-theme='dark'] & {
-          background-color: var(--bs-gray-800);
+          background-color: var(--bs-gray-700);
         }
       }
+    }
+  }
+}
+
+.btn-reaction {
+  [data-bs-theme='dark'] & {
+    color: var(--bs-gray-400) !important;
+    background-color: var(--bs-gray-800);
+    &:active, &.active {
+      background-color: #626E79 !important;
+    }
+    &:hover {
+      background-color: #57616B !important;
     }
   }
 }

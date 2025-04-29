@@ -117,7 +117,7 @@ const Index: FC<Props> = ({
       })}>
       {showAddCommentBtn && (
         <Button
-          className="rounded-pill me-2 link-secondary"
+          className="rounded-pill me-2 link-secondary btn-reaction"
           variant={darkMode ? 'dark' : 'light'}
           size="sm"
           onClick={handleClickComment}>
@@ -137,7 +137,7 @@ const Index: FC<Props> = ({
           aria-label={t('reaction.btn_label')}
           aria-haspopup="true"
           active={reactIsActive}
-          className="smile-btn rounded-pill link-secondary"
+          className="smile-btn rounded-pill link-secondary btn-reaction"
           variant={darkMode ? 'dark' : 'light'}>
           <Icon name="emoji-smile-fill" />
           <span className="ms-1">+</span>
@@ -160,7 +160,7 @@ const Index: FC<Props> = ({
               </Tooltip>
             }>
             <Button
-              className="rounded-pill ms-2 link-secondary d-flex align-items-center"
+              className="rounded-pill ms-2 link-secondary d-flex align-items-center btn-reaction"
               aria-label={
                 data?.is_active
                   ? t('reaction.unreact_emoji', { emoji: data.emoji })
