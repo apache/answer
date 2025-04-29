@@ -566,7 +566,7 @@ backend:
         name:
           other: 第一个链接
         desc:
-          other: 第一次添加链接到另一篇文章。
+          other: 第一次添加了一个链接到另一个帖子。
       first_reaction:
         name:
           other: 第一个响应
@@ -721,7 +721,7 @@ backend:
         name:
           other: 解决方案机构
         desc:
-          other: 接受150份答复。
+          other: 有150个答案被接受。
       nice_answer:
         name:
           other: 好答案
@@ -761,7 +761,7 @@ backend:
         name:
           other: 值得关注问题
         desc:
-          other: 1,000 个浏览量。
+          other: 问题有 1,000 个浏览量。
       famous_question:
         name:
           other: 著名的问题
@@ -1032,9 +1032,9 @@ ui:
     merge:
       title: 合并标签
       source_tag_title: 源标签
-      source_tag_description: 源标签及其相关数据将被重新映射到目标标签。
+      source_tag_description: 源标签及其相关数据将重新映射到目标标签。
       target_tag_title: 目标标签
-      target_tag_description: 合并后将创建这两个标签之间的同义词。
+      target_tag_description: 合并后将在这两个标签之间将创建一个同义词。
       no_results: 没有匹配的标签
       btn_submit: 提交
       btn_close: 关闭
@@ -1493,7 +1493,7 @@ ui:
     display_below: 在下方显示
     always_display: 总是显示
     or: 或者
-    back_sites: 返回站点
+    back_sites: 返回网站
   search:
     title: 搜索结果
     keywords: 关键词
@@ -1523,7 +1523,7 @@ ui:
     via: 分享到...
     copied: 已复制
     facebook: 分享到 Facebook
-    twitter: 分享至X
+    twitter: 分享到 X
   cannot_vote_for_self: 你不能给自己的帖子投票。
   modal_confirm:
     title: 发生错误...
@@ -1636,9 +1636,9 @@ ui:
     ssl_enabled:
       label: 启用 SSL
     ssl_enabled_on:
-      label: On
+      label: 开
     ssl_enabled_off:
-      label: Off
+      label: 关
     ssl_mode:
       label: SSL 模式
     ssl_root_cert:
