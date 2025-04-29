@@ -30,8 +30,12 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+	"time"
 
+	"github.com/apache/answer/internal/entity"
+	"github.com/apache/answer/internal/repo/file"
 	"github.com/apache/answer/internal/service/file_record"
+	"github.com/google/uuid"
 
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/reason"
@@ -65,6 +69,10 @@ var (
 	}
 )
 
+var (
+	FileStorageMode = os.Getenv("FILE_STORAGE_MODE") // eg "fs" or "db"
+)
+
 type UploaderService interface {
 	UploadAvatarFile(ctx *gin.Context, userID string) (url string, err error)
 	UploadPostFile(ctx *gin.Context, userID string) (url string, err error)
@@ -78,6 +86,7 @@ type uploaderService struct {
 	serviceConfig     *service_config.ServiceConfig
 	siteInfoService   siteinfo_common.SiteInfoCommonService
 	fileRecordService *file_record.FileRecordService
+	fileRepo          file.FileRepo
 }
 
 // NewUploaderService new upload service
@@ -85,6 +94,7 @@ func NewUploaderService(
 	serviceConfig *service_config.ServiceConfig,
 	siteInfoService siteinfo_common.SiteInfoCommonService,
 	fileRecordService *file_record.FileRecordService,
+	fileRepo file.FileRepo,
 ) UploaderService {
 	for _, subPath := range subPathList {
 		err := dir.CreateDirIfNotExist(filepath.Join(serviceConfig.UploadPath, subPath))
@@ -96,7 +106,12 @@ func NewUploaderService(
 		serviceConfig:     serviceConfig,
 		siteInfoService:   siteInfoService,
 		fileRecordService: fileRecordService,
+		fileRepo:          fileRepo,
 	}
+}
+
+func UseDbStorage() bool {
+	return FileStorageMode != "fs"
 }
 
 // UploadAvatarFile upload avatar file
@@ -215,12 +230,14 @@ func (us *uploaderService) UploadPostFile(ctx *gin.Context, userID string) (
 
 	fileExt := strings.ToLower(path.Ext(fileHeader.Filename))
 	newFilename := fmt.Sprintf("%s%s", uid.IDStr12(), fileExt)
-	avatarFilePath := path.Join(constant.PostSubPath, newFilename)
-	url, err = us.uploadImageFile(ctx, fileHeader, avatarFilePath)
+	fileHeader.Filename = newFilename
+	url, err = us.uploadImageFile(ctx, fileHeader, constant.PostSubPath)
+	postFilePath := path.Join(constant.PostSubPath, newFilename)
+
 	if err != nil {
 		return "", err
 	}
-	us.fileRecordService.AddFileRecord(ctx, userID, avatarFilePath, url, string(plugin.UserPost))
+	us.fileRecordService.AddFileRecord(ctx, userID, postFilePath, url, string(plugin.UserPost))
 	return url, nil
 }
 
@@ -285,7 +302,6 @@ func (us *uploaderService) UploadBrandingFile(ctx *gin.Context, userID string) (
 	if _, ok := plugin.DefaultFileTypeCheckMapping[plugin.AdminBranding][fileExt]; !ok {
 		return "", errors.BadRequest(reason.RequestFormatError).WithError(err)
 	}
-
 	newFilename := fmt.Sprintf("%s%s", uid.IDStr12(), fileExt)
 	avatarFilePath := path.Join(constant.BrandingSubPath, newFilename)
 	url, err = us.uploadImageFile(ctx, fileHeader, avatarFilePath)
@@ -307,7 +323,37 @@ func (us *uploaderService) uploadImageFile(ctx *gin.Context, file *multipart.Fil
 	if err != nil {
 		return "", err
 	}
-	filePath := path.Join(us.serviceConfig.UploadPath, fileSubPath)
+	if UseDbStorage() {
+		src, err := file.Open()
+		if err != nil {
+			return "", errors.InternalServer(reason.UnknownError).WithError(err).WithStack()
+		}
+		defer src.Close()
+
+		buffer := new(bytes.Buffer)
+		if _, err = io.Copy(buffer, src); err != nil {
+			return "", errors.InternalServer(reason.UnknownError).WithError(err).WithStack()
+		}
+
+		file := &entity.File{
+			ID:        uuid.New().String(),
+			FileName:  file.Filename,
+			MimeType:  file.Header.Get("Content-Type"),
+			Size:      int64(len(buffer.Bytes())),
+			Content:   buffer.Bytes(),
+			CreatedAt: time.Now(),
+		}
+
+		err = us.fileRepo.Save(ctx, file)
+		if err != nil {
+			return "", errors.InternalServer(reason.UnknownError).WithError(err).WithStack()
+		}
+
+		return fmt.Sprintf("%s/answer/api/v1/file/%s/%s", siteGeneral.SiteUrl, fileSubPath, file.ID), nil
+		//TODO checks: DecodeAndCheckImageFile removeExif
+	}
+	filePath := path.Join(us.serviceConfig.UploadPath, fileSubPath, file.Filename)
+
 	if err := ctx.SaveUploadedFile(file, filePath); err != nil {
 		return "", errors.InternalServer(reason.UnknownError).WithError(err).WithStack()
 	}
@@ -335,6 +381,35 @@ func (us *uploaderService) uploadAttachmentFile(ctx *gin.Context, file *multipar
 	siteGeneral, err := us.siteInfoService.GetSiteGeneral(ctx)
 	if err != nil {
 		return "", err
+	}
+	if UseDbStorage() {
+		src, err := file.Open()
+		if err != nil {
+			return "", errors.InternalServer(reason.UnknownError).WithError(err).WithStack()
+		}
+		defer src.Close()
+
+		buf := new(bytes.Buffer)
+		if _, err = io.Copy(buf, src); err != nil {
+			return "", errors.InternalServer(reason.UnknownError).WithError(err).WithStack()
+		}
+
+		blob := &entity.File{
+			ID:        uuid.New().String(),
+			FileName:  originalFilename,
+			MimeType:  file.Header.Get("Content-Type"),
+			Size:      int64(len(buf.Bytes())),
+			Content:   buf.Bytes(),
+			CreatedAt: time.Now(),
+		}
+
+		err = us.fileRepo.Save(ctx, blob)
+		if err != nil {
+			return "", errors.InternalServer(reason.UnknownError).WithError(err).WithStack()
+		}
+
+		downloadUrl = fmt.Sprintf("%s/answer/api/v1/file/%s?download=%s", siteGeneral.SiteUrl, blob.ID, url.QueryEscape(originalFilename))
+		return downloadUrl, nil
 	}
 	filePath := path.Join(us.serviceConfig.UploadPath, fileSubPath)
 	if err := ctx.SaveUploadedFile(file, filePath); err != nil {

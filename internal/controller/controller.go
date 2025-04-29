@@ -53,4 +53,5 @@ var ProviderSetController = wire.NewSet(
 	NewEmbedController,
 	NewBadgeController,
 	NewRenderController,
+	NewFileController,
 )

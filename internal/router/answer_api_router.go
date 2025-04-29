@@ -57,6 +57,7 @@ type AnswerAPIRouter struct {
 	metaController          *controller.MetaController
 	badgeController         *controller.BadgeController
 	adminBadgeController    *controller_admin.BadgeController
+	fileController          *controller.FileController
 }
 
 func NewAnswerAPIRouter(
@@ -90,6 +91,7 @@ func NewAnswerAPIRouter(
 	metaController *controller.MetaController,
 	badgeController *controller.BadgeController,
 	adminBadgeController *controller_admin.BadgeController,
+	fileController *controller.FileController,
 ) *AnswerAPIRouter {
 	return &AnswerAPIRouter{
 		langController:          langController,
@@ -122,6 +124,7 @@ func NewAnswerAPIRouter(
 		metaController:          metaController,
 		badgeController:         badgeController,
 		adminBadgeController:    adminBadgeController,
+		fileController:          fileController,
 	}
 }
 
@@ -148,6 +151,9 @@ func (a *AnswerAPIRouter) RegisterMustUnAuthAnswerAPIRouter(authUserMiddleware *
 
 	// plugins
 	r.GET("/plugin/status", a.pluginController.GetAllPluginStatus)
+
+	// file branding
+	r.GET("/file/branding/:id", a.fileController.GetFile)
 }
 
 func (a *AnswerAPIRouter) RegisterUnAuthAnswerAPIRouter(r *gin.RouterGroup) {
@@ -170,6 +176,10 @@ func (a *AnswerAPIRouter) RegisterUnAuthAnswerAPIRouter(r *gin.RouterGroup) {
 	r.GET("/personal/qa/top", a.questionController.UserTop)
 	r.GET("/personal/question/page", a.questionController.PersonalQuestionPage)
 	r.GET("/question/link", a.questionController.GetQuestionLink)
+
+	//file
+	r.GET("/file/post/:id", a.fileController.GetFile)
+	r.GET("/file/avatar/:id", a.fileController.GetFile)
 
 	// comment
 	r.GET("/comment/page", a.commentController.GetCommentWithPage)
@@ -310,6 +320,7 @@ func (a *AnswerAPIRouter) RegisterAnswerAPIRouter(r *gin.RouterGroup) {
 
 	// meta
 	r.PUT("/meta/reaction", a.metaController.AddOrUpdateReaction)
+
 }
 
 func (a *AnswerAPIRouter) RegisterAnswerAdminAPIRouter(r *gin.RouterGroup) {
