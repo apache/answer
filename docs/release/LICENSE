@@ -228,6 +228,7 @@ MIT licenses
 The following components are provided under the MIT License. See project link for details.
 
    (MIT License) axios (https://github.com/axios/axios) [link](./licenses/LICENSE-axios-axios.txt)
+   (MIT License) buffer (https://github.com/feross/buffer) [link](./licenses/LICENSE-feross-buffer.txt)
    (MIT License) bootstrap (https://github.com/twbs/bootstrap) [link](./licenses/LICENSE-twbs-bootstrap.txt)
    (MIT License) icons (https://github.com/twbs/icons) [link](./licenses/LICENSE-twbs-icons.txt)
    (MIT License) classnames (https://github.com/JedWatson/classnames) [link](./LICENSE-JedWatson-classnames.txt)
