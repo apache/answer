@@ -127,7 +127,13 @@ func (us *uploaderService) UploadAvatarFile(ctx *gin.Context, userID string) (ur
 
 	newFilename := fmt.Sprintf("%s%s", uid.IDStr12(), fileExt)
 	avatarFilePath := path.Join(constant.AvatarSubPath, newFilename)
-	return us.uploadImageFile(ctx, fileHeader, avatarFilePath)
+	url, err = us.uploadImageFile(ctx, fileHeader, avatarFilePath)
+	if err != nil {
+		return "", err
+	}
+	us.fileRecordService.AddFileRecord(ctx, userID, avatarFilePath, url, string(plugin.UserAvatar))
+	return url, nil
+
 }
 
 func (us *uploaderService) AvatarThumbFile(ctx *gin.Context, fileName string, size int) (url string, err error) {
@@ -282,7 +288,13 @@ func (us *uploaderService) UploadBrandingFile(ctx *gin.Context, userID string) (
 
 	newFilename := fmt.Sprintf("%s%s", uid.IDStr12(), fileExt)
 	avatarFilePath := path.Join(constant.BrandingSubPath, newFilename)
-	return us.uploadImageFile(ctx, fileHeader, avatarFilePath)
+	url, err = us.uploadImageFile(ctx, fileHeader, avatarFilePath)
+	if err != nil {
+		return "", err
+	}
+	us.fileRecordService.AddFileRecord(ctx, userID, avatarFilePath, url, string(plugin.AdminBranding))
+	return url, nil
+
 }
 
 func (us *uploaderService) uploadImageFile(ctx *gin.Context, file *multipart.FileHeader, fileSubPath string) (
