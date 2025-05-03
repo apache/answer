@@ -74,6 +74,7 @@ var (
 		&entity.Badge{},
 		&entity.BadgeGroup{},
 		&entity.BadgeAward{},
+		&entity.FileRecord{},
 	}
 
 	roles = []*entity.Role{
