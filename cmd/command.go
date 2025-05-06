@@ -82,7 +82,6 @@ func init() {
 }
 
 var (
-	// rootCmd represents the base command when called without any subcommands
 	rootCmd = &cobra.Command{
 		Use:   "answer",
 		Short: "Answer is a minimalist open source Q&A community.",
@@ -92,7 +91,6 @@ To run answer, use:
 	- 'answer run' to launch application.`,
 	}
 
-	// runCmd represents the run command
 	runCmd = &cobra.Command{
 		Use:   "run",
 		Short: "Run the application",
@@ -105,7 +103,6 @@ To run answer, use:
 		},
 	}
 
-	// initCmd represents the init command
 	initCmd = &cobra.Command{
 		Use:   "init",
 		Short: "init answer application",
@@ -135,7 +132,6 @@ To run answer, use:
 		},
 	}
 
-	// upgradeCmd represents the upgrade command
 	upgradeCmd = &cobra.Command{
 		Use:   "upgrade",
 		Short: "upgrade Answer version",
@@ -157,7 +153,6 @@ To run answer, use:
 		},
 	}
 
-	// dumpCmd represents the dump command
 	dumpCmd = &cobra.Command{
 		Use:   "dump",
 		Short: "back up data",
@@ -179,7 +174,6 @@ To run answer, use:
 		},
 	}
 
-	// checkCmd represents the check command
 	checkCmd = &cobra.Command{
 		Use:   "check",
 		Short: "checking the required environment",
@@ -214,7 +208,6 @@ To run answer, use:
 		},
 	}
 
-	// buildCmd used to build another answer with plugins
 	buildCmd = &cobra.Command{
 		Use:   "build",
 		Short: "used to build answer with plugins",
@@ -235,7 +228,6 @@ To run answer, use:
 		},
 	}
 
-	// pluginCmd prints all plugins packed in the binary
 	pluginCmd = &cobra.Command{
 		Use:   "plugin",
 		Short: "prints all plugins packed in the binary",
@@ -249,7 +241,6 @@ To run answer, use:
 		},
 	}
 
-	// configCmd set some config to default value
 	configCmd = &cobra.Command{
 		Use:   "config",
 		Short: "set some config to default value",
@@ -286,7 +277,6 @@ To run answer, use:
 		},
 	}
 
-	// i18nCmd used to merge i18n files
 	i18nCmd = &cobra.Command{
 		Use:   "i18n",
 		Short: "overwrite i18n files",
