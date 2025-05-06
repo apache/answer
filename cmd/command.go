@@ -93,8 +93,8 @@ To run answer, use:
 
 	runCmd = &cobra.Command{
 		Use:   "run",
-		Short: "Run the application",
-		Long:  `Run the application`,
+		Short: "Run Answer",
+		Long:  `Start running Answer`,
 		Run: func(_ *cobra.Command, _ []string) {
 			cli.FormatAllPath(dataDirPath)
 			fmt.Println("config file path: ", cli.GetConfigFilePath())
@@ -105,8 +105,8 @@ To run answer, use:
 
 	initCmd = &cobra.Command{
 		Use:   "init",
-		Short: "init answer application",
-		Long:  `init answer application`,
+		Short: "Initialize Answer",
+		Long:  `Initialize Answer with specified configuration`,
 		Run: func(_ *cobra.Command, _ []string) {
 			// check config file and database. if config file exists and database is already created, init done
 			cli.InstallAllInitialEnvironment(dataDirPath)
@@ -134,8 +134,8 @@ To run answer, use:
 
 	upgradeCmd = &cobra.Command{
 		Use:   "upgrade",
-		Short: "upgrade Answer version",
-		Long:  `upgrade Answer version`,
+		Short: "Upgrade Answer",
+		Long:  `Upgrade Answer to the latest version`,
 		Run: func(_ *cobra.Command, _ []string) {
 			log.SetLogger(log.NewStdLogger(os.Stdout))
 			cli.FormatAllPath(dataDirPath)
@@ -155,8 +155,8 @@ To run answer, use:
 
 	dumpCmd = &cobra.Command{
 		Use:   "dump",
-		Short: "back up data",
-		Long:  `back up data`,
+		Short: "Back up data",
+		Long:  `Back up database into an SQL file`,
 		Run: func(_ *cobra.Command, _ []string) {
 			fmt.Println("Answer is backing up data")
 			cli.FormatAllPath(dataDirPath)
@@ -176,7 +176,7 @@ To run answer, use:
 
 	checkCmd = &cobra.Command{
 		Use:   "check",
-		Short: "checking the required environment",
+		Short: "Check the required environment",
 		Long:  `Check if the current environment meets the startup requirements`,
 		Run: func(_ *cobra.Command, _ []string) {
 			cli.FormatAllPath(dataDirPath)
@@ -210,7 +210,7 @@ To run answer, use:
 
 	buildCmd = &cobra.Command{
 		Use:   "build",
-		Short: "used to build answer with plugins",
+		Short: "Build Answer with plugins",
 		Long:  `Build a new Answer with plugins that you need`,
 		Run: func(_ *cobra.Command, _ []string) {
 			fmt.Printf("try to build a new answer with plugins:\n%s\n", strings.Join(buildWithPlugins, "\n"))
@@ -230,8 +230,8 @@ To run answer, use:
 
 	pluginCmd = &cobra.Command{
 		Use:   "plugin",
-		Short: "prints all plugins packed in the binary",
-		Long:  `prints all plugins packed in the binary`,
+		Short: "Print all plugins packed in the binary",
+		Long:  `Print all plugins packed in the binary`,
 		Run: func(_ *cobra.Command, _ []string) {
 			_ = plugin.CallBase(func(base plugin.Base) error {
 				info := base.Info()
@@ -243,8 +243,8 @@ To run answer, use:
 
 	configCmd = &cobra.Command{
 		Use:   "config",
-		Short: "set some config to default value",
-		Long:  `set some config to default value`,
+		Short: "Set some config to default value",
+		Long:  `Set some config to default value`,
 		Run: func(_ *cobra.Command, _ []string) {
 			cli.FormatAllPath(dataDirPath)
 
@@ -279,7 +279,7 @@ To run answer, use:
 
 	i18nCmd = &cobra.Command{
 		Use:   "i18n",
-		Short: "overwrite i18n files",
+		Short: "Overwrite i18n files",
 		Long:  `Merge i18n files from plugins to original i18n files. It will overwrite the original i18n files`,
 		Run: func(_ *cobra.Command, _ []string) {
 			if err := cli.ReplaceI18nFilesLocal(i18nTargetPath); err != nil {
