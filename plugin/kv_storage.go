@@ -164,6 +164,7 @@ func (kv *KVOperator) Get(ctx context.Context, params KVParams) (string, error) 
 		return "", ErrKVKeyNotFound
 	}
 
+	params.Value = data.Value
 	kv.setCache(ctx, params)
 
 	return data.Value, nil
