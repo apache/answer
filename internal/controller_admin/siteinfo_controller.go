@@ -28,6 +28,7 @@ import (
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/siteinfo"
 	"github.com/gin-gonic/gin"
+	"github.com/segmentfault/pacman/log"
 )
 
 // SiteInfoController site info controller
@@ -274,7 +275,12 @@ func (sc *SiteInfoController) UpdateBranding(ctx *gin.Context) {
 	if handler.BindAndCheck(ctx, req) {
 		return
 	}
-	err := sc.siteInfoService.SaveSiteBranding(ctx, req)
+	currentBranding, _ := sc.siteInfoService.GetSiteBranding(ctx)
+	err := sc.siteInfoService.CleanUpRemovedBrandingFiles(ctx, req, currentBranding)
+	if err != nil {
+		log.Error(err)
+	}
+	err = sc.siteInfoService.SaveSiteBranding(ctx, req)
 	handler.HandleResponse(ctx, err, nil)
 }
 

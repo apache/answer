@@ -33,6 +33,7 @@ import (
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/config"
 	"github.com/apache/answer/internal/service/export"
+	"github.com/apache/answer/internal/service/file_record"
 	questioncommon "github.com/apache/answer/internal/service/question_common"
 	"github.com/apache/answer/internal/service/siteinfo_common"
 	tagcommon "github.com/apache/answer/internal/service/tag_common"
@@ -49,6 +50,7 @@ type SiteInfoService struct {
 	tagCommonService      *tagcommon.TagCommonService
 	configService         *config.ConfigService
 	questioncommon        *questioncommon.QuestionCommon
+	fileRecordService     *file_record.FileRecordService
 }
 
 func NewSiteInfoService(
@@ -58,6 +60,7 @@ func NewSiteInfoService(
 	tagCommonService *tagcommon.TagCommonService,
 	configService *config.ConfigService,
 	questioncommon *questioncommon.QuestionCommon,
+	fileRecordService *file_record.FileRecordService,
 
 ) *SiteInfoService {
 	plugin.RegisterGetSiteURLFunc(func() string {
@@ -76,6 +79,7 @@ func NewSiteInfoService(
 		tagCommonService:      tagCommonService,
 		configService:         configService,
 		questioncommon:        questioncommon,
+		fileRecordService:     fileRecordService,
 	}
 }
 
@@ -437,4 +441,44 @@ func (s *SiteInfoService) UpdatePrivilegesConfig(ctx context.Context, req *schem
 		}
 	}
 	return
+}
+
+func (s *SiteInfoService) CleanUpRemovedBrandingFiles(
+	ctx context.Context,
+	newBranding *schema.SiteBrandingReq,
+	currentBranding *schema.SiteBrandingResp,
+) error {
+	currentFiles := map[string]string{
+		"logo":        currentBranding.Logo,
+		"mobile_logo": currentBranding.MobileLogo,
+		"square_icon": currentBranding.SquareIcon,
+		"favicon":     currentBranding.Favicon,
+	}
+
+	newFiles := map[string]string{
+		"logo":        newBranding.Logo,
+		"mobile_logo": newBranding.MobileLogo,
+		"square_icon": newBranding.SquareIcon,
+		"favicon":     newBranding.Favicon,
+	}
+
+	for key, currentFile := range currentFiles {
+		newFile := newFiles[key]
+		if currentFile != "" && currentFile != newFile {
+			fileRecord, err := s.fileRecordService.GetFileRecordByURL(ctx, currentFile)
+			if err != nil {
+				log.Error(err)
+				continue
+			}
+			if fileRecord == nil {
+				log.Error("could not fetch file record by url")
+				continue
+			}
+			if err := s.fileRecordService.DeleteAndMoveFileRecord(ctx, fileRecord); err != nil {
+				log.Error(err)
+			}
+		}
+	}
+
+	return nil
 }

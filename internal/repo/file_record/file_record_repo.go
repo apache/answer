@@ -82,3 +82,18 @@ func (fr *fileRecordRepo) UpdateFileRecord(ctx context.Context, fileRecord *enti
 	}
 	return
 }
+
+// GetFileRecordByURL gets a file record by its url
+func (fr *fileRecordRepo) GetFileRecordByURL(ctx context.Context, fileURL string) (record *entity.FileRecord, err error) {
+	record = &entity.FileRecord{}
+	session := fr.data.DB.Context(ctx)
+	exists, err := session.Where("file_url = ? AND status = ?", fileURL, entity.FileRecordStatusAvailable).Get(record)
+	if err != nil {
+		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+		return
+	}
+	if !exists {
+		return
+	}
+	return record, nil
+}
