@@ -23,9 +23,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
+
 	"github.com/apache/answer/internal/service/event_queue"
 	"github.com/apache/answer/pkg/token"
-	"time"
 
 	"github.com/apache/answer/internal/base/constant"
 	questioncommon "github.com/apache/answer/internal/service/question_common"
@@ -41,6 +42,7 @@ import (
 	"github.com/apache/answer/internal/service/activity_common"
 	"github.com/apache/answer/internal/service/auth"
 	"github.com/apache/answer/internal/service/export"
+	"github.com/apache/answer/internal/service/file_record"
 	"github.com/apache/answer/internal/service/role"
 	"github.com/apache/answer/internal/service/siteinfo_common"
 	usercommon "github.com/apache/answer/internal/service/user_common"
@@ -67,6 +69,7 @@ type UserService struct {
 	userNotificationConfigService *user_notification_config.UserNotificationConfigService
 	questionService               *questioncommon.QuestionCommon
 	eventQueueService             event_queue.EventQueueService
+	fileRecordService             *file_record.FileRecordService
 }
 
 func NewUserService(userRepo usercommon.UserRepo,
@@ -82,6 +85,7 @@ func NewUserService(userRepo usercommon.UserRepo,
 	userNotificationConfigService *user_notification_config.UserNotificationConfigService,
 	questionService *questioncommon.QuestionCommon,
 	eventQueueService event_queue.EventQueueService,
+	fileRecordService *file_record.FileRecordService,
 ) *UserService {
 	return &UserService{
 		userCommonService:             userCommonService,
@@ -97,6 +101,7 @@ func NewUserService(userRepo usercommon.UserRepo,
 		userNotificationConfigService: userNotificationConfigService,
 		questionService:               questionService,
 		eventQueueService:             eventQueueService,
+		fileRecordService:             fileRecordService,
 	}
 }
 
@@ -355,12 +360,51 @@ func (us *UserService) UpdateInfo(ctx context.Context, req *schema.UpdateInfoReq
 	}
 
 	cond := us.formatUserInfoForUpdateInfo(oldUserInfo, req, siteUsers)
+
+	us.cleanUpRemovedAvatar(ctx, oldUserInfo.Avatar, cond.Avatar)
+
 	err = us.userRepo.UpdateInfo(ctx, cond)
 	if err != nil {
 		return nil, err
 	}
 	us.eventQueueService.Send(ctx, schema.NewEvent(constant.EventUserUpdate, req.UserID))
 	return nil, err
+}
+
+func (us *UserService) cleanUpRemovedAvatar(
+	ctx context.Context,
+	oldAvatarJSON string,
+	newAvatarJSON string,
+) {
+	if oldAvatarJSON == newAvatarJSON {
+		return
+	}
+
+	var oldAvatar, newAvatar struct {
+		Type   string `json:"type"`
+		Custom string `json:"custom"`
+	}
+
+	_ = json.Unmarshal([]byte(oldAvatarJSON), &oldAvatar)
+	_ = json.Unmarshal([]byte(newAvatarJSON), &newAvatar)
+
+	// clean up if old is custom and it's either removed or replaced
+	if oldAvatar.Type == "custom" && (newAvatar.Type != "custom" || oldAvatar.Custom != newAvatar.Custom) {
+		if oldAvatar.Custom != "" {
+			fileRecord, err := us.fileRecordService.GetFileRecordByURL(ctx, oldAvatar.Custom)
+			if err != nil {
+				log.Error(err)
+				return
+			}
+			if fileRecord == nil {
+				log.Warn("no file record found for old avatar url:", oldAvatar.Custom)
+				return
+			}
+			if err := us.fileRecordService.DeleteAndMoveFileRecord(ctx, fileRecord); err != nil {
+				log.Error(err)
+			}
+		}
+	}
 }
 
 func (us *UserService) formatUserInfoForUpdateInfo(
