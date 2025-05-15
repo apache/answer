@@ -380,10 +380,7 @@ func (us *UserService) cleanUpRemovedAvatar(
 		return
 	}
 
-	var oldAvatar, newAvatar struct {
-		Type   string `json:"type"`
-		Custom string `json:"custom"`
-	}
+	var oldAvatar, newAvatar schema.AvatarInfo
 
 	_ = json.Unmarshal([]byte(oldAvatarJSON), &oldAvatar)
 	_ = json.Unmarshal([]byte(newAvatarJSON), &newAvatar)

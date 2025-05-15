@@ -275,13 +275,17 @@ func (sc *SiteInfoController) UpdateBranding(ctx *gin.Context) {
 	if handler.BindAndCheck(ctx, req) {
 		return
 	}
-	currentBranding, _ := sc.siteInfoService.GetSiteBranding(ctx)
-	err := sc.siteInfoService.CleanUpRemovedBrandingFiles(ctx, req, currentBranding)
-	if err != nil {
-		log.Error(err)
+	currentBranding, getBrandingErr := sc.siteInfoService.GetSiteBranding(ctx)
+	if getBrandingErr == nil {
+		cleanUpErr := sc.siteInfoService.CleanUpRemovedBrandingFiles(ctx, req, currentBranding)
+		if cleanUpErr != nil {
+			log.Errorf("failed to clean up removed branding file(s): %v", cleanUpErr)
+		}
+	} else {
+		log.Errorf("failed to get current site branding: %v", getBrandingErr)
 	}
-	err = sc.siteInfoService.SaveSiteBranding(ctx, req)
-	handler.HandleResponse(ctx, err, nil)
+	saveErr := sc.siteInfoService.SaveSiteBranding(ctx, req)
+	handler.HandleResponse(ctx, saveErr, nil)
 }
 
 // UpdateSiteWrite update site write info

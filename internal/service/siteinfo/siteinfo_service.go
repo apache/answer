@@ -22,6 +22,7 @@ package siteinfo
 import (
 	"context"
 	"encoding/json"
+	errpkg "errors"
 	"fmt"
 	"strings"
 
@@ -448,6 +449,7 @@ func (s *SiteInfoService) CleanUpRemovedBrandingFiles(
 	newBranding *schema.SiteBrandingReq,
 	currentBranding *schema.SiteBrandingResp,
 ) error {
+	var allErrors []error
 	currentFiles := map[string]string{
 		"logo":        currentBranding.Logo,
 		"mobile_logo": currentBranding.MobileLogo,
@@ -467,18 +469,21 @@ func (s *SiteInfoService) CleanUpRemovedBrandingFiles(
 		if currentFile != "" && currentFile != newFile {
 			fileRecord, err := s.fileRecordService.GetFileRecordByURL(ctx, currentFile)
 			if err != nil {
-				log.Error(err)
+				allErrors = append(allErrors, err)
 				continue
 			}
 			if fileRecord == nil {
-				log.Error("could not fetch file record by url")
+				err := errpkg.New("file record is nil for key " + key)
+				allErrors = append(allErrors, err)
 				continue
 			}
 			if err := s.fileRecordService.DeleteAndMoveFileRecord(ctx, fileRecord); err != nil {
-				log.Error(err)
+				allErrors = append(allErrors, err)
 			}
 		}
 	}
-
+	if len(allErrors) > 0 {
+		return errpkg.Join(allErrors...)
+	}
 	return nil
 }
