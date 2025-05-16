@@ -182,7 +182,7 @@ func initApplication(debug bool, serverConf *conf.Server, dbConf *data.Database,
 	questionCommon := questioncommon.NewQuestionCommon(questionRepo, answerRepo, voteRepo, followRepo, tagCommonService, userCommon, collectionCommon, answerCommon, metaCommonService, configService, activityQueueService, revisionRepo, siteInfoCommonService, dataData)
 	eventQueueService := event_queue.NewEventQueueService()
 	fileRecordRepo := file_record.NewFileRecordRepo(dataData)
-	fileRecordService := file_record2.NewFileRecordService(fileRecordRepo, revisionRepo, serviceConf, siteInfoCommonService)
+	fileRecordService := file_record2.NewFileRecordService(fileRecordRepo, revisionRepo, serviceConf, siteInfoCommonService, userCommon)
 	userService := content.NewUserService(userRepo, userActiveActivityRepo, activityRepo, emailService, authService, siteInfoCommonService, userRoleRelService, userCommon, userExternalLoginService, userNotificationConfigRepo, userNotificationConfigService, questionCommon, eventQueueService, fileRecordService)
 	captchaRepo := captcha.NewCaptchaRepo(dataData)
 	captchaService := action.NewCaptchaService(captchaRepo)

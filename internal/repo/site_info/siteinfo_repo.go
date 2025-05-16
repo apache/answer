@@ -101,3 +101,18 @@ func (sr *siteInfoRepo) setCache(ctx context.Context, siteType string, siteInfo 
 		log.Error(err)
 	}
 }
+
+func (sr *siteInfoRepo) IsBrandingFileUsed(ctx context.Context, filePath string) (bool, error) {
+	siteInfo := &entity.SiteInfo{}
+	count, err := sr.data.DB.Context(ctx).
+		Table("site_info").
+		Where(builder.Eq{"type": "branding"}).
+		And(builder.Like{"content", "%" + filePath + "%"}).
+		Count(&siteInfo)
+
+	if err != nil {
+		return false, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+
+	return count > 0, nil
+}

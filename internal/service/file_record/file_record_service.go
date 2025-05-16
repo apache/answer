@@ -32,6 +32,7 @@ import (
 	"github.com/apache/answer/internal/service/revision"
 	"github.com/apache/answer/internal/service/service_config"
 	"github.com/apache/answer/internal/service/siteinfo_common"
+	usercommon "github.com/apache/answer/internal/service/user_common"
 	"github.com/apache/answer/pkg/checker"
 	"github.com/apache/answer/pkg/dir"
 	"github.com/apache/answer/pkg/writer"
@@ -54,6 +55,7 @@ type FileRecordService struct {
 	revisionRepo    revision.RevisionRepo
 	serviceConfig   *service_config.ServiceConfig
 	siteInfoService siteinfo_common.SiteInfoCommonService
+	userService     *usercommon.UserCommon
 }
 
 // NewFileRecordService new file record service
@@ -62,12 +64,14 @@ func NewFileRecordService(
 	revisionRepo revision.RevisionRepo,
 	serviceConfig *service_config.ServiceConfig,
 	siteInfoService siteinfo_common.SiteInfoCommonService,
+	userService *usercommon.UserCommon,
 ) *FileRecordService {
 	return &FileRecordService{
 		fileRecordRepo:  fileRecordRepo,
 		revisionRepo:    revisionRepo,
 		serviceConfig:   serviceConfig,
 		siteInfoService: siteInfoService,
+		userService:     userService,
 	}
 }
 
@@ -107,6 +111,18 @@ func (fs *FileRecordService) CleanOrphanUploadFiles(ctx context.Context) {
 				continue
 			}
 			if isBrandingOrAvatarFile(fileRecord.FilePath) {
+				if strings.Contains(fileRecord.FilePath, constant.BrandingSubPath+"/") {
+					if fs.siteInfoService.IsBrandingFileUsed(ctx, fileRecord.FilePath) {
+						continue
+					}
+				} else if strings.Contains(fileRecord.FilePath, constant.AvatarSubPath+"/") {
+					if fs.userService.IsAvatarFileUsed(ctx, fileRecord.FilePath) {
+						continue
+					}
+				}
+				if err := fs.DeleteAndMoveFileRecord(ctx, fileRecord); err != nil {
+					log.Error(err)
+				}
 				continue
 			}
 			if checker.IsNotZeroString(fileRecord.ObjectID) {

@@ -35,6 +35,7 @@ import (
 type SiteInfoRepo interface {
 	SaveByType(ctx context.Context, siteType string, data *entity.SiteInfo) (err error)
 	GetByType(ctx context.Context, siteType string) (siteInfo *entity.SiteInfo, exist bool, err error)
+	IsBrandingFileUsed(ctx context.Context, filePath string) (bool, error)
 }
 
 // siteInfoCommonService site info common service
@@ -56,6 +57,7 @@ type SiteInfoCommonService interface {
 	GetSiteTheme(ctx context.Context) (resp *schema.SiteThemeResp, err error)
 	GetSiteSeo(ctx context.Context) (resp *schema.SiteSeoResp, err error)
 	GetSiteInfoByType(ctx context.Context, siteType string, resp interface{}) (err error)
+	IsBrandingFileUsed(ctx context.Context, filePath string) bool
 }
 
 // NewSiteInfoCommonService new site info common service
@@ -232,4 +234,14 @@ func (s *siteInfoCommonService) GetSiteInfoByType(ctx context.Context, siteType 
 	}
 	_ = json.Unmarshal([]byte(siteInfo.Content), resp)
 	return nil
+}
+
+func (s *siteInfoCommonService) IsBrandingFileUsed(ctx context.Context, filePath string) bool {
+	used, err := s.siteInfoRepo.IsBrandingFileUsed(ctx, filePath)
+	if err != nil {
+		log.Errorf("error checking if branding file is used: %v", err)
+		// will try again with the next clean up
+		return true
+	}
+	return used
 }

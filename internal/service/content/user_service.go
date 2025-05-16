@@ -385,21 +385,23 @@ func (us *UserService) cleanUpRemovedAvatar(
 	_ = json.Unmarshal([]byte(oldAvatarJSON), &oldAvatar)
 	_ = json.Unmarshal([]byte(newAvatarJSON), &newAvatar)
 
+	if len(oldAvatar.Custom) == 0 {
+		return
+	}
+
 	// clean up if old is custom and it's either removed or replaced
-	if oldAvatar.Type == "custom" && (newAvatar.Type != "custom" || oldAvatar.Custom != newAvatar.Custom) {
-		if oldAvatar.Custom != "" {
-			fileRecord, err := us.fileRecordService.GetFileRecordByURL(ctx, oldAvatar.Custom)
-			if err != nil {
-				log.Error(err)
-				return
-			}
-			if fileRecord == nil {
-				log.Warn("no file record found for old avatar url:", oldAvatar.Custom)
-				return
-			}
-			if err := us.fileRecordService.DeleteAndMoveFileRecord(ctx, fileRecord); err != nil {
-				log.Error(err)
-			}
+	if oldAvatar.Custom != newAvatar.Custom {
+		fileRecord, err := us.fileRecordService.GetFileRecordByURL(ctx, oldAvatar.Custom)
+		if err != nil {
+			log.Error(err)
+			return
+		}
+		if fileRecord == nil {
+			log.Warn("no file record found for old avatar url:", oldAvatar.Custom)
+			return
+		}
+		if err := us.fileRecordService.DeleteAndMoveFileRecord(ctx, fileRecord); err != nil {
+			log.Error(err)
 		}
 	}
 }

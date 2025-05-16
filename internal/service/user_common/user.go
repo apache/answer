@@ -60,6 +60,7 @@ type UserRepo interface {
 	GetByEmail(ctx context.Context, email string) (userInfo *entity.User, exist bool, err error)
 	GetUserCount(ctx context.Context) (count int64, err error)
 	SearchUserListByName(ctx context.Context, name string, limit int, onlyStaff bool) (userList []*entity.User, err error)
+	IsAvatarFileUsed(ctx context.Context, filePath string) (bool, error)
 }
 
 // UserCommon user service
@@ -244,4 +245,14 @@ func (us *UserCommon) CacheLoginUserInfo(ctx context.Context, userID string, use
 		}
 	}
 	return accessToken, userCacheInfo, nil
+}
+
+func (us *UserCommon) IsAvatarFileUsed(ctx context.Context, filePath string) bool {
+	used, err := us.userRepo.IsAvatarFileUsed(ctx, filePath)
+	if err != nil {
+		log.Errorf("error checking if branding file is used: %v", err)
+		// will try again with the next clean up
+		return true
+	}
+	return used
 }
