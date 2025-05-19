@@ -84,7 +84,6 @@
 
   // style for colored navbar
   &.theme-light {
-    background: rgb(255, 255, 255);
     .nav-link {
       color: rgba(0, 0, 0, 0.65);
     }
@@ -93,7 +92,7 @@
       box-shadow: none;
       color: var(--bs-body-color);
       background-color: rgba(255, 255, 255, 0.2);
-      border: $border-width $border-style #dee2e6;
+      border: $border-width $border-style rgba(0, 0, 0, 0.05);
       &:focus {
         border: $border-width $border-style $border-color;
       }

@@ -233,7 +233,7 @@ func (m *Mentor) initSiteInfoLegalConfig() {
 }
 
 func (m *Mentor) initSiteInfoThemeConfig() {
-	themeConfig := `{"theme":"default","theme_config":{"default":{"navbar_style":"colored","primary_color":"#0033ff"}}}`
+	themeConfig := `{"theme":"default","theme_config":{"default":{"navbar_style":"#0033ff","primary_color":"#0033ff"}}}`
 	_, m.err = m.engine.Context(m.ctx).Insert(&entity.SiteInfo{
 		Type:    "theme",
 		Content: themeConfig,

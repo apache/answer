@@ -50,7 +50,7 @@ func addThemeAndPrivateMode(ctx context.Context, x *xorm.Engine) error {
 		}
 	}
 
-	themeConfig := `{"theme":"default","theme_config":{"default":{"navbar_style":"colored","primary_color":"#0033ff"}}}`
+	themeConfig := `{"theme":"default","theme_config":{"default":{"navbar_style":"#0033ff","primary_color":"#0033ff"}}}`
 	themeSiteInfo := &entity.SiteInfo{
 		Type:    "theme",
 		Content: themeConfig,
