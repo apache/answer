@@ -36,7 +36,7 @@ const store = create<IType>((set) => ({
   theme_options: [{ label: 'Default', value: 'default' }],
   theme_config: {
     default: {
-      navbar_style: 'colored',
+      navbar_style: DEFAULT_THEME_COLOR,
       primary_color: DEFAULT_THEME_COLOR,
     },
   },

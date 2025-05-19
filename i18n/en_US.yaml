@@ -1927,9 +1927,9 @@ ui:
       name: Name
       email: Email
       reputation: Reputation
-      created_at: Created Time
-      delete_at: Deleted Time
-      suspend_at: Suspended Time
+      created_at: Created time
+      delete_at: Deleted time
+      suspend_at: Suspended time
       status: Status
       role: Role
       action: Action
@@ -2143,7 +2143,7 @@ ui:
       color_scheme:
         label: Color scheme
       navbar_style:
-        label: Navbar style
+        label: Navbar background style
       primary_color:
         label: Primary color
         text: Modify the colors used by your themes

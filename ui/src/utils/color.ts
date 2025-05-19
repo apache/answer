@@ -60,3 +60,7 @@ export const shiftColor = (color, weight) => {
   }
   return tintColor(color, -weight);
 };
+
+export const isLight = (color) => {
+  return Color(color).isLight();
+};

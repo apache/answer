@@ -24,7 +24,7 @@ import { Link, NavLink, useLocation, useMatch } from 'react-router-dom';
 
 import classnames from 'classnames';
 
-import { userCenter, floppyNavigation } from '@/utils';
+import { userCenter, floppyNavigation, isLight } from '@/utils';
 import {
   loggedUserInfoStore,
   siteInfoStore,
@@ -82,9 +82,12 @@ const Header: FC = () => {
   }, [location.pathname]);
 
   let navbarStyle = 'theme-colored';
+  let themeMode = 'light';
   const { theme, theme_config } = themeSettingStore((_) => _);
   if (theme_config?.[theme]?.navbar_style) {
-    navbarStyle = `theme-${theme_config[theme].navbar_style}`;
+    themeMode = isLight(theme_config[theme].navbar_style) ? 'light' : 'dark';
+    console.log('isLightTheme', themeMode);
+    navbarStyle = `theme-${themeMode}`;
   }
 
   useEffect(() => {
@@ -103,9 +106,12 @@ const Header: FC = () => {
 
   return (
     <Navbar
-      variant={navbarStyle === 'theme-colored' ? 'dark' : ''}
+      data-bs-theme={themeMode}
       expand="xl"
       className={classnames('sticky-top', navbarStyle)}
+      style={{
+        backgroundColor: theme_config[theme].navbar_style,
+      }}
       id="header">
       <div className="w-100 d-flex align-items-center px-3">
         <Navbar.Toggle

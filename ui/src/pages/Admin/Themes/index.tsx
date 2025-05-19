@@ -60,9 +60,7 @@ const Index: FC = () => {
       navbar_style: {
         type: 'string',
         title: t('navbar_style.label'),
-        enum: ['colored', 'light'],
-        enumNames: ['Colored', 'Light'],
-        default: 'colored',
+        default: DEFAULT_THEME_COLOR,
       },
       primary_color: {
         type: 'string',
@@ -80,7 +78,19 @@ const Index: FC = () => {
       'ui:widget': 'select',
     },
     navbar_style: {
-      'ui:widget': 'select',
+      'ui:widget': 'input_group',
+      'ui:options': {
+        inputType: 'color',
+        suffixBtnOptions: {
+          text: '',
+          variant: 'outline-secondary',
+          iconName: 'arrow-counterclockwise',
+          actionType: 'click',
+          title: t('reset', { keyPrefix: 'btns' }),
+          // eslint-disable-next-line @typescript-eslint/no-use-before-define
+          clickCallback: () => resetNavbarStyle(),
+        },
+      },
     },
     primary_color: {
       'ui:widget': 'input_group',
@@ -101,6 +111,12 @@ const Index: FC = () => {
 
   const [formData, setFormData] = useState(initFormData(schema));
   const { update: updateThemeSetting } = themeSettingStore((_) => _);
+
+  const resetNavbarStyle = () => {
+    const formMeta = { ...formData };
+    formMeta.navbar_style.value = DEFAULT_THEME_COLOR;
+    setFormData({ ...formMeta });
+  };
 
   const resetPrimaryScheme = () => {
     const formMeta = { ...formData };
