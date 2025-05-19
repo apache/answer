@@ -21,6 +21,8 @@ import { useEffect, useState, memo } from 'react';
 import { Button, Form, Modal, Tab, Tabs } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
+import TurndownService from 'turndown';
+
 import { Modal as AnswerModal } from '@/components';
 import ToolItem from '../toolItem';
 import { IEditorContext, Editor } from '../types';
@@ -152,11 +154,21 @@ const Image = ({ editorInstance }) => {
     e.stopPropagation();
     e.preventDefault();
   }
+
+  function htmlToMarkdown(htmlStr) {
+    const turndownService = new TurndownService();
+
+    const markdown = turndownService.turndown(htmlStr);
+    return markdown;
+  }
   const drop = async (e) => {
     const fileList = e.dataTransfer.files;
     const bool = verifyImageSize(fileList);
 
     if (!bool) {
+      const htmlStr = e.dataTransfer.getData('text/html');
+      const markdown = htmlToMarkdown(htmlStr);
+      editor.replaceSelection(markdown);
       return;
     }
 
@@ -228,30 +240,9 @@ const Image = ({ editorInstance }) => {
       return;
     }
     event.preventDefault();
+    const markdown = htmlToMarkdown(htmlStr);
 
-    let innerText = '';
-    const allPTag = new DOMParser()
-      .parseFromString(
-        htmlStr.replace(
-          /<img([\s\S]*?) src\s*=\s*(['"])([\s\S]*?)\2([^>]*)>/gi,
-          `<p>![${t('image.text')}]($3)\n\n</p>`,
-        ),
-        'text/html',
-      )
-      .querySelectorAll('body p');
-
-    allPTag.forEach((p, index) => {
-      const text = p.textContent || '';
-      if (text !== '') {
-        if (index === allPTag.length - 1) {
-          innerText += `${p.textContent}`;
-        } else {
-          innerText += `${p.textContent}${text.endsWith('\n') ? '' : '\n\n'}`;
-        }
-      }
-    });
-
-    editor.replaceSelection(innerText);
+    editor.replaceSelection(markdown);
   };
   const handleClick = () => {
     if (!link.value) {

@@ -172,6 +172,24 @@ export const useEditor = ({
         placeholder(placeholderText),
         EditorView.lineWrapping,
         editableCompartment.of(EditorView.editable.of(true)),
+        EditorView.domEventHandlers({
+          paste(event) {
+            const clipboard = event.clipboardData as DataTransfer;
+            const htmlStr = clipboard.getData('text/html');
+            const imgRegex =
+              /<img([\s\S]*?) src\s*=\s*(['"])([\s\S]*?)\2([^>]*)>/;
+
+            return Boolean(htmlStr.match(imgRegex));
+          },
+          drop(event) {
+            const clipboard = event.dataTransfer as DataTransfer;
+            const htmlStr = clipboard.getData('text/html');
+            const imgRegex =
+              /<img([\s\S]*?) src\s*=\s*(['"])([\s\S]*?)\2([^>]*)>/;
+
+            return Boolean(htmlStr.match(imgRegex));
+          },
+        }),
       ],
     });
 
