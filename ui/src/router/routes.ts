@@ -351,7 +351,7 @@ const routes: RouteNode[] = [
             page: 'pages/Admin/Themes',
           },
           {
-            path: 'css-html',
+            path: 'customize',
             page: 'pages/Admin/CssAndHtml',
           },
           {

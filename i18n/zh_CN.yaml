@@ -1753,6 +1753,7 @@ ui:
     privileges: 特权
     plugins: 插件
     installed_plugins: 已安装插件
+    apperance: 外观
   website_welcome: 欢迎来到 {{site_name}}
   user_center:
     login: 登录

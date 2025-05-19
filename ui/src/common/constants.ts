@@ -103,16 +103,16 @@ export const ADMIN_NAV_MENUS = [
     icon: 'award-fill',
   },
   {
-    name: 'customize',
+    name: 'apperance',
     icon: 'palette-fill',
     children: [
       {
         name: 'themes',
       },
       {
-        name: 'css_html',
-        path: 'css-html',
+        name: 'customize',
       },
+      { name: 'branding' },
     ],
   },
   {
@@ -121,7 +121,6 @@ export const ADMIN_NAV_MENUS = [
     children: [
       { name: 'general' },
       { name: 'interface' },
-      { name: 'branding' },
       { name: 'smtp' },
       { name: 'legal' },
       { name: 'write' },

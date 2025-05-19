@@ -1792,6 +1792,7 @@ ui:
     privileges: Privileges
     plugins: Plugins
     installed_plugins: Installed Plugins
+    apperance: Appearance
   website_welcome: Welcome to {{site_name}}
   user_center:
     login: Login
