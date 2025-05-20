@@ -94,6 +94,9 @@ const Index: FC = () => {
     },
     gravatar_base_url: {
       'ui:widget': 'input',
+      'ui:options': {
+        placeholder: 'https://www.gravatar.com/avatar/',
+      },
     },
     profile_editable: {
       'ui:widget': 'legend',
@@ -186,7 +189,7 @@ const Index: FC = () => {
           v = 'system';
         }
         if (k === 'gravatar_base_url' && !v) {
-          v = 'https://www.gravatar.com/avatar/';
+          v = '';
         }
         formMeta[k] = { ...formData[k], value: v };
       });
