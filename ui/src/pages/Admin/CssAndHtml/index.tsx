@@ -150,7 +150,7 @@ const Index: FC = () => {
 
   return (
     <>
-      <h3 className="mb-4">{t('page_title')}</h3>
+      <h3 className="mb-4">{t('customize', { keyPrefix: 'nav_menus' })}</h3>
       <SchemaForm
         schema={schema}
         formData={formData}

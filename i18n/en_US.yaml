@@ -1787,7 +1787,6 @@ ui:
     seo: SEO
     customize: Customize
     themes: Themes
-    css_html: CSS/HTML
     login: Login
     privileges: Privileges
     plugins: Plugins

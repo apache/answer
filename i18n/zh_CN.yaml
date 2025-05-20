@@ -1748,7 +1748,6 @@ ui:
     seo: SEO
     customize: 自定义
     themes: 主题
-    css_html: CSS/HTML
     login: 登录
     privileges: 特权
     plugins: 插件
@@ -2112,16 +2111,13 @@ ui:
       page_title: CSS 与 HTML
       custom_css:
         label: 自定义 CSS
-        text: >
-
+        text: 这将作为 &lt;link> 标签插入
       head:
         label: 头部
-        text: >
-
+        text: 这将在 &lt;/head> 前插入
       header:
         label: 页眉
-        text: >
-
+        text: 这将在 &lt;body> 后插入
       footer:
         label: 页脚
         text: 这将在 &lt;/body> 之前插入。
