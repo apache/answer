@@ -228,30 +228,64 @@ const Image = ({ editorInstance }) => {
       return;
     }
     event.preventDefault();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlStr, 'text/html');
+    const { body } = doc;
 
-    let innerText = '';
-    const allPTag = new DOMParser()
-      .parseFromString(
-        htmlStr.replace(
-          /<img([\s\S]*?) src\s*=\s*(['"])([\s\S]*?)\2([^>]*)>/gi,
-          `<p>![${t('image.text')}]($3)\n\n</p>`,
-        ),
-        'text/html',
-      )
-      .querySelectorAll('body p');
+    let markdownText = '';
 
-    allPTag.forEach((p, index) => {
-      const text = p.textContent || '';
-      if (text !== '') {
-        if (index === allPTag.length - 1) {
-          innerText += `${p.textContent}`;
+    function traverse(node) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        // text node
+        markdownText += node.textContent;
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        // element node
+        const tagName = node.tagName.toLowerCase();
+
+        if (tagName === 'img') {
+          // img node
+          const src = node.getAttribute('src');
+          const alt = node.getAttribute('alt') || t('image.text');
+          markdownText += `![${alt}](${src})`;
+        } else if (tagName === 'br') {
+          // br node
+          markdownText += '\n';
         } else {
-          innerText += `${p.textContent}${text.endsWith('\n') ? '' : '\n\n'}`;
+          for (let i = 0; i < node.childNodes.length; i += 1) {
+            traverse(node.childNodes[i]);
+          }
+        }
+
+        const blockLevelElements = [
+          'p',
+          'div',
+          'h1',
+          'h2',
+          'h3',
+          'h4',
+          'h5',
+          'h6',
+          'ul',
+          'ol',
+          'li',
+          'blockquote',
+          'pre',
+          'table',
+          'thead',
+          'tbody',
+          'tr',
+          'th',
+          'td',
+        ];
+        if (blockLevelElements.includes(tagName)) {
+          markdownText += '\n\n';
         }
       }
-    });
+    }
 
-    editor.replaceSelection(innerText);
+    traverse(body);
+
+    editor.replaceSelection(markdownText);
   };
   const handleClick = () => {
     if (!link.value) {
