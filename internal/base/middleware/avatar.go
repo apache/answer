@@ -21,6 +21,7 @@ package middleware
 
 import (
 	"fmt"
+	"net/http"
 	"net/url"
 	"os"
 	"path"
@@ -62,7 +63,8 @@ func (am *AvatarMiddleware) AvatarThumb() gin.HandlerFunc {
 				filePath, err = am.uploaderService.AvatarThumbFile(ctx, filename, size)
 				if err != nil {
 					log.Error(err)
-					ctx.Abort()
+					ctx.AbortWithStatus(http.StatusNotFound)
+					return
 				}
 			}
 			avatarFile, err := os.ReadFile(filePath)

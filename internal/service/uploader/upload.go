@@ -155,7 +155,7 @@ func (us *uploaderService) AvatarThumbFile(ctx *gin.Context, fileName string, si
 	filePath := fmt.Sprintf("%s/%s/%s", us.serviceConfig.UploadPath, constant.AvatarSubPath, fileName)
 	avatarFile, err = os.ReadFile(filePath)
 	if err != nil {
-		return "", errors.InternalServer(reason.UnknownError).WithError(err).WithStack()
+		return "", errors.NotFound(reason.UnknownError).WithError(err)
 	}
 	reader := bytes.NewReader(avatarFile)
 	img, err := imaging.Decode(reader)
