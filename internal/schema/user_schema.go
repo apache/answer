@@ -238,7 +238,7 @@ func (u *UserModifyPasswordReq) Check() (errFields []*validator.FormErrorField, 
 }
 
 type UpdateInfoRequest struct {
-	DisplayName string     `validate:"omitempty,gt=0,lte=30" json:"display_name"`
+	DisplayName string     `validate:"omitempty,gte=2,lte=30" json:"display_name"`
 	Username    string     `validate:"omitempty,gte=2,lte=30" json:"username"`
 	Avatar      AvatarInfo `json:"avatar"`
 	Bio         string     `validate:"omitempty,gt=0,lte=4096" json:"bio"`

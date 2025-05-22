@@ -1852,10 +1852,10 @@ ui:
         fields:
           display_name:
             label: Display name
-            msg_range: Display name up to 30 characters.
+            msg_range: Display name must be 2-30 characters in length.
           username:
             label: Username
-            msg_range: Username up to 30 characters.
+            msg_range: Username must be 2-30 characters in length.
           email:
             label: 이메일
             msg_invalid: Invalid Email Address.

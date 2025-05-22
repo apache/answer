@@ -8263,7 +8263,7 @@ const docTemplate = `{
                 "display_name": {
                     "type": "string",
                     "maxLength": 30,
-                    "minLength": 4
+                    "minLength": 2
                 },
                 "email": {
                     "type": "string",
@@ -8274,7 +8274,8 @@ const docTemplate = `{
                 },
                 "username": {
                     "type": "string",
-                    "maxLength": 30
+                    "maxLength": 30,
+                    "minLength": 2
                 }
             }
         },
@@ -11084,7 +11085,8 @@ const docTemplate = `{
                 },
                 "display_name": {
                     "type": "string",
-                    "maxLength": 30
+                    "maxLength": 30,
+                    "minLength": 2
                 },
                 "location": {
                     "type": "string",

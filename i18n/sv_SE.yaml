@@ -1275,12 +1275,12 @@ ui:
       display_name:
         label: Visningsnamn
         msg: Display name cannot be empty.
-        msg_range: Display name up to 30 characters.
+        msg_range: Display name must be 2-30 characters in length.
       username:
         label: Användarnamn
         caption: People can mention you as "@username".
         msg: Username cannot be empty.
-        msg_range: Username up to 30 characters.
+        msg_range: Username must be 2-30 characters in length.
         character: 'Must use the character set "a-z", "0-9", " - . _"'
       avatar:
         label: Profilbild
@@ -1852,10 +1852,10 @@ ui:
         fields:
           display_name:
             label: Visningsnamn
-            msg_range: Display name up to 30 characters.
+            msg_range: Display name must be 2-30 characters in length.
           username:
             label: Användarnamn
-            msg_range: Username up to 30 characters.
+            msg_range: Username must be 2-30 characters in length.
           email:
             label: Email
             msg_invalid: Ogiltig e-postadress.

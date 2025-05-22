@@ -527,7 +527,7 @@ definitions:
     properties:
       display_name:
         maxLength: 30
-        minLength: 4
+        minLength: 2
         type: string
       email:
         maxLength: 500
@@ -536,6 +536,7 @@ definitions:
         type: string
       username:
         maxLength: 30
+        minLength: 2
         type: string
     required:
     - display_name
@@ -2485,6 +2486,7 @@ definitions:
         type: string
       display_name:
         maxLength: 30
+        minLength: 2
         type: string
       location:
         maxLength: 100

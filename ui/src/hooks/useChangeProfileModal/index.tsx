@@ -69,7 +69,7 @@ const useChangeProfileModal = (props: IProps = {}, userData) => {
       'ui:options': {
         inputType: 'text',
         validator: (value) => {
-          const MIN_LENGTH = 3;
+          const MIN_LENGTH = 2;
           const MAX_LENGTH = 30;
           if (value.length < MIN_LENGTH || value.length > MAX_LENGTH) {
             return t('form.fields.display_name.msg_range');
@@ -82,7 +82,7 @@ const useChangeProfileModal = (props: IProps = {}, userData) => {
       'ui:options': {
         inputType: 'text',
         validator: (value) => {
-          const MIN_LENGTH = 3;
+          const MIN_LENGTH = 2;
           const MAX_LENGTH = 30;
           if (value.length < MIN_LENGTH || value.length > MAX_LENGTH) {
             return t('form.fields.username.msg_range');
