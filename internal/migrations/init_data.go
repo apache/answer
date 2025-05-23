@@ -75,6 +75,7 @@ var (
 		&entity.BadgeGroup{},
 		&entity.BadgeAward{},
 		&entity.FileRecord{},
+		&entity.PluginKVStorage{},
 	}
 
 	roles = []*entity.Role{
