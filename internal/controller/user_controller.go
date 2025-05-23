@@ -717,9 +717,12 @@ func (uc *UserController) SearchUserListByName(ctx *gin.Context) {
 }
 
 func (uc *UserController) setVisitCookies(ctx *gin.Context, visitToken string, force bool) {
-	cookie, err := ctx.Cookie(constant.UserVisitCookiesCacheKey)
-	if err == nil && len(cookie) > 0 && !force {
-		return
+	if !force {
+		cookie, _ := ctx.Cookie(constant.UserVisitCookiesCacheKey)
+		// If the cookie is the same as the visitToken, no need to set it again
+		if cookie == visitToken {
+			return
+		}
 	}
 	general, err := uc.siteInfoCommonService.GetSiteGeneral(ctx)
 	if err != nil {
