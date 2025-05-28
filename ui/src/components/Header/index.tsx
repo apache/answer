@@ -81,7 +81,7 @@ const Header: FC = () => {
     setShowMobileSideNav(false);
   }, [location.pathname]);
 
-  let navbarStyle = 'theme-colored';
+  let navbarStyle = 'theme-light';
   let themeMode = 'light';
   const { theme, theme_config } = themeSettingStore((_) => _);
   if (theme_config?.[theme]?.navbar_style) {
@@ -186,8 +186,8 @@ const Header: FC = () => {
           <>
             <Link
               className={classnames('me-2 btn btn-link', {
-                'link-light': navbarStyle === 'theme-colored',
-                'link-primary': navbarStyle !== 'theme-colored',
+                'link-light': navbarStyle === 'theme-dark',
+                'link-primary': navbarStyle !== 'theme-dark',
               })}
               onClick={() => floppyNavigation.storageLoginRedirect()}
               to={userCenter.getLoginUrl()}>
@@ -197,7 +197,7 @@ const Header: FC = () => {
               <Link
                 className={classnames(
                   'btn',
-                  navbarStyle === 'theme-colored' ? 'btn-light' : 'btn-primary',
+                  navbarStyle === 'theme-dark' ? 'btn-light' : 'btn-primary',
                 )}
                 to={userCenter.getSignUpUrl()}>
                 {t('btns.signup')}
