@@ -1275,12 +1275,12 @@ ui:
       display_name:
         label: Display name
         msg: Zobrazované meno nemôže byť prázdne.
-        msg_range: Zobrazované meno nesmie mať viac ako 30 znakov.
+        msg_range: Display name must be 2-30 characters in length.
       username:
         label: Užívateľské meno
         caption: Ľudia vás môžu spomenúť ako „@používateľské meno“.
         msg: Užívateľské meno nemôže byť prázdne.
-        msg_range: Používateľské meno nesmie mať viac ako 30 znakov.
+        msg_range: Username must be 2-30 characters in length.
         character: 'Musíte použiť znakovú sadu "a-z", "0-9", "- . _"'
       avatar:
         label: Profile image
@@ -1748,11 +1748,11 @@ ui:
     seo: SEO
     customize: Prispôsobiť
     themes: Témy
-    css_html: CSS/HTML
     login: Prihlásiť sa
     privileges: Privileges
     plugins: Plugins
     installed_plugins: Installed Plugins
+    apperance: Appearance
   website_welcome: Welcome to {{site_name}}
   user_center:
     login: Login
@@ -1887,9 +1887,9 @@ ui:
       name: Meno
       email: E-mail
       reputation: Reputácia
-      created_at: Čas vytvorenia
-      delete_at: Čas vymazania
-      suspend_at: Čas pozastavenia
+      created_at: Created time
+      delete_at: Deleted time
+      suspend_at: Suspended time
       status: Stav
       role: Rola
       action: Akcia
@@ -2103,7 +2103,7 @@ ui:
       color_scheme:
         label: Color scheme
       navbar_style:
-        label: Navbar style
+        label: Navbar background style
       primary_color:
         label: Primary color
         text: Upraviť farby používané vašími motívmi

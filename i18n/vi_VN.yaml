@@ -1275,12 +1275,12 @@ ui:
       display_name:
         label: Tên hiển thị
         msg: Tên hiển thị không thể trống.
-        msg_range: Tên hiển thị tối đa 30 ký tự.
+        msg_range: Display name must be 2-30 characters in length.
       username:
         label: Tên người dùng
         caption: Mọi người có thể nhắc đến bạn với "@username".
         msg: Tên người dùng không thể trống.
-        msg_range: Tên người dùng tối đa 30 ký tự.
+        msg_range: Username must be 2-30 characters in length.
         character: 'Chỉ sử dụng bộ ký tự "a-z", "0-9", " - . _"'
       avatar:
         label: Hình ảnh hồ sơ
@@ -1748,11 +1748,11 @@ ui:
     seo: SEO
     customize: Tùy chỉnh
     themes: Chủ đề
-    css_html: CSS/HTML
     login: Đăng nhập
     privileges: Đặc quyền
     plugins: Plugins
     installed_plugins: Plugin đã cài đặt
+    apperance: Appearance
   website_welcome: Chào mừng bạn đến với {{site_name}}
   user_center:
     login: Đăng nhập
@@ -1852,10 +1852,10 @@ ui:
         fields:
           display_name:
             label: Tên hiển thị
-            msg_range: Tên hiển thị tối đa 30 ký tự.
+            msg_range: Display name must be 2-30 characters in length.
           username:
             label: Tên người dùng
-            msg_range: Tên người dùng tối đa 30 ký tự.
+            msg_range: Username must be 2-30 characters in length.
           email:
             label: Email
             msg_invalid: Địa chỉ email không hợp lệ.
@@ -1887,9 +1887,9 @@ ui:
       name: Tên
       email: Email
       reputation: Danh tiếng
-      created_at: Thời gian tạo
-      delete_at: Thời gian xóa
-      suspend_at: Thời gian đình chỉ
+      created_at: Created time
+      delete_at: Deleted time
+      suspend_at: Suspended time
       status: Trạng thái
       role: Vai trò
       action: Hành động
@@ -2103,7 +2103,7 @@ ui:
       color_scheme:
         label: Sơ đồ màu
       navbar_style:
-        label: Kiểu thanh điều hướng
+        label: Navbar background style
       primary_color:
         label: Màu chính
         text: Thay đổi các màu sắc được sử dụng bởi chủ đề của bạn

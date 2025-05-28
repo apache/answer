@@ -1275,12 +1275,12 @@ ui:
       display_name:
         label: Anzeigename
         msg: Anzeigename darf nicht leer sein.
-        msg_range: Anzeigename bis zu 30 Zeichen.
+        msg_range: Display name must be 2-30 characters in length.
       username:
         label: Nutzername
         caption: Leute können dich als "@Benutzername" erwähnen.
         msg: Benutzername darf nicht leer sein.
-        msg_range: Benutzername bis zu 30 Zeichen.
+        msg_range: Username must be 2-30 characters in length.
         character: 'Muss den Zeichensatz "a-z", "0-9", " - . _" verwenden'
       avatar:
         label: Profilbild
@@ -1748,11 +1748,11 @@ ui:
     seo: SEO
     customize: Anpassen
     themes: Themen
-    css_html: CSS/HTML
     login: Anmeldung
     privileges: Berechtigungen
     plugins: Erweiterungen (Plugins)
     installed_plugins: Installierte Plugins
+    apperance: Appearance
   website_welcome: Willkommen auf {{site_name}}
   user_center:
     login: Anmelden
@@ -1852,10 +1852,10 @@ ui:
         fields:
           display_name:
             label: Anzeigename
-            msg_range: Anzeigename bis zu 30 Zeichen.
+            msg_range: Display name must be 2-30 characters in length.
           username:
             label: Nutzername
-            msg_range: Nutzername bis zu 30 Zeichen.
+            msg_range: Username must be 2-30 characters in length.
           email:
             label: E-Mail
             msg_invalid: Ungültige E-Mail-Adresse.
@@ -1887,9 +1887,9 @@ ui:
       name: Name
       email: E-Mail
       reputation: Ansehen
-      created_at: Erstellt
-      delete_at: Löschzeit
-      suspend_at: Sperrzeit
+      created_at: Created time
+      delete_at: Deleted time
+      suspend_at: Suspended time
       status: Status
       role: Rolle
       action: Aktion
@@ -2103,7 +2103,7 @@ ui:
       color_scheme:
         label: Farbschema
       navbar_style:
-        label: Stil der Navigationsleiste
+        label: Navbar background style
       primary_color:
         label: Primäre Farbe
         text: Ändere die Farben, die von deinen Themes verwendet werden

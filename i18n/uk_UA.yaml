@@ -1275,12 +1275,12 @@ ui:
       display_name:
         label: Ім'я для відображення
         msg: Ім'я для відображення не може бути порожнім.
-        msg_range: Ім'я для відображення до 30 символів.
+        msg_range: Display name must be 2-30 characters in length.
       username:
         label: Ім'я користувача
         caption: Користувачі можуть згадувати вас як "@username".
         msg: Ім’я користувача не може бути порожнім.
-        msg_range: Ім'я користувача до 30 символів.
+        msg_range: Username must be 2-30 characters in length.
         character: 'Необхідно використовувати набір символів "a-z", "0-9", "-. _"'
       avatar:
         label: Зображення профілю
@@ -1748,11 +1748,11 @@ ui:
     seo: SEO
     customize: Персоналізувати
     themes: Теми
-    css_html: CSS/HTML
     login: Вхід
     privileges: Привілеї
     plugins: Плагіни
     installed_plugins: Встановлені плагіни
+    apperance: Appearance
   website_welcome: Ласкаво просимо до {{site_name}}
   user_center:
     login: Вхід
@@ -1852,10 +1852,10 @@ ui:
         fields:
           display_name:
             label: Зображуване ім'я
-            msg_range: Зображуване ім'я до 30 символів.
+            msg_range: Display name must be 2-30 characters in length.
           username:
             label: Ім'я користувача
-            msg_range: Ім'я користувача до 30 символів.
+            msg_range: Username must be 2-30 characters in length.
           email:
             label: Електронна пошта
             msg_invalid: Невірна адреса електронної пошти.
@@ -1887,9 +1887,9 @@ ui:
       name: Ім’я
       email: Електронна пошта
       reputation: Репутація
-      created_at: Створений час
-      delete_at: Видалений час
-      suspend_at: Час призупинення
+      created_at: Created time
+      delete_at: Deleted time
+      suspend_at: Suspended time
       status: Статус
       role: Роль
       action: Дія
@@ -2103,7 +2103,7 @@ ui:
       color_scheme:
         label: Схема кольорів
       navbar_style:
-        label: Стиль панелі навігації
+        label: Navbar background style
       primary_color:
         label: Основний колір
         text: Змінюйте кольори, що використовуються у ваших темах

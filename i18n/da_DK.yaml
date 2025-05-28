@@ -1275,12 +1275,12 @@ ui:
       display_name:
         label: Visnings-navn
         msg: Visnings-navn skal udfyldes.
-        msg_range: Visnings-navn på op til 30 tegn.
+        msg_range: Display name must be 2-30 characters in length.
       username:
         label: Brugernavn
         caption: Man kan nævne dig som "@username".
         msg: Brugernavn skal udfyldes.
-        msg_range: Brugernavn op til 30 tegn.
+        msg_range: Username must be 2-30 characters in length.
         character: 'Skal bruge tegnsættet "a-z", "0-9", " - . _"'
       avatar:
         label: Profilbillede
@@ -1748,11 +1748,11 @@ ui:
     seo: SEO
     customize: Tilpas
     themes: Temaer
-    css_html: CSS/HTML
     login: Log Ind
     privileges: Rettigheder
     plugins: Plugins
     installed_plugins: Installerede Plugins
+    apperance: Appearance
   website_welcome: Velkommen til {{site_name}}
   user_center:
     login: Log Ind
@@ -1852,10 +1852,10 @@ ui:
         fields:
           display_name:
             label: Visnings-navn
-            msg_range: Visnings-navn på op til 30 tegn.
+            msg_range: Display name must be 2-30 characters in length.
           username:
             label: Brugernavn
-            msg_range: Brugernavn op til 30 tegn.
+            msg_range: Username must be 2-30 characters in length.
           email:
             label: E-mail
             msg_invalid: Ugyldig E-Mail Adresse.
@@ -1887,9 +1887,9 @@ ui:
       name: Navn
       email: E-mail
       reputation: Omdømme
-      created_at: Oprettet Tidspunkt
-      delete_at: Slettet Tidspunkt
-      suspend_at: Suspenderet Tidspunkt
+      created_at: Created time
+      delete_at: Deleted time
+      suspend_at: Suspended time
       status: Status
       role: Rolle
       action: Handling
@@ -2103,7 +2103,7 @@ ui:
       color_scheme:
         label: Farveskema
       navbar_style:
-        label: Navigations-bjælke stil
+        label: Navbar background style
       primary_color:
         label: Primær farve
         text: Ændre farver, der bruges af dine temaer

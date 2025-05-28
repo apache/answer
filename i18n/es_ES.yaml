@@ -1275,12 +1275,12 @@ ui:
       display_name:
         label: Nombre público
         msg: El nombre a mostrar no puede estar vacío.
-        msg_range: Mostrar nombre de hasta 30 caracteres.
+        msg_range: Display name must be 2-30 characters in length.
       username:
         label: Nombre de usuario
         caption: La gente puede mencionarte con "@nombredeusuario".
         msg: El nombre de usuario no puede estar vacío.
-        msg_range: Nombre de usuario de hasta 30 caracteres.
+        msg_range: Username must be 2-30 characters in length.
         character: 'Debe usar el conjunto de caracteres "a-z", "0-9", " - . _"'
       avatar:
         label: Imagen de perfil
@@ -1748,11 +1748,11 @@ ui:
     seo: ESTE
     customize: Personalizar
     themes: Temas
-    css_html: CSS/HTML
     login: Iniciar sesión
     privileges: Privilegios
     plugins: Extensiones
     installed_plugins: Extensiones Instaladas
+    apperance: Appearance
   website_welcome: Bienvenido a {{site_name}}
   user_center:
     login: Iniciar sesión
@@ -1852,10 +1852,10 @@ ui:
         fields:
           display_name:
             label: Nombre para mostrar
-            msg_range: Mostrar nombre de hasta 30 caracteres.
+            msg_range: Display name must be 2-30 characters in length.
           username:
             label: Nombre de usuario
-            msg_range: Nombre de usuario hasta 30 caracteres.
+            msg_range: Username must be 2-30 characters in length.
           email:
             label: Correo electrónico
             msg_invalid: Dirección de correo inválida.
@@ -1887,9 +1887,9 @@ ui:
       name: Nombre
       email: Correo electrónico
       reputation: Reputación
-      created_at: Creado Tiempo
-      delete_at: Hora eliminada
-      suspend_at: Tiempo suspendido
+      created_at: Created time
+      delete_at: Deleted time
+      suspend_at: Suspended time
       status: Estado
       role: Rol
       action: Acción
@@ -2103,7 +2103,7 @@ ui:
       color_scheme:
         label: Esquema de color
       navbar_style:
-        label: Estilo de barra de navegación
+        label: Navbar background style
       primary_color:
         label: Color primario
         text: Modifica los colores usados por tus temas

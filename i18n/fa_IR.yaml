@@ -1275,12 +1275,12 @@ ui:
       display_name:
         label: نام
         msg: نام نمی تواند خالی باشد.
-        msg_range: نام میتواند تا ۳۰ حرف باشد.
+        msg_range: Display name must be 2-30 characters in length.
       username:
         label: نام‌کاربری
         caption: دیگران میتوانند به شما به بصورت "@username" اشاره کنند.
         msg: نام کاربری نمی تواند خالی باشد.
-        msg_range: نام کاربری میتواند تا ۳۰ حرف باشد.
+        msg_range: Username must be 2-30 characters in length.
         character: 'باید از حروف "a-z", "0-9", " - . _" استفاده شود'
       avatar:
         label: عکس پروفایل
@@ -1748,11 +1748,11 @@ ui:
     seo: سئو
     customize: شخصی‌سازی
     themes: پوسته ها
-    css_html: CSS/HTML
     login: ورود
     privileges: مجوزها
     plugins: افزونه‌ها
     installed_plugins: پلاگین های نصب شده
+    apperance: Appearance
   website_welcome: به {{site_name}} خوش آمدید
   user_center:
     login: ورود
@@ -1887,9 +1887,9 @@ ui:
       name: نام
       email: ایمیل
       reputation: محبوبیت
-      created_at: زمان ایجاد
-      delete_at: زمان حذف
-      suspend_at: زمان معلق
+      created_at: Created time
+      delete_at: Deleted time
+      suspend_at: Suspended time
       status: وضعیت
       role: نقش
       action: عمل
@@ -2103,7 +2103,7 @@ ui:
       color_scheme:
         label: Color scheme
       navbar_style:
-        label: Navbar style
+        label: Navbar background style
       primary_color:
         label: Primary color
         text: Modify the colors used by your themes

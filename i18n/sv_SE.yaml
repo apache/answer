@@ -1748,11 +1748,11 @@ ui:
     seo: SEO
     customize: Anpassa
     themes: Teman
-    css_html: CSS/HTML
     login: Logga in
     privileges: Privileges
     plugins: Plugins
     installed_plugins: Installed Plugins
+    apperance: Appearance
   website_welcome: Välkommen till {{site_name}}
   user_center:
     login: Login
@@ -1887,9 +1887,9 @@ ui:
       name: Namn
       email: Email
       reputation: Reputation
-      created_at: Created Time
-      delete_at: Deleted Time
-      suspend_at: Suspended Time
+      created_at: Created time
+      delete_at: Deleted time
+      suspend_at: Suspended time
       status: Status
       role: Roll
       action: Action
@@ -2103,7 +2103,7 @@ ui:
       color_scheme:
         label: Färgschema
       navbar_style:
-        label: Navbar style
+        label: Navbar background style
       primary_color:
         label: Primary color
         text: Modify the colors used by your themes

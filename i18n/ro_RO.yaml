@@ -58,7 +58,7 @@ backend:
     undelete:
       other: Restabilește
     merge:
-      other: Merge
+      other: Îmbinare
   role:
     name:
       user:
@@ -140,17 +140,17 @@ backend:
   pass:
     other: Parolă
   old_pass:
-    other: Current password
+    other: Parolă actuală
   original_text:
-    other: This post
+    other: Acest articol
   email_or_password_wrong_error:
     other: E-mailul și parola nu se potrivesc.
   error:
     common:
       invalid_url:
-        other: Invalid URL.
+        other: URL invalid.
       status_invalid:
-        other: Invalid status.
+        other: Stare nevalidă.
     password:
       space_invalid:
         other: Parola nu poate conține spații.
@@ -158,7 +158,7 @@ backend:
       cannot_update_their_password:
         other: Nu vă puteți modifica parola.
       cannot_edit_their_profile:
-        other: You cannot modify your profile.
+        other: Nu vă puteți modifica profilul.
       cannot_modify_self_status:
         other: Nu vă puteți modifica starea.
       email_or_password_wrong:
@@ -173,7 +173,7 @@ backend:
       question_closed_cannot_add:
         other: Întrebările sunt închise şi nu pot fi adăugate.
       content_cannot_empty:
-        other: Answer content cannot be empty.
+        other: Conținutul răspunsului nu poate fi gol.
     comment:
       edit_without_permission:
         other: Comentariul nu poate fi editat.
@@ -182,7 +182,7 @@ backend:
       cannot_edit_after_deadline:
         other: Comentariul a durat prea mult pentru a fi modificat.
       content_cannot_empty:
-        other: Comment content cannot be empty.
+        other: Conținutul comentariului nu poate fi gol.
     email:
       duplicate:
         other: Email-ul există deja.
@@ -215,15 +215,15 @@ backend:
       new_password_same_as_previous_setting:
         other: Noua parolă este identică cu cea anterioară.
       already_deleted:
-        other: This post has been deleted.
+        other: Acest articol a fost șters.
     meta:
       object_not_found:
-        other: Meta object not found
+        other: Nu s-a găsit obiectul Meta
     question:
       already_deleted:
         other: Această postare a fost ștearsă.
       under_review:
-        other: Your post is awaiting review. It will be visible after it has been approved.
+        other: Articolul tău este în așteptare. Acesta va fi vizibil după ce a fost aprobat.
       not_found:
         other: Întrebarea nu a fost găsită.
       cannot_deleted:
@@ -233,7 +233,7 @@ backend:
       cannot_update:
         other: Nu aveți permisiunea de a actualiza.
       content_cannot_empty:
-        other: Content cannot be empty.
+        other: Conținutul nu poate fi gol.
     rank:
       fail_to_meet_the_condition:
         other: Rangul de reputaţie nu îndeplineşte condiţia.
@@ -325,7 +325,7 @@ backend:
         other: Configurarea site-ului nu a fost găsită.
     badge:
       object_not_found:
-        other: Badge object not found
+        other: Nu s-a găsit obiectul Insignă
   reason:
     spam:
       name:
@@ -336,7 +336,7 @@ backend:
       name:
         other: nepoliticos sau abuziv
       desc:
-        other: "A reasonable person would find this content inappropriate for respectful discourse."
+        other: "O persoană rezonabilă ar considera acest conținut nepotrivit pentru un discurs respectuos."
     a_duplicate:
       name:
         other: un duplicat
@@ -1275,12 +1275,12 @@ ui:
       display_name:
         label: Nume afișat
         msg: Numele afișat nu poate fi gol.
-        msg_range: Nume afișat până la 30 de caractere.
+        msg_range: Display name must be 2-30 characters in length.
       username:
         label: Nume de utilizator
         caption: Oamenii te pot menționa ca "@utilizator".
         msg: Numele de utilizator nu poate fi gol.
-        msg_range: Nume utilizator de până la 30 de caractere.
+        msg_range: Username must be 2-30 characters in length.
         character: 'Trebuie să utilizați setul de caractere "a-z", "0-9", " - . _"'
       avatar:
         label: Imaginea de profil
@@ -1748,11 +1748,11 @@ ui:
     seo: SEO
     customize: Personalizează
     themes: Teme
-    css_html: CSS/HTML
     login: Autentifică-te
     privileges: Privilegii
     plugins: Extensii
     installed_plugins: Extensii instalate
+    apperance: Appearance
   website_welcome: Bun venit la {{site_name}}
   user_center:
     login: Autentifică-te
@@ -1887,9 +1887,9 @@ ui:
       name: Nume
       email: E-mail
       reputation: Reputație
-      created_at: Ora crearii
-      delete_at: Oră ștergerii
-      suspend_at: Ora suspendării
+      created_at: Created time
+      delete_at: Deleted time
+      suspend_at: Suspended time
       status: Stare
       role: Rol
       action: Acţiune
@@ -2103,7 +2103,7 @@ ui:
       color_scheme:
         label: Paletă de culori
       navbar_style:
-        label: Navbar style
+        label: Navbar background style
       primary_color:
         label: Culoare primară
         text: Modifică culorile folosite de temele tale

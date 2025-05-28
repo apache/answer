@@ -1275,12 +1275,12 @@ ui:
       display_name:
         label: Display name
         msg: 顯示名稱不能為空。
-        msg_range: 顯示名稱最長 30 個字元。
+        msg_range: Display name must be 2-30 characters in length.
       username:
         label: 用戶名
         caption: 用戶之間可以通過 "@用戶名" 進行交互。
         msg: 用戶名不能為空
-        msg_range: 使用者名稱最長 30 個字元。
+        msg_range: Username must be 2-30 characters in length.
         character: '必須由 "a-z", "0-9", " - . _" 組成'
       avatar:
         label: Profile image
@@ -1748,11 +1748,11 @@ ui:
     seo: SEO
     customize: 自定義
     themes: 主題
-    css_html: CSS/HTML
     login: 登入
     privileges: Privileges
     plugins: Plugins
     installed_plugins: Installed Plugins
+    apperance: Appearance
   website_welcome: Welcome to {{site_name}}
   user_center:
     login: Login
@@ -1887,9 +1887,9 @@ ui:
       name: 名稱
       email: 郵箱
       reputation: 聲望
-      created_at: 創建時間
-      delete_at: 刪除時間
-      suspend_at: 停權時間
+      created_at: Created time
+      delete_at: Deleted time
+      suspend_at: Suspended time
       status: 狀態
       role: 角色
       action: 操作
@@ -2103,7 +2103,7 @@ ui:
       color_scheme:
         label: Color scheme
       navbar_style:
-        label: 導航欄樣式
+        label: Navbar background style
       primary_color:
         label: 主色調
         text: 修改您主題使用的顏色

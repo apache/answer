@@ -1275,12 +1275,12 @@ ui:
       display_name:
         label: 显示名称
         msg: 昵称不能为空。
-        msg_range: 显示名称不能超过 30 个字符。
+        msg_range: 显示名称长度必须为 2-30 个字符。
       username:
         label: 用户名
         caption: 用户可以通过 "@用户名" 来提及你。
         msg: 用户名不能为空
-        msg_range: 用户名不能超过 30 个字符。
+        msg_range: 显示名称长度必须为 2-30 个字符。
         character: '只能由 "a-z"、"A-Z"、"0-9"、" - . _" 组成'
       avatar:
         label: 头像
@@ -1636,9 +1636,9 @@ ui:
     ssl_enabled:
       label: 启用 SSL
     ssl_enabled_on:
-      label: 开
+      label: On
     ssl_enabled_off:
-      label: 关
+      label: Off
     ssl_mode:
       label: SSL 模式
     ssl_root_cert:
@@ -1852,10 +1852,10 @@ ui:
         fields:
           display_name:
             label: 显示名称
-            msg_range: 显示名称不能超过 30 个字符。
+            msg_range: 显示名称长度必须为 2-30 个字符。
           username:
             label: 用户名
-            msg_range: 用户名不能超过 30 个字符。
+            msg_range: 用户名长度必须为 2-30 个字符。
           email:
             label: 电子邮件地址
             msg_invalid: 无效的邮箱地址
@@ -2103,7 +2103,7 @@ ui:
       color_scheme:
         label: 配色方案
       navbar_style:
-        label: 导航栏样式
+        label: 导航栏背景样式
       primary_color:
         label: 主色调
         text: 修改您主题使用的颜色

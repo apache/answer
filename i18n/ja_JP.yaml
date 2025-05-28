@@ -1274,12 +1274,12 @@ ui:
       display_name:
         label: 表示名
         msg: 表示名は必須です。
-        msg_range: 表示名は最大 30 文字までです。
+        msg_range: Display name must be 2-30 characters in length.
       username:
         label: ユーザー名
         caption: ユーザーは "@username" としてあなたをメンションできます。
         msg: ユーザー名は空にできません。
-        msg_range: 表示名は最大 30 文字までです。
+        msg_range: Username must be 2-30 characters in length.
         character: '文字セット "a-z", "0-9", " - . _" を使用してください。'
       avatar:
         label: プロフィール画像
@@ -1749,11 +1749,11 @@ ui:
     seo: SEO
     customize: カスタマイズ
     themes: テーマ
-    css_html: CSS/HTML
     login: ログイン
     privileges: 特典
     plugins: プラグイン
     installed_plugins: 使用中のプラグイン
+    apperance: Appearance
   website_welcome: '{{site_name}} へようこそ'
   user_center:
     login: ログイン
@@ -1853,10 +1853,10 @@ ui:
         fields:
           display_name:
             label: 表示名
-            msg_range: 表示名は最大 30 文字までです。
+            msg_range: Display name must be 2-30 characters in length.
           username:
             label: ユーザー名
-            msg_range: ユーザー名は30文字までです。
+            msg_range: Username must be 2-30 characters in length.
           email:
             label: メールアドレス
             msg_invalid: 無効なメールアドレス
@@ -1888,9 +1888,9 @@ ui:
       name: 名前
       email: メールアドレス
       reputation: 評価
-      created_at: 作成日時
-      delete_at: 削除日時
-      suspend_at: サスペンド時間
+      created_at: Created time
+      delete_at: Deleted time
+      suspend_at: Suspended time
       status: ステータス
       role: ロール
       action: 操作
@@ -2104,7 +2104,7 @@ ui:
       color_scheme:
         label: 配色
       navbar_style:
-        label: ナビゲーションバーのスタイル
+        label: Navbar background style
       primary_color:
         label: メインカラー
         text: テーマで使用される色を変更する

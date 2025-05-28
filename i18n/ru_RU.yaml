@@ -1275,12 +1275,12 @@ ui:
       display_name:
         label: Отображаемое имя
         msg: Отображаемое имя не может быть пустым.
-        msg_range: Имя пользователя должно быть до 30 символов.
+        msg_range: Display name must be 2-30 characters in length.
       username:
         label: Имя пользователя
         caption: Люди могут упоминать вас как "@username".
         msg: Имя пользователя не может быть пустым.
-        msg_range: Имя пользователя должно быть до 30 символов.
+        msg_range: Username must be 2-30 characters in length.
         character: 'Необходимо использовать набор символов "a-z", "0-9", " - . _"'
       avatar:
         label: Изображение профиля
@@ -1748,11 +1748,11 @@ ui:
     seo: SEO
     customize: Настройки интерфейса
     themes: Темы
-    css_html: CSS/HTML
     login: Вход
     privileges: Привилегии
     plugins: Плагины
     installed_plugins: Установленные плагины
+    apperance: Appearance
   website_welcome: Добро пожаловать на {{site_name}}
   user_center:
     login: Вход
@@ -1887,9 +1887,9 @@ ui:
       name: Имя
       email: Email
       reputation: Репутация
-      created_at: Дата создания
-      delete_at: Время удаления
-      suspend_at: Дата блокировки
+      created_at: Created time
+      delete_at: Deleted time
+      suspend_at: Suspended time
       status: Статус
       role: Роль
       action: Действия
@@ -2103,7 +2103,7 @@ ui:
       color_scheme:
         label: Цветовая схема
       navbar_style:
-        label: Стиль панели навигации
+        label: Navbar background style
       primary_color:
         label: Основной цвет
         text: Измените цвета, используемые в ваших темах
