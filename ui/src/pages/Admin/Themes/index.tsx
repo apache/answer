@@ -166,7 +166,9 @@ const Index: FC = () => {
         const themeConfig = setting.theme_config[themeName];
         const formMeta = { ...formData };
         formMeta.themes.value = themeName;
-        formMeta.navbar_style.value = themeConfig?.navbar_style;
+        formMeta.navbar_style.value = themeConfig?.navbar_style.startsWith('#')
+          ? themeConfig?.navbar_style
+          : DEFAULT_THEME_COLOR;
         formMeta.primary_color.value = themeConfig?.primary_color;
         formData.color_scheme.value = setting?.color_scheme || 'system';
         setFormData({ ...formMeta });

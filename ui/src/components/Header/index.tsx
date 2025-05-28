@@ -85,6 +85,7 @@ const Header: FC = () => {
   let themeMode = 'light';
   const { theme, theme_config } = themeSettingStore((_) => _);
   if (theme_config?.[theme]?.navbar_style) {
+    // const color = theme_config[theme].navbar_style.startsWith('#')
     themeMode = isLight(theme_config[theme].navbar_style) ? 'light' : 'dark';
     console.log('isLightTheme', themeMode);
     navbarStyle = `theme-${themeMode}`;

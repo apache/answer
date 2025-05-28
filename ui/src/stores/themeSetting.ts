@@ -42,6 +42,10 @@ const store = create<IType>((set) => ({
   },
   update: (params) =>
     set((state) => {
+      // Compatibility default value is colored or light before v1.5.1
+      if (!params.theme_config.default.navbar_style.startsWith('#')) {
+        params.theme_config.default.navbar_style = DEFAULT_THEME_COLOR;
+      }
       return {
         ...state,
         ...params,
