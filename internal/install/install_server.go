@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"io/fs"
 	"net/http"
+	"os"
 
 	"github.com/apache/answer/configs"
 	"github.com/apache/answer/internal/base/conf"
@@ -53,6 +54,7 @@ func NewInstallHTTPServer() *gin.Engine {
 
 	c := &conf.AllConfig{}
 	_ = yaml.Unmarshal(configs.Config, c)
+	setStorageMode(c)
 
 	r.GET("/healthz", func(ctx *gin.Context) { ctx.String(200, "OK") })
 	r.StaticFS(c.UI.BaseURL+"/static", http.FS(&_resource{
@@ -90,4 +92,13 @@ func WebPage(c *gin.Context) {
 		return
 	}
 	c.String(http.StatusOK, string(file))
+}
+
+func setStorageMode(allConfig *conf.AllConfig) {
+	// TODO should config.yaml override env var?
+	mode := os.Getenv("FILE_STORAGE_MODE")
+	if mode == "db" {
+		allConfig.ServiceConfig.UseDbFileStorage = true
+	}
+	log.Infof("using database file storage: %t", allConfig.ServiceConfig.UseDbFileStorage)
 }

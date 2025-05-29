@@ -69,10 +69,6 @@ var (
 	}
 )
 
-var (
-	FileStorageMode = os.Getenv("FILE_STORAGE_MODE") // eg "fs" or "db"
-)
-
 type UploaderService interface {
 	UploadAvatarFile(ctx *gin.Context, userID string) (url string, err error)
 	UploadPostFile(ctx *gin.Context, userID string) (url string, err error)
@@ -108,10 +104,6 @@ func NewUploaderService(
 		fileRecordService: fileRecordService,
 		fileRepo:          fileRepo,
 	}
-}
-
-func UseDbStorage() bool {
-	return FileStorageMode != "fs"
 }
 
 // UploadAvatarFile upload avatar file
@@ -323,7 +315,7 @@ func (us *uploaderService) uploadImageFile(ctx *gin.Context, file *multipart.Fil
 	if err != nil {
 		return "", err
 	}
-	if UseDbStorage() {
+	if us.serviceConfig.UseDbFileStorage {
 		src, err := file.Open()
 		if err != nil {
 			return "", errors.InternalServer(reason.UnknownError).WithError(err).WithStack()
@@ -382,7 +374,7 @@ func (us *uploaderService) uploadAttachmentFile(ctx *gin.Context, file *multipar
 	if err != nil {
 		return "", err
 	}
-	if UseDbStorage() {
+	if us.serviceConfig.UseDbFileStorage {
 		src, err := file.Open()
 		if err != nil {
 			return "", errors.InternalServer(reason.UnknownError).WithError(err).WithStack()
