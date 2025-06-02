@@ -13,6 +13,7 @@ import (
 type FileRepo interface {
 	Save(ctx context.Context, file *entity.File) error
 	GetByID(ctx context.Context, id string) (*entity.File, error)
+	Delete(ctx context.Context, id string) (err error)
 }
 
 type fileRepo struct {
@@ -41,4 +42,12 @@ func (r *fileRepo) GetByID(ctx context.Context, id string) (*entity.File, error)
 		return nil, sql.ErrNoRows
 	}
 	return &blob, nil
+}
+
+func (r *fileRepo) Delete(ctx context.Context, id string) (err error) {
+	_, err = r.data.DB.Context(ctx).ID(id).Delete(&entity.File{})
+	if err != nil {
+		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	return
 }

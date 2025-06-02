@@ -132,12 +132,12 @@ func (us *uploaderService) UploadAvatarFile(ctx *gin.Context, userID string) (ur
 		return "", errors.BadRequest(reason.RequestFormatError).WithError(err)
 	}
 
-	newFilename := fmt.Sprintf("%s%s", uid.IDStr12(), fileExt)
-	avatarFilePath := path.Join(constant.AvatarSubPath, newFilename)
-	url, err = us.uploadImageFile(ctx, fileHeader, avatarFilePath)
+	fileHeader.Filename = fmt.Sprintf("%s%s", uid.IDStr12(), fileExt)
+	url, err = us.uploadImageFile(ctx, fileHeader, constant.AvatarSubPath)
 	if err != nil {
 		return "", err
 	}
+	avatarFilePath := path.Join(constant.AvatarSubPath, fileHeader.Filename)
 	us.fileRecordService.AddFileRecord(ctx, userID, avatarFilePath, url, string(plugin.UserAvatar))
 	return url, nil
 
@@ -221,14 +221,13 @@ func (us *uploaderService) UploadPostFile(ctx *gin.Context, userID string) (
 	}
 
 	fileExt := strings.ToLower(path.Ext(fileHeader.Filename))
-	newFilename := fmt.Sprintf("%s%s", uid.IDStr12(), fileExt)
-	fileHeader.Filename = newFilename
+	fileHeader.Filename = fmt.Sprintf("%s%s", uid.IDStr12(), fileExt)
 	url, err = us.uploadImageFile(ctx, fileHeader, constant.PostSubPath)
-	postFilePath := path.Join(constant.PostSubPath, newFilename)
-
 	if err != nil {
 		return "", err
 	}
+
+	postFilePath := path.Join(constant.PostSubPath, fileHeader.Filename)
 	us.fileRecordService.AddFileRecord(ctx, userID, postFilePath, url, string(plugin.UserPost))
 	return url, nil
 }
@@ -294,17 +293,18 @@ func (us *uploaderService) UploadBrandingFile(ctx *gin.Context, userID string) (
 	if _, ok := plugin.DefaultFileTypeCheckMapping[plugin.AdminBranding][fileExt]; !ok {
 		return "", errors.BadRequest(reason.RequestFormatError).WithError(err)
 	}
-	newFilename := fmt.Sprintf("%s%s", uid.IDStr12(), fileExt)
-	avatarFilePath := path.Join(constant.BrandingSubPath, newFilename)
-	url, err = us.uploadImageFile(ctx, fileHeader, avatarFilePath)
+	fileHeader.Filename = fmt.Sprintf("%s%s", uid.IDStr12(), fileExt)
+	url, err = us.uploadImageFile(ctx, fileHeader, constant.BrandingSubPath)
 	if err != nil {
 		return "", err
 	}
+	avatarFilePath := path.Join(constant.BrandingSubPath, fileHeader.Filename)
 	us.fileRecordService.AddFileRecord(ctx, userID, avatarFilePath, url, string(plugin.AdminBranding))
 	return url, nil
 
 }
 
+// TODO add new file name
 func (us *uploaderService) uploadImageFile(ctx *gin.Context, file *multipart.FileHeader, fileSubPath string) (
 	url string, err error) {
 	siteGeneral, err := us.siteInfoService.GetSiteGeneral(ctx)

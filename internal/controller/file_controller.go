@@ -9,18 +9,18 @@ import (
 )
 
 type FileController struct {
-	FileRepo file.FileRepo
+	fileRepo file.FileRepo
 }
 
-func NewFileController(repo file.FileRepo) *FileController {
-	return &FileController{FileRepo: repo}
+func NewFileController(fileRepo file.FileRepo) *FileController {
+	return &FileController{fileRepo: fileRepo}
 }
 
 func (bc *FileController) GetFile(ctx *gin.Context) {
 	id := ctx.Param("id")
 	download := ctx.DefaultQuery("download", "")
 
-	blob, err := bc.FileRepo.GetByID(ctx.Request.Context(), id)
+	blob, err := bc.fileRepo.GetByID(ctx.Request.Context(), id)
 	if err != nil || blob == nil {
 		handler.HandleResponse(ctx, err, "file not found")
 		return
