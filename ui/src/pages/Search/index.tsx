@@ -106,7 +106,7 @@ const Index = () => {
     <Row className="pt-4 mb-5">
       <Col className="page-main flex-auto">
         <Head data={extra} />
-        <SearchHead sort={order} count={count} />
+        <SearchHead sort={order} count={isLoading ? -1 : count} />
         <ListGroup className="rounded-0 mb-5">
           {isSkeletonShow ? (
             <ListLoader />

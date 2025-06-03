@@ -1534,6 +1534,7 @@ ui:
     follow: Follow
     following: Following
     counts: "{{count}} Results"
+    counts_loading: "... Results"
     more: More
     sort_btns:
       relevance: Relevance
