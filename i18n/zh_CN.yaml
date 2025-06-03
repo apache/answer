@@ -1501,6 +1501,7 @@ ui:
     follow: 关注
     following: 已关注
     counts: "{{count}} 个结果"
+    counts_loading: "... 个结果"
     more: 更多
     sort_btns:
       relevance: 相关性
