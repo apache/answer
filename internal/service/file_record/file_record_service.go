@@ -29,6 +29,7 @@ import (
 
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/entity"
+	"github.com/apache/answer/internal/repo/file"
 	"github.com/apache/answer/internal/service/revision"
 	"github.com/apache/answer/internal/service/service_config"
 	"github.com/apache/answer/internal/service/siteinfo_common"
@@ -56,6 +57,7 @@ type FileRecordService struct {
 	serviceConfig   *service_config.ServiceConfig
 	siteInfoService siteinfo_common.SiteInfoCommonService
 	userService     *usercommon.UserCommon
+	fileRepo        file.FileRepo
 }
 
 // NewFileRecordService new file record service
@@ -65,6 +67,7 @@ func NewFileRecordService(
 	serviceConfig *service_config.ServiceConfig,
 	siteInfoService siteinfo_common.SiteInfoCommonService,
 	userService *usercommon.UserCommon,
+	fileRepo file.FileRepo,
 ) *FileRecordService {
 	return &FileRecordService{
 		fileRecordRepo:  fileRecordRepo,
@@ -72,6 +75,7 @@ func NewFileRecordService(
 		serviceConfig:   serviceConfig,
 		siteInfoService: siteInfoService,
 		userService:     userService,
+		fileRepo:        fileRepo,
 	}
 }
 
@@ -181,6 +185,16 @@ func (fs *FileRecordService) DeleteAndMoveFileRecord(ctx context.Context, fileRe
 	// Delete the file record
 	if err := fs.fileRecordRepo.DeleteFileRecord(ctx, fileRecord.ID); err != nil {
 		return fmt.Errorf("delete file record error: %v", err)
+	}
+
+	if fs.serviceConfig.UseDbFileStorage {
+		fileURL := fileRecord.FileURL
+		parts := strings.Split(fileURL, "/")
+		fileId := parts[len(parts)-1]
+		if err := fs.fileRepo.Delete(ctx, fileId); err != nil {
+			return fmt.Errorf("failed to delete file: %v", err)
+		}
+		return nil
 	}
 
 	// Move the file to the deleted directory

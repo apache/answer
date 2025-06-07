@@ -32,6 +32,7 @@ import (
 	"github.com/apache/answer/internal/service/service_config"
 	"github.com/apache/answer/pkg/writer"
 	"github.com/segmentfault/pacman/contrib/conf/viper"
+	"github.com/segmentfault/pacman/log"
 	"gopkg.in/yaml.v3"
 )
 
@@ -50,6 +51,7 @@ type envConfigOverrides struct {
 	SwaggerHost        string
 	SwaggerAddressPort string
 	SiteAddr           string
+	StorageMode        string
 }
 
 func loadEnvs() (envOverrides *envConfigOverrides) {
@@ -57,6 +59,7 @@ func loadEnvs() (envOverrides *envConfigOverrides) {
 		SwaggerHost:        os.Getenv("SWAGGER_HOST"),
 		SwaggerAddressPort: os.Getenv("SWAGGER_ADDRESS_PORT"),
 		SiteAddr:           os.Getenv("SITE_ADDR"),
+		StorageMode:        os.Getenv("FILE_STORAGE_MODE"),
 	}
 }
 
@@ -92,6 +95,10 @@ func (c *AllConfig) SetEnvironmentOverrides() {
 	}
 	if envs.SwaggerAddressPort != "" {
 		c.Swaggerui.Address = envs.SwaggerAddressPort
+	}
+	if envs.StorageMode == "db" {
+		c.ServiceConfig.UseDbFileStorage = true
+		log.Info("saving files as blob in db")
 	}
 }
 
