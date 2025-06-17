@@ -38,6 +38,6 @@ service_config:
   purge_deleted_files_period_days: 30
 ui:
   public_url: '/'
-  api_url: '/'
   base_url: ''
+  api_base_url: ''
 
