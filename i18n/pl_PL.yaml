@@ -306,6 +306,14 @@ backend:
         other: "Błąd {{.Field}} w pobliżu '{{.Content}}' w linii {{.Line}}. {{.ExtraMessage}}"
       add_bulk_users_amount_error:
         other: "Liczba użytkowników, których dodasz na raz, powinna mieścić się w przedziale 1-{{.MaxAmount}}."
+      status_suspended_forever:
+        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+      status_suspended_until:
+        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+      status_deleted:
+        other: "This user was deleted."
+      status_inactive:
+        other: "This user is inactive."
     config:
       read_config_failed:
         other: Nie udało się odczytać pliku konfiguracyjnego.
@@ -809,7 +817,7 @@ ui:
     tag_wiki: wiki tagu
     create_tag: Utwórz tag
     edit_tag: Edytuj tag
-    ask_a_question: Zadaj pytanie
+    ask_a_question: Create Question
     edit_question: Edytuj pytanie
     edit_answer: Edytuj odpowiedź
     search: Szukaj
@@ -1056,6 +1064,9 @@ ui:
     day: dzień
     hours: godziny
     days: dni
+    month: month
+    months: months
+    year: year
   reaction:
     heart: serce
     smile: uśmiech
@@ -1111,10 +1122,10 @@ ui:
     more: Więcej
     wiki: Wiki
   ask:
-    title: Dodaj pytanie
+    title: Create Question
     edit_title: Edytuj pytanie
     default_reason: Edytuj pytanie
-    default_first_reason: Dodaj pytanie
+    default_first_reason: Create question
     similar_questions: Podobne pytania
     form:
       fields:
@@ -1122,7 +1133,7 @@ ui:
           label: Rewizja
         title:
           label: Tytuł
-          placeholder: Bądź konkretny i wyobraź sobie, że zadajesz pytanie innej osobie
+          placeholder: What's your topic? Be specific.
           msg:
             empty: Tytuł nie może być pusty.
             range: Tytuł do 150 znaków
@@ -1150,7 +1161,7 @@ ui:
     add_btn: Dodaj tag
     create_btn: Utwórz nowy tag
     search_tag: Wyszukaj tag
-    hint: "Opisz, o czym jest Twoje pytanie, wymagany jest co najmniej jeden tag."
+    hint: "Describe what your content is about, at least one tag is required."
     no_result: Nie znaleziono pasujących tagów
     tag_required_text: Wymagany tag (co najmniej jeden)
   header:
@@ -1356,12 +1367,12 @@ ui:
     review: Twoja poprawka zostanie wyświetlona po zatwierdzeniu.
     sent_success: Wysyłanie zakończone powodzeniem
   related_question:
-    title: Powiązane pytania
+    title: Related
     answers: odpowiedzi
   linked_question:
-    title: Linked Questions
-    description: Questions linked to
-    no_linked_question: No questions linked from this question.
+    title: Linked
+    description: Posts linked to
+    no_linked_question: No contents linked from this content.
   invite_to_answer:
     title: Ludzie pytali
     desc: Wybierz osoby, które mogą znać odpowiedź.
@@ -1501,6 +1512,7 @@ ui:
     follow: Obserwuj
     following: Obserwuje
     counts: "Liczba wyników: {{count}}"
+    counts_loading: "... Results"
     more: Więcej
     sort_btns:
       relevance: Relewantność
@@ -1552,6 +1564,7 @@ ui:
     all_questions: Wszystkie pytania
     x_questions: "{{ count }} pytań"
     x_answers: "{{ count }} odpowiedzi"
+    x_posts: "{{ count }} Posts"
     questions: Pytania
     answers: Odpowiedzi
     newest: Najnowsze
@@ -1890,6 +1903,7 @@ ui:
       created_at: Created time
       delete_at: Deleted time
       suspend_at: Suspended time
+      suspend_until: Suspend until
       status: Status
       role: Rola
       action: Akcja
@@ -1924,6 +1938,8 @@ ui:
       suspend_user:
         title: Zawieś tego użytkownika
         content: Zawieszony użytkownik nie może się logować.
+        label: How long will the user be suspended for?
+        forever: Forever
     questions:
       page_title: Pytania
       unlisted: Unlisted
@@ -1984,6 +2000,12 @@ ui:
         label: Strefa czasowa
         msg: Strefa czasowa nie może być pusta.
         text: Wybierz miasto w tej samej strefie czasowej, co Ty.
+      avatar:
+        label: Default avatar
+        text: For users without a custom avatar of their own.
+      gravatar_base_url:
+        label: Gravatar base URL
+        text: URL of the Gravatar provider's API base. Ignored when empty.
     smtp:
       page_title: SMTP
       from_email:

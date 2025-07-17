@@ -306,6 +306,14 @@ backend:
         other: "Error {{.Field}} formato cerca de '{{.Content}}' en la línea {{.Line}}. {{.ExtraMessage}}"
       add_bulk_users_amount_error:
         other: "El número de usuarios que añadas a la vez debe estar en el rango de 1 a {{.MaxAmount}}."
+      status_suspended_forever:
+        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+      status_suspended_until:
+        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+      status_deleted:
+        other: "This user was deleted."
+      status_inactive:
+        other: "This user is inactive."
     config:
       read_config_failed:
         other: Lectura de configuración fallida
@@ -809,7 +817,7 @@ ui:
     tag_wiki: wiki de Etiquetas
     create_tag: Crear etiqueta
     edit_tag: Editar etiqueta
-    ask_a_question: Añadir Pregunta
+    ask_a_question: Create Question
     edit_question: Editar Pregunta
     edit_answer: Editar respuesta
     search: Buscar
@@ -1056,6 +1064,9 @@ ui:
     day: día
     hours: horas
     days: días
+    month: month
+    months: months
+    year: year
   reaction:
     heart: corazón
     smile: sonrisa
@@ -1111,10 +1122,10 @@ ui:
     more: Mas
     wiki: Wiki
   ask:
-    title: Agregar una pregunta
+    title: Create Question
     edit_title: Editar pregunta
     default_reason: Editar pregunta
-    default_first_reason: Añadir pregunta
+    default_first_reason: Create question
     similar_questions: Preguntas similares
     form:
       fields:
@@ -1122,7 +1133,7 @@ ui:
           label: Revisión
         title:
           label: Título
-          placeholder: Sé preciso e imagina que le estás preguntando esto a una persona
+          placeholder: What's your topic? Be specific.
           msg:
             empty: El título no puede estar vacío.
             range: Título hasta 150 caracteres
@@ -1150,7 +1161,7 @@ ui:
     add_btn: Añadir etiqueta
     create_btn: Crear nueva etiqueta
     search_tag: Buscar etiqueta
-    hint: "Describe de qué trata tu pregunta, se requiere al menos una etiqueta."
+    hint: "Describe what your content is about, at least one tag is required."
     no_result: Ninguna etiqueta coincide
     tag_required_text: Etiqueta requerida (al menos una)
   header:
@@ -1356,12 +1367,12 @@ ui:
     review: Tu revisión será visible luego de ser aprobada.
     sent_success: Enviado con éxito
   related_question:
-    title: Preguntas relacionadas
+    title: Related
     answers: respuestas
   linked_question:
-    title: Preguntas relacionadas
-    description: Pregunta relacionada con
-    no_linked_question: No hay preguntas enlazadas a esta pregunta.
+    title: Linked
+    description: Posts linked to
+    no_linked_question: No contents linked from this content.
   invite_to_answer:
     title: Personas Preguntadas
     desc: Selecciona personas que creas que sepan la respuesta.
@@ -1501,6 +1512,7 @@ ui:
     follow: Seguir
     following: Siguiendo
     counts: "{{count}} Resultados"
+    counts_loading: "... Results"
     more: Más
     sort_btns:
       relevance: Relevancia
@@ -1552,6 +1564,7 @@ ui:
     all_questions: Todas las preguntas
     x_questions: "{{ count }} Preguntas"
     x_answers: "{{ count }} respuestas"
+    x_posts: "{{ count }} Posts"
     questions: Preguntas
     answers: Respuestas
     newest: Más reciente
@@ -1890,6 +1903,7 @@ ui:
       created_at: Created time
       delete_at: Deleted time
       suspend_at: Suspended time
+      suspend_until: Suspend until
       status: Estado
       role: Rol
       action: Acción
@@ -1924,6 +1938,8 @@ ui:
       suspend_user:
         title: Suspender a este usuario
         content: Un usuario suspendido no puede iniciar sesión.
+        label: How long will the user be suspended for?
+        forever: Forever
     questions:
       page_title: Preguntas
       unlisted: No listado
@@ -1984,6 +2000,12 @@ ui:
         label: Zona horaria
         msg: El huso horario no puede estar vacío.
         text: Elija una ciudad en la misma zona horaria que usted.
+      avatar:
+        label: Default avatar
+        text: For users without a custom avatar of their own.
+      gravatar_base_url:
+        label: Gravatar base URL
+        text: URL of the Gravatar provider's API base. Ignored when empty.
     smtp:
       page_title: SMTP
       from_email:

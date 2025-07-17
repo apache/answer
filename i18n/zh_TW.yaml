@@ -23,18 +23,18 @@ backend:
     unknown:
       other: 未知的錯誤。
     request_format_error:
-      other: 請求格式錯誤。
+      other: 要求格式錯誤。
     unauthorized_error:
       other: 未授權。
     database_error:
-      other: 資料庫錯誤。
+      other: 資料伺服器錯誤。
     forbidden_error:
-      other: 訪問被拒絕。
+      other: 已拒絕存取。
     duplicate_request_error:
-      other: 提交重複。
+      other: 重複送出。
   action:
     report:
-      other: 舉報
+      other: 檢舉
     edit:
       other: 編輯
     delete:
@@ -44,7 +44,7 @@ backend:
     reopen:
       other: 再次開啟。
     forbidden_error:
-      other: 訪問被拒絕。
+      other: 已拒絕存取。
     pin:
       other: 置頂
     hide:
@@ -58,7 +58,7 @@ backend:
     undelete:
       other: 還原
     merge:
-      other: Merge
+      other: 合併
   role:
     name:
       user:
@@ -71,9 +71,9 @@ backend:
       user:
         other: 預設沒有特別閱讀權限。
       admin:
-        other: 擁有訪問該網站的全部權限。
+        other: 擁有存取此網站的全部權限。
       moderator:
-        other: 可以訪問除了管理員設定以外的所有貼文。
+        other: 可以存取除了管理員設定以外的所有貼文。
   privilege:
     level_1:
       description:
@@ -92,7 +92,7 @@ backend:
     rank_answer_add_label:
       other: Write answer
     rank_comment_add_label:
-      other: Write comment
+      other: 寫留言
     rank_report_add_label:
       other: Flag
     rank_comment_vote_up_label:
@@ -134,29 +134,29 @@ backend:
   email:
     other: 電子郵件
   e_mail:
-    other: Email
+    other: 電子郵件
   password:
     other: 密碼
   pass:
-    other: Password
+    other: 密碼
   old_pass:
-    other: Current password
+    other: 目前密碼
   original_text:
-    other: This post
+    other: 此貼文
   email_or_password_wrong_error:
     other: 電郵和密碼不匹配。
   error:
     common:
       invalid_url:
-        other: Invalid URL.
+        other: URL 無效。
       status_invalid:
-        other: Invalid status.
+        other: 無效狀態。
     password:
       space_invalid:
-        other: Password cannot contain spaces.
+        other: 密碼不能包含空白字元。
     admin:
       cannot_update_their_password:
-        other: 您不能修改自己的密码。
+        other: 你不能修改自己的密码。
       cannot_edit_their_profile:
         other: You cannot modify your profile.
       cannot_modify_self_status:
@@ -176,25 +176,25 @@ backend:
         other: Answer content cannot be empty.
     comment:
       edit_without_permission:
-        other: 不允許編輯評論。
+        other: 不允許編輯留言。
       not_found:
-        other: 未發現評論。
+        other: 未發現留言。
       cannot_edit_after_deadline:
-        other: 該則評論時間過久，無法修改。
+        other: 這則留言時間過久，無法修改。
       content_cannot_empty:
         other: Comment content cannot be empty.
     email:
       duplicate:
-        other: 該電子郵件已被使用。
+        other: 這個電子郵件地址已被使用。
       need_to_be_verified:
-        other: 需驗證電子郵件
+        other: 需驗證電子郵件地址。
       verify_url_expired:
-        other: 電子郵件驗證網址已過期，請重發電子郵件。
+        other: 電子郵件地址驗證網址已過期，請重寄電子郵件。
       illegal_email_domain_error:
         other: Email is not allowed from that email domain. Please use another one.
     lang:
       not_found:
-        other: 未找到语言文件。
+        other: 未找到語言檔。
     object:
       captcha_verification_failed:
         other: 驗證碼錯誤。
@@ -209,13 +209,13 @@ backend:
       verification_failed:
         other: 驗證失敗。
       email_or_password_incorrect:
-        other: 電郵和密碼不匹配。
+        other: 電子郵件地址和密碼不匹配。
       old_password_verification_failed:
         other: 舊密碼驗證失敗
       new_password_same_as_previous_setting:
         other: 新密碼與先前的一樣。
       already_deleted:
-        other: This post has been deleted.
+        other: 這則貼文已被刪除。
     meta:
       object_not_found:
         other: Meta object not found
@@ -262,7 +262,7 @@ backend:
       is_used_cannot_delete:
         other: You cannot delete a tag that is in use.
       cannot_set_synonym_as_itself:
-        other: 你不能將當前標籤的同義詞設置為本身。
+        other: 你不能將目前標籤的同義詞設定為本身。
     smtp:
       config_from_name_cannot_be_email:
         other: The from name cannot be a email address.
@@ -289,9 +289,9 @@ backend:
       username_invalid:
         other: 使用者名稱無效。
       username_duplicate:
-        other: 用戶名已被使用
+        other: 使用者名稱已被使用。
       set_avatar:
-        other: 頭像設置錯誤。
+        other: 大頭照設定錯誤。
       cannot_update_your_role:
         other: 您不能修改自己的角色。
       not_allowed_registration:
@@ -306,12 +306,20 @@ backend:
         other: "Error {{.Field}} format near '{{.Content}}' at line {{.Line}}. {{.ExtraMessage}}"
       add_bulk_users_amount_error:
         other: "The number of users you add at once should be in the range of 1-{{.MaxAmount}}."
+      status_suspended_forever:
+        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+      status_suspended_until:
+        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+      status_deleted:
+        other: "This user was deleted."
+      status_inactive:
+        other: "This user is inactive."
     config:
       read_config_failed:
-        other: 讀取配置失敗
+        other: 讀取組態失敗
     database:
       connection_failed:
-        other: 資料庫連接失敗
+        other: 資料庫連線失敗
       create_table_failed:
         other: 表建立失敗
     install:
@@ -329,7 +337,7 @@ backend:
   reason:
     spam:
       name:
-        other: spam
+        other: 垃圾訊息
       desc:
         other: This post is an advertisement, or vandalism. It is not useful or relevant to the current topic.
     rude_or_abusive:
@@ -383,7 +391,7 @@ backend:
         other: Improve and correct problems with this post yourself.
     needs_close:
       name:
-        other: needs close
+        other: 需關閉
       desc:
         other: A closed question can't answer, but still can edit, vote and comment.
     needs_delete:
@@ -395,7 +403,7 @@ backend:
     close:
       duplicate:
         name:
-          other: 垃圾信息
+          other: 垃圾訊息
         desc:
           other: 此問題以前就有人問過，而且已經有了答案。
       guideline:
@@ -440,9 +448,9 @@ backend:
       accept_answer:
         other: 已接受的回答
       comment_question:
-        other: 評論了問題
+        other: 留言了問題
       comment_answer:
-        other: 評論了答案
+        other: 留言了答案
       reply_to_you:
         other: 回覆了你
       mention_you:
@@ -454,7 +462,7 @@ backend:
       your_answer_was_deleted:
         other: 你的答案已被刪除
       your_comment_was_deleted:
-        other: 你的評論已被刪除
+        other: 你的留言已被刪除
       up_voted_question:
         other: upvoted question
       down_voted_question:
@@ -520,11 +528,11 @@ backend:
     downvoted:
       other: downvoted
     accept:
-      other: accept
+      other: 採納
     accepted:
-      other: accepted
+      other: 已採納
     edit:
-      other: edit
+      other: 編輯
   review:
     queued_post:
       other: Queued post
@@ -549,7 +557,7 @@ backend:
           other: Completed our new user tutorial.
       editor:
         name:
-          other: Editor
+          other: 編輯者
         desc:
           other: First post edit.
       first_flag:
@@ -564,7 +572,7 @@ backend:
           other: First up voted a post.
       first_link:
         name:
-          other: First Link
+          other: 首個連結
         desc:
           other: First added a link to another post.
       first_reaction:
@@ -599,12 +607,12 @@ backend:
           other: Read the [community guidelines].
       reader:
         name:
-          other: Reader
+          other: 閱讀者
         desc:
           other: Read every answers in a topic with more than 10 answers.
       welcome:
         name:
-          other: Welcome
+          other: 歡迎
         desc:
           other: Received a up vote.
       nice_share:
@@ -654,7 +662,7 @@ backend:
           other: Invited 5 members.
       thank_you:
         name:
-          other: Thank You
+          other: 感謝
         desc:
           other: Has 20 up voted posts and gave 10 up votes.
       gives_back:
@@ -795,7 +803,7 @@ backend:
 # The following fields are used for interface presentation(Front-end)
 ui:
   how_to_format:
-    title: 如何設定文本格式
+    title: 如何設定文字格式
     desc: >-
       <ul class="mb-0"><li><p class="mb-2">mention a post: <code>#post_id</code></p></li> <li><p class="mb-2">to make links</p><pre class="mb-2"><code>&lt;https://url.com&gt;<br/><br/>[Title](https://url.com)</code></pre></li><li><p class="mb-2">put returns between paragraphs</p></li><li><p class="mb-2"><em>_italic_</em> or **<strong>bold</strong>**</p></li><li><p class="mb-2">indent code by 4 spaces</p></li><li><p class="mb-2">quote by placing <code>&gt;</code> at start of line</p></li><li><p class="mb-2">backtick escapes <code>`like _this_`</code></p></li><li><p class="mb-2">create code fences with backticks <code>`</code></p><pre class="mb-0"><code>```<br/>code here<br/>```</code></pre></li></ul>
   pagination:
@@ -809,11 +817,11 @@ ui:
     tag_wiki: 標籤 wiki
     create_tag: Create Tag
     edit_tag: 編輯標籤
-    ask_a_question: 提問題
+    ask_a_question: Create Question
     edit_question: 編輯問題
     edit_answer: 編輯回答
     search: 搜尋
-    posts_containing: 包含的帖子
+    posts_containing: 包含的貼文
     settings: 設定
     notifications: 通知
     login: 登入
@@ -821,18 +829,18 @@ ui:
     account_recovery: 帳號恢復
     account_activation: 帳號啟用
     confirm_email: 確認電子郵件
-    account_suspended: 帳號已封禁
+    account_suspended: 帳號已被停權
     admin: 後台管理
     change_email: 修改電子郵件
     install: Answer 安裝
     upgrade: Answer 升級
     maintenance: 網站維護
-    users: 用戶
+    users: 使用者
     oauth_callback: Processing
     http_404: HTTP 錯誤 404
     http_50X: HTTP 錯誤 500
     http_403: HTTP 錯誤 403
-    logout: Log Out
+    logout: 登出
   notifications:
     title: 通知
     inbox: 收件夾
@@ -842,7 +850,7 @@ ui:
     show_more: 顯示更多
     someone: Someone
     inbox_type:
-      all: All
+      all: 所有
       posts: Posts
       invites: Invites
       votes: Votes
@@ -909,7 +917,7 @@ ui:
       form_image:
         fields:
           file:
-            label: Image file
+            label: 圖檔
             btn: 選擇圖片
             msg:
               empty: 文件不能為空。
@@ -1036,8 +1044,8 @@ ui:
       target_tag_title: Target tag
       target_tag_description: A synonym between these two tags will be created after merging.
       no_results: No tags matched
-      btn_submit: Submit
-      btn_close: Close
+      btn_submit: 送出
+      btn_close: 關閉
   edit_tag:
     title: 編輯標籤
     default_reason: 編輯標籤
@@ -1056,6 +1064,9 @@ ui:
     day: 天
     hours: hours
     days: days
+    month: month
+    months: months
+    year: year
   reaction:
     heart: heart
     smile: smile
@@ -1111,10 +1122,10 @@ ui:
     more: 更多
     wiki: Wiki
   ask:
-    title: 發問
+    title: Create Question
     edit_title: 編輯問題
     default_reason: 編輯問題
-    default_first_reason: Add question
+    default_first_reason: Create question
     similar_questions: 相似的問題
     form:
       fields:
@@ -1122,7 +1133,7 @@ ui:
           label: 編輯歷史
         title:
           label: 標題
-          placeholder: 具體一點，想像你是在向另一個人提出問題
+          placeholder: What's your topic? Be specific.
           msg:
             empty: 標題不能為空
             range: 標題最多 150 個字元
@@ -1150,7 +1161,7 @@ ui:
     add_btn: 建立標籤
     create_btn: 建立新標籤
     search_tag: 搜尋標籤
-    hint: "请描述您的問題，至少需要一個標籤。"
+    hint: "Describe what your content is about, at least one tag is required."
     no_result: 沒有匹配的標籤
     tag_required_text: 必填標籤 (至少一個)
   header:
@@ -1318,12 +1329,12 @@ ui:
       change_email_info: >-
         我們已經寄出一封郵件至此電子郵件地址，請遵照說明進行確認。
       email:
-        label: Email
+        label: 電子郵件地址
       new_email:
-        label: New email
-        msg: New email cannot be empty.
+        label: 新電子郵件地址
+        msg: 新電子郵件地址不能為空白。
       pass:
-        label: Current password
+        label: 目前密碼
         msg: Password cannot be empty.
       password_title: 密碼
       current_pass:
@@ -1335,16 +1346,16 @@ ui:
       new_pass:
         label: New password
       pass_confirm:
-        label: Confirm new password
+        label: 確認新密碼
     interface:
       heading: 介面
       lang:
-        label: Interface language
+        label: 介面語言
         text: 設定使用者介面語言，在重新整裡頁面後生效。
     my_logins:
-      title: My logins
-      label: Log in or sign up on this site using these accounts.
-      modal_title: Remove login
+      title: 我的登入
+      label: 使用這些帳號登入或註冊此網站。
+      modal_title: 移除登入
       modal_content: Are you sure you want to remove this login from your account?
       modal_confirm_btn: Remove
       remove_success: Removed successfully
@@ -1356,12 +1367,12 @@ ui:
     review: 您的修訂將在審核通過後顯示。
     sent_success: Sent successfully
   related_question:
-    title: 相關問題
+    title: Related
     answers: 個回答
   linked_question:
-    title: Linked Questions
-    description: Questions linked to
-    no_linked_question: No questions linked from this question.
+    title: Linked
+    description: Posts linked to
+    no_linked_question: No contents linked from this content.
   invite_to_answer:
     title: People Asked
     desc: Invite people who you think might know the answer.
@@ -1441,18 +1452,18 @@ ui:
   btns:
     confirm: 確認
     cancel: 取消
-    edit: Edit
+    edit: 編輯
     save: 儲存
     delete: 刪除
-    undelete: Undelete
-    list: List
+    undelete: 還原
+    list: 清單
     unlist: Unlist
     unlisted: Unlisted
     login: 登入
     signup: 註冊
     logout: 登出
     verify: 驗證
-    create: Create
+    create: 建立
     approve: 核准
     reject: 拒絕
     skip: 略過
@@ -1501,6 +1512,7 @@ ui:
     follow: 追蹤
     following: 已關注
     counts: "{{count}} 個結果"
+    counts_loading: "... Results"
     more: 更多
     sort_btns:
       relevance: 相關性
@@ -1552,6 +1564,7 @@ ui:
     all_questions: 全部問題
     x_questions: "{{ count }} 個問題"
     x_answers: "{{ count }} 個回答"
+    x_posts: "{{ count }} Posts"
     questions: 個問題
     answers: 回答
     newest: 最新的
@@ -1890,6 +1903,7 @@ ui:
       created_at: Created time
       delete_at: Deleted time
       suspend_at: Suspended time
+      suspend_until: Suspend until
       status: 狀態
       role: 角色
       action: 操作
@@ -1924,6 +1938,8 @@ ui:
       suspend_user:
         title: Suspend this user
         content: A suspended user can't log in.
+        label: How long will the user be suspended for?
+        forever: Forever
     questions:
       page_title: 問題
       unlisted: Unlisted
@@ -1984,6 +2000,12 @@ ui:
         label: 時區
         msg: 時區不能為空。
         text: 選擇一個與您相同時區的城市。
+      avatar:
+        label: Default avatar
+        text: For users without a custom avatar of their own.
+      gravatar_base_url:
+        label: Gravatar base URL
+        text: URL of the Gravatar provider's API base. Ignored when empty.
     smtp:
       page_title: SMTP
       from_email:

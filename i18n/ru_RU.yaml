@@ -306,6 +306,14 @@ backend:
         other: "Ошибка формата {{.Field}} рядом с '{{.Content}}' в строке {{.Line}}. {{.ExtraMessage}}"
       add_bulk_users_amount_error:
         other: "Количество пользователей, которое Вы добавляете, должно быть в промежутке от 1 до {{.MaxAmount}}."
+      status_suspended_forever:
+        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+      status_suspended_until:
+        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+      status_deleted:
+        other: "This user was deleted."
+      status_inactive:
+        other: "This user is inactive."
     config:
       read_config_failed:
         other: Не удалось прочитать конфигурацию
@@ -809,7 +817,7 @@ ui:
     tag_wiki: wiki тэг
     create_tag: Создать тег
     edit_tag: Изменить тег
-    ask_a_question: Задать вопрос
+    ask_a_question: Create Question
     edit_question: Редактировать вопрос
     edit_answer: Редактировать ответ
     search: Поиск
@@ -1056,6 +1064,9 @@ ui:
     day: дней
     hours: часов
     days: дней
+    month: month
+    months: months
+    year: year
   reaction:
     heart: сердечко
     smile: smile
@@ -1111,10 +1122,10 @@ ui:
     more: Подробнее
     wiki: Wiki
   ask:
-    title: Задать вопрос
+    title: Create Question
     edit_title: Редактировать вопрос
     default_reason: Редактировать вопрос
-    default_first_reason: Задать вопрос
+    default_first_reason: Create question
     similar_questions: Похожие вопросы
     form:
       fields:
@@ -1122,7 +1133,7 @@ ui:
           label: Версия
         title:
           label: Заголовок
-          placeholder: Будьте конкретны и представьте, что вы задаете вопрос другому человеку
+          placeholder: What's your topic? Be specific.
           msg:
             empty: Заголовок не может быть пустым.
             range: Заголовок должен быть меньше 150 символов
@@ -1150,7 +1161,7 @@ ui:
     add_btn: Тег
     create_btn: новый тег
     search_tag: Поиск тега
-    hint: "Добавьте хотя бы один тег."
+    hint: "Describe what your content is about, at least one tag is required."
     no_result: Нет соответствующих тэгов
     tag_required_text: Обязательный тег (хотя бы один)
   header:
@@ -1356,12 +1367,12 @@ ui:
     review: Ваша версия будет отображаться после проверки.
     sent_success: Отправлено успешно
   related_question:
-    title: Похожие вопросы
+    title: Related
     answers: ответы
   linked_question:
-    title: Связанные вопросы
-    description: Questions linked to
-    no_linked_question: No questions linked from this question.
+    title: Linked
+    description: Posts linked to
+    no_linked_question: No contents linked from this content.
   invite_to_answer:
     title: Позвать на помощь
     desc: Выберите людей, которые, по вашему мнению, могут знать ответ.
@@ -1501,6 +1512,7 @@ ui:
     follow: Подписаться
     following: Подписка
     counts: "Результатов: {{count}}"
+    counts_loading: "... Results"
     more: Ещё
     sort_btns:
       relevance: По релевантности
@@ -1552,6 +1564,7 @@ ui:
     all_questions: Все вопросы
     x_questions: "{{ count }} вопросов"
     x_answers: "{{ count }} ответов"
+    x_posts: "{{ count }} Posts"
     questions: Вопросы
     answers: Ответы
     newest: Последние
@@ -1890,6 +1903,7 @@ ui:
       created_at: Created time
       delete_at: Deleted time
       suspend_at: Suspended time
+      suspend_until: Suspend until
       status: Статус
       role: Роль
       action: Действия
@@ -1924,6 +1938,8 @@ ui:
       suspend_user:
         title: Заблокировать этого пользователя
         content: Заблокированный пользователь не сможет войти.
+        label: How long will the user be suspended for?
+        forever: Forever
     questions:
       page_title: Вопросы
       unlisted: Unlisted
@@ -1984,6 +2000,12 @@ ui:
         label: Часовой пояс
         msg: Часовой пояс не может быть пустым.
         text: Выберите город в том же часовом поясе, что и вы.
+      avatar:
+        label: Default avatar
+        text: For users without a custom avatar of their own.
+      gravatar_base_url:
+        label: Gravatar base URL
+        text: URL of the Gravatar provider's API base. Ignored when empty.
     smtp:
       page_title: SMTP
       from_email:

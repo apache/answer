@@ -2133,13 +2133,16 @@ ui:
       page_title: CSS 与 HTML
       custom_css:
         label: 自定义 CSS
-        text: 这将作为 &lt;link> 标签插入
+        text: >
+
       head:
         label: 头部
-        text: 这将在 &lt;/head> 前插入
+        text: >
+
       header:
         label: 页眉
-        text: 这将在 &lt;body> 后插入
+        text: >
+
       footer:
         label: 页脚
         text: 这将在 &lt;/body> 之前插入。

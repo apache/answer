@@ -58,7 +58,7 @@ backend:
     undelete:
       other: Annuler la suppression
     merge:
-      other: Merge
+      other: Fusionner
   role:
     name:
       user:
@@ -140,7 +140,7 @@ backend:
   pass:
     other: Mot de passe
   old_pass:
-    other: Current password
+    other: Mot de passe actuel
   original_text:
     other: Ce post
   email_or_password_wrong_error:
@@ -173,7 +173,7 @@ backend:
       question_closed_cannot_add:
         other: Les questions sont fermées et ne peuvent pas être ajoutées.
       content_cannot_empty:
-        other: Answer content cannot be empty.
+        other: La réponse ne peut être vide.
     comment:
       edit_without_permission:
         other: Les commentaires ne sont pas autorisés à être modifiés.
@@ -182,7 +182,7 @@ backend:
       cannot_edit_after_deadline:
         other: Le commentaire a été posté il y a trop longtemps pour être modifié.
       content_cannot_empty:
-        other: Comment content cannot be empty.
+        other: Le commentaire ne peut être vide.
     email:
       duplicate:
         other: L'adresse e-mail existe déjà.
@@ -233,7 +233,7 @@ backend:
       cannot_update:
         other: Pas de permission pour mettre à jour.
       content_cannot_empty:
-        other: Content cannot be empty.
+        other: Le contenu ne peut pas être vide.
     rank:
       fail_to_meet_the_condition:
         other: Le rang de réputation ne remplit pas la condition.
@@ -306,6 +306,14 @@ backend:
         other: "Erreur format {{.Field}} près de '{{.Content}}' à la ligne {{.Line}}. {{.ExtraMessage}}"
       add_bulk_users_amount_error:
         other: "Le nombre d'utilisateurs que vous ajoutez simultanément doit être compris entre 1-{{.MaxAmount}}."
+      status_suspended_forever:
+        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+      status_suspended_until:
+        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+      status_deleted:
+        other: "This user was deleted."
+      status_inactive:
+        other: "This user is inactive."
     config:
       read_config_failed:
         other: La lecture de la configuration a échoué
@@ -494,7 +502,7 @@ backend:
       title:
         other: "[{{.SiteName}}] Nouvelle question : {{.QuestionTitle}}"
       body:
-        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote : Il s'agit d'un e-mail automatique, merci de ne pas répondre à ce message, votre réponse ne pourra être considérée.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Se désabonner</a></small>"
     pass_reset:
       title:
         other: "[{{.SiteName }}] Réinitialisation du mot de passe"
@@ -566,7 +574,7 @@ backend:
         name:
           other: Premier lien
         desc:
-          other: First added a link to another post.
+          other: A ajouté un lien vers un autre message.
       first_reaction:
         name:
           other: Première réaction
@@ -809,7 +817,7 @@ ui:
     tag_wiki: tag wiki
     create_tag: Créer un tag
     edit_tag: Modifier l'étiquette
-    ask_a_question: Ajouter une question
+    ask_a_question: Create Question
     edit_question: Modifier la question
     edit_answer: Modifier la réponse
     search: Rechercher
@@ -1030,14 +1038,14 @@ ui:
       tip: Êtes-vous sûr de vouloir supprimer ?
       close: Fermer
     merge:
-      title: Merge tag
-      source_tag_title: Source tag
-      source_tag_description: The source tag and its associated data will be remapped to the target tag.
-      target_tag_title: Target tag
-      target_tag_description: A synonym between these two tags will be created after merging.
-      no_results: No tags matched
-      btn_submit: Submit
-      btn_close: Close
+      title: Étiquette de fusion
+      source_tag_title: Étiquette de source
+      source_tag_description: Cette étiquette de source et ses données associées seront réorganisées vers l'étiquette cible.
+      target_tag_title: Étiquette cible
+      target_tag_description: Un synonyme entre ces deux étiquettes sera créé après la fusion.
+      no_results: Aucune étiquette correspondante
+      btn_submit: Valider
+      btn_close: Fermer
   edit_tag:
     title: Editer le tag
     default_reason: Éditer le tag
@@ -1056,6 +1064,9 @@ ui:
     day: jour
     hours: heures
     days: jours
+    month: month
+    months: months
+    year: year
   reaction:
     heart: cœur
     smile: sourire
@@ -1111,10 +1122,10 @@ ui:
     more: Plus
     wiki: Wiki
   ask:
-    title: Ajouter une question
+    title: Create Question
     edit_title: Modifier la question
     default_reason: Modifier la question
-    default_first_reason: Ajouter une question
+    default_first_reason: Create question
     similar_questions: Questions similaires
     form:
       fields:
@@ -1122,7 +1133,7 @@ ui:
           label: Modification
         title:
           label: Titre
-          placeholder: Soyez précis et imaginez que vous posez une question à une autre personne
+          placeholder: What's your topic? Be specific.
           msg:
             empty: Le titre ne peut pas être vide.
             range: Titre de 150 caractères maximum
@@ -1150,7 +1161,7 @@ ui:
     add_btn: Ajouter une étiquette
     create_btn: Créer une nouvelle étiquette
     search_tag: Rechercher une étiquette
-    hint: "Décrivez en quoi consiste votre question, au moins une étiquette est requise."
+    hint: "Describe what your content is about, at least one tag is required."
     no_result: Aucune étiquette correspondante
     tag_required_text: Étiquette requise (au moins une)
   header:
@@ -1275,12 +1286,12 @@ ui:
       display_name:
         label: Nom affiché
         msg: Le nom ne peut être vide.
-        msg_range: Display name must be 2-30 characters in length.
+        msg_range: Le nom d'affichage doit contenir entre 2 et 30 caractères.
       username:
         label: Nom d'utilisateur
         caption: Les gens peuvent vous mentionner avec "@username".
         msg: Le nom d'utilisateur ne peut pas être vide.
-        msg_range: Username must be 2-30 characters in length.
+        msg_range: Le nom d'utilisateur doit contenir entre 2 et 30 caractères.
         character: 'Doit utiliser seulement les caractères "a-z", "0-9", " - . _"'
       avatar:
         label: Photo de profil
@@ -1356,12 +1367,12 @@ ui:
     review: Votre révision s'affichera après vérification.
     sent_success: Envoyé avec succès
   related_question:
-    title: Questions liées
+    title: Related
     answers: réponses
   linked_question:
-    title: Questions connexes
-    description: Questions liées à
-    no_linked_question: Aucune question liée à cette question.
+    title: Linked
+    description: Posts linked to
+    no_linked_question: No contents linked from this content.
   invite_to_answer:
     title: Personnes interrogées
     desc: Invite people who you think might know the answer.
@@ -1452,7 +1463,7 @@ ui:
     signup: S'inscrire
     logout: Se déconnecter
     verify: Vérifier
-    create: Create
+    create: Créer
     approve: Approuver
     reject: Rejeter
     skip: Ignorer
@@ -1484,16 +1495,16 @@ ui:
     normal: Normal
     closed: Fermé
     deleted: Supprimé
-    deleted_permanently: Deleted permanently
+    deleted_permanently: Supprimé définitivement
     pending: En attente de traitement
     more: Plus
-    view: View
-    card: Card
+    view: Vue
+    card: Carte
     compact: Compact
-    display_below: Display below
-    always_display: Always display
-    or: or
-    back_sites: Back to sites
+    display_below: Afficher dessous
+    always_display: Toujours afficher
+    or: ou
+    back_sites: Retour aux sites
   search:
     title: Résultats de la recherche
     keywords: Mots-clés
@@ -1501,6 +1512,7 @@ ui:
     follow: Suivre
     following: Abonnements
     counts: "{{count}} Résultats"
+    counts_loading: "... Results"
     more: Plus
     sort_btns:
       relevance: Pertinence
@@ -1523,13 +1535,13 @@ ui:
     via: Partager via...
     copied: Copié
     facebook: Partager sur Facebook
-    twitter: Share to X
+    twitter: Partager sur X
   cannot_vote_for_self: Vous ne pouvez pas voter pour votre propre message.
   modal_confirm:
     title: Erreur...
   delete_permanently:
-    title: Delete permanently
-    content: Are you sure you want to delete permanently?
+    title: Supprimer définitivement
+    content: Êtes-vous sûr de vouloir supprimer définitivement ?
   account_result:
     success: Votre nouveau compte est confirmé; vous serez redirigé vers la page d'accueil.
     link: Continuer vers la page d'accueil
@@ -1552,6 +1564,7 @@ ui:
     all_questions: Toutes les questions
     x_questions: "{{ count }} questions"
     x_answers: "{{ count }} réponses"
+    x_posts: "{{ count }} Posts"
     questions: Questions
     answers: Réponses
     newest: Les plus récents
@@ -1634,22 +1647,22 @@ ui:
       placeholder: /data/answer.db
       msg: Le fichier de base de données ne doit pas être vide.
     ssl_enabled:
-      label: Enable SSL
+      label: Activer SSL
     ssl_enabled_on:
       label: On
     ssl_enabled_off:
       label: Off
     ssl_mode:
-      label: SSL Mode
+      label: Mode SSL
     ssl_root_cert:
-      placeholder: sslrootcert file path
-      msg: Path to sslrootcert file cannot be empty
+      placeholder: Chemin du fichier sslrootcert
+      msg: Le chemin vers le fichier sslrootcert ne peut pas être vide
     ssl_cert:
-      placeholder: sslcert file path
-      msg: Path to sslcert file cannot be empty
+      placeholder: Chemin du fichier sslcert
+      msg: Le chemin vers le fichier sslcert ne peut pas être vide
     ssl_key:
-      placeholder: sslkey file path
-      msg: Path to sslkey file cannot be empty
+      placeholder: Chemin du fichier sslkey
+      msg: Le chemin vers le fichier sslkey ne peut pas être vide
     config_yaml:
       title: Créer config.yaml
       label: Le fichier config.yaml a été créé.
@@ -1682,8 +1695,8 @@ ui:
     admin_name:
       label: Nom
       msg: Le nom ne peut pas être vide.
-      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
-      msg_max_length: Name must be between 2 to 30 characters in length.
+      character: 'Utiliser seulement les caractères "a-z", "0-9", " - . _"'
+      msg_max_length: La longueur du nom doit être comprise entre 2 et 30 caractères.
     admin_password:
       label: Mot de passe
       text: >-
@@ -1692,9 +1705,9 @@ ui:
       msg_min_length: Le mot de passe doit comporter au moins 8 caractères.
       msg_max_length: Le mot de passe doit comporter au maximum 32 caractères.
     admin_confirm_password:
-      label: "Confirm Password"
-      text: "Please re-enter your password to confirm."
-      msg: "Confirm password does not match."
+      label: "Répétez le mot de passe"
+      text: "Veuillez saisir à nouveau votre mot de passe pour confirmer."
+      msg: "Les mots de passe ne correspondent pas."
     admin_email:
       label: Email
       text: Vous aurez besoin de cet email pour vous connecter.
@@ -1752,7 +1765,7 @@ ui:
     privileges: Privilèges
     plugins: Extensions
     installed_plugins: Extensions installées
-    apperance: Appearance
+    apperance: Apparence
   website_welcome: Bienvenue sur {{site_name}}
   user_center:
     login: Connexion
@@ -1852,10 +1865,10 @@ ui:
         fields:
           display_name:
             label: Nom affiché
-            msg_range: Display name must be 2-30 characters in length.
+            msg_range: Le nom d'affichage doit contenir entre 2 et 30 caractères.
           username:
             label: Nom d'utilisateur
-            msg_range: Username must be 2-30 characters in length.
+            msg_range: Le nom d'utilisateur doit contenir entre 2 et 30 caractères.
           email:
             label: Email
             msg_invalid: Adresse e-mail non valide.
@@ -1887,9 +1900,10 @@ ui:
       name: Nom
       email: E-mail
       reputation: Réputation
-      created_at: Created time
-      delete_at: Deleted time
-      suspend_at: Suspended time
+      created_at: Date de création
+      delete_at: Date de suppression
+      suspend_at: Date de suspension
+      suspend_until: Suspend until
       status: Statut
       role: Rôle
       action: Action
@@ -1924,6 +1938,8 @@ ui:
       suspend_user:
         title: Suspendre cet utilisateur
         content: Un utilisateur suspendu ne peut pas se connecter.
+        label: How long will the user be suspended for?
+        forever: Forever
     questions:
       page_title: Questions
       unlisted: Non listé
@@ -1984,6 +2000,12 @@ ui:
         label: Fuseau Horaire
         msg: Le fuseau horaire ne peut pas être vide.
         text: Choisissez une ville dans le même fuseau horaire que vous.
+      avatar:
+        label: Default avatar
+        text: For users without a custom avatar of their own.
+      gravatar_base_url:
+        label: Gravatar base URL
+        text: URL of the Gravatar provider's API base. Ignored when empty.
     smtp:
       page_title: SMTP
       from_email:
@@ -2050,10 +2072,10 @@ ui:
         label: Protection des données
         text: "Vous pouvez ajouter le contenu des conditions de service ici. Si vous avez déjà un document hébergé ailleurs, veuillez fournir l'URL complète ici."
       external_content_display:
-        label: External content
-        text: "Content includes images, videos, and media embedded from external websites."
-        always_display: Always display external content
-        ask_before_display: Ask before displaying external content
+        label: Contenu externe
+        text: "Le contenu comprend des images, des vidéos et des médias intégrés à partir de sites web externes."
+        always_display: Toujours afficher le contenu externe
+        ask_before_display: Demander avant d'afficher le contenu externe
     write:
       page_title: Écrire
       restrict_answer:
@@ -2103,7 +2125,7 @@ ui:
       color_scheme:
         label: Jeu de couleurs
       navbar_style:
-        label: Navbar background style
+        label: Style d'arrière-plan de la barre de navigation
       primary_color:
         label: Couleur primaire
         text: Modifier les couleurs utilisées par vos thèmes
@@ -2309,11 +2331,11 @@ ui:
     user_deleted: Cet utilisateur a été supprimé.
     badge_activated: Ce badge a été activé.
     badge_inactivated: Ce badge a été désactivé.
-    users_deleted: These users have been deleted.
-    posts_deleted: These questions have been deleted.
-    answers_deleted: These answers have been deleted.
-    copy: Copy to clipboard
-    copied: Copied
-    external_content_warning: External images/media are not displayed.
+    users_deleted: Ces utilisateurs ont été supprimés.
+    posts_deleted: Ces questions ont été supprimées.
+    answers_deleted: Ces réponses ont été supprimées.
+    copy: Copier dans le presse-papier
+    copied: Copié
+    external_content_warning: Les images/médias externes ne sont pas affichés.
 
 

@@ -306,6 +306,14 @@ backend:
         other: "مشکل پیش آمده در فرمت {{.Field}} در کنار {{.Content}} در خط {{.Line}}. {{.ExtraMessage}}"
       add_bulk_users_amount_error:
         other: "تعداد کاربرانی که اضافه می کنید باید رنج بین ۱-{{.MaxAmount}} باشند."
+      status_suspended_forever:
+        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+      status_suspended_until:
+        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+      status_deleted:
+        other: "This user was deleted."
+      status_inactive:
+        other: "This user is inactive."
     config:
       read_config_failed:
         other: خواندن کافیگ با مشکل مواجه شد
@@ -809,7 +817,7 @@ ui:
     tag_wiki: ویکی تگ
     create_tag: ایجاد برچسب
     edit_tag: ویرایش برچسب
-    ask_a_question: اضافه کردن سوال
+    ask_a_question: Create Question
     edit_question: ویرایش سوال
     edit_answer: ویرایش پاسخ
     search: جستجو
@@ -1056,6 +1064,9 @@ ui:
     day: روز
     hours: ساعات
     days: روزها
+    month: month
+    months: months
+    year: year
   reaction:
     heart: heart
     smile: smile
@@ -1111,10 +1122,10 @@ ui:
     more: بیشتر
     wiki: Wiki
   ask:
-    title: سوالی اضافه کنید
+    title: Create Question
     edit_title: سوال را ویرایش کنید
     default_reason: سوال را ویرایش کنید
-    default_first_reason: سوال اضافه کنید
+    default_first_reason: Create question
     similar_questions: سؤال های مشابه
     form:
       fields:
@@ -1122,7 +1133,7 @@ ui:
           label: تجدید نظر
         title:
           label: عنوان
-          placeholder: به طور خاص فرض کنید که شما یک سؤال از یک شخص دیگری می پرسید
+          placeholder: What's your topic? Be specific.
           msg:
             empty: عنوان نمی تواند خالی باشد.
             range: عنوان میتواند تا ۳۰ حرف باشد
@@ -1150,7 +1161,7 @@ ui:
     add_btn: اضافه کردن برچسب
     create_btn: ایجاد یک برچسب جدید
     search_tag: جست‌وجوی برچسب‌
-    hint: "درمورد سوال خود توضیحی دهید، حداقل یک برچسب نیاز است."
+    hint: "Describe what your content is about, at least one tag is required."
     no_result: هیچ تگی مطابقت ندارد
     tag_required_text: تگ نیاز هست (حداقل یک مورد)
   header:
@@ -1356,12 +1367,12 @@ ui:
     review: بازبینی شما پس از بررسی نشان داده خواهد شد.
     sent_success: با موفقيت ارسال شد
   related_question:
-    title: سوالات مرتبط
+    title: Related
     answers: جواب ها
   linked_question:
-    title: Linked Questions
-    description: Questions linked to
-    no_linked_question: No questions linked from this question.
+    title: Linked
+    description: Posts linked to
+    no_linked_question: No contents linked from this content.
   invite_to_answer:
     title: مردم پرسیدند
     desc: افرادی را دعوت کنید که فکر می کنید ممکن است پاسخ را بدانند.
@@ -1501,6 +1512,7 @@ ui:
     follow: دنبال کردن
     following: دنبال میکنید
     counts: "{{count}} نتیجه"
+    counts_loading: "... Results"
     more: بیشتر
     sort_btns:
       relevance: مرتبط
@@ -1552,6 +1564,7 @@ ui:
     all_questions: تمام سوالات
     x_questions: "{{ count }} سوال"
     x_answers: "{{ count }} جواب"
+    x_posts: "{{ count }} Posts"
     questions: سوالات
     answers: پاسخ ها
     newest: جدیدترین
@@ -1890,6 +1903,7 @@ ui:
       created_at: Created time
       delete_at: Deleted time
       suspend_at: Suspended time
+      suspend_until: Suspend until
       status: وضعیت
       role: نقش
       action: عمل
@@ -1924,6 +1938,8 @@ ui:
       suspend_user:
         title: تعلیق این کاربر
         content: کاربر تعلیق شده نمی‌تواند وارد شود.
+        label: How long will the user be suspended for?
+        forever: Forever
     questions:
       page_title: سوالات
       unlisted: Unlisted
@@ -1984,6 +2000,12 @@ ui:
         label: منطقه زمانی
         msg: منطقه زمانی نمی تواند خالی باشد.
         text: شهری را در همان منطقه زمانی خود انتخاب کنید.
+      avatar:
+        label: Default avatar
+        text: For users without a custom avatar of their own.
+      gravatar_base_url:
+        label: Gravatar base URL
+        text: URL of the Gravatar provider's API base. Ignored when empty.
     smtp:
       page_title: SMTP
       from_email:

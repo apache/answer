@@ -306,6 +306,14 @@ backend:
         other: "Lỗi định dạng {{.Field}} gần '{{.Content}}' tại dòng {{.Line}}. {{.ExtraMessage}}"
       add_bulk_users_amount_error:
         other: "Số lượng người dùng bạn thêm cùng một lúc nên nằm trong khoảng từ 1-{{.MaxAmount}}."
+      status_suspended_forever:
+        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+      status_suspended_until:
+        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+      status_deleted:
+        other: "This user was deleted."
+      status_inactive:
+        other: "This user is inactive."
     config:
       read_config_failed:
         other: Đọc cấu hình thất bại
@@ -809,7 +817,7 @@ ui:
     tag_wiki: wiki thẻ
     create_tag: Tạo thẻ
     edit_tag: Chỉnh sửa thẻ
-    ask_a_question: Thêm câu hỏi
+    ask_a_question: Create Question
     edit_question: Chỉnh sửa câu hỏi
     edit_answer: Chỉnh sửa câu
     search: Tìm kiếm
@@ -1056,6 +1064,9 @@ ui:
     day: ngày
     hours: giờ
     days: ngày
+    month: month
+    months: months
+    year: year
   reaction:
     heart: trái tim
     smile: nụ cười
@@ -1111,10 +1122,10 @@ ui:
     more: Thêm
     wiki: Wiki
   ask:
-    title: Thêm Câu hỏi
+    title: Create Question
     edit_title: Chỉnh sửa Câu hỏi
     default_reason: Chỉnh sửa câu hỏi
-    default_first_reason: Thêm câu hỏi
+    default_first_reason: Create question
     similar_questions: Câu hỏi tương tự
     form:
       fields:
@@ -1122,7 +1133,7 @@ ui:
           label: Sửa đổi
         title:
           label: Tiêu đề
-          placeholder: Hãy cụ thể và tưởng tượng rằng bạn đang hỏi một người khác
+          placeholder: What's your topic? Be specific.
           msg:
             empty: Tiêu đề không thể trống.
             range: Tiêu đề tối đa 150 ký tự
@@ -1150,7 +1161,7 @@ ui:
     add_btn: Thêm thẻ
     create_btn: Tạo thẻ mới
     search_tag: Tìm kiếm thẻ
-    hint: "Mô tả câu hỏi của bạn, ít nhất một thẻ là bắt buộc."
+    hint: "Describe what your content is about, at least one tag is required."
     no_result: Không có thẻ phù hợp
     tag_required_text: Thẻ bắt buộc (ít nhất một)
   header:
@@ -1356,12 +1367,12 @@ ui:
     review: Sửa đổi của bạn sẽ được hiển thị sau khi được xem xét.
     sent_success: Đã gửi thành công
   related_question:
-    title: Các câu hỏi liên quan
+    title: Related
     answers: câu trả lời
   linked_question:
-    title: Câu hỏi được liên kết
-    description: Câu hỏi liên quan đến
-    no_linked_question: Không có câu hỏi nào được liên kết từ câu hỏi này.
+    title: Linked
+    description: Posts linked to
+    no_linked_question: No contents linked from this content.
   invite_to_answer:
     title: Mời mọi người
     desc: Mời những người bạn nghĩ có thể trả lời.
@@ -1501,6 +1512,7 @@ ui:
     follow: Theo dõi
     following: Đang theo dõi
     counts: "{{count}} Kết quả"
+    counts_loading: "... Results"
     more: Thêm
     sort_btns:
       relevance: Liên quan
@@ -1552,6 +1564,7 @@ ui:
     all_questions: Tất cả câu hỏi
     x_questions: "{{ count }} Câu hỏi"
     x_answers: "{{ count }} câu trả lời"
+    x_posts: "{{ count }} Posts"
     questions: Câu hỏi
     answers: Câu trả lời
     newest: Mới nhất
@@ -1890,6 +1903,7 @@ ui:
       created_at: Created time
       delete_at: Deleted time
       suspend_at: Suspended time
+      suspend_until: Suspend until
       status: Trạng thái
       role: Vai trò
       action: Hành động
@@ -1924,6 +1938,8 @@ ui:
       suspend_user:
         title: Đình chỉ người dùng này
         content: Người dùng bị đình chỉ không thể đăng nhập.
+        label: How long will the user be suspended for?
+        forever: Forever
     questions:
       page_title: Câu hỏi
       unlisted: Không được liệt kê
@@ -1984,6 +2000,12 @@ ui:
         label: Múi giờ
         msg: Múi giờ không thể trống.
         text: Chọn một thành phố cùng múi giờ với bạn.
+      avatar:
+        label: Default avatar
+        text: For users without a custom avatar of their own.
+      gravatar_base_url:
+        label: Gravatar base URL
+        text: URL of the Gravatar provider's API base. Ignored when empty.
     smtp:
       page_title: SMTP
       from_email:

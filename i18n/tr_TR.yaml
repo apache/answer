@@ -306,6 +306,14 @@ backend:
         other: "{{.Line}} satırındaki '{{.Content}}' içeriğinde {{.Field}} biçimi hatası. {{.ExtraMessage}}"
       add_bulk_users_amount_error:
         other: "Bir kerede eklediğiniz kullanıcı sayısı 1-{{.MaxAmount}} aralığında olmalıdır."
+      status_suspended_forever:
+        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+      status_suspended_until:
+        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+      status_deleted:
+        other: "This user was deleted."
+      status_inactive:
+        other: "This user is inactive."
     config:
       read_config_failed:
         other: Yapılandırma okunamadı.
@@ -809,7 +817,7 @@ ui:
     tag_wiki: etiket wikisi
     create_tag: Etiket Oluştur
     edit_tag: Etiketi Düzenle
-    ask_a_question: Soru Ekle
+    ask_a_question: Create Question
     edit_question: Soruyu Düzenle
     edit_answer: Cevabı Düzenle
     search: Ara
@@ -1056,6 +1064,9 @@ ui:
     day: gün
     hours: saatler
     days: günler
+    month: month
+    months: months
+    year: year
   reaction:
     heart: kalp
     smile: gülümseme
@@ -1111,10 +1122,10 @@ ui:
     more: Daha Fazla
     wiki: Wiki
   ask:
-    title: Soru Ekle
+    title: Create Question
     edit_title: Soruyu Düzenle
     default_reason: Soruyu düzenle
-    default_first_reason: Soru ekle
+    default_first_reason: Create question
     similar_questions: Benzer sorular
     form:
       fields:
@@ -1122,7 +1133,7 @@ ui:
           label: Revizyon
         title:
           label: Başlık
-          placeholder: Spesifik olun ve başka birine soru sorduğunuzu hayal edin
+          placeholder: What's your topic? Be specific.
           msg:
             empty: Başlık boş olamaz.
             range: Başlık en fazla 150 karakter olabilir
@@ -1150,7 +1161,7 @@ ui:
     add_btn: Etiket ekle
     create_btn: Yeni etiket oluştur
     search_tag: Etiket ara
-    hint: "Sorunuzun ne hakkında olduğunu tanımlayın, en az bir etiket gereklidir."
+    hint: "Describe what your content is about, at least one tag is required."
     no_result: Eşleşen etiket bulunamadı
     tag_required_text: Gerekli etiket (en az bir tane)
   header:
@@ -1275,12 +1286,12 @@ ui:
       display_name:
         label: Görünen ad
         msg: Görünen ad boş olamaz.
-        msg_range: Display name must be 2-30 characters in length.
+        msg_range: Görünen ad 2-30 karakter uzunluğunda olmalıdır.
       username:
         label: Kullanıcı adı
         caption: İnsanlar size "@kullaniciadi" şeklinde bahsedebilir.
         msg: Kullanıcı adı boş olamaz.
-        msg_range: Username must be 2-30 characters in length.
+        msg_range: Kullanıcı adı 2-30 karakter uzunluğunda olmalıdır.
         character: '"a-z", "0-9", "- . _" karakter setini kullanmalısınız'
       avatar:
         label: Profil resmi
@@ -1356,12 +1367,12 @@ ui:
     review: Revizyonunuz incelendikten sonra görünecek.
     sent_success: Başarıyla gönderildi
   related_question:
-    title: İlgili Sorular
+    title: Related
     answers: cevap
   linked_question:
-    title: Bağlantılı Sorular
-    description: Şu soruya bağlantılı sorular
-    no_linked_question: Bu sorudan bağlantılı soru yok.
+    title: Linked
+    description: Posts linked to
+    no_linked_question: No contents linked from this content.
   invite_to_answer:
     title: İnsanları Davet Et
     desc: Cevap verebileceğini düşündüğünüz kişileri davet edin.
@@ -1501,6 +1512,7 @@ ui:
     follow: Takip Et
     following: Takip Ediliyor
     counts: "{{count}} Sonuç"
+    counts_loading: "... Results"
     more: Daha Fazla
     sort_btns:
       relevance: İlgililik
@@ -1552,6 +1564,7 @@ ui:
     all_questions: Tüm Sorular
     x_questions: "{{ count }} Soru"
     x_answers: "{{ count }} cevap"
+    x_posts: "{{ count }} Posts"
     questions: Sorular
     answers: Cevaplar
     newest: En Yeni
@@ -1752,7 +1765,7 @@ ui:
     privileges: Ayrıcalıklar
     plugins: Eklentiler
     installed_plugins: Kurulu Eklentiler
-    apperance: Appearance
+    apperance: Görünüm
   website_welcome: '{{site_name}} sitesine hoş geldiniz'
   user_center:
     login: Giriş
@@ -1852,10 +1865,10 @@ ui:
         fields:
           display_name:
             label: Görünen ad
-            msg_range: Display name must be 2-30 characters in length.
+            msg_range: Görünen ad 2-30 karakter uzunluğunda olmalıdır.
           username:
             label: Kullanıcı adı
-            msg_range: Username must be 2-30 characters in length.
+            msg_range: Kullanıcı adı 2-30 karakter uzunluğunda olmalıdır.
           email:
             label: E-posta
             msg_invalid: Geçersiz E-posta Adresi.
@@ -1887,9 +1900,10 @@ ui:
       name: İsim
       email: E-posta
       reputation: İtibar
-      created_at: Created time
-      delete_at: Deleted time
-      suspend_at: Suspended time
+      created_at: Oluşturulma zamanı
+      delete_at: Silinme zamanı
+      suspend_at: Askıya Alınma Zamanı
+      suspend_until: Suspend until
       status: Durum
       role: Rol
       action: Eylem
@@ -1924,6 +1938,8 @@ ui:
       suspend_user:
         title: Bu kullanıcıyı askıya al
         content: Askıya alınmış bir kullanıcı giriş yapamaz.
+        label: How long will the user be suspended for?
+        forever: Forever
     questions:
       page_title: Sorular
       unlisted: Listelenmemiş
@@ -1984,6 +2000,12 @@ ui:
         label: Saat dilimi
         msg: Saat dilimi boş olamaz.
         text: Sizinle aynı saat dilimindeki bir şehri seçin.
+      avatar:
+        label: Default avatar
+        text: For users without a custom avatar of their own.
+      gravatar_base_url:
+        label: Gravatar base URL
+        text: URL of the Gravatar provider's API base. Ignored when empty.
     smtp:
       page_title: SMTP
       from_email:
@@ -2103,7 +2125,7 @@ ui:
       color_scheme:
         label: Renk şeması
       navbar_style:
-        label: Navbar background style
+        label: Gezinme çubuğu arka plan stili
       primary_color:
         label: Ana renk
         text: Temalarınızda kullanılan renkleri değiştirin

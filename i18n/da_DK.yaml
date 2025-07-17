@@ -306,6 +306,14 @@ backend:
         other: "Fejl {{.Field}} format nær '{{.Content}}' i linje {{.Line}}. {{.ExtraMessage}}"
       add_bulk_users_amount_error:
         other: "Antallet af brugere du tilføjer på én gang skal være i intervallet 1 -{{.MaxAmount}}."
+      status_suspended_forever:
+        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+      status_suspended_until:
+        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+      status_deleted:
+        other: "This user was deleted."
+      status_inactive:
+        other: "This user is inactive."
     config:
       read_config_failed:
         other: Kunne ikke læse konfigurationen
@@ -809,7 +817,7 @@ ui:
     tag_wiki: tag wiki
     create_tag: Opret tag
     edit_tag: Rediger tag
-    ask_a_question: Tilføj spørgsmål
+    ask_a_question: Create Question
     edit_question: Rediger spørgsmål
     edit_answer: Rediger Svar
     search: Søg
@@ -1056,6 +1064,9 @@ ui:
     day: dag
     hours: timer
     days: dag
+    month: month
+    months: months
+    year: year
   reaction:
     heart: hjerte
     smile: smil
@@ -1111,10 +1122,10 @@ ui:
     more: Mere
     wiki: Wiki
   ask:
-    title: Tilføj spørgsmål
+    title: Create Question
     edit_title: Rediger spørgsmål
     default_reason: Rediger spørgsmål
-    default_first_reason: Tilføj spørgsmål
+    default_first_reason: Create question
     similar_questions: Lignende spørgsmål
     form:
       fields:
@@ -1122,7 +1133,7 @@ ui:
           label: Revision
         title:
           label: Titel
-          placeholder: Vær specifik og forestil dig, at du stiller et spørgsmål til en anden person
+          placeholder: What's your topic? Be specific.
           msg:
             empty: Titel må ikke være tom.
             range: Titel på op til 150 tegn
@@ -1150,7 +1161,7 @@ ui:
     add_btn: Tilføj tag
     create_btn: Opret et nyt tag
     search_tag: Søg tag
-    hint: "Beskriv hvad dit spørgsmål handler om, mindst et tag er påkrævet."
+    hint: "Describe what your content is about, at least one tag is required."
     no_result: Ingen tags matchede
     tag_required_text: Påkrævet tag (mindst én)
   header:
@@ -1356,12 +1367,12 @@ ui:
     review: Din revision vil blive vist efter gennemgang.
     sent_success: Sendt
   related_question:
-    title: Relaterede spørgsmål
+    title: Related
     answers: svar
   linked_question:
-    title: Linked Questions
-    description: Questions linked to
-    no_linked_question: No questions linked from this question.
+    title: Linked
+    description: Posts linked to
+    no_linked_question: No contents linked from this content.
   invite_to_answer:
     title: Inviter personer
     desc: Invitér personer, som du tror, kan svare.
@@ -1501,6 +1512,7 @@ ui:
     follow: Følg
     following: Følger
     counts: "{{count}} Resultater"
+    counts_loading: "... Results"
     more: Mere
     sort_btns:
       relevance: Relevans
@@ -1552,6 +1564,7 @@ ui:
     all_questions: Alle Spørgsmål
     x_questions: "{{ count }} Spørgsmål"
     x_answers: "{{ count }} svar"
+    x_posts: "{{ count }} Posts"
     questions: Spørgsmål
     answers: Svar
     newest: Nyeste
@@ -1890,6 +1903,7 @@ ui:
       created_at: Created time
       delete_at: Deleted time
       suspend_at: Suspended time
+      suspend_until: Suspend until
       status: Status
       role: Rolle
       action: Handling
@@ -1924,6 +1938,8 @@ ui:
       suspend_user:
         title: Suspendér denne bruger
         content: En suspenderet bruger kan ikke logge ind.
+        label: How long will the user be suspended for?
+        forever: Forever
     questions:
       page_title: Spørgsmål
       unlisted: Fjernet fra liste
@@ -1984,6 +2000,12 @@ ui:
         label: Tidszone
         msg: Tidszone skal udfyldes.
         text: Vælg en by i samme tidszone som dig selv.
+      avatar:
+        label: Default avatar
+        text: For users without a custom avatar of their own.
+      gravatar_base_url:
+        label: Gravatar base URL
+        text: URL of the Gravatar provider's API base. Ignored when empty.
     smtp:
       page_title: SMTP
       from_email:

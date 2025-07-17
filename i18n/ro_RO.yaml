@@ -306,6 +306,14 @@ backend:
         other: "{{.Field}} format lângă '{{.Content}}' la linia {{.Line}}. {{.ExtraMessage}}"
       add_bulk_users_amount_error:
         other: "Numărul de utilizatori pe care îi adăugați odată trebuie să fie în intervalul 1-{{.MaxAmount}}."
+      status_suspended_forever:
+        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+      status_suspended_until:
+        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+      status_deleted:
+        other: "This user was deleted."
+      status_inactive:
+        other: "This user is inactive."
     config:
       read_config_failed:
         other: Citirea configurației a eșuat
@@ -809,7 +817,7 @@ ui:
     tag_wiki: etichetă wiki
     create_tag: Creați etichetă
     edit_tag: Modificați eticheta
-    ask_a_question: Adăugați întrebarea
+    ask_a_question: Create Question
     edit_question: Editați întrebarea
     edit_answer: Editaţi răspunsul
     search: Caută
@@ -1056,6 +1064,9 @@ ui:
     day: zi
     hours: ore
     days: zile
+    month: month
+    months: months
+    year: year
   reaction:
     heart: heart
     smile: smile
@@ -1111,10 +1122,10 @@ ui:
     more: Mai multe
     wiki: Wiki
   ask:
-    title: Adăugați întrebarea
+    title: Create Question
     edit_title: Editați întrebarea
     default_reason: Editați întrebarea
-    default_first_reason: Adaugă o întrebare
+    default_first_reason: Create question
     similar_questions: Întrebări similare
     form:
       fields:
@@ -1122,7 +1133,7 @@ ui:
           label: Revizuire
         title:
           label: Titlu
-          placeholder: Fii specific și imaginează-ți că pui o întrebare unei alte persoane
+          placeholder: What's your topic? Be specific.
           msg:
             empty: Titlul nu poate fi gol.
             range: Titlu de până la 150 de caractere
@@ -1150,7 +1161,7 @@ ui:
     add_btn: Adaugă etichetă
     create_btn: Creează o etichetă nouă
     search_tag: Căutare etichetă
-    hint: "Descrie despre ce este intrebarea ta, este necesar cel putin o eticheta."
+    hint: "Describe what your content is about, at least one tag is required."
     no_result: Nicio etichetă potrivită
     tag_required_text: Etichetă necesară (cel puțin una)
   header:
@@ -1356,12 +1367,12 @@ ui:
     review: Revizuirea ta va arăta după recenzie.
     sent_success: Trimis cu succes
   related_question:
-    title: Întrebări conexe
+    title: Related
     answers: răspunsuri
   linked_question:
-    title: Linked Questions
-    description: Questions linked to
-    no_linked_question: No questions linked from this question.
+    title: Linked
+    description: Posts linked to
+    no_linked_question: No contents linked from this content.
   invite_to_answer:
     title: Persoane întrebate
     desc: Invită persoane care crezi că știu răspunsul.
@@ -1501,6 +1512,7 @@ ui:
     follow: Urmărește
     following: Urmăriți
     counts: "{{count}} rezultatele"
+    counts_loading: "... Results"
     more: Mai mult
     sort_btns:
       relevance: Relevanță
@@ -1552,6 +1564,7 @@ ui:
     all_questions: Toate întrebările
     x_questions: "{{ count }} Întrebări"
     x_answers: "{{ count }} răspunsuri"
+    x_posts: "{{ count }} Posts"
     questions: Întrebări
     answers: Răspunsuri
     newest: Cele mai noi
@@ -1890,6 +1903,7 @@ ui:
       created_at: Created time
       delete_at: Deleted time
       suspend_at: Suspended time
+      suspend_until: Suspend until
       status: Stare
       role: Rol
       action: Acţiune
@@ -1924,6 +1938,8 @@ ui:
       suspend_user:
         title: Suspendă acest utilizator
         content: Un utilizator suspendat nu se poate autentifica.
+        label: How long will the user be suspended for?
+        forever: Forever
     questions:
       page_title: Întrebări
       unlisted: Unlisted
@@ -1984,6 +2000,12 @@ ui:
         label: Fusul orar
         msg: Fusul orar nu poate fi gol.
         text: Alege un oraș în același fus orar cu tine.
+      avatar:
+        label: Default avatar
+        text: For users without a custom avatar of their own.
+      gravatar_base_url:
+        label: Gravatar base URL
+        text: URL of the Gravatar provider's API base. Ignored when empty.
     smtp:
       page_title: SMTP
       from_email:

@@ -306,6 +306,14 @@ backend:
         other: "Error {{.Field}} format near '{{.Content}}' at line {{.Line}}. {{.ExtraMessage}}"
       add_bulk_users_amount_error:
         other: "一度に追加するユーザーの数は、1 -{{.MaxAmount}} の範囲にする必要があります。"
+      status_suspended_forever:
+        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+      status_suspended_until:
+        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+      status_deleted:
+        other: "This user was deleted."
+      status_inactive:
+        other: "This user is inactive."
     config:
       read_config_failed:
         other: configの読み込みに失敗しました
@@ -808,7 +816,7 @@ ui:
     tag_wiki: タグ wiki
     create_tag: タグを作成
     edit_tag: タグを編集
-    ask_a_question: 質問を追加
+    ask_a_question: Create Question
     edit_question: 質問を編集
     edit_answer: 回答を編集
     search: 検索
@@ -1055,6 +1063,9 @@ ui:
     day: 日
     hours: 時
     days: 日
+    month: month
+    months: months
+    year: year
   reaction:
     heart: ハート
     smile: 笑顔
@@ -1110,10 +1121,10 @@ ui:
     more: もっと見る
     wiki: Wiki
   ask:
-    title: 質問を追加
+    title: Create Question
     edit_title: 質問を編集
     default_reason: 質問を編集
-    default_first_reason: 質問を追加
+    default_first_reason: Create question
     similar_questions: 類似の質問
     form:
       fields:
@@ -1121,7 +1132,7 @@ ui:
           label: 修正
         title:
           label: タイトル
-          placeholder: 具体的にして、あなたが他の人に質問していると想像してください
+          placeholder: What's your topic? Be specific.
           msg:
             empty: タイトルを空にすることはできません。
             range: タイトルは最大150文字までです
@@ -1149,7 +1160,7 @@ ui:
     add_btn: タグを追加
     create_btn: 新しタグを作成
     search_tag: タグを検索
-    hint: "質問について説明してください。少なくとも1つのタグが必要です。"
+    hint: "Describe what your content is about, at least one tag is required."
     no_result: 一致するタグはありません
     tag_required_text: 必須タグ (少なくとも 1 つ)
   header:
@@ -1355,12 +1366,12 @@ ui:
     review: レビュー後にあなたのリビジョンが表示されます。
     sent_success: 正常に送信されました。
   related_question:
-    title: 関係のある質問
+    title: Related
     answers: 回答
   linked_question:
-    title: リンクされた質問
-    description: リンクされている質問
-    no_linked_question: この質問からリンクされた質問はありません。
+    title: Linked
+    description: Posts linked to
+    no_linked_question: No contents linked from this content.
   invite_to_answer:
     title: People Asked
     desc: Select people who you think might know the answer.
@@ -1502,6 +1513,7 @@ ui:
     follow: フォロー
     following: フォロー中
     counts: "結果：{{count}}"
+    counts_loading: "... Results"
     more: もっと見る
     sort_btns:
       relevance: 関連性
@@ -1553,6 +1565,7 @@ ui:
     all_questions: すべての質問
     x_questions: "{{ count }} の質問"
     x_answers: "{{ count }} の回答"
+    x_posts: "{{ count }} Posts"
     questions: 質問
     answers: 回答
     newest: 最新
@@ -1891,6 +1904,7 @@ ui:
       created_at: Created time
       delete_at: Deleted time
       suspend_at: Suspended time
+      suspend_until: Suspend until
       status: ステータス
       role: ロール
       action: 操作
@@ -1925,6 +1939,8 @@ ui:
       suspend_user:
         title: ユーザーをサスペンドにする
         content: 一時停止中のユーザーはログインできません。
+        label: How long will the user be suspended for?
+        forever: Forever
     questions:
       page_title: 質問
       unlisted: 限定公開済み
@@ -1985,6 +2001,12 @@ ui:
         label: タイムゾーン
         msg: タイムゾーンを空にすることはできません。
         text: あなたのタイムゾーンを選択してください。
+      avatar:
+        label: Default avatar
+        text: For users without a custom avatar of their own.
+      gravatar_base_url:
+        label: Gravatar base URL
+        text: URL of the Gravatar provider's API base. Ignored when empty.
     smtp:
       page_title: SMTP
       from_email:

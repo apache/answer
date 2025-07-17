@@ -306,6 +306,14 @@ backend:
         other: "Помилка формату {{.Field}} біля '{{.Content}}' у рядку {{.Line}}. {{.ExtraMessage}}"
       add_bulk_users_amount_error:
         other: "Кількість користувачів, яких ви додаєте одночасно, має бути в діапазоні 1-{{.MaxAmount}}."
+      status_suspended_forever:
+        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+      status_suspended_until:
+        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+      status_deleted:
+        other: "This user was deleted."
+      status_inactive:
+        other: "This user is inactive."
     config:
       read_config_failed:
         other: Не вдалося прочитати конфігурацію
@@ -809,7 +817,7 @@ ui:
     tag_wiki: тег вікі
     create_tag: Створити теґ
     edit_tag: Редагувати теґ
-    ask_a_question: Додати запитання
+    ask_a_question: Create Question
     edit_question: Редагувати запитання
     edit_answer: Редагувати відповідь
     search: Пошук
@@ -1056,6 +1064,9 @@ ui:
     day: день
     hours: годин
     days: дні
+    month: month
+    months: months
+    year: year
   reaction:
     heart: серце
     smile: посмішка
@@ -1111,10 +1122,10 @@ ui:
     more: Більше
     wiki: Вікі
   ask:
-    title: Додати питання
+    title: Create Question
     edit_title: Редагувати питання
     default_reason: Редагувати питання
-    default_first_reason: Додати питання
+    default_first_reason: Create question
     similar_questions: Подібні питання
     form:
       fields:
@@ -1122,7 +1133,7 @@ ui:
           label: Редакція
         title:
           label: Назва
-          placeholder: Будьте конкретними та уявіть, що ви ставите запитання іншій людині
+          placeholder: What's your topic? Be specific.
           msg:
             empty: Назва не може бути порожньою.
             range: Назва до 150 символів
@@ -1150,7 +1161,7 @@ ui:
     add_btn: Додати теґ
     create_btn: Створити новий теґ
     search_tag: Шукати теґ
-    hint: "Опишіть, про що ваше запитання, принаймні один тег є обов'язковим."
+    hint: "Describe what your content is about, at least one tag is required."
     no_result: Не знайдено тегів
     tag_required_text: Обов'язковий тег (принаймні один)
   header:
@@ -1356,12 +1367,12 @@ ui:
     review: Ваша версія з'явиться після перевірки.
     sent_success: Успішно відправлено
   related_question:
-    title: Пов'язані запитання
+    title: Related
     answers: відповіді
   linked_question:
-    title: Пов'язані питання
-    description: Питання, пов'язані з
-    no_linked_question: Немає питань, пов'язаних з цього питання.
+    title: Linked
+    description: Posts linked to
+    no_linked_question: No contents linked from this content.
   invite_to_answer:
     title: Люди запитували
     desc: Виберіть людей, які, на вашу думку, можуть знати відповідь.
@@ -1501,6 +1512,7 @@ ui:
     follow: Підписатися
     following: Підписані
     counts: "{{count}} Результатів"
+    counts_loading: "... Results"
     more: Більше
     sort_btns:
       relevance: Релевантність
@@ -1552,6 +1564,7 @@ ui:
     all_questions: Всі питання
     x_questions: "{{ count }} Питань"
     x_answers: "{{ count }} відповідей"
+    x_posts: "{{ count }} Posts"
     questions: Запитання
     answers: Відповіді
     newest: Найновіші
@@ -1890,6 +1903,7 @@ ui:
       created_at: Created time
       delete_at: Deleted time
       suspend_at: Suspended time
+      suspend_until: Suspend until
       status: Статус
       role: Роль
       action: Дія
@@ -1924,6 +1938,8 @@ ui:
       suspend_user:
         title: Призупинити цього користувача
         content: Призупинений користувач не може увійти в систему.
+        label: How long will the user be suspended for?
+        forever: Forever
     questions:
       page_title: Запитання
       unlisted: Вилучене зі списку
@@ -1984,6 +2000,12 @@ ui:
         label: Часовий пояс
         msg: Часовий пояс не може бути пустим.
         text: Виберіть місто в тому ж часовому поясі, що й ви.
+      avatar:
+        label: Default avatar
+        text: For users without a custom avatar of their own.
+      gravatar_base_url:
+        label: Gravatar base URL
+        text: URL of the Gravatar provider's API base. Ignored when empty.
     smtp:
       page_title: SMTP
       from_email:

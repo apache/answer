@@ -306,6 +306,14 @@ backend:
         other: "Error {{.Field}} format near '{{.Content}}' at line {{.Line}}. {{.ExtraMessage}}"
       add_bulk_users_amount_error:
         other: "The number of users you add at once should be in the range of 1-{{.MaxAmount}}."
+      status_suspended_forever:
+        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+      status_suspended_until:
+        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+      status_deleted:
+        other: "This user was deleted."
+      status_inactive:
+        other: "This user is inactive."
     config:
       read_config_failed:
         other: Read Config zlyhal
@@ -809,7 +817,7 @@ ui:
     tag_wiki: značka wiki
     create_tag: Vytvoriť štítok
     edit_tag: Upraviť značku
-    ask_a_question: Pridať otázku
+    ask_a_question: Create Question
     edit_question: Úpraviť otázku
     edit_answer: Úpraviť odpoveť
     search: Vyhľadávanie
@@ -1056,6 +1064,9 @@ ui:
     day: deň
     hours: hours
     days: days
+    month: month
+    months: months
+    year: year
   reaction:
     heart: heart
     smile: smile
@@ -1111,10 +1122,10 @@ ui:
     more: Viac
     wiki: Wiki
   ask:
-    title: Pridať otázku
+    title: Create Question
     edit_title: Upraviť otázku
     default_reason: Upraviť otázku
-    default_first_reason: Add question
+    default_first_reason: Create question
     similar_questions: Podobné otázky
     form:
       fields:
@@ -1122,7 +1133,7 @@ ui:
           label: Revízia
         title:
           label: Názov
-          placeholder: Buďte konkrétni a predstavte si, že kladiete otázku inej osobe
+          placeholder: What's your topic? Be specific.
           msg:
             empty: Názov nemôže byť prázdny.
             range: Názov do 150 znakov
@@ -1150,7 +1161,7 @@ ui:
     add_btn: Pridať značku
     create_btn: Vytvoriť novú značku
     search_tag: Vyhľadať značku --
-    hint: "Popíšte, čoho sa vaša otázka týka, vyžaduje sa aspoň jedna značka."
+    hint: "Describe what your content is about, at least one tag is required."
     no_result: Nezodpovedajú žiadne značky
     tag_required_text: Povinný štítok (aspoň jeden)
   header:
@@ -1356,12 +1367,12 @@ ui:
     review: Vaša revízia sa zobrazí po preskúmaní.
     sent_success: Sent successfully
   related_question:
-    title: Súvisiace otázky
+    title: Related
     answers: odpovede
   linked_question:
-    title: Linked Questions
-    description: Questions linked to
-    no_linked_question: No questions linked from this question.
+    title: Linked
+    description: Posts linked to
+    no_linked_question: No contents linked from this content.
   invite_to_answer:
     title: People Asked
     desc: Select people who you think might know the answer.
@@ -1501,6 +1512,7 @@ ui:
     follow: Sledovať
     following: Sledované
     counts: "{{count}} výsledky"
+    counts_loading: "... Results"
     more: Viac
     sort_btns:
       relevance: Relevantnosť
@@ -1552,6 +1564,7 @@ ui:
     all_questions: Všetky otázky
     x_questions: "{{ count }} otázky/otázok"
     x_answers: "{{ count }} odpovede/odpovedí"
+    x_posts: "{{ count }} Posts"
     questions: Otázky
     answers: Odpovede
     newest: Najnovšie
@@ -1890,6 +1903,7 @@ ui:
       created_at: Created time
       delete_at: Deleted time
       suspend_at: Suspended time
+      suspend_until: Suspend until
       status: Stav
       role: Rola
       action: Akcia
@@ -1924,6 +1938,8 @@ ui:
       suspend_user:
         title: Suspend this user
         content: A suspended user can't log in.
+        label: How long will the user be suspended for?
+        forever: Forever
     questions:
       page_title: Otázky
       unlisted: Unlisted
@@ -1984,6 +2000,12 @@ ui:
         label: Časové pásmo
         msg: Časové pásmo nemôže byť prázdne.
         text: Vyberte si mesto v rovnakom časovom pásme ako vy.
+      avatar:
+        label: Default avatar
+        text: For users without a custom avatar of their own.
+      gravatar_base_url:
+        label: Gravatar base URL
+        text: URL of the Gravatar provider's API base. Ignored when empty.
     smtp:
       page_title: SMTP
       from_email:

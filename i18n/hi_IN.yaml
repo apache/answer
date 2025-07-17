@@ -306,6 +306,14 @@ backend:
         other: "Error {{.Field}} format near '{{.Content}}' at line {{.Line}}. {{.ExtraMessage}}"
       add_bulk_users_amount_error:
         other: "The number of users you add at once should be in the range of 1-{{.MaxAmount}}."
+      status_suspended_forever:
+        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+      status_suspended_until:
+        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+      status_deleted:
+        other: "This user was deleted."
+      status_inactive:
+        other: "This user is inactive."
     config:
       read_config_failed:
         other: Read config failed
@@ -809,7 +817,7 @@ ui:
     tag_wiki: tag wiki
     create_tag: Create Tag
     edit_tag: Edit Tag
-    ask_a_question: Add Question
+    ask_a_question: Create Question
     edit_question: Edit Question
     edit_answer: Edit Answer
     search: Search
@@ -1056,6 +1064,9 @@ ui:
     day: day
     hours: hours
     days: days
+    month: month
+    months: months
+    year: year
   reaction:
     heart: heart
     smile: smile
@@ -1111,10 +1122,10 @@ ui:
     more: More
     wiki: Wiki
   ask:
-    title: Add Question
+    title: Create Question
     edit_title: Edit Question
     default_reason: Edit question
-    default_first_reason: Add question
+    default_first_reason: Create question
     similar_questions: Similar questions
     form:
       fields:
@@ -1122,7 +1133,7 @@ ui:
           label: Revision
         title:
           label: Title
-          placeholder: Be specific and imagine you're asking a question to another person
+          placeholder: What's your topic? Be specific.
           msg:
             empty: Title cannot be empty.
             range: Title up to 150 characters
@@ -1150,7 +1161,7 @@ ui:
     add_btn: Add tag
     create_btn: Create new tag
     search_tag: Search tag
-    hint: "Describe what your question is about, at least one tag is required."
+    hint: "Describe what your content is about, at least one tag is required."
     no_result: No tags matched
     tag_required_text: Required tag (at least one)
   header:
@@ -1356,12 +1367,12 @@ ui:
     review: Your revision will show after review.
     sent_success: Sent successfully
   related_question:
-    title: Related Questions
+    title: Related
     answers: answers
   linked_question:
-    title: Linked Questions
-    description: Questions linked to
-    no_linked_question: No questions linked from this question.
+    title: Linked
+    description: Posts linked to
+    no_linked_question: No contents linked from this content.
   invite_to_answer:
     title: People Asked
     desc: Select people who you think might know the answer.
@@ -1501,6 +1512,7 @@ ui:
     follow: Follow
     following: Following
     counts: "{{count}} Results"
+    counts_loading: "... Results"
     more: More
     sort_btns:
       relevance: Relevance
@@ -1552,6 +1564,7 @@ ui:
     all_questions: All Questions
     x_questions: "{{ count }} Questions"
     x_answers: "{{ count }} answers"
+    x_posts: "{{ count }} Posts"
     questions: Questions
     answers: Answers
     newest: Newest
@@ -1890,6 +1903,7 @@ ui:
       created_at: Created time
       delete_at: Deleted time
       suspend_at: Suspended time
+      suspend_until: Suspend until
       status: Status
       role: Role
       action: Action
@@ -1924,6 +1938,8 @@ ui:
       suspend_user:
         title: Suspend this user
         content: A suspended user can't log in.
+        label: How long will the user be suspended for?
+        forever: Forever
     questions:
       page_title: Questions
       unlisted: Unlisted
@@ -1984,6 +2000,12 @@ ui:
         label: Timezone
         msg: Timezone cannot be empty.
         text: Choose a city in the same timezone as you.
+      avatar:
+        label: Default avatar
+        text: For users without a custom avatar of their own.
+      gravatar_base_url:
+        label: Gravatar base URL
+        text: URL of the Gravatar provider's API base. Ignored when empty.
     smtp:
       page_title: SMTP
       from_email:

@@ -306,6 +306,14 @@ backend:
         other: "Errore {{.Field}} formato vicino a '{{.Content}}' alla riga {{.Line}}. {{.ExtraMessage}}"
       add_bulk_users_amount_error:
         other: "Il numero di utenti che aggiungi contemporaneamente dovrebbe essere compreso tra 1 e {{.MaxAmount}}."
+      status_suspended_forever:
+        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+      status_suspended_until:
+        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+      status_deleted:
+        other: "This user was deleted."
+      status_inactive:
+        other: "This user is inactive."
     config:
       read_config_failed:
         other: Configurazione lettura fallita
@@ -809,7 +817,7 @@ ui:
     tag_wiki: tag wiki
     create_tag: Crea tag
     edit_tag: Modifica Tag
-    ask_a_question: Aggiungi una domanda
+    ask_a_question: Create Question
     edit_question: Modifica Domanda
     edit_answer: Modifica risposta
     search: Cerca
@@ -1056,6 +1064,9 @@ ui:
     day: giorno
     hours: ore
     days: giorni
+    month: month
+    months: months
+    year: year
   reaction:
     heart: cuore
     smile: sorriso
@@ -1111,10 +1122,10 @@ ui:
     more: Altro
     wiki: Wiki
   ask:
-    title: Aggiungi una domanda
+    title: Create Question
     edit_title: Modifica Domanda
     default_reason: Modifica domanda
-    default_first_reason: Aggiungi una domanda
+    default_first_reason: Create question
     similar_questions: Domande simili
     form:
       fields:
@@ -1122,7 +1133,7 @@ ui:
           label: Revisione
         title:
           label: Titolo
-          placeholder: Sii specifico e immagina tu stia facendo una domanda ad un'altra persona
+          placeholder: What's your topic? Be specific.
           msg:
             empty: Il titolo non può essere vuoto.
             range: Il titolo non può superare i 150 caratteri
@@ -1150,7 +1161,7 @@ ui:
     add_btn: Aggiungi tag
     create_btn: Crea un nuovo tag
     search_tag: Cerca tag
-    hint: "Descrivi qual è la tua domanda, è richiesto almeno un tag."
+    hint: "Describe what your content is about, at least one tag is required."
     no_result: Nessun tag corrispondente
     tag_required_text: Tag richiesto (almeno uno)
   header:
@@ -1356,12 +1367,12 @@ ui:
     review: Le tue modifiche verranno visualizzata dopo la revisione.
     sent_success: Inviato correttamente
   related_question:
-    title: Domande correlate
+    title: Related
     answers: risposte
   linked_question:
-    title: Domande correlate
-    description: Domande connesse a
-    no_linked_question: Nessuna domanda legata a questa domanda.
+    title: Linked
+    description: Posts linked to
+    no_linked_question: No contents linked from this content.
   invite_to_answer:
     title: Persone Interpellate
     desc: Seleziona le persone che pensi potrebbero conoscere la risposta.
@@ -1501,6 +1512,7 @@ ui:
     follow: Segui
     following: Segui già
     counts: "{{count}} Risultati"
+    counts_loading: "... Results"
     more: Altro
     sort_btns:
       relevance: Rilevanza
@@ -1552,6 +1564,7 @@ ui:
     all_questions: Tutte le domande
     x_questions: "{{ count }} Domande"
     x_answers: "{{count}} risposte"
+    x_posts: "{{ count }} Posts"
     questions: Domande
     answers: Risposte
     newest: Più recenti
@@ -1890,6 +1903,7 @@ ui:
       created_at: Created time
       delete_at: Deleted time
       suspend_at: Suspended time
+      suspend_until: Suspend until
       status: Stato
       role: Ruolo
       action: Azione
@@ -1924,6 +1938,8 @@ ui:
       suspend_user:
         title: Sospendi questo utente
         content: Un utente sospeso non può accedere.
+        label: How long will the user be suspended for?
+        forever: Forever
     questions:
       page_title: Domande
       unlisted: Rimosso dall'elenco
@@ -1984,6 +2000,12 @@ ui:
         label: Fuso orario
         msg: Il fuso orario non può essere vuoto.
         text: Scegli una città con il tuo stesso fuso orario.
+      avatar:
+        label: Default avatar
+        text: For users without a custom avatar of their own.
+      gravatar_base_url:
+        label: Gravatar base URL
+        text: URL of the Gravatar provider's API base. Ignored when empty.
     smtp:
       page_title: Protocollo di Trasferimento Posta Semplice
       from_email:
