@@ -1,0 +1,2341 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# The following fields are used for back-end
+backend:
+  base:
+    success:
+      other: 成功。
+    unknown:
+      other: 未知错误。
+    request_format_error:
+      other: 请求格式错误。
+    unauthorized_error:
+      other: 未授权。
+    database_error:
+      other: 数据服务器错误。
+    forbidden_error:
+      other: 禁止访问。
+    duplicate_request_error:
+      other: 重复提交。
+  action:
+    report:
+      other: 举报
+    edit:
+      other: 编辑
+    delete:
+      other: 删除
+    close:
+      other: 关闭
+    reopen:
+      other: 重新打开
+    forbidden_error:
+      other: 禁止访问。
+    pin:
+      other: 置顶
+    hide:
+      other: 列表隐藏
+    unpin:
+      other: 取消置顶
+    show:
+      other: 列表显示
+    invite_someone_to_answer:
+      other: 编辑
+    undelete:
+      other: 撤消删除
+    merge:
+      other: 合并
+  role:
+    name:
+      user:
+        other: 用户
+      admin:
+        other: 管理员
+      moderator:
+        other: 版主
+    description:
+      user:
+        other: 默认没有特殊权限。
+      admin:
+        other: 拥有管理网站的全部权限。
+      moderator:
+        other: 拥有除访问后台管理以外的所有权限。
+  privilege:
+    level_1:
+      description:
+        other: 级别 1（少量声望要求，适合私有团队、群组）
+    level_2:
+      description:
+        other: 级别 2（低声望要求，适合初启动的社区）
+    level_3:
+      description:
+        other: 级别 3（高声望要求，适合成熟的社区）
+    level_custom:
+      description:
+        other: 自定义等级
+    rank_question_add_label:
+      other: 提问
+    rank_answer_add_label:
+      other: 写答案
+    rank_comment_add_label:
+      other: 写评论
+    rank_report_add_label:
+      other: 举报
+    rank_comment_vote_up_label:
+      other: 点赞评论
+    rank_link_url_limit_label:
+      other: 每次发布超过 2 个链接
+    rank_question_vote_up_label:
+      other: 点赞问题
+    rank_answer_vote_up_label:
+      other: 点赞答案
+    rank_question_vote_down_label:
+      other: 点踩问题
+    rank_answer_vote_down_label:
+      other: 点踩答案
+    rank_invite_someone_to_answer_label:
+      other: 邀请回答
+    rank_tag_add_label:
+      other: 创建新标签
+    rank_tag_edit_label:
+      other: 编辑标签描述（需要审核）
+    rank_question_edit_label:
+      other: 编辑别人的问题（需要审核）
+    rank_answer_edit_label:
+      other: 编辑别人的答案（需要审核）
+    rank_question_edit_without_review_label:
+      other: 编辑别人的问题无需审核
+    rank_answer_edit_without_review_label:
+      other: 编辑别人的答案无需审核
+    rank_question_audit_label:
+      other: 审核问题编辑
+    rank_answer_audit_label:
+      other: 审核回答编辑
+    rank_tag_audit_label:
+      other: 审核标签编辑
+    rank_tag_edit_without_review_label:
+      other: 编辑标签描述无需审核
+    rank_tag_synonym_label:
+      other: 管理标签同义词
+  email:
+    other: 邮箱
+  e_mail:
+    other: 邮箱
+  password:
+    other: 密码
+  pass:
+    other: 密码
+  old_pass:
+    other: 当前密码
+  original_text:
+    other: 本帖
+  email_or_password_wrong_error:
+    other: 邮箱和密码不匹配。
+  error:
+    common:
+      invalid_url:
+        other: 无效的 URL。
+      status_invalid:
+        other: 无效状态。
+    password:
+      space_invalid:
+        other: 密码不得含有空格。
+    admin:
+      cannot_update_their_password:
+        other: 你无法修改自己的密码。
+      cannot_edit_their_profile:
+        other: 您不能修改您的个人资料。
+      cannot_modify_self_status:
+        other: 你无法修改自己的状态。
+      email_or_password_wrong:
+        other: 邮箱和密码不匹配。
+    answer:
+      not_found:
+        other: 没有找到答案。
+      cannot_deleted:
+        other: 没有删除权限。
+      cannot_update:
+        other: 没有更新权限。
+      question_closed_cannot_add:
+        other: 问题已关闭，无法添加。
+      content_cannot_empty:
+        other: 回答内容不能为空。
+    comment:
+      edit_without_permission:
+        other: 不允许编辑评论。
+      not_found:
+        other: 评论未找到。
+      cannot_edit_after_deadline:
+        other: 评论时间太久，无法修改。
+      content_cannot_empty:
+        other: 评论内容不能为空。
+    email:
+      duplicate:
+        other: 邮箱已存在。
+      need_to_be_verified:
+        other: 邮箱需要验证。
+      verify_url_expired:
+        other: 邮箱验证的网址已过期，请重新发送邮件。
+      illegal_email_domain_error:
+        other: 此邮箱不在允许注册的邮箱域中。请使用其他邮箱尝试。
+    lang:
+      not_found:
+        other: 语言文件未找到。
+    object:
+      captcha_verification_failed:
+        other: 验证码错误。
+      disallow_follow:
+        other: 你不能关注。
+      disallow_vote:
+        other: 你不能投票。
+      disallow_vote_your_self:
+        other: 你不能为自己的帖子投票。
+      not_found:
+        other: 对象未找到。
+      verification_failed:
+        other: 验证失败。
+      email_or_password_incorrect:
+        other: 邮箱和密码不匹配。
+      old_password_verification_failed:
+        other: 旧密码验证失败。
+      new_password_same_as_previous_setting:
+        other: 新密码和旧密码相同。
+      already_deleted:
+        other: 该帖子已被删除。
+    meta:
+      object_not_found:
+        other: Meta 对象未找到
+    question:
+      already_deleted:
+        other: 该帖子已被删除。
+      under_review:
+        other: 您的帖子正在等待审核。它将在它获得批准后可见。
+      not_found:
+        other: 问题未找到。
+      cannot_deleted:
+        other: 没有删除权限。
+      cannot_close:
+        other: 没有关闭权限。
+      cannot_update:
+        other: 没有更新权限。
+      content_cannot_empty:
+        other: 内容不能为空。
+    rank:
+      fail_to_meet_the_condition:
+        other: 声望值未达到要求。
+      vote_fail_to_meet_the_condition:
+        other: 感谢投票。你至少需要 {{.Rank}} 声望才能投票。
+      no_enough_rank_to_operate:
+        other: 你至少需要 {{.Rank}} 声望才能执行此操作。
+    report:
+      handle_failed:
+        other: 报告处理失败。
+      not_found:
+        other: 报告未找到。
+    tag:
+      already_exist:
+        other: 标签已存在。
+      not_found:
+        other: 标签未找到。
+      recommend_tag_not_found:
+        other: 推荐标签不存在。
+      recommend_tag_enter:
+        other: 请选择至少一个必选标签。
+      not_contain_synonym_tags:
+        other: 不应包含同义词标签。
+      cannot_update:
+        other: 没有更新权限。
+      is_used_cannot_delete:
+        other: 你不能删除这个正在使用的标签。
+      cannot_set_synonym_as_itself:
+        other: 你不能将当前标签设为自己的同义词。
+    smtp:
+      config_from_name_cannot_be_email:
+        other: 发件人名称不能是邮箱地址。
+    theme:
+      not_found:
+        other: 主题未找到。
+    revision:
+      review_underway:
+        other: 目前无法编辑，有一个版本在审阅队列中。
+      no_permission:
+        other: 无权限修改。
+    user:
+      external_login_missing_user_id:
+        other: 第三方平台没有提供唯一的 UserID，所以你不能登录，请联系网站管理员。
+      external_login_unbinding_forbidden:
+        other: 请在移除此登录之前为你的账户设置登录密码。
+      email_or_password_wrong:
+        other:
+          other: 邮箱和密码不匹配。
+      not_found:
+        other: 用户未找到。
+      suspended:
+        other: 用户已被封禁。
+      username_invalid:
+        other: 用户名无效。
+      username_duplicate:
+        other: 用户名已被使用。
+      set_avatar:
+        other: 头像设置错误。
+      cannot_update_your_role:
+        other: 你不能修改自己的角色。
+      not_allowed_registration:
+        other: 该网站暂未开放注册。
+      not_allowed_login_via_password:
+        other: 该网站暂不支持密码登录。
+      access_denied:
+        other: 拒绝访问
+      page_access_denied:
+        other: 您没有权限访问此页面。
+      add_bulk_users_format_error:
+        other: "发生错误，{{.Field}} 格式错误，在 '{{.Content}}' 行数 {{.Line}}. {{.ExtraMessage}}"
+      add_bulk_users_amount_error:
+        other: "一次性添加的用户数量应在 1-{{.MaxAmount}} 之间。"
+      status_suspended_forever:
+        other: "<strong>该用户已被永久封禁。</strong>该用户不符合社区准则。"
+      status_suspended_until:
+        other: "<strong>该用户已被封禁至 {{.SuspendedUntil}}。</strong>该用户不符合社区准则。"
+      status_deleted:
+        other: "该用户已被删除。"
+      status_inactive:
+        other: "该用户未激活。"
+    config:
+      read_config_failed:
+        other: 读取配置失败
+    database:
+      connection_failed:
+        other: 数据库连接失败
+      create_table_failed:
+        other: 创建表失败
+    install:
+      create_config_failed:
+        other: 无法创建 config.yaml 文件。
+    upload:
+      unsupported_file_format:
+        other: 不支持的文件格式。
+    site_info:
+      config_not_found:
+        other: 未找到网站的该配置信息。
+    badge:
+      object_not_found:
+        other: 没有找到徽章对象
+  reason:
+    spam:
+      name:
+        other: 垃圾信息
+      desc:
+        other: 这个帖子是一个广告，或是破坏性行为。它对当前的主题无帮助或无关。
+    rude_or_abusive:
+      name:
+        other: 粗鲁或辱骂的
+      desc:
+        other: "一个有理智的人都会认为这种内容不适合进行尊重性的讨论。"
+    a_duplicate:
+      name:
+        other: 重复内容
+      desc:
+        other: 该问题有人问过，而且已经有了答案。
+      placeholder:
+        other: 输入已有的问题链接
+    not_a_answer:
+      name:
+        other: 不是答案
+      desc:
+        other: "该帖是作为答案发布的，但它并没有试图回答这个问题。总之，它可能应该是个编辑、评论、另一个问题或者需要被删除。"
+    no_longer_needed:
+      name:
+        other: 不再需要
+      desc:
+        other: 该评论已过时，对话性质或与此帖子无关。
+    something:
+      name:
+        other: 其他原因
+      desc:
+        other: 此帖子需要工作人员注意，因为是上述所列以外的其他理由。
+      placeholder:
+        other: 让我们具体知道你关心的什么
+    community_specific:
+      name:
+        other: 社区特定原因
+      desc:
+        other: 该问题不符合社区准则。
+    not_clarity:
+      name:
+        other: 需要细节或澄清
+      desc:
+        other: 该问题目前涵盖多个问题。它应该侧重在一个问题上。
+    looks_ok:
+      name:
+        other: 看起来没问题
+      desc:
+        other: 这个帖子是好的，不是低质量。
+    needs_edit:
+      name:
+        other: 需要编辑，我已做了修改。
+      desc:
+        other: 改进和纠正你自己帖子中的问题。
+    needs_close:
+      name:
+        other: 需要关闭
+      desc:
+        other: 关闭的问题不能回答，但仍然可以编辑、投票和评论。
+    needs_delete:
+      name:
+        other: 需要删除
+      desc:
+        other: 该帖子将被删除。
+  question:
+    close:
+      duplicate:
+        name:
+          other: 垃圾信息
+        desc:
+          other: 此问题以前就有人问过，而且已经有了答案。
+      guideline:
+        name:
+          other: 社区特定原因
+        desc:
+          other: 该问题不符合社区准则。
+      multiple:
+        name:
+          other: 需要细节或澄清
+        desc:
+          other: 该问题目前涵盖多个问题。它应该只集中在一个问题上。
+      other:
+        name:
+          other: 其他原因
+        desc:
+          other: 该帖子存在上面没有列出的另一个原因。
+    operation_type:
+      asked:
+        other: 提问于
+      answered:
+        other: 回答于
+      modified:
+        other: 修改于
+    deleted_title:
+      other: 删除的问题
+    questions_title:
+      other: 问题
+  tag:
+    tags_title:
+      other: 标签
+    no_description:
+      other: 此标签没有描述。
+  notification:
+    action:
+      update_question:
+        other: 更新了问题
+      answer_the_question:
+        other: 回答了问题
+      update_answer:
+        other: 更新了答案
+      accept_answer:
+        other: 采纳了答案
+      comment_question:
+        other: 评论了问题
+      comment_answer:
+        other: 评论了答案
+      reply_to_you:
+        other: 回复了你
+      mention_you:
+        other: 提到了你
+      your_question_is_closed:
+        other: 你的问题已被关闭
+      your_question_was_deleted:
+        other: 你的问题已被删除
+      your_answer_was_deleted:
+        other: 你的答案已被删除
+      your_comment_was_deleted:
+        other: 你的评论已被删除
+      up_voted_question:
+        other: 点赞问题
+      down_voted_question:
+        other: 点踩问题
+      up_voted_answer:
+        other: 点赞答案
+      down_voted_answer:
+        other: 点踩回答
+      up_voted_comment:
+        other: 点赞评论
+      invited_you_to_answer:
+        other: 邀请你回答
+      earned_badge:
+        other: 你获得 "{{.BadgeName}}" 徽章
+  email_tpl:
+    change_email:
+      title:
+        other: "[{{.SiteName}}] 确认你的新邮箱地址"
+      body:
+        other: "请点击以下链接确认你在 {{.SiteName}} 上的新邮箱地址：<br>\n<a href='{{.ChangeEmailUrl}}' target='_blank'>{{.ChangeEmailUrl}}</a><br><br>\n\n如果你没有请求此更改，请忽略此邮件。\n\n--<br>\n这是系统自动发送的电子邮件，请勿回复，因为您的回复将不会被看到<br><br>"
+    new_answer:
+      title:
+        other: "[{{.SiteName}}] {{.DisplayName}} 回答了你的问题"
+      body:
+        other: "<a href='{{.AnswerUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}：<br>\n<blockquote>{{.AnswerSummary}}</blockquote><br>\n<a href='{{.AnswerUrl}}'>在 {{.SiteName}} 上查看</a><br><br>\n\n--<br>\n这是系统自动发送的电子邮件，请勿回复，因为您的回复将不会被看到<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>取消订阅</a></small>"
+    invited_you_to_answer:
+      title:
+        other: "[{{.SiteName}}] {{.DisplayName}} 邀请您回答问题"
+      body:
+        other: "<a href='{{.InviteUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}：<br>\n<blockquote>我想你可能知道答案。</blockquote><br>\n<a href='{{.InviteUrl}}'>在 {{.SiteName}} 上查看</a><br><br>\n\n--<br>\n这是系统自动发送的电子邮件，请勿回复，因为您的回复将不会被看到<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>取消订阅</a></small>"
+    new_comment:
+      title:
+        other: "[{{.SiteName}}] {{.DisplayName}} 评论了你的帖子"
+      body:
+        other: "<a href='{{.CommentUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}：<br>\n<blockquote>{{.CommentSummary}}</blockquote><br>\n<a href='{{.CommentUrl}}'>在 {{.SiteName}} 上查看</a><br><br>\n\n--<br>\n这是系统自动发送的电子邮件，请勿回复，因为您的回复将不会被看到<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>取消订阅</a></small>"
+    new_question:
+      title:
+        other: "[{{.SiteName}}] 新问题: {{.QuestionTitle}}"
+      body:
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\n这是系统自动发送的电子邮件，请勿回复，因为您的回复将不会被看到 <br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>取消订阅</a></small>"
+    pass_reset:
+      title:
+        other: "[{{.SiteName }}] 重置密码"
+      body:
+        other: "有人要求在 [{{.SiteName}}] 上重置你的密码。<br><br>\n\n如果这不是你的操作，请安心忽略此电子邮件。<br><br>\n\n请点击以下链接设置一个新密码：<br>\n<a href='{{.PassResetUrl}}' target='_blank'>{{.PassResetUrl}}</a>\n\n如果你没有请求此更改，请忽略此邮件。\n"
+    register:
+      title:
+        other: "[{{.SiteName}}] 确认你的新账户"
+      body:
+        other: "欢迎加入 {{.SiteName}}！<br><br>\n\n请点击以下链接确认并激活你的新账户：<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\n如果上面的链接不能点击，请将其复制并粘贴到你的浏览器地址栏中。\n<br><br>\n\n--<br>\n这是系统自动发送的电子邮件，请勿回复，因为您的回复将不会被看到"
+    test:
+      title:
+        other: "[{{.SiteName}}] 测试邮件"
+      body:
+        other: "这是测试电子邮件。\n<br><br>\n\n-<br>\n注意：这是一个自动的系统电子邮件， 请不要回复此消息，因为您的回复将不会被看到。"
+  action_activity_type:
+    upvote:
+      other: 点赞
+    upvoted:
+      other: 点赞
+    downvote:
+      other: 点踩
+    downvoted:
+      other: 点踩
+    accept:
+      other: 采纳
+    accepted:
+      other: 已采纳
+    edit:
+      other: 编辑
+  review:
+    queued_post:
+      other: 排队的帖子
+    flagged_post:
+      other: 举报的帖子
+    suggested_post_edit:
+      other: 建议的编辑
+  reaction:
+    tooltip:
+      other: "{{ .Names }} 以及另外 {{ .Count }} 个..."
+  badge:
+    default_badges:
+      autobiographer:
+        name:
+          other: 自传作者
+        desc:
+          other: 填写了 <a href="{{ .ProfileURL }}" target="_blank">个人资料</a> 信息。
+      certified:
+        name:
+          other: 已认证
+        desc:
+          other: 完成了我们的新用户教程。
+      editor:
+        name:
+          other: 编辑者
+        desc:
+          other: 首次帖子编辑。
+      first_flag:
+        name:
+          other: 第一次举报
+        desc:
+          other: 第一次举报一个帖子
+      first_upvote:
+        name:
+          other: 第一次投票
+        desc:
+          other: 第一次投票了一个帖子。
+      first_link:
+        name:
+          other: 第一个链接
+        desc:
+          other: 第一次添加了一个链接到另一个帖子。
+      first_reaction:
+        name:
+          other: 第一个响应
+        desc:
+          other: 第一次表情回应帖子
+      first_share:
+        name:
+          other: 首次分享
+        desc:
+          other: 首次分享了一个帖子。
+      scholar:
+        name:
+          other: 学者
+        desc:
+          other: 问了一个问题并接受了一个答案。
+      commentator:
+        name:
+          other: 评论员
+        desc:
+          other: 留下5条评论。
+      new_user_of_the_month:
+        name:
+          other: 月度用户
+        desc:
+          other: 本月杰出用户
+      read_guidelines:
+        name:
+          other: 阅读指南
+        desc:
+          other: 阅读[社区准则]。
+      reader:
+        name:
+          other: 读者
+        desc:
+          other: 用10个以上的答案在主题中阅读每个答案。
+      welcome:
+        name:
+          other: 欢迎
+        desc:
+          other: 获得一个点赞投票
+      nice_share:
+        name:
+          other: 好分享
+        desc:
+          other: 分享了一个拥有25个唯一访客的帖子。
+      good_share:
+        name:
+          other: 好分享
+        desc:
+          other: 分享了一个拥有300个唯一访客的帖子。
+      great_share:
+        name:
+          other: 优秀的分享
+        desc:
+          other: 分享了一个拥有1000个唯一访客的帖子。
+      out_of_love:
+        name:
+          other: 失去爱好
+        desc:
+          other: 一天内使用了 50 个赞。
+      higher_love:
+        name:
+          other: 更高的爱好
+        desc:
+          other: 一天内使用了 50 个赞 5 次。
+      crazy_in_love:
+        name:
+          other: 爱情疯狂的
+        desc:
+          other: 一天内使用了 50 个赞 20 次。
+      promoter:
+        name:
+          other: 推荐人
+        desc:
+          other: 邀请用户。
+      campaigner:
+        name:
+          other: 宣传者
+        desc:
+          other: 邀请了3个基本用户。
+      champion:
+        name:
+          other: 冠军
+        desc:
+          other: 邀请了5个成员。
+      thank_you:
+        name:
+          other: 谢谢
+        desc:
+          other: 有 20 个赞成票的帖子，并投了 10 个赞成票。
+      gives_back:
+        name:
+          other: 返回
+        desc:
+          other: 拥有100个投票赞成的职位并放弃了100个投票。
+      empathetic:
+        name:
+          other: 情随境迁
+        desc:
+          other: 拥有500个投票赞成的职位并放弃了1000个投票。
+      enthusiast:
+        name:
+          other: 狂热
+        desc:
+          other: 连续访问10天。
+      aficionado:
+        name:
+          other: Aficionado
+        desc:
+          other: 连续访问100天。
+      devotee:
+        name:
+          other: Devotee
+        desc:
+          other: 连续访问365天。
+      anniversary:
+        name:
+          other: 周年纪念日
+        desc:
+          other: 活跃成员一年至少发布一次。
+      appreciated:
+        name:
+          other: 欣赏
+        desc:
+          other: 在 20 个帖子中获得 1个投票
+      respected:
+        name:
+          other: 尊敬
+        desc:
+          other: 100个员额获得2次补票。
+      admired:
+        name:
+          other: 仰慕
+        desc:
+          other: 300个员额获得5次补票。
+      solved:
+        name:
+          other: 已解决
+        desc:
+          other: 接受答案。
+      guidance_counsellor:
+        name:
+          other: 指导顾问
+        desc:
+          other: 接受答案。
+      know_it_all:
+        name:
+          other: 万事通
+        desc:
+          other: 接受50个答案。
+      solution_institution:
+        name:
+          other: 解决方案机构
+        desc:
+          other: 有150个答案被接受。
+      nice_answer:
+        name:
+          other: 好答案
+        desc:
+          other: 回答得分为10或以上。
+      good_answer:
+        name:
+          other: 好答案
+        desc:
+          other: 回答得分为25或更多。
+      great_answer:
+        name:
+          other: 优秀答案
+        desc:
+          other: 回答得分为50或以上。
+      nice_question:
+        name:
+          other: 好问题
+        desc:
+          other: 问题得分为10或以上。
+      good_question:
+        name:
+          other: 好问题
+        desc:
+          other: 问题得分为25或更多。
+      great_question:
+        name:
+          other: 很棒的问题
+        desc:
+          other: 问题得分为50或更多。
+      popular_question:
+        name:
+          other: 热门问题
+        desc:
+          other: 问题有 500 个浏览量。
+      notable_question:
+        name:
+          other: 值得关注问题
+        desc:
+          other: 问题有 1,000 个浏览量。
+      famous_question:
+        name:
+          other: 著名的问题
+        desc:
+          other: 问题有 5,000 个浏览量。
+      popular_link:
+        name:
+          other: 热门链接
+        desc:
+          other: 发布了一个带有50个点击的外部链接。
+      hot_link:
+        name:
+          other: 热门链接
+        desc:
+          other: 发布了一个带有300个点击的外部链接。
+      famous_link:
+        name:
+          other: 著名链接
+        desc:
+          other: 发布了一个带有100个点击的外部链接。
+    default_badge_groups:
+      getting_started:
+        name:
+          other: 完成初始化
+      community:
+        name:
+          other: Community 专题
+      posting:
+        name:
+          other: 发帖
+# The following fields are used for interface presentation(Front-end)
+ui:
+  how_to_format:
+    title: 如何排版
+    desc: >-
+      <ul class="mb-0"><li><p class="mb-2">引用问题或答案: <code>#4</code></p></li><li><p class="mb-2">添加链接</p><pre class="mb-2"><code>&lt;https://url.com&gt;<br/><br/>[标题](https://url.com)</code></pre></li><li><p class="mb-2">段落之间使用空行分隔</p></li><li><p class="mb-2"><em>_斜体_</em> 或者 **<strong>粗体</strong>**</p></li><li><p class="mb-2">使用  个空格缩进代码</p></li><li><p class="mb-2">在行首添加 <code>&gt;</code> 表示引用</p></li><li><p class="mb-2">反引号进行转义 <code>`像 _这样_`</code></p></li><li><p class="mb-2">使用 <code>```</code> 创建代码块</p><pre class="mb-0"><code>```<br/>这是代码块<br/>```</code></pre></li></ul>
+  pagination:
+    prev: 上一页
+    next: 下一页
+  page_title:
+    question: 问题
+    questions: 问题
+    tag: 标签
+    tags: 标签
+    tag_wiki: 标签维基
+    create_tag: 创建标签
+    edit_tag: 编辑标签
+    ask_a_question: 创建问题
+    edit_question: 编辑问题
+    edit_answer: 编辑回答
+    search: 搜索
+    posts_containing: 帖子包含
+    settings: 设置
+    notifications: 通知
+    login: 登录
+    sign_up: 注册
+    account_recovery: 账号恢复
+    account_activation: 账号激活
+    confirm_email: 确认电子邮件
+    account_suspended: 账号已被封禁
+    admin: 后台管理
+    change_email: 修改邮箱
+    install: Answer 安装
+    upgrade: Answer 升级
+    maintenance: 网站维护
+    users: 用户
+    oauth_callback: 处理中
+    http_404: HTTP 错误 404
+    http_50X: HTTP 错误 500
+    http_403: HTTP 错误 403
+    logout: 退出
+  notifications:
+    title: 通知
+    inbox: 收件箱
+    achievement: 成就
+    new_alerts: 新通知
+    all_read: 全部标记为已读
+    show_more: 显示更多
+    someone: 有人
+    inbox_type:
+      all: 全部
+      posts: 帖子
+      invites: 邀请
+      votes: 投票
+    answer: 回答
+    question: 问题
+    badge_award: 徽章
+  suspended:
+    title: 你的账号账号已被封禁
+    until_time: "你的账号被封禁直到 {{ time }}。"
+    forever: 你的账号已被永久封禁。
+    end: 你违反了我们的社区准则。
+    contact_us: 联系我们
+  editor:
+    blockquote:
+      text: 引用
+    bold:
+      text: 粗体
+    chart:
+      text: 图表
+      flow_chart: 流程图
+      sequence_diagram: 时序图
+      class_diagram: 类图
+      state_diagram: 状态图
+      entity_relationship_diagram: 实体关系图
+      user_defined_diagram: 用户自定义图表
+      gantt_chart: 甘特图
+      pie_chart: 饼图
+    code:
+      text: 代码块
+      add_code: 添加代码块
+      form:
+        fields:
+          code:
+            label: 代码块
+            msg:
+              empty: 代码块不能为空
+          language:
+            label: 语言
+            placeholder: 自动识别
+      btn_cancel: 取消
+      btn_confirm: 添加
+    formula:
+      text: 公式
+      options:
+        inline: 行内公式
+        block: 块级公式
+    heading:
+      text: 标题
+      options:
+        h1: 标题 1
+        h2: 标题 2
+        h3: 标题 3
+        h4: 标题 4
+        h5: 标题 5
+        h6: 标题 6
+    help:
+      text: 帮助
+    hr:
+      text: 水平线
+    image:
+      text: 图片
+      add_image: 添加图片
+      tab_image: 上传图片
+      form_image:
+        fields:
+          file:
+            label: 图像文件
+            btn: 选择图片
+            msg:
+              empty: 请选择图片文件。
+              only_image: 只能上传图片文件。
+              max_size: 文件大小不能超过 {{size}} MB。
+          desc:
+            label: 描述
+      tab_url: 图片地址
+      form_url:
+        fields:
+          url:
+            label: 图片地址
+            msg:
+              empty: 图片地址不能为空
+          name:
+            label: 描述
+      btn_cancel: 取消
+      btn_confirm: 添加
+      uploading: 上传中
+    indent:
+      text: 缩进
+    outdent:
+      text: 减少缩进
+    italic:
+      text: 斜体
+    link:
+      text: 超链接
+      add_link: 添加超链接
+      form:
+        fields:
+          url:
+            label: 链接
+            msg:
+              empty: 链接不能为空。
+          name:
+            label: 描述
+      btn_cancel: 取消
+      btn_confirm: 添加
+    ordered_list:
+      text: 有序列表
+    unordered_list:
+      text: 无序列表
+    table:
+      text: 表格
+      heading: 表头
+      cell: 单元格
+    file:
+      text: 附件
+      not_supported: "不支持的文件类型。请尝试上传其他类型的文件如： {{file_type}}。"
+      max_size: "上传文件超过 {{size}} MB。"
+  close_modal:
+    title: 关闭原因是...
+    btn_cancel: 取消
+    btn_submit: 提交
+    remark:
+      empty: 不能为空。
+    msg:
+      empty: 请选择一个原因。
+  report_modal:
+    flag_title: 我举报这篇帖子的原因是...
+    close_title: 我关闭这篇帖子的原因是...
+    review_question_title: 审查问题
+    review_answer_title: 审查回答
+    review_comment_title: 审查评论
+    btn_cancel: 取消
+    btn_submit: 提交
+    remark:
+      empty: 不能为空
+    msg:
+      empty: 请选择一个原因。
+      not_a_url: URL 格式不正确。
+      url_not_match: URL 来源与当前网站不匹配。
+  tag_modal:
+    title: 创建新标签
+    form:
+      fields:
+        display_name:
+          label: 显示名称
+          msg:
+            empty: 显示名称不能为空。
+            range: 显示名称不能超过 35 个字符。
+        slug_name:
+          label: URL 固定链接
+          desc: URL 固定链接不能超过 35 个字符。
+          msg:
+            empty: URL 固定链接不能为空。
+            range: URL 固定链接不能超过 35 个字符。
+            character: URL 固定链接包含非法字符。
+        desc:
+          label: 描述
+        revision:
+          label: 编辑历史
+        edit_summary:
+          label: 编辑备注
+          placeholder: >-
+            简单描述更改原因（更正拼写、修复语法、改进格式）
+    btn_cancel: 取消
+    btn_submit: 提交
+    btn_post: 发布新标签
+  tag_info:
+    created_at: 创建于
+    edited_at: 编辑于
+    history: 历史
+    synonyms:
+      title: 同义词
+      text: 以下标签将被重置到
+      empty: 此标签目前没有同义词。
+      btn_add: 添加同义词
+      btn_edit: 编辑
+      btn_save: 保存
+    synonyms_text: 以下标签将被重置到
+    delete:
+      title: 删除标签
+      tip_with_posts: >-
+        <p>我们不允许 <strong>删除带有帖子的标签</strong>。</p> <p>请先从帖子中移除此标签。</p>
+      tip_with_synonyms: >-
+        <p>我们不允许 <strong>删除带有同义词的标签</strong>。</p> <p>请先从此标签中删除同义词。</p>
+      tip: 确定要删除吗？
+      close: 关闭
+    merge:
+      title: 合并标签
+      source_tag_title: 源标签
+      source_tag_description: 源标签及其相关数据将重新映射到目标标签。
+      target_tag_title: 目标标签
+      target_tag_description: 合并后将在这两个标签之间将创建一个同义词。
+      no_results: 没有匹配的标签
+      btn_submit: 提交
+      btn_close: 关闭
+  edit_tag:
+    title: 编辑标签
+    default_reason: 编辑标签
+    default_first_reason: 添加标签
+    btn_save_edits: 保存更改
+    btn_cancel: 取消
+  dates:
+    long_date: MM 月 DD 日
+    long_date_with_year: "YYYY 年 MM 月 DD 日"
+    long_date_with_time: "YYYY 年 MM 月 DD 日 HH:mm"
+    now: 刚刚
+    x_seconds_ago: "{{count}} 秒前"
+    x_minutes_ago: "{{count}} 分钟前"
+    x_hours_ago: "{{count}} 小时前"
+    hour: 小时
+    day: 天
+    hours: 小时
+    days: 日
+    month: 月
+    months: 月
+    year: 年
+  reaction:
+    heart: 爱心
+    smile: 微笑
+    frown: 愁
+    btn_label: 添加或删除回应。
+    undo_emoji: 撤销 {{ emoji }} 回应
+    react_emoji: 用 {{ emoji }} 回应
+    unreact_emoji: 撤销 {{ emoji }}
+  comment:
+    btn_add_comment: 添加评论
+    reply_to: 回复
+    btn_reply: 回复
+    btn_edit: 编辑
+    btn_delete: 删除
+    btn_flag: 举报
+    btn_save_edits: 保存更改
+    btn_cancel: 取消
+    show_more: "{{count}} 条剩余评论"
+    tip_question: >-
+      使用评论提问更多信息或者提出改进意见。避免在评论里回答问题。
+    tip_answer: >-
+      使用评论对回答者进行回复，或者通知回答者你已更新了问题的内容。如果要补充或者完善问题的内容，请在原问题中更改。
+    tip_vote: 它给帖子添加了一些有用的内容
+  edit_answer:
+    title: 编辑回答
+    default_reason: 编辑回答
+    default_first_reason: 添加答案
+    form:
+      fields:
+        revision:
+          label: 编辑历史
+        answer:
+          label: 回答内容
+          feedback:
+            characters: 内容长度至少 6 个字符
+        edit_summary:
+          label: 编辑摘要
+          placeholder: >-
+            简单描述更改原因（更正拼写、修复语法、改进格式）
+    btn_save_edits: 保存更改
+    btn_cancel: 取消
+  tags:
+    title: 标签
+    sort_buttons:
+      popular: 热门
+      name: 名称
+      newest: 最新
+    button_follow: 关注
+    button_following: 已关注
+    tag_label: 个问题
+    search_placeholder: 通过标签名称过滤
+    no_desc: 此标签无描述。
+    more: 更多
+    wiki: 维基
+  ask:
+    title: 创建问题
+    edit_title: 编辑问题
+    default_reason: 编辑问题
+    default_first_reason: 创建问题
+    similar_questions: 相似问题
+    form:
+      fields:
+        revision:
+          label: 修订版本
+        title:
+          label: 标题
+          placeholder: 你的主题是什么？请具体说明。
+          msg:
+            empty: 标题不能为空。
+            range: 标题最多 150 个字符
+        body:
+          label: 内容
+          msg:
+            empty: 内容不能为空。
+        tags:
+          label: 标签
+          msg:
+            empty: 必须选择一个标签
+        answer:
+          label: 回答内容
+          msg:
+            empty: 回答内容不能为空
+        edit_summary:
+          label: 编辑备注
+          placeholder: >-
+            简单描述更改原因（更正拼写、修复语法、改进格式）
+    btn_post_question: 提交问题
+    btn_save_edits: 保存更改
+    answer_question: 回答自己的问题
+    post_question&answer: 提交问题和回答
+  tag_selector:
+    add_btn: 添加标签
+    create_btn: 创建新标签
+    search_tag: 搜索标签
+    hint: "描述您的内容是关于什么，至少需要一个标签。"
+    no_result: 没有匹配的标签
+    tag_required_text: 必选标签（至少一个）
+  header:
+    nav:
+      question: 问题
+      tag: 标签
+      user: 用户
+      badges: 徽章
+      profile: 用户主页
+      setting: 账号设置
+      logout: 退出
+      admin: 后台管理
+      review: 审查
+      bookmark: 收藏夹
+      moderation: 管理
+    search:
+      placeholder: 搜索
+  footer:
+    build_on: >-
+      由 <1>Apache Answer</1> 提供动力 - 驱动问答社区的开源软件。<br />用爱制造 © {{cc}}.
+  upload_img:
+    name: 更改
+    loading: 加载中...
+  pic_auth_code:
+    title: 验证码
+    placeholder: 输入图片中的文字
+    msg:
+      empty: 验证码不能为空。
+  inactive:
+    first: >-
+      就差一步！我们发送了一封激活邮件到 <bold>{{mail}}</bold>。请按照邮件中的说明激活你的账户。
+    info: "如果没有收到，请检查你的垃圾邮件文件夹。"
+    another: >-
+      我们向你的邮箱 <bold>{{mail}}</bold> 发送了另一封激活电子邮件。可能需要几分钟才能到达；请务必检查您的垃圾邮件箱。
+    btn_name: 重新发送激活邮件
+    change_btn_name: 更改邮箱
+    msg:
+      empty: 不能为空。
+    resend_email:
+      url_label: 确定要重新发送激活邮件吗？
+      url_text: 你也可以将上面的激活链接给该用户。
+  login:
+    login_to_continue: 登录以继续
+    info_sign: 没有账户？<1>注册</1>
+    info_login: 已经有账户？<1>登录</1>
+    agreements: 登录即表示您同意<1>隐私政策</1>和<3>服务条款</3>。
+    forgot_pass: 忘记密码?
+    name:
+      label: 名字
+      msg:
+        empty: 名字不能为空
+        range: 名称长度必须在 2 至 30 个字符之间。
+        character: '只能由 "a-z"、"A-Z"、"0-9"、" - . _" 组成'
+    email:
+      label: 邮箱
+      msg:
+        empty: 邮箱不能为空
+    password:
+      label: 密码
+      msg:
+        empty: 密码不能为空
+        different: 两次输入密码不一致
+  account_forgot:
+    page_title: 忘记密码
+    btn_name: 发送恢复邮件
+    send_success: >-
+      如果存在邮箱为 <strong>{{mail}}</strong> 账户，你将很快收到一封重置密码的说明邮件。
+    email:
+      label: 邮箱
+      msg:
+        empty: 邮箱不能为空
+  change_email:
+    btn_cancel: 取消
+    btn_update: 更新电子邮件地址
+    send_success: >-
+      如果存在邮箱为 <strong>{{mail}}</strong> 的账户，你将很快收到一封重置密码的说明邮件。
+    email:
+      label: 新的电子邮件地址
+      msg:
+        empty: 邮箱不能为空。
+  oauth:
+    connect: 连接到 {{ auth_name }}
+    remove: 移除 {{ auth_name }}
+  oauth_bind_email:
+    subtitle: 向你的账户添加恢复邮件地址。
+    btn_update: 更新电子邮件地址
+    email:
+      label: 邮箱
+      msg:
+        empty: 邮箱不能为空。
+    modal_title: 邮箱已经存在。
+    modal_content: 该电子邮件地址已经注册。你确定要连接到已有账户吗？
+    modal_cancel: 更改邮箱
+    modal_confirm: 连接到已有账户
+  password_reset:
+    page_title: 密码重置
+    btn_name: 重置我的密码
+    reset_success: >-
+      你已经成功更改密码；你将被重定向到登录页面。
+    link_invalid: >-
+      抱歉，此密码重置链接已失效。也许是你已经重置过密码了？
+    to_login: 前往登录页面
+    password:
+      label: 密码
+      msg:
+        empty: 密码不能为空。
+        length: 密码长度在8-32个字符之间
+        different: 两次输入密码不一致
+    password_confirm:
+      label: 确认新密码
+  settings:
+    page_title: 设置
+    goto_modify: 前往修改
+    nav:
+      profile: 我的资料
+      notification: 通知
+      account: 账号
+      interface: 界面
+    profile:
+      heading: 个人资料
+      btn_name: 保存
+      display_name:
+        label: 显示名称
+        msg: 昵称不能为空。
+        msg_range: 显示名称长度必须为 2-30 个字符。
+      username:
+        label: 用户名
+        caption: 用户可以通过 "@用户名" 来提及你。
+        msg: 用户名不能为空
+        msg_range: 显示名称长度必须为 2-30 个字符。
+        character: '只能由 "a-z"、"A-Z"、"0-9"、" - . _" 组成'
+      avatar:
+        label: 头像
+        gravatar: Gravatar
+        gravatar_text: 你可以更改图像在
+        custom: 自定义
+        custom_text: 你可以上传你的图片。
+        default: 系统
+        msg: 请上传头像
+      bio:
+        label: 关于我
+      website:
+        label: 网站
+        placeholder: "https://example.com"
+        msg: 网址格式不正确
+      location:
+        label: 位置
+        placeholder: "城市，国家"
+    notification:
+      heading: 邮件通知
+      turn_on: 开启
+      inbox:
+        label: 收件箱通知
+        description: 你的提问有新的回答，评论，邀请回答和其他。
+      all_new_question:
+        label: 所有新问题
+        description: 获取所有新问题的通知。每周最多有50个问题。
+      all_new_question_for_following_tags:
+        label: 所有关注标签的新问题
+        description: 获取关注的标签下新问题通知。
+    account:
+      heading: 账号
+      change_email_btn: 更改邮箱
+      change_pass_btn: 更改密码
+      change_email_info: >-
+        邮件已发送。请根据指引完成验证。
+      email:
+        label: 电子邮件地址
+      new_email:
+        label: 新的电子邮件地址
+        msg: 新邮箱不能为空。
+      pass:
+        label: 当前密码
+        msg: 密码不能为空。
+      password_title: 密码
+      current_pass:
+        label: 当前密码
+        msg:
+          empty: 当前密码不能为空
+          length: 密码长度必须在 8 至 32 之间
+          different: 两次输入的密码不匹配
+      new_pass:
+        label: 新密码
+      pass_confirm:
+        label: 确认新密码
+    interface:
+      heading: 界面
+      lang:
+        label: 界面语言
+        text: 设置用户界面语言，在刷新页面后生效。
+    my_logins:
+      title: 我的登录
+      label: 使用这些账户登录或注册本网站。
+      modal_title: 移除登录
+      modal_content: 你确定要从账户里移除该登录？
+      modal_confirm_btn: 移除
+      remove_success: 移除成功
+  toast:
+    update: 更新成功
+    update_password: 密码更新成功。
+    flag_success: 感谢标记。
+    forbidden_operate_self: 禁止对自己执行操作
+    review: 您的修订将在审阅通过后显示。
+    sent_success: 发送成功
+  related_question:
+    title: 相似
+    answers: 个回答
+  linked_question:
+    title: 关联
+    description: 帖子关联到
+    no_linked_question: 没有与之关联的贴子。
+  invite_to_answer:
+    title: 受邀人
+    desc: 邀请你认为可能知道答案的人。
+    invite: 邀请回答
+    add: 添加人员
+    search: 搜索人员
+  question_detail:
+    action: 操作
+    Asked: 提问于
+    asked: 提问于
+    update: 修改于
+    edit: 编辑于
+    commented: 评论
+    Views: 阅读次数
+    Follow: 关注此问题
+    Following: 已关注
+    follow_tip: 关注此问题以接收通知
+    answered: 回答于
+    closed_in: 关闭于
+    show_exist: 查看类似问题。
+    useful: 有用的
+    question_useful: 它是有用和明确的
+    question_un_useful: 它不明确或没用的
+    question_bookmark: 收藏该问题
+    answer_useful: 这是有用的
+    answer_un_useful: 它是没有用的
+    answers:
+      title: 个回答
+      score: 评分
+      newest: 最新
+      oldest: 最旧
+      btn_accept: 采纳
+      btn_accepted: 已被采纳
+    write_answer:
+      title: 你的回答
+      edit_answer: 编辑我的回答
+      btn_name: 提交你的回答
+      add_another_answer: 添加另一个回答
+      confirm_title: 继续回答
+      continue: 继续
+      confirm_info: >-
+        <p>你确定要提交一个新的回答吗？</p><p>作为替代，你可以通过编辑来完善和改进之前的回答。</p>
+      empty: 回答内容不能为空。
+      characters: 内容长度至少 6 个字符。
+      tips:
+        header_1: 感谢你的回答
+        li1_1: 请务必确定在 <strong>回答问题</strong>。提供详细信息并分享你的研究。
+        li1_2: 用参考资料或个人经历来支持你所做的任何陈述。
+        header_2: 但是 <strong>请避免</strong>...
+        li2_1: 请求帮助，寻求澄清，或答复其他答案。
+    reopen:
+      confirm_btn: 重新打开
+      title: 重新打开这个帖子
+      content: 确定要重新打开吗？
+    list:
+      confirm_btn: 列表显示
+      title: 列表中显示这个帖子
+      content: 确定要列表中显示这个帖子吗？
+    unlist:
+      confirm_btn: 列表隐藏
+      title: 从列表中隐藏这个帖子
+      content: 确定要从列表中隐藏这个帖子吗？
+    pin:
+      title: 置顶该帖子
+      content: 你确定要全局置顶吗？这个帖子将出现在所有帖子列表的顶部。
+      confirm_btn: 置顶
+  delete:
+    title: 删除
+    question: >-
+      我们不建议 <strong>删除有回答的帖子</strong>。因为这样做会使得后来的读者无法从该帖子中获得帮助。</p><p>如果删除过多有回答的帖子，你的账号将会被禁止提问。你确定要删除吗？
+    answer_accepted: >-
+      <p>我们不建议<strong>删除被采纳的回答</strong>。因为这样做会使得后来的读者无法从该帖子中获得帮助。</p>如果删除过多被采纳的回答，你的账号将会被禁止回答任何提问。你确定要删除吗？
+    other: 你确定要删除？
+    tip_answer_deleted: 该回答已被删除
+    undelete_title: 撤销删除本帖
+    undelete_desc: 你确定你要撤销删除吗？
+  btns:
+    confirm: 确认
+    cancel: 取消
+    edit: 编辑
+    save: 保存
+    delete: 删除
+    undelete: 撤消删除
+    list: 列表显示
+    unlist: 列表隐藏
+    unlisted: 已隐藏
+    login: 登录
+    signup: 注册
+    logout: 退出
+    verify: 验证
+    create: 创建
+    approve: 批准
+    reject: 拒绝
+    skip: 跳过
+    discard_draft: 丢弃草稿
+    pinned: 已置顶
+    all: 全部
+    question: 问题
+    answer: 回答
+    comment: 评论
+    refresh: 刷新
+    resend: 重新发送
+    deactivate: 取消激活
+    active: 激活
+    suspend: 封禁
+    unsuspend: 解禁
+    close: 关闭
+    reopen: 重新打开
+    ok: 确定
+    light: 浅色
+    dark: 深色
+    system_setting: 跟随系统
+    default: 默认
+    reset: 重置
+    tag: 标签
+    post_lowercase: 帖子
+    filter: 筛选
+    ignore: 忽略
+    submit: 提交
+    normal: 正常
+    closed: 已关闭
+    deleted: 已删除
+    deleted_permanently: 永久删除
+    pending: 等待处理
+    more: 更多
+    view: 浏览量
+    card: 卡片
+    compact: 紧凑
+    display_below: 在下方显示
+    always_display: 总是显示
+    or: 或者
+    back_sites: 返回网站
+  search:
+    title: 搜索结果
+    keywords: 关键词
+    options: 选项
+    follow: 关注
+    following: 已关注
+    counts: "{{count}} 个结果"
+    counts_loading: "... 个结果"
+    more: 更多
+    sort_btns:
+      relevance: 相关性
+      newest: 最新的
+      active: 活跃的
+      score: 评分
+      more: 更多
+    tips:
+      title: 高级搜索提示
+      tag: "<1>[tag]</1> 在指定标签中搜索"
+      user: "<1>user:username</1> 根据作者搜索"
+      answer: "<1>answers:0</1> 搜索未回答的问题"
+      score: "<1>score:3</1> 评分 3+ 的帖子"
+      question: "<1>is:question</1> 搜索问题"
+      is_answer: "<1>is:answer</1> 搜索回答"
+    empty: 找不到任何相关的内容。<br /> 请尝试其他关键字，或者减少查找内容的长度。
+  share:
+    name: 分享
+    copy: 复制链接
+    via: 分享到...
+    copied: 已复制
+    facebook: 分享到 Facebook
+    twitter: 分享到 X
+  cannot_vote_for_self: 你不能给自己的帖子投票。
+  modal_confirm:
+    title: 发生错误...
+  delete_permanently:
+    title: 永久删除
+    content: 您确定要永久删除吗？
+  account_result:
+    success: 你的账号已通过验证，即将返回首页。
+    link: 返回首页
+    oops: 糟糕！
+    invalid: 您使用的链接不再有效。
+    confirm_new_email: 你的电子邮箱已更新
+    confirm_new_email_invalid: >-
+      抱歉，此验证链接已失效。也许是你的邮箱已经成功更改了？
+  unsubscribe:
+    page_title: 退订
+    success_title: 退订成功
+    success_desc: 您已成功退订，并且将不会再收到我们的邮件。
+    link: 更改设置
+  question:
+    following_tags: 已关注的标签
+    edit: 编辑
+    save: 保存
+    follow_tag_tip: 关注标签来筛选你的问题列表。
+    hot_questions: 热门问题
+    all_questions: 全部问题
+    x_questions: "{{ count }} 个问题"
+    x_answers: "{{ count }} 个回答"
+    x_posts: "{{ count }} 个帖子"
+    questions: 问题
+    answers: 回答
+    newest: 最新
+    active: 活跃
+    hot: 热门
+    frequent: 频繁的
+    recommend: 推荐
+    score: 评分
+    unanswered: 未回答
+    modified: 更新于
+    answered: 回答于
+    asked: 提问于
+    closed: 已关闭
+    follow_a_tag: 关注一个标签
+    more: 更多
+  personal:
+    overview: 概览
+    answers: 回答
+    answer: 回答
+    questions: 问题
+    question: 问题
+    bookmarks: 收藏
+    reputation: 声望
+    comments: 评论
+    votes: 得票
+    badges: 徽章
+    newest: 最新
+    score: 评分
+    edit_profile: 编辑资料
+    visited_x_days: "已访问 {{ count }} 天"
+    viewed: 浏览次数
+    joined: 加入于
+    comma: "，"
+    last_login: 上次登录
+    about_me: 关于我
+    about_me_empty: "// Hello, World!"
+    top_answers: 高分回答
+    top_questions: 高分问题
+    stats: 状态
+    list_empty: 没有找到相关的内容。<br />试试看其他选项卡？
+    content_empty: 未找到帖子。
+    accepted: 已采纳
+    answered: 回答于
+    asked: 提问于
+    downvoted: 点踩
+    mod_short: 版主
+    mod_long: 版主
+    x_reputation: 声望
+    x_votes: 得票
+    x_answers: 个回答
+    x_questions: 个问题
+    recent_badges: 最近的徽章
+  install:
+    title: 安装
+    next: 下一步
+    done: 完成
+    config_yaml_error: 无法创建 config.yaml 文件。
+    lang:
+      label: 请选择一种语言
+    db_type:
+      label: 数据库引擎
+    db_username:
+      label: 用户名
+      placeholder: root
+      msg: 用户名不能为空
+    db_password:
+      label: 密码
+      placeholder: root
+      msg: 密码不能为空
+    db_host:
+      label: 数据库主机
+      placeholder: "db:3306"
+      msg: 数据库地址不能为空
+    db_name:
+      label: 数据库名
+      placeholder: 回答
+      msg: 数据库名称不能为空。
+    db_file:
+      label: 数据库文件
+      placeholder: /data/answer.db
+      msg: 数据库文件不能为空。
+    ssl_enabled:
+      label: 启用 SSL
+    ssl_enabled_on:
+      label: On
+    ssl_enabled_off:
+      label: Off
+    ssl_mode:
+      label: SSL 模式
+    ssl_root_cert:
+      placeholder: sslrootcert文件路径
+      msg: sslrootcert 文件的路径不能为空
+    ssl_cert:
+      placeholder: sslcert文件路径
+      msg: sslcert 文件的路径不能为空
+    ssl_key:
+      placeholder: sslkey 文件路径
+      msg: sslcert 文件的路径不能为空
+    config_yaml:
+      title: 创建 config.yaml
+      label: 已创建 config.yaml 文件。
+      desc: >-
+        你可以手动在 <1>/var/wwww/xxx/</1> 目录中创建 <1>config.yaml</1> 文件并粘贴以下文本。
+      info: 完成后，点击“下一步”按钮。
+    site_information: 站点信息
+    admin_account: 管理员账号
+    site_name:
+      label: 站点名称
+      msg: 站点名称不能为空。
+      msg_max_length: 站点名称长度不得超过 30 个字符。
+    site_url:
+      label: 网站网址
+      text: 此网站的网址。
+      msg:
+        empty: 网址不能为空。
+        incorrect: 网址格式不正确。
+        max_length: 网址长度不得超过 512 个字符。
+    contact_email:
+      label: 联系邮箱
+      text: 负责本网站的主要联系人的电子邮件地址。
+      msg:
+        empty: 联系人邮箱不能为空。
+        incorrect: 联系人邮箱地址不正确。
+    login_required:
+      label: 私有的
+      switch: 需要登录
+      text: 只有登录用户才能访问这个社区。
+    admin_name:
+      label: 名字
+      msg: 名字不能为空。
+      character: '只能由 "a-z"、"A-Z"、"0-9"、" - . _" 组成'
+      msg_max_length: 名称长度必须在 2 至 30 个字符之间。
+    admin_password:
+      label: 密码
+      text: >-
+        您需要此密码才能登录。请将其存储在一个安全的位置。
+      msg: 密码不能为空。
+      msg_min_length: 密码必须至少 8 个字符长。
+      msg_max_length: 密码长度不能超过 32 个字符。
+    admin_confirm_password:
+      label: "确认密码"
+      text: "请重新输入您的密码以确认。"
+      msg: "确认密码不一致。"
+    admin_email:
+      label: 邮箱
+      text: 您需要此电子邮件才能登录。
+      msg:
+        empty: 邮箱不能为空。
+        incorrect: 邮箱格式不正确。
+    ready_title: 您的网站已准备好
+    ready_desc: >-
+      如果你想改变更多的设置，请访问 <1>管理区域</1>；在网站菜单中找到它。
+    good_luck: "玩得愉快，祝你好运！"
+    warn_title: 警告
+    warn_desc: >-
+      文件 <1>config.yaml</1> 已存在。如果你要重置该文件中的任何配置项，请先删除它。
+    install_now: 您可以尝试 <1>现在安装</1>。
+    installed: 已安裝
+    installed_desc: >-
+      你似乎已经安装过了。如果要重新安装，请先清除旧的数据库表。
+    db_failed: 数据连接异常！
+    db_failed_desc: >-
+      这或者意味着数据库信息在 <1>config.yaml</1> 文件不正确，或者无法与数据库服务器建立联系。这可能意味着你的主机数据库服务器故障。
+  counts:
+    views: 次浏览
+    votes: 个点赞
+    answers: 个回答
+    accepted: 已被采纳
+  page_error:
+    http_error: HTTP 错误 {{ code }}
+    desc_403: 您无权访问此页面。
+    desc_404: 很抱歉，此页面不存在。
+    desc_50X: 服务器遇到了一个错误，无法完成你的请求。
+    back_home: 返回首页
+  page_maintenance:
+    desc: "我们正在进行维护，我们将很快回来。"
+  nav_menus:
+    dashboard: 后台管理
+    contents: 内容管理
+    questions: 问题
+    answers: 回答
+    users: 用户管理
+    badges: 徽章
+    flags: 举报管理
+    settings: 站点设置
+    general: 一般
+    interface: 界面
+    smtp: SMTP
+    branding: 品牌
+    legal: 法律条款
+    write: 撰写
+    tos: 服务条款
+    privacy: 隐私政策
+    seo: SEO
+    customize: 自定义
+    themes: 主题
+    login: 登录
+    privileges: 特权
+    plugins: 插件
+    installed_plugins: 已安装插件
+    apperance: 外观
+  website_welcome: 欢迎来到 {{site_name}}
+  user_center:
+    login: 登录
+    qrcode_login_tip: 请使用 {{ agentName }} 扫描二维码并登录。
+    login_failed_email_tip: 登录失败，请允许此应用访问您的邮箱信息，然后重试。
+  badges:
+    modal:
+      title: 恭喜
+      content: 你赢得了一个新徽章。
+      close: 关闭
+      confirm: 查看徽章
+    title: 徽章
+    awarded: 授予
+    earned_×: 以获得 ×{{ number }}
+    ×_awarded: "{{ number }} 得到"
+    can_earn_multiple: 你可以多次获得
+    earned: 获得
+  admin:
+    admin_header:
+      title: 后台管理
+    dashboard:
+      title: 后台管理
+      welcome: 欢迎来到管理后台！
+      site_statistics: 站点统计
+      questions: "问题:"
+      resolved: "已解决:"
+      unanswered: "未回答:"
+      answers: "回答:"
+      comments: "评论:"
+      votes: "投票:"
+      users: "用户:"
+      flags: "举报:"
+      reviews: "审查:"
+      site_health: 网站健康
+      version: "版本"
+      https: "HTTPS:"
+      upload_folder: "上传文件夹："
+      run_mode: "运行模式："
+      private: 私有
+      public: 公开
+      smtp: "SMTP:"
+      timezone: "时区："
+      system_info: 系统信息
+      go_version: "Go版本："
+      database: "数据库："
+      database_size: "数据库大小："
+      storage_used: "已用存储空间："
+      uptime: "运行时间："
+      links: 链接
+      plugins: 插件
+      github: GitHub
+      blog: 博客
+      contact: 联系
+      forum: 论坛
+      documents: 文档
+      feedback: 用户反馈
+      support: 帮助
+      review: 审查
+      config: 配置
+      update_to: 更新到
+      latest: 最新版本
+      check_failed: 校验失败
+      "yes": "是"
+      "no": "否"
+      not_allowed: 拒绝
+      allowed: 允许
+      enabled: 已启用
+      disabled: 停用
+      writable: 可写
+      not_writable: 不可写
+    flags:
+      title: 举报
+      pending: 等待处理
+      completed: 已完成
+      flagged: 被举报内容
+      flagged_type: 标记了 {{ type }}
+      created: 创建于
+      action: 操作
+      review: 审查
+    user_role_modal:
+      title: 更改用户状态为...
+      btn_cancel: 取消
+      btn_submit: 提交
+    new_password_modal:
+      title: 设置新密码
+      form:
+        fields:
+          password:
+            label: 密码
+            text: 用户将被退出，需要再次登录。
+            msg: 密码的长度必须是8-32个字符。
+      btn_cancel: 取消
+      btn_submit: 提交
+    edit_profile_modal:
+      title: 编辑资料
+      form:
+        fields:
+          display_name:
+            label: 显示名称
+            msg_range: 显示名称长度必须为 2-30 个字符。
+          username:
+            label: 用户名
+            msg_range: 用户名长度必须为 2-30 个字符。
+          email:
+            label: 电子邮件地址
+            msg_invalid: 无效的邮箱地址
+      edit_success: 修改成功
+      btn_cancel: 取消
+      btn_submit: 提交
+    user_modal:
+      title: 添加新用户
+      form:
+        fields:
+          users:
+            label: 批量添加用户
+            placeholder: "John Smith, john@example.com, BUSYopr2\nAlice, alice@example.com, fpDntV8q"
+            text: 用逗号分隔“name, email, password”，每行一个用户。
+            msg: "请输入用户的邮箱，每行一个。"
+          display_name:
+            label: 显示名称
+            msg: 显示名称长度必须为 2-30 个字符
+          email:
+            label: 邮箱
+            msg: 邮箱无效。
+          password:
+            label: 密码
+            msg: 密码的长度必须是8-32个字符。
+      btn_cancel: 取消
+      btn_submit: 提交
+    users:
+      title: 用户
+      name: 名称
+      email: 邮箱
+      reputation: 声望
+      created_at: 创建时间
+      delete_at: 删除时间
+      suspend_at: 封禁时间
+      suspend_until: 封禁到期
+      status: 状态
+      role: 角色
+      action: 操作
+      change: 更改
+      all: 全部
+      staff: 工作人员
+      more: 更多
+      inactive: 不活跃
+      suspended: 已封禁
+      deleted: 已删除
+      normal: 正常
+      Moderator: 版主
+      Admin: 管理员
+      User: 用户
+      filter:
+        placeholder: "按名称筛选，用户：id"
+      set_new_password: 设置新密码
+      edit_profile: 编辑资料
+      change_status: 更改状态
+      change_role: 更改角色
+      show_logs: 显示日志
+      add_user: 添加用户
+      deactivate_user:
+        title: 停用用户
+        content: 未激活的用户必须重新验证他们的邮箱。
+      delete_user:
+        title: 删除此用户
+        content: 确定要删除此用户？此操作无法撤销！
+        remove: 移除内容
+        label: 删除所有问题、 答案、 评论等
+        text: 如果你只想删除用户账户，请不要选中此项。
+      suspend_user:
+        title: 挂起此用户
+        content: 被封禁的用户将无法登录。
+        label: 用户将被封禁多长时间？
+        forever: 永久
+    questions:
+      page_title: 问题
+      unlisted: 已隐藏
+      post: 标题
+      votes: 得票数
+      answers: 回答数
+      created: 创建于
+      status: 状态
+      action: 操作
+      change: 更改
+      pending: 等待处理
+      filter:
+        placeholder: "按标题过滤，问题:id"
+    answers:
+      page_title: 回答
+      post: 标题
+      votes: 得票数
+      created: 创建于
+      status: 状态
+      action: 操作
+      change: 更改
+      filter:
+        placeholder: "按标题筛选，答案:id"
+    general:
+      page_title: 一般
+      name:
+        label: 站点名称
+        msg: 不能为空
+        text: "站点的名称，作为站点的标题。"
+      site_url:
+        label: 网站网址
+        msg: 网站网址不能为空。
+        validate: 请输入一个有效的 URL。
+        text: 此网站的地址。
+      short_desc:
+        label: 简短站点描述
+        msg: 简短网站描述不能为空。
+        text: "简短的标语，作为网站主页的标题（Html 的 title 标签）。"
+      desc:
+        label: 站点描述
+        msg: 网站描述不能为空。
+        text: "使用一句话描述本站，作为网站的描述（Html 的 meta 标签）。"
+      contact_email:
+        label: 联系邮箱
+        msg: 联系人邮箱不能为空。
+        validate: 联系人邮箱无效。
+        text: 本网站的主要联系邮箱地址。
+      check_update:
+        label: 软件更新
+        text: 自动检查软件更新
+    interface:
+      page_title: 界面
+      language:
+        label: 界面语言
+        msg: 不能为空
+        text: 设置用户界面语言，在刷新页面后生效。
+      time_zone:
+        label: 时区
+        msg: 时区不能为空。
+        text: 选择一个与您相同时区的城市。
+      avatar:
+        label: 默认头像
+        text: 没有自定义头像的用户。
+      gravatar_base_url:
+        label: Gravatar 根路径 URL
+        text: Gravatar 提供商的 API 基础的 URL。当为空时忽略。
+    smtp:
+      page_title: SMTP
+      from_email:
+        label: 发件人邮箱
+        msg: 发件人邮箱不能为空。
+        text: 用于发送邮件的地址。
+      from_name:
+        label: 发件人
+        msg: 不能为空
+        text: 发件人的名字。
+      smtp_host:
+        label: SMTP 主机
+        msg: 不能为空
+        text: 邮件服务器
+      encryption:
+        label: 加密
+        msg: 不能为空
+        text: 对于大多数服务器而言，SSL 是推荐开启的。
+        ssl: SSL
+        tls: TLS
+        none: 无加密
+      smtp_port:
+        label: SMTP 端口
+        msg: SMTP 端口必须在 1 ~ 65535 之间。
+        text: 邮件服务器的端口号。
+      smtp_username:
+        label: SMTP 用户名
+        msg: 不能为空
+      smtp_password:
+        label: SMTP 密码
+        msg: 不能为空
+      test_email_recipient:
+        label: 测试收件邮箱
+        text: 提供用于接收测试邮件的邮箱地址。
+        msg: 测试收件邮箱无效
+      smtp_authentication:
+        label: 启用身份验证
+        title: SMTP 身份验证
+        msg: 不能为空
+        "yes": "是"
+        "no": "否"
+    branding:
+      page_title: 品牌
+      logo:
+        label: 网站标志（Logo）
+        msg: 图标不能为空。
+        text: 在你的网站左上方的Logo图标。使用一个高度为56，长宽比大于3:1的宽长方形图像。如果留空，将显示网站标题文本。
+      mobile_logo:
+        label: 移动端 Logo
+        text: 在你的网站的移动版上使用的标志。使用一个高度为56的宽矩形图像。如果留空，将使用 "Logo"设置中的图像。
+      square_icon:
+        label: 方形图标
+        msg: 方形图标不能为空。
+        text: 用作元数据图标的基础的图像。最好是大于512x512。
+      favicon:
+        label: 收藏夹图标
+        text: 网站的图标。要在 CDN 正常工作，它必须是 png。 将调整大小到32x32。如果留空，将使用“方形图标”。
+    legal:
+      page_title: 法律条款
+      terms_of_service:
+        label: 服务条款
+        text: "您可以在此添加服务内容的条款。如果您已经在别处托管了文档，请在这里提供完整的URL。"
+      privacy_policy:
+        label: 隐私政策
+        text: "您可以在此添加隐私政策内容。如果您已经在别处托管了文档，请在这里提供完整的URL。"
+      external_content_display:
+        label: 外部内容
+        text: "内容包括从外部网站嵌入的图像、视频和媒体。"
+        always_display: 总是显示外部内容
+        ask_before_display: 在显示外部内容之前询问
+    write:
+      page_title: 编辑
+      restrict_answer:
+        title: 回答编辑
+        label: 每个用户对于每个问题只能有一个回答
+        text: "用户可以使用编辑按钮优化已有的回答"
+      recommend_tags:
+        label: 推荐标签
+        text: "推荐标签将默认显示在下拉列表中。"
+        msg:
+          contain_reserved: "推荐标签不能包含保留标签"
+      required_tag:
+        title: 设置必填标签
+        label: 设置“推荐标签”为必需的标签
+        text: "每个新问题必须至少有一个推荐标签。"
+      reserved_tags:
+        label: 保留标签
+        text: "只有版主才能使用保留的标签。"
+      image_size:
+        label: 最大图像大小 (MB)
+        text: "最大图像上传大小."
+      attachment_size:
+        label: 最大附件大小 (MB)
+        text: "最大附件文件上传大小。"
+      image_megapixels:
+        label: 最大图像兆像素
+        text: "允许图像的最大兆位数。"
+      image_extensions:
+        label: 允许的图像后缀
+        text: "允许图像显示的文件扩展名的列表，用英文逗号分隔。"
+      attachment_extensions:
+        label: 允许的附件后缀
+        text: "允许上传的文件扩展名列表与英文逗号分开。警告：允许上传可能会导致安全问题。"
+    seo:
+      page_title: 搜索引擎优化
+      permalink:
+        label: 固定链接
+        text: 自定义URL结构可以提高可用性，以及你的链接的向前兼容性。
+      robots:
+        label: robots.txt
+        text: 这将永久覆盖任何相关的网站设置。
+    themes:
+      page_title: 主题
+      themes:
+        label: 主题
+        text: 选择一个现有主题。
+      color_scheme:
+        label: 配色方案
+      navbar_style:
+        label: 导航栏背景样式
+      primary_color:
+        label: 主色调
+        text: 修改您主题使用的颜色
+    css_and_html:
+      page_title: CSS 与 HTML
+      custom_css:
+        label: 自定义 CSS
+        text: >
+
+      head:
+        label: 头部
+        text: >
+
+      header:
+        label: 页眉
+        text: >
+
+      footer:
+        label: 页脚
+        text: 这将在 &lt;/body> 之前插入。
+      sidebar:
+        label: 侧边栏
+        text: 这将插入侧边栏中。
+    login:
+      page_title: 登录
+      membership:
+        title: 会员
+        label: 允许新注册
+        text: 关闭以防止任何人创建新账户。
+      email_registration:
+        title: 邮箱注册
+        label: 允许邮箱注册
+        text: 关闭以阻止任何人通过邮箱创建新账户。
+      allowed_email_domains:
+        title: 允许的邮箱域
+        text: 允许注册账户的邮箱域。每行一个域名。留空时忽略。
+      private:
+        title: 非公开的
+        label: 需要登录
+        text: 只有登录用户才能访问这个社区。
+      password_login:
+        title: 密码登录
+        label: 允许使用邮箱和密码登录
+        text: "警告：如果您未配置过其他登录方式，关闭密码登录后您则可能无法登录。"
+    installed_plugins:
+      title: 已安装插件
+      plugin_link: 插件扩展功能。您可以在<1>插件仓库</1>中找到插件。
+      filter:
+        all: 全部
+        active: 已启用
+        inactive: 未启用
+        outdated: 已过期
+      plugins:
+        label: 插件
+        text: 选择一个现有的插件。
+      name: 名称
+      version: 版本
+      status: 状态
+      action: 操作
+      deactivate: 停用
+      activate: 启用
+      settings: 设置
+    settings_users:
+      title: 用户
+      avatar:
+        label: 默认头像
+        text: 没有自定义头像的用户。
+      gravatar_base_url:
+        label: Gravatar 根路径 URL
+        text: Gravatar 提供商的 API 基础的 URL。当为空时忽略。
+      profile_editable:
+        title: 个人资料可编辑
+      allow_update_display_name:
+        label: 允许用户修改显示名称
+      allow_update_username:
+        label: 允许用户修改用户名
+      allow_update_avatar:
+        label: 允许用户修改个人头像
+      allow_update_bio:
+        label: 允许用户修改个人介绍
+      allow_update_website:
+        label: 允许用户修改个人主页网址
+      allow_update_location:
+        label: 允许用户更改位置
+    privilege:
+      title: 特权
+      level:
+        label: 级别所需声望
+        text: 选择特权所需的声望值
+      msg:
+        should_be_number: 输入必须是数字
+        number_larger_1: 数字应该大于等于 1
+    badges:
+      action: 操作
+      active: 活跃的
+      activate: 启用
+      all: 全部
+      awards: 奖项
+      deactivate: 取消激活
+      filter:
+        placeholder: 按名称筛选，或使用 badge:id
+      group: 组
+      inactive: 未启用
+      name: 名字
+      show_logs: 显示日志
+      status: 状态
+      title: 徽章
+  form:
+    optional: (选填)
+    empty: 不能为空
+    invalid: 是无效的
+    btn_submit: 保存
+    not_found_props: "所需属性 {{ key }} 未找到。"
+    select: 选择
+  page_review:
+    review: 评论
+    proposed: 提案
+    question_edit: 问题编辑
+    answer_edit: 回答编辑
+    tag_edit: '标签管理: 编辑标签'
+    edit_summary: 编辑备注
+    edit_question: 编辑问题
+    edit_answer: 编辑回答
+    edit_tag: 编辑标签
+    empty: 没有剩余的审核任务。
+    approve_revision_tip: 您是否批准此修订？
+    approve_flag_tip: 您是否批准此举报？
+    approve_post_tip: 您是否批准此帖子？
+    approve_user_tip: 您是否批准此修订？
+    suggest_edits: 建议的编辑
+    flag_post: 举报帖子
+    flag_user: 举报用户
+    queued_post: 排队的帖子
+    queued_user: 排队用户
+    filter_label: 类型
+    reputation: 声望值
+    flag_post_type: 举报这个帖子的类型是 {{ type }}
+    flag_user_type: 举报这个用户的类型是 {{ type }}
+    edit_post: 编辑帖子
+    list_post: 文章列表
+    unlist_post: 隐藏的帖子
+  timeline:
+    undeleted: 取消删除
+    deleted: 删除
+    downvote: 反对
+    upvote: 点赞
+    accept: 采纳
+    cancelled: 已取消
+    commented: '评论:'
+    rollback: 回滚
+    edited: 最后编辑于
+    answered: 回答于
+    asked: 提问于
+    closed: 关闭
+    reopened: 重新开启
+    created: 创建于
+    pin: 已置顶
+    unpin: 取消置頂
+    show: 已显示
+    hide: 已隐藏
+    title: "历史记录"
+    tag_title: "时间线"
+    show_votes: "显示投票"
+    n_or_a: N/A
+    title_for_question: "时间线"
+    title_for_answer: "{{ title }} 的 {{ author }} 回答时间线"
+    title_for_tag: "时间线"
+    datetime: 日期时间
+    type: 类型
+    by: 由
+    comment: 评论
+    no_data: "空空如也"
+  users:
+    title: 用户
+    users_with_the_most_reputation: 本周声望最高的用户
+    users_with_the_most_vote: 本周投票最多的用户
+    staffs: 我们的社区工作人员
+    reputation: 声望值
+    votes: 投票
+  prompt:
+    leave_page: 确定要离开此页面？
+    changes_not_save: 您的更改尚未保存
+  draft:
+    discard_confirm: 您确定要丢弃您的草稿吗？
+  messages:
+    post_deleted: 该帖子已被删除。
+    post_cancel_deleted: 此帖子已被删除
+    post_pin: 该帖子已被置顶。
+    post_unpin: 该帖子已被取消置顶。
+    post_hide_list: 此帖子已经从列表中隐藏。
+    post_show_list: 该帖子已显示到列表中。
+    post_reopen: 这个帖子已被重新打开.
+    post_list: 这个帖子已经被显示
+    post_unlist: 这个帖子已经被隐藏
+    post_pending: 您的帖子正在等待审核。它将在它获得批准后可见。
+    post_closed: 此帖已关闭。
+    answer_deleted: 该回答已被删除.
+    answer_cancel_deleted: 此答案已取消删除。
+    change_user_role: 此用户的角色已被更改。
+    user_inactive: 此用户已经处于未激活状态。
+    user_normal: 此用户已经是正常的。
+    user_suspended: 此用户已被封禁。
+    user_deleted: 此用户已被删除
+    badge_activated: 此徽章已被激活。
+    badge_inactivated: 此徽章已被禁用。
+    users_deleted: 这些用户已被删除。
+    posts_deleted: 这些问题已被删除。
+    answers_deleted: 这些答案已被删除。
+    copy: 复制到剪贴板
+    copied: 已复制
+    external_content_warning: 外部图像/媒体未显示。
+
+

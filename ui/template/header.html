@@ -78,6 +78,14 @@
             content="{{if $.siteinfo.Branding.Favicon }}{{$.siteinfo.Branding.Favicon}}{{else}}{{$.baseURL}}/favicon.ico{{end}}"
     />
     <meta name="go-template">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NRX9V3TDXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-NRX9V3TDXX');
+    </script>
     <!--customize_head-->
     {{if .HeadCode }} {{.HeadCode | templateHTML}} {{end}}
     <!--customize_head-->

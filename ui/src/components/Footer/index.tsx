@@ -40,9 +40,17 @@ const Index = () => {
         </Link>
 
         {/* Link to Privacy Policy with right margin for spacing */}
-        <Link to="/privacy">
+        <Link to="/privacy" className="me-3">
           {t('label', { keyPrefix: 'admin.legal.privacy_policy' })}
         </Link>
+
+        {/* Link to 民眾之窗 */}
+        <a
+          href="https://flash.justice-tw.org/grassway"
+          target="_blank"
+          rel="noopener noreferrer">
+          民眾之窗
+        </a>
       </p>
       <p className="text-center mb-0 small">
         <Trans i18nKey="footer.build_on" values={{ cc }}>

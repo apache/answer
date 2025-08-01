@@ -1,0 +1,2341 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# The following fields are used for back-end
+backend:
+  base:
+    success:
+      other: Thành công.
+    unknown:
+      other: Lỗi không xác định.
+    request_format_error:
+      other: Định dạng yêu cầu không hợp lệ.
+    unauthorized_error:
+      other: Chưa được cấp quyền.
+    database_error:
+      other: Lỗi dữ liệu máy chủ.
+    forbidden_error:
+      other: Bị cấm.
+    duplicate_request_error:
+      other: Trùng lặp yêu cầu.
+  action:
+    report:
+      other: Gắn nhãn
+    edit:
+      other: Chỉnh sửa
+    delete:
+      other: Xóa
+    close:
+      other: Đóng
+    reopen:
+      other: Mở lại
+    forbidden_error:
+      other: Bị cấm.
+    pin:
+      other: Ghim
+    hide:
+      other: Gỡ bỏ khỏi danh sách
+    unpin:
+      other: Bỏ ghim
+    show:
+      other: Hiển thị
+    invite_someone_to_answer:
+      other: Chỉnh sửa
+    undelete:
+      other: Khôi phục
+    merge:
+      other: Merge
+  role:
+    name:
+      user:
+        other: Người dùng
+      admin:
+        other: Quản trị viên
+      moderator:
+        other: Người điều hành
+    description:
+      user:
+        other: Mặc định không có quyền truy cập đặc biệt.
+      admin:
+        other: Có toàn quyền truy cập vào trang.
+      moderator:
+        other: Có quyền truy cập vào tất cả bài viết trừ cài đặt quản trị.
+  privilege:
+    level_1:
+      description:
+        other: Cấp độ 1 (yêu cầu danh tiếng thấp cho nhóm riêng, nhóm)
+    level_2:
+      description:
+        other: Cấp độ 2 (yêu cầu danh tiếng cao cho cộng đồng đã phát triển)
+    level_3:
+      description:
+        other: Cấp độ 3 (yêu cầu danh tiếng cao cho cộng đồng đã phát triển)
+    level_custom:
+      description:
+        other: Cấp độ tùy chỉnh
+    rank_question_add_label:
+      other: Đặt câu hỏi
+    rank_answer_add_label:
+      other: Viết câu trả lời
+    rank_comment_add_label:
+      other: Viết bình luận
+    rank_report_add_label:
+      other: Gắn Cờ
+    rank_comment_vote_up_label:
+      other: Bình chọn lên cho bình luận
+    rank_link_url_limit_label:
+      other: Đăng nhiều hơn 2 liên kết cùng một lúc
+    rank_question_vote_up_label:
+      other: Bình chọn lên cho câu hỏi
+    rank_answer_vote_up_label:
+      other: Bình chọn lên cho câu trả lời
+    rank_question_vote_down_label:
+      other: Bình chọn xuống cho câu hỏi
+    rank_answer_vote_down_label:
+      other: Bình chọn xuống cho câu trả lời
+    rank_invite_someone_to_answer_label:
+      other: Mời ai đó trả lời
+    rank_tag_add_label:
+      other: Tạo thẻ mới
+    rank_tag_edit_label:
+      other: Chỉnh sửa mô tả thẻ (cần xem xét)
+    rank_question_edit_label:
+      other: Chỉnh sửa câu hỏi của người khác (cần xem xét)
+    rank_answer_edit_label:
+      other: Chỉnh sửa câu trả lời của người khác (cần xem xét)
+    rank_question_edit_without_review_label:
+      other: Chỉnh sửa câu hỏi của người khác không cần xem xét
+    rank_answer_edit_without_review_label:
+      other: Chỉnh sửa câu trả lời của người khác không cần xem xét
+    rank_question_audit_label:
+      other: Xem xét chỉnh sửa câu hỏi
+    rank_answer_audit_label:
+      other: Xem xét chỉnh sửa câu trả lời
+    rank_tag_audit_label:
+      other: Xem xét chỉnh sửa thẻ
+    rank_tag_edit_without_review_label:
+      other: Chỉnh sửa mô tả thẻ không cần xem xét
+    rank_tag_synonym_label:
+      other: Quản lý từ đồng nghĩa của thẻ
+  email:
+    other: Email
+  e_mail:
+    other: Email
+  password:
+    other: Mật khẩu
+  pass:
+    other: Mật khẩu
+  old_pass:
+    other: Current password
+  original_text:
+    other: Bài viết này
+  email_or_password_wrong_error:
+    other: Email và mật khẩu không trùng khớp.
+  error:
+    common:
+      invalid_url:
+        other: URL không tồn tại.
+      status_invalid:
+        other: Trạng thái không hợp lệ
+    password:
+      space_invalid:
+        other: Mật khẩu không thể tồn tại khoảng trắng.
+    admin:
+      cannot_update_their_password:
+        other: Bạn không thể thay đổi mật khẩu.
+      cannot_edit_their_profile:
+        other: Bạn không thể thay đổi hồ sơ.
+      cannot_modify_self_status:
+        other: Bạn không thể thay đổi trạng thái của mình.
+      email_or_password_wrong:
+        other: Email và mật khẩu không khớp.
+    answer:
+      not_found:
+        other: Không tìm thấy câu trả lời.
+      cannot_deleted:
+        other: Không có quyền xóa.
+      cannot_update:
+        other: Không có quyền cập nhật.
+      question_closed_cannot_add:
+        other: Câu hỏi đã đóng và không thể thêm.
+      content_cannot_empty:
+        other: Answer content cannot be empty.
+    comment:
+      edit_without_permission:
+        other: Không được phép chỉnh sửa bình luận.
+      not_found:
+        other: Không tìm thấy bình luận.
+      cannot_edit_after_deadline:
+        other: Thời gian bình luận đã quá lâu để chỉnh sửa.
+      content_cannot_empty:
+        other: Comment content cannot be empty.
+    email:
+      duplicate:
+        other: Email đã được dùng.
+      need_to_be_verified:
+        other: Email cần được xác minh.
+      verify_url_expired:
+        other: URL xác minh email đã hết hạn, vui lòng gửi lại email.
+      illegal_email_domain_error:
+        other: Email không được phép từ miền email đó. Vui lòng sử dụng miền khác.
+    lang:
+      not_found:
+        other: Không tìm thấy file ngôn ngữ.
+    object:
+      captcha_verification_failed:
+        other: Xác minh Captcha thất bại.
+      disallow_follow:
+        other: Bạn không được phép theo dõi.
+      disallow_vote:
+        other: Bạn không được phép bỏ phiếu.
+      disallow_vote_your_self:
+        other: Bạn không thể bỏ phiếu cho bài đăng của chính mình.
+      not_found:
+        other: Đối tượng không tìm thấy.
+      verification_failed:
+        other: Xác thực không thành công.
+      email_or_password_incorrect:
+        other: Email và mật khẩu không trùng khớp.
+      old_password_verification_failed:
+        other: Xác minh mật khẩu cũ thất bại.
+      new_password_same_as_previous_setting:
+        other: Mật khẩu mới giống như cài đặt trước.
+      already_deleted:
+        other: Mật khẩu mới giống như cài đặt trước.
+    meta:
+      object_not_found:
+        other: Đối tượng không tìm thấy
+    question:
+      already_deleted:
+        other: Bài đăng này đã bị xóa.
+      under_review:
+        other: Bài đăng của bạn đang chờ xem xét. Nó sẽ hiển thị sau khi được phê duyệt.
+      not_found:
+        other: Không tìm thấy câu hỏi.
+      cannot_deleted:
+        other: Không có quyền xóa.
+      cannot_close:
+        other: Không có quyền đóng.
+      cannot_update:
+        other: Không có quyền cập nhật.
+      content_cannot_empty:
+        other: Content cannot be empty.
+    rank:
+      fail_to_meet_the_condition:
+        other: Xếp hạng danh tiếng không đạt được điều kiện.
+      vote_fail_to_meet_the_condition:
+        other: Cảm ơn phản hồi của bạn. Bạn cần ít nhất {{.Rank}} danh tiếng để bỏ phiếu.
+      no_enough_rank_to_operate:
+        other: Bạn cần ít nhất {{.Rank}} danh tiếng để làm điều này.
+    report:
+      handle_failed:
+        other: Xử lý báo cáo thất bại.
+      not_found:
+        other: Không tìm thấy báo cáo.
+    tag:
+      already_exist:
+        other: Thẻ đã tồn tại.
+      not_found:
+        other: Không tìm thấy thẻ.
+      recommend_tag_not_found:
+        other: Thẻ đề xuất không tồn tại.
+      recommend_tag_enter:
+        other: Vui lòng nhập ít nhất một thẻ bắt buộc.
+      not_contain_synonym_tags:
+        other: Không nên chứa các thẻ đồng nghĩa.
+      cannot_update:
+        other: Không có quyền cập nhật.
+      is_used_cannot_delete:
+        other: Bạn không thể xóa thẻ đang được sử dụng.
+      cannot_set_synonym_as_itself:
+        other: Bạn không thể đặt từ đồng nghĩa của thẻ hiện tại là chính nó.
+    smtp:
+      config_from_name_cannot_be_email:
+        other: Tên người gửi không thể là địa chỉ email.
+    theme:
+      not_found:
+        other: Chủ đề không tìm thấy.
+    revision:
+      review_underway:
+        other: Không thể chỉnh sửa hiện tại, có một phiên bản đang trong hàng đợi xem xét.
+      no_permission:
+        other: Không có quyền sửa đổi.
+    user:
+      external_login_missing_user_id:
+        other: Nền tảng bên thứ ba không cung cấp UserID duy nhất, vì vậy bạn không thể đăng nhập, vui lòng liên hệ với quản trị viên trang web.
+      external_login_unbinding_forbidden:
+        other: Vui lòng đặt mật khẩu đăng nhập cho tài khoản của bạn trước khi bạn gỡ bỏ đăng nhập này.
+      email_or_password_wrong:
+        other:
+          other: Email và mật khẩu không khớp.
+      not_found:
+        other: Không tìm thấy người dùng.
+      suspended:
+        other: Người dùng đã bị đình chỉ.
+      username_invalid:
+        other: Tên người dùng không hợp lệ.
+      username_duplicate:
+        other: Tên người dùng đã được sử dụng.
+      set_avatar:
+        other: Thiết lập hình đại diện thất bại.
+      cannot_update_your_role:
+        other: Bạn không thể sửa đổi vai trò của mình.
+      not_allowed_registration:
+        other: Hiện tại trang không mở đăng ký.
+      not_allowed_login_via_password:
+        other: Hiện tại trang không cho phép đăng nhập qua mật khẩu.
+      access_denied:
+        other: Truy cập bị từ chối
+      page_access_denied:
+        other: Bạn không có quyền truy cập trang này.
+      add_bulk_users_format_error:
+        other: "Lỗi định dạng {{.Field}} gần '{{.Content}}' tại dòng {{.Line}}. {{.ExtraMessage}}"
+      add_bulk_users_amount_error:
+        other: "Số lượng người dùng bạn thêm cùng một lúc nên nằm trong khoảng từ 1-{{.MaxAmount}}."
+      status_suspended_forever:
+        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+      status_suspended_until:
+        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+      status_deleted:
+        other: "This user was deleted."
+      status_inactive:
+        other: "This user is inactive."
+    config:
+      read_config_failed:
+        other: Đọc cấu hình thất bại
+    database:
+      connection_failed:
+        other: Kết nối cơ sở dữ liệu thất bại
+      create_table_failed:
+        other: Tạo bảng thất bại
+    install:
+      create_config_failed:
+        other: Không thể tạo file config.yaml.
+    upload:
+      unsupported_file_format:
+        other: Định dạng tệp không được hỗ trợ.
+    site_info:
+      config_not_found:
+        other: Không tìm thấy cấu hình trang.
+    badge:
+      object_not_found:
+        other: Đối tượng không tìm thấy
+  reason:
+    spam:
+      name:
+        other: thư rác
+      desc:
+        other: Bài đăng này quảng cáo hoặc phá hoại. Nó không hữu ích hoặc liên quan đến chủ đề hiện tại.
+    rude_or_abusive:
+      name:
+        other: thô lỗ hoặc lạm dụng
+      desc:
+        other: "Một người hợp lý sẽ thấy nội dung này không phù hợp để diễn thuyết một cách tôn trọng."
+    a_duplicate:
+      name:
+        other: một bản sao
+      desc:
+        other: Câu hỏi này đã được hỏi trước đó, đã có câu trả lời.
+      placeholder:
+        other: Nhập liên kết câu hỏi hiện tại
+    not_a_answer:
+      name:
+        other: không phải câu trả lời
+      desc:
+        other: "Điều này đã được đăng dưới dạng câu trả lời nhưng nó không cố gắng trả lời câu hỏi. Nó có thể là một bản chỉnh sửa, một nhận xét, một câu hỏi khác hoặc bị xóa hoàn toàn."
+    no_longer_needed:
+      name:
+        other: không còn cần thiết
+      desc:
+        other: Bình luận này đã lỗi thời, đối thoại hoặc không liên quan đến bài đăng này.
+    something:
+      name:
+        other: điều gì đó khác
+      desc:
+        other: Bài đăng này cần sự chú ý của nhân viên vì một lý do khác không được liệt kê ở trên.
+      placeholder:
+        other: Hãy cho chúng tôi biết cụ thể điều gì bạn quan tâm
+    community_specific:
+      name:
+        other: một lý do cụ thể của cộng đồng
+      desc:
+        other: Câu hỏi này không đáp ứng hướng dẫn của cộng đồng.
+    not_clarity:
+      name:
+        other: cần chi tiết hoặc rõ ràng
+      desc:
+        other: Câu hỏi này hiện bao gồm nhiều câu hỏi trong một. Nó nên tập trung vào một vấn đề duy nhất.
+    looks_ok:
+      name:
+        other: trông ổn
+      desc:
+        other: Bài đăng này tốt như vậy và không kém chất lượng.
+    needs_edit:
+      name:
+        other: cần chỉnh sửa, và tôi đã làm điều đó
+      desc:
+        other: Cải thiện và sửa các vấn đề với bài đăng này bằng chính bạn.
+    needs_close:
+      name:
+        other: cần đóng
+      desc:
+        other: Một câu hỏi đã đóng không thể trả lời, nhưng vẫn có thể chỉnh sửa, bỏ phiếu và bình luận.
+    needs_delete:
+      name:
+        other: cần xóa
+      desc:
+        other: Bài đăng này sẽ bị xóa.
+  question:
+    close:
+      duplicate:
+        name:
+          other: spam
+        desc:
+          other: Câu hỏi này đã được hỏi trước đó và đã có câu trả lời.
+      guideline:
+        name:
+          other: một lý do cụ thể của cộng đồng
+        desc:
+          other: Câu hỏi này không đáp ứng hướng dẫn của cộng đồng.
+      multiple:
+        name:
+          other: cần chi tiết hoặc rõ ràng
+        desc:
+          other: Câu hỏi này hiện bao gồm nhiều câu hỏi trong một. Nó chỉ nên tập trung vào một vấn đề.
+      other:
+        name:
+          other: điều gì đó khác
+        desc:
+          other: Bài đăng này cần một lý do khác không được liệt kê ở trên.
+    operation_type:
+      asked:
+        other: đã hỏi
+      answered:
+        other: đã trả lời
+      modified:
+        other: đã chỉnh sửa
+    deleted_title:
+      other: Câu hỏi đã xóa
+    questions_title:
+      other: Các câu hỏi
+  tag:
+    tags_title:
+      other: Thẻ
+    no_description:
+      other: Thẻ không có mô tả.
+  notification:
+    action:
+      update_question:
+        other: câu hỏi đã cập nhật
+      answer_the_question:
+        other: đã trả lời câu hỏi
+      update_answer:
+        other: câu trả lời đã cập nhật
+      accept_answer:
+        other: câu trả lời đã chấp nhận
+      comment_question:
+        other: đã bình luận câu hỏi
+      comment_answer:
+        other: đã bình luận câu trả lời
+      reply_to_you:
+        other: đã trả lời bạn
+      mention_you:
+        other: đã nhắc đến bạn
+      your_question_is_closed:
+        other: Câu hỏi của bạn đã được đóng
+      your_question_was_deleted:
+        other: Câu hỏi của bạn đã bị xóa
+      your_answer_was_deleted:
+        other: Câu trả lời của bạn đã bị xóa
+      your_comment_was_deleted:
+        other: Bình luận của bạn đã bị xóa
+      up_voted_question:
+        other: câu hỏi đã bình chọn lên
+      down_voted_question:
+        other: câu hỏi đã bình chọn xuống
+      up_voted_answer:
+        other: câu trả lời đã bình chọn lên
+      down_voted_answer:
+        other: câu trả lời đã bình chọn xuống
+      up_voted_comment:
+        other: bình luận đã bình chọn lên
+      invited_you_to_answer:
+        other: đã mời bạn trả lời
+      earned_badge:
+        other: Bạn đã nhận được huy hiệu "{{.BadgeName}}"
+  email_tpl:
+    change_email:
+      title:
+        other: "[{{.SiteName}}] Xác nhận địa chỉ email mới của bạn"
+      body:
+        other: "Xác nhận địa chỉ email mới của bạn cho {{.SiteName}} bằng cách nhấp vào liên kết sau:<br>\n<a href='{{.ChangeEmailUrl}}' target='_blank'>{{.ChangeEmailUrl}}</a><br><br>\n\nNếu bạn không yêu cầu thay đổi này, vui lòng bỏ qua email này.<br><br>\n\n--<br>\nLưu ý: Đây là email hệ thống tự động, vui lòng không trả lời tin nhắn này vì chúng tôi sẽ không nhìn thấy phản hồi của bạn."
+    new_answer:
+      title:
+        other: "[{{.SiteName}}] {{.DisplayName}} đã trả lời câu hỏi của bạn"
+      body:
+        other: "<a href='{{.AnswerUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.AnswerSummary}}</blockquote><br>\n<a href='{{.AnswerUrl}}'>Xem trên {{.SiteName}}</a><br><br>\n\n--<br>\nLưu ý: Đây là email hệ thống tự động, vui lòng không trả lời thư này vì chúng tôi sẽ không nhìn thấy phản hồi của bạn.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Hủy đăng ký</a></small>"
+    invited_you_to_answer:
+      title:
+        other: "[{{.SiteName}}] {{.DisplayName}} mời bạn trả lời"
+      body:
+        other: "<a href='{{.InviteUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>Tôi nghĩ bạn có thể biết câu trả lời.</blockquote><br>\n<a href='{{.InviteUrl}}'>Xem trên {{.SiteName}}</a><br><br>\n\n--<br>\nLưu ý: Đây là email hệ thống tự động, vui lòng không trả lời thư này vì chúng tôi sẽ không nhìn thấy phản hồi của bạn.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Hủy đăng ký</a></small>"
+    new_comment:
+      title:
+        other: "[{{.SiteName}}] {{.DisplayName}} đã bình luận về bài đăng của bạn"
+      body:
+        other: "<a href='{{.CommentUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.CommentSummary}}</blockquote><br>\n<a href='{{.CommentUrl}}'>Xem trên {{.SiteName}}</a><br><br>\n\n--<br>\nLưu ý: Đây là email hệ thống tự động, vui lòng không trả lời thư này vì chúng tôi sẽ không nhìn thấy phản hồi của bạn.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Hủy đăng ký</a></small>"
+    new_question:
+      title:
+        other: "[{{.SiteName}}] Câu hỏi mới: {{.QuestionTitle}}"
+      body:
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+    pass_reset:
+      title:
+        other: "[{{.SiteName}}] Đặt lại mật khẩu"
+      body:
+        other: "Ai đó đã yêu cầu đặt lại mật khẩu của bạn trên {{.SiteName}}.<br><br>\n\nNếu người đó không phải là bạn thì bạn có thể yên tâm bỏ qua email này.<br><br>\n\nNhấp vào liên kết sau để chọn mật khẩu mới:<br>\n<a href='{{.PassResetUrl}}' target='_blank'>{{.PassResetUrl}}</a>\n<br><br>\n\n--<br>\nLưu ý: Đây là email hệ thống tự động, vui lòng không trả lời tin nhắn này vì chúng tôi sẽ không nhìn thấy phản hồi của bạn."
+    register:
+      title:
+        other: "[{{.SiteName}}] Xác nhận tài khoản mới của bạn"
+      body:
+        other: "Chào mừng bạn đến với {{.SiteName}}!<br><br>\n\nNhấp vào liên kết sau để xác nhận và kích hoạt tài khoản mới của bạn:<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\nNếu liên kết trên không nhấp vào được, hãy thử sao chép và dán nó vào thanh địa chỉ trình duyệt web của bạn.\n<br><br>\n\n--<br>\nLưu ý: Đây là email hệ thống tự động, vui lòng không trả lời tin nhắn này vì chúng tôi sẽ không nhìn thấy phản hồi của bạn."
+    test:
+      title:
+        other: "[{{.SiteName}}] Email kiểm tra"
+      body:
+        other: "Đây là một email thử nghiệm.\n<br><br>\n\n--<br>\nLưu ý: Đây là email hệ thống tự động, vui lòng không trả lời tin nhắn này vì chúng tôi sẽ không nhìn thấy phản hồi của bạn."
+  action_activity_type:
+    upvote:
+      other: bình chọn lên
+    upvoted:
+      other: đã bình chọn lên
+    downvote:
+      other: bình chọn xuống
+    downvoted:
+      other: đã bình chọn xuống
+    accept:
+      other: chấp nhận
+    accepted:
+      other: đã chấp nhận
+    edit:
+      other: chỉnh sửa
+  review:
+    queued_post:
+      other: Bài đăng trong hàng đợi
+    flagged_post:
+      other: Bài đăng được đánh dấu
+    suggested_post_edit:
+      other: Đề xuất chỉnh sửa
+  reaction:
+    tooltip:
+      other: "{{ .Names }} và {{ .Count }} thêm..."
+  badge:
+    default_badges:
+      autobiographer:
+        name:
+          other: Tác giả tự truyện
+        desc:
+          other: Đã điền thông tin <a href="{{ .ProfileURL }}" target="_blank">hồ sơ</a>.
+      certified:
+        name:
+          other: Đã xác minh
+        desc:
+          other: Hoàn thành hướng dẫn cho người dùng mới của chúng tôi.
+      editor:
+        name:
+          other: Trình chỉnh sửa
+        desc:
+          other: Chỉnh sửa bài đăng đầu tiên.
+      first_flag:
+        name:
+          other: Cờ đầu tiên
+        desc:
+          other: Lần đầu tiên báo cáo một bài viết.
+      first_upvote:
+        name:
+          other: Lượt thích đầu tiên
+        desc:
+          other: Lần đầu tiên báo cáo một bài viết.
+      first_link:
+        name:
+          other: Liên kết đầu tiên
+        desc:
+          other: First added a link to another post.
+      first_reaction:
+        name:
+          other: Phản ứng đầu tiên
+        desc:
+          other: Phản ứng với bài viết đầu tiên.
+      first_share:
+        name:
+          other: Chia sẻ đầu tiên
+        desc:
+          other: Lần đầu chia sẻ một bài viết.
+      scholar:
+        name:
+          other: Học giả
+        desc:
+          other: Đặt một câu hỏi và chấp nhận một câu trả lời.
+      commentator:
+        name:
+          other: Bình luận viên
+        desc:
+          other: Để lại 5 bình luận.
+      new_user_of_the_month:
+        name:
+          other: Người dùng mới của tháng
+        desc:
+          other: Đóng góp nổi bật trong tháng đầu tiên của họ.
+      read_guidelines:
+        name:
+          other: Đọc hướng dẫn
+        desc:
+          other: Đọc [nguyên tắc cộng đồng].
+      reader:
+        name:
+          other: Người đọc
+        desc:
+          other: Đọc mọi câu trả lời trong một chủ đề có hơn 10 câu trả lời.
+      welcome:
+        name:
+          other: Xin chào
+        desc:
+          other: Đã nhận được phiếu tán thành.
+      nice_share:
+        name:
+          other: Chia sẻ hay
+        desc:
+          other: Đã chia sẻ một bài đăng với 25 khách truy cập.
+      good_share:
+        name:
+          other: Chia sẻ tốt
+        desc:
+          other: Đã chia sẻ một bài đăng với 300 khách truy cập.
+      great_share:
+        name:
+          other: Chia sẻ tuyệt vời
+        desc:
+          other: Đã chia sẻ một bài đăng với 1000 khách truy cập.
+      out_of_love:
+        name:
+          other: Hết yêu thích
+        desc:
+          other: Đã sử dụng 50 phiếu bầu trong một ngày.
+      higher_love:
+        name:
+          other: Thích cao hơn
+        desc:
+          other: Đã sử dụng 50 phiếu bầu trong một ngày.
+      crazy_in_love:
+        name:
+          other: Thích điên cuồng
+        desc:
+          other: Đã sử dụng 50 phiếu bầu trong một ngày 20 lần.
+      promoter:
+        name:
+          other: Người quảng bá
+        desc:
+          other: Đã mời một người dùng.
+      campaigner:
+        name:
+          other: Chiến dịch
+        desc:
+          other: Đã mời 3 người dùng cơ bản.
+      champion:
+        name:
+          other: Vô địch
+        desc:
+          other: Mời 5 thành viên.
+      thank_you:
+        name:
+          other: Cảm ơn bạn
+        desc:
+          other: Có 20 bài đăng được bình chọn đưa ra 10 phiếu bầu.
+      gives_back:
+        name:
+          other: Trả lại
+        desc:
+          other: Có 100 bài đăng được bình chọn và đưa ra 100 phiếu bầu.
+      empathetic:
+        name:
+          other: Đồng cảm
+        desc:
+          other: Có 500 bài đăng được bình chọn đưa ra 1000 phiếu bầu.
+      enthusiast:
+        name:
+          other: Người nhiệt thành
+        desc:
+          other: Đã truy cập 10 ngày liên tiếp.
+      aficionado:
+        name:
+          other: Người hâm mộ
+        desc:
+          other: Đã truy cập 100 ngày liên tiếp.
+      devotee:
+        name:
+          other: Tín đồ
+        desc:
+          other: Đã truy cập 365 ngày liên tiếp.
+      anniversary:
+        name:
+          other: Kỉ niệm
+        desc:
+          other: Thành viên tích cực trong một năm, đăng ít nhất một lần.
+      appreciated:
+        name:
+          other: Đánh giá cao
+        desc:
+          other: Nhận được 1 lượt bình chọn cho 20 bài viết.
+      respected:
+        name:
+          other: Tôn trọng
+        desc:
+          other: Nhận được 2 lượt bình chọn cho 100 bài viết.
+      admired:
+        name:
+          other: Ngưỡng mộ
+        desc:
+          other: Nhận được 5 lượt bình chọn trên 300 bài đăng.
+      solved:
+        name:
+          other: Đã giải quyết
+        desc:
+          other: Có một câu trả lời được chấp nhận.
+      guidance_counsellor:
+        name:
+          other: Cố vấn hướng dẫn
+        desc:
+          other: Có 10 câu trả lời được chấp nhận.
+      know_it_all:
+        name:
+          other: Biết tất cả
+        desc:
+          other: Có 50 câu trả lời được chấp nhận.
+      solution_institution:
+        name:
+          other: Viện giải pháp
+        desc:
+          other: Có 150 câu trả lời được chấp nhận.
+      nice_answer:
+        name:
+          other: Câu trả lời tốt
+        desc:
+          other: Điểm trả lời từ 10 trở lên.
+      good_answer:
+        name:
+          other: Câu trả lời của bạn
+        desc:
+          other: Điểm trả lời từ 25 trở lên.
+      great_answer:
+        name:
+          other: Câu trả lời tuyệt vời
+        desc:
+          other: Điểm trả lời từ 50 trở lên.
+      nice_question:
+        name:
+          other: Câu trả lời tốt
+        desc:
+          other: Điểm trả lời từ 10 trở lên.
+      good_question:
+        name:
+          other: Câu trả lời tốt
+        desc:
+          other: Điểm trả lời từ 25 trở lên.
+      great_question:
+        name:
+          other: Câu trả lời tốt
+        desc:
+          other: Điểm trả lời từ 50 trở lên.
+      popular_question:
+        name:
+          other: Câu hỏi phổ biến
+        desc:
+          other: Câu hỏi với 500 lượt xem.
+      notable_question:
+        name:
+          other: Câu hỏi đáng chú ý
+        desc:
+          other: Câu hỏi với 1.000 lượt xem.
+      famous_question:
+        name:
+          other: Câu hỏi nổi tiếng
+        desc:
+          other: Câu hỏi với 5.000 lượt xem.
+      popular_link:
+        name:
+          other: Liên kết phổ biến
+        desc:
+          other: Đã đăng một liên kết bên ngoài với 50 lần nhấp chuột.
+      hot_link:
+        name:
+          other: Liên kết nổi bật
+        desc:
+          other: Đã đăng một liên kết bên ngoài với 300 lần nhấp chuột.
+      famous_link:
+        name:
+          other: Liên kết nổi tiếng
+        desc:
+          other: Đã đăng một liên kết bên ngoài với 100 lần nhấp chuột.
+    default_badge_groups:
+      getting_started:
+        name:
+          other: Bắt đầu
+      community:
+        name:
+          other: Cộng đồng
+      posting:
+        name:
+          other: Viết bài thảo luận
+# The following fields are used for interface presentation(Front-end)
+ui:
+  how_to_format:
+    title: Cách định dạng
+    desc: >-
+      <ul class="mb-0"><li><p class="mb-2">đề cập đến bài đăng: <code>#post_id</code></p></li> <li><p class ="mb-2">để tạo liên kết</p><pre class="mb-2"><code>&lt;https://url.com&gt;<br/><br/>[Title](https://url.com)</code></pre></li><li><p class="mb-2">đặt trả về giữa đoạn văn</p></li><li><p class="mb-2"><em>_italic_</em> hoặc **<strong>in đậm</strong>**</p></li ><li><p class="mb-2">mã thụt lề 4 dấu cách</p></li><li><p class="mb-2">trích dẫn bằng cách đặt <code>&gt;</ code> ở đầu dòng</p></li><li><p class="mb-2">backtick thoát <code>`like _this_`</code></p></li><li><p class="mb-2">tạo hàng rào mã bằng dấu backticks <code>`</code></p><pre class="mb -0"><code>```<br/>mã vào đây<br/>```</code></pre></li></ul>
+  pagination:
+    prev: Trước
+    next: Tiếp
+  page_title:
+    question: Câu hỏi
+    questions: Các câu hỏi
+    tag: Thẻ
+    tags: Các thẻ
+    tag_wiki: wiki thẻ
+    create_tag: Tạo thẻ
+    edit_tag: Chỉnh sửa thẻ
+    ask_a_question: Create Question
+    edit_question: Chỉnh sửa câu hỏi
+    edit_answer: Chỉnh sửa câu
+    search: Tìm kiếm
+    posts_containing: Bài đăng chứa
+    settings: Cài đặt
+    notifications: Các thông báo
+    login: Đăng nhập
+    sign_up: Đăng ký
+    account_recovery: Khôi phục tài khoản
+    account_activation: Kích hoạt tài khoản
+    confirm_email: Xác nhận Email
+    account_suspended: Tài khoản bị đình chỉ
+    admin: Quản trị
+    change_email: Thay đổi Email
+    install: Cài đặt Answer
+    upgrade: Nâng cấp Answer
+    maintenance: Bảo trì trang web
+    users: Người dùng
+    oauth_callback: Đang xử lý
+    http_404: Lỗi HTTP 404
+    http_50X: Lỗi HTTP 500
+    http_403: Lỗi HTTP 403
+    logout: Đăng xuất
+  notifications:
+    title: Các thông báo
+    inbox: Hộp thư đến
+    achievement: Thành tích
+    new_alerts: Cảnh báo mới
+    all_read: Đánh dấu tất cả đã đọc
+    show_more: Xem thêm
+    someone: Ai đó
+    inbox_type:
+      all: Tất cả
+      posts: Bài đăng
+      invites: Lời mời
+      votes: Bình chọn
+    answer: Câu trả lời
+    question: Câu hỏi
+    badge_award: Huy hiệu
+  suspended:
+    title: Tài khoản của bạn đã bị đình chỉ
+    until_time: "Tài khoản của bạn đã bị đình chỉ cho đến {{ time }}."
+    forever: Người dùng này đã bị đình chỉ vĩnh viễn.
+    end: Bạn không tuân thủ hướng dẫn cộng đồng.
+    contact_us: Liên hệ với chúng tôi
+  editor:
+    blockquote:
+      text: Trích dẫn
+    bold:
+      text: Đậm
+    chart:
+      text: Biểu đồ
+      flow_chart: Biểu đồ luồng
+      sequence_diagram: Sơ đồ trình tự
+      class_diagram: Sơ đồ lớp
+      state_diagram: Sơ đồ trạng thái
+      entity_relationship_diagram: Sơ đồ quan hệ thực thể
+      user_defined_diagram: Sơ đồ do người dùng định nghĩa
+      gantt_chart: Biểu đồ Gantt
+      pie_chart: Biểu đồ tròn
+    code:
+      text: Mẫu code
+      add_code: Thêm code mẫu
+      form:
+        fields:
+          code:
+            label: Mã
+            msg:
+              empty: Mã không thể trống.
+          language:
+            label: Ngôn ngữ
+            placeholder: Phát hiện tự động
+      btn_cancel: Hủy
+      btn_confirm: Thêm
+    formula:
+      text: Công thức
+      options:
+        inline: Công thức nội dòng
+        block: Công thức khối
+    heading:
+      text: Tiêu đề
+      options:
+        h1: Tiêu đề 1
+        h2: Tiêu đề 2
+        h3: Tiêu đề 3
+        h4: Tiêu đề 4
+        h5: Tiêu đề 5
+        h6: Tiêu đề 6
+    help:
+      text: Trợ giúp
+    hr:
+      text: Thước ngang
+    image:
+      text: Hình ảnh
+      add_image: Thêm hình ảnh
+      tab_image: Tải Ảnh lên
+      form_image:
+        fields:
+          file:
+            label: Tệp hình ảnh
+            btn: Chọn hình ảnh
+            msg:
+              empty: Tệp không thể trống.
+              only_image: Chỉ cho phép tệp hình ảnh.
+              max_size: Kích thước tệp không được vượt quá {{size}} MB.
+          desc:
+            label: Mô tả
+      tab_url: URL hình ảnh
+      form_url:
+        fields:
+          url:
+            label: URL hình ảnh
+            msg:
+              empty: URL hình ảnh không thể trống.
+          name:
+            label: Mô tả
+      btn_cancel: Hủy
+      btn_confirm: Thêm
+      uploading: Đang tải lên
+    indent:
+      text: Canh lề
+    outdent:
+      text: Lùi lề
+    italic:
+      text: Nhấn mạnh
+    link:
+      text: Liên kết
+      add_link: Thêm liên kết
+      form:
+        fields:
+          url:
+            label: Đường link url
+            msg:
+              empty: URL không thể trống.
+          name:
+            label: Mô tả
+      btn_cancel: Hủy
+      btn_confirm: Thêm
+    ordered_list:
+      text: Danh sách đánh số
+    unordered_list:
+      text: Danh sách gạch đầu dòng
+    table:
+      text: Bảng
+      heading: Tiêu đề
+      cell: Ô
+    file:
+      text: Đính kèm tập tin
+      not_supported: "Không hỗ trợ loại tệp đó. Hãy thử lại với {{file_type}}."
+      max_size: "Kích thước tệp đính kèm không được vượt quá {{size}} MB."
+  close_modal:
+    title: Tôi đang đóng bài đăng này với lý do...
+    btn_cancel: Hủy
+    btn_submit: Gửi
+    remark:
+      empty: Không thể trống.
+    msg:
+      empty: Vui lòng chọn một lý do.
+  report_modal:
+    flag_title: Tôi đang đánh dấu để báo cáo bài đăng này với lý do...
+    close_title: Tôi đang đóng bài đăng này với lý do...
+    review_question_title: Xem xét câu hỏi
+    review_answer_title: Xem xét câu trả lời
+    review_comment_title: Xem xét bình luận
+    btn_cancel: Hủy
+    btn_submit: Gửi
+    remark:
+      empty: Không thể trống.
+    msg:
+      empty: Vui lòng chọn một lý do.
+      not_a_url: Định dạng URL không chính xác.
+      url_not_match: Nguồn gốc URL không khớp với trang web hiện tại.
+  tag_modal:
+    title: Tạo thẻ mới
+    form:
+      fields:
+        display_name:
+          label: Tên hiển thị
+          msg:
+            empty: Tên hiển thị không thể trống.
+            range: Tên hiển thị tối đa 35 ký tự.
+        slug_name:
+          label: Đường dẫn URL
+          desc: Đường dẫn tối đa 35 ký tự.
+          msg:
+            empty: Đường dẫn URL không thể trống.
+            range: Đường dẫn URL tối đa 35 ký tự.
+            character: Đường dẫn URL chứa bộ ký tự không được phép.
+        desc:
+          label: Mô tả
+        revision:
+          label: Sửa đổi
+        edit_summary:
+          label: Tóm tắt chỉnh sửa
+          placeholder: >-
+            Giải thích ngắn gọn các thay đổi của bạn (sửa chính tả, sửa ngữ pháp, cải thiện định dạng)
+    btn_cancel: Hủy
+    btn_submit: Gửi
+    btn_post: Đăng thẻ mới
+  tag_info:
+    created_at: Đã tạo
+    edited_at: Đã chỉnh sửa
+    history: Lịch sử
+    synonyms:
+      title: Từ đồng nghĩa
+      text: Các thẻ sau sẽ được ánh xạ lại thành
+      empty: Không tìm thấy từ đồng nghĩa.
+      btn_add: Thêm từ đồng nghĩa
+      btn_edit: Chỉnh sửa
+      btn_save: Lưu
+    synonyms_text: Các thẻ sau sẽ được ánh xạ lại thành
+    delete:
+      title: Xóa thẻ này
+      tip_with_posts: >-
+        <p>Chúng tôi không cho phép <strong>xóa thẻ có bài đăng</strong>.</p> <p>Vui lòng xóa thẻ này khỏi các bài đăng trước.</p>
+      tip_with_synonyms: >-
+        <p>Chúng tôi không cho phép <strong>xóa thẻ có từ đồng nghĩa</strong>.</p> <p>Vui lòng xóa các từ đồng nghĩa khỏi thẻ này trước.</p>
+      tip: Bạn có chắc chắn muốn xóa không?
+      close: Đóng
+    merge:
+      title: Merge tag
+      source_tag_title: Source tag
+      source_tag_description: The source tag and its associated data will be remapped to the target tag.
+      target_tag_title: Target tag
+      target_tag_description: A synonym between these two tags will be created after merging.
+      no_results: No tags matched
+      btn_submit: Submit
+      btn_close: Close
+  edit_tag:
+    title: Chỉnh sửa Thẻ
+    default_reason: Chỉnh sửa thẻ
+    default_first_reason: Thêm thẻ
+    btn_save_edits: Lưu chỉnh sửa
+    btn_cancel: Hủy
+  dates:
+    long_date: MMM D
+    long_date_with_year: "MMM D, YYYY"
+    long_date_with_time: "MMM D, YYYY [at] HH:mm"
+    now: bây giờ
+    x_seconds_ago: "{{count}}giây trước"
+    x_minutes_ago: "{{count}}phút trước"
+    x_hours_ago: "{{count}}giờ trước"
+    hour: giờ
+    day: ngày
+    hours: giờ
+    days: ngày
+    month: month
+    months: months
+    year: year
+  reaction:
+    heart: trái tim
+    smile: nụ cười
+    frown: nhăn mặt
+    btn_label: thêm hoặc loại bỏ phản ứng
+    undo_emoji: bỏ dấu {{ emoji }} phản ứng
+    react_emoji: biểu cảm với {{ emoji }}
+    unreact_emoji: hủy biểu cảm {{ emoji }}
+  comment:
+    btn_add_comment: Thêm bình luận
+    reply_to: Trả lời cho
+    btn_reply: Trả lời
+    btn_edit: Chỉnh sửa
+    btn_delete: Xóa
+    btn_flag: Gắn Cờ
+    btn_save_edits: Lưu chỉnh sửa
+    btn_cancel: Hủy
+    show_more: "{{count}} bình luận khác"
+    tip_question: >-
+      Sử dụng bình luận để yêu cầu thêm thông tin hoặc đề xuất cải tiến. Tránh trả lời câu hỏi trong bình luận.
+    tip_answer: >-
+      Sử dụng bình luận để trả lời cho người dùng khác hoặc thông báo cho họ về các thay đổi. Nếu bạn đang thêm thông tin mới, hãy chỉnh sửa bài đăng của mình thay vì bình luận.
+    tip_vote: Nó thêm điều gì đó hữu ích cho bài đăng
+  edit_answer:
+    title: Chỉnh sửa Câu trả lời
+    default_reason: Chỉnh sửa câu trả lời
+    default_first_reason: Thêm câu trả lời
+    form:
+      fields:
+        revision:
+          label: Sửa đổi
+        answer:
+          label: Câu trả lời
+          feedback:
+            characters: nội dung phải có ít nhất 6 ký tự.
+        edit_summary:
+          label: Tóm tắt chỉnh sửa
+          placeholder: >-
+            Giải thích ngắn gọn các thay đổi của bạn (sửa chính tả, sửa ngữ pháp, cải thiện định dạng)
+    btn_save_edits: Lưu chỉnh sửa
+    btn_cancel: Hủy
+  tags:
+    title: Thẻ
+    sort_buttons:
+      popular: Phổ biến
+      name: Tên
+      newest: Mới nhất
+    button_follow: Theo dõi
+    button_following: Đang theo dõi
+    tag_label: câu hỏi
+    search_placeholder: Lọc theo tên thẻ
+    no_desc: Thẻ không có mô tả.
+    more: Thêm
+    wiki: Wiki
+  ask:
+    title: Create Question
+    edit_title: Chỉnh sửa Câu hỏi
+    default_reason: Chỉnh sửa câu hỏi
+    default_first_reason: Create question
+    similar_questions: Câu hỏi tương tự
+    form:
+      fields:
+        revision:
+          label: Sửa đổi
+        title:
+          label: Tiêu đề
+          placeholder: What's your topic? Be specific.
+          msg:
+            empty: Tiêu đề không thể trống.
+            range: Tiêu đề tối đa 150 ký tự
+        body:
+          label: Nội dung
+          msg:
+            empty: Nội dung không thể trống.
+        tags:
+          label: Thẻ
+          msg:
+            empty: Thẻ không thể trống.
+        answer:
+          label: Câu trả lời
+          msg:
+            empty: Câu trả lời không thể trống.
+        edit_summary:
+          label: Tóm tắt chỉnh sửa
+          placeholder: >-
+            Giải thích ngắn gọn các thay đổi của bạn (sửa chính tả, sửa ngữ pháp, cải thiện định dạng)
+    btn_post_question: Đăng câu hỏi của bạn
+    btn_save_edits: Lưu chỉnh sửa
+    answer_question: Trả lời câu hỏi của chính bạn
+    post_question&answer: Đăng câu hỏi và câu trả lời của bạn
+  tag_selector:
+    add_btn: Thêm thẻ
+    create_btn: Tạo thẻ mới
+    search_tag: Tìm kiếm thẻ
+    hint: "Describe what your content is about, at least one tag is required."
+    no_result: Không có thẻ phù hợp
+    tag_required_text: Thẻ bắt buộc (ít nhất một)
+  header:
+    nav:
+      question: Câu hỏi
+      tag: Thẻ
+      user: Người dùng
+      badges: Danh hiệu
+      profile: Hồ sơ
+      setting: Cài đặt
+      logout: Đăng xuất
+      admin: Quản trị
+      review: Xem xét
+      bookmark: Đánh dấu
+      moderation: Điều hành
+    search:
+      placeholder: Tìm kiếm
+  footer:
+    build_on: >-
+      Được hỗ trợ bởi <1> Apache Answer </1>- phần mềm mã nguồn mở dành cho cộng đồng hỏi đáp.<br />Được tạo với tình yêu © {{cc}}.
+  upload_img:
+    name: Thay đổi
+    loading: đang tải...
+  pic_auth_code:
+    title: Mã xác minh
+    placeholder: Nhập văn bản ở trên
+    msg:
+      empty: Captcha không thể trống.
+  inactive:
+    first: >-
+      Bạn gần như đã hoàn tất! Chúng tôi đã gửi một email kích hoạt đến <bold>{{mail}}</bold>. Vui lòng làm theo hướng dẫn trong email để kích hoạt tài khoản của bạn.
+    info: "Nếu không nhận được, hãy kiểm tra thư mục spam của bạn."
+    another: >-
+      Chúng tôi đã gửi một email kích hoạt khác cho bạn tại <bold>{{mail}}</bold>. Có thể mất vài phút để nó đến; hãy chắc chắn kiểm tra thư mục thư rác của bạn.
+    btn_name: Gửi lại email kích hoạt
+    change_btn_name: Thay đổi email
+    msg:
+      empty: Không thể để trống mục này.
+    resend_email:
+      url_label: Bạn có chắc chắn muốn gửi lại email kích hoạt không?
+      url_text: Bạn cũng có thể cung cấp liên kết kích hoạt ở trên cho người dùng.
+  login:
+    login_to_continue: Đăng nhập để tiếp tục
+    info_sign: Bạn không có tài khoản? <1>Đăng ký</1>
+    info_login: Bạn đã có tài khoản? <1>Đăng nhập</1>
+    agreements: Bằng cách đăng ký, bạn đồng ý với <1>chính sách bảo mật</1> và <3>điều khoản dịch vụ</3>.
+    forgot_pass: Quên mật khẩu?
+    name:
+      label: Tên
+      msg:
+        empty: Tên không thể trống.
+        range: Tên phải có độ dài từ 2 đến 30 ký tự.
+        character: 'Chỉ sử dụng bộ ký tự "a-z", "0-9", , "A-Z", " - . _"'
+    email:
+      label: Email
+      msg:
+        empty: Email không thể trống.
+    password:
+      label: Mật khẩu
+      msg:
+        empty: Mật khẩu không thể trống.
+        different: Mật khẩu nhập vào ở hai bên không nhất quán
+  account_forgot:
+    page_title: Quên mật khẩu
+    btn_name: Gửi email khôi phục cho tôi
+    send_success: >-
+      Nếu một tài khoản khớp với <strong>{{mail}}</strong>, bạn sẽ sớm nhận được một email với hướng dẫn về cách đặt lại mật khẩu của mình.
+    email:
+      label: Email
+      msg:
+        empty: Email không thể trống.
+  change_email:
+    btn_cancel: Hủy
+    btn_update: Cập nhật địa chỉ email
+    send_success: >-
+      Nếu một tài khoản khớp với <strong>{{mail}}</strong>, bạn sẽ sớm nhận được một email với hướng dẫn về cách đặt lại mật khẩu của mình.
+    email:
+      label: Email mới
+      msg:
+        empty: Email không thể trống.
+  oauth:
+    connect: Kết nối với {{ auth_name }}
+    remove: Xóa bỏ {{ auth_name }}
+  oauth_bind_email:
+    subtitle: Thêm email khôi phục vào tài khoản của bạn.
+    btn_update: Cập nhật địa chỉ email
+    email:
+      label: Email
+      msg:
+        empty: Email không thể trống.
+    modal_title: Email đã tồn tại.
+    modal_content: Địa chỉ email này đã được đăng ký. Bạn có chắc chắn muốn kết nối với tài khoản hiện tại không?
+    modal_cancel: Thay đổi email
+    modal_confirm: Kết nối với tài khoản hiện tại
+  password_reset:
+    page_title: Đặt lại mật khẩu
+    btn_name: Đặt lại mật khẩu của tôi
+    reset_success: >-
+      Bạn đã thay đổi mật khẩu thành công; bạn sẽ được chuyển hướng đến trang đăng nhập.
+    link_invalid: >-
+      Xin lỗi, liên kết đặt lại mật khẩu này không còn hợp lệ. Có thể mật khẩu của bạn đã được đặt lại?
+    to_login: Tiếp tục đến trang đăng nhập
+    password:
+      label: Mật khẩu
+      msg:
+        empty: Mật khẩu không thể trống.
+        length: Độ dài cần nằm trong khoảng từ 8 đến 32
+        different: Mật khẩu nhập vào ở hai bên không nhất quán
+    password_confirm:
+      label: Xác nhận mật khẩu mới
+  settings:
+    page_title: Cài đặt
+    goto_modify: Đi đến sửa đổi
+    nav:
+      profile: Hồ sơ
+      notification: Thông báo
+      account: Tài khoản
+      interface: Giao diện
+    profile:
+      heading: Hồ sơ
+      btn_name: Lưu
+      display_name:
+        label: Tên hiển thị
+        msg: Tên hiển thị không thể trống.
+        msg_range: Display name must be 2-30 characters in length.
+      username:
+        label: Tên người dùng
+        caption: Mọi người có thể nhắc đến bạn với "@username".
+        msg: Tên người dùng không thể trống.
+        msg_range: Username must be 2-30 characters in length.
+        character: 'Chỉ sử dụng bộ ký tự "a-z", "0-9", " - . _"'
+      avatar:
+        label: Hình ảnh hồ sơ
+        gravatar: Gravatar
+        gravatar_text: Bạn có thể thay đổi hình ảnh trên
+        custom: Tùy chỉnh
+        custom_text: Bạn có thể tải lên hình ảnh của mình.
+        default: Hệ thống
+        msg: Vui lòng tải lên một hình đại diện
+      bio:
+        label: Giới thiệu về tôi
+      website:
+        label: Website
+        placeholder: "https://example.com"
+        msg: Định dạng website không chính xác
+      location:
+        label: Địa điểm
+        placeholder: "Thành phố, Quốc gia"
+    notification:
+      heading: Thông báo qua Email
+      turn_on: Bật
+      inbox:
+        label: Thông báo hộp thư đến
+        description: Các câu trả lời cho câu hỏi của bạn, bình luận, lời mời và nhiều hơn nữa.
+      all_new_question:
+        label: Tất cả câu hỏi mới
+        description: Nhận thông báo về tất cả các câu hỏi mới. Tối đa 50 câu hỏi mỗi tuần.
+      all_new_question_for_following_tags:
+        label: Tất cả câu hỏi mới cho các thẻ theo dõi
+        description: Nhận thông báo về các câu hỏi mới cho các thẻ đang theo dõi.
+    account:
+      heading: Tài khoản
+      change_email_btn: Thay đổi email
+      change_pass_btn: Thay đổi mật khẩu
+      change_email_info: >-
+        Chúng tôi đã gửi một email đến địa chỉ đó. Vui lòng làm theo hướng dẫn xác nhận.
+      email:
+        label: Email
+      new_email:
+        label: Email mới
+        msg: Email mới không được để trống.
+      pass:
+        label: Mật khẩu hiện tại
+        msg: Mật khẩu không thể trống.
+      password_title: Mật khẩu
+      current_pass:
+        label: Mật khẩu hiện tại
+        msg:
+          empty: Mật khẩu hiện tại không thể trống.
+          length: Độ dài cần nằm trong khoảng từ 8 đến 32.
+          different: Hai mật khẩu nhập vào không khớp.
+      new_pass:
+        label: Mật khẩu mới
+      pass_confirm:
+        label: Xác nhận mật khẩu mới
+    interface:
+      heading: Giao diện
+      lang:
+        label: Ngôn ngữ giao diện
+        text: Ngôn ngữ giao diện người dùng. Nó sẽ thay đổi khi bạn làm mới trang.
+    my_logins:
+      title: Đăng nhập của tôi
+      label: Đăng nhập hoặc đăng ký trên trang này bằng các tài khoản này.
+      modal_title: Xóa đăng nhập
+      modal_content: Bạn có chắc chắn muốn xóa đăng nhập này khỏi tài khoản của bạn không?
+      modal_confirm_btn: Xóa
+      remove_success: Đã xóa thành công
+  toast:
+    update: cập nhật thành công
+    update_password: Mật khẩu đã được thay đổi thành công.
+    flag_success: Cảm ơn bạn đã đánh dấu.
+    forbidden_operate_self: Không được phép thao tác trên chính mình
+    review: Sửa đổi của bạn sẽ được hiển thị sau khi được xem xét.
+    sent_success: Đã gửi thành công
+  related_question:
+    title: Related
+    answers: câu trả lời
+  linked_question:
+    title: Linked
+    description: Posts linked to
+    no_linked_question: No contents linked from this content.
+  invite_to_answer:
+    title: Mời mọi người
+    desc: Mời những người bạn nghĩ có thể trả lời.
+    invite: Mời trả lời
+    add: Thêm người
+    search: Tìm kiếm người
+  question_detail:
+    action: Hành động
+    Asked: Đã hỏi
+    asked: đã hỏi
+    update: Đã chỉnh sửa
+    edit: đã chỉnh sửa
+    commented: đã bình luận
+    Views: Lượt xem
+    Follow: Theo dõi
+    Following: Đang theo dõi
+    follow_tip: Theo dõi câu hỏi này để nhận thông báo
+    answered: đã trả lời
+    closed_in: Đóng trong
+    show_exist: Hiển thị câu hỏi hiện tại.
+    useful: Hữu ích
+    question_useful: Nó hữu ích và rõ ràng
+    question_un_useful: Nó không rõ ràng hoặc không hữu ích
+    question_bookmark: Đánh dấu câu hỏi này
+    answer_useful: Nó hữu ích
+    answer_un_useful: Nó không hữu ích
+    answers:
+      title: Các câu trả lời
+      score: Điểm
+      newest: Mới nhất
+      oldest: Cũ nhất
+      btn_accept: Chấp nhận
+      btn_accepted: Đã chấp nhận
+    write_answer:
+      title: Câu trả lời của bạn
+      edit_answer: Chỉnh sửa câu trả lời hiện tại của tôi
+      btn_name: Đăng câu trả lời của bạn
+      add_another_answer: Thêm câu trả lời khác
+      confirm_title: Tiếp tục trả lời
+      continue: Tiếp tục
+      confirm_info: >-
+        <p>Bạn có chắc chắn muốn thêm một câu trả lời khác không?</p><p>Bạn có thể sử dụng liên kết chỉnh sửa để tinh chỉnh và cải thiện câu trả lời hiện tại của mình, thay vì.</p>
+      empty: Câu trả lời không thể trống.
+      characters: nội dung phải có ít nhất 6 ký tự.
+      tips:
+        header_1: Cảm ơn câu trả lời của bạn
+        li1_1: Vui lòng chắc chắn <strong>trả lời câu hỏi</strong>. Cung cấp chi tiết và chia sẻ nghiên cứu của bạn.
+        li1_2: Hỗ trợ bất kỳ tuyên bố nào bạn đưa ra với tài liệu tham khảo hoặc kinh nghiệm cá nhân.
+        header_2: Nhưng <strong>tránh</strong> ...
+        li2_1: Yêu cầu trợ giúp, yêu cầu làm rõ, hoặc trả lời cho các câu trả lời khác.
+    reopen:
+      confirm_btn: Mở lại
+      title: Mở lại bài đăng này
+      content: Bạn có chắc chắn muốn mở lại không?
+    list:
+      confirm_btn: Danh sách
+      title: Danh sách bài đăng này
+      content: Bạn có chắc chắn muốn liệt kê không?
+    unlist:
+      confirm_btn: Gỡ bỏ khỏi danh sách
+      title: Gỡ bỏ bài đăng này khỏi danh sách
+      content: Bạn có chắc chắn muốn gỡ bỏ không?
+    pin:
+      title: Ghim bài đăng này
+      content: Bạn có chắc chắn muốn ghim toàn cầu không? Bài đăng này sẽ xuất hiện ở đầu tất cả các danh sách bài đăng.
+      confirm_btn: Ghim
+  delete:
+    title: Xóa bài đăng này
+    question: >-
+      Chúng tôi không khuyến khích <strong>xóa câu hỏi có câu trả lời</strong> vì làm như vậy sẽ tước đoạt kiến thức của độc giả trong tương lai.</p><p>Việc xóa liên tục các câu hỏi đã được trả lời có thể dẫn đến việc tài khoản của bạn bị chặn không được phép hỏi. Bạn có chắc chắn muốn xóa không?
+    answer_accepted: >-
+      <p>Chúng tôi không khuyến khích <strong>xóa câu trả lời đã được chấp nhận</strong> vì làm như vậy sẽ tước đoạt kiến thức của độc giả trong tương lai. </p> Việc xóa liên tục các câu trả lời đã được chấp nhận có thể dẫn đến việc tài khoản của bạn bị chặn không được phép trả lời. Bạn có chắc chắn muốn xóa không?
+    other: Bạn có chắc chắn muốn xóa không?
+    tip_answer_deleted: Câu trả lời này đã bị xóa
+    undelete_title: Khôi phục bài đăng này
+    undelete_desc: Bạn có chắc chắn muốn khôi phục không?
+  btns:
+    confirm: Xác nhận
+    cancel: Hủy
+    edit: Chỉnh sửa
+    save: Lưu
+    delete: Xóa
+    undelete: Khôi phục
+    list: Danh sách
+    unlist: Gỡ bỏ khỏi danh sách
+    unlisted: Không được liệt kê
+    login: Đăng nhập
+    signup: Đăng ký
+    logout: Đăng xuất
+    verify: Xác minh
+    create: Create
+    approve: Phê duyệt
+    reject: Từ chối
+    skip: Bỏ qua
+    discard_draft: Hủy bản nháp
+    pinned: Đã ghim
+    all: Tất cả
+    question: Câu hỏi
+    answer: Câu trả lời
+    comment: Bình luận
+    refresh: Làm mới
+    resend: Gửi lại
+    deactivate: Ngừng kích hoạt
+    active: Hoạt động
+    suspend: Tạm ngừng
+    unsuspend: Bỏ vô hiệu hóa
+    close: Đóng
+    reopen: Mở lại
+    ok: Đồng ý
+    light: Phông nền sáng
+    dark: Tối
+    system_setting: Cài đặt hệ thống
+    default: Mặc định
+    reset: Đặt lại
+    tag: Thẻ
+    post_lowercase: bài đăng
+    filter: Lọc
+    ignore: Bỏ qua
+    submit: Gửi
+    normal: Bình thường
+    closed: Đã đóng
+    deleted: Đã xóa
+    deleted_permanently: Deleted permanently
+    pending: Đang chờ xử lý
+    more: Thêm
+    view: View
+    card: Card
+    compact: Compact
+    display_below: Display below
+    always_display: Always display
+    or: or
+    back_sites: Back to sites
+  search:
+    title: Kết quả tìm kiếm
+    keywords: Từ khóa
+    options: Tùy chọn
+    follow: Theo dõi
+    following: Đang theo dõi
+    counts: "{{count}} Kết quả"
+    counts_loading: "... Results"
+    more: Thêm
+    sort_btns:
+      relevance: Liên quan
+      newest: Mới nhất
+      active: Hoạt động
+      score: Điểm
+      more: Thêm
+    tips:
+      title: Mẹo tìm kiếm nâng cao
+      tag: "<1>[tag]</1> tìm kiếm trong một thẻ"
+      user: "<1>user:username</1> tìm kiếm theo tác giả"
+      answer: "<1>answers:0</1> câu hỏi chưa có câu trả lời"
+      score: "<1>score:3</1> bài đăng có điểm 3+"
+      question: "<1>is:question</1> tìm kiếm câu hỏi"
+      is_answer: "<1>is:answer</1> tìm kiếm câu trả lời"
+    empty: Chúng tôi không thể tìm thấy bất cứ thứ gì. <br /> Thử các từ khóa khác hoặc ít cụ thể hơn.
+  share:
+    name: Chia sẻ
+    copy: Sao chép liên kết
+    via: Chia sẻ bài đăng qua...
+    copied: Đã sao chép
+    facebook: Chia sẻ lên Facebook
+    twitter: Share to X
+  cannot_vote_for_self: Bạn không thể bỏ phiếu cho bài đăng của chính mình.
+  modal_confirm:
+    title: Lỗi...
+  delete_permanently:
+    title: Delete permanently
+    content: Are you sure you want to delete permanently?
+  account_result:
+    success: Tài khoản mới của bạn đã được xác nhận; bạn sẽ được chuyển hướng đến trang chủ.
+    link: Tiếp tục đến trang chủ
+    oops: Rất tiếc!
+    invalid: Liên kết bạn đã dùng không còn hoạt động nữa.
+    confirm_new_email: Email của bạn đã được cập nhật.
+    confirm_new_email_invalid: >-
+      Xin lỗi, liên kết xác nhận này không còn hợp lệ. Có thể email của bạn đã được thay đổi?
+  unsubscribe:
+    page_title: Hủy đăng ký
+    success_title: Hủy đăng ký thành công
+    success_desc: Bạn đã được gỡ bỏ khỏi danh sách người đăng ký này và sẽ không nhận được thêm email từ chúng tôi.
+    link: Thay đổi cài đặt
+  question:
+    following_tags: Thẻ đang theo dõi
+    edit: Chỉnh sửa
+    save: Lưu
+    follow_tag_tip: Theo dõi các thẻ để tùy chỉnh danh sách câu hỏi của bạn.
+    hot_questions: Câu hỏi nổi bật
+    all_questions: Tất cả câu hỏi
+    x_questions: "{{ count }} Câu hỏi"
+    x_answers: "{{ count }} câu trả lời"
+    x_posts: "{{ count }} Posts"
+    questions: Câu hỏi
+    answers: Câu trả lời
+    newest: Mới nhất
+    active: Hoạt động
+    hot: Được nhiều quan tâm
+    frequent: Thường xuyên
+    recommend: Đề xuất
+    score: Điểm
+    unanswered: Chưa được trả lời
+    modified: đã chỉnh sửa
+    answered: đã trả lời
+    asked: đã hỏi
+    closed: đã đóng
+    follow_a_tag: Theo dõi một thẻ
+    more: Thêm
+  personal:
+    overview: Tổng quan
+    answers: Câu trả lời
+    answer: câu trả lời
+    questions: Câu hỏi
+    question: câu hỏi
+    bookmarks: Đánh dấu
+    reputation: Danh tiếng
+    comments: Bình luận
+    votes: Bình chọn
+    badges: Danh hiệu
+    newest: Mới nhất
+    score: Điểm
+    edit_profile: Chỉnh sửa hồ sơ
+    visited_x_days: "Đã truy cập {{ count }} ngày"
+    viewed: Đã xem
+    joined: Tham gia
+    comma: ","
+    last_login: Đã xem
+    about_me: Về tôi
+    about_me_empty: "// Xin chào, Thế giới !"
+    top_answers: Câu trả lời hàng đầu
+    top_questions: Câu hỏi hàng đầu
+    stats: Thống kê
+    list_empty: Không tìm thấy bài đăng.<br />Có thể bạn muốn chọn một thẻ khác?
+    content_empty: Không tìm thấy bài viết nào.
+    accepted: Đã chấp nhận
+    answered: đã trả lời
+    asked: đã hỏi
+    downvoted: đã bỏ phiếu xuống
+    mod_short: MOD
+    mod_long: Người điều hành
+    x_reputation: danh tiếng
+    x_votes: phiếu bầu nhận được
+    x_answers: câu trả lời
+    x_questions: câu hỏi
+    recent_badges: Huy hiệu gần đây
+  install:
+    title: Cài đặt
+    next: Tiếp theo
+    done: Hoàn thành
+    config_yaml_error: Không thể tạo file config.yaml.
+    lang:
+      label: Vui lòng chọn một ngôn ngữ
+    db_type:
+      label: Hệ quản trị cơ sở dữ liệu
+    db_username:
+      label: Tên người dùng
+      placeholder: root
+      msg: Tên người dùng không thể trống.
+    db_password:
+      label: Mật khẩu
+      placeholder: root
+      msg: Mật khẩu không thể trống.
+    db_host:
+      label: Máy chủ cơ sở dữ liệu
+      placeholder: "db:3306"
+      msg: Máy chủ cơ sở dữ liệu không thể trống.
+    db_name:
+      label: Tên cơ sở dữ liệu
+      placeholder: câu trả lời
+      msg: Tên cơ sở dữ liệu không thể trống.
+    db_file:
+      label: Tệp tin Database
+      placeholder: /data/answer.db
+      msg: Tệp cơ sở dữ liệu không thể trống.
+    ssl_enabled:
+      label: Enable SSL
+    ssl_enabled_on:
+      label: On
+    ssl_enabled_off:
+      label: Off
+    ssl_mode:
+      label: SSL Mode
+    ssl_root_cert:
+      placeholder: sslrootcert file path
+      msg: Path to sslrootcert file cannot be empty
+    ssl_cert:
+      placeholder: sslcert file path
+      msg: Path to sslcert file cannot be empty
+    ssl_key:
+      placeholder: sslkey file path
+      msg: Path to sslkey file cannot be empty
+    config_yaml:
+      title: Tạo config.yaml
+      label: Tệp config.yaml đã được tạo.
+      desc: >-
+        Bạn có thể tạo tệp <1>config.yaml</1> thủ công trong thư mục <1>/var/wwww/xxx/</1> và dán văn bản sau vào đó.
+      info: Sau khi bạn đã làm xong, nhấp vào nút "Tiếp theo".
+    site_information: Thông tin trang
+    admin_account: Tài khoản quản trị
+    site_name:
+      label: Tên trang
+      msg: Tên trang không thể trống.
+      msg_max_length: Tên trang phải có tối đa 30 ký tự.
+    site_url:
+      label: URL trang
+      text: Địa chỉ của trang của bạn.
+      msg:
+        empty: URL trang không thể trống.
+        incorrect: Định dạng URL trang không chính xác.
+        max_length: URL trang phải có tối đa 512 ký tự.
+    contact_email:
+      label: Email liên hệ
+      text: Địa chỉ email của người liên hệ chính phụ trách trang này.
+      msg:
+        empty: Email liên hệ không thể trống.
+        incorrect: Định dạng email liên hệ không chính xác.
+    login_required:
+      label: Riêng tư
+      switch: Yêu cầu đăng nhập
+      text: Chỉ người dùng đã đăng nhập mới có thể truy cập cộng đồng này.
+    admin_name:
+      label: Tên
+      msg: Tên không thể trống.
+      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      msg_max_length: Name must be between 2 to 30 characters in length.
+    admin_password:
+      label: Mật khẩu
+      text: >-
+        Bạn sẽ cần mật khẩu này để đăng nhập. Vui lòng lưu trữ nó ở một nơi an toàn.
+      msg: Mật khẩu không thể trống.
+      msg_min_length: Mật khẩu phải có ít nhất 8 ký tự.
+      msg_max_length: Mật khẩu phải có tối đa 32 ký tự.
+    admin_confirm_password:
+      label: "Confirm Password"
+      text: "Please re-enter your password to confirm."
+      msg: "Confirm password does not match."
+    admin_email:
+      label: Email
+      text: Bạn sẽ cần email này để đăng nhập.
+      msg:
+        empty: Email không thể trống.
+        incorrect: Định dạng email không chính xác.
+    ready_title: Trang web của bạn đã sẵn sàng
+    ready_desc: >-
+      Nếu bạn cảm thấy muốn thay đổi thêm cài đặt nào đó, hãy truy cập <1>mục quản trị</1>; tìm nó trong menu trang.
+    good_luck: "Chúc bạn vui vẻ và may mắn!"
+    warn_title: Cảnh báo
+    warn_desc: >-
+      Tệp <1>config.yaml</1> đã tồn tại. Nếu bạn cần đặt lại bất kỳ mục cấu hình nào trong tệp này, vui lòng xóa nó trước.
+    install_now: Bạn có thể thử <1>cài đặt ngay bây giờ</1>.
+    installed: Đã cài đặt
+    installed_desc: >-
+      Có vẻ như bạn đã cài đặt rồi. Để cài đặt lại, vui lòng xóa các bảng cơ sở dữ liệu cũ trước.
+    db_failed: Kết nối cơ sở dữ liệu thất bại
+    db_failed_desc: >-
+      Điều này có thể có nghĩa là thông tin cơ sở dữ liệu trong tệp <1>config.yaml</1> của bạn không chính xác hoặc không thể thiết lập liên lạc với máy chủ cơ sở dữ liệu. Điều này có thể có nghĩa là máy chủ cơ sở dữ liệu của máy chủ của bạn đang bị tắt.
+  counts:
+    views: lượt xem
+    votes: bình chọn
+    answers: câu trả lời
+    accepted: Đã chấp nhận
+  page_error:
+    http_error: Lỗi HTTP {{ code }}
+    desc_403: Bạn không có quyền truy cập trang này.
+    desc_404: Thật không may, trang này không tồn tại.
+    desc_50X: Máy chủ đã gặp sự cố và không thể hoàn thành yêu cầu của bạn.
+    back_home: Quay lại trang chủ
+  page_maintenance:
+    desc: "Chúng tôi đang bảo trì, chúng tôi sẽ trở lại sớm."
+  nav_menus:
+    dashboard: Bảng điều khiển
+    contents: Nội dung
+    questions: Câu hỏi
+    answers: Câu trả lời
+    users: Người dùng
+    badges: Huy hiệu
+    flags: Cờ
+    settings: Cài đặt
+    general: Chung
+    interface: Giao diện
+    smtp: SMTP
+    branding: Thương hiệu
+    legal: Pháp lý
+    write: Viết
+    tos: Điều khoản dịch vụ
+    privacy: Quyền riêng tư
+    seo: SEO
+    customize: Tùy chỉnh
+    themes: Chủ đề
+    login: Đăng nhập
+    privileges: Đặc quyền
+    plugins: Plugins
+    installed_plugins: Plugin đã cài đặt
+    apperance: Appearance
+  website_welcome: Chào mừng bạn đến với {{site_name}}
+  user_center:
+    login: Đăng nhập
+    qrcode_login_tip: Vui lòng sử dụng {{ agentName }} để quét mã QR và đăng nhập.
+    login_failed_email_tip: Đăng nhập thất bại, vui lòng cho phép ứng dụng này truy cập thông tin email của bạn trước khi thử lại.
+  badges:
+    modal:
+      title: Chúc mừng
+      content: Bạn đã nhận được huy hiệu mới.
+      close: Đóng
+      confirm: Xem huy hiệu
+    title: Huy hiệu
+    awarded: Giải Thưởng
+    earned_×: Nhận được ×{{ number }}
+    ×_awarded: "{{ number }} được trao tặng"
+    can_earn_multiple: Bạn có thể kiếm được nhiều lần.
+    earned: Đã nhận
+  admin:
+    admin_header:
+      title: Quản trị
+    dashboard:
+      title: Bảng điều khiển
+      welcome: Chào mừng bạn đến với Answer Admin!
+      site_statistics: Thống kê trang
+      questions: "Câu hỏi:"
+      resolved: "Đã giải quyết:"
+      unanswered: "Chưa được trả lời:"
+      answers: "Câu trả lời:"
+      comments: "Bình luận:"
+      votes: "Phiếu bầu:"
+      users: "Người dùng:"
+      flags: "Cờ:"
+      reviews: "Đánh giá:"
+      site_health: Sức khỏe trang
+      version: "Phiên bản:"
+      https: "HTTPS:"
+      upload_folder: "Thư mục tải lên:"
+      run_mode: "Chế độ hoạt động:"
+      private: Riêng tư
+      public: Công cộng
+      smtp: "SMTP:"
+      timezone: "Múi giờ:"
+      system_info: Thông tin hệ thống
+      go_version: "Phiên bản Go:"
+      database: "Database:"
+      database_size: "Tệp tin Database:"
+      storage_used: "Bộ nhớ đã sử dụng:"
+      uptime: "Thời gian hoạt động:"
+      links: Links
+      plugins: Plugin
+      github: GitHub
+      blog: Blog
+      contact: Liên hệ
+      forum: Diễn đàn
+      documents: Tài liệu
+      feedback: Phản hồi
+      support: Hỗ trợ
+      review: Đánh giá
+      config: Cấu hình
+      update_to: Cập nhật lên
+      latest: Mới nhất
+      check_failed: Kiểm tra thất bại
+      "yes": "Có"
+      "no": "Không"
+      not_allowed: Không được phép
+      allowed: Được phép
+      enabled: Đã bật
+      disabled: Đã tắt
+      writable: Có thể chỉnh sửa
+      not_writable: Không thể ghi
+    flags:
+      title: Cờ
+      pending: Đang chờ xử lý
+      completed: Hoàn thành
+      flagged: Đã đánh dấu
+      flagged_type: Đã đánh dấu {{ type }}
+      created: Đã tạo
+      action: Hành động
+      review: Đánh giá
+    user_role_modal:
+      title: Thay đổi vai trò người dùng thành...
+      btn_cancel: Hủy
+      btn_submit: Gửi
+    new_password_modal:
+      title: Đặt mật khẩu mới
+      form:
+        fields:
+          password:
+            label: Mật khẩu
+            text: Người dùng sẽ bị đăng xuất và cần đăng nhập lại.
+            msg: Mật khẩu phải có độ dài từ 8 đến 32 ký tự.
+      btn_cancel: Hủy
+      btn_submit: Gửi
+    edit_profile_modal:
+      title: Chỉnh sửa hồ sơ
+      form:
+        fields:
+          display_name:
+            label: Tên hiển thị
+            msg_range: Display name must be 2-30 characters in length.
+          username:
+            label: Tên người dùng
+            msg_range: Username must be 2-30 characters in length.
+          email:
+            label: Email
+            msg_invalid: Địa chỉ email không hợp lệ.
+      edit_success: Chỉnh Sửa Thành Công
+      btn_cancel: Hủy
+      btn_submit: Gửi
+    user_modal:
+      title: Thêm người dùng mới
+      form:
+        fields:
+          users:
+            label: Thêm người dùng hàng loạt
+            placeholder: "John Smith, john@example.com, BUSYopr2\nAlice, alice@example.com, fpDntV8q"
+            text: Tách "tên, email, mật khẩu" bằng dấu phẩy. Một người dùng mỗi dòng.
+            msg: "Vui lòng nhập email của người dùng, một dòng mỗi người."
+          display_name:
+            label: Tên hiển thị
+            msg: Tên hiển thị phải dài từ 2-30 ký tự.
+          email:
+            label: Email
+            msg: Email không hợp lệ.
+          password:
+            label: Mật khẩu
+            msg: Mật khẩu phải có từ 8 đến 32 ký tự.
+      btn_cancel: Hủy
+      btn_submit: Gửi
+    users:
+      title: Người dùng
+      name: Tên
+      email: Email
+      reputation: Danh tiếng
+      created_at: Created time
+      delete_at: Deleted time
+      suspend_at: Suspended time
+      suspend_until: Suspend until
+      status: Trạng thái
+      role: Vai trò
+      action: Hành động
+      change: Thay đổi
+      all: Tất cả
+      staff: Nhân viên
+      more: Thêm
+      inactive: Không hoạt động
+      suspended: Bị tạm ngưng
+      deleted: Đã xóa
+      normal: Bình thường
+      Moderator: Người điều hành
+      Admin: Quản trị viên
+      User: Người dùng
+      filter:
+        placeholder: "Lọc theo tên, user:id"
+      set_new_password: Đặt mật khẩu mới
+      edit_profile: Chỉnh sửa hồ sơ
+      change_status: Thay đổi trạng thái
+      change_role: Thay đổi vai trò
+      show_logs: Hiển thị nhật ký
+      add_user: Thêm người dùng
+      deactivate_user:
+        title: Ngừng kích hoạt người dùng
+        content: Người dùng không hoạt động phải xác nhận lại email của họ.
+      delete_user:
+        title: Xóa người dùng này
+        content: Bạn có chắc chắn muốn xóa người dùng này không? Điều này là vĩnh viễn!
+        remove: Xóa nội dung của họ
+        label: Xóa tất cả các câu hỏi, câu trả lời, bình luận, vv.
+        text: Không chọn điều này nếu bạn chỉ muốn xóa tài khoản của người dùng.
+      suspend_user:
+        title: Đình chỉ người dùng này
+        content: Người dùng bị đình chỉ không thể đăng nhập.
+        label: How long will the user be suspended for?
+        forever: Forever
+    questions:
+      page_title: Câu hỏi
+      unlisted: Không được liệt kê
+      post: Bài đăng
+      votes: Phiếu bầu
+      answers: Câu trả lời
+      created: Đã tạo
+      status: Trạng thái
+      action: Hành động
+      change: Thay đổi
+      pending: Đang chờ xử lý
+      filter:
+        placeholder: "Lọc theo tiêu đề, question:id"
+    answers:
+      page_title: Câu trả lời
+      post: Bài đăng
+      votes: Phiếu bầu
+      created: Đã tạo
+      status: Trạng thái
+      action: Hành động
+      change: Thay đổi
+      filter:
+        placeholder: "Lọc theo tiêu đề, answer:id"
+    general:
+      page_title: Chung
+      name:
+        label: Tên trang
+        msg: Tên trang không thể trống.
+        text: "Tên của trang này, được sử dụng trong thẻ tiêu đề."
+      site_url:
+        label: URL trang
+        msg: Url trang không thể trống.
+        validate: Vui lòng nhập URL hợp lệ.
+        text: Địa chỉ của trang của bạn.
+      short_desc:
+        label: Mô tả ngắn của trang
+        msg: Mô tả ngắn của trang không thể trống.
+        text: "Mô tả ngắn, được sử dụng trong thẻ tiêu đề trên trang chủ."
+      desc:
+        label: Mô tả trang
+        msg: Mô tả trang không thể trống.
+        text: "Mô tả trang này trong một câu, được sử dụng trong thẻ mô tả meta."
+      contact_email:
+        label: Email liên hệ
+        msg: Email liên hệ không thể trống.
+        validate: Định dạng email liên hệ không hợp lệ.
+        text: Địa chỉ email của người liên hệ chính phụ trách trang này.
+      check_update:
+        label: Cập nhật phần mềm
+        text: Tự động kiểm tra cập nhật
+    interface:
+      page_title: Giao diện
+      language:
+        label: Ngôn ngữ giao diện
+        msg: Ngôn ngữ giao diện không thể trống.
+        text: Ngôn ngữ giao diện người dùng. Nó sẽ thay đổi khi bạn làm mới trang.
+      time_zone:
+        label: Múi giờ
+        msg: Múi giờ không thể trống.
+        text: Chọn một thành phố cùng múi giờ với bạn.
+      avatar:
+        label: Default avatar
+        text: For users without a custom avatar of their own.
+      gravatar_base_url:
+        label: Gravatar base URL
+        text: URL of the Gravatar provider's API base. Ignored when empty.
+    smtp:
+      page_title: SMTP
+      from_email:
+        label: Email gửi từ
+        msg: Email gửi từ không thể trống.
+        text: Địa chỉ email mà các email được gửi từ đó.
+      from_name:
+        label: Tên gửi từ
+        msg: Tên gửi từ không thể trống.
+        text: Tên mà các email được gửi từ đó.
+      smtp_host:
+        label: Máy chủ SMTP
+        msg: Máy chủ SMTP không thể trống.
+        text: Máy chủ thư của bạn.
+      encryption:
+        label: Mã hóa
+        msg: Mã hóa không thể trống.
+        text: Đối với hầu hết các máy chủ, SSL là tùy chọn được khuyến nghị.
+        ssl: SSL
+        tls: TLS
+        none: Không
+      smtp_port:
+        label: Cổng SMTP
+        msg: Cổng SMTP phải là số từ 1 đến 65535.
+        text: Cổng đến máy chủ thư của bạn.
+      smtp_username:
+        label: Tên người dùng SMTP
+        msg: Tên người dùng SMTP không thể trống.
+      smtp_password:
+        label: Mật khẩu SMTP
+        msg: Mật khẩu SMTP không thể trống.
+      test_email_recipient:
+        label: Người nhận email kiểm tra
+        text: Cung cấp địa chỉ email sẽ nhận email kiểm tra.
+        msg: Người nhận email kiểm tra không hợp lệ
+      smtp_authentication:
+        label: Bật xác thực
+        title: Xác thực SMTP
+        msg: Xác thực SMTP không thể trống.
+        "yes": "Có"
+        "no": "Không"
+    branding:
+      page_title: Thương hiệu
+      logo:
+        label: Logo
+        msg: Logo không thể trống.
+        text: Hình ảnh logo ở góc trên bên trái của trang của bạn. Sử dụng hình ảnh hình chữ nhật rộng với chiều cao 56 và tỷ lệ khung hình lớn hơn 3:1. Nếu để trống, văn bản tiêu đề trang sẽ được hiển thị.
+      mobile_logo:
+        label: Logo di động
+        text: Logo được sử dụng trên phiên bản di động của trang của bạn. Sử dụng hình ảnh hình chữ nhật rộng với chiều cao 56. Nếu để trống, hình ảnh từ cài đặt "logo" sẽ được sử dụng.
+      square_icon:
+        label: Biểu tượng vuông
+        msg: Biểu tượng vuông không thể trống.
+        text: Hình ảnh được sử dụng làm cơ sở cho các biểu tượng siêu dữ liệu. Nên lớn hơn 512x512.
+      favicon:
+        label: Favicon
+        text: Favicon cho trang của bạn. Để hoạt động chính xác trên một CDN, nó phải là png. Sẽ được thay đổi kích thước thành 32x32. Nếu để trống, "biểu tượng vuông" sẽ được sử dụng.
+    legal:
+      page_title: Pháp lý
+      terms_of_service:
+        label: Điều khoản dịch vụ
+        text: "Bạn có thể thêm nội dung điều khoản dịch vụ ở đây. Nếu bạn đã có một tài liệu được lưu trữ ở nơi khác, cung cấp URL đầy đủ ở đây."
+      privacy_policy:
+        label: Chính sách bảo mật
+        text: "Bạn có thể thêm nội dung chính sách bảo mật ở đây. Nếu bạn đã có một tài liệu được lưu trữ ở nơi khác, cung cấp URL đầy đủ ở đây."
+      external_content_display:
+        label: External content
+        text: "Content includes images, videos, and media embedded from external websites."
+        always_display: Always display external content
+        ask_before_display: Ask before displaying external content
+    write:
+      page_title: Viết
+      restrict_answer:
+        title: Câu trả lời chỉnh sửa
+        label: Each user can only write one answer for each question
+        text: "Tắt để cho phép người dùng viết nhiều câu trả lời cho cùng một câu hỏi, điều này có thể khiến các câu trả lời bị mất trọng tâm."
+      recommend_tags:
+        label: Thẻ được đề xuất
+        text: "Các thẻ gợi ý sẽ hiển thị trong danh sách thả xuống theo mặc định."
+        msg:
+          contain_reserved: "các thẻ được đề xuất không được chứa thẻ dự bị"
+      required_tag:
+        title: Đặt thẻ cần thiết
+        label: Đặt thẻ được đề xuất là bắt buộc
+        text: "Mỗi câu hỏi mới phải có ít nhất một thẻ được đề xuất."
+      reserved_tags:
+        label: Thẻ dành riêng
+        text: "Thẻ dành riêng chỉ có thể được thêm vào một bài đăng bởi điều hành viên."
+      image_size:
+        label: Kích thước hình ảnh tối đa (MB)
+        text: "Kích thước tải lên hình ảnh tối đa."
+      attachment_size:
+        label: Kích thước tệp đính kèm tối đa (MB)
+        text: "Kích thước tải lên tệp đính kèm tối đa."
+      image_megapixels:
+        label: Megapixel hình ảnh tối đa
+        text: "Số megapixel tối đa được phép cho một hình ảnh."
+      image_extensions:
+        label: Tiện ích mở rộng hình ảnh được ủy quyền
+        text: "Danh sách đuôi file được phép hiển thị hình ảnh, phân cách bằng dấu phẩy."
+      attachment_extensions:
+        label: Các loại tệp đính kèm được phép tải lên
+        text: "Danh sách các đuôi file được phép tải lên, phân cách bằng dấu phẩy. CẢNH BÁO: Cho phép tải lên có thể gây ra vấn đề bảo mật."
+    seo:
+      page_title: SEO
+      permalink:
+        label: Liên kết cố định
+        text: Cấu trúc URL tùy chỉnh có thể cải thiện khả năng sử dụng và khả năng tương thích về sau của liên kết của bạn.
+      robots:
+        label: robots.txt
+        text: Điều này sẽ ghi đè vĩnh viễn bất kỳ cài đặt trang web liên quan nào.
+    themes:
+      page_title: Giao diện
+      themes:
+        label: Giao diện
+        text: Chọn một chủ đề hiện có.
+      color_scheme:
+        label: Sơ đồ màu
+      navbar_style:
+        label: Navbar background style
+      primary_color:
+        label: Màu chính
+        text: Thay đổi các màu sắc được sử dụng bởi chủ đề của bạn
+    css_and_html:
+      page_title: CSS và HTML
+      custom_css:
+        label: CSS tùy chỉnh
+        text: >
+
+      head:
+        label: Đầu
+        text: >
+
+      header:
+        label: Đầu trang
+        text: >
+
+      footer:
+        label: Cuối trang
+        text: Điều này sẽ chèn trước &lt;/body>.
+      sidebar:
+        label: Thanh bên
+        text: Điều này sẽ chèn vào thanh bên.
+    login:
+      page_title: Đăng nhập
+      membership:
+        title: Thành viên
+        label: Cho phép đăng ký mới
+        text: Tắt để ngăn ai đó tạo tài khoản mới.
+      email_registration:
+        title: Đăng ký qua email
+        label: Cho phép đăng ký qua email
+        text: Tắt để ngăn ai đó tạo tài khoản mới thông qua email.
+      allowed_email_domains:
+        title: Miền email được phép
+        text: Miền email mà người dùng phải đăng ký tài khoản. Một miền mỗi dòng. Bỏ qua khi trống.
+      private:
+        title: Riêng tư
+        label: Yêu cầu đăng nhập
+        text: Chỉ người dùng đã đăng nhập mới có thể truy cập cộng đồng này.
+      password_login:
+        title: Đăng nhập bằng mật khẩu
+        label: Cho phép đăng nhập bằng email và mật khẩu
+        text: "CẢNH BÁO: Nếu tắt, bạn có thể không thể đăng nhập nếu bạn chưa cấu hình phương thức đăng nhập khác trước đó."
+    installed_plugins:
+      title: Plugin đã cài đặt
+      plugin_link: Plugin mở rộng và mở rộng chức năng của trang web. Bạn có thể tìm thấy plugin trong <1>Kho Plugin Answer</1>.
+      filter:
+        all: Tất cả
+        active: Đang hoạt động
+        inactive: Không hoạt động
+        outdated: Quá hạn
+      plugins:
+        label: Plugin
+        text: Chọn một plugin hiện có.
+      name: Tên
+      version: Phiên bản
+      status: Trạng thái
+      action: Hành động
+      deactivate: Vô hiệu hóa
+      activate: Kích hoạt
+      settings: Cài đặt
+    settings_users:
+      title: Người dùng
+      avatar:
+        label: Hình đại diện mặc định
+        text: Dành cho người dùng không có hình đại diện tùy chỉnh của riêng họ.
+      gravatar_base_url:
+        label: Gravatar Base URL
+        text: URL của nhà cung cấp API Gravatar. Bỏ qua khi trống.
+      profile_editable:
+        title: Hồ sơ có thể chỉnh sửa
+      allow_update_display_name:
+        label: Cho phép người dùng thay đổi tên hiển thị của họ
+      allow_update_username:
+        label: Cho phép người dùng thay đổi tên người dùng của họ
+      allow_update_avatar:
+        label: Cho phép người dùng thay đổi hình ảnh hồ sơ của họ
+      allow_update_bio:
+        label: Cho phép người dùng thay đổi giới thiệu về mình
+      allow_update_website:
+        label: Cho phép người dùng thay đổi trang web của họ
+      allow_update_location:
+        label: Cho phép người dùng thay đổi vị trí của họ
+    privilege:
+      title: Đặc quyền
+      level:
+        label: Mức độ danh tiếng yêu cầu
+        text: Chọn mức danh tiếng yêu cầu cho các đặc quyền
+      msg:
+        should_be_number: dữ liệu đầu vào phải là kiểu số
+        number_larger_1: số phải bằng hoặc lớn hơn 1
+    badges:
+      action: Hành động
+      active: Hoạt động
+      activate: Kích hoạt
+      all: Tất cả
+      awards: Giải Thưởng
+      deactivate: Ngừng kích hoạt
+      filter:
+        placeholder: Lọc theo tên, user:id
+      group: Nhóm
+      inactive: Không hoạt động
+      name: Tên
+      show_logs: Hiển thị nhật ký
+      status: Trạng thái
+      title: Danh hiệu
+  form:
+    optional: (tùy chọn)
+    empty: không thể trống
+    invalid: không hợp lệ
+    btn_submit: Lưu
+    not_found_props: "Không tìm thấy thuộc tính bắt buộc {{ key }}."
+    select: Chọn
+  page_review:
+    review: Xem xét
+    proposed: đề xuất
+    question_edit: Chỉnh sửa câu hỏi
+    answer_edit: Câu trả lời chỉnh sửa
+    tag_edit: Chỉnh sửa thẻ
+    edit_summary: Tóm tắt chỉnh sửa
+    edit_question: Chỉnh sửa câu hỏi
+    edit_answer: Chỉnh sửa câu trả lời
+    edit_tag: Chỉnh sửa thẻ
+    empty: Không còn nhiệm vụ xem xét nào.
+    approve_revision_tip: Bạn có chấp nhận sửa đổi này không?
+    approve_flag_tip: Bạn có chấp nhận cờ này không?
+    approve_post_tip: Bạn có chấp nhận bài đăng này không?
+    approve_user_tip: Bạn có chấp nhận người dùng này không?
+    suggest_edits: Đề xuất chỉnh sửa
+    flag_post: Đánh dấu bài đăng
+    flag_user: Đánh dấu người dùng
+    queued_post: Bài đăng trong hàng đợi
+    queued_user: Người dùng trong hàng đợi
+    filter_label: Loại
+    reputation: danh tiếng
+    flag_post_type: Đánh dấu bài đăng này là {{ type }}.
+    flag_user_type: Đánh dấu người dùng này là {{ type }}.
+    edit_post: Chỉnh sửa bài đăng
+    list_post: Liệt kê bài đăng
+    unlist_post: Gỡ bỏ bài đăng khỏi danh sách
+  timeline:
+    undeleted: đã khôi phục
+    deleted: đã xóa
+    downvote: bỏ phiếu xuống
+    upvote: bỏ phiếu lên
+    accept: chấp nhận
+    cancelled: đã hủy
+    commented: đã bình luận
+    rollback: quay lại
+    edited: đã chỉnh sửa
+    answered: đã trả lời
+    asked: đã hỏi
+    closed: đã đóng
+    reopened: đã mở lại
+    created: đã tạo
+    pin: đã ghim
+    unpin: bỏ ghim
+    show: được liệt kê
+    hide: không được liệt kê
+    title: "Lịch sử cho"
+    tag_title: "Dòng thời gian cho"
+    show_votes: "Hiển thị phiếu bầu"
+    n_or_a: N/A
+    title_for_question: "Dòng thời gian cho"
+    title_for_answer: "Dòng thời gian cho câu trả lời của {{ title }} bởi {{ author }}"
+    title_for_tag: "Dòng thời gian cho thẻ"
+    datetime: Ngày giờ
+    type: Loại
+    by: Bởi
+    comment: Bình luận
+    no_data: "Chúng tôi không thể tìm thấy bất cứ thứ gì."
+  users:
+    title: Người dùng
+    users_with_the_most_reputation: Người dùng có điểm danh tiếng cao nhất trong tuần này
+    users_with_the_most_vote: Người dùng đã bỏ phiếu nhiều nhất trong tuần này
+    staffs: Nhân viên cộng đồng của chúng tôi
+    reputation: danh tiếng
+    votes: phiếu bầu
+  prompt:
+    leave_page: Bạn có chắc chắn muốn rời khỏi trang không?
+    changes_not_save: Các thay đổi của bạn có thể không được lưu.
+  draft:
+    discard_confirm: Bạn có chắc chắn muốn hủy bản nháp của mình không?
+  messages:
+    post_deleted: Bài đăng này đã bị xóa.
+    post_cancel_deleted: Bài đăng này đã được phục hồi.
+    post_pin: Bài đăng này đã được ghim.
+    post_unpin: Bài đăng này đã bị bỏ ghim.
+    post_hide_list: Bài đăng này đã được ẩn khỏi danh sách.
+    post_show_list: Bài đăng này đã được hiển thị trên danh sách.
+    post_reopen: Bài đăng này đã được mở lại.
+    post_list: Bài đăng này đã được liệt kê.
+    post_unlist: Bài đăng này đã được gỡ bỏ khỏi danh sách.
+    post_pending: Bài đăng của bạn đang chờ xem xét. Đây là bản xem trước, nó sẽ được hiển thị sau khi được phê duyệt.
+    post_closed: Bài đăng này đã bị đóng.
+    answer_deleted: Câu trả lời này đã bị xóa.
+    answer_cancel_deleted: Câu trả lời này đã được phục hồi.
+    change_user_role: Vai trò của người dùng này đã được thay đổi.
+    user_inactive: Người dùng này đã không hoạt động.
+    user_normal: Người dùng này đã bình thường.
+    user_suspended: Người dùng này đã bị đình chỉ.
+    user_deleted: Người dùng này đã bị xóa.
+    badge_activated: Huy hiệu này đã được kích hoạt.
+    badge_inactivated: Huy hiệu này đã bị vô hiệu hóa.
+    users_deleted: These users have been deleted.
+    posts_deleted: These questions have been deleted.
+    answers_deleted: These answers have been deleted.
+    copy: Copy to clipboard
+    copied: Copied
+    external_content_warning: External images/media are not displayed.
+
+

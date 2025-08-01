@@ -1,0 +1,2341 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# The following fields are used for back-end
+backend:
+  base:
+    success:
+      other: Başarılı.
+    unknown:
+      other: Bilinmeyen hata.
+    request_format_error:
+      other: İstek formatı geçerli değil.
+    unauthorized_error:
+      other: Yetkisiz erişim.
+    database_error:
+      other: Veri tabanı sunucu hatası.
+    forbidden_error:
+      other: Erişim engellendi.
+    duplicate_request_error:
+      other: Yinelenen gönderim.
+  action:
+    report:
+      other: Bildir
+    edit:
+      other: Düzenle
+    delete:
+      other: Sil
+    close:
+      other: Kapat
+    reopen:
+      other: Yeniden Aç
+    forbidden_error:
+      other: Erişim engellendi.
+    pin:
+      other: Sabitle
+    hide:
+      other: Listeden Kaldır
+    unpin:
+      other: Sabitlemeyi Kaldır
+    show:
+      other: Listele
+    invite_someone_to_answer:
+      other: Cevaplamaya Davet Et
+    undelete:
+      other: Silmeyi Geri Al
+    merge:
+      other: Birleştir
+  role:
+    name:
+      user:
+        other: Kullanıcı
+      admin:
+        other: Yönetici
+      moderator:
+        other: Moderatör
+    description:
+      user:
+        other: Özel erişimi olmayan varsayılan kullanıcı.
+      admin:
+        other: Siteye tam erişim gücüne sahiptir.
+      moderator:
+        other: Yönetici ayarları dışında tüm gönderilere erişebilir.
+  privilege:
+    level_1:
+      description:
+        other: Seviye 1 (özel takım, grup için daha az itibar gerektirir)
+    level_2:
+      description:
+        other: Seviye 2 (başlangıç topluluğu için düşük itibar gerektirir)
+    level_3:
+      description:
+        other: Seviye 3 (gelişmiş topluluk için yüksek itibar gerektirir)
+    level_custom:
+      description:
+        other: Özel Seviye
+    rank_question_add_label:
+      other: Soru sor
+    rank_answer_add_label:
+      other: Cevap yaz
+    rank_comment_add_label:
+      other: Yorum yaz
+    rank_report_add_label:
+      other: Bildir
+    rank_comment_vote_up_label:
+      other: Yorumu yukarı oyla
+    rank_link_url_limit_label:
+      other: Bir seferde 2'den fazla bağlantı paylaş
+    rank_question_vote_up_label:
+      other: Soruyu yukarı oyla
+    rank_answer_vote_up_label:
+      other: Cevabı yukarı oyla
+    rank_question_vote_down_label:
+      other: Soruyu aşağı oyla
+    rank_answer_vote_down_label:
+      other: Cevabı aşağı oyla
+    rank_invite_someone_to_answer_label:
+      other: Birini cevaplamaya davet et
+    rank_tag_add_label:
+      other: Yeni etiket oluştur
+    rank_tag_edit_label:
+      other: Etiket açıklamasını düzenle (inceleme gerekli)
+    rank_question_edit_label:
+      other: Başkasının sorusunu düzenle (inceleme gerekli)
+    rank_answer_edit_label:
+      other: Başkasının cevabını düzenle (inceleme gerekli)
+    rank_question_edit_without_review_label:
+      other: Başkasının sorusunu inceleme olmadan düzenle
+    rank_answer_edit_without_review_label:
+      other: Başkasının cevabını inceleme olmadan düzenle
+    rank_question_audit_label:
+      other: Soru düzenlemelerini incele
+    rank_answer_audit_label:
+      other: Cevap düzenlemelerini incele
+    rank_tag_audit_label:
+      other: Etiket düzenlemelerini incele
+    rank_tag_edit_without_review_label:
+      other: Etiket açıklamasını inceleme olmadan düzenle
+    rank_tag_synonym_label:
+      other: Etiket eş anlamlılarını yönet
+  email:
+    other: E-posta
+  e_mail:
+    other: E-posta
+  password:
+    other: Parola
+  pass:
+    other: Parola
+  old_pass:
+    other: Mevcut parola
+  original_text:
+    other: Bu gönderi
+  email_or_password_wrong_error:
+    other: E-posta ve parola eşleşmiyor.
+  error:
+    common:
+      invalid_url:
+        other: Geçersiz URL.
+      status_invalid:
+        other: Geçersiz durum.
+    password:
+      space_invalid:
+        other: Parola boşluk içeremez.
+    admin:
+      cannot_update_their_password:
+        other: Parolanızı değiştiremezsiniz.
+      cannot_edit_their_profile:
+        other: Profilinizi değiştiremezsiniz.
+      cannot_modify_self_status:
+        other: Durumunuzu değiştiremezsiniz.
+      email_or_password_wrong:
+        other: E-posta ve parola eşleşmiyor.
+    answer:
+      not_found:
+        other: Cevap bulunamadı.
+      cannot_deleted:
+        other: Silme izni yok.
+      cannot_update:
+        other: Güncelleme izni yok.
+      question_closed_cannot_add:
+        other: Sorular kapatıldı ve cevap eklenemez.
+      content_cannot_empty:
+        other: Cevap içeriği boş olamaz.
+    comment:
+      edit_without_permission:
+        other: Yorumları düzenleme izniniz yok.
+      not_found:
+        other: Yorum bulunamadı.
+      cannot_edit_after_deadline:
+        other: Yorum süresi çok uzun olduğu için artık düzenlenemez.
+      content_cannot_empty:
+        other: Yorum içeriği boş olamaz.
+    email:
+      duplicate:
+        other: Bu e-posta adresi zaten kullanılmaktadır.
+      need_to_be_verified:
+        other: E-posta doğrulanmalıdır.
+      verify_url_expired:
+        other: E-posta doğrulama URL'sinin süresi dolmuş, lütfen e-postayı yeniden gönderin.
+      illegal_email_domain_error:
+        other: Bu e-posta alan adına izin verilmiyor. Lütfen başka bir e-posta kullanın.
+    lang:
+      not_found:
+        other: Dil dosyası bulunamadı.
+    object:
+      captcha_verification_failed:
+        other: Captcha yanlış.
+      disallow_follow:
+        other: Takip etme izniniz yok.
+      disallow_vote:
+        other: Oy verme izniniz yok.
+      disallow_vote_your_self:
+        other: Kendi gönderinize oy veremezsiniz.
+      not_found:
+        other: Nesne bulunamadı.
+      verification_failed:
+        other: Doğrulama başarısız.
+      email_or_password_incorrect:
+        other: E-posta ve parola eşleşmiyor.
+      old_password_verification_failed:
+        other: Eski parola doğrulaması başarısız oldu.
+      new_password_same_as_previous_setting:
+        other: Yeni parola öncekiyle aynı.
+      already_deleted:
+        other: Bu gönderi silinmiş.
+    meta:
+      object_not_found:
+        other: Meta nesnesi bulunamadı.
+    question:
+      already_deleted:
+        other: Bu gönderi silinmiş.
+      under_review:
+        other: Gönderiniz inceleme bekliyor. Onaylandıktan sonra görünür olacaktır.
+      not_found:
+        other: Soru bulunamadı.
+      cannot_deleted:
+        other: Silme izni yok.
+      cannot_close:
+        other: Kapatma izni yok.
+      cannot_update:
+        other: Güncelleme izni yok.
+      content_cannot_empty:
+        other: İçerik boş olamaz.
+    rank:
+      fail_to_meet_the_condition:
+        other: İtibar seviyesi koşulu karşılamıyor.
+      vote_fail_to_meet_the_condition:
+        other: Geri bildiriminiz için teşekkürler. Oy kullanmak için en az {{.Rank}} itibara ihtiyacınız var.
+      no_enough_rank_to_operate:
+        other: Bu işlemi yapmak için en az {{.Rank}} itibara ihtiyacınız var.
+    report:
+      handle_failed:
+        other: Rapor işleme başarısız.
+      not_found:
+        other: Rapor bulunamadı.
+    tag:
+      already_exist:
+        other: Etiket zaten var.
+      not_found:
+        other: Etiket bulunamadı.
+      recommend_tag_not_found:
+        other: Önerilen etiket mevcut değil.
+      recommend_tag_enter:
+        other: Lütfen en az bir adet gerekli etiket giriniz.
+      not_contain_synonym_tags:
+        other: Eş anlamlı etiketler içermemelidir.
+      cannot_update:
+        other: Güncelleme izni yok.
+      is_used_cannot_delete:
+        other: Kullanımda olan bir etiketi silemezsiniz.
+      cannot_set_synonym_as_itself:
+        other: Bir etiketin eş anlamlısını kendisi olarak ayarlayamazsınız.
+    smtp:
+      config_from_name_cannot_be_email:
+        other: Gönderen adı bir e-posta adresi olamaz.
+    theme:
+      not_found:
+        other: Tema bulunamadı.
+    revision:
+      review_underway:
+        other: Şu anda düzenlenemez, inceleme kuyruğunda bir sürüm var.
+      no_permission:
+        other: Düzenleme izniniz yok.
+    user:
+      external_login_missing_user_id:
+        other: Üçüncü taraf platform benzersiz bir Kullanıcı ID'si sağlamıyor, bu nedenle giriş yapamazsınız. Lütfen site yöneticisiyle iletişime geçin.
+      external_login_unbinding_forbidden:
+        other: Bu girişi kaldırmadan önce lütfen hesabınız için bir giriş parolası ayarlayın.
+      email_or_password_wrong:
+        other:
+          other: E-posta ve parola eşleşmiyor.
+      not_found:
+        other: Kullanıcı bulunamadı.
+      suspended:
+        other: Kullanıcı askıya alındı.
+      username_invalid:
+        other: Kullanıcı adı geçersiz.
+      username_duplicate:
+        other: Kullanıcı adı zaten kullanımda.
+      set_avatar:
+        other: Avatar ayarlama başarısız.
+      cannot_update_your_role:
+        other: Kendi rolünüzü değiştiremezsiniz.
+      not_allowed_registration:
+        other: Şu anda site kayıt için açık değil.
+      not_allowed_login_via_password:
+        other: Şu anda site parola ile giriş yapmaya izin vermiyor.
+      access_denied:
+        other: Erişim reddedildi.
+      page_access_denied:
+        other: Bu sayfaya erişim izniniz yok.
+      add_bulk_users_format_error:
+        other: "{{.Line}} satırındaki '{{.Content}}' içeriğinde {{.Field}} biçimi hatası. {{.ExtraMessage}}"
+      add_bulk_users_amount_error:
+        other: "Bir kerede eklediğiniz kullanıcı sayısı 1-{{.MaxAmount}} aralığında olmalıdır."
+      status_suspended_forever:
+        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+      status_suspended_until:
+        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+      status_deleted:
+        other: "This user was deleted."
+      status_inactive:
+        other: "This user is inactive."
+    config:
+      read_config_failed:
+        other: Yapılandırma okunamadı.
+    database:
+      connection_failed:
+        other: Veritabanı bağlantısı başarısız.
+      create_table_failed:
+        other: Tablo oluşturma başarısız.
+    install:
+      create_config_failed:
+        other: config.yaml dosyası oluşturulamıyor.
+    upload:
+      unsupported_file_format:
+        other: Desteklenmeyen dosya formatı.
+    site_info:
+      config_not_found:
+        other: Site yapılandırması bulunamadı.
+    badge:
+      object_not_found:
+        other: Rozet nesnesi bulunamadı.
+  reason:
+    spam:
+      name:
+        other: spam
+      desc:
+        other: Bu gönderi bir reklam veya vandalizm. Mevcut konuyla ilgili veya yararlı değil.
+    rude_or_abusive:
+      name:
+        other: kaba veya taciz edici
+      desc:
+        other: "Makul bir kişi bu içeriği saygılı bir iletişim için uygunsuz bulurdu."
+    a_duplicate:
+      name:
+        other: kopya
+      desc:
+        other: Bu soru daha önce sorulmuş ve cevaplandırılmış.
+      placeholder:
+        other: Mevcut soru bağlantısını girin
+    not_a_answer:
+      name:
+        other: cevap değil
+      desc:
+        other: "Bu bir cevap olarak gönderilmiş, ancak soruyu cevaplamaya çalışmıyor. Bir düzenleme, yorum, başka bir soru olabilir veya tamamen silinmesi gerekebilir."
+    no_longer_needed:
+      name:
+        other: artık gerekli değil
+      desc:
+        other: Bu yorum güncelliğini yitirmiş, sohbet niteliğinde veya bu gönderiyle ilgili değil.
+    something:
+      name:
+        other: başka bir şey
+      desc:
+        other: Bu gönderi, yukarıda listelenmeyen başka bir nedenden dolayı personel ilgisi gerektiriyor.
+      placeholder:
+        other: Endişelerinizin ne olduğunu spesifik olarak belirtin
+    community_specific:
+      name:
+        other: topluluk kurallarına aykırı
+      desc:
+        other: Bu soru bir topluluk kılavuzuna uymuyor.
+    not_clarity:
+      name:
+        other: detay veya açıklık gerekiyor
+      desc:
+        other: Bu soru şu anda tek soruda birden fazla soru içeriyor. Sadece tek bir soruna odaklanmalı.
+    looks_ok:
+      name:
+        other: iyi görünüyor
+      desc:
+        other: Bu gönderi olduğu gibi iyi ve düşük kaliteli değil.
+    needs_edit:
+      name:
+        other: düzenleme gerektiriyor ve ben yaptım
+      desc:
+        other: Bu gönderideki sorunları kendiniz düzeltin ve iyileştirin.
+    needs_close:
+      name:
+        other: kapatılması gerekiyor
+      desc:
+        other: Kapatılmış bir soru cevaplanamaz, ancak düzenlenebilir, oylanabilir ve yorum yapılabilir.
+    needs_delete:
+      name:
+        other: silinmesi gerekiyor
+      desc:
+        other: Bu gönderi silinecek.
+  question:
+    close:
+      duplicate:
+        name:
+          other: kopya
+        desc:
+          other: Bu soru daha önce sorulmuş ve cevaplandırılmış.
+      guideline:
+        name:
+          other: topluluk kurallarına aykırı
+        desc:
+          other: Bu soru bir topluluk kılavuzuna uymuyor.
+      multiple:
+        name:
+          other: detay veya açıklık gerekiyor
+        desc:
+          other: Bu soru şu anda tek soruda birden fazla soru içeriyor. Sadece tek bir soruna odaklanmalı.
+      other:
+        name:
+          other: başka bir şey
+        desc:
+          other: Bu gönderi yukarıda listelenmeyen başka bir neden gerektiriyor.
+    operation_type:
+      asked:
+        other: soruldu
+      answered:
+        other: cevaplandı
+      modified:
+        other: değiştirildi
+    deleted_title:
+      other: Silinmiş soru
+    questions_title:
+      other: Sorular
+  tag:
+    tags_title:
+      other: Etiketler
+    no_description:
+      other: Bu etiketin açıklaması yok.
+  notification:
+    action:
+      update_question:
+        other: soruyu güncelledi
+      answer_the_question:
+        other: soruyu cevapladı
+      update_answer:
+        other: cevabı güncelledi
+      accept_answer:
+        other: cevabı kabul etti
+      comment_question:
+        other: soruya yorum yaptı
+      comment_answer:
+        other: cevaba yorum yaptı
+      reply_to_you:
+        other: size yanıt verdi
+      mention_you:
+        other: sizden bahsetti
+      your_question_is_closed:
+        other: Sorunuz kapatıldı
+      your_question_was_deleted:
+        other: Sorunuz silindi
+      your_answer_was_deleted:
+        other: Cevabınız silindi
+      your_comment_was_deleted:
+        other: Yorumunuz silindi
+      up_voted_question:
+        other: soruyu yukarı oyladı
+      down_voted_question:
+        other: soruyu aşağı oyladı
+      up_voted_answer:
+        other: cevabı yukarı oyladı
+      down_voted_answer:
+        other: cevabı aşağı oyladı
+      up_voted_comment:
+        other: yorumu yukarı oyladı
+      invited_you_to_answer:
+        other: sizi cevaplamaya davet etti
+      earned_badge:
+        other: Rozet kazandınız "{{.BadgeName}}"
+  email_tpl:
+    change_email:
+      title:
+        other: "[{{.SiteName}}] Yeni e-posta adresinizi onaylayın"
+      body:
+        other: "{{.SiteName}} için aşağıdaki bağlantıya tıklayarak yeni e-posta adresinizi onaylayın:<br>\n<a href='{{.ChangeEmailUrl}}' target='_blank'>{{.ChangeEmailUrl}}</a><br><br>\n\nEğer bu değişikliği siz talep etmediyseniz, lütfen bu e-postayı dikkate almayın.<br><br>\n\n--<br>\nNot: Bu otomatik bir sistem e-postasıdır, lütfen bu mesaja yanıt vermeyin çünkü cevabınız görülmeyecektir."
+    new_answer:
+      title:
+        other: "[{{.SiteName}}] {{.DisplayName}} sorunuzu cevapladı"
+      body:
+        other: "<a href='{{.AnswerUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.AnswerSummary}}</blockquote><br>\n<a href='{{.AnswerUrl}}'>{{.SiteName}} üzerinde görüntüle</a><br><br>\n\n--<br>\nNot: Bu otomatik bir sistem e-postasıdır, lütfen bu mesaja yanıt vermeyin çünkü cevabınız görülmeyecektir.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Abonelikten çık</a></small>"
+    invited_you_to_answer:
+      title:
+        other: "[{{.SiteName}}] {{.DisplayName}} sizi cevaplamaya davet etti"
+      body:
+        other: "<a href='{{.InviteUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>Cevabı biliyor olabileceğinizi düşünüyorum.</blockquote><br>\n<a href='{{.InviteUrl}}'>{{.SiteName}} üzerinde görüntüle</a><br><br>\n\n--<br>\nNot: Bu otomatik bir sistem e-postasıdır, lütfen bu mesaja yanıt vermeyin çünkü cevabınız görülmeyecektir.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Abonelikten çık</a></small>"
+    new_comment:
+      title:
+        other: "[{{.SiteName}}] {{.DisplayName}} gönderinize yorum yaptı"
+      body:
+        other: "<a href='{{.CommentUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.CommentSummary}}</blockquote><br>\n<a href='{{.CommentUrl}}'>{{.SiteName}} üzerinde görüntüle</a><br><br>\n\n--<br>\nNot: Bu otomatik bir sistem e-postasıdır, lütfen bu mesaja yanıt vermeyin çünkü cevabınız görülmeyecektir.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Abonelikten çık</a></small>"
+    new_question:
+      title:
+        other: "[{{.SiteName}}] Yeni soru: {{.QuestionTitle}}"
+      body:
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNot: Bu otomatik bir sistem e-postasıdır, lütfen bu mesaja yanıt vermeyin çünkü cevabınız görülmeyecektir.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Abonelikten çık</a></small>"
+    pass_reset:
+      title:
+        other: "[{{.SiteName }}] Parola sıfırlama"
+      body:
+        other: "Birisi {{.SiteName}} üzerindeki parolanızı sıfırlamak istedi.<br><br>\n\nEğer bu siz değilseniz, bu e-postayı güvenle görmezden gelebilirsiniz.<br><br>\n\nYeni bir parola seçmek için aşağıdaki bağlantıya tıklayın:<br>\n<a href='{{.PassResetUrl}}' target='_blank'>{{.PassResetUrl}}</a>\n<br><br>\n\n--<br>\nNot: Bu otomatik bir sistem e-postasıdır, lütfen bu mesaja yanıt vermeyin çünkü cevabınız görülmeyecektir."
+    register:
+      title:
+        other: "[{{.SiteName}}] Yeni hesabınızı onaylayın"
+      body:
+        other: "{{.SiteName}} sitesine hoş geldiniz!<br><br>\n\nYeni hesabınızı onaylamak ve etkinleştirmek için aşağıdaki bağlantıya tıklayın:<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\nYukarıdaki bağlantı tıklanabilir değilse, web tarayıcınızın adres çubuğuna kopyalayıp yapıştırmayı deneyin.\n<br><br>\n\n--<br>\nNot: Bu otomatik bir sistem e-postasıdır, lütfen bu mesaja yanıt vermeyin çünkü cevabınız görülmeyecektir."
+    test:
+      title:
+        other: "[{{.SiteName}}] Test E-postası"
+      body:
+        other: "Bu bir test e-postasıdır.\n<br><br>\n\n--<br>\nNot: Bu otomatik bir sistem e-postasıdır, lütfen bu mesaja yanıt vermeyin çünkü cevabınız görülmeyecektir."
+  action_activity_type:
+    upvote:
+      other: yukarı oyla
+    upvoted:
+      other: yukarı oyladı
+    downvote:
+      other: aşağı oyla
+    downvoted:
+      other: aşağı oyladı
+    accept:
+      other: kabul et
+    accepted:
+      other: kabul edildi
+    edit:
+      other: düzenle
+  review:
+    queued_post:
+      other: Sıradaki gönderi
+    flagged_post:
+      other: Bildirilen gönderi
+    suggested_post_edit:
+      other: Önerilen düzenlemeler
+  reaction:
+    tooltip:
+      other: "{{ .Names }} ve {{ .Count }} kişi daha..."
+  badge:
+    default_badges:
+      autobiographer:
+        name:
+          other: Otobiyografi Yazarı
+        desc:
+          other: <a href="{{ .ProfileURL }}" target="_blank">Profil</a> bilgilerini doldurdu.
+      certified:
+        name:
+          other: Sertifikalı
+        desc:
+          other: Yeni kullanıcı eğitimimizi tamamladı.
+      editor:
+        name:
+          other: Editör
+        desc:
+          other: İlk gönderi düzenlemesi.
+      first_flag:
+        name:
+          other: İlk Bildirim
+        desc:
+          other: İlk kez bir gönderiyi bildirdi.
+      first_upvote:
+        name:
+          other: İlk Yukarı Oylama
+        desc:
+          other: İlk kez bir gönderiyi yukarı oyladı.
+      first_link:
+        name:
+          other: İlk Bağlantı
+        desc:
+          other: İlk kez başka bir gönderiye bağlantı ekledi.
+      first_reaction:
+        name:
+          other: İlk Tepki
+        desc:
+          other: İlk kez bir gönderiye tepki verdi.
+      first_share:
+        name:
+          other: İlk Paylaşım
+        desc:
+          other: İlk kez bir gönderi paylaştı.
+      scholar:
+        name:
+          other: Bilim İnsanı
+        desc:
+          other: Bir soru sordu ve bir cevabı kabul etti.
+      commentator:
+        name:
+          other: Yorumcu
+        desc:
+          other: 5 yorum bıraktı.
+      new_user_of_the_month:
+        name:
+          other: Ayın Yeni Kullanıcısı
+        desc:
+          other: İlk aylarında üstün katkılarda bulundu.
+      read_guidelines:
+        name:
+          other: Kuralları Okuyan
+        desc:
+          other: '[Topluluk kurallarını] oku.'
+      reader:
+        name:
+          other: Okuyucu
+        desc:
+          other: 10'dan fazla cevap içeren bir konudaki tüm cevapları okudu.
+      welcome:
+        name:
+          other: Hoş Geldin
+        desc:
+          other: Bir yukarı oy aldı.
+      nice_share:
+        name:
+          other: Güzel Paylaşım
+        desc:
+          other: 25 farklı ziyaretçi tarafından görüntülenen bir gönderi paylaştı.
+      good_share:
+        name:
+          other: İyi Paylaşım
+        desc:
+          other: 300 farklı ziyaretçi tarafından görüntülenen bir gönderi paylaştı.
+      great_share:
+        name:
+          other: Harika Paylaşım
+        desc:
+          other: 1000 farklı ziyaretçi tarafından görüntülenen bir gönderi paylaştı.
+      out_of_love:
+        name:
+          other: Sevgiden
+        desc:
+          other: Bir günde 50 yukarı oy kullandı.
+      higher_love:
+        name:
+          other: Yüksek Sevgi
+        desc:
+          other: Bir günde 50 yukarı oyu 5 kez kullandı.
+      crazy_in_love:
+        name:
+          other: Çılgınca Aşık
+        desc:
+          other: Bir günde 50 yukarı oyu 20 kez kullandı.
+      promoter:
+        name:
+          other: Destekçi
+        desc:
+          other: Bir kullanıcıyı davet etti.
+      campaigner:
+        name:
+          other: Kampanyacı
+        desc:
+          other: 3 temel kullanıcıyı davet etti.
+      champion:
+        name:
+          other: Şampiyon
+        desc:
+          other: 5 üye davet etti.
+      thank_you:
+        name:
+          other: Teşekkürler
+        desc:
+          other: 20 yukarı oy aldı ve 10 yukarı oy verdi.
+      gives_back:
+        name:
+          other: Karşılık Veren
+        desc:
+          other: 100 yukarı oy aldı ve 100 yukarı oy verdi.
+      empathetic:
+        name:
+          other: Empatik
+        desc:
+          other: 500 yukarı oy aldı ve 1000 yukarı oy verdi.
+      enthusiast:
+        name:
+          other: Hevesli
+        desc:
+          other: 10 gün üst üste ziyaret etti.
+      aficionado:
+        name:
+          other: Meraklı
+        desc:
+          other: 100 gün üst üste ziyaret etti.
+      devotee:
+        name:
+          other: Hayran
+        desc:
+          other: 365 gün üst üste ziyaret etti.
+      anniversary:
+        name:
+          other: Yıldönümü
+        desc:
+          other: Bir yıl boyunca aktif üye, en az bir gönderi paylaştı.
+      appreciated:
+        name:
+          other: Takdir Edilen
+        desc:
+          other: 20 gönderisinde 1 yukarı oy aldı.
+      respected:
+        name:
+          other: Saygın
+        desc:
+          other: 100 gönderisinde 2 yukarı oy aldı.
+      admired:
+        name:
+          other: Hayranlık Uyandıran
+        desc:
+          other: 300 gönderisinde 5 yukarı oy aldı.
+      solved:
+        name:
+          other: Çözüldü
+        desc:
+          other: Bir cevabı kabul edildi.
+      guidance_counsellor:
+        name:
+          other: Rehber Danışman
+        desc:
+          other: 10 cevabı kabul edildi.
+      know_it_all:
+        name:
+          other: Her Şeyi Bilen
+        desc:
+          other: 50 cevabı kabul edildi.
+      solution_institution:
+        name:
+          other: Çözüm Kurumu
+        desc:
+          other: 150 cevabı kabul edildi.
+      nice_answer:
+        name:
+          other: Güzel Cevap
+        desc:
+          other: 10 veya daha fazla cevap puanı.
+      good_answer:
+        name:
+          other: İyi Cevap
+        desc:
+          other: 25 veya daha fazla cevap puanı.
+      great_answer:
+        name:
+          other: Harika Cevap
+        desc:
+          other: 50 veya daha fazla cevap puanı.
+      nice_question:
+        name:
+          other: Güzel Soru
+        desc:
+          other: 10 veya daha fazla soru puanı.
+      good_question:
+        name:
+          other: İyi Soru
+        desc:
+          other: 25 veya daha fazla soru puanı.
+      great_question:
+        name:
+          other: Harika Soru
+        desc:
+          other: 50 veya daha fazla soru puanı.
+      popular_question:
+        name:
+          other: Popüler Soru
+        desc:
+          other: 500 görüntülenme alan soru.
+      notable_question:
+        name:
+          other: Dikkat Çeken Soru
+        desc:
+          other: 1.000 görüntülenme alan soru.
+      famous_question:
+        name:
+          other: Ünlü Soru
+        desc:
+          other: 5.000 görüntülenme alan soru.
+      popular_link:
+        name:
+          other: Popüler Bağlantı
+        desc:
+          other: 50 tıklama alan harici bir bağlantı paylaştı.
+      hot_link:
+        name:
+          other: Sıcak Bağlantı
+        desc:
+          other: 300 tıklama alan harici bir bağlantı paylaştı.
+      famous_link:
+        name:
+          other: Ünlü Bağlantı
+        desc:
+          other: 100 tıklama alan harici bir bağlantı paylaştı.
+    default_badge_groups:
+      getting_started:
+        name:
+          other: Başlangıç
+      community:
+        name:
+          other: Topluluk
+      posting:
+        name:
+          other: Gönderi Yazmak
+# The following fields are used for interface presentation(Front-end)
+ui:
+  how_to_format:
+    title: Nasıl Biçimlendirilir
+    desc: >-
+      <ul class="mb-0"><li><p class="mb-2">bir gönderiden bahsetmek için: <code>#post_id</code></p></li> <li><p class="mb-2">bağlantı oluşturmak için</p><pre class="mb-2"><code>&lt;https://url.com&gt;<br/><br/>[Başlık](https://url.com)</code></pre></li><li><p class="mb-2">paragraflar arasında boşluk bırakın</p></li><li><p class="mb-2"><em>_italik_</em> veya **<strong>kalın</strong>**</p></li><li><p class="mb-2">kodu 4 boşlukla girintileyin</p></li><li><p class="mb-2">satırın başına <code>&gt;</code> koyarak alıntı yapın</p></li><li><p class="mb-2">ters tırnak işaretleriyle kaçış yapın <code>`_böyle_`</code></p></li><li><p class="mb-2">ters tırnak işaretleriyle <code>`</code> kod blokları oluşturun</p><pre class="mb-0"><code>```<br/>kod buraya<br/>```</code></pre></li></ul>
+  pagination:
+    prev: Önceki
+    next: Sonraki
+  page_title:
+    question: Soru
+    questions: Sorular
+    tag: Etiket
+    tags: Etiketler
+    tag_wiki: etiket wikisi
+    create_tag: Etiket Oluştur
+    edit_tag: Etiketi Düzenle
+    ask_a_question: Create Question
+    edit_question: Soruyu Düzenle
+    edit_answer: Cevabı Düzenle
+    search: Ara
+    posts_containing: İçeren gönderiler
+    settings: Ayarlar
+    notifications: Bildirimler
+    login: Giriş Yap
+    sign_up: Kayıt Ol
+    account_recovery: Hesap Kurtarma
+    account_activation: Hesap Aktivasyonu
+    confirm_email: E-posta Onayı
+    account_suspended: Hesap Askıya Alındı
+    admin: Yönetici
+    change_email: E-posta Değiştir
+    install: Answer Kurulumu
+    upgrade: Answer Yükseltme
+    maintenance: Website Bakımı
+    users: Kullanıcılar
+    oauth_callback: İşleniyor
+    http_404: HTTP Hatası 404
+    http_50X: HTTP Hatası 500
+    http_403: HTTP Hatası 403
+    logout: Çıkış Yap
+  notifications:
+    title: Bildirimler
+    inbox: Gelen Kutusu
+    achievement: Başarılar
+    new_alerts: Yeni uyarılar
+    all_read: Tümünü okundu olarak işaretle
+    show_more: Daha fazla göster
+    someone: Birisi
+    inbox_type:
+      all: Tümü
+      posts: Gönderiler
+      invites: Davetler
+      votes: Oylar
+    answer: Cevap
+    question: Soru
+    badge_award: Rozet
+  suspended:
+    title: Hesabınız Askıya Alındı
+    until_time: "Hesabınız {{ time }} tarihine kadar askıya alındı."
+    forever: Bu kullanıcı süresiz olarak askıya alındı.
+    end: Topluluk kurallarını karşılamıyorsunuz.
+    contact_us: Bize ulaşın
+  editor:
+    blockquote:
+      text: Alıntı
+    bold:
+      text: Kalın
+    chart:
+      text: Grafik
+      flow_chart: Akış şeması
+      sequence_diagram: Sıralama diyagramı
+      class_diagram: Sınıf diyagramı
+      state_diagram: Durum diyagramı
+      entity_relationship_diagram: Varlık ilişki diyagramı
+      user_defined_diagram: Kullanıcı tanımlı diyagram
+      gantt_chart: Gantt şeması
+      pie_chart: Pasta grafiği
+    code:
+      text: Kod Örneği
+      add_code: Kod örneği ekle
+      form:
+        fields:
+          code:
+            label: Kod
+            msg:
+              empty: Kod boş olamaz.
+          language:
+            label: Dil
+            placeholder: Otomatik algılama
+      btn_cancel: İptal
+      btn_confirm: Ekle
+    formula:
+      text: Formül
+      options:
+        inline: Satır içi formül
+        block: Blok formül
+    heading:
+      text: Başlık
+      options:
+        h1: Başlık 1
+        h2: Başlık 2
+        h3: Başlık 3
+        h4: Başlık 4
+        h5: Başlık 5
+        h6: Başlık 6
+    help:
+      text: Yardım
+    hr:
+      text: Yatay çizgi
+    image:
+      text: Resim
+      add_image: Resim ekle
+      tab_image: Resim Yükle
+      form_image:
+        fields:
+          file:
+            label: Resim dosyası
+            btn: Resim seç
+            msg:
+              empty: Dosya boş olamaz.
+              only_image: Sadece resim dosyalarına izin verilir.
+              max_size: Dosya boyutu {{size}} MB'ı geçemez.
+          desc:
+            label: Açıklama
+      tab_url: Resim URL'si
+      form_url:
+        fields:
+          url:
+            label: Resim URL'si
+            msg:
+              empty: Resim URL'si boş olamaz.
+          name:
+            label: Açıklama
+      btn_cancel: İptal
+      btn_confirm: Ekle
+      uploading: Yükleniyor
+    indent:
+      text: Girinti
+    outdent:
+      text: Girintiyi azalt
+    italic:
+      text: İtalik
+    link:
+      text: Bağlantı
+      add_link: Bağlantı ekle
+      form:
+        fields:
+          url:
+            label: URL
+            msg:
+              empty: URL boş olamaz.
+          name:
+            label: Açıklama
+      btn_cancel: İptal
+      btn_confirm: Ekle
+    ordered_list:
+      text: Numaralı liste
+    unordered_list:
+      text: Madde işaretli liste
+    table:
+      text: Tablo
+      heading: Başlık
+      cell: Hücre
+    file:
+      text: Dosya ekle
+      not_supported: "Bu dosya türü desteklenmiyor. {{file_type}} ile tekrar deneyin."
+      max_size: "Eklenen dosyaların boyutu {{size}} MB'ı geçemez."
+  close_modal:
+    title: Bu gönderiyi kapatıyorum çünkü...
+    btn_cancel: İptal
+    btn_submit: Gönder
+    remark:
+      empty: Boş olamaz.
+    msg:
+      empty: Lütfen bir neden seçin.
+  report_modal:
+    flag_title: Bu gönderiyi şu nedenle bildiriyorum...
+    close_title: Bu gönderiyi şu nedenle kapatıyorum...
+    review_question_title: Soruyu incele
+    review_answer_title: Cevabı incele
+    review_comment_title: Yorumu incele
+    btn_cancel: İptal
+    btn_submit: Gönder
+    remark:
+      empty: Boş olamaz.
+    msg:
+      empty: Lütfen bir neden seçin.
+      not_a_url: URL formatı yanlış.
+      url_not_match: URL kaynağı mevcut web sitesiyle eşleşmiyor.
+  tag_modal:
+    title: Yeni etiket oluştur
+    form:
+      fields:
+        display_name:
+          label: Görünen ad
+          msg:
+            empty: Görünen ad boş olamaz.
+            range: Görünen ad en fazla 35 karakter olabilir.
+        slug_name:
+          label: URL kısaltması
+          desc: URL kısaltması en fazla 35 karakter olabilir.
+          msg:
+            empty: URL kısaltması boş olamaz.
+            range: URL kısaltması en fazla 35 karakter olabilir.
+            character: URL kısaltması izin verilmeyen karakter içeriyor.
+        desc:
+          label: Açıklama
+        revision:
+          label: Revizyon
+        edit_summary:
+          label: Düzenleme özeti
+          placeholder: >-
+            Değişikliklerinizi kısaca açıklayın (yazım hatası düzeltildi, dilbilgisi düzeltildi, biçimlendirme geliştirildi)
+    btn_cancel: İptal
+    btn_submit: Gönder
+    btn_post: Yeni etiket gönder
+  tag_info:
+    created_at: Oluşturuldu
+    edited_at: Düzenlendi
+    history: Geçmiş
+    synonyms:
+      title: Eş Anlamlılar
+      text: Aşağıdaki etiketler şuna yeniden eşlenecek
+      empty: Eş anlamlı bulunamadı.
+      btn_add: Eş anlamlı ekle
+      btn_edit: Düzenle
+      btn_save: Kaydet
+    synonyms_text: Aşağıdaki etiketler şuna yeniden eşlenecek
+    delete:
+      title: Bu etiketi sil
+      tip_with_posts: >-
+        <p><strong>Gönderileri olan etiketin silinmesine</strong> izin vermiyoruz.</p> <p>Lütfen önce bu etiketi gönderilerden kaldırın.</p>
+      tip_with_synonyms: >-
+        <p><strong>Eş anlamlıları olan etiketin silinmesine</strong> izin vermiyoruz.</p> <p>Lütfen önce bu etiketin eş anlamlılarını kaldırın.</p>
+      tip: Silmek istediğinizden emin misiniz?
+      close: Kapat
+    merge:
+      title: Etiket birleştir
+      source_tag_title: Kaynak etiket
+      source_tag_description: Kaynak etiket ve ilişkili verileri hedef etikete yeniden eşlenecek.
+      target_tag_title: Hedef etiket
+      target_tag_description: Birleştirmeden sonra bu iki etiket arasında bir eş anlamlı ilişkisi oluşturulacak.
+      no_results: Eşleşen etiket bulunamadı
+      btn_submit: Gönder
+      btn_close: Kapat
+  edit_tag:
+    title: Etiketi Düzenle
+    default_reason: Etiketi düzenle
+    default_first_reason: Etiket ekle
+    btn_save_edits: Düzenlemeleri kaydet
+    btn_cancel: İptal
+  dates:
+    long_date: D MMM
+    long_date_with_year: "D MMM, YYYY"
+    long_date_with_time: "D MMM, YYYY [saat] HH:mm"
+    now: şimdi
+    x_seconds_ago: "{{count}} saniye önce"
+    x_minutes_ago: "{{count}} dakika önce"
+    x_hours_ago: "{{count}} saat önce"
+    hour: saat
+    day: gün
+    hours: saatler
+    days: günler
+    month: month
+    months: months
+    year: year
+  reaction:
+    heart: kalp
+    smile: gülümseme
+    frown: üzgün
+    btn_label: tepki ekle veya kaldır
+    undo_emoji: '{{emoji}} tepkisini geri al'
+    react_emoji: '{{emoji}} ile tepki ver'
+    unreact_emoji: '{{emoji}} tepkisini kaldır'
+  comment:
+    btn_add_comment: Yorum ekle
+    reply_to: Yanıtla
+    btn_reply: Yanıtla
+    btn_edit: Düzenle
+    btn_delete: Sil
+    btn_flag: Bildir
+    btn_save_edits: Düzenlemeleri kaydet
+    btn_cancel: İptal
+    show_more: "{{count}} daha fazla yorum"
+    tip_question: >-
+      Daha fazla bilgi istemek veya iyileştirmeler önermek için yorumları kullanın. Yorumlarda soruları cevaplamaktan kaçının.
+    tip_answer: >-
+      Diğer kullanıcılara yanıt vermek veya onları değişikliklerden haberdar etmek için yorumları kullanın. Yeni bilgi ekliyorsanız, yorum yapmak yerine gönderinizi düzenleyin.
+    tip_vote: Gönderiye faydalı bir şey ekliyor
+  edit_answer:
+    title: Cevabı Düzenle
+    default_reason: Cevabı düzenle
+    default_first_reason: Cevap ekle
+    form:
+      fields:
+        revision:
+          label: Revizyon
+        answer:
+          label: Cevap
+          feedback:
+            characters: içerik en az 6 karakter uzunluğunda olmalıdır.
+        edit_summary:
+          label: Düzenleme özeti
+          placeholder: >-
+            Yaptığınız değişiklikleri kısaca açıklayın (düzeltilmiş yazım geliştirilmiş biçimlendirme)
+    btn_save_edits: Düzenlemeleri kaydet
+    btn_cancel: İptal
+  tags:
+    title: Etiketler
+    sort_buttons:
+      popular: Popüler
+      name: İsim
+      newest: En Yeni
+    button_follow: Takip Et
+    button_following: Takip Ediliyor
+    tag_label: sorular
+    search_placeholder: Etiket adına göre filtrele
+    no_desc: Bu etiketin açıklaması yok.
+    more: Daha Fazla
+    wiki: Wiki
+  ask:
+    title: Create Question
+    edit_title: Soruyu Düzenle
+    default_reason: Soruyu düzenle
+    default_first_reason: Create question
+    similar_questions: Benzer sorular
+    form:
+      fields:
+        revision:
+          label: Revizyon
+        title:
+          label: Başlık
+          placeholder: What's your topic? Be specific.
+          msg:
+            empty: Başlık boş olamaz.
+            range: Başlık en fazla 150 karakter olabilir
+        body:
+          label: İçerik
+          msg:
+            empty: İçerik boş olamaz.
+        tags:
+          label: Etiketler
+          msg:
+            empty: Etiketler boş olamaz.
+        answer:
+          label: Cevap
+          msg:
+            empty: Cevap boş olamaz.
+        edit_summary:
+          label: Düzenleme özeti
+          placeholder: >-
+            Değişikliklerinizi kısaca açıklayın (yazım hatası düzeltildi, dilbilgisi düzeltildi, biçimlendirme geliştirildi)
+    btn_post_question: Sorunuzu gönderin
+    btn_save_edits: Düzenlemeleri kaydet
+    answer_question: Kendi sorunuzu cevaplayın
+    post_question&answer: Sorunuzu ve cevabınızı gönderin
+  tag_selector:
+    add_btn: Etiket ekle
+    create_btn: Yeni etiket oluştur
+    search_tag: Etiket ara
+    hint: "Describe what your content is about, at least one tag is required."
+    no_result: Eşleşen etiket bulunamadı
+    tag_required_text: Gerekli etiket (en az bir tane)
+  header:
+    nav:
+      question: Sorular
+      tag: Etiketler
+      user: Kullanıcılar
+      badges: Rozetler
+      profile: Profil
+      setting: Ayarlar
+      logout: Çıkış yap
+      admin: Yönetici
+      review: İnceleme
+      bookmark: Yer İşaretleri
+      moderation: Moderasyon
+    search:
+      placeholder: Ara
+  footer:
+    build_on: >-
+      <1>Apache Answer</1> tarafından desteklenmektedir - S&C topluluklarına güç veren açık kaynaklı yazılım.<br />Sevgiyle yapıldı © {{cc}}.
+  upload_img:
+    name: Değiştir
+    loading: yükleniyor...
+  pic_auth_code:
+    title: Captcha
+    placeholder: Yukarıdaki metni yazın
+    msg:
+      empty: Captcha boş olamaz.
+  inactive:
+    first: >-
+      Neredeyse tamamlandı! <bold>{{mail}}</bold> adresine bir aktivasyon e-postası gönderdik. Hesabınızı etkinleştirmek için lütfen e-postadaki talimatları izleyin.
+    info: "E-posta gelmezse, spam klasörünüzü kontrol edin."
+    another: >-
+      <bold>{{mail}}</bold> adresine başka bir aktivasyon e-postası gönderdik. Gelmesi birkaç dakika sürebilir; spam klasörünüzü kontrol etmeyi unutmayın.
+    btn_name: Aktivasyon e-postasını yeniden gönder
+    change_btn_name: E-posta değiştir
+    msg:
+      empty: Boş olamaz.
+    resend_email:
+      url_label: Aktivasyon e-postasını yeniden göndermek istediğinizden emin misiniz?
+      url_text: Ayrıca yukarıdaki aktivasyon bağlantısını kullanıcıya verebilirsiniz.
+  login:
+    login_to_continue: Devam etmek için giriş yapın
+    info_sign: Hesabınız yok mu? <1>Kaydolun</1>
+    info_login: Zaten hesabınız var mı? <1>Giriş yapın</1>
+    agreements: Kaydolarak <1>gizlilik politikasını</1> ve <3>hizmet şartlarını</3> kabul etmiş olursunuz.
+    forgot_pass: Parolanızı mı unuttunuz?
+    name:
+      label: İsim
+      msg:
+        empty: İsim boş olamaz.
+        range: İsim 2 ile 30 karakter arasında olmalıdır.
+        character: '"a-z", "A-Z", "0-9", "- . _" karakter setini kullanmalısınız'
+    email:
+      label: E-posta
+      msg:
+        empty: E-posta boş olamaz.
+    password:
+      label: Parola
+      msg:
+        empty: Parola boş olamaz.
+        different: Her iki tarafta girilen parolalar tutarsız
+  account_forgot:
+    page_title: Parolanızı mı Unuttunuz
+    btn_name: Bana kurtarma e-postası gönder
+    send_success: >-
+      Eğer bir hesap <strong>{{mail}}</strong> ile eşleşirse, kısa süre içinde parolanızı nasıl sıfırlayacağınıza dair talimatlar içeren bir e-posta almalısınız.
+    email:
+      label: E-posta
+      msg:
+        empty: E-posta boş olamaz.
+  change_email:
+    btn_cancel: İptal
+    btn_update: E-posta adresini güncelle
+    send_success: >-
+      Eğer bir hesap <strong>{{mail}}</strong> ile eşleşirse, kısa süre içinde parolanızı nasıl sıfırlayacağınıza dair talimatlar içeren bir e-posta almalısınız.
+    email:
+      label: Yeni e-posta
+      msg:
+        empty: E-posta boş olamaz.
+  oauth:
+    connect: '{{auth_name}} ile bağlan'
+    remove: '{{auth_name}} kaldır'
+  oauth_bind_email:
+    subtitle: Hesabınıza bir kurtarma e-postası ekleyin.
+    btn_update: E-posta adresini güncelle
+    email:
+      label: E-posta
+      msg:
+        empty: E-posta boş olamaz.
+    modal_title: E-posta zaten mevcut.
+    modal_content: Bu e-posta adresi zaten kayıtlı. Mevcut hesaba bağlanmak istediğinizden emin misiniz?
+    modal_cancel: E-posta değiştir
+    modal_confirm: Mevcut hesaba bağlan
+  password_reset:
+    page_title: Parola Sıfırlama
+    btn_name: Parolamı sıfırla
+    reset_success: >-
+      Parolanızı başarıyla değiştirdiniz; giriş sayfasına yönlendirileceksiniz.
+    link_invalid: >-
+      Üzgünüz, bu parola sıfırlama bağlantısı artık geçerli değil. Belki de parolanız zaten sıfırlanmış?
+    to_login: Giriş sayfasına devam et
+    password:
+      label: Parola
+      msg:
+        empty: Parola boş olamaz.
+        length: Uzunluk 8 ile 32 arasında olmalıdır
+        different: Her iki tarafta girilen parolalar tutarsız
+    password_confirm:
+      label: Yeni parolayı onayla
+  settings:
+    page_title: Ayarlar
+    goto_modify: Değiştirmeye git
+    nav:
+      profile: Profil
+      notification: Bildirimler
+      account: Hesap
+      interface: Arayüz
+    profile:
+      heading: Profil
+      btn_name: Kaydet
+      display_name:
+        label: Görünen ad
+        msg: Görünen ad boş olamaz.
+        msg_range: Görünen ad 2-30 karakter uzunluğunda olmalıdır.
+      username:
+        label: Kullanıcı adı
+        caption: İnsanlar size "@kullaniciadi" şeklinde bahsedebilir.
+        msg: Kullanıcı adı boş olamaz.
+        msg_range: Kullanıcı adı 2-30 karakter uzunluğunda olmalıdır.
+        character: '"a-z", "0-9", "- . _" karakter setini kullanmalısınız'
+      avatar:
+        label: Profil resmi
+        gravatar: Gravatar
+        gravatar_text: Resmi şurada değiştirebilirsiniz
+        custom: Özel
+        custom_text: Kendi resminizi yükleyebilirsiniz.
+        default: Sistem
+        msg: Lütfen bir avatar yükleyin
+      bio:
+        label: Hakkımda
+      website:
+        label: Website
+        placeholder: "https://example.com"
+        msg: Website formatı yanlış
+      location:
+        label: Konum
+        placeholder: "Şehir, Ülke"
+    notification:
+      heading: E-posta Bildirimleri
+      turn_on: Aç
+      inbox:
+        label: Gelen kutusu bildirimleri
+        description: Sorularınıza cevaplar, yorumlar, davetler ve daha fazlası.
+      all_new_question:
+        label: Tüm yeni sorular
+        description: Tüm yeni sorulardan haberdar olun. Haftada en fazla 50 soru.
+      all_new_question_for_following_tags:
+        label: Takip edilen etiketler için tüm yeni sorular
+        description: Takip ettiğiniz etiketlerdeki yeni sorulardan haberdar olun.
+    account:
+      heading: Hesap
+      change_email_btn: E-posta değiştir
+      change_pass_btn: Parola değiştir
+      change_email_info: >-
+        Bu adrese bir e-posta gönderdik. Lütfen onay talimatlarını takip edin.
+      email:
+        label: E-posta
+      new_email:
+        label: Yeni e-posta
+        msg: Yeni e-posta boş olamaz.
+      pass:
+        label: Mevcut parola
+        msg: Parola boş olamaz.
+      password_title: Parola
+      current_pass:
+        label: Mevcut parola
+        msg:
+          empty: Mevcut parola boş olamaz.
+          length: Uzunluk 8 ile 32 arasında olmalıdır.
+          different: Girilen iki parola eşleşmiyor.
+      new_pass:
+        label: Yeni parola
+      pass_confirm:
+        label: Yeni parolayı onayla
+    interface:
+      heading: Arayüz
+      lang:
+        label: Arayüz dili
+        text: Kullanıcı arayüzü dili. Sayfa yenilendiğinde değişecektir.
+    my_logins:
+      title: Girişlerim
+      label: Bu hesapları kullanarak bu sitede giriş yapın veya kaydolun.
+      modal_title: Girişi kaldır
+      modal_content: Bu girişi hesabınızdan kaldırmak istediğinizden emin misiniz?
+      modal_confirm_btn: Kaldır
+      remove_success: Başarıyla kaldırıldı
+  toast:
+    update: güncelleme başarılı
+    update_password: Parola başarıyla değiştirildi.
+    flag_success: Bildirdiğiniz için teşekkürler.
+    forbidden_operate_self: Kendinizle ilgili işlem yapmak yasaktır
+    review: Revizyonunuz incelendikten sonra görünecek.
+    sent_success: Başarıyla gönderildi
+  related_question:
+    title: Related
+    answers: cevap
+  linked_question:
+    title: Linked
+    description: Posts linked to
+    no_linked_question: No contents linked from this content.
+  invite_to_answer:
+    title: İnsanları Davet Et
+    desc: Cevap verebileceğini düşündüğünüz kişileri davet edin.
+    invite: Cevaplamaya davet et
+    add: Kişi ekle
+    search: Kişi ara
+  question_detail:
+    action: Eylem
+    Asked: Soruldu
+    asked: sordu
+    update: Değiştirildi
+    edit: düzenledi
+    commented: yorum yaptı
+    Views: Görüntülendi
+    Follow: Takip Et
+    Following: Takip Ediliyor
+    follow_tip: Bildirim almak için bu soruyu takip edin
+    answered: cevapladı
+    closed_in: Şurada kapatıldı
+    show_exist: Var olan soruyu göster.
+    useful: Faydalı
+    question_useful: Faydalı ve açık
+    question_un_useful: Belirsiz veya faydalı değil
+    question_bookmark: Bu soruyu yer işaretlerine ekle
+    answer_useful: Faydalı
+    answer_un_useful: Faydalı değil
+    answers:
+      title: Cevaplar
+      score: Puan
+      newest: En Yeni
+      oldest: En Eski
+      btn_accept: Kabul Et
+      btn_accepted: Kabul Edildi
+    write_answer:
+      title: Cevabınız
+      edit_answer: Mevcut cevabımı düzenle
+      btn_name: Cevabınızı gönderin
+      add_another_answer: Başka bir cevap ekle
+      confirm_title: Cevaplamaya devam et
+      continue: Devam et
+      confirm_info: >-
+        <p>Başka bir cevap eklemek istediğinizden emin misiniz?</p><p>Bunun yerine mevcut cevabınızı iyileştirmek ve geliştirmek için düzenleme bağlantısını kullanabilirsiniz.</p>
+      empty: Cevap boş olamaz.
+      characters: içerik en az 6 karakter uzunluğunda olmalıdır.
+      tips:
+        header_1: Cevabınız için teşekkürler
+        li1_1: Lütfen <strong>soruyu cevapladığınızdan</strong> emin olun. Detaylar verin ve araştırmanızı paylaşın.
+        li1_2: Yaptığınız ifadeleri referanslar veya kişisel deneyimlerle destekleyin.
+        header_2: Ancak <strong>şunlardan kaçının</strong> ...
+        li2_1: Yardım istemek, açıklama istemek veya diğer cevaplara yanıt vermek.
+    reopen:
+      confirm_btn: Yeniden Aç
+      title: Bu gönderiyi yeniden aç
+      content: Yeniden açmak istediğinizden emin misiniz?
+    list:
+      confirm_btn: Listele
+      title: Bu gönderiyi listele
+      content: Listelemek istediğinizden emin misiniz?
+    unlist:
+      confirm_btn: Listeden Kaldır
+      title: Bu gönderiyi listeden kaldır
+      content: Listeden kaldırmak istediğinizden emin misiniz?
+    pin:
+      title: Bu gönderiyi sabitle
+      content: Küresel olarak sabitlemek istediğinizden emin misiniz? Bu gönderi tüm gönderi listelerinin en üstünde görünecektir.
+      confirm_btn: Sabitle
+  delete:
+    title: Bu gönderiyi sil
+    question: >-
+      <strong>Cevapları olan soruları silmenizi</strong> önermiyoruz çünkü bunu yapmak gelecekteki okuyucuları bu bilgiden mahrum bırakır.</p><p>Cevaplanmış soruları tekrar tekrar silmek, hesabınızın soru sorma yeteneğinin engellenmesine neden olabilir. Silmek istediğinizden emin misiniz?
+    answer_accepted: >-
+      <p><strong>Kabul edilmiş cevabı silmenizi</strong> önermiyoruz çünkü bunu yapmak gelecekteki okuyucuları bu bilgiden mahrum bırakır. </p> Kabul edilmiş cevapları tekrar tekrar silmek, hesabınızın cevap verme yeteneğinin engellenmesine neden olabilir. Silmek istediğinizden emin misiniz?
+    other: Silmek istediğinizden emin misiniz?
+    tip_answer_deleted: Bu cevap silinmiştir
+    undelete_title: Bu gönderinin silmesini geri al
+    undelete_desc: Silmeyi geri almak istediğinizden emin misiniz?
+  btns:
+    confirm: Onayla
+    cancel: İptal
+    edit: Düzenle
+    save: Kaydet
+    delete: Sil
+    undelete: Silmeyi Geri Al
+    list: Listele
+    unlist: Listeden Kaldır
+    unlisted: Listede Değil
+    login: Giriş Yap
+    signup: Kayıt Ol
+    logout: Çıkış Yap
+    verify: Doğrula
+    create: Oluştur
+    approve: Onayla
+    reject: Reddet
+    skip: Atla
+    discard_draft: Taslağı at
+    pinned: Sabitlendi
+    all: Tümü
+    question: Soru
+    answer: Cevap
+    comment: Yorum
+    refresh: Yenile
+    resend: Yeniden Gönder
+    deactivate: Devre Dışı Bırak
+    active: Aktif
+    suspend: Askıya Al
+    unsuspend: Askıyı Kaldır
+    close: Kapat
+    reopen: Yeniden Aç
+    ok: Tamam
+    light: Açık
+    dark: Koyu
+    system_setting: Sistem ayarı
+    default: Varsayılan
+    reset: Sıfırla
+    tag: Etiket
+    post_lowercase: gönderi
+    filter: Filtrele
+    ignore: Yoksay
+    submit: Gönder
+    normal: Normal
+    closed: Kapalı
+    deleted: Silindi
+    deleted_permanently: Kalıcı olarak silindi
+    pending: Beklemede
+    more: Daha Fazla
+    view: Görüntüle
+    card: Kart
+    compact: Kompakt
+    display_below: Aşağıda göster
+    always_display: Her zaman göster
+    or: veya
+    back_sites: Sitelere geri dön
+  search:
+    title: Arama Sonuçları
+    keywords: Anahtar Kelimeler
+    options: Seçenekler
+    follow: Takip Et
+    following: Takip Ediliyor
+    counts: "{{count}} Sonuç"
+    counts_loading: "... Results"
+    more: Daha Fazla
+    sort_btns:
+      relevance: İlgililik
+      newest: En Yeni
+      active: Aktif
+      score: Puan
+      more: Daha Fazla
+    tips:
+      title: Gelişmiş Arama İpuçları
+      tag: "<1>[etiket]</1> bir etiketle ara"
+      user: "<1>user:kullanıcıadı</1> yazara göre ara"
+      answer: "<1>answers:0</1> cevaplanmamış sorular"
+      score: "<1>score:3</1> 3+ puana sahip gönderiler"
+      question: "<1>is:question</1> soruları ara"
+      is_answer: "<1>is:answer</1> cevapları ara"
+    empty: Hiçbir şey bulamadık. <br /> Farklı veya daha az spesifik anahtar kelimeler deneyin.
+  share:
+    name: Paylaş
+    copy: Bağlantıyı kopyala
+    via: Gönderiyi şurada paylaş...
+    copied: Kopyalandı
+    facebook: Facebook'ta Paylaş
+    twitter: X'te Paylaş
+  cannot_vote_for_self: Kendi gönderinize oy veremezsiniz.
+  modal_confirm:
+    title: Hata...
+  delete_permanently:
+    title: Kalıcı olarak sil
+    content: Kalıcı olarak silmek istediğinizden emin misiniz?
+  account_result:
+    success: Yeni hesabınız onaylandı; ana sayfaya yönlendirileceksiniz.
+    link: Ana sayfaya devam et
+    oops: Hay aksi!
+    invalid: Kullandığınız bağlantı artık çalışmıyor.
+    confirm_new_email: E-postanız güncellendi.
+    confirm_new_email_invalid: >-
+      Üzgünüz, bu onay bağlantısı artık geçerli değil. Belki e-postanız zaten değiştirildi?
+  unsubscribe:
+    page_title: Abonelikten Çık
+    success_title: Abonelikten Çıkma Başarılı
+    success_desc: Bu abone listesinden başarıyla çıkarıldınız ve bizden başka e-posta almayacaksınız.
+    link: Ayarları değiştir
+  question:
+    following_tags: Takip Edilen Etiketler
+    edit: Düzenle
+    save: Kaydet
+    follow_tag_tip: Soru listenizi oluşturmak için etiketleri takip edin.
+    hot_questions: Popüler Sorular
+    all_questions: Tüm Sorular
+    x_questions: "{{ count }} Soru"
+    x_answers: "{{ count }} cevap"
+    x_posts: "{{ count }} Posts"
+    questions: Sorular
+    answers: Cevaplar
+    newest: En Yeni
+    active: Aktif
+    hot: Popüler
+    frequent: Sık Sorulan
+    recommend: Önerilenler
+    score: Puan
+    unanswered: Cevaplanmamış
+    modified: değiştirildi
+    answered: cevaplandı
+    asked: soruldu
+    closed: kapandı
+    follow_a_tag: Bir etiketi takip et
+    more: Daha Fazla
+  personal:
+    overview: Genel Bakış
+    answers: Cevaplar
+    answer: cevap
+    questions: Sorular
+    question: soru
+    bookmarks: Yer İşaretleri
+    reputation: İtibar
+    comments: Yorumlar
+    votes: Oylar
+    badges: Rozetler
+    newest: En Yeni
+    score: Puan
+    edit_profile: Profili düzenle
+    visited_x_days: "{{ count }} gün ziyaret edildi"
+    viewed: Görüntülendi
+    joined: Katıldı
+    comma: ","
+    last_login: Görüldü
+    about_me: Hakkımda
+    about_me_empty: "// Merhaba, Dünya !"
+    top_answers: En İyi Cevaplar
+    top_questions: En İyi Sorular
+    stats: İstatistikler
+    list_empty: Gönderi bulunamadı.<br />Belki farklı bir sekme seçmek istersiniz?
+    content_empty: Gönderi bulunamadı.
+    accepted: Kabul Edildi
+    answered: cevaplandı
+    asked: sordu
+    downvoted: negatif oylandı
+    mod_short: MOD
+    mod_long: Moderatörler
+    x_reputation: itibar
+    x_votes: alınan oy
+    x_answers: cevap
+    x_questions: soru
+    recent_badges: Son Rozetler
+  install:
+    title: Kurulum
+    next: İleri
+    done: Tamamlandı
+    config_yaml_error: config.yaml dosyası oluşturulamıyor.
+    lang:
+      label: Lütfen bir dil seçin
+    db_type:
+      label: Veritabanı motoru
+    db_username:
+      label: Kullanıcı adı
+      placeholder: root
+      msg: Kullanıcı adı boş olamaz.
+    db_password:
+      label: Parola
+      placeholder: root
+      msg: Parola boş olamaz.
+    db_host:
+      label: Veritabanı sunucusu
+      placeholder: "db:3306"
+      msg: Veritabanı sunucusu boş olamaz.
+    db_name:
+      label: Veritabanı adı
+      placeholder: answer
+      msg: Veritabanı adı boş olamaz.
+    db_file:
+      label: Veritabanı dosyası
+      placeholder: /data/answer.db
+      msg: Veritabanı dosyası boş olamaz.
+    ssl_enabled:
+      label: SSL'i Etkinleştir
+    ssl_enabled_on:
+      label: On
+    ssl_enabled_off:
+      label: Off
+    ssl_mode:
+      label: SSL Modu
+    ssl_root_cert:
+      placeholder: sslrootcert dosya yolu
+      msg: sslrootcert dosya yolu boş olamaz
+    ssl_cert:
+      placeholder: sslcert dosya yolu
+      msg: sslcert dosya yolu boş olamaz
+    ssl_key:
+      placeholder: sslkey dosya yolu
+      msg: sslkey dosya yolu boş olamaz
+    config_yaml:
+      title: config.yaml Oluştur
+      label: config.yaml dosyası oluşturuldu.
+      desc: >-
+        <1>config.yaml</1> dosyasını <1>/var/wwww/xxx/</1> dizininde manuel olarak oluşturabilir ve aşağıdaki metni içine yapıştırabilirsiniz.
+      info: Bunu yaptıktan sonra "İleri" düğmesine tıklayın.
+    site_information: Site Bilgisi
+    admin_account: Yönetici Hesabı
+    site_name:
+      label: Site adı
+      msg: Saat dilimi boş olamaz.
+      msg_max_length: Site adı en fazla 30 karakter uzunluğunda olmalıdır.
+    site_url:
+      label: Site URL'si
+      text: Sitenizin adresi.
+      msg:
+        empty: Site URL'si boş olamaz.
+        incorrect: Site URL'si formatı yanlış.
+        max_length: Site URL'si en fazla 512 karakter uzunluğunda olmalıdır.
+    contact_email:
+      label: İletişim e-postası
+      text: Bu siteden sorumlu kilit kişinin e-posta adresi.
+      msg:
+        empty: İletişim e-postası boş olamaz.
+        incorrect: İletişim e-postası formatı yanlış.
+    login_required:
+      label: Özel
+      switch: Giriş gerekli
+      text: Bu topluluğa sadece giriş yapmış kullanıcılar erişebilir.
+    admin_name:
+      label: İsim
+      msg: İsim boş olamaz.
+      character: '"a-z", "A-Z", "0-9", "- . _" karakter setini kullanmalısınız'
+      msg_max_length: İsim 2 ile 30 karakter arasında olmalıdır.
+    admin_password:
+      label: Parola
+      text: >-
+        Giriş yapmak için bu parolaya ihtiyacınız olacak. Lütfen güvenli bir yerde saklayın.
+      msg: Parola boş olamaz.
+      msg_min_length: Parola en az 8 karakter uzunluğunda olmalıdır.
+      msg_max_length: Parola en fazla 32 karakter uzunluğunda olmalıdır.
+    admin_confirm_password:
+      label: "Parolayı Onayla"
+      text: "Lütfen onaylamak için parolanızı tekrar girin."
+      msg: "Onay parolası eşleşmiyor."
+    admin_email:
+      label: E-posta
+      text: Giriş yapmak için bu e-postaya ihtiyacınız olacak.
+      msg:
+        empty: E-posta boş olamaz.
+        incorrect: E-posta formatı yanlış.
+    ready_title: Siteniz hazır
+    ready_desc: >-
+      Daha fazla ayarı değiştirmek isterseniz, <1>yönetici bölümünü</1> ziyaret edin; site menüsünde bulabilirsiniz.
+    good_luck: "İyi eğlenceler ve iyi şanslar!"
+    warn_title: Uyarı
+    warn_desc: >-
+      <1>config.yaml</1> dosyası zaten var. Bu dosyadaki herhangi bir yapılandırma öğesini sıfırlamanız gerekiyorsa, lütfen önce dosyayı silin.
+    install_now: <1>Şimdi kurulum</1> yapmayı deneyebilirsiniz.
+    installed: Zaten kurulu
+    installed_desc: >-
+      Zaten kurulum yapmış görünüyorsunuz. Yeniden kurmak için lütfen önce eski veritabanı tablolarınızı temizleyin.
+    db_failed: Veritabanı bağlantısı başarısız
+    db_failed_desc: >-
+      Bu, <1>config.yaml</1> dosyanızdaki veritabanı bilgilerinin yanlış olduğu veya veritabanı sunucusuyla bağlantı kurulamadığı anlamına gelir. Bu, sunucunuzun veritabanı sunucusunun çalışmadığı anlamına gelebilir.
+  counts:
+    views: görüntülenme
+    votes: oy
+    answers: cevap
+    accepted: Kabul Edildi
+  page_error:
+    http_error: HTTP Hatası {{ code }}
+    desc_403: Bu sayfaya erişim izniniz yok.
+    desc_404: Maalesef, bu sayfa mevcut değil.
+    desc_50X: Sunucu bir hatayla karşılaştı ve isteğinizi tamamlayamadı.
+    back_home: Ana sayfaya dön
+  page_maintenance:
+    desc: "Bakım altındayız, yakında geri döneceğiz."
+  nav_menus:
+    dashboard: Gösterge Paneli
+    contents: İçerikler
+    questions: Sorular
+    answers: Cevaplar
+    users: Kullanıcılar
+    badges: Rozetler
+    flags: Bildirimler
+    settings: Ayarlar
+    general: Genel
+    interface: Arayüz
+    smtp: SMTP
+    branding: Marka
+    legal: Yasal
+    write: Yaz
+    tos: Kullanım Şartları
+    privacy: Gizlilik
+    seo: SEO
+    customize: Özelleştir
+    themes: Temalar
+    login: Giriş
+    privileges: Ayrıcalıklar
+    plugins: Eklentiler
+    installed_plugins: Kurulu Eklentiler
+    apperance: Görünüm
+  website_welcome: '{{site_name}} sitesine hoş geldiniz'
+  user_center:
+    login: Giriş
+    qrcode_login_tip: Lütfen QR kodu taramak ve giriş yapmak için {{ agentName }} kullanın.
+    login_failed_email_tip: Giriş başarısız oldu, lütfen tekrar denemeden önce bu uygulamanın e-posta bilgilerinize erişmesine izin verin.
+  badges:
+    modal:
+      title: Tebrikler
+      content: Yeni bir rozet kazandınız.
+      close: Kapat
+      confirm: Rozetleri görüntüle
+    title: Rozetler
+    awarded: Kazanıldı
+    earned_×: '{{ number }} kez kazanıldı'
+    ×_awarded: "{{ number }} kez verildi"
+    can_earn_multiple: Bunu birden çok kez kazanabilirsiniz.
+    earned: Kazanıldı
+  admin:
+    admin_header:
+      title: Yönetici
+    dashboard:
+      title: Gösterge Paneli
+      welcome: Yönetici'ye Hoş Geldiniz!
+      site_statistics: Site istatistikleri
+      questions: "Sorular:"
+      resolved: "Çözülmüş:"
+      unanswered: "Cevaplanmamış:"
+      answers: "Cevaplar:"
+      comments: "Yorumlar:"
+      votes: "Oylar:"
+      users: "Kullanıcılar:"
+      flags: "Bildirimler:"
+      reviews: "İncelemeler:"
+      site_health: Site sağlığı
+      version: "Sürüm:"
+      https: "HTTPS:"
+      upload_folder: "Yükleme klasörü:"
+      run_mode: "Çalışma modu:"
+      private: Özel
+      public: Herkese Açık
+      smtp: "SMTP:"
+      timezone: "Saat dilimi:"
+      system_info: Sistem bilgisi
+      go_version: "Go sürümü:"
+      database: "Veritabanı:"
+      database_size: "Veritabanı boyutu:"
+      storage_used: "Kullanılan depolama:"
+      uptime: "Çalışma süresi:"
+      links: Bağlantılar
+      plugins: Eklentiler
+      github: GitHub
+      blog: Blog
+      contact: İletişim
+      forum: Forum
+      documents: Belgeler
+      feedback: Geribildirim
+      support: Destek
+      review: İnceleme
+      config: Yapılandırma
+      update_to: Güncelle
+      latest: En son
+      check_failed: Kontrol başarısız
+      "yes": "Evet"
+      "no": "Hayır"
+      not_allowed: İzin verilmiyor
+      allowed: İzin veriliyor
+      enabled: Etkin
+      disabled: Devre dışı
+      writable: Yazılabilir
+      not_writable: Yazılamaz
+    flags:
+      title: Bildirimler
+      pending: Bekleyen
+      completed: Tamamlanan
+      flagged: Bildirilen
+      flagged_type: Bildirilen {{ type }}
+      created: Oluşturuldu
+      action: Eylem
+      review: İnceleme
+    user_role_modal:
+      title: Kullanıcı rolünü şuna değiştir...
+      btn_cancel: İptal
+      btn_submit: Gönder
+    new_password_modal:
+      title: Yeni parola belirle
+      form:
+        fields:
+          password:
+            label: Parola
+            text: Kullanıcının oturumu kapatılacak ve tekrar giriş yapması gerekecek.
+            msg: Parola 8-32 karakter uzunluğunda olmalıdır.
+      btn_cancel: İptal
+      btn_submit: Gönder
+    edit_profile_modal:
+      title: Profili düzenle
+      form:
+        fields:
+          display_name:
+            label: Görünen ad
+            msg_range: Görünen ad 2-30 karakter uzunluğunda olmalıdır.
+          username:
+            label: Kullanıcı adı
+            msg_range: Kullanıcı adı 2-30 karakter uzunluğunda olmalıdır.
+          email:
+            label: E-posta
+            msg_invalid: Geçersiz E-posta Adresi.
+      edit_success: Başarıyla düzenlendi
+      btn_cancel: İptal
+      btn_submit: Gönder
+    user_modal:
+      title: Yeni kullanıcı ekle
+      form:
+        fields:
+          users:
+            label: Toplu kullanıcı ekle
+            placeholder: "John Smith, john@example.com, BUSYopr2\nAlice, alice@example.com, fpDntV8q"
+            text: İsim, e-posta, parola bilgilerini virgülle ayırın. Her satırda bir kullanıcı.
+            msg: "Lütfen kullanıcının e-postasını girin, her satırda bir tane."
+          display_name:
+            label: Görünen ad
+            msg: Görünen ad 2-30 karakter uzunluğunda olmalıdır.
+          email:
+            label: E-posta
+            msg: E-posta geçerli değil.
+          password:
+            label: Parola
+            msg: Parola 8-32 karakter uzunluğunda olmalıdır.
+      btn_cancel: İptal
+      btn_submit: Gönder
+    users:
+      title: Kullanıcılar
+      name: İsim
+      email: E-posta
+      reputation: İtibar
+      created_at: Oluşturulma zamanı
+      delete_at: Silinme zamanı
+      suspend_at: Askıya Alınma Zamanı
+      suspend_until: Suspend until
+      status: Durum
+      role: Rol
+      action: Eylem
+      change: Değiştir
+      all: Tümü
+      staff: Ekip
+      more: Daha Fazla
+      inactive: Etkin Değil
+      suspended: Askıya Alınmış
+      deleted: Silinmiş
+      normal: Normal
+      Moderator: Moderatör
+      Admin: Yönetici
+      User: Kullanıcı
+      filter:
+        placeholder: "İsme göre filtreleme, user:id"
+      set_new_password: Yeni parola belirle
+      edit_profile: Profili düzenle
+      change_status: Durumu değiştir
+      change_role: Rolü değiştir
+      show_logs: Kayıtları göster
+      add_user: Kullanıcı ekle
+      deactivate_user:
+        title: Kullanıcıyı devre dışı bırak
+        content: Etkin olmayan bir kullanıcının e-postasını yeniden doğrulaması gerekir.
+      delete_user:
+        title: Bu kullanıcıyı sil
+        content: Bu kullanıcıyı silmek istediğinizden emin misiniz? Bu kalıcıdır!
+        remove: İçeriklerini kaldır
+        label: Tüm soruları, cevapları, yorumları vb. kaldır.
+        text: Sadece kullanıcının hesabını silmek istiyorsanız bunu işaretlemeyin.
+      suspend_user:
+        title: Bu kullanıcıyı askıya al
+        content: Askıya alınmış bir kullanıcı giriş yapamaz.
+        label: How long will the user be suspended for?
+        forever: Forever
+    questions:
+      page_title: Sorular
+      unlisted: Listelenmemiş
+      post: Gönderi
+      votes: Oylar
+      answers: Cevaplar
+      created: Oluşturuldu
+      status: Durum
+      action: Eylem
+      change: Değiştir
+      pending: Beklemede
+      filter:
+        placeholder: "Başlığa göre filtreleme, question:id"
+    answers:
+      page_title: Cevaplar
+      post: Gönderi
+      votes: Oylar
+      created: Oluşturuldu
+      status: Durum
+      action: Eylem
+      change: Değiştir
+      filter:
+        placeholder: "Başlığa göre filtreleme, answer:id"
+    general:
+      page_title: Genel
+      name:
+        label: Site adı
+        msg: Site adı boş olamaz.
+        text: "Başlık etiketinde kullanılan bu sitenin adı."
+      site_url:
+        label: Site URL'si
+        msg: Site url'si boş olamaz.
+        validate: Lütfen geçerli bir URL girin.
+        text: Sitenizin adresi.
+      short_desc:
+        label: Kısa site açıklaması
+        msg: Kısa site açıklaması boş olamaz.
+        text: "Ana sayfadaki başlık etiketinde kullanılan kısa açıklama."
+      desc:
+        label: Site açıklaması
+        msg: Site açıklaması boş olamaz.
+        text: "Bu siteyi bir cümleyle açıklayın, meta açıklama etiketinde kullanılır."
+      contact_email:
+        label: İletişim e-postası
+        msg: İletişim e-postası boş olamaz.
+        validate: İletişim e-postası geçerli değil.
+        text: Bu siteden sorumlu kilit kişinin e-posta adresi.
+      check_update:
+        label: Yazılım güncellemeleri
+        text: Güncellemeleri otomatik olarak kontrol et
+    interface:
+      page_title: Arayüz
+      language:
+        label: Arayüz dili
+        msg: Arayüz dili boş olamaz.
+        text: Kullanıcı arayüzü dili. Sayfa yenilendiğinde değişecektir.
+      time_zone:
+        label: Saat dilimi
+        msg: Saat dilimi boş olamaz.
+        text: Sizinle aynı saat dilimindeki bir şehri seçin.
+      avatar:
+        label: Default avatar
+        text: For users without a custom avatar of their own.
+      gravatar_base_url:
+        label: Gravatar base URL
+        text: URL of the Gravatar provider's API base. Ignored when empty.
+    smtp:
+      page_title: SMTP
+      from_email:
+        label: Gönderen e-posta
+        msg: Gönderen e-posta boş olamaz.
+        text: E-postaların gönderildiği e-posta adresi.
+      from_name:
+        label: Gönderen adı
+        msg: Gönderen adı boş olamaz.
+        text: E-postaların gönderildiği isim.
+      smtp_host:
+        label: SMTP sunucusu
+        msg: SMTP sunucusu boş olamaz.
+        text: Mail sunucunuz.
+      encryption:
+        label: Şifreleme
+        msg: Şifreleme boş olamaz.
+        text: Çoğu sunucu için SSL önerilen seçenektir.
+        ssl: SSL
+        tls: TLS
+        none: Yok
+      smtp_port:
+        label: SMTP portu
+        msg: SMTP portu 1 ~ 65535 arasında bir sayı olmalıdır.
+        text: Mail sunucunuzun portu.
+      smtp_username:
+        label: SMTP kullanıcı adı
+        msg: SMTP kullanıcı adı boş olamaz.
+      smtp_password:
+        label: SMTP parolası
+        msg: SMTP parolası boş olamaz.
+      test_email_recipient:
+        label: Test e-posta alıcıları
+        text: Test gönderimlerini alacak e-posta adresini girin.
+        msg: Test e-posta alıcıları geçersiz
+      smtp_authentication:
+        label: Kimlik doğrulamayı etkinleştir
+        title: SMTP kimlik doğrulaması
+        msg: SMTP kimlik doğrulaması boş olamaz.
+        "yes": "Evet"
+        "no": "Hayır"
+    branding:
+      page_title: Marka
+      logo:
+        label: Logo
+        msg: Logo boş olamaz.
+        text: Sitenizin sol üst köşesindeki logo resmi. 56 yüksekliğinde ve 3:1'den büyük en-boy oranlı geniş dikdörtgen bir resim kullanın. Boş bırakılırsa, site başlık metni gösterilecektir.
+      mobile_logo:
+        label: Mobil logo
+        text: Sitenizin mobil versiyonunda kullanılan logo. 56 yüksekliğinde geniş dikdörtgen bir resim kullanın. Boş bırakılırsa, "logo" ayarındaki resim kullanılacaktır.
+      square_icon:
+        label: Kare simge
+        msg: Kare simge boş olamaz.
+        text: Meta veri simgeleri için temel olarak kullanılan resim. İdeal olarak 512x512'den büyük olmalıdır.
+      favicon:
+        label: Favicon
+        text: Siteniz için bir favicon. CDN üzerinde düzgün çalışması için png olmalıdır. 32x32 boyutuna yeniden boyutlandırılacaktır. Boş bırakılırsa, "kare simge" kullanılacaktır.
+    legal:
+      page_title: Yasal
+      terms_of_service:
+        label: Kullanım şartları
+        text: "Buraya kullanım şartları içeriği ekleyebilirsiniz. Başka bir yerde barındırılan bir belgeniz varsa, tam URL'yi buraya girin."
+      privacy_policy:
+        label: Gizlilik politikası
+        text: "Buraya gizlilik politikası içeriği ekleyebilirsiniz. Başka bir yerde barındırılan bir belgeniz varsa, tam URL'yi buraya girin."
+      external_content_display:
+        label: Harici içerik
+        text: "İçerik, harici web sitelerinden gömülen resimler, videolar ve medyayı içerir."
+        always_display: Her zaman harici içeriği göster
+        ask_before_display: Harici içeriği göstermeden önce sor
+    write:
+      page_title: Yazma
+      restrict_answer:
+        title: Cevap yazma
+        label: Her kullanıcı aynı soru için sadece bir cevap yazabilir
+        text: "Kullanıcıların aynı soruya birden fazla cevap yazmasına izin vermek için kapatın, bu cevapların odaktan uzaklaşmasına neden olabilir."
+      recommend_tags:
+        label: Önerilen etiketler
+        text: "Önerilen etiketler varsayılan olarak açılır listede gösterilecektir."
+        msg:
+          contain_reserved: "önerilen etiketler ayrılmış etiketleri içeremez"
+      required_tag:
+        title: Gerekli etiketleri ayarla
+        label: Önerilen etiketleri gerekli etiketler olarak ayarla
+        text: "Her yeni soru en az bir önerilen etikete sahip olmalıdır."
+      reserved_tags:
+        label: Ayrılmış etiketler
+        text: "Ayrılmış etiketler sadece moderatör tarafından kullanılabilir."
+      image_size:
+        label: Maksimum resim boyutu (MB)
+        text: "Maksimum resim yükleme boyutu."
+      attachment_size:
+        label: Maksimum ek dosya boyutu (MB)
+        text: "Maksimum ek dosya yükleme boyutu."
+      image_megapixels:
+        label: Maksimum resim megapikseli
+        text: "Bir resim için izin verilen maksimum megapiksel sayısı."
+      image_extensions:
+        label: İzin verilen resim uzantıları
+        text: "Resim gösterimi için izin verilen dosya uzantılarının listesi, virgülle ayırın."
+      attachment_extensions:
+        label: İzin verilen ek dosya uzantıları
+        text: "Yükleme için izin verilen dosya uzantılarının listesi, virgülle ayırın. UYARI: Yüklemelere izin vermek güvenlik sorunlarına neden olabilir."
+    seo:
+      page_title: SEO
+      permalink:
+        label: Kalıcı bağlantı
+        text: Özel URL yapıları, bağlantılarınızın kullanılabilirliğini ve ileriye dönük uyumluluğunu iyileştirebilir.
+      robots:
+        label: robots.txt
+        text: Bu, ilgili tüm site ayarlarını kalıcı olarak geçersiz kılacaktır.
+    themes:
+      page_title: Temalar
+      themes:
+        label: Temalar
+        text: Mevcut bir tema seçin.
+      color_scheme:
+        label: Renk şeması
+      navbar_style:
+        label: Gezinme çubuğu arka plan stili
+      primary_color:
+        label: Ana renk
+        text: Temalarınızda kullanılan renkleri değiştirin
+    css_and_html:
+      page_title: CSS ve HTML
+      custom_css:
+        label: Özel CSS
+        text: >
+          Bu &lt;link> olarak eklenecektir
+      head:
+        label: Head
+        text: >
+          Bu &lt;/head> öncesine eklenecektir
+      header:
+        label: Header
+        text: >
+          Bu &lt;body> sonrasına eklenecektir
+      footer:
+        label: Footer
+        text: Bu &lt;/body> öncesine eklenecektir
+      sidebar:
+        label: Kenar çubuğu
+        text: Bu kenar çubuğuna eklenecektir.
+    login:
+      page_title: Giriş
+      membership:
+        title: Üyelik
+        label: Yeni kayıtlara izin ver
+        text: Herhangi birinin yeni hesap oluşturmasını engellemek için kapatın.
+      email_registration:
+        title: E-posta kaydı
+        label: E-posta kaydına izin ver
+        text: Herhangi birinin e-posta yoluyla yeni hesap oluşturmasını engellemek için kapatın.
+      allowed_email_domains:
+        title: İzin verilen e-posta alan adları
+        text: Kullanıcıların hesap kaydı yapması gereken e-posta alan adları. Her satırda bir alan adı. Boş olduğunda dikkate alınmaz.
+      private:
+        title: Özel
+        label: Giriş gerekli
+        text: Bu topluluğa sadece giriş yapmış kullanıcılar erişebilir.
+      password_login:
+        title: Parola ile giriş
+        label: E-posta ve parola ile girişe izin ver
+        text: "UYARI: Kapatırsanız, daha önce başka bir giriş yöntemi yapılandırmadıysanız giriş yapamayabilirsiniz."
+    installed_plugins:
+      title: Kurulu Eklentiler
+      plugin_link: Eklentiler işlevselliği genişletir ve artırır. Eklentileri <1>Eklenti Deposu</1>'nda bulabilirsiniz.
+      filter:
+        all: Tümü
+        active: Aktif
+        inactive: Pasif
+        outdated: Güncel değil
+      plugins:
+        label: Eklentiler
+        text: Mevcut bir eklenti seçin.
+      name: İsim
+      version: Sürüm
+      status: Durum
+      action: Eylem
+      deactivate: Devre dışı bırak
+      activate: Etkinleştir
+      settings: Ayarlar
+    settings_users:
+      title: Kullanıcılar
+      avatar:
+        label: Varsayılan avatar
+        text: Kendi özel avatarı olmayan kullanıcılar için.
+      gravatar_base_url:
+        label: Gravatar temel URL'si
+        text: Gravatar sağlayıcısının API temel URL'si. Boş olduğunda dikkate alınmaz.
+      profile_editable:
+        title: Profil düzenlenebilir
+      allow_update_display_name:
+        label: Kullanıcıların görünen adlarını değiştirmelerine izin ver
+      allow_update_username:
+        label: Kullanıcıların kullanıcı adlarını değiştirmelerine izin ver
+      allow_update_avatar:
+        label: Kullanıcıların profil resimlerini değiştirmelerine izin ver
+      allow_update_bio:
+        label: Kullanıcıların hakkında bilgilerini değiştirmelerine izin ver
+      allow_update_website:
+        label: Kullanıcıların web sitelerini değiştirmelerine izin ver
+      allow_update_location:
+        label: Kullanıcıların konumlarını değiştirmelerine izin ver
+    privilege:
+      title: Ayrıcalıklar
+      level:
+        label: Gereken itibar seviyesi
+        text: Ayrıcalıklar için gereken itibarı seçin
+      msg:
+        should_be_number: giriş bir sayı olmalıdır
+        number_larger_1: sayı 1'e eşit veya daha büyük olmalıdır
+    badges:
+      action: Eylem
+      active: Aktif
+      activate: Etkinleştir
+      all: Tümü
+      awards: Ödüller
+      deactivate: Devre dışı bırak
+      filter:
+        placeholder: İsme göre filtreleme, badge:id
+      group: Grup
+      inactive: Pasif
+      name: İsim
+      show_logs: Kayıtları göster
+      status: Durum
+      title: Rozetler
+  form:
+    optional: (isteğe bağlı)
+    empty: boş olamaz
+    invalid: geçersiz
+    btn_submit: Kaydet
+    not_found_props: "Gerekli {{ key }} özelliği bulunamadı."
+    select: Seç
+  page_review:
+    review: İnceleme
+    proposed: önerilen
+    question_edit: Soru düzenleme
+    answer_edit: Cevap düzenleme
+    tag_edit: Etiket düzenleme
+    edit_summary: Düzenleme özeti
+    edit_question: Soruyu düzenle
+    edit_answer: Cevabı düzenle
+    edit_tag: Etiketi düzenle
+    empty: İncelenecek görev kalmadı.
+    approve_revision_tip: Bu revizyonu onaylıyor musunuz?
+    approve_flag_tip: Bu bildirimi onaylıyor musunuz?
+    approve_post_tip: Bu gönderiyi onaylıyor musunuz?
+    approve_user_tip: Bu kullanıcıyı onaylıyor musunuz?
+    suggest_edits: Önerilen düzenlemeler
+    flag_post: Gönderiyi bildir
+    flag_user: Kullanıcıyı bildir
+    queued_post: Sıradaki gönderi
+    queued_user: Sıradaki kullanıcı
+    filter_label: Tür
+    reputation: itibar
+    flag_post_type: Bu gönderiyi {{ type }} olarak bildirdi.
+    flag_user_type: Bu kullanıcıyı {{ type }} olarak bildirdi.
+    edit_post: Gönderiyi düzenle
+    list_post: Gönderiyi listele
+    unlist_post: Gönderiyi listeden kaldır
+  timeline:
+    undeleted: silme geri alındı
+    deleted: silindi
+    downvote: negatif oy
+    upvote: pozitif oy
+    accept: kabul et
+    cancelled: iptal edildi
+    commented: yorum yapıldı
+    rollback: geri alındı
+    edited: düzenlendi
+    answered: cevaplandı
+    asked: soruldu
+    closed: kapatıldı
+    reopened: yeniden açıldı
+    created: oluşturuldu
+    pin: sabitlendi
+    unpin: sabitlenme kaldırıldı
+    show: listelendi
+    hide: listelenmedi
+    title: "Geçmiş:"
+    tag_title: "Zaman çizelgesi:"
+    show_votes: "Oyları göster"
+    n_or_a: Yok
+    title_for_question: "Zaman çizelgesi:"
+    title_for_answer: "{{ author }} tarafından {{ title }} sorusuna verilen cevabın zaman çizelgesi"
+    title_for_tag: "Etiket için zaman çizelgesi"
+    datetime: Tarih/Saat
+    type: Tür
+    by: Yapan
+    comment: Yorum
+    no_data: "Hiçbir şey bulamadık."
+  users:
+    title: Kullanıcılar
+    users_with_the_most_reputation: Bu hafta en yüksek itibar puanına sahip kullanıcılar
+    users_with_the_most_vote: Bu hafta en çok oy veren kullanıcılar
+    staffs: Topluluk ekibimiz
+    reputation: itibar
+    votes: oy
+  prompt:
+    leave_page: Sayfadan ayrılmak istediğinizden emin misiniz?
+    changes_not_save: Değişiklikleriniz kaydedilmeyebilir.
+  draft:
+    discard_confirm: Taslağınızı atmak istediğinizden emin misiniz?
+  messages:
+    post_deleted: Bu gönderi silindi.
+    post_cancel_deleted: Bu gönderinin silme işlemi geri alındı.
+    post_pin: Bu gönderi sabitlendi.
+    post_unpin: Bu gönderinin sabitlenmesi kaldırıldı.
+    post_hide_list: Bu gönderi listede gizlendi.
+    post_show_list: Bu gönderi listede gösterildi.
+    post_reopen: Bu gönderi yeniden açıldı.
+    post_list: Bu gönderi listelendi.
+    post_unlist: Bu gönderi listeden kaldırıldı.
+    post_pending: Gönderiniz inceleme bekliyor. Bu bir önizlemedir, onaylandıktan sonra görünür olacaktır.
+    post_closed: Bu gönderi kapatıldı.
+    answer_deleted: Bu cevap silindi.
+    answer_cancel_deleted: Bu cevabın silme işlemi geri alındı.
+    change_user_role: Bu kullanıcının rolü değiştirildi.
+    user_inactive: Bu kullanıcı zaten etkin değil.
+    user_normal: Bu kullanıcı zaten normal durumda.
+    user_suspended: Bu kullanıcı askıya alındı.
+    user_deleted: Bu kullanıcı silindi.
+    badge_activated: Bu rozet etkinleştirildi.
+    badge_inactivated: Bu rozet devre dışı bırakıldı.
+    users_deleted: Bu kullanıcılar silindi.
+    posts_deleted: Bu sorular silindi.
+    answers_deleted: Bu cevaplar silindi.
+    copy: Panoya kopyala
+    copied: Kopyalandı
+    external_content_warning: Harici resimler/medya gösterilmiyor.
+
+

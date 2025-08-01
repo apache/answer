@@ -1,0 +1,14 @@
+[Unit]
+Description=Answer Service with Google Analytics
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/answer_server
+ExecStart=/root/answer_server/answer-linux run -C /root/answer_server/data
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

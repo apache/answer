@@ -1,0 +1,2341 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# The following fields are used for back-end
+backend:
+  base:
+    success:
+      other: 成功。
+    unknown:
+      other: 未知的錯誤。
+    request_format_error:
+      other: 要求格式錯誤。
+    unauthorized_error:
+      other: 未授權。
+    database_error:
+      other: 資料伺服器錯誤。
+    forbidden_error:
+      other: 已拒絕存取。
+    duplicate_request_error:
+      other: 重複送出。
+  action:
+    report:
+      other: 檢舉
+    edit:
+      other: 編輯
+    delete:
+      other: 删除
+    close:
+      other: 關閉
+    reopen:
+      other: 再次開啟。
+    forbidden_error:
+      other: 已拒絕存取。
+    pin:
+      other: 置頂
+    hide:
+      other: 不公開
+    unpin:
+      other: 取消置頂
+    show:
+      other: 清單
+    invite_someone_to_answer:
+      other: 編輯
+    undelete:
+      other: 還原
+    merge:
+      other: 合併
+  role:
+    name:
+      user:
+        other: 使用者
+      admin:
+        other: 管理員
+      moderator:
+        other: 版主
+    description:
+      user:
+        other: 預設沒有特別閱讀權限。
+      admin:
+        other: 擁有存取此網站的全部權限。
+      moderator:
+        other: 可以存取除了管理員設定以外的所有貼文。
+  privilege:
+    level_1:
+      description:
+        other: 等級 1（私人團隊、群組所需聲望較少）
+    level_2:
+      description:
+        other: 等級 2（新創社群所需聲望較低）
+    level_3:
+      description:
+        other: 等級 3（成熟社群所需聲望較高）
+    level_custom:
+      description:
+        other: 自訂等級
+    rank_question_add_label:
+      other: 提出問題
+    rank_answer_add_label:
+      other: 撰寫答案
+    rank_comment_add_label:
+      other: 寫留言
+    rank_report_add_label:
+      other: 檢舉
+    rank_comment_vote_up_label:
+      other: 為留言按讚
+    rank_link_url_limit_label:
+      other: 一次發布超過 2 個連結
+    rank_question_vote_up_label:
+      other: 為問題按讚
+    rank_answer_vote_up_label:
+      other: 為答案按讚
+    rank_question_vote_down_label:
+      other: 為問題按踩
+    rank_answer_vote_down_label:
+      other: 為答案按踩
+    rank_invite_someone_to_answer_label:
+      other: 邀請他人回答
+    rank_tag_add_label:
+      other: 建立新標籤
+    rank_tag_edit_label:
+      other: 編輯標籤描述（需要審核）
+    rank_question_edit_label:
+      other: 編輯他人的問題（需要審核）
+    rank_answer_edit_label:
+      other: 編輯他人的答案（需要審核）
+    rank_question_edit_without_review_label:
+      other: 無需審核即可編輯他人的問題
+    rank_answer_edit_without_review_label:
+      other: 無需審核即可編輯他人的答案
+    rank_question_audit_label:
+      other: 審核問題編輯
+    rank_answer_audit_label:
+      other: 審核答案編輯
+    rank_tag_audit_label:
+      other: 審核標籤編輯
+    rank_tag_edit_without_review_label:
+      other: 無需審核即可編輯標籤描述
+    rank_tag_synonym_label:
+      other: 管理標籤同義詞
+  email:
+    other: 電子郵件
+  e_mail:
+    other: 電子郵件
+  password:
+    other: 密碼
+  pass:
+    other: 密碼
+  old_pass:
+    other: 目前密碼
+  original_text:
+    other: 此貼文
+  email_or_password_wrong_error:
+    other: 電郵和密碼不匹配。
+  error:
+    common:
+      invalid_url:
+        other: URL 無效。
+      status_invalid:
+        other: 無效狀態。
+    password:
+      space_invalid:
+        other: 密碼不能包含空白字元。
+    admin:
+      cannot_update_their_password:
+        other: 你不能修改自己的密码。
+      cannot_edit_their_profile:
+        other: 你不能修改你的個人資料。
+      cannot_modify_self_status:
+        other: 你不能修改你的狀態。
+      email_or_password_wrong:
+        other: 電郵和密碼不匹配。
+    answer:
+      not_found:
+        other: 未發現答案。
+      cannot_deleted:
+        other: 沒有刪除權限。
+      cannot_update:
+        other: 沒有更新權限。
+      question_closed_cannot_add:
+        other: 問題已關閉，無法新增。
+      content_cannot_empty:
+        other: 回答內容不能為空。
+    comment:
+      edit_without_permission:
+        other: 不允許編輯留言。
+      not_found:
+        other: 未發現留言。
+      cannot_edit_after_deadline:
+        other: 這則留言時間過久，無法修改。
+      content_cannot_empty:
+        other: 留言內容不能為空。
+    email:
+      duplicate:
+        other: 這個電子郵件地址已被使用。
+      need_to_be_verified:
+        other: 需驗證電子郵件地址。
+      verify_url_expired:
+        other: 電子郵件地址驗證網址已過期，請重寄電子郵件。
+      illegal_email_domain_error:
+        other: 不允許使用該電子郵件網域的郵箱。請使用其他的。
+    lang:
+      not_found:
+        other: 未找到語言檔。
+    object:
+      captcha_verification_failed:
+        other: 驗證碼錯誤。
+      disallow_follow:
+        other: 你不被允許追蹤。
+      disallow_vote:
+        other: 你無法投票。
+      disallow_vote_your_self:
+        other: 你不能為自己的貼文投票。
+      not_found:
+        other: 找不到物件。
+      verification_failed:
+        other: 驗證失敗。
+      email_or_password_incorrect:
+        other: 電子郵件地址和密碼不匹配。
+      old_password_verification_failed:
+        other: 舊密碼驗證失敗
+      new_password_same_as_previous_setting:
+        other: 新密碼與先前的一樣。
+      already_deleted:
+        other: 這則貼文已被刪除。
+    meta:
+      object_not_found:
+        other: 找不到 Meta 物件
+    question:
+      already_deleted:
+        other: 此貼文已被刪除。
+      under_review:
+        other: 你的貼文正在等待審核。審核通過後將會顯示。
+      not_found:
+        other: 找不到問題。
+      cannot_deleted:
+        other: 無刪除權限。
+      cannot_close:
+        other: 無關閉權限。
+      cannot_update:
+        other: 無更新權限。
+      content_cannot_empty:
+        other: 內容不能為空。
+    rank:
+      fail_to_meet_the_condition:
+        other: 聲望等級不符合條件。
+      vote_fail_to_meet_the_condition:
+        other: 感謝你的意見反饋。你至少需要 {{.Rank}} 聲望才能投票。
+      no_enough_rank_to_operate:
+        other: 你至少需要 {{.Rank}} 聲望才能執行此操作。
+    report:
+      handle_failed:
+        other: 報告處理失敗。
+      not_found:
+        other: 找不到報告。
+    tag:
+      already_exist:
+        other: 標籤已存在。
+      not_found:
+        other: 找不到標籤。
+      recommend_tag_not_found:
+        other: 推薦標籤不存在。
+      recommend_tag_enter:
+        other: 請輸入至少一個必需的標籤。
+      not_contain_synonym_tags:
+        other: 不應包含同義詞標籤。
+      cannot_update:
+        other: 沒有權限更新。
+      is_used_cannot_delete:
+        other: 你不能刪除正在使用中的標籤。
+      cannot_set_synonym_as_itself:
+        other: 你不能將目前標籤的同義詞設定為本身。
+    smtp:
+      config_from_name_cannot_be_email:
+        other: 寄件者名稱不能是電子郵件地址。
+    theme:
+      not_found:
+        other: 未找到主題。
+    revision:
+      review_underway:
+        other: 目前無法編輯，有一個版本在審查佇列中。
+      no_permission:
+        other: 沒有修訂權限。
+    user:
+      external_login_missing_user_id:
+        other: 第三方平台未提供唯一的使用者 ID，因此你無法登入，請聯繫網站管理員。
+      external_login_unbinding_forbidden:
+        other: 在移除此登入方式前，請先為你的帳號設定登入密碼。
+      email_or_password_wrong:
+        other:
+          other: 電子郵箱和密碼不匹配。
+      not_found:
+        other: 未找到使用者。
+      suspended:
+        other: 該使用者已被停權。
+      username_invalid:
+        other: 使用者名稱無效。
+      username_duplicate:
+        other: 使用者名稱已被使用。
+      set_avatar:
+        other: 大頭照設定錯誤。
+      cannot_update_your_role:
+        other: 您不能修改自己的角色。
+      not_allowed_registration:
+        other: 目前網站不開放註冊。
+      not_allowed_login_via_password:
+        other: 目前網站不允許透過密碼登入。
+      access_denied:
+        other: 拒絕存取
+      page_access_denied:
+        other: 你沒有存取此頁面的權限。
+      add_bulk_users_format_error:
+        other: "第 {{.Line}} 行 '{{.Content}}' 附近的 {{.Field}} 格式錯誤。{{.ExtraMessage}}"
+      add_bulk_users_amount_error:
+        other: "你一次新增的使用者數量應該在 1-{{.MaxAmount}} 的範圍內。"
+      status_suspended_forever:
+        other: "<strong>此使用者已被永久停權。</strong> 此使用者不符合社群準則。"
+      status_suspended_until:
+        other: "<strong>此使用者已被停權至 {{.SuspendedUntil}}。</strong> 此使用者不符合社群準則。"
+      status_deleted:
+        other: "此使用者已被刪除。"
+      status_inactive:
+        other: "此使用者是不活躍的。"
+    config:
+      read_config_failed:
+        other: 讀取組態失敗
+    database:
+      connection_failed:
+        other: 資料庫連線失敗
+      create_table_failed:
+        other: 表建立失敗
+    install:
+      create_config_failed:
+        other: 無法建立 config.yaml 檔。
+    upload:
+      unsupported_file_format:
+        other: 不支援的檔案格式。
+    site_info:
+      config_not_found:
+        other: 找不到網站配置。
+    badge:
+      object_not_found:
+        other: 找不到徽章物件
+  reason:
+    spam:
+      name:
+        other: 垃圾訊息
+      desc:
+        other: 這篇貼文是廣告或惡意破壞。它對目前的話題沒有用處或相關性。
+    rude_or_abusive:
+      name:
+        other: 粗魯或辯罵
+      desc:
+        other: "理性的人會認為這個內容不適合尊重的討論。"
+    a_duplicate:
+      name:
+        other: 重複
+      desc:
+        other: 這個問題以前已經被問過，並且已經有了答案。
+      placeholder:
+        other: 輸入現有問題的連結
+    not_a_answer:
+      name:
+        other: 不是答案
+      desc:
+        other: "這個被當作答案發布，但它不是在試圖回答問題。它可能應該是編輯、留言、另一個問題，或者完全刪除。"
+    no_longer_needed:
+      name:
+        other: 不再需要
+      desc:
+        other: 這個留言已過時、屬於對話性質或與此貼文無關。
+    something:
+      name:
+        other: 其他原因
+      desc:
+        other: 這篇貼文需要工作人員關注，原因不在上面列出的項目中。
+      placeholder:
+        other: 請詳細告訴我們你擔心的是什麼
+    community_specific:
+      name:
+        other: 社群特定原因
+      desc:
+        other: 這個問題不符合社群指引。
+    not_clarity:
+      name:
+        other: 需要細節或澄清
+      desc:
+        other: 這個問題目前在一個問題中包含多個問題。它應該只關注一個問題。
+    looks_ok:
+      name:
+        other: 看起來沒問題
+      desc:
+        other: 這篇貼文目前狀態很好，品質不低。
+    needs_edit:
+      name:
+        other: 需要編輯，我已經做了
+      desc:
+        other: 自行改進和修正此貼文的問題。
+    needs_close:
+      name:
+        other: 需關閉
+      desc:
+        other: 已關閉的問題無法回答，但仍可以編輯、投票和留言。
+    needs_delete:
+      name:
+        other: 需要刪除
+      desc:
+        other: 此貼文將被刪除。
+  question:
+    close:
+      duplicate:
+        name:
+          other: 垃圾訊息
+        desc:
+          other: 此問題以前就有人問過，而且已經有了答案。
+      guideline:
+        name:
+          other: 一个社群特定原因
+        desc:
+          other: 此問題不符合社群準則。
+      multiple:
+        name:
+          other: 需要細節或明晰
+        desc:
+          other: 本問題目前包含多個問題。它應該只針對一個問題。
+      other:
+        name:
+          other: 其他原因
+        desc:
+          other: 這個帖子需要上面沒有列出的另一個原因。
+    operation_type:
+      asked:
+        other: 提問於
+      answered:
+        other: 回答於
+      modified:
+        other: 修改於
+    deleted_title:
+      other: 已刪除的問題
+    questions_title:
+      other: 問題
+  tag:
+    tags_title:
+      other: 標籤
+    no_description:
+      other: 此標籤沒有描述。
+  notification:
+    action:
+      update_question:
+        other: 更新了問題
+      answer_the_question:
+        other: 回答了問題
+      update_answer:
+        other: 更新了答案
+      accept_answer:
+        other: 已接受的回答
+      comment_question:
+        other: 留言了問題
+      comment_answer:
+        other: 留言了答案
+      reply_to_you:
+        other: 回覆了你
+      mention_you:
+        other: 提到了你
+      your_question_is_closed:
+        other: 你的問題已被關閉
+      your_question_was_deleted:
+        other: 你的問題已被刪除
+      your_answer_was_deleted:
+        other: 你的答案已被刪除
+      your_comment_was_deleted:
+        other: 你的留言已被刪除
+      up_voted_question:
+        other: 為問題按讚
+      down_voted_question:
+        other: 為問題按踩
+      up_voted_answer:
+        other: 為答案按讚
+      down_voted_answer:
+        other: 為答案按踩
+      up_voted_comment:
+        other: 為留言按讚
+      invited_you_to_answer:
+        other: 邀請你回答
+      earned_badge:
+        other: 你已獲得「{{.BadgeName}}」徽章
+  email_tpl:
+    change_email:
+      title:
+        other: "[{{.SiteName}}] 確認你的新電子郵件地址"
+      body:
+        other: "請點擊以下連結確認你在 {{.SiteName}} 的新電子郵件地址：<br>\n<a href='{{.ChangeEmailUrl}}' target='_blank'>{{.ChangeEmailUrl}}</a><br><br>\n\n如果你沒有要求此更改，請忽略此郵件。<br><br>\n\n--<br>\n注意：這是一封自動系統郵件，請勿回覆此訊息，因為你的回覆將不會被看到。"
+    new_answer:
+      title:
+        other: "[{{.SiteName}}] {{.DisplayName}} 回答了你的問題"
+      body:
+        other: "<a href='{{.AnswerUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.AnswerSummary}}</blockquote><br>\n<a href='{{.AnswerUrl}}'>在 {{.SiteName}} 上查看</a><br><br>\n\n--<br>\n注意：這是一封自動系統郵件，請勿回覆此訊息，因為你的回覆將不會被看到。<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>取消訂閱</a></small>"
+    invited_you_to_answer:
+      title:
+        other: "[{{.SiteName}}] {{.DisplayName}} 邀請你回答"
+      body:
+        other: "<a href='{{.InviteUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>我想你可能知道答案。</blockquote><br>\n<a href='{{.InviteUrl}}'>在 {{.SiteName}} 上查看</a><br><br>\n\n--<br>\n注意：這是一封自動系統郵件，請勿回覆此訊息，因為你的回覆將不會被看到。<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>取消訂閱</a></small>"
+    new_comment:
+      title:
+        other: "[{{.SiteName}}] {{.DisplayName}} 對你的貼文做了留言"
+      body:
+        other: "<a href='{{.CommentUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.CommentSummary}}</blockquote><br>\n<a href='{{.CommentUrl}}'>在 {{.SiteName}} 上查看</a><br><br>\n\n--<br>\n注意：這是一封自動系統郵件，請勿回覆此訊息，因為你的回覆將不會被看到。<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>取消訂閱</a></small>"
+    new_question:
+      title:
+        other: "[{{.SiteName}}] 新問題：{{.QuestionTitle}}"
+      body:
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\n注意：這是一封自動系統郵件，請勿回覆此訊息，因為你的回覆將不會被看到。<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>取消訂閱</a></small>"
+    pass_reset:
+      title:
+        other: "[{{.SiteName}}] 密碼重設"
+      body:
+        other: "有人要求在 {{.SiteName}} 上重設你的密碼。<br><br>\n\n如果不是你操作的，你可以安全地忽略此郵件。<br><br>\n\n點擊以下連結選擇新密碼：<br>\n<a href='{{.PassResetUrl}}' target='_blank'>{{.PassResetUrl}}</a>\n<br><br>\n\n--<br>\n注意：這是一封自動系統郵件，請勿回覆此訊息，因為你的回覆將不會被看到。"
+    register:
+      title:
+        other: "[{{.SiteName}}] 確認你的新帳號"
+      body:
+        other: "歡迎來到 {{.SiteName}}！<br><br>\n\n點擊以下連結確認並啟用你的新帳號：<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\n如果上面的連結不可點擊，請嘗試複製並將其貼上到瀏覽器的地址欄中。\n<br><br>\n\n--<br>\n注意：這是一封自動系統郵件，請勿回覆此訊息，因為你的回覆將不會被看到。"
+    test:
+      title:
+        other: "[{{.SiteName}}] 測試郵件"
+      body:
+        other: "這是一封測試郵件。\n<br><br>\n\n--<br>\n注意：這是一封自動系統郵件，請勿回覆此訊息，因為你的回覆將不會被看到。"
+  action_activity_type:
+    upvote:
+      other: 按讚
+    upvoted:
+      other: 已按讚
+    downvote:
+      other: 按踩
+    downvoted:
+      other: 已按踩
+    accept:
+      other: 採納
+    accepted:
+      other: 已採納
+    edit:
+      other: 編輯
+  review:
+    queued_post:
+      other: 排隊中的貼文
+    flagged_post:
+      other: 已檢舉的貼文
+    suggested_post_edit:
+      other: 建議編輯
+  reaction:
+    tooltip:
+      other: "{{ .Names }} 和其他 {{ .Count }} 人..."
+  badge:
+    default_badges:
+      autobiographer:
+        name:
+          other: 自傳作者
+        desc:
+          other: 填寫了<a href="{{ .ProfileURL }}" target="_blank">個人資料</a>信息。
+      certified:
+        name:
+          other: 已認證
+        desc:
+          other: 完成了我們的新用戶教學。
+      editor:
+        name:
+          other: 編輯者
+        desc:
+          other: 首次編輯貼文。
+      first_flag:
+        name:
+          other: 首次檢舉
+        desc:
+          other: 首次檢舉貼文。
+      first_upvote:
+        name:
+          other: 首次按讚
+        desc:
+          other: 首次為貼文按讚。
+      first_link:
+        name:
+          other: 首個連結
+        desc:
+          other: 首次新增連結到其他貼文。
+      first_reaction:
+        name:
+          other: 首次反應
+        desc:
+          other: 首次對貼文做出反應。
+      first_share:
+        name:
+          other: 首次分享
+        desc:
+          other: 首次分享貼文。
+      scholar:
+        name:
+          other: 學者
+        desc:
+          other: 提問並接受了一個答案。
+      commentator:
+        name:
+          other: 評論員
+        desc:
+          other: 留下 5 則評論。
+      new_user_of_the_month:
+        name:
+          other: 本月新用戶
+        desc:
+          other: 在第一個月內有傑出的貢獻。
+      read_guidelines:
+        name:
+          other: 閱讀指引
+        desc:
+          other: 閱讀了[社群指引]。
+      reader:
+        name:
+          other: 閱讀者
+        desc:
+          other: 閱讀了一個有超過 10 個答案的主題中的所有答案。
+      welcome:
+        name:
+          other: 歡迎
+        desc:
+          other: 獲得了一個讚。
+      nice_share:
+        name:
+          other: 好分享
+        desc:
+          other: 分享貼文獲得 25 名獨特訪客。
+      good_share:
+        name:
+          other: 良好分享
+        desc:
+          other: 分享貼文獲得 300 名獨特訪客。
+      great_share:
+        name:
+          other: 絕佳分享
+        desc:
+          other: 分享貼文獲得 1000 名獨特訪客。
+      out_of_love:
+        name:
+          other: 愛不釋手
+        desc:
+          other: 一天內使用了 50 個讚。
+      higher_love:
+        name:
+          other: 更高的愛
+        desc:
+          other: 5 次在一天內使用 50 個讚。
+      crazy_in_love:
+        name:
+          other: 痴愛
+        desc:
+          other: 20 次在一天內使用 50 個讚。
+      promoter:
+        name:
+          other: 推廣者
+        desc:
+          other: 邀請了一名用戶。
+      campaigner:
+        name:
+          other: 活動家
+        desc:
+          other: 邀請了 3 名基本用戶。
+      champion:
+        name:
+          other: 冠軍
+        desc:
+          other: 邀請了 5 名成員。
+      thank_you:
+        name:
+          other: 感謝
+        desc:
+          other: 有 20 篇被讚的貼文並給出了 10 個讚。
+      gives_back:
+        name:
+          other: 回饋
+        desc:
+          other: 有 100 篇被讚的貼文並給出了 100 個讚。
+      empathetic:
+        name:
+          other: 富有同情心
+        desc:
+          other: 有 500 篇被讚的貼文並給出了 1000 個讚。
+      enthusiast:
+        name:
+          other: 熱心者
+        desc:
+          other: 連續造訪 10 天。
+      aficionado:
+        name:
+          other: 狂熱粉絲
+        desc:
+          other: 連續造訪 100 天。
+      devotee:
+        name:
+          other: 虛誠信徒
+        desc:
+          other: 連續造訪 365 天。
+      anniversary:
+        name:
+          other: 周年紀念
+        desc:
+          other: 作為活躍成員滿一年，至少發布一次。
+      appreciated:
+        name:
+          other: 備受讚賞
+        desc:
+          other: 20 篇貼文獲得 1 個讚。
+      respected:
+        name:
+          other: 備受尊重
+        desc:
+          other: 100 篇貼文獲得 2 個讚。
+      admired:
+        name:
+          other: 備受欽佩
+        desc:
+          other: 300 篇貼文獲得 5 個讚。
+      solved:
+        name:
+          other: 解決者
+        desc:
+          other: 有一個答案被接受。
+      guidance_counsellor:
+        name:
+          other: 指導顧問
+        desc:
+          other: 有 10 個答案被接受。
+      know_it_all:
+        name:
+          other: 通徹各事
+        desc:
+          other: 有 50 個答案被接受。
+      solution_institution:
+        name:
+          other: 解答機構
+        desc:
+          other: 有 150 個答案被接受。
+      nice_answer:
+        name:
+          other: 好答案
+        desc:
+          other: 答案得分 10 分或以上。
+      good_answer:
+        name:
+          other: 良好答案
+        desc:
+          other: 答案得分 25 分或以上。
+      great_answer:
+        name:
+          other: 絕佳答案
+        desc:
+          other: 答案得分 50 分或以上。
+      nice_question:
+        name:
+          other: 好問題
+        desc:
+          other: 問題得分 10 分或以上。
+      good_question:
+        name:
+          other: 良好問題
+        desc:
+          other: 問題得分 25 分或以上。
+      great_question:
+        name:
+          other: 絕佳問題
+        desc:
+          other: 問題得分 50 分或以上。
+      popular_question:
+        name:
+          other: 熱門問題
+        desc:
+          other: 問題有 500 次檢視。
+      notable_question:
+        name:
+          other: 值得注意的問題
+        desc:
+          other: 問題有 1,000 次檢視。
+      famous_question:
+        name:
+          other: 著名問題
+        desc:
+          other: 問題有 5,000 次檢視。
+      popular_link:
+        name:
+          other: 熱門連結
+        desc:
+          other: 發布的外部連結有 50 次點擊。
+      hot_link:
+        name:
+          other: 熔熱連結
+        desc:
+          other: 發布的外部連結有 300 次點擊。
+      famous_link:
+        name:
+          other: 著名連結
+        desc:
+          other: 發布的外部連結有 100 次點擊。
+    default_badge_groups:
+      getting_started:
+        name:
+          other: 入門
+      community:
+        name:
+          other: 社群
+      posting:
+        name:
+          other: 發文
+# The following fields are used for interface presentation(Front-end)
+ui:
+  how_to_format:
+    title: 如何設定文字格式
+    desc: >-
+      <ul class="mb-0"><li><p class="mb-2">提及貼文：<code>#post_id</code></p></li> <li><p class="mb-2">建立連結</p><pre class="mb-2"><code>&lt;https://url.com&gt;<br/><br/>[標題](https://url.com)</code></pre></li><li><p class="mb-2">段落之間換行</p></li><li><p class="mb-2"><em>_斜體_</em> 或 **<strong>粗體</strong>**</p></li><li><p class="mb-2">程式碼縮排 4 個空格</p></li><li><p class="mb-2">引用：在行首放置 <code>&gt;</code></p></li><li><p class="mb-2">反引號轉義 <code>`像這樣_`</code></p></li><li><p class="mb-2">使用反引號建立程式碼區塊 <code>`</code></p><pre class="mb-0"><code>```<br/>程式碼在這裡<br/>```</code></pre></li></ul>
+  pagination:
+    prev: 上一頁
+    next: 下一頁
+  page_title:
+    question: 問題
+    questions: 問題
+    tag: 標籤
+    tags: 標籤
+    tag_wiki: 標籤 wiki
+    create_tag: 建立標籤
+    edit_tag: 編輯標籤
+    ask_a_question: 建立問題
+    edit_question: 編輯問題
+    edit_answer: 編輯回答
+    search: 搜尋
+    posts_containing: 包含的貼文
+    settings: 設定
+    notifications: 通知
+    login: 登入
+    sign_up: 註冊
+    account_recovery: 帳號恢復
+    account_activation: 帳號啟用
+    confirm_email: 確認電子郵件
+    account_suspended: 帳號已被停權
+    admin: 後台管理
+    change_email: 修改電子郵件
+    install: Answer 安裝
+    upgrade: Answer 升級
+    maintenance: 網站維護
+    users: 使用者
+    oauth_callback: 處理中
+    http_404: HTTP 錯誤 404
+    http_50X: HTTP 錯誤 500
+    http_403: HTTP 錯誤 403
+    logout: 登出
+  notifications:
+    title: 通知
+    inbox: 收件夾
+    achievement: 成就
+    new_alerts: 新提醒
+    all_read: 全部標記為已讀
+    show_more: 顯示更多
+    someone: 某人
+    inbox_type:
+      all: 所有
+      posts: 貼文
+      invites: 邀請
+      votes: 投票
+    answer: 回答
+    question: 問題
+    badge_award: 徽章
+  suspended:
+    title: 您的帳號已被停權
+    until_time: "你的帳號被停權至{{ time }}。"
+    forever: 你的帳號已被永久停權。
+    end: 違反了我們的社群準則。
+    contact_us: 聯繫我們
+  editor:
+    blockquote:
+      text: 引用
+    bold:
+      text: 粗體
+    chart:
+      text: 圖表
+      flow_chart: 流程圖
+      sequence_diagram: 時序圖
+      class_diagram: 類圖
+      state_diagram: 狀態圖
+      entity_relationship_diagram: 實體關係圖
+      user_defined_diagram: 用戶自定義圖表
+      gantt_chart: 甘特圖
+      pie_chart: 圓餅圖
+    code:
+      text: 代碼示例
+      add_code: 添加代碼示例
+      form:
+        fields:
+          code:
+            label: 代碼塊
+            msg:
+              empty: 代碼不能為空
+          language:
+            label: 語言
+            placeholder: 自動偵測
+      btn_cancel: 取消
+      btn_confirm: 添加
+    formula:
+      text: 公式
+      options:
+        inline: 內聯公式
+        block: 公式塊
+    heading:
+      text: 標題
+      options:
+        h1: 標題 1
+        h2: 標題 2
+        h3: 標題 3
+        h4: 標題 4
+        h5: 標題 5
+        h6: 標題 6
+    help:
+      text: 幫助
+    hr:
+      text: 水平線
+    image:
+      text: 圖片
+      add_image: 添加圖片
+      tab_image: 上傳圖片
+      form_image:
+        fields:
+          file:
+            label: 圖檔
+            btn: 選擇圖片
+            msg:
+              empty: 文件不能為空。
+              only_image: 只能上傳圖片文件。
+              max_size: 檔案大小不能超過 {{size}} MB。
+          desc:
+            label: 圖片描述
+      tab_url: 圖片地址
+      form_url:
+        fields:
+          url:
+            label: 圖片地址
+            msg:
+              empty: 圖片地址不能為空
+          name:
+            label: 圖片描述
+      btn_cancel: 取消
+      btn_confirm: 添加
+      uploading: 上傳中...
+    indent:
+      text: 增加縮排
+    outdent:
+      text: 減少縮排
+    italic:
+      text: 斜體
+    link:
+      text: 超連結
+      add_link: 添加超連結
+      form:
+        fields:
+          url:
+            label: 連結
+            msg:
+              empty: 連結不能為空。
+          name:
+            label: 描述
+      btn_cancel: 取消
+      btn_confirm: 添加
+    ordered_list:
+      text: 編號列表
+    unordered_list:
+      text: 項目符號列表
+    table:
+      text: 表格
+      heading: 表頭
+      cell: 單元格
+    file:
+      text: 附加檔案
+      not_supported: "不支援該檔案類型。請使用 {{file_type}} 重試。"
+      max_size: "附加檔案大小不能超過 {{size}} MB。"
+  close_modal:
+    title: 關閉原因是...
+    btn_cancel: 取消
+    btn_submit: 提交
+    remark:
+      empty: 不能為空。
+    msg:
+      empty: 請選擇一個原因。
+  report_modal:
+    flag_title: 報告為...
+    close_title: 關閉原因是...
+    review_question_title: 審核問題
+    review_answer_title: 審核回答
+    review_comment_title: 審核評論
+    btn_cancel: 取消
+    btn_submit: 提交
+    remark:
+      empty: 不能為空
+    msg:
+      empty: 請選擇一個原因。
+      not_a_url: URL 格式不正確。
+      url_not_match: URL 來源與目前網站不符。
+  tag_modal:
+    title: 創建新標籤
+    form:
+      fields:
+        display_name:
+          label: 顯示名稱
+          msg:
+            empty: 顯示名稱不能為空。
+            range: 顯示名稱不能超過 35 個字符。
+        slug_name:
+          label: URL 固定連結
+          desc: URL 固定連結最多 35 個字元。
+          msg:
+            empty: URL 固定連結不能為空。
+            range: URL 固定連結不能超過 35 個字元。
+            character: URL 固定連結包含非法字元。
+        desc:
+          label: 描述
+        revision:
+          label: 修訂版本
+        edit_summary:
+          label: 編輯摘要
+          placeholder: >-
+            簡要說明您的更改（拼寫修正、文法修正、格式改進）
+    btn_cancel: 取消
+    btn_submit: 提交
+    btn_post: 發佈新標籤
+  tag_info:
+    created_at: 創建於
+    edited_at: 編輯於
+    history: 歷史
+    synonyms:
+      title: 同義詞
+      text: 以下標籤等同於
+      empty: 此標籤目前沒有同義詞。
+      btn_add: 添加同義詞
+      btn_edit: 編輯
+      btn_save: 儲存
+    synonyms_text: 以下標籤等同於
+    delete:
+      title: 刪除標籤
+      tip_with_posts: >-
+        <p>我們不允許<strong>刪除帶有貼文的標籤</strong>。</p> <p>請先從貼文中移除此標籤。</p>
+      tip_with_synonyms: >-
+        <p>我們不允許<strong>刪除帶有同義詞的標籤</strong>。</p> <p>請先從此標籤中移除同義詞。</p>
+      tip: 你確定要刪除嗎？
+      close: 關閉
+    merge:
+      title: 合併標籤
+      source_tag_title: 原標籤
+      source_tag_description: 原標籤及其關聯數據將被重新映射到目標標籤。
+      target_tag_title: 目標標籤
+      target_tag_description: 合併後將在這兩個標籤之間建立同義詞關係。
+      no_results: 沒有符合的標籤
+      btn_submit: 送出
+      btn_close: 關閉
+  edit_tag:
+    title: 編輯標籤
+    default_reason: 編輯標籤
+    default_first_reason: 新增標籤
+    btn_save_edits: 儲存更改
+    btn_cancel: 取消
+  dates:
+    long_date: MM月DD日
+    long_date_with_year: "YYYY年MM月DD日"
+    long_date_with_time: "YYYY 年 MM 月 DD 日 HH:mm"
+    now: 剛剛
+    x_seconds_ago: "{{count}} 秒前"
+    x_minutes_ago: "{{count}} 分鐘前"
+    x_hours_ago: "{{count}} 小時前"
+    hour: 小時
+    day: 天
+    hours: 小時
+    days: 天
+    month: 月
+    months: 月
+    year: 年
+  reaction:
+    heart: 心
+    smile: 微笑
+    frown: 皑眉
+    btn_label: 新增或移除反應
+    undo_emoji: undo {{ emoji }} reaction
+    react_emoji: 以 {{ emoji }} 反應
+    unreact_emoji: 取消 {{ emoji }} 反應
+  comment:
+    btn_add_comment: 添加評論
+    reply_to: 回復
+    btn_reply: 回復
+    btn_edit: 編輯
+    btn_delete: 刪除
+    btn_flag: 舉報
+    btn_save_edits: 保存
+    btn_cancel: 取消
+    show_more: "{{count}} 條剩餘評論"
+    tip_question: >-
+      通过評論询问更多问题或提出改進建議。避免在評論中回答問題。
+    tip_answer: >-
+      使用評論回復其他用戶或通知他們进行更改。如果你要添加新的信息，請編輯你的帖子，而不是發表評論。
+    tip_vote: 它為貼文新增了有用的內容
+  edit_answer:
+    title: 編輯回答
+    default_reason: 編輯回答
+    default_first_reason: 新增回答
+    form:
+      fields:
+        revision:
+          label: 編輯歷史
+        answer:
+          label: 回答內容
+          feedback:
+            characters: 內容必須至少6個字元長度。
+        edit_summary:
+          label: 編輯摘要
+          placeholder: >-
+            簡單描述更改原因 (錯別字、文字表達、格式等等)
+    btn_save_edits: 儲存更改
+    btn_cancel: 取消
+  tags:
+    title: 標籤
+    sort_buttons:
+      popular: 熱門
+      name: 名稱
+      newest: 最新
+    button_follow: 關注
+    button_following: 已關注
+    tag_label: 個問題
+    search_placeholder: 通過標籤名過濾
+    no_desc: 此標籤無描述。
+    more: 更多
+    wiki: 知識庫
+  ask:
+    title: 建立問題
+    edit_title: 編輯問題
+    default_reason: 編輯問題
+    default_first_reason: 建立問題
+    similar_questions: 相似的問題
+    form:
+      fields:
+        revision:
+          label: 編輯歷史
+        title:
+          label: 標題
+          placeholder: 你的主題是什麼？請具體說明。
+          msg:
+            empty: 標題不能為空
+            range: 標題最多 150 個字元
+        body:
+          label: 正文
+          msg:
+            empty: 正文不能爲空。
+        tags:
+          label: 標籤
+          msg:
+            empty: 標籤不能為空
+        answer:
+          label: 回答內容
+          msg:
+            empty: 回答內容不能為空
+        edit_summary:
+          label: 編輯摘要
+          placeholder: >-
+            簡單描述更改原因 (錯別字、文字表達、格式等等)
+    btn_post_question: 提出問題
+    btn_save_edits: 儲存更改
+    answer_question: 回答您自己的問題
+    post_question&answer: 發布您的問題和答案
+  tag_selector:
+    add_btn: 建立標籤
+    create_btn: 建立新標籤
+    search_tag: 搜尋標籤
+    hint: "描述您的內容是關於什麼，至少需要一個標籤。"
+    no_result: 沒有匹配的標籤
+    tag_required_text: 必填標籤 (至少一個)
+  header:
+    nav:
+      question: 問題
+      tag: 標籤
+      user: 用戶
+      badges: 徽章
+      profile: 用戶主頁
+      setting: 帳號設置
+      logout: 登出
+      admin: 後台管理
+      review: 審查
+      bookmark: 書籤
+      moderation: 管理
+    search:
+      placeholder: 搜尋
+  footer:
+    build_on: >-
+      由 <1> Apache Answer </1> 驅動 - 支援問答社群的開源軟體。<br />用愛製作 © {{cc}}。
+  upload_img:
+    name: 更改
+    loading: 讀取中...
+  pic_auth_code:
+    title: 驗證碼
+    placeholder: 輸入上面的文字
+    msg:
+      empty: 验证码不能為空
+  inactive:
+    first: >-
+      就差一步！我們寄送了一封啟用電子郵件到 <bold>{{mail}}</bold>。請按照郵件中的說明啟用您的帳戶。
+    info: "如果沒有收到，請檢查您的垃圾郵件文件夾。"
+    another: >-
+      我們向您發送了另一封啟用電子郵件，地址為 <bold>{{mail}}</bold>。它可能需要幾分鐘才能到達；請務必檢查您的垃圾郵件文件夾。
+    btn_name: 重新發送啟用郵件
+    change_btn_name: 更改郵箱
+    msg:
+      empty: 不能為空
+    resend_email:
+      url_label: 你確定要重新寄送啟用郵件嗎？
+      url_text: 你也可以將上面的啟用連結提供給使用者。
+  login:
+    login_to_continue: 登入以繼續
+    info_sign: 沒有帳戶？<1>註冊</1>
+    info_login: 已經有一個帳號？<1>登入</1>
+    agreements: 登入即表示您同意<1>隱私政策</1>和<3>服務條款</3>。
+    forgot_pass: 忘記密碼?
+    name:
+      label: 名稱
+      msg:
+        empty: 名稱不能為空
+        range: 名稱長度必須在 2 至 30 個字元之間。
+        character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+    email:
+      label: 郵箱
+      msg:
+        empty: 郵箱不能為空
+    password:
+      label: 密碼
+      msg:
+        empty: 密碼不能為空
+        different: 兩次輸入密碼不一致
+  account_forgot:
+    page_title: 忘記密碼
+    btn_name: 向我發送恢復郵件
+    send_success: >-
+      如果帳號與<strong>{{mail}}</strong>相符，您應該很快就會收到一封電子郵件，說明如何重置您的密碼。
+    email:
+      label: 郵箱
+      msg:
+        empty: 郵箱不能為空
+  change_email:
+    btn_cancel: 取消
+    btn_update: 更新電子郵件地址
+    send_success: >-
+      如果帳號與<strong>{{mail}}</strong>相符，您應該很快就會收到一封電子郵件，說明如何重置您的密碼。
+    email:
+      label: 新電子郵件
+      msg:
+        empty: 郵箱不能為空
+  oauth:
+    connect: 連接 {{ auth_name }}
+    remove: 移除 {{ auth_name }}
+  oauth_bind_email:
+    subtitle: 為您的帳戶新增一個復原電子郵件。
+    btn_update: 更新電子郵件地址
+    email:
+      label: 電子郵件
+      msg:
+        empty: 電子郵件不能為空。
+    modal_title: 電子郵件已存在。
+    modal_content: 這個電子郵件地址已經註冊。您確定要連接到現有帳戶嗎？
+    modal_cancel: 更改電子郵件
+    modal_confirm: 連接到現有帳戶
+  password_reset:
+    page_title: 密碼重置
+    btn_name: 重置我的密碼
+    reset_success: >-
+      你已經成功更改密碼，將返回登入頁面
+    link_invalid: >-
+      抱歉，此密碼重置連結已失效。也許是你已經重置過密碼了？
+    to_login: 前往登入頁面
+    password:
+      label: 密碼
+      msg:
+        empty: 密碼不能為空
+        length: 密碼長度在8-32個字元之間
+        different: 兩次輸入密碼不一致
+    password_confirm:
+      label: 確認新密碼
+  settings:
+    page_title: 設置
+    goto_modify: 前往修改
+    nav:
+      profile: 我的資料
+      notification: 通知
+      account: 帳號
+      interface: 界面
+    profile:
+      heading: 個人資料
+      btn_name: 保存
+      display_name:
+        label: 顯示名稱
+        msg: 顯示名稱不能為空。
+        msg_range: 顯示名稱長度必須在 2-30 個字元之間。
+      username:
+        label: 用戶名
+        caption: 用戶之間可以通過 "@用戶名" 進行交互。
+        msg: 用戶名不能為空
+        msg_range: 使用者名長度必須在 2-30 個字元之間。
+        character: '必須由 "a-z", "0-9", " - . _" 組成'
+      avatar:
+        label: 個人圖像
+        gravatar: 頭像
+        gravatar_text: 您可以在以下網址更改圖像
+        custom: 自定義
+        custom_text: 您可以上傳您的圖片。
+        default: 系統
+        msg: 請上傳頭像
+      bio:
+        label: 關於我
+      website:
+        label: 網站
+        placeholder: "https://example.com"
+        msg: 網站格式不正確
+      location:
+        label: 位置
+        placeholder: "城市, 國家"
+    notification:
+      heading: 通知
+      turn_on: 開啟
+      inbox:
+        label: 電子郵件通知
+        description: 您問題的回答、評論、邀請等等。
+      all_new_question:
+        label: 所有新問題
+        description: 接收所有新問題的通知。每週最多 50 個問題。
+      all_new_question_for_following_tags:
+        label: 關注標籤的所有新問題
+        description: 接收關注標籤新問題的通知。
+    account:
+      heading: 帳號
+      change_email_btn: 更改郵箱
+      change_pass_btn: 更改密碼
+      change_email_info: >-
+        我們已經寄出一封郵件至此電子郵件地址，請遵照說明進行確認。
+      email:
+        label: 電子郵件地址
+      new_email:
+        label: 新電子郵件地址
+        msg: 新電子郵件地址不能為空白。
+      pass:
+        label: 目前密碼
+        msg: 密碼不能為空。
+      password_title: 密碼
+      current_pass:
+        label: 目前密碼
+        msg:
+          empty: 目前密碼不能為空。
+          length: 密碼長度必須在 8 至 32 之間
+          different: 兩次輸入的密碼不匹配
+      new_pass:
+        label: 新密碼
+      pass_confirm:
+        label: 確認新密碼
+    interface:
+      heading: 介面
+      lang:
+        label: 介面語言
+        text: 設定使用者介面語言，在重新整裡頁面後生效。
+    my_logins:
+      title: 我的登入
+      label: 使用這些帳號登入或註冊此網站。
+      modal_title: 移除登入
+      modal_content: 您確定要從帳戶中移除這個登入方式嗎？
+      modal_confirm_btn: 移除
+      remove_success: 移除成功
+  toast:
+    update: 更新成功
+    update_password: 更改密碼成功。
+    flag_success: 感謝您的標記
+    forbidden_operate_self: 禁止自己操作
+    review: 您的修訂將在審核通過後顯示。
+    sent_success: 傳送成功
+  related_question:
+    title: 相關
+    answers: 個回答
+  linked_question:
+    title: 連結
+    description: 相關連結的貼文
+    no_linked_question: 沒有從此內容連結的內容。
+  invite_to_answer:
+    title: 被邀請的人員
+    desc: 邀請您認為可能知道答案的人員。
+    invite: 邀請回答
+    add: 新增人員
+    search: 搜尋人員
+  question_detail:
+    action: 操作
+    Asked: 提問於
+    asked: 提問於
+    update: 修改於
+    edit: 最後編輯於
+    commented: commented
+    Views: 閱讀次數
+    Follow: 關注
+    Following: 已關注
+    follow_tip: 關注此問題以接收通知
+    answered: 回答於
+    closed_in: 關閉於
+    show_exist: 顯示現有問題。
+    useful: 有用
+    question_useful: 它有用且清晰
+    question_un_useful: 它不清晰或沒有用
+    question_bookmark: 書籤此問題
+    answer_useful: 它很有用
+    answer_un_useful: 它沒有用
+    answers:
+      title: 個回答
+      score: 評分
+      newest: 最新
+      oldest: 最舊
+      btn_accept: 採納
+      btn_accepted: 已被採納
+    write_answer:
+      title: 你的回答
+      edit_answer: 編輯我現有的回答
+      btn_name: 提交你的回答
+      add_another_answer: 添加另一個答案
+      confirm_title: 繼續回答
+      continue: 繼續
+      confirm_info: >-
+        <p>您確定要添加一個新的回答嗎？</p><p>您可以使用编辑链接来完善和改进您现有的答案。</p>
+      empty: 回答內容不能為空。
+      characters: 內容必須至少6個字元長度。
+      tips:
+        header_1: 感謝您的回答
+        li1_1: 請確保<strong>回答問題</strong>。提供詳細信息和分享您的研究。
+        li1_2: 用參考資料或個人經驗來支持您的任何聲明。
+        header_2: 但是<strong>避免</strong> ...
+        li2_1: 尋求幫助、尋求澄清或回應其他回答。
+    reopen:
+      confirm_btn: 重新開啟
+      title: 重新打開這個貼文
+      content: 確定要重新打開嗎？
+    list:
+      confirm_btn: 上架
+      title: 上架此貼文
+      content: 您確定要上架嗎？
+    unlist:
+      confirm_btn: 下架
+      title: 下架此貼文
+      content: 您確定要下架嗎？
+    pin:
+      title: 置頂此貼文
+      content: 您確定要全域置頂嗎？此貼文將顯示在所有貼文列表的頂部。
+      confirm_btn: 置頂
+  delete:
+    title: 刪除此貼
+    question: >-
+      我們不建議<strong>刪除有回答的貼文</strong>。因為這樣做會使得後來的讀者無法從該問題中獲得幫助。</p><p>如果刪除過多有回答的貼文，你的帳號將會被禁止提問。你確定要刪除嗎？
+    answer_accepted: >-
+      <p>我們不建議<strong>刪除被採納的回答</strong>。因為這樣做會使得後來的讀者無法從該回答中獲得幫助。</p>如果刪除過多被採納的貼文，你的帳號將會被禁止回答任何提問。你確定要刪除嗎？
+    other: 你確定要刪除？
+    tip_answer_deleted: 此回答已被刪除
+    undelete_title: 取消刪除此貼文
+    undelete_desc: 您確定要取消刪除嗎？
+  btns:
+    confirm: 確認
+    cancel: 取消
+    edit: 編輯
+    save: 儲存
+    delete: 刪除
+    undelete: 還原
+    list: 清單
+    unlist: 下架
+    unlisted: 已下架
+    login: 登入
+    signup: 註冊
+    logout: 登出
+    verify: 驗證
+    create: 建立
+    approve: 核准
+    reject: 拒絕
+    skip: 略過
+    discard_draft: 放棄草稿
+    pinned: 置頂
+    all: 全部
+    question: 問題
+    answer: 解答
+    comment: 評論
+    refresh: 重新整理
+    resend: 重新寄送
+    deactivate: 停用
+    active: 活躍
+    suspend: 停權
+    unsuspend: 取消停權
+    close: 關閉
+    reopen: 重新開啟
+    ok: 確定
+    light: 明亮
+    dark: 暗黑
+    system_setting: 系統設定
+    default: 預設
+    reset: 重設
+    tag: 標籤
+    post_lowercase: 貼文
+    filter: 篩選
+    ignore: 忽略
+    submit: 提交
+    normal: 正常
+    closed: 已關閉
+    deleted: 已刪除
+    deleted_permanently: 永久刪除
+    pending: 待處理
+    more: 更多
+    view: 查看
+    card: 卡片
+    compact: 緊繮
+    display_below: 顯示在下方
+    always_display: 總是顯示
+    or: or
+    back_sites: 返回網站
+  search:
+    title: 搜尋結果
+    keywords: 關鍵詞
+    options: 選項
+    follow: 追蹤
+    following: 已關注
+    counts: "{{count}} 個結果"
+    counts_loading: "... Results"
+    more: 更多
+    sort_btns:
+      relevance: 相關性
+      newest: 最新的
+      active: 活躍的
+      score: 評分
+      more: 更多
+    tips:
+      title: 高級搜尋提示
+      tag: "<1>[tag]</1> 在指定標籤中搜尋"
+      user: "<1>user:username</1> 根據作者搜尋"
+      answer: "<1>answers:0</1> 搜尋未回答的問題"
+      score: "<1>score:3</1> 得分為 3+ 的帖子"
+      question: "<1>is:question</1> 只搜尋問題"
+      is_answer: "<1>is:answer</1> 只搜尋回答"
+    empty: 找不到任何相關的內容。<br /> 請嘗試其他關鍵字，或者減少查找內容的長度。
+  share:
+    name: 分享
+    copy: 複製連結
+    via: 分享在...
+    copied: 已複製
+    facebook: 分享到 Facebook
+    twitter: 分享到 X
+  cannot_vote_for_self: 您不能為自己的貼文投票。
+  modal_confirm:
+    title: 發生錯誤...
+  delete_permanently:
+    title: 永久刪除
+    content: 您確定要永久刪除嗎？
+  account_result:
+    success: 你的帳號已通過驗證，即將返回首頁。
+    link: 繼續訪問主頁
+    oops: 哎呀！
+    invalid: 您使用的連結已不再有效。
+    confirm_new_email: 你的電子郵箱已更新
+    confirm_new_email_invalid: >-
+      抱歉，此驗證連結已失效。也許是你的郵箱已經成功更改了？
+  unsubscribe:
+    page_title: 退訂
+    success_title: 取消訂閱成功
+    success_desc: 您已成功從訂閱者清單中移除且不會在收到任何來自我們的郵件。
+    link: 更改設置
+  question:
+    following_tags: 已關注的標籤
+    edit: 編輯
+    save: 儲存
+    follow_tag_tip: 按照標籤整理您的問題列表。
+    hot_questions: 熱門問題
+    all_questions: 全部問題
+    x_questions: "{{ count }} 個問題"
+    x_answers: "{{ count }} 個回答"
+    x_posts: "{{ count }} Posts"
+    questions: 個問題
+    answers: 回答
+    newest: 最新的
+    active: 活躍的
+    hot: 熱門
+    frequent: 常見
+    recommend: 推薦
+    score: 評分
+    unanswered: 未回答
+    modified: 修改於
+    answered: 回答於
+    asked: 提問於
+    closed: 已關閉
+    follow_a_tag: 關注一個標籤
+    more: 更多
+  personal:
+    overview: 概覽
+    answers: 回答
+    answer: 回答
+    questions: 問題
+    question: 問題
+    bookmarks: 書籤
+    reputation: 聲望
+    comments: 評論
+    votes: 得票
+    badges: 徽章
+    newest: 最新
+    score: 評分
+    edit_profile: 編輯個人資料
+    visited_x_days: "已造訪 {{ count }} 天"
+    viewed: 閱讀次數
+    joined: 加入於
+    comma: ","
+    last_login: 出現時間
+    about_me: 關於我
+    about_me_empty: "// 你好, 世界 !"
+    top_answers: 熱門回答
+    top_questions: 熱門問題
+    stats: 狀態
+    list_empty: 沒有找到相關的內容。<br />試試看其他標籤？
+    content_empty: 未找到貼文。
+    accepted: 已採納
+    answered: 回答於
+    asked: 提問於
+    downvoted: downvoted
+    mod_short: MOD
+    mod_long: 管理員
+    x_reputation: 聲望
+    x_votes: 得票
+    x_answers: 個回答
+    x_questions: 個問題
+    recent_badges: 最近的徽章
+  install:
+    title: 安裝
+    next: 下一步
+    done: 完成
+    config_yaml_error: 無法建立 config.yaml 檔。
+    lang:
+      label: 請選擇語言
+    db_type:
+      label: 資料庫引擎
+    db_username:
+      label: 用戶名
+      placeholder: 根
+      msg: 用戶名不能為空
+    db_password:
+      label: 密碼
+      placeholder: root
+      msg: 密碼不能為空
+    db_host:
+      label: 資料庫主機
+      placeholder: "db: 3306"
+      msg: 資料庫主機不可為空。
+    db_name:
+      label: 資料庫名稱
+      placeholder: 回答
+      msg: 資料庫名稱不可為空。
+    db_file:
+      label: 資料庫檔案
+      placeholder: /data/answer.db
+      msg: 資料庫檔案不可為空。
+    ssl_enabled:
+      label: 啟用 SSL
+    ssl_enabled_on:
+      label: 開啟
+    ssl_enabled_off:
+      label: 關閉
+    ssl_mode:
+      label: SSL 模式
+    ssl_root_cert:
+      placeholder: sslrootcert file path
+      msg: sslrootcert 檔案路徑不可為空
+    ssl_cert:
+      placeholder: sslcert file path
+      msg: sslcert 檔案路徑不可為空
+    ssl_key:
+      placeholder: sslkey file path
+      msg: sslkey 檔案路徑不可為空
+    config_yaml:
+      title: 創建 config.yaml
+      label: 已創建 config.yaml 文件。
+      desc: >-
+        您可以手動在 <1>/var/wwww/xxx/</1> 目錄中創建<1>config.yaml</1> 文件並粘貼以下文本。
+      info: 完成後點擊"下一步"按鈕。
+    site_information: 網站資訊
+    admin_account: 管理員帳戶
+    site_name:
+      label: 站點名稱
+      msg: 網站名稱不可為空。
+      msg_max_length: 網站名稱長度不得超過 30 個字元。
+    site_url:
+      label: 網站 URL
+      text: 此網站的地址。
+      msg:
+        empty: 網站URL不能為空。
+        incorrect: 網站URL格式不正確。
+        max_length: 網站URL長度不得超過 512 個字元。
+    contact_email:
+      label: 聯絡電子郵件
+      text: 負責本網站的主要聯絡人的電子郵件地址。
+      msg:
+        empty: 聯繫人電子郵件不可為空。
+        incorrect: 聯繫人電子郵件格式錯誤。
+    login_required:
+      label: 私人
+      switch: Login required
+      text: 只有登入的使用者才能訪問此社群。
+    admin_name:
+      label: 暱稱
+      msg: 暱稱不能為空。
+      character: '必須使用字符集 "a-z", "A-Z", "0-9", " - . _"'
+      msg_max_length: 名稱長度必須在 2 到 30 個字符之間。
+    admin_password:
+      label: 密碼
+      text: >-
+        您需要此密碼才能登入。請將其儲存在一個安全的位置。
+      msg: 密碼不能為空。
+      msg_min_length: 密碼長度至少必須為 8 個字元。
+      msg_max_length: 密碼長度最多不能超過 32 個字元。
+    admin_confirm_password:
+      label: "確認密碼"
+      text: "請重新輸入您的密碼以確認。"
+      msg: "確認密碼不符合。"
+    admin_email:
+      label: 郵箱
+      text: 您需要此電子郵件才能登入。
+      msg:
+        empty: 郵箱不能為空。
+        incorrect: 郵箱格式不正確。
+    ready_title: 您的網站已經準備就緒
+    ready_desc: >-
+      如果你想改變更多的設定，請瀏覽<1>管理員部分</1>；在網站選單中找到它。
+    good_luck: "玩得愉快，祝您好運！"
+    warn_title: 警告
+    warn_desc: >-
+      檔案<1>config.yaml</1>已存在。如果您需要重置此文件中的任何配置項，請先刪除它。
+    install_now: 您可以嘗試<1>現在安裝</1>。
+    installed: 已安裝
+    installed_desc: >-
+      您似乎已經安裝過了。要重新安裝，請先清除舊的資料庫表。
+    db_failed: 資料連接異常！
+    db_failed_desc: >-
+      這意味著您的 <1>config.yaml</1> 文件中的資料庫資訊不正確，或者無法與資料庫伺服器建立聯繫。這可能意味著您的主機的資料庫伺服器已關閉。
+  counts:
+    views: 觀看
+    votes: 得票
+    answers: 回答
+    accepted: 已採納
+  page_error:
+    http_error: HTTP 错误 {{ code }}
+    desc_403: 您沒有權限存取此頁面。
+    desc_404: 很遺憾，此頁面不存在。
+    desc_50X: 伺服器發生錯誤，無法完成您的請求。
+    back_home: 返回首頁
+  page_maintenance:
+    desc: "我們正在維護中，很快就會回來。"
+  nav_menus:
+    dashboard: 後台管理
+    contents: 內容
+    questions: 問題
+    answers: 回答
+    users: 使用者管理
+    badges: 徽章
+    flags: 檢舉
+    settings: 設定
+    general: 一般
+    interface: 介面
+    smtp: SMTP
+    branding: 品牌
+    legal: 法律條款
+    write: 撰寫
+    tos: 服務條款
+    privacy: 隱私政策
+    seo: SEO
+    customize: 自定義
+    themes: 主題
+    login: 登入
+    privileges: 特權
+    plugins: 外掛程式
+    installed_plugins: 已安裝的外掛程式
+    apperance: 外觀
+  website_welcome: 歡迎來到 {{site_name}}
+  user_center:
+    login: 登入
+    qrcode_login_tip: 請使用 {{ agentName }} 掃描 QR 碼並登入。
+    login_failed_email_tip: 登入失敗，請允許此應用程式存取您的電子郵件資訊，然後再試一次。
+  badges:
+    modal:
+      title: 恭喜
+      content: 您獲得了一個新徽章。
+      close: 關閉
+      confirm: 查看徽章
+    title: 徽章
+    awarded: 已獲得
+    earned_×: 已獲得 ×{{ number }}
+    ×_awarded: "{{ number }} 已獲得"
+    can_earn_multiple: 您可以多次獲得此徽章。
+    earned: 已獲得
+  admin:
+    admin_header:
+      title: 後台管理
+    dashboard:
+      title: 後台管理
+      welcome: 歡迎來到管理後台！
+      site_statistics: 站點統計
+      questions: "問題:"
+      resolved: "已解決："
+      unanswered: "未回答："
+      answers: "回答:"
+      comments: "評論:"
+      votes: "投票:"
+      users: "使用者："
+      flags: "檢舉:"
+      reviews: "審查："
+      site_health: 站點狀態
+      version: "版本"
+      https: "HTTPS:"
+      upload_folder: "上傳資料夾："
+      run_mode: "執行模式："
+      private: 私人
+      public: 公開
+      smtp: "SMTP:"
+      timezone: "時區："
+      system_info: 系統資訊
+      go_version: "Go 版本："
+      database: "資料庫："
+      database_size: "資料庫大小："
+      storage_used: "已用儲存空間："
+      uptime: "運行時間："
+      links: 連結
+      plugins: 外掛程式
+      github: GitHub
+      blog: 部落格
+      contact: 聯繫
+      forum: 討論區
+      documents: 文件
+      feedback: 用戶反饋
+      support: 支持
+      review: 審核
+      config: 配置
+      update_to: 更新到
+      latest: 最新版本
+      check_failed: 校驗失敗
+      "yes": "是"
+      "no": "否"
+      not_allowed: 不允許
+      allowed: 允許
+      enabled: 已啟用
+      disabled: 停用
+      writable: 可寫入
+      not_writable: 不可寫入
+    flags:
+      title: 檢舉
+      pending: 等待處理
+      completed: 已完成
+      flagged: 已標記
+      flagged_type: 已標示 {{ type }}
+      created: 創建於
+      action: 操作
+      review: 審核
+    user_role_modal:
+      title: 更改用戶狀態為...
+      btn_cancel: 取消
+      btn_submit: 提交
+    new_password_modal:
+      title: 設定新密碼
+      form:
+        fields:
+          password:
+            label: 密碼
+            text: 用戶將被登出並需要重新登入。
+            msg: 密碼長度必須在 8-32 個字元之間。
+      btn_cancel: 取消
+      btn_submit: 提交
+    edit_profile_modal:
+      title: 編輯個人資料
+      form:
+        fields:
+          display_name:
+            label: 顯示名稱
+            msg_range: 顯示名稱長度必須在 2-30 個字元之間。
+          username:
+            label: 使用者名稱
+            msg_range: 使用者名稱長度必須在 2-30 個字元之間。
+          email:
+            label: 電子郵件
+            msg_invalid: 電子郵件地址無效。
+      edit_success: 編輯成功
+      btn_cancel: 取消
+      btn_submit: 提交
+    user_modal:
+      title: 新增新用戶
+      form:
+        fields:
+          users:
+            label: 大量新增使用者
+            placeholder: "John Smith, john@example.com, BUSYopr2\nAlice, alice@example.com, fpDntV8q"
+            text: 以逗號分隔「姓名、電子郵件、密碼」。每行一位用戶。
+            msg: "請輸入使用者的電子郵件，每行一個。"
+          display_name:
+            label: 顯示名稱
+            msg: 顯示名稱長度必須在 2 到 30 個字元之間。
+          email:
+            label: 電子郵件
+            msg: 電子郵件格式不正確。
+          password:
+            label: 密碼
+            msg: 密碼長度必須在 8-32 個字元之間。
+      btn_cancel: 取消
+      btn_submit: 提交
+    users:
+      title: 用戶
+      name: 名稱
+      email: 郵箱
+      reputation: 聲望
+      created_at: 創建時間
+      delete_at: 刪除時間
+      suspend_at: 暫停時間
+      suspend_until: 暫停至
+      status: 狀態
+      role: 角色
+      action: 操作
+      change: 更改
+      all: 全部
+      staff: 工作人員
+      more: 更多
+      inactive: 不活躍
+      suspended: 已停權
+      deleted: 已刪除
+      normal: 正常
+      Moderator: 版主
+      Admin: 管理員
+      User: 用戶
+      filter:
+        placeholder: "按名稱篩選，用戶：id"
+      set_new_password: 設置新密碼
+      edit_profile: 編輯個人資料
+      change_status: 更改狀態
+      change_role: 更改角色
+      show_logs: 顯示日誌
+      add_user: 新增使用者
+      deactivate_user:
+        title: 停用用戶
+        content: 非活躍用戶必須重新驗證其電子郵件。
+      delete_user:
+        title: 刪除此用戶
+        content: 您確定要刪除此用戶嗎？這是永久性的！
+        remove: 移除其內容
+        label: 移除所有問題、答案、評論等。
+        text: 如果您只想刪除用戶帳戶，請勿勾選此項目。
+      suspend_user:
+        title: 停權此用戶
+        content: 被停權的用戶無法登入。
+        label: 使用者會被停用多久？
+        forever: 永久
+    questions:
+      page_title: 問題
+      unlisted: 已下架
+      post: 標題
+      votes: 得票數
+      answers: 回答
+      created: 創建於
+      status: 狀態
+      action: 操作
+      change: 更改
+      pending: 待處理
+      filter:
+        placeholder: "按標題過濾，問題:id"
+    answers:
+      page_title: 回答
+      post: 發布
+      votes: 得票數
+      created: 創建於
+      status: 狀態
+      action: 操作
+      change: 更改
+      filter:
+        placeholder: "按名稱篩選，answer:id"
+    general:
+      page_title: 一般
+      name:
+        label: 站點名稱
+        msg: 不能為空
+        text: "網站的名稱，如標題標籤中所用。"
+      site_url:
+        label: 網站網址
+        msg: 網站網址不能為空。
+        validate: 請輸入一個有效的 URL。
+        text: 此網站的網址。
+      short_desc:
+        label: 站點簡短描述
+        msg: 網站簡短描述不能為空。
+        text: "簡短的描述，如主頁上的標題標籤所使用的那样。"
+      desc:
+        label: 站點描述
+        msg: 網站描述不能為空。
+        text: "使用一句話描述本站，作為網站的描述（Html 的 meta 標籤）。"
+      contact_email:
+        label: 聯絡電子郵件
+        msg: 聯絡人信箱不能為空。
+        validate: 聯絡人信箱無效。
+        text: 負責本網站的主要聯絡人的電子郵件信箱。
+      check_update:
+        label: 軟體更新
+        text: 自動檢查更新
+    interface:
+      page_title: 介面
+      language:
+        label: 介面語言
+        msg: 界面語言不能為空
+        text: 設置用戶界面語言，在刷新頁面后生效。
+      time_zone:
+        label: 時區
+        msg: 時區不能為空。
+        text: 選擇一個與您相同時區的城市。
+      avatar:
+        label: 預設頭像
+        text: 用於沒有自己自定義頭像的用戶。
+      gravatar_base_url:
+        label: Gravatar 基礎網址
+        text: Gravatar 提供者 API 基址的 URL。為空時忽略。
+    smtp:
+      page_title: SMTP
+      from_email:
+        label: 寄件者電子郵件
+        msg: 發件人電子郵件不能为空。
+        text: 發送郵件的郵箱地址
+      from_name:
+        label: 寄件者姓名
+        msg: 發件人名稱不能为空。
+        text: 發件人的名稱
+      smtp_host:
+        label: SMTP host
+        msg: SMTP 主機名稱不能為空。
+        text: 郵件服務器
+      encryption:
+        label: 加密
+        msg: 加密不能為空。
+        text: 對於大多數服務器，SSL 是推薦的選項。
+        ssl: SSL
+        tls: TLS
+        none: 無
+      smtp_port:
+        label: SMTP port
+        msg: SMTP 埠必須在 1 ~ 65535 之間。
+        text: 郵件服務器的端口號。
+      smtp_username:
+        label: SMTP 用戶名
+        msg: SMTP 用戶名不能為空。
+      smtp_password:
+        label: SMTP 密碼
+        msg: SMTP 密碼不能為空。
+      test_email_recipient:
+        label: 測試郵件收件人
+        text: 提供用於接收測試郵件的郵箱地址。
+        msg: 測試郵件收件人無效
+      smtp_authentication:
+        label: 啟用身份驗證
+        title: SMTP 身份驗證
+        msg: SMTP 身份驗證不能為空。
+        "yes": "是"
+        "no": "否"
+    branding:
+      page_title: 品牌
+      logo:
+        label: 標誌
+        msg: 圖標不能為空。
+        text: 在你的網站左上方的Logo圖標。使用一個高度為56，長寬比大於3:1的寬長方形圖像。如果留空，將顯示網站標題文本。
+      mobile_logo:
+        label: Mobile logo
+        text: 在您網站的移動版本上使用的徽標。 使用高度為 56 的寬矩形圖像。如果留空，將使用“徽標”設置中的圖像。
+      square_icon:
+        label: Square icon
+        msg: 方形圖示不能為空。
+        text: 用作元數據圖標的基礎的圖像。最好是大於512x512。
+      favicon:
+        label: 網站圖示
+        text: 您網站的圖標。 要在 CDN 上正常工作，它必須是 png。 將調整為 32x32的大小。 如果留空，將使用“方形圖標”。
+    legal:
+      page_title: 法律條款
+      terms_of_service:
+        label: Terms of service
+        text: "您可以在此加入服務內容的條款。如果您已經在別處托管了文檔，請在這裡提供完整的URL。"
+      privacy_policy:
+        label: Privacy policy
+        text: "您可以在此加入隱私政策內容。如果您已經在別處托管了文檔，請在這裡提供完整的URL。"
+      external_content_display:
+        label: External content
+        text: "內容包括來自外部網站的圖片、影片和媒體。"
+        always_display: 總是顯示 external content
+        ask_before_display: 顯示外部內容前先詢問
+    write:
+      page_title: 編輯
+      restrict_answer:
+        title: 回答編寫
+        label: 每個使用者每個問題只能編寫一個回答
+        text: "關閉後允許使用者對同一問題編寫多個回答，這可能導致回答不聚焦。"
+      recommend_tags:
+        label: 推薦標籤
+        text: "推薦標籤將預設顯示在下拉列表中。"
+        msg:
+          contain_reserved: "推薦標籤不能包含保留標籤"
+      required_tag:
+        title: 設定必需標籤
+        label: 將「推薦標籤」設定為必需標籤
+        text: "每個新問題必須至少有一個推薦標籤。"
+      reserved_tags:
+        label: 保留標籤
+        text: "保留標籤只能由管理員使用。"
+      image_size:
+        label: 圖片最大大小 (MB)
+        text: "圖片上傳的最大大小。"
+      attachment_size:
+        label: 附件最大大小 (MB)
+        text: "附件檔案上傳的最大大小。"
+      image_megapixels:
+        label: 圖片最大像素
+        text: "圖片允許的最大像素數量。"
+      image_extensions:
+        label: 允許的圖片擴充名
+        text: "允許用於圖片顯示的檔案擴充名列表，以逗號分隔。"
+      attachment_extensions:
+        label: 允許的附件擴充名
+        text: "允許上傳的檔案擴充名列表，以逗號分隔。警告：允許上傳可能導致安全問題。"
+    seo:
+      page_title: 搜尋引擎優化
+      permalink:
+        label: 固定連結
+        text: 自定義URL結構可以提高可用性，以及你的連結的向前相容性。
+      robots:
+        label: robots.txt
+        text: 這將永久覆蓋任何相關的網站設置。
+    themes:
+      page_title: 主題
+      themes:
+        label: 主題
+        text: 選擇一個現有主題。
+      color_scheme:
+        label: 色彩方案
+      navbar_style:
+        label: 導航欄背景樣式
+      primary_color:
+        label: 主色調
+        text: 修改您主題使用的顏色
+    css_and_html:
+      page_title: CSS 與 HTML
+      custom_css:
+        label: 自定義CSS
+        text: >
+
+      head:
+        label: 頭部
+        text: >
+
+      header:
+        label: 標題
+        text: >
+
+      footer:
+        label: 頁尾
+        text: 這將在 &lt;/body> 之前插入。
+      sidebar:
+        label: 側邊欄
+        text: 這將在側邊欄中插入。
+    login:
+      page_title: 登入
+      membership:
+        title: 會員
+        label: 允許新註冊
+        text: 關閉以防止任何人創建新帳戶。
+      email_registration:
+        title: 電子郵件註冊
+        label: 允許電子郵件註冊
+        text: 關閉以防止任何人通過電子郵件建立新帳戶。
+      allowed_email_domains:
+        title: 允許的電子郵件網域
+        text: 用戶必須註冊帳戶的電子郵件網域。每行一個網域。空白時忽略。
+      private:
+        title: 非公開的
+        label: 需要登入
+        text: 只有登入使用者才能訪問這個社群。
+      password_login:
+        title: 密碼登入
+        label: 允許電子郵件和密碼登入
+        text: "警告：如果關閉，如果您之前沒有配置其他登入方式，您可能無法登入。"
+    installed_plugins:
+      title: 已安裝的外掛程式
+      plugin_link: 外掛程式擴展和增強功能。您可以在<1>外掛儲存庫</1>中找到外掛程式。
+      filter:
+        all: 全部
+        active: 活躍
+        inactive: 停用
+        outdated: 過期
+      plugins:
+        label: 外掛程式
+        text: 選擇一個現有的外掛程式。
+      name: 名稱
+      version: 版本
+      status: 狀態
+      action: 操作
+      deactivate: 停用
+      activate: 啟用
+      settings: 設定
+    settings_users:
+      title: 用戶
+      avatar:
+        label: 預設頭像
+        text: 用於沒有自己自定義頭像的用戶。
+      gravatar_base_url:
+        label: Gravatar 基礎網址
+        text: Gravatar 提供者 API 基址的 URL。為空時忽略。
+      profile_editable:
+        title: 個人資料可編輯
+      allow_update_display_name:
+        label: 允許使用者更改顯示名稱
+      allow_update_username:
+        label: 允許使用者更改用戶名
+      allow_update_avatar:
+        label: 允許使用者更改頭像
+      allow_update_bio:
+        label: 允許使用者更改個人簡介
+      allow_update_website:
+        label: 允許使用者更改個人網站
+      allow_update_location:
+        label: 允許使用者更改地理位置
+    privilege:
+      title: 特權
+      level:
+        label: 聲望所需等級
+        text: 選擇特權所需的聲望值
+      msg:
+        should_be_number: 輸入內容應為數字
+        number_larger_1: 數字應大於或等於 1
+    badges:
+      action: 操作
+      active: 活躍
+      activate: 啟用
+      all: 全部
+      awards: 獲得次數
+      deactivate: 停用
+      filter:
+        placeholder: 按名稱、徽章：id 篩選
+      group: 群組
+      inactive: 非活躍
+      name: 名稱
+      show_logs: 顯示日誌
+      status: 狀態
+      title: 徽章
+  form:
+    optional: (選填)
+    empty: 不能為空
+    invalid: 是無效的
+    btn_submit: 儲存
+    not_found_props: "所需屬性 {{ key }} 未找到。"
+    select: Select
+  page_review:
+    review: 審核
+    proposed: 提案
+    question_edit: 問題編輯
+    answer_edit: 回答編輯
+    tag_edit: '標籤管理: 編輯標籤'
+    edit_summary: 編輯摘要
+    edit_question: 編輯問題
+    edit_answer: 編輯回答
+    edit_tag: 編輯標籤
+    empty: 沒有剩餘的審核任務。
+    approve_revision_tip: 您批准此修訂嗎？
+    approve_flag_tip: 您批准此檢舉嗎？
+    approve_post_tip: 您批准此貼文嗎？
+    approve_user_tip: 您批准此使用者嗎？
+    suggest_edits: 建議的編輯
+    flag_post: 檢舉貼文
+    flag_user: 檢舉使用者
+    queued_post: 待審核貼文
+    queued_user: 待審核使用者
+    filter_label: 類型
+    reputation: 聲望
+    flag_post_type: 已將此貼文檢舉為{{ type }}。
+    flag_user_type: 已將此使用者檢舉為{{ type }}。
+    edit_post: 編輯貼文
+    list_post: 上架貼文
+    unlist_post: 下架貼文
+  timeline:
+    undeleted: 未刪除的
+    deleted: 刪除
+    downvote: 反對
+    upvote: 贊同
+    accept: 採納
+    cancelled: 已取消
+    commented: '評論:'
+    rollback: 回滾
+    edited: 最後編輯於
+    answered: 回答於
+    asked: 提問於
+    closed: 關閉
+    reopened: 重新開啟
+    created: 創建於
+    pin: 釘住
+    unpin: 取消釘住
+    show: 顯示
+    hide: 隱藏
+    title: "歷史記錄"
+    tag_title: "時間線"
+    show_votes: "顯示投票"
+    n_or_a: N/A
+    title_for_question: "時間線"
+    title_for_answer: "{{ title }} 的 {{ author }} 回答時間線"
+    title_for_tag: "標籤的時間線"
+    datetime: 日期時間
+    type: 類型
+    by: 由
+    comment: 評論
+    no_data: "我們找不到任何東西。"
+  users:
+    title: 用戶
+    users_with_the_most_reputation: 本週口碑分數最高的使用者
+    users_with_the_most_vote: 本週投票次數最多的使用者
+    staffs: 我們的社區工作人員
+    reputation: 聲望值
+    votes: 選票
+  prompt:
+    leave_page: 你確定要離開此頁面？
+    changes_not_save: 你所做的變更可能不會儲存。
+  draft:
+    discard_confirm: 您確定要放棄您的草稿嗎？
+  messages:
+    post_deleted: 此貼文已被刪除。
+    post_cancel_deleted: 此貼文已取消刪除。
+    post_pin: 此貼文已被置頂。
+    post_unpin: 此貼文已取消置頂。
+    post_hide_list: 此貼文已從列表中隱藏。
+    post_show_list: 此貼文已顯示在列表中。
+    post_reopen: 此貼文已重新開啟。
+    post_list: 此貼文已上架。
+    post_unlist: 此貼文已下架。
+    post_pending: 您的貼文正在等待審查。這是預覽，在獲得批准後將顯示。
+    post_closed: 此貼文已被關閉。
+    answer_deleted: 此回答已被刪除。
+    answer_cancel_deleted: 此回答已取消刪除。
+    change_user_role: 此使用者的角色已被更改。
+    user_inactive: 此使用者已經是非活躍狀態。
+    user_normal: 此使用者已經是正常狀態。
+    user_suspended: 此使用者已被停權。
+    user_deleted: 此使用者已被刪除。
+    badge_activated: 此徽章已被啟用。
+    badge_inactivated: 此徽章已被停用。
+    users_deleted: 這些使用者已被刪除。
+    posts_deleted: 這些問題已被刪除。
+    answers_deleted: 這些回答已被刪除。
+    copy: 複製到剪貼簿
+    copied: 已複製
+    external_content_warning: 不顯示外部圖片/媒體。
+
+

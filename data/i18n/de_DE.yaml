@@ -1,0 +1,2341 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# The following fields are used for back-end
+backend:
+  base:
+    success:
+      other: Erfolgreich.
+    unknown:
+      other: Unbekannter Fehler.
+    request_format_error:
+      other: Format der Anfrage ist ungültig.
+    unauthorized_error:
+      other: Nicht autorisiert.
+    database_error:
+      other: Datenbank-Fehler.
+    forbidden_error:
+      other: Verboten.
+    duplicate_request_error:
+      other: Doppelte Einreichung.
+  action:
+    report:
+      other: Melden
+    edit:
+      other: Bearbeiten
+    delete:
+      other: Löschen
+    close:
+      other: Schließen
+    reopen:
+      other: Wieder öffnen
+    forbidden_error:
+      other: Verboten.
+    pin:
+      other: Anpinnen
+    hide:
+      other: Von Liste nehmen
+    unpin:
+      other: Loslösen
+    show:
+      other: Liste
+    invite_someone_to_answer:
+      other: Bearbeiten
+    undelete:
+      other: Wiederherstellen
+    merge:
+      other: Zusammenführen
+  role:
+    name:
+      user:
+        other: Benutzer
+      admin:
+        other: Admin
+      moderator:
+        other: Moderator
+    description:
+      user:
+        other: Standard ohne speziellen Zugriff.
+      admin:
+        other: Habe die volle Berechtigung, auf die Seite zuzugreifen.
+      moderator:
+        other: Hat Zugriff auf alle Beiträge außer Admin-Einstellungen.
+  privilege:
+    level_1:
+      description:
+        other: Level 1 (weniger Reputation für privates Team, Gruppen)
+    level_2:
+      description:
+        other: Level 2 (niedrige Reputation für Startup-Community)
+    level_3:
+      description:
+        other: Level 3 (hohe Reputation für eine reife Community)
+    level_custom:
+      description:
+        other: Benutzerdefinierter Level
+    rank_question_add_label:
+      other: Fragen stellen
+    rank_answer_add_label:
+      other: Antwort schreiben
+    rank_comment_add_label:
+      other: Kommentar schreiben
+    rank_report_add_label:
+      other: Melden
+    rank_comment_vote_up_label:
+      other: Kommentar upvoten
+    rank_link_url_limit_label:
+      other: Mehr als 2 Links gleichzeitig posten
+    rank_question_vote_up_label:
+      other: Frage upvoten
+    rank_answer_vote_up_label:
+      other: Antwort upvoten
+    rank_question_vote_down_label:
+      other: Frage downvoten
+    rank_answer_vote_down_label:
+      other: Antwort downvoten
+    rank_invite_someone_to_answer_label:
+      other: Jemanden zum Antworten einladen
+    rank_tag_add_label:
+      other: Neuen Tag erstellen
+    rank_tag_edit_label:
+      other: Tag-Beschreibung bearbeiten (muss überprüft werden)
+    rank_question_edit_label:
+      other: Frage eines anderen bearbeiten (muss überarbeitet werden)
+    rank_answer_edit_label:
+      other: Antwort eines anderen bearbeiten (muss überarbeitet werden)
+    rank_question_edit_without_review_label:
+      other: Frage eines anderen ohne Überprüfung bearbeiten
+    rank_answer_edit_without_review_label:
+      other: Antwort eines anderen ohne Überprüfung bearbeiten
+    rank_question_audit_label:
+      other: Frageänderungen überprüfen
+    rank_answer_audit_label:
+      other: Bearbeitete Antworten überprüfen
+    rank_tag_audit_label:
+      other: Tag-Bearbeitungen überprüfen
+    rank_tag_edit_without_review_label:
+      other: Tag-Beschreibung ohne Überprüfung bearbeiten
+    rank_tag_synonym_label:
+      other: Tag-Synonyme verwalten
+  email:
+    other: E-Mail
+  e_mail:
+    other: E-Mail
+  password:
+    other: Passwort
+  pass:
+    other: Passwort
+  old_pass:
+    other: Aktuelles Passwort
+  original_text:
+    other: Dieser Beitrag
+  email_or_password_wrong_error:
+    other: E-Mail und Passwort stimmen nicht überein.
+  error:
+    common:
+      invalid_url:
+        other: Ungültige URL.
+      status_invalid:
+        other: Ungültiger Status.
+    password:
+      space_invalid:
+        other: Passwort darf keine Leerzeichen enthalten.
+    admin:
+      cannot_update_their_password:
+        other: Du kannst dein Passwort nicht ändern.
+      cannot_edit_their_profile:
+        other: Du kannst dein Profil nicht bearbeiten.
+      cannot_modify_self_status:
+        other: Du kannst deinen Status nicht ändern.
+      email_or_password_wrong:
+        other: E-Mail und Password stimmen nicht überein.
+    answer:
+      not_found:
+        other: Antwort nicht gefunden.
+      cannot_deleted:
+        other: Keine Berechtigung zum Löschen.
+      cannot_update:
+        other: Keine Berechtigung zum Aktualisieren.
+      question_closed_cannot_add:
+        other: Fragen sind geschlossen und können nicht hinzugefügt werden.
+      content_cannot_empty:
+        other: Die Antwort darf nicht leer sein.
+    comment:
+      edit_without_permission:
+        other: Kommentar kann nicht bearbeitet werden.
+      not_found:
+        other: Kommentar wurde nicht gefunden.
+      cannot_edit_after_deadline:
+        other: Die Kommentarzeit war zu lang, um sie zu ändern.
+      content_cannot_empty:
+        other: Der Kommentar darf nicht leer sein.
+    email:
+      duplicate:
+        other: E-Mail existiert bereits.
+      need_to_be_verified:
+        other: E-Mail muss überprüft werden.
+      verify_url_expired:
+        other: Die verifizierbare E-Mail-URL ist abgelaufen, bitte sende die E-Mail erneut.
+      illegal_email_domain_error:
+        other: E-Mails sind von dieser E-Mail-Domäne nicht erlaubt. Bitte verwende eine andere.
+    lang:
+      not_found:
+        other: Sprachdatei nicht gefunden.
+    object:
+      captcha_verification_failed:
+        other: Captcha ist falsch.
+      disallow_follow:
+        other: Es ist dir nicht erlaubt zu folgen.
+      disallow_vote:
+        other: Es ist dir nicht erlaubt abzustimmen.
+      disallow_vote_your_self:
+        other: Du kannst nicht für deinen eigenen Beitrag stimmen.
+      not_found:
+        other: Objekt nicht gefunden.
+      verification_failed:
+        other: Verifizierung fehlgeschlagen.
+      email_or_password_incorrect:
+        other: E-Mail und Passwort stimmen nicht überein.
+      old_password_verification_failed:
+        other: Die Überprüfung des alten Passworts ist fehlgeschlagen
+      new_password_same_as_previous_setting:
+        other: Das neue Passwort ist das gleiche wie das vorherige Passwort.
+      already_deleted:
+        other: Dieser Beitrag wurde gelöscht.
+    meta:
+      object_not_found:
+        other: Metaobjekt nicht gefunden
+    question:
+      already_deleted:
+        other: Dieser Beitrag wurde gelöscht.
+      under_review:
+        other: Ihr Beitrag wartet auf Überprüfung. Er wird sichtbar sein, nachdem er genehmigt wurde.
+      not_found:
+        other: Frage nicht gefunden.
+      cannot_deleted:
+        other: Keine Berechtigung zum Löschen.
+      cannot_close:
+        other: Keine Berechtigung zum Schließen.
+      cannot_update:
+        other: Keine Berechtigung zum Aktualisieren.
+      content_cannot_empty:
+        other: Der Inhalt darf nicht leer sein.
+    rank:
+      fail_to_meet_the_condition:
+        other: Ansehenssrang erfüllt die Bedingung nicht.
+      vote_fail_to_meet_the_condition:
+        other: Danke für dein Feedback. Du brauchst mindestens {{.Rank}} Ansehen, um eine Stimme abzugeben.
+      no_enough_rank_to_operate:
+        other: Dafür brauchst du mindestens {{.Rank}} Ansehen.
+    report:
+      handle_failed:
+        other: Bearbeiten der Meldung fehlgeschlagen.
+      not_found:
+        other: Meldung nicht gefunden.
+    tag:
+      already_exist:
+        other: Tag existiert bereits.
+      not_found:
+        other: Tag nicht gefunden.
+      recommend_tag_not_found:
+        other: Das Tag "Empfehlen" ist nicht vorhanden.
+      recommend_tag_enter:
+        other: Bitte gib mindestens einen erforderlichen Tag ein.
+      not_contain_synonym_tags:
+        other: Sollte keine Synonym-Tags enthalten.
+      cannot_update:
+        other: Keine Berechtigung zum Aktualisieren.
+      is_used_cannot_delete:
+        other: Du kannst keinen Tag löschen, der in Gebrauch ist.
+      cannot_set_synonym_as_itself:
+        other: Du kannst das Synonym des aktuellen Tags nicht als sich selbst festlegen.
+    smtp:
+      config_from_name_cannot_be_email:
+        other: Der Absendername kann keine E-Mail-Adresse sein.
+    theme:
+      not_found:
+        other: Design nicht gefunden.
+    revision:
+      review_underway:
+        other: Kann derzeit nicht bearbeitet werden, es existiert eine Version in der Überprüfungswarteschlange.
+      no_permission:
+        other: Keine Berechtigung zum Überarbeiten.
+    user:
+      external_login_missing_user_id:
+        other: Die Plattform des Drittanbieters stellt keine eindeutige UserID zur Verfügung, sodass du dich nicht anmelden kannst. Bitte wende dich an den Administrator der Website.
+      external_login_unbinding_forbidden:
+        other: Bitte setze ein Login-Passwort für dein Konto, bevor du dieses Login entfernst.
+      email_or_password_wrong:
+        other:
+          other: E-Mail und Passwort stimmen nicht überein.
+      not_found:
+        other: Benutzer nicht gefunden.
+      suspended:
+        other: Benutzer wurde gesperrt.
+      username_invalid:
+        other: Benutzername ist ungültig.
+      username_duplicate:
+        other: Benutzername wird bereits verwendet.
+      set_avatar:
+        other: Avatar setzen fehlgeschlagen.
+      cannot_update_your_role:
+        other: Du kannst deine Rolle nicht ändern.
+      not_allowed_registration:
+        other: Derzeit ist die Seite nicht für die Anmeldung geöffnet.
+      not_allowed_login_via_password:
+        other: Zurzeit ist es auf der Seite nicht möglich, sich mit einem Passwort anzumelden.
+      access_denied:
+        other: Zugriff verweigert
+      page_access_denied:
+        other: Du hast keinen Zugriff auf diese Seite.
+      add_bulk_users_format_error:
+        other: "Fehler {{.Field}}-Format in der Nähe von '{{.Content}}' in Zeile {{.Line}}. {{.ExtraMessage}}"
+      add_bulk_users_amount_error:
+        other: "Die Anzahl der Benutzer, die du auf einmal hinzufügst, sollte im Bereich von 1-{{.MaxAmount}} liegen."
+      status_suspended_forever:
+        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+      status_suspended_until:
+        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+      status_deleted:
+        other: "This user was deleted."
+      status_inactive:
+        other: "This user is inactive."
+    config:
+      read_config_failed:
+        other: Lesekonfiguration fehlgeschlagen
+    database:
+      connection_failed:
+        other: Datenbankverbindung fehlgeschlagen
+      create_table_failed:
+        other: Tabelle erstellen fehlgeschlagen
+    install:
+      create_config_failed:
+        other: Kann die config.yaml-Datei nicht erstellen.
+    upload:
+      unsupported_file_format:
+        other: Dateiformat nicht unterstützt.
+    site_info:
+      config_not_found:
+        other: Seiten-Konfiguration nicht gefunden.
+    badge:
+      object_not_found:
+        other: Abzeichen-Objekt nicht gefunden
+  reason:
+    spam:
+      name:
+        other: Spam
+      desc:
+        other: Dieser Beitrag ist eine Werbung oder Vandalismus. Er ist nicht nützlich oder relevant für das aktuelle Thema.
+    rude_or_abusive:
+      name:
+        other: unhöflich oder beleidigend
+      desc:
+        other: "Eine vernünftige Person würde diesen Inhalt im respektvoll diskutierten Diskurs für unangemessen halten."
+    a_duplicate:
+      name:
+        other: ein Duplikat
+      desc:
+        other: Diese Frage wurde schon einmal gestellt und hat bereits eine Antwort.
+      placeholder:
+        other: Gib den Link zur bestehenden Frage ein
+    not_a_answer:
+      name:
+        other: keine Antwort
+      desc:
+        other: "Die Antwort versucht nicht, die Frage zu beantworten. Sie sollte entweder bearbeitet, kommentiert, als weitere Frage gestellt oder ganz gelöscht werden."
+    no_longer_needed:
+      name:
+        other: nicht mehr benötigt
+      desc:
+        other: Dieser Kommentar ist veraltet oder nicht relevant für diesen Beitrag.
+    something:
+      name:
+        other: anderer Grund
+      desc:
+        other: Dieser Beitrag erfordert die Aufmerksamkeit der Temmitglieder aus einem anderen, oben nicht genannten Grund.
+      placeholder:
+        other: Lass uns wissen, worüber du dir Sorgen machst
+    community_specific:
+      name:
+        other: ein Community-spezifischer Grund
+      desc:
+        other: Diese Frage entspricht nicht den Gemeinschaftsrichtlinien.
+    not_clarity:
+      name:
+        other: benötigt Details oder Klarheit
+      desc:
+        other: Diese Frage enthält derzeit mehrere Fragen in einer. Sie sollte sich auf ein einziges Problem konzentrieren.
+    looks_ok:
+      name:
+        other: sieht OK aus
+      desc:
+        other: Dieser Beitrag ist gut so wie er ist und nicht von schlechter Qualität.
+    needs_edit:
+      name:
+        other: muss bearbeitet werden, und ich habe es getan
+      desc:
+        other: Verbessere und korrigiere Probleme mit diesem Beitrag selbst.
+    needs_close:
+      name:
+        other: muss geschlossen werden
+      desc:
+        other: Eine geschlossene Frage kann nicht beantwortet werden, aber du kannst sie trotzdem bearbeiten, abstimmen und kommentieren.
+    needs_delete:
+      name:
+        other: muss gelöscht werden
+      desc:
+        other: Dieser Beitrag wird gelöscht.
+  question:
+    close:
+      duplicate:
+        name:
+          other: Spam
+        desc:
+          other: Diese Frage ist bereits gestellt worden und hat bereits eine Antwort.
+      guideline:
+        name:
+          other: ein Community-spezifischer Grund
+        desc:
+          other: Diese Frage entspricht nicht einer Gemeinschaftsrichtlinie.
+      multiple:
+        name:
+          other: benötigt Details oder Klarheit
+        desc:
+          other: Diese Frage enthält derzeit mehrere Fragen in einer. Sie sollte sich auf ein einziges Problem konzentrieren.
+      other:
+        name:
+          other: etwas anderes
+        desc:
+          other: Dieser Beitrag erfordert einen anderen Grund, der oben nicht aufgeführt ist.
+    operation_type:
+      asked:
+        other: gefragt
+      answered:
+        other: beantwortet
+      modified:
+        other: geändert
+    deleted_title:
+      other: Gelöschte Frage
+    questions_title:
+      other: Fragen
+  tag:
+    tags_title:
+      other: Schlagwörter
+    no_description:
+      other: Diese Kategorie hat keine Beschreibung.
+  notification:
+    action:
+      update_question:
+        other: aktualisierte Frage
+      answer_the_question:
+        other: beantwortete Frage
+      update_answer:
+        other: aktualisierte Antwort
+      accept_answer:
+        other: akzeptierte Antwort
+      comment_question:
+        other: kommentierte Frage
+      comment_answer:
+        other: kommentierte Antwort
+      reply_to_you:
+        other: hat Ihnen geantwortet
+      mention_you:
+        other: hat dich erwähnt
+      your_question_is_closed:
+        other: Deine Frage wurde geschlossen
+      your_question_was_deleted:
+        other: Deine Frage wurde gelöscht
+      your_answer_was_deleted:
+        other: Deine Antwort wurde gelöscht
+      your_comment_was_deleted:
+        other: Dein Kommentar wurde gelöscht
+      up_voted_question:
+        other: positiv bewertete Frage
+      down_voted_question:
+        other: negativ bewertete Frage
+      up_voted_answer:
+        other: positiv bewertete Antwort
+      down_voted_answer:
+        other: negativ bewertete Antwort
+      up_voted_comment:
+        other: positiv bewerteter Kommentar
+      invited_you_to_answer:
+        other: hat dich eingeladen, zu antworten
+      earned_badge:
+        other: Du hast das "{{.BadgeName}}" Abzeichen verdient
+  email_tpl:
+    change_email:
+      title:
+        other: "[{{.SiteName}}] Bestätige deine neue E-Mail-Adresse"
+      body:
+        other: "Bestätigen Sie Ihre neue E-Mail-Adresse für {{.SiteName}} indem Sie auf den folgenden Link klicken:<br>\n<a href='{{.ChangeEmailUrl}}' target='_blank'>{{.ChangeEmailUrl}}</a><br><br>\n\nWenn Sie diese Änderung nicht angefordert haben bitte diese E-Mail ignorieren.<br><br>\n\n--<br>\nHinweis: Dies ist eine automatische System-E-Mail, Bitte antworten Sie nicht auf diese Nachricht, da Ihre Antwort nicht angezeigt wird."
+    new_answer:
+      title:
+        other: "[{{.SiteName}}] {{.DisplayName}} hat deine Frage beantwortet"
+      body:
+        other: "<a href='{{.AnswerUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.AnswerSummary}}</blockquote><br>\n\n<a href='{{.AnswerUrl}}'>Auf {{.SiteName}} anschauen</a><br><br>\n\n--<br>\nHinweis: Dies ist eine automatische System-E-Mail, bitte antworten Sie nicht auf diese Nachricht, da Ihre Antwort nicht angezeigt wird.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Abmelden</a></small>"
+    invited_you_to_answer:
+      title:
+        other: "[{{.SiteName}}] {{.DisplayName}} hat dich eingeladen zu antworten"
+      body:
+        other: "<a href='{{.InviteUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>Ich denke, Sie kennen die Antwort.</blockquote><br>\n<a href='{{.InviteUrl}}'> {{.SiteName}}</a><br><br>\n\n--<br>\nHinweis: Dies ist eine automatische System-E-Mail, Bitte antworten Sie nicht auf diese Nachricht, da Ihre Antwort nicht angezeigt wird.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Abmelden</a></small>"
+    new_comment:
+      title:
+        other: "[{{.SiteName}}] {{.DisplayName}} hat deinen Beitrag kommentiert"
+      body:
+        other: "<a href='{{.CommentUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.CommentSummary}}</blockquote><br>\n\n<a href='{{.CommentUrl}}'>Auf {{.SiteName}} anschauen</a><br><br>\n\n--<br>\nHinweis: Dies ist eine automatische System-E-Mail, Bitte antworten Sie nicht auf diese Nachricht, da Ihre Antwort nicht angezeigt wird.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Abmelden</a></small>"
+    new_question:
+      title:
+        other: "[{{.SiteName}}] Neue Frage: {{.QuestionTitle}}"
+      body:
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nHinweis: Dies ist eine automatische Systemnachricht, bitte antworten Sie nicht darauf. Antworten werden nicht gelesen oder bearbeitet.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Benachrichtigung abbestellen</a></small>"
+    pass_reset:
+      title:
+        other: "[{{.SiteName }}] Passwort zurücksetzen"
+      body:
+        other: "Jemand bat darum, Ihr Passwort auf {{.SiteName}}zurückzusetzen.<br><br>\n\nWenn Sie es nicht waren, können Sie diese E-Mail sicher ignorieren.<br><br>\n\nKlicken Sie auf den folgenden Link, um ein neues Passwort auszuwählen:<br>\n<a href='{{.PassResetUrl}}' target='_blank'>{{.PassResetUrl}}</a>\n\n<br><br>\n\n--<br>\nHinweis: Dies ist eine automatische System-E-Mail, Bitte antworten Sie nicht auf diese Nachricht, da Ihre Antwort nicht angezeigt wird."
+    register:
+      title:
+        other: "[{{.SiteName}}] Bestätige dein neues Konto"
+      body:
+        other: "Willkommen in {{.SiteName}}!<br><br>\n\nKlicken Sie auf den folgenden Link, um Ihr neues Konto zu bestätigen und zu aktivieren:<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\nWenn der obige Link nicht anklickbar ist kopieren und in die Adressleiste Ihres Webbrowsers einfügen.\n<br><br>\n\n--<br>\nHinweis: Dies ist eine automatische System-E-Mail, Bitte antworten Sie nicht auf diese Nachricht, da Ihre Antwort nicht sichtbar ist."
+    test:
+      title:
+        other: "[{{.SiteName}}] Test-E-Mail"
+      body:
+        other: "Dies ist eine Test-E-Mail.\n<br><br>\n\n--<br>\nHinweis: Dies ist eine automatische System-E-Mail, Bitte antworten Sie nicht auf diese Nachricht, da Ihre Antwort nicht angezeigt wird."
+  action_activity_type:
+    upvote:
+      other: positiv bewerten
+    upvoted:
+      other: positiv bewertet
+    downvote:
+      other: negativ bewerten
+    downvoted:
+      other: negativ bewertet
+    accept:
+      other: akzeptieren
+    accepted:
+      other: akzeptiert
+    edit:
+      other: bearbeiten
+  review:
+    queued_post:
+      other: Post in der Warteschlange
+    flagged_post:
+      other: Beiträge gemeldet
+    suggested_post_edit:
+      other: Änderungsvorschläge
+  reaction:
+    tooltip:
+      other: "{{ .Names }} Und {{ .Count }} mehr..."
+  badge:
+    default_badges:
+      autobiographer:
+        name:
+          other: Autobiograph
+        desc:
+          other: Gefüllt mit <a href="{{ .ProfileURL }}" target="_blank">Profil</a> Informationen.
+      certified:
+        name:
+          other: Zertifiziert
+        desc:
+          other: Erledigte unser neues Benutzerhandbuch.
+      editor:
+        name:
+          other: Editor
+        desc:
+          other: Erster Beitrag bearbeiten.
+      first_flag:
+        name:
+          other: Erste Meldung
+        desc:
+          other: Erste Meldung eines Beitrags.
+      first_upvote:
+        name:
+          other: Erster Upvote
+        desc:
+          other: Erste Like eines Beitrags.
+      first_link:
+        name:
+          other: Erster Link
+        desc:
+          other: Hat erstmals einen Link zu einem anderen Beitrag hinzugefügt.
+      first_reaction:
+        name:
+          other: Erste Reaktion
+        desc:
+          other: Zuerst reagierte auf den Beitrag.
+      first_share:
+        name:
+          other: Erstes Teilen
+        desc:
+          other: Zuerst einen Beitrag geteilt.
+      scholar:
+        name:
+          other: Gelehrter
+        desc:
+          other: Hat eine Frage gestellt und eine Antwort akzeptiert.
+      commentator:
+        name:
+          other: Kommentator
+        desc:
+          other: Hinterlassen Sie 5 Kommentare.
+      new_user_of_the_month:
+        name:
+          other: Neuer Benutzer des Monats
+        desc:
+          other: Ausstehende Beiträge in ihrem ersten Monat.
+      read_guidelines:
+        name:
+          other: Lesen Sie die Richtlinien
+        desc:
+          other: Lesen Sie die [Community-Richtlinien].
+      reader:
+        name:
+          other: Leser
+        desc:
+          other: Lesen Sie alle Antworten in einem Thema mit mehr als 10 Antworten.
+      welcome:
+        name:
+          other: Willkommen
+        desc:
+          other: Du hast eine positive Abstimmung erhalten.
+      nice_share:
+        name:
+          other: Schöne teilen
+        desc:
+          other: Hat einen Beitrag mit 25 einzigartigen Besuchern freigegeben.
+      good_share:
+        name:
+          other: Gut geteilt
+        desc:
+          other: Hat einen Beitrag mit 300 einzigartigen Besuchern freigegeben.
+      great_share:
+        name:
+          other: Großartiges Teilen
+        desc:
+          other: Hat einen Beitrag mit 1000 einzigartigen Besuchern freigegeben.
+      out_of_love:
+        name:
+          other: Aus Liebe
+        desc:
+          other: Hat an einem Tag 50 Upvotes verwendet.
+      higher_love:
+        name:
+          other: Höhere Liebe
+        desc:
+          other: Hat an einem Tag 50 Upvotes 5 Mal verwendet.
+      crazy_in_love:
+        name:
+          other: Im siebten Himmel
+        desc:
+          other: Hat an einem Tag 50 Upvotes 20 Mal verwendet.
+      promoter:
+        name:
+          other: Förderer
+        desc:
+          other: Hat einen Benutzer eingeladen.
+      campaigner:
+        name:
+          other: Kampagnenleiter
+        desc:
+          other: Lade 3 einfache Benutzer ein.
+      champion:
+        name:
+          other: Champion
+        desc:
+          other: Hat 5 Mitglieder eingeladen.
+      thank_you:
+        name:
+          other: Vielen Dank
+        desc:
+          other: Beitrag mit 20 Upvotes und 10 abgegebenen Upvotes.
+      gives_back:
+        name:
+          other: Feedback geben
+        desc:
+          other: Beitrag mit 100 Upvotes und 100 abgegebenen Upvotes.
+      empathetic:
+        name:
+          other: Einfühlsam
+        desc:
+          other: Beitrag mit 500 Upvotes und 1000 abgegebenen Upvotes.
+      enthusiast:
+        name:
+          other: Enthusiast
+        desc:
+          other: Besucht 10 aufeinander folgende Tage.
+      aficionado:
+        name:
+          other: Aficionado
+        desc:
+          other: Besucht 100 aufeinander folgende Tage.
+      devotee:
+        name:
+          other: Anhänger
+        desc:
+          other: 365 aufeinander folgende Tage besucht.
+      anniversary:
+        name:
+          other: Jahrestag
+        desc:
+          other: Aktives Mitglied für ein Jahr, mindestens einmal veröffentlicht.
+      appreciated:
+        name:
+          other: Gewertschätzt
+        desc:
+          other: Erhalten 1 up vote für 20 posts.
+      respected:
+        name:
+          other: Respektiert
+        desc:
+          other: Erhalten 2 up vote für 100 posts.
+      admired:
+        name:
+          other: Bewundert
+        desc:
+          other: 5 upvotes für 300 posts erhalten.
+      solved:
+        name:
+          other: Gelöst
+        desc:
+          other: Eine Antwort wurde akzeptiert.
+      guidance_counsellor:
+        name:
+          other: Anleitungsberater
+        desc:
+          other: 10 Antworten wurden akzeptiert.
+      know_it_all:
+        name:
+          other: Alleswisser
+        desc:
+          other: 50 Antworten wurden akzeptiert.
+      solution_institution:
+        name:
+          other: Lösungsfinder
+        desc:
+          other: 150 Antworten wurden akzeptiert.
+      nice_answer:
+        name:
+          other: Nette Antwort
+        desc:
+          other: Die Antwortpunktzahl beträgt mehr als 10 Punkte.
+      good_answer:
+        name:
+          other: Gute Antwort
+        desc:
+          other: Die Antwortpunktzahl beträgt mehr als 25 Punkte.
+      great_answer:
+        name:
+          other: Großartige Antwort
+        desc:
+          other: Die Antwortpunktzahl beträgt mehr als 50 Punkte.
+      nice_question:
+        name:
+          other: Schöne Frage
+        desc:
+          other: Fragenpunktzahl von 10 oder mehr.
+      good_question:
+        name:
+          other: Gute Frage
+        desc:
+          other: Fragen mit 25 oder mehr Punkten.
+      great_question:
+        name:
+          other: Große Frage
+        desc:
+          other: Frage mit 50 oder mehr Punkten.
+      popular_question:
+        name:
+          other: Populäre Frage
+        desc:
+          other: Frage mit 500 Ansichten.
+      notable_question:
+        name:
+          other: Bemerkenswerte Frage
+        desc:
+          other: Frage mit 1.000 Ansichten.
+      famous_question:
+        name:
+          other: Erstklassige Frage
+        desc:
+          other: Frage mit 5.000 Ansichten.
+      popular_link:
+        name:
+          other: Populärer Link
+        desc:
+          other: Hat einen externen Link mit 50 Klicks gepostet.
+      hot_link:
+        name:
+          other: Heißer Link
+        desc:
+          other: Geschrieben einen externen Link mit 300 Klicks.
+      famous_link:
+        name:
+          other: Berühmter Link
+        desc:
+          other: Geschrieben einen externen Link mit 100 Klicks.
+    default_badge_groups:
+      getting_started:
+        name:
+          other: Erste Schritte
+      community:
+        name:
+          other: Gemeinschaft
+      posting:
+        name:
+          other: Freigeben
+# The following fields are used for interface presentation(Front-end)
+ui:
+  how_to_format:
+    title: Wie man formatiert
+    desc: >-
+      <ul class="mb-0"><li><p class="mb-2">einen Beitrag erwähnen: <code>#post_id</code></p></li><li><p class="mb-2">um Links</p><pre class="mb-2"><code>&lt;https://url.com&gt;<br/><br/>[Titel](https://url.com)</code></pre></li><li><p class="mb-2">Zwischen den Absätzen Zeilenumbrüche einfügen</p></li><li><p class="mb-2"><em>_italic_</em> oder **<strong>fett</strong>**</p></li><li><p class="mb-2">Code um 4 Leerzeichen einrücken</p></li><li><p class="mb-2">Zitat durch Setzen von <code>&gt; </code> am Anfang der Zeile</p></li><li><p class="mb-2">Backtick-Escapes <code>`wie _this_`</code></p></li><li><p class="mb-2">Codeumrandungen mit Backticks <code>`</code></p><pre class="mb-0"><code>`<br/>Code hier<br/>``</code></pre></li></ul>
+  pagination:
+    prev: Zurück
+    next: Weiter
+  page_title:
+    question: Frage
+    questions: Fragen
+    tag: Schlagwort
+    tags: Schlagwörter
+    tag_wiki: tag Wiki
+    create_tag: Tag erstellen
+    edit_tag: Tag bearbeiten
+    ask_a_question: Create Question
+    edit_question: Frage bearbeiten
+    edit_answer: Antwort bearbeiten
+    search: Suchen
+    posts_containing: Beiträge enthalten
+    settings: Einstellungen
+    notifications: Benachrichtigungen
+    login: Anmelden
+    sign_up: Registrieren
+    account_recovery: Konto-Wiederherstellung
+    account_activation: Account Aktivierung
+    confirm_email: Bestätigungs-E-Mail
+    account_suspended: Konto gesperrt
+    admin: Verwaltung
+    change_email: E-Mails ändern
+    install: Installation beantworten
+    upgrade: Antwort-Upgrade
+    maintenance: Website-Wartung
+    users: Benutzer
+    oauth_callback: In Bearbeitung
+    http_404: HTTP-Fehler 404
+    http_50X: HTTP-Fehler 500
+    http_403: HTTP Fehler 403
+    logout: Ausloggen
+  notifications:
+    title: Benachrichtigungen
+    inbox: Posteingang
+    achievement: Erfolge
+    new_alerts: Neue Benachrichtigungen
+    all_read: Alle als gelesen markieren
+    show_more: Mehr anzeigen
+    someone: Jemand
+    inbox_type:
+      all: Alle
+      posts: Beiträge
+      invites: Einladungen
+      votes: Abstimmungen
+    answer: Antwort
+    question: Frage
+    badge_award: Abzeichen
+  suspended:
+    title: Dein Konto wurde gesperrt
+    until_time: "Dein Konto wurde bis zum {{ time }} gesperrt."
+    forever: Dieser Benutzer wurde für immer gesperrt.
+    end: Du erfüllst keine Community-Richtlinie.
+    contact_us: Kontaktiere uns
+  editor:
+    blockquote:
+      text: Blockzitat
+    bold:
+      text: Stark
+    chart:
+      text: Bestenliste
+      flow_chart: Flussdiagramm
+      sequence_diagram: Sequenzdiagramm
+      class_diagram: Klassen Diagramm
+      state_diagram: Zustandsdiagramm
+      entity_relationship_diagram: Entitätsbeziehungsdiagramm
+      user_defined_diagram: Benutzerdefiniertes Diagramm
+      gantt_chart: Gantt-Diagramm
+      pie_chart: Kuchendiagramm
+    code:
+      text: Code Beispiel
+      add_code: Code-Beispiel hinzufügen
+      form:
+        fields:
+          code:
+            label: Code
+            msg:
+              empty: Code kann nicht leer sein.
+          language:
+            label: Sprache
+            placeholder: Automatische Erkennung
+      btn_cancel: Abbrechen
+      btn_confirm: Hinzufügen
+    formula:
+      text: Formel
+      options:
+        inline: Inline Formel
+        block: Block Formel
+    heading:
+      text: Überschrift
+      options:
+        h1: Überschrift 1
+        h2: Überschrift 2
+        h3: Überschrift 3
+        h4: Überschrift 4
+        h5: Überschrift 5
+        h6: Überschrift 6
+    help:
+      text: Hilfe
+    hr:
+      text: Horizontale Richtlinie
+    image:
+      text: Bild
+      add_image: Bild hinzufügen
+      tab_image: Bild hochladen
+      form_image:
+        fields:
+          file:
+            label: Bilddatei
+            btn: Bild auswählen
+            msg:
+              empty: Datei darf nicht leer sein.
+              only_image: Nur Bilddateien sind erlaubt.
+              max_size: Dateigröße darf {{size}} MB nicht überschreiten.
+          desc:
+            label: Beschreibung
+      tab_url: Bild URL
+      form_url:
+        fields:
+          url:
+            label: Bild URL
+            msg:
+              empty: Bild-URL darf nicht leer sein.
+          name:
+            label: Beschreibung
+      btn_cancel: Abbrechen
+      btn_confirm: Hinzufügen
+      uploading: Hochladen
+    indent:
+      text: Einzug
+    outdent:
+      text: Ausrücken
+    italic:
+      text: Hervorhebung
+    link:
+      text: Hyperlink
+      add_link: Hyperlink hinzufügen
+      form:
+        fields:
+          url:
+            label: URL
+            msg:
+              empty: URL darf nicht leer sein.
+          name:
+            label: Beschreibung
+      btn_cancel: Abbrechen
+      btn_confirm: Hinzufügen
+    ordered_list:
+      text: Nummerierte Liste
+    unordered_list:
+      text: Aufzählungsliste
+    table:
+      text: Tabelle
+      heading: Überschrift
+      cell: Zelle
+    file:
+      text: Datei anhängen
+      not_supported: "Diesen Dateityp nicht unterstützen. Versuchen Sie es erneut mit {{file_type}}."
+      max_size: "Dateigröße anhängen darf {{size}} MB nicht überschreiten."
+  close_modal:
+    title: Ich schließe diesen Beitrag als...
+    btn_cancel: Abbrechen
+    btn_submit: Senden
+    remark:
+      empty: Kann nicht leer sein.
+    msg:
+      empty: Bitte wähle einen Grund aus.
+  report_modal:
+    flag_title: Ich melde diesen Beitrag als...
+    close_title: Ich schließe diesen Beitrag wegen ...
+    review_question_title: Frage prüfen
+    review_answer_title: Antwort prüfen
+    review_comment_title: Kommentar prüfen
+    btn_cancel: Abbrechen
+    btn_submit: Senden
+    remark:
+      empty: Kann nicht leer sein.
+    msg:
+      empty: Bitte wähle einen Grund aus.
+      not_a_url: URL hat ein falsches Format.
+      url_not_match: URL-Ursprung stimmt nicht mit der aktuellen Website überein.
+  tag_modal:
+    title: Neuen Tag erstellen
+    form:
+      fields:
+        display_name:
+          label: Anzeigename
+          msg:
+            empty: Anzeigename darf nicht leer sein.
+            range: Anzeige des Namens mit bis zu 35 Zeichen.
+        slug_name:
+          label: URL-Slug
+          desc: 'Muss den Zeichensatz "a-z", "0-9", "+ # - " verwenden.'
+          msg:
+            empty: URL-Slug darf nicht leer sein.
+            range: URL-Slug mit bis zu 35 Zeichen.
+            character: URL-Slug enthält nicht erlaubten Zeichensatz.
+        desc:
+          label: Beschreibung
+        revision:
+          label: Version
+        edit_summary:
+          label: Zusammenfassung bearbeiten
+          placeholder: >-
+            Erkläre kurz deine Änderungen (korrigierte Rechtschreibung, korrigierte Grammatik, verbesserte Formatierung)
+    btn_cancel: Abbrechen
+    btn_submit: Senden
+    btn_post: Neuen Tag erstellen
+  tag_info:
+    created_at: Erstellt
+    edited_at: Bearbeitet
+    history: Verlauf
+    synonyms:
+      title: Synonyme
+      text: Die folgenden Tags werden neu zugeordnet zu
+      empty: Keine Synonyme gefunden.
+      btn_add: Synonym hinzufügen
+      btn_edit: Bearbeiten
+      btn_save: Speichern
+    synonyms_text: Die folgenden Tags werden neu zugeordnet zu
+    delete:
+      title: Diesen Tag löschen
+      tip_with_posts: >-
+        <p>Wir erlauben es nicht, <strong>Tags mit Beiträgen</strong>zu löschen.</p> <p>Bitte entfernen Sie dieses Tag zuerst aus den Beiträgen.</p>
+      tip_with_synonyms: >-
+        <p>Wir erlauben nicht <strong>Tags mit Synonymen</strong>zu löschen.</p> <p>Bitte entfernen Sie zuerst die Synonyme von diesem Schlagwort.</p>
+      tip: Bist du sicher, dass du löschen möchtest?
+      close: Schließen
+    merge:
+      title: Tags zusammenführen
+      source_tag_title: Quell-Tag
+      source_tag_description: Das Quell-Tag und seine zugehörigen Daten werden dem Ziel-Tag zugeordnet.
+      target_tag_title: Ziel-Tag
+      target_tag_description: Ein Synonym zwischen diesen beiden Tags wird nach dem Zusammenführen erstellt.
+      no_results: Keine zusammenpassenden Tags gefunden
+      btn_submit: Absenden
+      btn_close: Schließen
+  edit_tag:
+    title: Tag bearbeiten
+    default_reason: Tag bearbeiten
+    default_first_reason: Tag hinzufügen
+    btn_save_edits: Änderungen speichern
+    btn_cancel: Abbrechen
+  dates:
+    long_date: DD. MMM
+    long_date_with_year: "DD. MMM YYYY"
+    long_date_with_time: "DD. MMM YYYY [at] HH:mm"
+    now: Gerade eben
+    x_seconds_ago: "Vor {{count}}s"
+    x_minutes_ago: "Vor {{count}}m"
+    x_hours_ago: "Vor {{count}}h"
+    hour: Stunde
+    day: tag
+    hours: Stunden
+    days: Tage
+    month: month
+    months: months
+    year: year
+  reaction:
+    heart: Herz
+    smile: Lächeln
+    frown: Stirnrunzeln
+    btn_label: Reaktionen hinzufügen oder entfernen
+    undo_emoji: '{{ emoji }} Reaktion rückgängig machen'
+    react_emoji: mit {{ emoji }} reagieren
+    unreact_emoji: '{{ emoji }} Reaktion entfernen'
+  comment:
+    btn_add_comment: Einen Kommentar hinzufügen
+    reply_to: Antwort an
+    btn_reply: Antwort
+    btn_edit: Bearbeiten
+    btn_delete: Löschen
+    btn_flag: Melden
+    btn_save_edits: Änderungen speichern
+    btn_cancel: Abbrechen
+    show_more: "{{count}} mehr Kommentare"
+    tip_question: >-
+      Verwende Kommentare, um nach weiteren Informationen zu fragen oder Verbesserungen vorzuschlagen. Vermeide es, Fragen in Kommentaren zu beantworten.
+    tip_answer: >-
+      Verwende Stellungsnahmen, um anderen Nutzern zu antworten oder sie über Änderungen zu informieren. Wenn du neue Informationen hinzufügst, bearbeite deinen Beitrag, anstatt zu kommentieren.
+    tip_vote: Es fügt dem Beitrag etwas Nützliches hinzu
+  edit_answer:
+    title: Antwort bearbeiten
+    default_reason: Antwort bearbeiten
+    default_first_reason: Antwort hinzufügen
+    form:
+      fields:
+        revision:
+          label: Version
+        answer:
+          label: Antwort
+          feedback:
+            characters: der Inhalt muss mindestens 6 Zeichen lang sein.
+        edit_summary:
+          label: Zusammenfassung bearbeiten
+          placeholder: >-
+            Erkläre kurz deine Änderungen (korrigierte Rechtschreibung, korrigierte Grammatik, verbesserte Formatierung)
+    btn_save_edits: Änderungen speichern
+    btn_cancel: Abbrechen
+  tags:
+    title: Schlagwörter
+    sort_buttons:
+      popular: Beliebt
+      name: Name
+      newest: Neueste
+    button_follow: Folgen
+    button_following: Folgend
+    tag_label: fragen
+    search_placeholder: Nach Tagnamen filtern
+    no_desc: Der Tag hat keine Beschreibung.
+    more: Mehr
+    wiki: Wiki
+  ask:
+    title: Create Question
+    edit_title: Frage bearbeiten
+    default_reason: Frage bearbeiten
+    default_first_reason: Create question
+    similar_questions: Ähnliche Fragen
+    form:
+      fields:
+        revision:
+          label: Version
+        title:
+          label: Titel
+          placeholder: What's your topic? Be specific.
+          msg:
+            empty: Der Titel darf nicht leer sein.
+            range: Titel bis zu 150 Zeichen
+        body:
+          label: Körper
+          msg:
+            empty: Körper darf nicht leer sein.
+        tags:
+          label: Stichworte
+          msg:
+            empty: Tags dürfen nicht leer sein.
+        answer:
+          label: Antwort
+          msg:
+            empty: Antwort darf nicht leer sein.
+        edit_summary:
+          label: Zusammenfassung bearbeiten
+          placeholder: >-
+            Erkläre kurz deine Änderungen (korrigierte Rechtschreibung, korrigierte Grammatik, verbesserte Formatierung)
+    btn_post_question: Poste deine Frage
+    btn_save_edits: Änderungen speichern
+    answer_question: Eigene Frage beantworten
+    post_question&answer: Poste deine Frage und Antwort
+  tag_selector:
+    add_btn: Schlagwort hinzufügen
+    create_btn: Neuen Tag erstellen
+    search_tag: Tag suchen
+    hint: "Describe what your content is about, at least one tag is required."
+    no_result: Keine Tags gefunden
+    tag_required_text: Benötigter Tag (mindestens eins)
+  header:
+    nav:
+      question: Fragen
+      tag: Schlagwörter
+      user: Benutzer
+      badges: Abzeichen
+      profile: Profil
+      setting: Einstellungen
+      logout: Ausloggen
+      admin: Administrator
+      review: Überprüfung
+      bookmark: Lesezeichen
+      moderation: Moderation
+    search:
+      placeholder: Suchen
+  footer:
+    build_on: >-
+      Betrieben von <1> Apache Answer </1>- die Open-Source-Software, die Q&A-Communities betreibt.<br />Made with love © {{cc}}.
+  upload_img:
+    name: Ändern
+    loading: wird geladen...
+  pic_auth_code:
+    title: Captcha
+    placeholder: Gib den Text oben ein
+    msg:
+      empty: Captcha darf nicht leer sein.
+  inactive:
+    first: >-
+      Du bist fast fertig! Wir haben eine Aktivierungsmail an <bold>{{mail}}</bold> geschickt. Bitte folge den Anweisungen in der Mail, um dein Konto zu aktivieren.
+    info: "Wenn sie nicht ankommt, überprüfe deinen Spam-Ordner."
+    another: >-
+      Wir haben dir eine weitere Aktivierungs-E-Mail an <bold>{{mail}}</bold> geschickt. Es kann ein paar Minuten dauern, bis sie ankommt; überprüfe daher deinen Spam-Ordner.
+    btn_name: Aktivierungs Mail erneut senden
+    change_btn_name: E-Mail ändern
+    msg:
+      empty: Kann nicht leer sein.
+    resend_email:
+      url_label: Bist du sicher, dass du die Aktivierungs-E-Mail erneut senden willst?
+      url_text: Du kannst auch den Aktivierungslink oben an den Nutzer weitergeben.
+  login:
+    login_to_continue: Anmelden, um fortzufahren
+    info_sign: Du verfügst noch nicht über ein Konto? Registrieren
+    info_login: Du hast bereits ein Konto? <1>Anmelden</1>
+    agreements: Wenn du dich registrierst, stimmst du der <1>Datenschutzrichtlinie</1> und den <3>Nutzungsbedingungen</3> zu.
+    forgot_pass: Passwort vergessen?
+    name:
+      label: Name
+      msg:
+        empty: Der Name darf nicht leer sein.
+        range: Der Name muss zwischen 2 und 30 Zeichen lang sein.
+        character: 'Muss den Zeichensatz "a-z", "A-Z", "0-9", " - . _" verwenden'
+    email:
+      label: E-Mail
+      msg:
+        empty: E-Mail-Feld darf nicht leer sein.
+    password:
+      label: Passwort
+      msg:
+        empty: Passwort-Feld darf nicht leer sein.
+        different: Die beiden eingegebenen Passwörter stimmen nicht überein
+  account_forgot:
+    page_title: Dein Passwort vergessen
+    btn_name: Schicke mir eine E-Mail zur Wiederherstellung
+    send_success: >-
+      Wenn ein Konto mit <strong>{{mail}}</strong> übereinstimmt, solltest du in Kürze eine E-Mail mit Anweisungen erhalten, wie du dein Passwort zurücksetzen kannst.
+    email:
+      label: E-Mail
+      msg:
+        empty: E-Mail darf nicht leer sein.
+  change_email:
+    btn_cancel: Stornieren
+    btn_update: E-Mail Adresse aktualisieren
+    send_success: >-
+      Wenn ein Konto mit <strong>{{mail}}</strong> übereinstimmt, solltest du in Kürze eine E-Mail mit Anweisungen erhalten, wie du dein Passwort zurücksetzen kannst.
+    email:
+      label: Neue E-Mail
+      msg:
+        empty: E-Mail darf nicht leer sein.
+  oauth:
+    connect: Mit {{ auth_name }} verbinden
+    remove: '{{ auth_name }} entfernen'
+  oauth_bind_email:
+    subtitle: Wiederherstellungs-E-Mail zu deinem Konto hinzufügen.
+    btn_update: E-Mail aktualisieren
+    email:
+      label: E-Mail
+      msg:
+        empty: E-Mail darf nicht leer sein.
+    modal_title: E-Mail existiert bereits.
+    modal_content: Diese E-Mail ist bereits registriert. Bist du sicher, dass du dich mit dem bestehenden Konto verbinden möchtest?
+    modal_cancel: E-Mail ändern
+    modal_confirm: Mit dem bestehenden Konto verbinden
+  password_reset:
+    page_title: Passwort zurücksetzen
+    btn_name: Setze mein Passwort zurück
+    reset_success: >-
+      Du hast dein Passwort erfolgreich geändert; du wirst zur Anmeldeseite weitergeleitet.
+    link_invalid: >-
+      Dieser Link zum Zurücksetzen des Passworts ist leider nicht mehr gültig. Vielleicht ist dein Passwort bereits zurückgesetzt?
+    to_login: Weiter zur Anmeldeseite
+    password:
+      label: Passwort
+      msg:
+        empty: Passwort kann nicht leer sein.
+        length: Die Länge muss zwischen 8 und 32 liegen
+        different: Die auf beiden Seiten eingegebenen Passwörter sind inkonsistent
+    password_confirm:
+      label: Neues Passwort bestätigen
+  settings:
+    page_title: Einstellungen
+    goto_modify: Zum Ändern
+    nav:
+      profile: Profil
+      notification: Benachrichtigungen
+      account: Konto
+      interface: Benutzeroberfläche
+    profile:
+      heading: Profil
+      btn_name: Speichern
+      display_name:
+        label: Anzeigename
+        msg: Anzeigename darf nicht leer sein.
+        msg_range: Der Anzeigename muss zwischen 2 und 30 Zeichen lang sein.
+      username:
+        label: Nutzername
+        caption: Leute können dich als "@Benutzername" erwähnen.
+        msg: Benutzername darf nicht leer sein.
+        msg_range: Der Benutzername muss zwischen 2 und 30 Zeichen lang sein.
+        character: 'Muss den Zeichensatz "a-z", "0-9", " - . _" verwenden'
+      avatar:
+        label: Profilbild
+        gravatar: Gravatar
+        gravatar_text: Du kannst das Bild ändern auf
+        custom: Benutzerdefiniert
+        custom_text: Du kannst dein Bild hochladen.
+        default: System
+        msg: Bitte lade einen Avatar hoch
+      bio:
+        label: Über mich
+      website:
+        label: Webseite
+        placeholder: "https://example.com"
+        msg: Website falsches Format
+      location:
+        label: Standort
+        placeholder: "Stadt, Land"
+    notification:
+      heading: E-Mail-Benachrichtigungen
+      turn_on: Aktivieren
+      inbox:
+        label: Posteingangsbenachrichtigungen
+        description: Antworten auf deine Fragen, Kommentare, Einladungen und mehr.
+      all_new_question:
+        label: Alle neuen Fragen
+        description: Lass dich über alle neuen Fragen benachrichtigen. Bis zu 50 Fragen pro Woche.
+      all_new_question_for_following_tags:
+        label: Alle neuen Fragen für folgende Tags
+        description: Lass dich über neue Fragen zu folgenden Tags benachrichtigen.
+    account:
+      heading: Konto
+      change_email_btn: E-Mail ändern
+      change_pass_btn: Passwort ändern
+      change_email_info: >-
+        Wir haben eine E-Mail an diese Adresse geschickt. Bitte befolge die Anweisungen zur Bestätigung.
+      email:
+        label: E-Mail
+      new_email:
+        label: Neue E-Mail
+        msg: Neue E-Mail darf nicht leer sein.
+      pass:
+        label: Aktuelles Passwort
+        msg: Passwort kann nicht leer sein.
+      password_title: Passwort
+      current_pass:
+        label: Aktuelles Passwort
+        msg:
+          empty: Das aktuelle Passwort darf nicht leer sein.
+          length: Die Länge muss zwischen 8 und 32 liegen.
+          different: Die beiden eingegebenen Passwörter stimmen nicht überein.
+      new_pass:
+        label: Neues Passwort
+      pass_confirm:
+        label: Neues Passwort bestätigen
+    interface:
+      heading: Benutzeroberfläche
+      lang:
+        label: Sprache der Benutzeroberfläche
+        text: Sprache der Benutzeroberfläche. Sie ändert sich, wenn du die Seite aktualisierst.
+    my_logins:
+      title: Meine Anmeldungen
+      label: Melde dich mit diesen Konten an oder registriere dich auf dieser Seite.
+      modal_title: Login entfernen
+      modal_content: Bist du sicher, dass du dieses Login aus deinem Konto entfernen möchtest?
+      modal_confirm_btn: Entfernen
+      remove_success: Erfolgreich entfernt
+  toast:
+    update: Aktualisierung erfolgreich
+    update_password: Das Kennwort wurde erfolgreich geändert.
+    flag_success: Danke fürs Markieren.
+    forbidden_operate_self: Verboten, an sich selbst zu operieren
+    review: Deine Überarbeitung wird nach der Überprüfung angezeigt.
+    sent_success: Erfolgreich gesendet
+  related_question:
+    title: Related
+    answers: antworten
+  linked_question:
+    title: Linked
+    description: Posts linked to
+    no_linked_question: No contents linked from this content.
+  invite_to_answer:
+    title: Frage jemanden
+    desc: Lade Leute ein, von denen du glaubst, dass sie die Antwort wissen könnten.
+    invite: Zur Antwort einladen
+    add: Personen hinzufügen
+    search: Personen suchen
+  question_detail:
+    action: Aktion
+    Asked: Gefragt
+    asked: gefragt
+    update: Geändert
+    edit: bearbeitet
+    commented: kommentiert
+    Views: Gesehen
+    Follow: Folgen
+    Following: Folgend
+    follow_tip: Folge dieser Frage, um Benachrichtigungen zu erhalten
+    answered: beantwortet
+    closed_in: Abgeschlossen in
+    show_exist: Bestehende Frage anzeigen.
+    useful: Nützlich
+    question_useful: Es ist nützlich und klar
+    question_un_useful: Es ist unklar oder nicht nützlich
+    question_bookmark: Lesezeichen für diese Frage
+    answer_useful: Es ist nützlich
+    answer_un_useful: Es ist nicht nützlich
+    answers:
+      title: Antworten
+      score: Punkte
+      newest: Neueste
+      oldest: Älteste
+      btn_accept: Akzeptieren
+      btn_accepted: Akzeptiert
+    write_answer:
+      title: Deine Antwort
+      edit_answer: Meine existierende Antwort bearbeiten
+      btn_name: Poste deine Antwort
+      add_another_answer: Weitere Antwort hinzufügen
+      confirm_title: Antworten fortsetzen
+      continue: Weitermachen
+      confirm_info: >-
+        <p>Bist du sicher, dass du eine weitere Antwort hinzufügen willst?</p><p>Du könntest stattdessen den Bearbeiten-Link verwenden, um deine existierende Antwort zu verfeinern und zu verbessern.</p>
+      empty: Antwort darf nicht leer sein.
+      characters: der Inhalt muss mindestens 6 Zeichen lang sein.
+      tips:
+        header_1: Danke für deine Antwort
+        li1_1: Bitte stelle sicher, dass du <strong>die Frage beantwortest</strong>. Gib Details an und erzähle von deiner Recherche.
+        li1_2: Untermauere alle Aussagen, die du erstellst, mit Referenzen oder persönlichen Erfahrungen.
+        header_2: Aber <strong>vermeide</strong>...
+        li2_1: Bitte um Hilfe, um Klarstellung oder um Antwort auf andere Antworten.
+    reopen:
+      confirm_btn: Wieder öffnen
+      title: Diesen Beitrag erneut öffnen
+      content: Bist du sicher, dass du wieder öffnen willst?
+    list:
+      confirm_btn: Liste
+      title: Diesen Beitrag auflisten
+      content: Möchten Sie diesen Beitrag wirklich in der Liste anzeigen?
+    unlist:
+      confirm_btn: Von Liste nehmen
+      title: Diesen Beitrag von der Liste nehmen
+      content: Möchten Sie diesen Beitrag wirklich aus der Liste ausblenden?
+    pin:
+      title: Diesen Beitrag anpinnen
+      content: Bist du sicher, dass du den Beitrag global anheften möchtest? Dieser Beitrag wird in allen Beitragslisten ganz oben erscheinen.
+      confirm_btn: Anheften
+  delete:
+    title: Diesen Beitrag löschen
+    question: >-
+      Wir raten davon ab, <strong>Fragen mit Antworten zu löschen</strong>, weil dadurch zukünftigen Lesern dieses Wissen vorenthalten wird.</p><p>Wiederholtes Löschen von beantworteten Fragen kann dazu führen, dass dein Konto für Fragen gesperrt wird. Bist du sicher, dass du löschen möchtest?
+    answer_accepted: >-
+      <p>Wir empfehlen nicht, <strong>akzeptierte Antworten zu löschen</strong>, denn dadurch wird zukünftigen Lesern dieses Wissen vorenthalten. </p> Das wiederholte Löschen von akzeptierten Antworten kann dazu führen, dass dein Konto für die Beantwortung gesperrt wird. Bist du sicher, dass du löschen möchtest?
+    other: Bist du sicher, dass du löschen möchtest?
+    tip_answer_deleted: Diese Antwort wurde gelöscht
+    undelete_title: Diesen Beitrag wiederherstellen
+    undelete_desc: Bist du sicher, dass du die Löschung umkehren willst?
+  btns:
+    confirm: Bestätigen
+    cancel: Abbrechen
+    edit: Bearbeiten
+    save: Speichern
+    delete: Löschen
+    undelete: Wiederherstellen
+    list: Liste
+    unlist: Verstecken
+    unlisted: Versteckt
+    login: Einloggen
+    signup: Registrieren
+    logout: Ausloggen
+    verify: Überprüfen
+    create: Erstellen
+    approve: Genehmigen
+    reject: Ablehnen
+    skip: Überspringen
+    discard_draft: Entwurf verwerfen
+    pinned: Angeheftet
+    all: Alle
+    question: Frage
+    answer: Antwort
+    comment: Kommentar
+    refresh: Aktualisieren
+    resend: Erneut senden
+    deactivate: Deaktivieren
+    active: Aktiv
+    suspend: Sperren
+    unsuspend: Entsperren
+    close: Schließen
+    reopen: Wieder öffnen
+    ok: Okay
+    light: Hell
+    dark: Dunkel
+    system_setting: System-Einstellung
+    default: Standard
+    reset: Zurücksetzen
+    tag: Tag
+    post_lowercase: post
+    filter: Filter
+    ignore: Ignorieren
+    submit: Absenden
+    normal: Normal
+    closed: Geschlossen
+    deleted: Gelöscht
+    deleted_permanently: Dauerhaft gelöscht
+    pending: Ausstehend
+    more: Mehr
+    view: Betrachten
+    card: Karte
+    compact: Kompakt
+    display_below: Unten anzeigen
+    always_display: Immer anzeigen
+    or: oder
+    back_sites: Zurück zur Website
+  search:
+    title: Suchergebnisse
+    keywords: Schlüsselwörter
+    options: Optionen
+    follow: Folgen
+    following: Folgend
+    counts: "{{count}} Ergebnisse"
+    counts_loading: "... Results"
+    more: Mehr
+    sort_btns:
+      relevance: Relevanz
+      newest: Neueste
+      active: Aktiv
+      score: Punktzahl
+      more: Mehr
+    tips:
+      title: Erweiterte Suchtipps
+      tag: "<1>[tag]</1> Suche mit einem Tag"
+      user: "<1>user:username</1> Suche nach Autor"
+      answer: "<1>Antworten:0</1> unbeantwortete Fragen"
+      score: "<1>score:3</1> Beiträge mit einer 3+ Punktzahl"
+      question: "<1>is:question</1> Suchfragen"
+      is_answer: "<1>ist:answer</1> Suchantworten"
+    empty: Wir konnten nichts finden. <br /> Versuche es mit anderen oder weniger spezifischen Keywords.
+  share:
+    name: Teilen
+    copy: Link kopieren
+    via: Beitrag teilen über...
+    copied: Kopiert
+    facebook: Auf Facebook teilen
+    twitter: Auf X teilen
+  cannot_vote_for_self: Du kannst nicht für deinen eigenen Beitrag stimmen.
+  modal_confirm:
+    title: Fehler...
+  delete_permanently:
+    title: Endgültig löschen
+    content: Sind Sie sicher, dass Sie den Inhalt endgültig löschen möchten?
+  account_result:
+    success: Dein neues Konto ist bestätigt; du wirst zur Startseite weitergeleitet.
+    link: Weiter zur Startseite
+    oops: Hoppla!
+    invalid: Der Link, den Sie verwendet haben, funktioniert nicht mehr.
+    confirm_new_email: Deine E-Mail wurde aktualisiert.
+    confirm_new_email_invalid: >-
+      Dieser Bestätigungslink ist leider nicht mehr gültig. Vielleicht wurde deine E-Mail-Adresse bereits geändert?
+  unsubscribe:
+    page_title: Abonnement entfernen
+    success_title: Erfolgreich vom Abo abgemeldet
+    success_desc: Du wurdest erfolgreich aus der Abonnentenliste gestrichen und wirst keine weiteren E-Mails von uns erhalten.
+    link: Einstellungen ändern
+  question:
+    following_tags: Folgende Tags
+    edit: Bearbeiten
+    save: Speichern
+    follow_tag_tip: Folge den Tags, um deine Liste mit Fragen zu erstellen.
+    hot_questions: Angesagte Fragen
+    all_questions: Alle Fragen
+    x_questions: "{{ count }} Fragen"
+    x_answers: "{{ count }} Antworten"
+    x_posts: "{{ count }} Posts"
+    questions: Fragen
+    answers: Antworten
+    newest: Neueste
+    active: Aktiv
+    hot: Heiß
+    frequent: Häufig
+    recommend: Empfehlen
+    score: Punktzahl
+    unanswered: Unbeantwortet
+    modified: geändert
+    answered: beantwortet
+    asked: gefragt
+    closed: schließen
+    follow_a_tag: Einem Tag folgen
+    more: Mehr
+  personal:
+    overview: Übersicht
+    answers: Antworten
+    answer: antwort
+    questions: Fragen
+    question: frage
+    bookmarks: Lesezeichen
+    reputation: Ansehen
+    comments: Kommentare
+    votes: Stimmen
+    badges: Abzeichen
+    newest: Neueste
+    score: Punktzahl
+    edit_profile: Profil bearbeiten
+    visited_x_days: "{{ count }} Tage besucht"
+    viewed: Gesehen
+    joined: Beigetreten
+    comma: ","
+    last_login: Gesehen
+    about_me: Über mich
+    about_me_empty: "// Hallo Welt !"
+    top_answers: Top-Antworten
+    top_questions: Top-Fragen
+    stats: Statistiken
+    list_empty: Keine Beiträge gefunden.<br />Vielleicht möchtest du einen anderen Reiter auswählen?
+    content_empty: Keine Posts gefunden.
+    accepted: Akzeptiert
+    answered: antwortete
+    asked: gefragt
+    downvoted: negativ bewertet
+    mod_short: MOD
+    mod_long: Moderatoren
+    x_reputation: ansehen
+    x_votes: Stimmen erhalten
+    x_answers: Antworten
+    x_questions: Fragen
+    recent_badges: Neueste Abzeichen
+  install:
+    title: Installation
+    next: Nächste
+    done: Erledigt
+    config_yaml_error: Die Datei config.yaml kann nicht erstellt werden.
+    lang:
+      label: Bitte wähle eine Sprache
+    db_type:
+      label: Datenbank-Engine
+    db_username:
+      label: Nutzername
+      placeholder: wurzel
+      msg: Benutzername darf nicht leer sein.
+    db_password:
+      label: Passwort
+      placeholder: wurzel
+      msg: Passwort kann nicht leer sein.
+    db_host:
+      label: Datenbank-Host
+      placeholder: "db:3306"
+      msg: Datenbank-Host darf nicht leer sein.
+    db_name:
+      label: Datenbankname
+      placeholder: antworten
+      msg: Der Datenbankname darf nicht leer sein.
+    db_file:
+      label: Datenbank-Datei
+      placeholder: /data/answer.Weder noch
+      msg: Datenbankdatei kann nicht leer sein.
+    ssl_enabled:
+      label: SSL aktivieren
+    ssl_enabled_on:
+      label: On
+    ssl_enabled_off:
+      label: Off
+    ssl_mode:
+      label: SSL-Modus
+    ssl_root_cert:
+      placeholder: SSL-Root-Zertifikat Pfad
+      msg: Pfad zum Ssl-Root-Zertifikat darf nicht leer sein
+    ssl_cert:
+      placeholder: SSL-Zertifikat Pfad
+      msg: Pfad zum SSL-Zertifikat darf nicht leer sein
+    ssl_key:
+      placeholder: SSL-Key Pfad
+      msg: Der Pfad zum SSL-Key darf nicht leer sein
+    config_yaml:
+      title: config.yaml erstellen
+      label: Die erstellte config.yaml-Datei.
+      desc: >-
+        Du kannst die Datei <1>config.yaml</1> manuell im Verzeichnis <1>/var/wwww/xxx/</1> erstellen und den folgenden Text dort einfügen.
+      info: Nachdem du das getan hast, klickst du auf die Schaltfläche "Weiter".
+    site_information: Standortinformationen
+    admin_account: Administratorkonto
+    site_name:
+      label: Seitenname
+      msg: Standortname darf nicht leer sein.
+      msg_max_length: Der Name der Website darf maximal 30 Zeichen lang sein.
+    site_url:
+      label: Seiten-URL
+      text: Die Adresse deiner Website.
+      msg:
+        empty: Die Website-URL darf nicht leer sein.
+        incorrect: Falsches Format der Website-URL.
+        max_length: Die URL der Website darf maximal 512 Zeichen lang sein.
+    contact_email:
+      label: Kontakt E-Mail
+      text: E-Mail-Adresse des Hauptkontakts, der für diese Website verantwortlich ist.
+      msg:
+        empty: Kontakt-E-Mail kann nicht leer sein.
+        incorrect: Falsches Format der Kontakt-E-Mail.
+    login_required:
+      label: Privat
+      switch: Anmeldung erforderlich
+      text: Nur eingeloggte Benutzer können auf diese Community zugreifen.
+    admin_name:
+      label: Name
+      msg: Der Name darf nicht leer sein.
+      character: 'Muss den Zeichensatz "a-z", "A-Z", "0-9", " - . _" verwenden'
+      msg_max_length: Der Name muss zwischen 2 und 30 Zeichen lang sein.
+    admin_password:
+      label: Passwort
+      text: >-
+        Du brauchst dieses Passwort, um dich einzuloggen. Bitte bewahre es an einem sicheren Ort auf.
+      msg: Passwort kann nicht leer sein.
+      msg_min_length: Passwort muss mindestens 8 Zeichen lang sein.
+      msg_max_length: Das Passwort darf maximal 32 Zeichen lang sein.
+    admin_confirm_password:
+      label: "Passwort bestätigen"
+      text: "Bitte geben Sie Ihr Passwort erneut ein, um es zu bestätigen."
+      msg: "Passwortbestätigung stimmt nicht überein!"
+    admin_email:
+      label: E-Mail
+      text: Du brauchst diese E-Mail, um dich einzuloggen.
+      msg:
+        empty: E-Mail darf nicht leer sein.
+        incorrect: E-Mail falsches Format.
+    ready_title: Ihre Seite ist bereit
+    ready_desc: >-
+      Wenn du noch mehr Einstellungen ändern möchtest, besuche den <1>Admin-Bereich</1>; du findest ihn im Seitenmenü.
+    good_luck: "Viel Spaß und viel Glück!"
+    warn_title: Warnung
+    warn_desc: >-
+      Die Datei <1>config.yaml</1> existiert bereits. Wenn du einen der Konfigurationspunkte in dieser Datei zurücksetzen musst, lösche sie bitte zuerst.
+    install_now: Du kannst versuchen, <1>jetzt zu installieren</1>.
+    installed: Bereits installiert
+    installed_desc: >-
+      Du scheinst es bereits installiert zu haben. Um neu zu installieren, lösche bitte zuerst deine alten Datenbanktabellen.
+    db_failed: Datenbankverbindung fehlgeschlagen
+    db_failed_desc: >-
+      Das bedeutet entweder, dass die Datenbankinformationen in deiner <1>config.yaml</1> Datei falsch sind oder dass der Kontakt zum Datenbankserver nicht hergestellt werden konnte. Das könnte bedeuten, dass der Datenbankserver deines Hosts ausgefallen ist.
+  counts:
+    views: Ansichten
+    votes: Stimmen
+    answers: Antworten
+    accepted: Akzeptiert
+  page_error:
+    http_error: HTTP Fehler {{ code }}
+    desc_403: Du hast keine Berechtigung, auf diese Seite zuzugreifen.
+    desc_404: Leider existiert diese Seite nicht.
+    desc_50X: Der Server ist auf einen Fehler gestoßen und konnte deine Anfrage nicht vollständig abschließen.
+    back_home: Zurück zur Startseite
+  page_maintenance:
+    desc: "Wir werden gewartet, wir sind bald wieder da."
+  nav_menus:
+    dashboard: Dashboard
+    contents: Inhalt
+    questions: Fragen
+    answers: Antworten
+    users: Benutzer
+    badges: Abzeichen
+    flags: Meldungen
+    settings: Einstellungen
+    general: Allgemein
+    interface: Benutzeroberfläche
+    smtp: SMTP
+    branding: Branding
+    legal: Rechtliches
+    write: Schreiben
+    tos: Nutzungsbedingungen
+    privacy: Privatsphäre
+    seo: SEO
+    customize: Anpassen
+    themes: Themen
+    login: Anmeldung
+    privileges: Berechtigungen
+    plugins: Erweiterungen (Plugins)
+    installed_plugins: Installierte Plugins
+    apperance: Erscheinungsbild
+  website_welcome: Willkommen auf {{site_name}}
+  user_center:
+    login: Anmelden
+    qrcode_login_tip: Bitte verwende {{ agentName }}, um den QR-Code zu scannen und dich einzuloggen.
+    login_failed_email_tip: Anmeldung ist fehlgeschlagen. Bitte erlaube dieser App, auf deine E-Mail-Informationen zuzugreifen, bevor du es erneut versuchst.
+  badges:
+    modal:
+      title: Glückwunsch
+      content: Sie haben sich ein neues Abzeichen verdient.
+      close: Schließen
+      confirm: Abzeichen ansehen
+    title: Abzeichen
+    awarded: Verliehen
+    earned_×: Verdiente ×{{ number }}
+    ×_awarded: "verliehen {{ number }} "
+    can_earn_multiple: Du kannst das mehrmals verdienen.
+    earned: Verdient
+  admin:
+    admin_header:
+      title: Administrator
+    dashboard:
+      title: Dashboard
+      welcome: Willkommen im Admin Bereich!
+      site_statistics: Website-Statistiken
+      questions: "Fragen:"
+      resolved: "Belöst:"
+      unanswered: "Nicht beantwortet:"
+      answers: "Antworten:"
+      comments: "Kommentare:"
+      votes: "Stimmen:"
+      users: "Nutzer:"
+      flags: "Meldungen:"
+      reviews: "Rezension:"
+      site_health: Gesundheit der Website
+      version: "Version:"
+      https: "HTTPS:"
+      upload_folder: "Hochladeverzeichnis:"
+      run_mode: "Betriebsmodus:"
+      private: Privat
+      public: Öffentlich
+      smtp: "SMTP:"
+      timezone: "Zeitzone:"
+      system_info: Systeminformationen
+      go_version: "Go Version:"
+      database: "Datenbank:"
+      database_size: "Datenbankgröße:"
+      storage_used: "Verwendeter Speicher:"
+      uptime: "Betriebszeit:"
+      links: Links
+      plugins: Plugins
+      github: GitHub
+      blog: Blog
+      contact: Kontakt
+      forum: Forum
+      documents: Dokumentation
+      feedback: Rückmeldung
+      support: Unterstützung
+      review: Überprüfung
+      config: Konfig
+      update_to: Aktualisieren zu
+      latest: Aktuell
+      check_failed: Prüfung fehlgeschlagen
+      "yes": "Ja"
+      "no": "Nein"
+      not_allowed: Nicht erlaubt
+      allowed: Erlaubt
+      enabled: Aktiviert
+      disabled: Deaktiviert
+      writable: Schreibbar
+      not_writable: Nicht schreibbar
+    flags:
+      title: Meldungen
+      pending: Ausstehend
+      completed: Abgeschlossen
+      flagged: Gekennzeichnet
+      flagged_type: '{{ type }} gemeldet'
+      created: Erstellt
+      action: Aktion
+      review: Überprüfung
+    user_role_modal:
+      title: Benutzerrolle ändern zu...
+      btn_cancel: Abbrechen
+      btn_submit: Senden
+    new_password_modal:
+      title: Neues Passwort festlegen
+      form:
+        fields:
+          password:
+            label: Passwort
+            text: Der Nutzer wird abgemeldet und muss sich erneut anmelden.
+            msg: Das Passwort muss mindestens 8-32 Zeichen lang sein.
+      btn_cancel: Abbrechen
+      btn_submit: Senden
+    edit_profile_modal:
+      title: Profil bearbeiten
+      form:
+        fields:
+          display_name:
+            label: Anzeigename
+            msg_range: Der Anzeigename muss zwischen 2 und 30 Zeichen lang sein.
+          username:
+            label: Nutzername
+            msg_range: Der Benutzername muss 2-30 Zeichen lang sein.
+          email:
+            label: E-Mail
+            msg_invalid: Ungültige E-Mail-Adresse.
+      edit_success: Erfolgreich bearbeitet
+      btn_cancel: Abbrechen
+      btn_submit: Absenden
+    user_modal:
+      title: Neuen Benutzer hinzufügen
+      form:
+        fields:
+          users:
+            label: Masse Benutzer hinzufügen
+            placeholder: "John Smith, john@example.com, BUSYopr2\nAlice, alice@example.com, fpDntV8q"
+            text: Trenne "Name, E-Mail, Passwort" mit Kommas. Ein Benutzer pro Zeile.
+            msg: "Bitte gib die E-Mail des Nutzers ein, eine pro Zeile."
+          display_name:
+            label: Anzeigename
+            msg: Der Anzeigename muss zwischen 2 und 30 Zeichen lang sein.
+          email:
+            label: E-Mail
+            msg: Die E-Mail ist nicht gültig.
+          password:
+            label: Passwort
+            msg: Das Passwort muss mindestens 8-32 Zeichen lang sein.
+      btn_cancel: Abbrechen
+      btn_submit: Senden
+    users:
+      title: Benutzer
+      name: Name
+      email: E-Mail
+      reputation: Ansehen
+      created_at: Angelegt am
+      delete_at: Löschzeit
+      suspend_at: Sperrzeit
+      suspend_until: Suspend until
+      status: Status
+      role: Rolle
+      action: Aktion
+      change: Ändern
+      all: Alle
+      staff: Teammitglieder
+      more: Mehr
+      inactive: Inaktiv
+      suspended: Gesperrt
+      deleted: Gelöscht
+      normal: Normal
+      Moderator: Moderation
+      Admin: Administrator
+      User: Benutzer
+      filter:
+        placeholder: "Nach Namen, user:id filtern"
+      set_new_password: Neues Passwort festlegen
+      edit_profile: Profil bearbeiten
+      change_status: Status ändern
+      change_role: Rolle wechseln
+      show_logs: Protokolle anzeigen
+      add_user: Benutzer hinzufügen
+      deactivate_user:
+        title: Benutzer deaktivieren
+        content: Ein inaktiver Nutzer muss seine E-Mail erneut bestätigen.
+      delete_user:
+        title: Diesen Benutzer löschen
+        content: Bist du sicher, dass du diesen Benutzer löschen willst? Das ist dauerhaft!
+        remove: Ihren Inhalt entfernen
+        label: Alle Fragen, Antworten, Kommentare, etc. entfernen
+        text: Aktiviere diese Option nicht, wenn du nur das Benutzerkonto löschen möchtest.
+      suspend_user:
+        title: Diesen Benutzer sperren
+        content: Ein gesperrter Benutzer kann sich nicht einloggen.
+        label: How long will the user be suspended for?
+        forever: Forever
+    questions:
+      page_title: Fragen
+      unlisted: Nicht gelistet
+      post: Beitrag
+      votes: Stimmen
+      answers: Antworten
+      created: Erstellt
+      status: Status
+      action: Aktion
+      change: Ändern
+      pending: Ausstehend
+      filter:
+        placeholder: "Filtern nach Titel, Frage:Id"
+    answers:
+      page_title: Antworten
+      post: Beitrag
+      votes: Stimmen
+      created: Erstellt
+      status: Status
+      action: Aktion
+      change: Ändern
+      filter:
+        placeholder: "Filtern nach Titel, Antwort: id"
+    general:
+      page_title: Allgemein
+      name:
+        label: Seitenname
+        msg: Der Site-Name darf nicht leer sein.
+        text: "Der Name dieser Website, wie er im Titel-Tag verwendet wird."
+      site_url:
+        label: Seiten-URL
+        msg: Die Website-Url darf nicht leer sein.
+        validate: Bitte gib eine gültige URL ein.
+        text: Die Adresse deiner Website.
+      short_desc:
+        label: Kurze Seitenbeschreibung
+        msg: Die kurze Website-Beschreibung darf nicht leer sein.
+        text: "Kurze Beschreibung, wie im Titel-Tag auf der Homepage verwendet."
+      desc:
+        label: Seitenbeschreibung
+        msg: Die Websitebeschreibung darf nicht leer sein.
+        text: "Beschreibe diese Seite in einem Satz, wie er im Meta Description Tag verwendet wird."
+      contact_email:
+        label: Kontakt E-Mail
+        msg: Kontakt-E-Mail darf nicht leer sein.
+        validate: Kontakt-E-Mail ist ungültig.
+        text: E-Mail-Adresse des Hauptkontakts, der für diese Website verantwortlich ist.
+      check_update:
+        label: Softwareaktualisierungen
+        text: Automatisch auf Updates prüfen
+    interface:
+      page_title: Benutzeroberfläche
+      language:
+        label: Interface Sprache
+        msg: Sprache der Benutzeroberfläche darf nicht leer sein.
+        text: Sprache der Benutzeroberfläche. Sie ändert sich, wenn du die Seite aktualisierst.
+      time_zone:
+        label: Zeitzone
+        msg: Die Zeitzone darf nicht leer sein.
+        text: Wähle eine Stadt in der gleichen Zeitzone wie du.
+      avatar:
+        label: Default avatar
+        text: For users without a custom avatar of their own.
+      gravatar_base_url:
+        label: Gravatar base URL
+        text: URL of the Gravatar provider's API base. Ignored when empty.
+    smtp:
+      page_title: SMTP
+      from_email:
+        label: Von E-Mail
+        msg: Von E-Mail darf nicht leer sein.
+        text: Die E-Mail-Adresse, von der E-Mails gesendet werden.
+      from_name:
+        label: Von Name
+        msg: Absendername darf nicht leer sein.
+        text: Der Name, von dem E-Mails gesendet werden.
+      smtp_host:
+        label: SMTP-Host
+        msg: Der SMTP-Host darf nicht leer sein.
+        text: Dein Mailserver.
+      encryption:
+        label: Verschlüsselung
+        msg: Verschlüsselung darf nicht leer sein.
+        text: Für die meisten Server ist SSL die empfohlene Option.
+        ssl: SSL
+        tls: TLS
+        none: Keine
+      smtp_port:
+        label: SMTP-Port
+        msg: SMTP-Port muss Nummer 1 ~ 65535 sein.
+        text: Der Port zu deinem Mailserver.
+      smtp_username:
+        label: SMTP-Benutzername
+        msg: Der SMTP-Benutzername darf nicht leer sein.
+      smtp_password:
+        label: SMTP-Kennwort
+        msg: Das SMTP-Passwort darf nicht leer sein.
+      test_email_recipient:
+        label: Test-E-Mail-Empfänger
+        text: Gib die E-Mail-Adresse an, an die Testsendungen gesendet werden sollen.
+        msg: Test-E-Mail-Empfänger ist ungültig
+      smtp_authentication:
+        label: Authentifizierung aktivieren
+        title: SMTP-Authentifizierung
+        msg: Die SMTP-Authentifizierung darf nicht leer sein.
+        "yes": "Ja"
+        "no": "Nein"
+    branding:
+      page_title: Branding
+      logo:
+        label: Logo
+        msg: Logo darf nicht leer sein.
+        text: Das Logobild oben links auf deiner Website. Verwende ein breites rechteckiges Bild mit einer Höhe von 56 und einem Seitenverhältnis von mehr als 3:1. Wenn du es leer lässt, wird der Text des Website-Titels angezeigt.
+      mobile_logo:
+        label: Mobiles Logo
+        text: Das Logo wird auf der mobilen Version deiner Website verwendet. Verwende ein breites rechteckiges Bild mit einer Höhe von 56. Wenn du nichts angibst, wird das Bild aus der Einstellung "Logo" verwendet.
+      square_icon:
+        label: Quadratisches Symbol
+        msg: Quadratisches Symbol darf nicht leer sein.
+        text: Bild, das als Basis für Metadatensymbole verwendet wird. Sollte idealerweise größer als 512x512 sein.
+      favicon:
+        label: Favicon
+        text: Ein Favicon für deine Website. Um korrekt über ein CDN zu funktionieren, muss es ein png sein. Es wird auf 32x32 verkleinert. Wenn du es leer lässt, wird das "quadratische Symbol" verwendet.
+    legal:
+      page_title: Rechtliches
+      terms_of_service:
+        label: Nutzungsbedingungen
+        text: "Du kannst hier Inhalte zu den Nutzungsbedingungen hinzufügen. Wenn du bereits ein Dokument hast, das anderswo gehostet wird, gib hier die vollständige URL an."
+      privacy_policy:
+        label: Datenschutzbestimmungen
+        text: "Du kannst hier Inhalte zur Datenschutzerklärung hinzufügen. Wenn du bereits ein Dokument hast, das anderswo gehostet wird, gib hier die vollständige URL an."
+      external_content_display:
+        label: Externer Inhalt
+        text: "Inhalte umfassen Bilder, Videos und Medien, die von externen Websites eingebettet sind."
+        always_display: Externen Inhalt immer anzeigen
+        ask_before_display: Vor der Anzeige externer Inhalte fragen
+    write:
+      page_title: Schreiben
+      restrict_answer:
+        title: Antwort bearbeiten
+        label: Jeder Benutzer kann für jede Frage nur eine Antwort schreiben
+        text: "Schalten Sie aus, um es Benutzern zu ermöglichen, mehrere Antworten auf dieselbe Frage zu schreiben, was dazu führen kann, dass Antworten nicht im Fokus stehen."
+      recommend_tags:
+        label: Empfohlene Tags
+        text: "Empfohlene Tags werden standardmäßig in der Dropdown-Liste angezeigt."
+        msg:
+          contain_reserved: "empfohlene Tags dürfen keine reservierten Tags enthalten"
+      required_tag:
+        title: Benötigte Tags festlegen
+        label: '"Empfohlene Tags" als erforderliche Tags festlegen'
+        text: "Jede neue Frage muss mindestens ein Empfehlungs-Tag haben."
+      reserved_tags:
+        label: Reservierte Tags
+        text: "Reservierte Tags können nur vom Moderator verwendet werden."
+      image_size:
+        label: Maximale Bildgröße (MB)
+        text: "Die maximale Bildladegröße."
+      attachment_size:
+        label: Maximale Anhanggröße (MB)
+        text: "Die maximale Dateigröße für Dateianhänge."
+      image_megapixels:
+        label: Max. BildmePixel
+        text: "Maximale Anzahl an Megapixeln für ein Bild."
+      image_extensions:
+        label: Autorisierte Bilderweiterungen
+        text: "Eine Liste von Dateierweiterungen, die für die Anzeige von Bildern erlaubt sind, getrennt durch Kommata."
+      attachment_extensions:
+        label: Autorisierte Anhänge Erweiterungen
+        text: "Eine Liste von Dateierweiterungen, die für das Hochladen erlaubt sind, getrennt mit Kommas. WARNUNG: Erlaubt Uploads kann Sicherheitsprobleme verursachen."
+    seo:
+      page_title: SEO
+      permalink:
+        label: Dauerlink
+        text: Benutzerdefinierte URL-Strukturen können die Benutzerfreundlichkeit und die Vorwärtskompatibilität deiner Links verbessern.
+      robots:
+        label: robots.txt
+        text: Dadurch werden alle zugehörigen Site-Einstellungen dauerhaft überschrieben.
+    themes:
+      page_title: Themen
+      themes:
+        label: Themen
+        text: Wähle ein bestehendes Thema aus.
+      color_scheme:
+        label: Farbschema
+      navbar_style:
+        label: Hintergrundstil der Navigationsleiste
+      primary_color:
+        label: Primäre Farbe
+        text: Ändere die Farben, die von deinen Themes verwendet werden
+    css_and_html:
+      page_title: CSS und HTML
+      custom_css:
+        label: Benutzerdefinierte CSS
+        text: >
+
+      head:
+        label: Kopf
+        text: >
+
+      header:
+        label: Header
+        text: >
+
+      footer:
+        label: Fusszeile
+        text: Dies wird vor </body> eingefügt.
+      sidebar:
+        label: Seitenleiste
+        text: Dies wird in die Seitenleiste eingefügt.
+    login:
+      page_title: Anmeldung
+      membership:
+        title: Mitgliedschaft
+        label: Neuregistrierungen zulassen
+        text: Schalte sie ab, um zu verhindern, dass jemand ein neues Konto erstellt.
+      email_registration:
+        title: E-Mail Registrierung
+        label: E-Mail-Registrierung zulassen
+        text: Abschalten, um zu verhindern, dass jemand ein neues Konto per E-Mail erstellt.
+      allowed_email_domains:
+        title: Zugelassene E-Mail-Domänen
+        text: E-Mail-Domänen, bei denen die Nutzer Konten registrieren müssen. Eine Domäne pro Zeile. Wird ignoriert, wenn leer.
+      private:
+        title: Privatgelände
+        label: Anmeldung erforderlich
+        text: Nur angemeldete Benutzer können auf diese Community zugreifen.
+      password_login:
+        title: Passwort-Login
+        label: E-Mail-und Passwort-Login erlauben
+        text: "WARNUNG: Wenn du diese Option abschaltest, kannst du dich möglicherweise nicht mehr anmelden, wenn du zuvor keine andere Anmeldemethode konfiguriert hast."
+    installed_plugins:
+      title: Installierte Plugins
+      plugin_link: Plugins erweitern und ergänzen die Funktionalität. Du kannst Plugins im <1>Pluginverzeichnis</1> finden.
+      filter:
+        all: Alle
+        active: Aktiv
+        inactive: Inaktiv
+        outdated: Veraltet
+      plugins:
+        label: Erweiterungen
+        text: Wähle ein bestehendes Plugin aus.
+      name: Name
+      version: Version
+      status: Status
+      action: Aktion
+      deactivate: Deaktivieren
+      activate: Aktivieren
+      settings: Einstellungen
+    settings_users:
+      title: Benutzer
+      avatar:
+        label: Standard-Avatar
+        text: Für Benutzer ohne einen eigenen Avatar.
+      gravatar_base_url:
+        label: Gravatar Base URL
+        text: URL der API-Basis des Gravatar-Anbieters. Wird ignoriert, wenn leer.
+      profile_editable:
+        title: Profil bearbeitbar
+      allow_update_display_name:
+        label: Benutzern erlauben, ihren Anzeigenamen zu ändern
+      allow_update_username:
+        label: Benutzern erlauben, ihren Benutzernamen zu ändern
+      allow_update_avatar:
+        label: Benutzern erlauben, ihr Profilbild zu ändern
+      allow_update_bio:
+        label: Benutzern erlauben, ihr Über mich zu ändern
+      allow_update_website:
+        label: Benutzern erlauben, ihre Website zu ändern
+      allow_update_location:
+        label: Benutzern erlauben, ihren Standort zu ändern
+    privilege:
+      title: Berechtigungen
+      level:
+        label: Benötigtes Reputations-Level
+        text: Wähle die für die Privilegien erforderliche Reputation aus
+      msg:
+        should_be_number: die Eingabe muss numerisch sein
+        number_larger_1: Zahl muss gleich oder größer als 1 sein
+    badges:
+      action: Aktion
+      active: Aktiv
+      activate: Aktivieren
+      all: Alle
+      awards: Verliehen
+      deactivate: Deaktivieren
+      filter:
+        placeholder: Nach Namen, Abzeichen:id filtern
+      group: Gruppe
+      inactive: Inaktiv
+      name: Name
+      show_logs: Protokolle anzeigen
+      status: Status
+      title: Abzeichen
+  form:
+    optional: (optional)
+    empty: kann nicht leer sein
+    invalid: ist ungültig
+    btn_submit: Speichern
+    not_found_props: "Erforderliche Eigenschaft {{ key }} nicht gefunden."
+    select: Auswählen
+  page_review:
+    review: Überprüfung
+    proposed: vorgeschlagen
+    question_edit: Frage bearbeiten
+    answer_edit: Antwort bearbeiten
+    tag_edit: Tag bearbeiten
+    edit_summary: Zusammenfassung bearbeiten
+    edit_question: Frage bearbeiten
+    edit_answer: Antwort bearbeiten
+    edit_tag: Tag bearbeiten
+    empty: Keine Überprüfungsaufgaben mehr übrig.
+    approve_revision_tip: Akzeptieren Sie diese Revision?
+    approve_flag_tip: Sind Sie mit diesem Bericht einverstanden?
+    approve_post_tip: Bestätigen Sie diesen Beitrag?
+    approve_user_tip: Bestätigen Sie diesen Benutzer?
+    suggest_edits: Änderungsvorschläge
+    flag_post: Beitrag melden
+    flag_user: Nutzer melden
+    queued_post: Beitrag in Warteschlange
+    queued_user: Benutzer in der Warteschlange
+    filter_label: Typ
+    reputation: ansehen
+    flag_post_type: Diesen Beitrag als {{ type }} markiert.
+    flag_user_type: Diesen Benutzer als {{ type }} markiert.
+    edit_post: Beitrag bearbeiten
+    list_post: Ausgestellte Beiträge
+    unlist_post: Versteckte Beiträge
+  timeline:
+    undeleted: ungelöscht
+    deleted: gelöscht
+    downvote: ablehnen
+    upvote: positiv bewerten
+    accept: akzeptieren
+    cancelled: abgebrochen
+    commented: kommentiert
+    rollback: zurückrollen
+    edited: bearbeitet
+    answered: antwortete
+    asked: gefragt
+    closed: geschlossen
+    reopened: wiedereröffnet
+    created: erstellt
+    pin: angeheftet
+    unpin: losgelöst
+    show: gelistet
+    hide: nicht gelistet
+    title: "Verlauf von"
+    tag_title: "Zeitleiste für"
+    show_votes: "Stimmen anzeigen"
+    n_or_a: Keine Angaben
+    title_for_question: "Zeitleiste für"
+    title_for_answer: "Zeitachse für die Antwort auf {{ title }} von {{ author }}"
+    title_for_tag: "Zeitachse für Tag"
+    datetime: Terminzeit
+    type: Typ
+    by: Von
+    comment: Kommentar
+    no_data: "Wir konnten nichts finden."
+  users:
+    title: Benutzer
+    users_with_the_most_reputation: Benutzer mit den höchsten Reputationspunkten dieser Woche
+    users_with_the_most_vote: Benutzer, die diese Woche am meisten gestimmt haben
+    staffs: Unsere Community Teammitglieder
+    reputation: Ansehen
+    votes: Stimmen
+  prompt:
+    leave_page: Bist du sicher, dass du die Seite verlassen willst?
+    changes_not_save: Deine Änderungen werden möglicherweise nicht gespeichert.
+  draft:
+    discard_confirm: Bist du sicher, dass du deinen Entwurf verwerfen willst?
+  messages:
+    post_deleted: Dieser Beitrag wurde gelöscht.
+    post_cancel_deleted: Dieser Beitrag wurde wiederhergestellt.
+    post_pin: Dieser Beitrag wurde angepinnt.
+    post_unpin: Dieser Beitrag wurde losgelöst.
+    post_hide_list: Dieser Beitrag wurde aus der Liste verborgen.
+    post_show_list: Dieser Beitrag wird in der Liste angezeigt.
+    post_reopen: Dieser Beitrag wurde wieder geöffnet.
+    post_list: Dieser Beitrag wurde angezeigt.
+    post_unlist: Dieser Beitrag wurde ausgeblendet.
+    post_pending: Dein Beitrag wartet auf eine Überprüfung. Dies ist eine Vorschau, sie wird nach der Genehmigung sichtbar sein.
+    post_closed: Dieser Beitrag wurde gelöscht.
+    answer_deleted: Diese Antwort wurde gelöscht.
+    answer_cancel_deleted: Diese Antwort wurde wiederhergestellt.
+    change_user_role: Die Rolle dieses Benutzers wurde geändert.
+    user_inactive: Dieser Benutzer ist bereits inaktiv.
+    user_normal: Dieser Benutzer ist bereits normal.
+    user_suspended: Dieser Nutzer wurde gesperrt.
+    user_deleted: Benutzer wurde gelöscht.
+    badge_activated: Dieses Abzeichen wurde aktiviert.
+    badge_inactivated: Dieses Abzeichen wurde deaktiviert.
+    users_deleted: Der Benutzer wurde gelöscht.
+    posts_deleted: Deine Frage wurde gelöscht.
+    answers_deleted: Deine Antwort wurde gelöscht.
+    copy: In die Zwischenablage kopieren
+    copied: Kopiert
+    external_content_warning: Externe Bilder/Medien werden nicht angezeigt.
+
+

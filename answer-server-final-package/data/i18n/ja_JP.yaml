@@ -1,0 +1,2342 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# The following fields are used for back-end
+backend:
+  base:
+    success:
+      other: 成功
+    unknown:
+      other: 不明なエラー
+    request_format_error:
+      other: リクエスト形式が無効です。
+    unauthorized_error:
+      other: 権限がありません。
+    database_error:
+      other: データサーバーエラー
+    forbidden_error:
+      other: アクセス権限がありません。
+    duplicate_request_error:
+      other: 重複しています
+  action:
+    report:
+      other: 通報
+    edit:
+      other: 編集
+    delete:
+      other: 削除
+    close:
+      other: 解決済み
+    reopen:
+      other: 再オープン
+    forbidden_error:
+      other: アクセス権限がありません。
+    pin:
+      other: ピン留めする
+    hide:
+      other: 限定公開にする
+    unpin:
+      other: ピン留め解除
+    show:
+      other: 限定公開を解除する
+    invite_someone_to_answer:
+      other: 編集
+    undelete:
+      other: 復元する
+    merge:
+      other: Merge
+  role:
+    name:
+      user:
+        other: ユーザー
+      admin:
+        other: 管理者
+      moderator:
+        other: モデレーター
+    description:
+      user:
+        other: 一般的なアクセスしか持ちません。
+      admin:
+        other: すべてにアクセスできる大いなる力を持っています。
+      moderator:
+        other: 管理者以外のすべての投稿へのアクセス権を持っています。
+  privilege:
+    level_1:
+      description:
+        other: レベル1 必要最低の評判レベルで利用可(クローズサイト・グループ・特定の人数下での利用)
+    level_2:
+      description:
+        other: レベル2 少しだけ評判レベルが必要(スタートアップコミュニティ・不特定多数の人数での利用)
+    level_3:
+      description:
+        other: レベル3 高い評判レベルが必要(成熟したコミュニティ)
+    level_custom:
+      description:
+        other: カスタムレベル
+    rank_question_add_label:
+      other: 質問する
+    rank_answer_add_label:
+      other: 回答を書く
+    rank_comment_add_label:
+      other: コメントを書く
+    rank_report_add_label:
+      other: 通報
+    rank_comment_vote_up_label:
+      other: コメントを高評価
+    rank_link_url_limit_label:
+      other: 一度に2つ以上のリンクを投稿する
+    rank_question_vote_up_label:
+      other: 質問を高評価
+    rank_answer_vote_up_label:
+      other: 回答を高評価
+    rank_question_vote_down_label:
+      other: 質問を低評価
+    rank_answer_vote_down_label:
+      other: 回答を低評価
+    rank_invite_someone_to_answer_label:
+      other: 誰かを回答に招待する
+    rank_tag_add_label:
+      other: 新しいタグを作成
+    rank_tag_edit_label:
+      other: タグの説明を編集（レビューが必要）
+    rank_question_edit_label:
+      other: 他の質問を編集（レビューが必要）
+    rank_answer_edit_label:
+      other: 他の回答を編集（レビューが必要）
+    rank_question_edit_without_review_label:
+      other: レビューなしで他の質問を編集する
+    rank_answer_edit_without_review_label:
+      other: レビューなしで他の回答を編集する
+    rank_question_audit_label:
+      other: 質問の編集をレビュー
+    rank_answer_audit_label:
+      other: 回答の編集をレビュー
+    rank_tag_audit_label:
+      other: タグの編集をレビュー
+    rank_tag_edit_without_review_label:
+      other: レビューなしでタグの説明を編集
+    rank_tag_synonym_label:
+      other: タグの同義語を管理する
+  email:
+    other: メールアドレス
+  e_mail:
+    other: メールアドレス
+  password:
+    other: パスワード
+  pass:
+    other: パスワード
+  old_pass:
+    other: Current password
+  original_text:
+    other: 投稿
+  email_or_password_wrong_error:
+    other: メールアドレスとパスワードが一致しません。
+  error:
+    common:
+      invalid_url:
+        other: 無効なURL
+      status_invalid:
+        other: 無効なステータス
+    password:
+      space_invalid:
+        other: パスワードにスペースを含めることはできません。
+    admin:
+      cannot_update_their_password:
+        other: パスワードは変更できません。
+      cannot_edit_their_profile:
+        other: プロフィールを変更できません。
+      cannot_modify_self_status:
+        other: ステータスを変更できません。
+      email_or_password_wrong:
+        other: メールアドレスとパスワードが一致しません。
+    answer:
+      not_found:
+        other: 回答が見つかりません。
+      cannot_deleted:
+        other: 削除する権限がありません。
+      cannot_update:
+        other: 更新する権限がありません。
+      question_closed_cannot_add:
+        other: 質問はクローズされて、追加できません。
+      content_cannot_empty:
+        other: Answer content cannot be empty.
+    comment:
+      edit_without_permission:
+        other: コメントを編集することはできません。
+      not_found:
+        other: コメントが見つかりません。
+      cannot_edit_after_deadline:
+        other: コメント時間が長すぎて変更できません。
+      content_cannot_empty:
+        other: Comment content cannot be empty.
+    email:
+      duplicate:
+        other: メールアドレスは既に存在しています。
+      need_to_be_verified:
+        other: 電子メールを確認する必要があります。
+      verify_url_expired:
+        other: メール認証済みURLの有効期限が切れています。メールを再送信してください。
+      illegal_email_domain_error:
+        other: そのメールドメインからのメールは許可されていません。別のメールアドレスを使用してください。
+    lang:
+      not_found:
+        other: 言語ファイルが見つかりません。
+    object:
+      captcha_verification_failed:
+        other: Captchaが間違っています。
+      disallow_follow:
+        other: フォローが許可されていません。
+      disallow_vote:
+        other: 投票が許可されていません。
+      disallow_vote_your_self:
+        other: 自分の投稿には投票できません。
+      not_found:
+        other: オブジェクトが見つかりません。
+      verification_failed:
+        other: 認証に失敗しました。
+      email_or_password_incorrect:
+        other: メールアドレスとパスワードが一致しません。
+      old_password_verification_failed:
+        other: 古いパスワードの確認に失敗しました。
+      new_password_same_as_previous_setting:
+        other: 新しいパスワードは前のパスワードと同じです。
+      already_deleted:
+        other: この投稿は削除されました。
+    meta:
+      object_not_found:
+        other: メタオブジェクトが見つかりません
+    question:
+      already_deleted:
+        other: この投稿は削除されました。
+      under_review:
+        other: あなたの投稿はレビュー待ちです。承認されると表示されます。
+      not_found:
+        other: 質問が見つかりません。
+      cannot_deleted:
+        other: 削除する権限がありません。
+      cannot_close:
+        other: クローズする権限がありません。
+      cannot_update:
+        other: 更新する権限がありません。
+      content_cannot_empty:
+        other: Content cannot be empty.
+    rank:
+      fail_to_meet_the_condition:
+        other: 評判ランクが条件を満たしていません
+      vote_fail_to_meet_the_condition:
+        other: フィードバックをありがとうございます。投票には少なくとも {{.Rank}} の評判が必要です。
+      no_enough_rank_to_operate:
+        other: 少なくとも {{.Rank}} の評判が必要です。
+    report:
+      handle_failed:
+        other: レポートの処理に失敗しました。
+      not_found:
+        other: レポートが見つかりません。
+    tag:
+      already_exist:
+        other: タグは既に存在します。
+      not_found:
+        other: タグが見つかりません。
+      recommend_tag_not_found:
+        other: おすすめタグは存在しません。
+      recommend_tag_enter:
+        other: 少なくとも 1 つの必須タグを入力してください。
+      not_contain_synonym_tags:
+        other: 同義語のタグを含めないでください。
+      cannot_update:
+        other: 更新する権限がありません。
+      is_used_cannot_delete:
+        other: 使用中のタグは削除できません。
+      cannot_set_synonym_as_itself:
+        other: 現在のタグの同義語をそのものとして設定することはできません。
+    smtp:
+      config_from_name_cannot_be_email:
+        other: Fromの名前はメールアドレスにできません。
+    theme:
+      not_found:
+        other: テーマが見つかりません。
+    revision:
+      review_underway:
+        other: 現在編集できません。レビューキューにバージョンがあります。
+      no_permission:
+        other: 編集する権限がありません。
+    user:
+      external_login_missing_user_id:
+        other: サードパーティのプラットフォームは一意のユーザーIDを提供していないため、ログインできません。ウェブサイト管理者にお問い合わせください。
+      external_login_unbinding_forbidden:
+        other: ログインを削除する前に、アカウントのログインパスワードを設定してください。
+      email_or_password_wrong:
+        other:
+          other: メールアドレスとパスワードが一致しません。
+      not_found:
+        other: ユーザーが見つかりません。
+      suspended:
+        other: このユーザーは凍結されています
+      username_invalid:
+        other: 無効なユーザー名です！
+      username_duplicate:
+        other: ユーザー名は既に使用されています！
+      set_avatar:
+        other: アバターを設定できませんでした
+      cannot_update_your_role:
+        other: ロールを変更できません
+      not_allowed_registration:
+        other: 現在、このサイトは新規登録を受け付けておりません
+      not_allowed_login_via_password:
+        other: 現在、このサイトはパスワードでログインできません
+      access_denied:
+        other: アクセスが拒否されました
+      page_access_denied:
+        other: このページへのアクセス権がありません
+      add_bulk_users_format_error:
+        other: "Error {{.Field}} format near '{{.Content}}' at line {{.Line}}. {{.ExtraMessage}}"
+      add_bulk_users_amount_error:
+        other: "一度に追加するユーザーの数は、1 -{{.MaxAmount}} の範囲にする必要があります。"
+      status_suspended_forever:
+        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+      status_suspended_until:
+        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+      status_deleted:
+        other: "This user was deleted."
+      status_inactive:
+        other: "This user is inactive."
+    config:
+      read_config_failed:
+        other: configの読み込みに失敗しました
+    database:
+      connection_failed:
+        other: データベースの接続が失敗しました
+      create_table_failed:
+        other: テーブルの作成に失敗しました
+    install:
+      create_config_failed:
+        other: config.yaml を作成できません。
+    upload:
+      unsupported_file_format:
+        other: サポートされていないファイル形式です。
+    site_info:
+      config_not_found:
+        other: configが見つかりません。
+    badge:
+      object_not_found:
+        other: バッジオブジェクトが見つかりません
+  reason:
+    spam:
+      name:
+        other: スパム
+      desc:
+        other: この投稿は広告です。現在のトピックには有用ではありません。
+    rude_or_abusive:
+      name:
+        other: 誹謗中傷
+      desc:
+        other: "合理的な人は、このコンテンツを尊重する言説には不適切と判断するでしょう。"
+    a_duplicate:
+      name:
+        other: 重複
+      desc:
+        other: この質問は以前に質問されており、すでに回答があります。
+      placeholder:
+        other: 既存の質問リンクを入力してください
+    not_a_answer:
+      name:
+        other: 回答では無い
+      desc:
+        other: "これは答えとして投稿されましたが、質問に答えようとしません。 それはおそらく編集、コメント、別の質問、または完全に削除されるべきです。"
+    no_longer_needed:
+      name:
+        other: 必要では無い
+      desc:
+        other: このコメントは古く、この投稿とは関係がありません。
+    something:
+      name:
+        other: その他
+      desc:
+        other: 上記以外の理由でスタッフの注意が必要です。
+      placeholder:
+        other: あなたが懸念していることを私たちに教えてください
+    community_specific:
+      name:
+        other: コミュニティ固有の理由です
+      desc:
+        other: この質問はコミュニティガイドラインを満たしていません
+    not_clarity:
+      name:
+        other: 詳細や明快さが必要です
+      desc:
+        other: この質問には現在複数の質問が含まれています。1つの問題にのみ焦点を当てる必要があります。
+    looks_ok:
+      name:
+        other: LGTM
+      desc:
+        other: この投稿はそのままで良く、改善する必要はありません！
+    needs_edit:
+      name:
+        other: 編集する必要があったため変更しました。
+      desc:
+        other: 自分自身でこの投稿の問題を改善し修正します。
+    needs_close:
+      name:
+        other: クローズする必要がある
+      desc:
+        other: クローズされた質問は回答できませんが、編集、投票、コメントはできます。
+    needs_delete:
+      name:
+        other: 削除が必要です
+      desc:
+        other: この投稿は削除されました
+  question:
+    close:
+      duplicate:
+        name:
+          other: スパム
+        desc:
+          other: この質問は以前に質問されており、すでに回答があります。
+      guideline:
+        name:
+          other: コミュニティ固有の理由です
+        desc:
+          other: この質問はコミュニティガイドラインを満たしていません
+      multiple:
+        name:
+          other: 詳細や明快さが必要です
+        desc:
+          other: この質問には現在複数の質問が含まれています。1つの問題にのみ焦点を当てる必要があります。
+      other:
+        name:
+          other: その他
+        desc:
+          other: 上記以外の理由でスタッフの注意が必要です。
+    operation_type:
+      asked:
+        other: 質問済み
+      answered:
+        other: 回答済み
+      modified:
+        other: 修正済み
+    deleted_title:
+      other: 質問を削除
+    questions_title:
+      other: 質問
+  tag:
+    tags_title:
+      other: タグ
+    no_description:
+      other: タグには説明がありません。
+  notification:
+    action:
+      update_question:
+        other: 質問を更新
+      answer_the_question:
+        other: 回答済みの質問
+      update_answer:
+        other: 回答を更新
+      accept_answer:
+        other: 承認された回答
+      comment_question:
+        other: コメントされた質問
+      comment_answer:
+        other: コメントされた回答
+      reply_to_you:
+        other: あなたへの返信
+      mention_you:
+        other: メンションされました
+      your_question_is_closed:
+        other: あなたの質問はクローズされました
+      your_question_was_deleted:
+        other: あなたの質問は削除されました
+      your_answer_was_deleted:
+        other: あなたの質問は削除されました
+      your_comment_was_deleted:
+        other: あなたのコメントは削除されました
+      up_voted_question:
+        other: 質問を高評価
+      down_voted_question:
+        other: 質問を低評価
+      up_voted_answer:
+        other: 回答を高評価
+      down_voted_answer:
+        other: 回答を低評価
+      up_voted_comment:
+        other: コメントを高評価
+      invited_you_to_answer:
+        other: あなたを回答に招待しました
+      earned_badge:
+        other: '"{{.BadgeName}}"バッジを獲得しました'
+  email_tpl:
+    change_email:
+      title:
+        other: "[{{.SiteName}}] 新しいメールアドレスを確認してください"
+      body:
+        other: "{{.SiteName}}の新しいメールアドレスを確認しリンクをクリックしてください。<br>\n<a href='{{.ChangeEmailUrl}}' target='_blank'>{{.ChangeEmailUrl}}</a><br><br>\n\n身に覚えがない場合はこのメールを無視してください。\n\n--<br>\n注: これはシステムからの自動メールです。このメッセージに返信しないでください。"
+    new_answer:
+      title:
+        other: "[{{.SiteName}}] {{.DisplayName}} があなたの質問に回答しました"
+      body:
+        other: "<a href='{{.AnswerUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.AnswerSummary}}</blockquote><br>\n<a href='{{.AnswerUrl}}'>{{.SiteName}}で確認</a><br><br>\n\n--<br>\n注: これはシステムからの自動メールです。このメッセージに返信しないでください。<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+    invited_you_to_answer:
+      title:
+        other: "[{{.SiteName}}] {{.DisplayName}} があなたを回答に招待しました"
+      body:
+        other: "<a href='{{.InviteUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>あなたなら答えを知っているかもしれません。</blockquote><br>\n<a href='{{.InviteUrl}}'>{{.SiteName}}で確認</a><br><br>\n\n--<br>\n注: これはシステムからの自動メールです。このメッセージに返信しないでください。<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>配信停止</a></small>\n"
+    new_comment:
+      title:
+        other: "[{{.SiteName}}] {{.DisplayName}} があなたの投稿にコメントしました"
+      body:
+        other: "<a href='{{.CommentUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.CommentSummary}}</blockquote><br>\n<a href='{{.CommentUrl}}'>で確認{{.SiteName}}</a><br><br>\n\n--<br>\n注: これはシステムからの自動メールです。このメッセージに返信しないでください。<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>配信停止</a></small>"
+    new_question:
+      title:
+        other: "[{{.SiteName}}] 新しい質問： {{.QuestionTitle}}"
+      body:
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+    pass_reset:
+      title:
+        other: "[{{.SiteName }}] パスワードリセット"
+      body:
+        other: "{{.SiteName}}であなたのパスワードをリセットしようとしました。<br><br>\n\nもしお心当たりがない場合は、このメールを無視してください。<br><br>\n\n新しいパスワードを設定するには、以下のリンクをクリックしてください。<br>\n<a href='{{.PassResetUrl}}' target='_blank'>{{.PassResetUrl}}</a>\n\n--<br>\n注: これはシステムからの自動メールです。このメッセージに返信しないでください。<br><br>\n"
+    register:
+      title:
+        other: "[{{.SiteName}}] 新しいアカウントを確認"
+      body:
+        other: "{{.SiteName}}へようこそ！<br><br>\n\n以下のリンクをクリックして、新しいアカウントを確認・有効化してください。<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\n上記のリンクがクリックできない場合は、リンクをコピーしてブラウザのアドレスバーに貼り付けてみてください。\n\n--<br>\n注: これはシステムからの自動メールです。このメッセージに返信しないでください。<br><br>"
+    test:
+      title:
+        other: "[{{.SiteName}}] テストメール"
+      body:
+        other: "これはテストメールです。\n<br><br>\n\n--<br>\n注: これはシステムからの自動メールです。このメッセージに返信しないでください。<br><br>"
+  action_activity_type:
+    upvote:
+      other: 高評価
+    upvoted:
+      other: 高評価しました
+    downvote:
+      other: 低評価
+    downvoted:
+      other: 低評価しました
+    accept:
+      other: 承認
+    accepted:
+      other: 承認済み
+    edit:
+      other: 編集
+  review:
+    queued_post:
+      other: キューに入れられた投稿
+    flagged_post:
+      other: 投稿を通報
+    suggested_post_edit:
+      other: 提案された編集
+  reaction:
+    tooltip:
+      other: "{{ .Names }} と {{ .Count }} もっと..."
+  badge:
+    default_badges:
+      autobiographer:
+        name:
+          other: 自伝作家
+        desc:
+          other: <a href="{{ .ProfileURL }}" target="_blank">プロファイル</a> 情報を入力しました。
+      certified:
+        name:
+          other: 認定済み
+        desc:
+          other: 新しいユーザーがチュートリアルを完了しました。
+      editor:
+        name:
+          other: 編集者
+        desc:
+          other: 最初の投稿の編集
+      first_flag:
+        name:
+          other: 初めての報告
+        desc:
+          other: 初めての報告
+      first_upvote:
+        name:
+          other: はじめての高評価
+        desc:
+          other: はじめて投稿に高評価した
+      first_link:
+        name:
+          other: はじめてのリンク
+        desc:
+          other: First added a link to another post.
+      first_reaction:
+        name:
+          other: 初めてのリアクション
+        desc:
+          other: はじめて投稿にリアクションした
+      first_share:
+        name:
+          other: はじめての共有
+        desc:
+          other: はじめて投稿を共有した
+      scholar:
+        name:
+          other: 研究生
+        desc:
+          other: 質問をして回答が承認された
+      commentator:
+        name:
+          other: コメントマン
+        desc:
+          other: 5つコメントをした
+      new_user_of_the_month:
+        name:
+          other: 今月の新しいユーザー
+        desc:
+          other: 最初の月に優れた貢献
+      read_guidelines:
+        name:
+          other: ガイドラインを読んだ
+        desc:
+          other: '「コミュニティガイドライン」をご覧ください。'
+      reader:
+        name:
+          other: リーダー
+        desc:
+          other: 10以上の回答を持つトピックのすべての回答を読んだ
+      welcome:
+        name:
+          other: ようこそ！
+        desc:
+          other: 高評価をされた
+      nice_share:
+        name:
+          other: Nice Share
+        desc:
+          other: 25人の訪問者と投稿を共有した
+      good_share:
+        name:
+          other: Good Share
+        desc:
+          other: 300の訪問者と投稿を共有した
+      great_share:
+        name:
+          other: Great Share
+        desc:
+          other: 1000人の訪問者と投稿を共有した
+      out_of_love:
+        name:
+          other: お隣さん
+        desc:
+          other: 1日に50票いれた
+      higher_love:
+        name:
+          other: お友達
+        desc:
+          other: 5日目に50回投票した
+      crazy_in_love:
+        name:
+          other: 崇拝
+        desc:
+          other: 一日に50回投票を20回した
+      promoter:
+        name:
+          other: プロモーター
+        desc:
+          other: ユーザーを招待した
+      campaigner:
+        name:
+          other: キャンペーン
+        desc:
+          other: 3人のベーシックユーザーを招待しました。
+      champion:
+        name:
+          other: チャンピオン
+        desc:
+          other: 5人のメンバーを招待しました。
+      thank_you:
+        name:
+          other: Thank you
+        desc:
+          other: 投稿が20件！投票数が10件！
+      gives_back:
+        name:
+          other: 返品
+        desc:
+          other: 投稿が100件 !?!? 投票数が100件 !?!?
+      empathetic:
+        name:
+          other: 共感性
+        desc:
+          other: 500の投稿を投票し、1000の投票を与えた。
+      enthusiast:
+        name:
+          other: 楽天家
+        desc:
+          other: 10日間連続ログイン
+      aficionado:
+        name:
+          other: Aficionado
+        desc:
+          other: 100日連続ログイン！！！
+      devotee:
+        name:
+          other: 献身者
+        desc:
+          other: 365日連続訪問！！！！！！！！
+      anniversary:
+        name:
+          other: 周年記念
+        desc:
+          other: 年に一回は...
+      appreciated:
+        name:
+          other: ありがとう！
+        desc:
+          other: 20件の投稿に1件の投票を受け取った
+      respected:
+        name:
+          other: 尊敬される
+        desc:
+          other: 100件の投稿で2件の投票を受け取った
+      admired:
+        name:
+          other: 崇拝された
+        desc:
+          other: 300の投稿に5票を獲得した
+      solved:
+        name:
+          other: 解決
+        desc:
+          other: 答えを受け入れられた
+      guidance_counsellor:
+        name:
+          other: アドバイザー
+        desc:
+          other: 10個の回答が承認された
+      know_it_all:
+        name:
+          other: 物知り博士
+        desc:
+          other: 50個の回答が承認された
+      solution_institution:
+        name:
+          other: 解決機関
+        desc:
+          other: 150個の回答が承認された
+      nice_answer:
+        name:
+          other: 素敵な回答
+        desc:
+          other: 回答スコアは10以上！！
+      good_answer:
+        name:
+          other: 良い回答
+        desc:
+          other: 回答スコアは25以上！？！
+      great_answer:
+        name:
+          other: 素晴らしい回答
+        desc:
+          other: 回答スコアは50以上！！！！1
+      nice_question:
+        name:
+          other: ナイスな質問
+        desc:
+          other: 質問スコアは10以上！！
+      good_question:
+        name:
+          other: よい質問
+        desc:
+          other: 質問スコアは25以上！？！
+      great_question:
+        name:
+          other: 素晴らしい質問
+        desc:
+          other: 50人の閲覧者！！
+      popular_question:
+        name:
+          other: 人気のある質問
+        desc:
+          other: 500人の閲覧者！！！
+      notable_question:
+        name:
+          other: 注目すべき質問
+        desc:
+          other: 1,000人の閲覧者！！！！
+      famous_question:
+        name:
+          other: 偉大な質問
+        desc:
+          other: 5,000人の閲覧者！！！！！
+      popular_link:
+        name:
+          other: 人気のリンク
+        desc:
+          other: 外部リンクを50回クリック
+      hot_link:
+        name:
+          other: 激アツリンク
+        desc:
+          other: 外部リンクを300回クリック
+      famous_link:
+        name:
+          other: 有名なリンク
+        desc:
+          other: 外部リンクを100回クリック
+    default_badge_groups:
+      getting_started:
+        name:
+          other: はじめに
+      community:
+        name:
+          other: コミュニティ
+      posting:
+        name:
+          other: 投稿中
+# The following fields are used for interface presentation(Front-end)
+ui:
+  how_to_format:
+    title: 書式設定
+    desc: \n
+  pagination:
+    prev: 前へ
+    next: 次へ
+  page_title:
+    question: 質問
+    questions: 質問
+    tag: タグ
+    tags: タグ
+    tag_wiki: タグ wiki
+    create_tag: タグを作成
+    edit_tag: タグを編集
+    ask_a_question: Create Question
+    edit_question: 質問を編集
+    edit_answer: 回答を編集
+    search: 検索
+    posts_containing: 記事を含む投稿
+    settings: 設定
+    notifications: お知らせ
+    login: ログイン
+    sign_up: 新規登録
+    account_recovery: アカウントの復旧
+    account_activation: アカウント有効化
+    confirm_email: メールアドレスを確認
+    account_suspended: アカウントは凍結されています
+    admin: 管理者
+    change_email: メールアドレスを変更
+    install: 回答に応答する
+    upgrade: 回答を改善する
+    maintenance: ウェブサイトのメンテナンス
+    users: ユーザー
+    oauth_callback: 処理中
+    http_404: HTTP エラー 404
+    http_50X: HTTP エラー 500
+    http_403: HTTP エラー 403
+    logout: ログアウト
+  notifications:
+    title: 通知
+    inbox: 受信トレイ
+    achievement: 実績
+    new_alerts: 新しい通知
+    all_read: すべて既読にする
+    show_more: もっと見る
+    someone: 誰か
+    inbox_type:
+      all: すべて
+      posts: 投稿
+      invites: 招待
+      votes: 投票
+    answer: 回答
+    question: 質問
+    badge_award: バッジ
+  suspended:
+    title: あなたのアカウントは停止されています。
+    until_time: "あなたのアカウントは {{ time }} まで停止されました。"
+    forever: このユーザーは永久に停止されました。
+    end: コミュニティガイドラインを満たしていません。
+    contact_us: お問い合わせ
+  editor:
+    blockquote:
+      text: 引用
+    bold:
+      text: 強い
+    chart:
+      text: チャート
+      flow_chart: フローチャート
+      sequence_diagram: シーケンス図
+      class_diagram: クラス図
+      state_diagram: 状態図
+      entity_relationship_diagram: ER図
+      user_defined_diagram: ユーザー定義図
+      gantt_chart: ガントチャート
+      pie_chart: 円グラフ
+    code:
+      text: コードサンプル
+      add_code: コードサンプルを追加
+      form:
+        fields:
+          code:
+            label: コード
+            msg:
+              empty: Code を空にすることはできません。
+          language:
+            label: 言語
+            placeholder: 自動検出
+      btn_cancel: キャンセル
+      btn_confirm: 追加
+    formula:
+      text: 数式
+      options:
+        inline: インライン数式
+        block: ブロック数式
+    heading:
+      text: 見出し
+      options:
+        h1: 見出し1
+        h2: 見出し2
+        h3: 見出し3
+        h4: 見出し4
+        h5: 見出し5
+        h6: 見出し6
+    help:
+      text: ヘルプ
+    hr:
+      text: 水平方向の罫線
+    image:
+      text: 画像
+      add_image: 画像を追加する
+      tab_image: 画像をアップロードする
+      form_image:
+        fields:
+          file:
+            label: 画像ファイル
+            btn: 画像を選択する
+            msg:
+              empty: ファイルは空にできません。
+              only_image: 画像ファイルのみが許可されています。
+              max_size: ファイルサイズは {{size}} MBを超えることはできません。
+          desc:
+            label: 説明
+      tab_url: 画像URL
+      form_url:
+        fields:
+          url:
+            label: 画像URL
+            msg:
+              empty: 画像のURLは空にできません。
+          name:
+            label: 説明
+      btn_cancel: キャンセル
+      btn_confirm: 追加
+      uploading: アップロード中
+    indent:
+      text: インデント
+    outdent:
+      text: アウトデント
+    italic:
+      text: 斜体
+    link:
+      text: ハイパーリンク
+      add_link: ハイパーリンクを追加
+      form:
+        fields:
+          url:
+            label: URL
+            msg:
+              empty: URLを入力してください。
+          name:
+            label: 説明
+      btn_cancel: キャンセル
+      btn_confirm: 追加
+    ordered_list:
+      text: 順序付きリスト
+    unordered_list:
+      text: 箇条書きリスト
+    table:
+      text: ' テーブル'
+      heading: 見出し
+      cell: セル
+    file:
+      text: ファイルを添付
+      not_supported: "そのファイルタイプをサポートしていません。 {{file_type}} でもう一度お試しください。"
+      max_size: "添付ファイルサイズは {{size}} MB を超えることはできません。"
+  close_modal:
+    title: この投稿を次のように閉じます...
+    btn_cancel: キャンセル
+    btn_submit: 送信
+    remark:
+      empty: 入力してください。
+    msg:
+      empty: 理由を選んでください。
+  report_modal:
+    flag_title: この投稿を報告するフラグを立てています...
+    close_title: この投稿を次のように閉じます...
+    review_question_title: 質問の編集をレビュー
+    review_answer_title: 答えをレビューする
+    review_comment_title: レビューコメント
+    btn_cancel: キャンセル
+    btn_submit: 送信
+    remark:
+      empty: 入力してください。
+    msg:
+      empty: 理由を選んでください。
+      not_a_url: URL形式が正しくありません。
+      url_not_match: URL の原点が現在のウェブサイトと一致しません。
+  tag_modal:
+    title: 新しいタグを作成
+    form:
+      fields:
+        display_name:
+          label: 表示名
+          msg:
+            empty: 表示名を入力してください。
+            range: 表示名は最大 35 文字までです。
+        slug_name:
+          label: URLスラッグ
+          desc: '文字セット「a-z」、「0-9」、「+ # -」を使用する必要があります。'
+          msg:
+            empty: URL スラッグを空にすることはできません。
+            range: タイトルは最大35文字までです.
+            character: URL スラグに許可されていない文字セットが含まれています。
+        desc:
+          label: 説明
+        revision:
+          label: 修正
+        edit_summary:
+          label: 概要を編集
+          placeholder: >-
+            簡単にあなたの変更を説明します(修正スペル、固定文法、改善されたフォーマット)
+    btn_cancel: キャンセル
+    btn_submit: 送信
+    btn_post: 新しいタグを投稿
+  tag_info:
+    created_at: 作成
+    edited_at: 編集済
+    history: 履歴
+    synonyms:
+      title: 類義語
+      text: 次のタグが再マップされます
+      empty: 同義語は見つかりません。
+      btn_add: 同義語を追加
+      btn_edit: 編集
+      btn_save: 保存
+    synonyms_text: 次のタグが再マップされます
+    delete:
+      title: このタグを削除
+      tip_with_posts: >-
+        <p> <strong>同義語</strong>でタグを削除することはできません。</p> <p>最初にこのタグから同義語を削除してください。</p>
+      tip_with_synonyms: >-
+        <p> <strong>同義語</strong>でタグを削除することはできません。</p> <p>最初にこのタグから同義語を削除してください。</p>
+      tip: 本当に削除してもよろしいですか？
+      close: クローズ
+    merge:
+      title: Merge tag
+      source_tag_title: Source tag
+      source_tag_description: The source tag and its associated data will be remapped to the target tag.
+      target_tag_title: Target tag
+      target_tag_description: A synonym between these two tags will be created after merging.
+      no_results: No tags matched
+      btn_submit: Submit
+      btn_close: Close
+  edit_tag:
+    title: タグを編集
+    default_reason: タグを編集
+    default_first_reason: タグを追加
+    btn_save_edits: 編集を保存
+    btn_cancel: キャンセル
+  dates:
+    long_date: MMM D
+    long_date_with_year: "YYYY年MM月D日"
+    long_date_with_time: "MMM D, YYYY [at] HH:mm"
+    now: 今
+    x_seconds_ago: "{{count}}秒前"
+    x_minutes_ago: "{{count}}分前"
+    x_hours_ago: "{{count}}時間前"
+    hour: 時
+    day: 日
+    hours: 時
+    days: 日
+    month: month
+    months: months
+    year: year
+  reaction:
+    heart: ハート
+    smile: 笑顔
+    frown: 眉をひそめる
+    btn_label: リアクションの追加または削除
+    undo_emoji: '{{ emoji }} のリアクションを元に戻す'
+    react_emoji: '{{ emoji }} に反応する'
+    unreact_emoji: '{{ emoji }} に反応しない'
+  comment:
+    btn_add_comment: コメントを追加
+    reply_to: 返信：
+    btn_reply: 返信
+    btn_edit: 編集
+    btn_delete: 削除
+    btn_flag: フラグ
+    btn_save_edits: 編集内容を保存
+    btn_cancel: キャンセル
+    show_more: "{{count}} 件のその他のコメント"
+    tip_question: >-
+      コメントを使用して、より多くの情報を求めたり、改善を提案したりします。コメントで質問に答えることは避けてください。
+    tip_answer: >-
+      コメントを使用して他のユーザーに返信したり、変更を通知します。新しい情報を追加する場合は、コメントの代わりに投稿を編集します。
+    tip_vote: 投稿に役に立つものを追加します
+  edit_answer:
+    title: 回答を編集
+    default_reason: 回答を編集
+    default_first_reason: 回答を追加
+    form:
+      fields:
+        revision:
+          label: 修正
+        answer:
+          label: 回答
+          feedback:
+            characters: コンテンツは6文字以上でなければなりません。
+        edit_summary:
+          label: 概要を編集
+          placeholder: >-
+            簡単にあなたの変更を説明します(修正スペル、固定文法、改善されたフォーマット)
+    btn_save_edits: 編集を保存
+    btn_cancel: キャンセル
+  tags:
+    title: タグ
+    sort_buttons:
+      popular: 人気
+      name: 名前
+      newest: 最新
+    button_follow: フォロー
+    button_following: フォロー中
+    tag_label: 質問
+    search_placeholder: タグ名でフィルタ
+    no_desc: タグには説明がありません。
+    more: もっと見る
+    wiki: Wiki
+  ask:
+    title: Create Question
+    edit_title: 質問を編集
+    default_reason: 質問を編集
+    default_first_reason: Create question
+    similar_questions: 類似の質問
+    form:
+      fields:
+        revision:
+          label: 修正
+        title:
+          label: タイトル
+          placeholder: What's your topic? Be specific.
+          msg:
+            empty: タイトルを空にすることはできません。
+            range: タイトルは最大150文字までです
+        body:
+          label: 本文
+          msg:
+            empty: 本文を空にすることはできません。
+        tags:
+          label: タグ
+          msg:
+            empty: 少なくとも一つ以上のタグが必要です。
+        answer:
+          label: 回答
+          msg:
+            empty: 回答は空欄にできません
+        edit_summary:
+          label: 概要を編集
+          placeholder: >-
+            簡単にあなたの変更を説明します(修正スペル、固定文法、改善されたフォーマット)
+    btn_post_question: 質問を投稿する
+    btn_save_edits: 編集内容を保存
+    answer_question: ご自身の質問に答えてください
+    post_question&answer: 質問と回答を投稿する
+  tag_selector:
+    add_btn: タグを追加
+    create_btn: 新しタグを作成
+    search_tag: タグを検索
+    hint: "Describe what your content is about, at least one tag is required."
+    no_result: 一致するタグはありません
+    tag_required_text: 必須タグ (少なくとも 1 つ)
+  header:
+    nav:
+      question: 質問
+      tag: タグ
+      user: ユーザー
+      badges: バッジ
+      profile: プロフィール
+      setting: 設定
+      logout: ログアウト
+      admin: 管理者
+      review: レビュー
+      bookmark: ブックマーク
+      moderation: モデレーション
+    search:
+      placeholder: 検索
+  footer:
+    build_on: >-
+      Powered by <1> Apache Answer </1>- the open-source software that powers Q&A communities.<br />Made with love © {{cc}}.
+  upload_img:
+    name: 変更
+    loading: 読み込み中…
+  pic_auth_code:
+    title: CAPTCHA
+    placeholder: 上記のテキストを入力してください
+    msg:
+      empty: Code を空にすることはできません。
+  inactive:
+    first: >-
+      <bold>{{mail}}</bold>にアクティベーションメールを送信しました。メールの指示に従ってアカウントをアクティベーションしてください。
+    info: "届かない場合は、迷惑メールフォルダを確認してください。"
+    another: >-
+      <bold>{{mail}}</bold>に別のアクティベーションメールを送信しました。 到着には数分かかる場合があります。スパムフォルダを確認してください。
+    btn_name: 認証メールを再送信
+    change_btn_name: メールアドレスを変更
+    msg:
+      empty: 空にすることはできません
+    resend_email:
+      url_label: 本当に認証メールを再送信してもよろしいですか？
+      url_text: ユーザーに上記のアクティベーションリンクを渡すこともできます。
+  login:
+    login_to_continue: ログインして続行
+    info_sign: アカウントをお持ちではありませんか？<1>サインアップ</1>
+    info_login: すでにアカウントをお持ちですか？<1>ログイン</1>
+    agreements: 登録することにより、<1>プライバシーポリシー</1>および<3>サービス規約</3>に同意するものとします。
+    forgot_pass: パスワードをお忘れですか?
+    name:
+      label: 名前
+      msg:
+        empty: 名前を空にすることはできません。
+        range: 2～30文字の名前を設定してください。
+        character: '文字セット "a-z", "A-Z", "0-9", " - " を使用する必要があります。'
+    email:
+      label: メールアドレス
+      msg:
+        empty: メールアドレスを入力してください。
+    password:
+      label: パスワード
+      msg:
+        empty: パスワードを入力してください。
+        different: 入力されたパスワードが一致しません
+  account_forgot:
+    page_title: パスワードを忘れた方はこちら
+    btn_name: 回復用のメールを送る
+    send_success: >-
+      アカウントが <strong>{{mail}}</strong>と一致する場合は、パスワードをすぐにリセットする方法に関するメールが送信されます。
+    email:
+      label: メールアドレス
+      msg:
+        empty: メールアドレスを入力してください。
+  change_email:
+    btn_cancel: キャンセル
+    btn_update: メールアドレスを更新
+    send_success: >-
+      アカウントが <strong>{{mail}}</strong>と一致する場合は、パスワードをすぐにリセットする方法に関するメールが送信されます。
+    email:
+      label: 新しいメールアドレス
+      msg:
+        empty: メールアドレス欄を空白にしておくことはできません
+  oauth:
+    connect: '{{ auth_name }} と接続'
+    remove: '{{ auth_name }} を削除'
+  oauth_bind_email:
+    subtitle: アカウントに回復用のメールアドレスを追加します。
+    btn_update: メールアドレスを更新
+    email:
+      label: メールアドレス
+      msg:
+        empty: メールアドレスは空にできません。
+    modal_title: このメールアドレスはすでに存在しています。
+    modal_content: このメールアドレスは既に登録されています。既存のアカウントに接続してもよろしいですか？
+    modal_cancel: メールアドレスを変更する
+    modal_confirm: 既存のアカウントに接続
+  password_reset:
+    page_title: パスワード再設定
+    btn_name: パスワードをリセット
+    reset_success: >-
+      パスワードを変更しました。ログインページにリダイレクトされます。
+    link_invalid: >-
+      申し訳ありませんが、このパスワードリセットのリンクは無効になりました。パスワードが既にリセットされている可能性がありますか？
+    to_login: ログインページへ
+    password:
+      label: パスワード
+      msg:
+        empty: パスワードを入力してください。
+        length: 長さは 8 から 32 の間である必要があります
+        different: 両側に入力されたパスワードが一致しません
+    password_confirm:
+      label: 新しいパスワードの確認
+  settings:
+    page_title: 設定
+    goto_modify: 変更を開く
+    nav:
+      profile: プロフィール
+      notification: お知らせ
+      account: アカウント
+      interface: 外観
+    profile:
+      heading: プロフィール
+      btn_name: 保存
+      display_name:
+        label: 表示名
+        msg: 表示名は必須です。
+        msg_range: Display name must be 2-30 characters in length.
+      username:
+        label: ユーザー名
+        caption: ユーザーは "@username" としてあなたをメンションできます。
+        msg: ユーザー名は空にできません。
+        msg_range: Username must be 2-30 characters in length.
+        character: '文字セット "a-z", "0-9", " - . _" を使用してください。'
+      avatar:
+        label: プロフィール画像
+        gravatar: Gravatar
+        gravatar_text: 画像を変更できます：
+        custom: カスタム
+        custom_text: 画像をアップロードできます。
+        default: システム
+        msg: アバターをアップロードしてください
+      bio:
+        label: 自己紹介
+      website:
+        label: ウェブサイト
+        placeholder: "http://example.com"
+        msg: ウェブサイトの形式が正しくありません
+      location:
+        label: ロケーション
+        placeholder: "都道府県,国"
+    notification:
+      heading: メール通知
+      turn_on: ONにする
+      inbox:
+        label: 受信トレイの通知
+        description: 質問、コメント、招待状などへの回答。
+      all_new_question:
+        label: すべての新規質問
+        description: すべての新しい質問の通知を受け取ります。週に最大50問まで。
+      all_new_question_for_following_tags:
+        label: 以下のタグに対するすべての新しい質問
+        description: タグをフォローするための新しい質問の通知を受け取る。
+    account:
+      heading: アカウント
+      change_email_btn: メールアドレスを変更する
+      change_pass_btn: パスワードを変更する
+      change_email_info: >-
+        このアドレスにメールを送信しました。メールの指示に従って確認処理を行ってください。
+      email:
+        label: メールアドレス
+      new_email:
+        label: 新しいメールアドレス
+        msg: 新しいメールアドレスは空にできません。
+      pass:
+        label: 現在のパスワード
+        msg: パスワードは空白にできません
+      password_title: パスワード
+      current_pass:
+        label: 現在のパスワード
+        msg:
+          empty: 現在のパスワードが空欄です
+          length: 長さは 8 から 32 の間である必要があります.
+          different: パスワードが一致しません。
+      new_pass:
+        label: 新しいパスワード
+      pass_confirm:
+        label: 新しいパスワードの確認 
+    interface:
+      heading: 外観
+      lang:
+        label: インタフェース言語
+        text: ユーザーインターフェイスの言語。ページを更新すると変更されます。
+    my_logins:
+      title: ログイン情報
+      label: これらのアカウントを使用してログインまたはこのサイトでサインアップします。
+      modal_title: ログイン情報を削除
+      modal_content: このログイン情報をアカウントから削除してもよろしいですか？
+      modal_confirm_btn: 削除
+      remove_success: 削除に成功しました
+  toast:
+    update: 更新に成功しました
+    update_password: パスワードの変更に成功しました。
+    flag_success: フラグを付けてくれてありがとう
+    forbidden_operate_self: 自分自身で操作することはできません
+    review: レビュー後にあなたのリビジョンが表示されます。
+    sent_success: 正常に送信されました。
+  related_question:
+    title: Related
+    answers: 回答
+  linked_question:
+    title: Linked
+    description: Posts linked to
+    no_linked_question: No contents linked from this content.
+  invite_to_answer:
+    title: People Asked
+    desc: Select people who you think might know the answer.
+    invite: 回答に招待する
+    add: ユーザーを追加
+    search: ユーザーを検索
+  question_detail:
+    action: 動作
+    Asked: 質問済み
+    asked: 質問済み
+    update: 修正済み
+    edit: 編集済み
+    commented: コメントしました
+    Views: 閲覧回数
+    Follow: フォロー
+    Following: フォロー中
+    follow_tip: この質問をフォローして通知を受け取る
+    answered: 回答済み
+    closed_in: クローズまで
+    show_exist: 既存の質問を表示します
+    useful: 役に立った
+    question_useful: それは有用で明確です。
+    question_un_useful: 不明確または有用ではない
+    question_bookmark: この質問をブックマークする
+    answer_useful: 役に立った
+    answer_un_useful: 役に立たない
+    answers:
+      title: 回答
+      score: スコア
+      newest: 最新
+      oldest: 古い順
+      btn_accept: 承認
+      btn_accepted: 承認済み
+    write_answer:
+      title: あなたの回答
+      edit_answer: 既存の回答を編集する
+      btn_name: 回答を投稿する
+      add_another_answer: 別の回答を追加
+      confirm_title: 回答を続ける
+      continue: 続行
+      confirm_info: >-
+         <p>本当に別の答えを追加したいのですか？ </p><p>代わりに、編集リンクを使って既存の答えを洗練させ、改善することができます。</p>
+      empty: 回答は空欄にできません
+      characters: コンテンツは6文字以上でなければなりません。
+      tips:
+        header_1: ご回答ありがとうございます。
+        li1_1: " 必ず<strong>質問に答えてください</strong>。詳細を述べ、あなたの研究を共有してください。\n"
+        li1_2: 参考文献や個人的な経験による裏付けを取ること。.
+        header_2: しかし、 <strong>は</strong> を避けてください...
+        li2_1: 助けを求める、説明を求める、または他の答えに応答する。
+    reopen:
+      confirm_btn: 再オープン
+      title: この投稿を再度開く
+      content: 再オープンしてもよろしいですか？
+    list:
+      confirm_btn: 一覧
+      title: この投稿の一覧
+      content: 一覧表示してもよろしいですか？
+    unlist:
+      confirm_btn: 限定公開にする
+      title: この投稿を元に戻す
+      content: 本当に元に戻しますか？
+    pin:
+      title: この投稿をピン留めする
+      content: "グローバルに固定してもよろしいですか？\nこの投稿はすべての投稿リストの上部に表示されます。"
+      confirm_btn: ピン留めする
+  delete:
+    title: この投稿を削除
+    question: >-
+      <p><strong>承認された回答を削除することはお勧めしません</strong>。削除すると、今後の読者がこの知識を得られなくなってしまうからです。</p> 承認された回答を繰り返し削除すると、回答機能が制限され、アカウントがブロックされる場合があります。本当に削除しますか？
+
+    answer_accepted: >-
+      <p><strong>承認された回答を削除することはお勧めしません</strong>。削除すると、今後の読者がこの知識を得られなくなってしまうからです。</p> 承認された回答を繰り返し削除すると、回答機能が制限され、アカウントがブロックされる場合があります。本当に削除しますか？
+
+    other: 本当に削除してもよろしいですか？
+    tip_answer_deleted: この回答は削除されました
+    undelete_title: この投稿を元に戻す
+    undelete_desc: 本当に元に戻しますか？
+  btns:
+    confirm: 確認
+    cancel: キャンセル
+    edit: 編集
+    save: 保存
+    delete: 削除
+    undelete: 元に戻す
+    list: 限定公開を解除する
+    unlist: 限定公開にする
+    unlisted: 限定公開済み
+    login: ログイン
+    signup: 新規登録
+    logout: ログアウト
+    verify: 認証
+    create: Create
+    approve: 承認
+    reject: 却下
+    skip: スキップする
+    discard_draft: 下書きを破棄
+    pinned: ピン留めしました
+    all: すべて
+    question: 質問
+    answer: 回答
+    comment: コメント
+    refresh: 更新
+    resend: 再送
+    deactivate: 無効化する
+    active: 有効
+    suspend: 凍結
+    unsuspend: 凍結解除
+    close: クローズ
+    reopen: 再オープン
+    ok: OK
+    light: ライト
+    dark: ダーク
+    system_setting: システム設定
+    default: 既定
+    reset: リセット
+    tag: タグ
+    post_lowercase: 投稿
+    filter: フィルター
+    ignore: 除外
+    submit: 送信
+    normal: 通常
+    closed: クローズ済み
+    deleted: 削除済み
+    deleted_permanently: Deleted permanently
+    pending: 処理待ち
+    more: もっと見る
+    view: View
+    card: Card
+    compact: Compact
+    display_below: Display below
+    always_display: Always display
+    or: or
+    back_sites: Back to sites
+  search:
+    title: 検索結果
+    keywords: キーワード
+    options: オプション
+    follow: フォロー
+    following: フォロー中
+    counts: "結果：{{count}}"
+    counts_loading: "... Results"
+    more: もっと見る
+    sort_btns:
+      relevance: 関連性
+      newest: 最新
+      active: アクティブ
+      score: スコア
+      more: もっと見る
+    tips:
+      title: 詳細検索のヒント
+      tag: "<1>[tag]</1> タグで検索"
+      user: "<1>ユーザー:ユーザー名</1>作成者による検索"
+      answer: "<1>回答:0</1>未回答の質問"
+      score: "<1>スコア:3</1>3以上のスコアを持つ投稿"
+      question: "<1>質問</1>質問を検索"
+      is_answer: "<1>は答え</1>答えを検索"
+    empty: 何も見つかりませんでした。 <br /> 別のキーワードまたはそれ以下の特定のキーワードをお試しください。
+  share:
+    name: シェア
+    copy: リンクをコピー
+    via: 投稿を共有...
+    copied: コピーしました
+    facebook: Facebookで共有
+    twitter: Share to X
+  cannot_vote_for_self: 自分の投稿には投票できません。
+  modal_confirm:
+    title: エラー...
+  delete_permanently:
+    title: Delete permanently
+    content: Are you sure you want to delete permanently?
+  account_result:
+    success: 新しいアカウントが確認されました。ホームページにリダイレクトされます。
+    link: ホームページへ
+    oops: おっと!
+    invalid: 使用したリンクは機能しません。
+    confirm_new_email: メールアドレスが更新されました。
+    confirm_new_email_invalid: >-
+      申し訳ありませんが、この確認リンクは無効です。メールアドレスが既に変更されている可能性があります。
+  unsubscribe:
+    page_title: 購読解除
+    success_title: 購読解除成功
+    success_desc: 配信リストから削除され、その他のメールの送信が停止されました。
+    link: 設定の変更
+  question:
+    following_tags: フォロー中のタグ
+    edit: 編集
+    save: 保存
+    follow_tag_tip: タグに従って質問のリストをキュレートします。
+    hot_questions: ホットな質問
+    all_questions: すべての質問
+    x_questions: "{{ count }} の質問"
+    x_answers: "{{ count }} の回答"
+    x_posts: "{{ count }} Posts"
+    questions: 質問
+    answers: 回答
+    newest: 最新
+    active: 有効
+    hot: 人気
+    frequent: Frequent
+    recommend: おすすめ
+    score: スコア
+    unanswered: 未回答
+    modified: 修正済み
+    answered: 回答済み
+    asked: 質問済み
+    closed: 解決済み
+    follow_a_tag: タグをフォロー
+    more: その他
+  personal:
+    overview: 概要
+    answers: 回答
+    answer: 回答
+    questions: 質問
+    question: 質問
+    bookmarks: ブックマーク
+    reputation: 評判
+    comments: コメント
+    votes: 投票
+    badges: バッジ
+    newest: 最新
+    score: スコア
+    edit_profile: プロファイルを編集
+    visited_x_days: "{{ count }}人の閲覧者"
+    viewed: 閲覧回数
+    joined: 参加しました
+    comma: ","
+    last_login: 閲覧数
+    about_me: 自己紹介
+    about_me_empty: "// Hello, World !"
+    top_answers: よくある回答
+    top_questions: よくある質問
+    stats: 統計情報
+    list_empty: 投稿が見つかりませんでした。<br />他のタブを選択しますか？
+    content_empty: 投稿が見つかりませんでした。
+    accepted: 承認済み
+    answered: 回答済み
+    asked: 質問済み
+    downvoted: 低評価しました
+    mod_short: MOD
+    mod_long: モデレーター
+    x_reputation: 評価
+    x_votes: 投票を受け取りました
+    x_answers: 回答
+    x_questions: 質問
+    recent_badges: 最近のバッジ
+  install:
+    title: Installation
+    next: 次へ
+    done: 完了
+    config_yaml_error: config.yaml を作成できません。
+    lang:
+      label: 言語を選択してください
+    db_type:
+      label: データベースエンジン
+    db_username:
+      label: ユーザー名
+      placeholder: root
+      msg: ユーザー名は空にできません。
+    db_password:
+      label: パスワード
+      placeholder: root
+      msg: パスワードを入力してください。
+    db_host:
+      label: データベースのホスト。
+      placeholder: "db:3306"
+      msg: データベースホストは空にできません。
+    db_name:
+      label: データベース名
+      placeholder: 回答
+      msg: データベース名を空にすることはできません。
+    db_file:
+      label: データベースファイル
+      placeholder: /data/answer.db
+      msg: データベースファイルは空にできません。
+    ssl_enabled:
+      label: Enable SSL
+    ssl_enabled_on:
+      label: On
+    ssl_enabled_off:
+      label: Off
+    ssl_mode:
+      label: SSL Mode
+    ssl_root_cert:
+      placeholder: sslrootcert file path
+      msg: Path to sslrootcert file cannot be empty
+    ssl_cert:
+      placeholder: sslcert file path
+      msg: Path to sslcert file cannot be empty
+    ssl_key:
+      placeholder: sslkey file path
+      msg: Path to sslkey file cannot be empty
+    config_yaml:
+      title: config.yamlを作成
+      label: config.yaml ファイルが作成されました。
+      desc: >-
+        <1>/var/www/xxx/</1>ディレクトリに<1>config.yaml</1>ファイルを手動で作成し、その中に次のテキストを貼り付けます。
+      info: 完了したら、「次へ」ボタンをクリックします。
+    site_information: サイト情報
+    admin_account: 管理者アカウント
+    site_name:
+      label: サイト名：
+      msg: サイト名は空にできません．
+      msg_max_length: サイト名は最大30文字でなければなりません。
+    site_url:
+      label: サイトURL
+      text: あなたのサイトのアドレス
+      msg:
+        empty: サイト URL は空にできません．
+        incorrect: サイトURLの形式が正しくありません。
+        max_length: サイトのURLは最大512文字でなければなりません
+    contact_email:
+      label: 連絡先メール アドレス
+      text: このサイトを担当するキーコンタクトのメールアドレスです。
+      msg:
+        empty: 連絡先メールアドレスを空にすることはできません。
+        incorrect: 連絡先メールアドレスの形式が正しくありません。
+    login_required:
+      label: 非公開
+      switch: ログインが必要です
+      text: ログインしているユーザーのみがこのコミュニティにアクセスできます。
+    admin_name:
+      label: 名前
+      msg: 名前を空にすることはできません。
+      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      msg_max_length: Name must be between 2 to 30 characters in length.
+    admin_password:
+      label: パスワード
+      text: >-
+        ログインするにはこのパスワードが必要です。安全な場所に保存してください。
+      msg: パスワードは空白にできません
+      msg_min_length: パスワードは8文字以上でなければなりません。
+      msg_max_length: パスワードは最大 32 文字でなければなりません。
+    admin_confirm_password:
+      label: "Confirm Password"
+      text: "Please re-enter your password to confirm."
+      msg: "Confirm password does not match."
+    admin_email:
+      label: メールアドレス
+      text: ログインするにはこのメールアドレスが必要です。
+      msg:
+        empty: メールアドレスは空にできません。
+        incorrect: メールアドレスの形式が正しくありません.
+    ready_title: サイトの準備ができました
+    ready_desc: >-
+      もっと設定を変更したいと思ったことがある場合は、<1>管理者セクション</1>をご覧ください。サイトメニューで見つけてください。
+    good_luck: "楽しんで、幸運を!"
+    warn_title: 警告
+    warn_desc: >-
+      ファイル<1>config.yaml</1>は既に存在します。このファイルのいずれかの設定アイテムをリセットする必要がある場合は、最初に削除してください。
+    install_now: <1>今すぐインストール</1>を試してみてください。
+    installed: 既にインストール済みです
+    installed_desc: >-
+      既にインストールされているようです。再インストールするには、最初に古いデータベーステーブルをクリアしてください。
+    db_failed: データベースの接続が失敗しました
+    db_failed_desc: >-
+      これは、<1>設定内のデータベース情報を意味します。 aml</1>ファイルが正しくないか、データベースサーバーとの連絡先が確立できませんでした。ホストのデータベースサーバーがダウンしている可能性があります。
+  counts:
+    views: ビュー
+    votes: 投票数
+    answers: 回答
+    accepted: 承認済み
+  page_error:
+    http_error: HTTP Error {{ code }}
+    desc_403: このページにアクセスする権限がありません。
+    desc_404: 残念ながら、このページは存在しません。
+    desc_50X: サーバーにエラーが発生し、リクエストを完了できませんでした。
+    back_home: ホームページに戻ります
+  page_maintenance:
+    desc: "メンテナンス中です。まもなく戻ります。"
+  nav_menus:
+    dashboard: ダッシュボード
+    contents: コンテンツ
+    questions: 質問
+    answers: 回答
+    users: ユーザー
+    badges: バッジ
+    flags: フラグ
+    settings: 設定
+    general: 一般
+    interface: 外観
+    smtp: SMTP
+    branding: ブランディング
+    legal: 法的事項
+    write: 書き
+    tos: 利用規約
+    privacy: プライバシー
+    seo: SEO
+    customize: カスタマイズ
+    themes: テーマ
+    login: ログイン
+    privileges: 特典
+    plugins: プラグイン
+    installed_plugins: 使用中のプラグイン
+    apperance: Appearance
+  website_welcome: '{{site_name}} へようこそ'
+  user_center:
+    login: ログイン
+    qrcode_login_tip: QRコードをスキャンしてログインするには {{ agentName }} を使用してください。
+    login_failed_email_tip: ログインに失敗しました。もう一度やり直す前に、このアプリがあなたのメール情報にアクセスすることを許可してください。
+  badges:
+    modal:
+      title: お疲れ様でした！
+      content: 新しいバッジを獲得しました。
+      close: クローズ
+      confirm: バッジを表示
+    title: バッジ
+    awarded: 受賞済み
+    earned_×: 獲得×{{ number }}
+    ×_awarded: "{{ number }} 受賞"
+    can_earn_multiple: これを複数回獲得できます。
+    earned: 獲得済み
+  admin:
+    admin_header:
+      title: 管理者
+    dashboard:
+      title: ダッシュボード
+      welcome: Adminへようこそ！
+      site_statistics: サイト統計
+      questions: "質問："
+      resolved: "解決済み:"
+      unanswered: "未回答:"
+      answers: "回答："
+      comments: "評論："
+      votes: "投票："
+      users: "ユーザー数:"
+      flags: "フラグ:"
+      reviews: "レビュー:"
+      site_health: サイトの状態
+      version: "バージョン:"
+      https: "HTTPS："
+      upload_folder: "フォルダを上げる"
+      run_mode: "実行中モード:"
+      private: 非公開
+      public: 公開
+      smtp: "SMTP:"
+      timezone: "Timezone:"
+      system_info: システム情報
+      go_version: "バージョン："
+      database: "データベース："
+      database_size: "データベースのサイズ："
+      storage_used: "使用されているストレージ"
+      uptime: "稼働時間:"
+      links: リンク
+      plugins: プラグイン
+      github: GitHub
+      blog: ブログ
+      contact: 連絡先
+      forum: Forum
+      documents: ドキュメント
+      feedback: フィードバック
+      support: サポート
+      review: レビュー
+      config: 設定
+      update_to: 更新日時
+      latest: 最新
+      check_failed: チェックに失敗しました
+      "yes": "はい"
+      "no": "いいえ"
+      not_allowed: 許可されていません
+      allowed: 許可
+      enabled: 有効
+      disabled: 無効
+      writable: 書き込み可
+      not_writable: 書き込み不可
+    flags:
+      title: フラグ
+      pending: 処理待ち
+      completed: 完了済
+      flagged: フラグ付き
+      flagged_type: フラグを立てた {{ type }}
+      created: 作成
+      action: 動作
+      review: レビュー
+    user_role_modal:
+      title: ユーザーロールを変更...
+      btn_cancel: キャンセル
+      btn_submit: 送信
+    new_password_modal:
+      title: 新しいパスワードを設定
+      form:
+        fields:
+          password:
+            label: パスワード
+            text: ユーザーはログアウトされ、再度ログインする必要があります。
+            msg: パスワードの長さは 8 ～ 32 文字である必要があります。
+      btn_cancel: キャンセル
+      btn_submit: 送信
+    edit_profile_modal:
+      title: プロファイルを編集
+      form:
+        fields:
+          display_name:
+            label: 表示名
+            msg_range: Display name must be 2-30 characters in length.
+          username:
+            label: ユーザー名
+            msg_range: Username must be 2-30 characters in length.
+          email:
+            label: メールアドレス
+            msg_invalid: 無効なメールアドレス
+      edit_success: 更新が成功しました
+      btn_cancel: キャンセル
+      btn_submit: 送信
+    user_modal:
+      title: 新しいユーザーを追加
+      form:
+        fields:
+          users:
+            label: ユーザーを一括追加
+            placeholder: "John Smith, john@example.com, BUSYopr2\nAlice, alice@example.com, fpDntV8q"
+            text: '「名前、メールアドレス、パスワード」をカンマで区切ってください。'
+            msg: "ユーザーのメールアドレスを1行に1つ入力してください。"
+          display_name:
+            label: 表示名
+            msg: 表示名の長さは 2 ～ 30 文字にする必要があります。
+          email:
+            label: メールアドレス
+            msg: メールアドレスが無効です。
+          password:
+            label: パスワード
+            msg: パスワードの長さは 8 ～ 32 文字である必要があります。
+      btn_cancel: キャンセル
+      btn_submit: 送信
+    users:
+      title: ユーザー
+      name: 名前
+      email: メールアドレス
+      reputation: 評価
+      created_at: Created time
+      delete_at: Deleted time
+      suspend_at: Suspended time
+      suspend_until: Suspend until
+      status: ステータス
+      role: ロール
+      action: 操作
+      change: 変更
+      all: すべて
+      staff: スタッフ
+      more: もっと見る
+      inactive: 非アクティブ
+      suspended: 凍結済み
+      deleted: 削除済み
+      normal: 通常
+      Moderator: モデレーター
+      Admin: 管理者
+      User: ユーザー
+      filter:
+        placeholder: "ユーザー名でフィルタ"
+      set_new_password: 新しいパスワードを設定します。
+      edit_profile: プロファイルを編集
+      change_status: ステータスを変更
+      change_role: ロールを変更
+      show_logs: ログを表示
+      add_user: ユーザを追加
+      deactivate_user:
+        title: ユーザーを非アクティブにする
+        content: アクティブでないユーザーはメールアドレスを再認証する必要があります。
+      delete_user:
+        title: このユーザの削除
+        content: このユーザーを削除してもよろしいですか？これは永久的です！
+        remove: このコンテンツを削除
+        label: すべての質問、回答、コメントなどを削除
+        text: ユーザーのアカウントのみ削除したい場合は、これを確認しないでください。
+      suspend_user:
+        title: ユーザーをサスペンドにする
+        content: 一時停止中のユーザーはログインできません。
+        label: How long will the user be suspended for?
+        forever: Forever
+    questions:
+      page_title: 質問
+      unlisted: 限定公開済み
+      post: 投稿
+      votes: 投票
+      answers: 回答
+      created: 作成
+      status: ステータス
+      action: 動作
+      change: 変更
+      pending: 処理待ち
+      filter:
+        placeholder: "タイトル、質問:id でフィルター"
+    answers:
+      page_title: 回答
+      post: 投稿
+      votes: 投票
+      created: 作成
+      status: ステータス
+      action: 操作
+      change: 変更
+      filter:
+        placeholder: "タイトル、質問:id でフィルター"
+    general:
+      page_title: 一般
+      name:
+        label: サイト名
+        msg: サイト名は空にできません．
+        text: "タイトルタグで使用されるこのサイトの名前。"
+      site_url:
+        label: サイトURL
+        msg: サイト URL は空にできません．
+        validate: 正しいURLを入力してください。
+        text: あなたのサイトのアドレス
+      short_desc:
+        label: 短いサイトの説明
+        msg: 短いサイト説明は空にできません．
+        text: "ホームページのタイトルタグで使用されている簡単な説明。"
+      desc:
+        label: サイトの説明
+        msg: サイト説明を空にすることはできません。
+        text: "メタ説明タグで使用されるように、このサイトを1つの文で説明します。"
+      contact_email:
+        label: 連絡先メール アドレス
+        msg: 連絡先メールアドレスを空にすることはできません。
+        validate: 連絡先のメールアドレスが無効です。
+        text: このサイトを担当するキーコンタクトのメールアドレスです。
+      check_update:
+        label: ソフトウェアアップデート
+        text: 自動的に更新を確認
+    interface:
+      page_title: 外観
+      language:
+        label: インタフェース言語
+        msg: インターフェース言語は空にできません。
+        text: ユーザーインターフェイスの言語。ページを更新すると変更されます。
+      time_zone:
+        label: タイムゾーン
+        msg: タイムゾーンを空にすることはできません。
+        text: あなたのタイムゾーンを選択してください。
+      avatar:
+        label: Default avatar
+        text: For users without a custom avatar of their own.
+      gravatar_base_url:
+        label: Gravatar base URL
+        text: URL of the Gravatar provider's API base. Ignored when empty.
+    smtp:
+      page_title: SMTP
+      from_email:
+        label: 差出人
+        msg: 差出人メールアドレスは空にできません。
+        text: 送信元のメールアドレス
+      from_name:
+        label: 差出人名
+        msg: 差出人名は空にできません
+        text: メールの送信元の名前
+      smtp_host:
+        label: SMTP ホスト
+        msg: SMTPホストは空にできません。
+        text: メールサーバー
+      encryption:
+        label: 暗号化
+        msg: 暗号化は空にできません。
+        text: ほとんどのサーバではSSLが推奨されます。
+        ssl: SSL
+        tls: TLS
+        none: なし
+      smtp_port:
+        label: SMTPポート
+        msg: SMTPポートは1〜65535でなければなりません。
+        text: メールサーバーへのポート番号
+      smtp_username:
+        label: SMTPユーザ名
+        msg: SMTP ユーザー名を空にすることはできません。
+      smtp_password:
+        label: SMTPパスワード
+        msg: SMTP パスワードを入力してください。
+      test_email_recipient:
+        label: テストメールの受信者
+        text: テスト送信を受信するメールアドレスを入力してください。
+        msg: テストメールの受信者が無効です
+      smtp_authentication:
+        label: 認証を有効にする
+        title: SMTP認証
+        msg: SMTP認証は空にできません。
+        "yes": "はい"
+        "no": "いいえ"
+    branding:
+      page_title: ブランディング
+      logo:
+        label: ロゴ
+        msg: ロゴは空にできません。
+        text: あなたのサイトの左上にあるロゴ画像。 高さが56、アスペクト比が3:1を超える広い矩形画像を使用します。 空白の場合、サイトタイトルテキストが表示されます。
+      mobile_logo:
+        label: モバイルロゴ
+        text: サイトのモバイル版で使用されるロゴです。高さが56の横長の長方形の画像を使用してください。空白のままにすると、"ロゴ"設定の画像が使用されます。
+      square_icon:
+        label: アイコン画像
+        msg: アイコン画像は空にできません。
+        text: メタデータアイコンのベースとして使用される画像。理想的には512x512より大きくなければなりません。
+      favicon:
+        label: Favicon
+        text: あなたのサイトのファビコン。CDN上で正しく動作するにはpngである必要があります。 32x32にリサイズされます。空白の場合は、"正方形のアイコン"が使用されます。
+    legal:
+      page_title: 法的情報
+      terms_of_service:
+        label: 利用規約
+        text: "ここで利用規約のサービスコンテンツを追加できます。すでに他の場所でホストされているドキュメントがある場合は、こちらにフルURLを入力してください。"
+      privacy_policy:
+        label: プライバシーポリシー
+        text: "ここにプライバシーポリシーの内容を追加できます。すでに他の場所でホストされているドキュメントを持っている場合は、こちらにフルURLを入力してください。"
+      external_content_display:
+        label: External content
+        text: "Content includes images, videos, and media embedded from external websites."
+        always_display: Always display external content
+        ask_before_display: Ask before displaying external content
+    write:
+      page_title: 編集
+      restrict_answer:
+        title: 回答を書く
+        label: 各ユーザーは同じ質問に対して1つの回答しか書けません
+        text: "ユーザが同じ質問に複数の回答を書き込めるようにするにはオフにします。これにより回答がフォーカスされていない可能性があります。"
+      recommend_tags:
+        label: おすすめタグ
+        text: "デフォルトでドロップダウンリストに推奨タグが表示されます。"
+        msg:
+          contain_reserved: "推奨されるタグは予約済みタグを含めることはできません"
+      required_tag:
+        title: 必須タグを設定
+        label: 必須タグに「推奨タグ」を設定
+        text: "新しい質問には少なくとも1つの推奨タグが必要です。"
+      reserved_tags:
+        label: 予約済みタグ
+        text: "予約済みのタグはモデレータのみ使用できます。"
+      image_size:
+        label: 画像ファイルの最大サイズ（MB）
+        text: "画像ファイルの最大アップロードサイズ。"
+      attachment_size:
+        label: 添付ファイルの最大サイズ (MB)
+        text: "添付ファイルの最大アップロードサイズ。"
+      image_megapixels:
+        label: 画像の最大解像度
+        text: "画像ファイルに許可する最大メガピクセル数。"
+      image_extensions:
+        label: 認可された画像ファイルの拡張子
+        text: "イメージ表示に許可されるファイル拡張子のリスト(コンマで区切り)"
+      attachment_extensions:
+        label: 認可された添付ファイルの拡張子
+        text: "アップロードを許可するファイル拡張子のリスト(カンマ区切り)\n警告: アップロードを許可するとセキュリティ上の問題が発生する可能性があります。"
+    seo:
+      page_title: SEO
+      permalink:
+        label: 固定リンク
+        text: カスタム URL 構造は、ユーザビリティとリンクの前方互換性を向上させることができます。
+      robots:
+        label: robots.txt
+        text: これにより、関連するサイト設定が永久に上書きされます。
+    themes:
+      page_title: テーマ
+      themes:
+        label: テーマ
+        text: 既存のテーマを選択してください
+      color_scheme:
+        label: 配色
+      navbar_style:
+        label: Navbar background style
+      primary_color:
+        label: メインカラー
+        text: テーマで使用される色を変更する
+    css_and_html:
+      page_title: CSS と HTML
+      custom_css:
+        label: カスタム CSS
+        text: >
+
+      head:
+        label: ヘッド
+        text: >
+
+      header:
+        label: ヘッダー
+        text: >
+
+      footer:
+        label: フッター
+        text: これは &lt;/body> の前に挿入されます。
+      sidebar:
+        label: サイドバー
+        text: サイドバーに挿入されます。
+    login:
+      page_title: ログイン
+      membership:
+        title: メンバー
+        label: 新しい登録を許可する
+        text: 誰もが新しいアカウントを作成できないようにするには、オフにしてください。
+      email_registration:
+        title: メールアドレスの登録
+        label: メールアドレスの登録を許可
+        text: オフにすると、メールで新しいアカウントを作成できなくなります。
+      allowed_email_domains:
+        title: 許可されたメールドメイン
+        text: ユーザーがアカウントを登録する必要があるメールドメインです。1行に1つのドメインがあります。空の場合は無視されます。
+      private:
+        title: 非公開
+        label: ログインが必要です
+        text: ログインしているユーザーのみがこのコミュニティにアクセスできます。
+      password_login:
+        title: パスワードログイン
+        label: メールアドレスとパスワードのログインを許可する
+        text: "警告: オフにすると、他のログイン方法を設定していない場合はログインできない可能性があります。"
+    installed_plugins:
+      title: インストール済みプラグイン
+      plugin_link: プラグインは機能を拡張します。<1>プラグインリポジトリ</1>にプラグインがあります。
+      filter:
+        all: すべて
+        active: アクティブ
+        inactive: 非アクティブ
+        outdated: 期限切れ
+      plugins:
+        label: プラグイン
+        text: 既存のプラグインを選択します
+      name: 名前
+      version: バージョン
+      status: ステータス
+      action: 操作
+      deactivate: 非アクティブ化
+      activate: アクティベート
+      settings: 設定
+    settings_users:
+      title: ユーザー
+      avatar:
+        label: デフォルトのアバター
+        text: 自分のカスタムアバターのないユーザー向け。
+      gravatar_base_url:
+        label: Gravatar Base URL
+        text: GravatarプロバイダーのAPIベースのURL。空の場合は無視されます。
+      profile_editable:
+        title: プロフィール編集可能
+      allow_update_display_name:
+        label: ユーザーが表示名を変更できるようにする
+      allow_update_username:
+        label: ユーザー名の変更を許可する
+      allow_update_avatar:
+        label: ユーザーのプロフィール画像の変更を許可する
+      allow_update_bio:
+        label: ユーザーが自分についての変更を許可する
+      allow_update_website:
+        label: ユーザーのウェブサイトの変更を許可する
+      allow_update_location:
+        label: ユーザーの位置情報の変更を許可する
+    privilege:
+      title: 特権
+      level:
+        label: 評判の必要レベル
+        text: 特権に必要な評判を選択します
+      msg:
+        should_be_number: 入力は数値でなければなりません
+        number_larger_1: 数値は 1 以上でなければなりません
+    badges:
+      action: 操作
+      active: アクティブ
+      activate: アクティベート
+      all: すべて
+      awards: 賞
+      deactivate: 非アクティブ化
+      filter:
+        placeholder: 名前、バッジ:id でフィルター
+      group: グループ
+      inactive: 非アクティブ
+      name: 名前
+      show_logs: ログを表示
+      status: ステータス
+      title: バッジ
+  form:
+    optional: (任意)
+    empty: 空にすることはできません
+    invalid: 無効です
+    btn_submit: 保存
+    not_found_props: "必須プロパティ {{ key }} が見つかりません。"
+    select: 選択
+  page_review:
+    review: レビュー
+    proposed: 提案された
+    question_edit: 質問の編集
+    answer_edit: 回答の編集
+    tag_edit: タグの編集
+    edit_summary: 概要を編集
+    edit_question: 質問を編集
+    edit_answer: 回答を編集
+    edit_tag: タグを編集
+    empty: レビュータスクは残っていません。
+    approve_revision_tip: この修正を承認しますか？
+    approve_flag_tip: このフラグを承認しますか？
+    approve_post_tip: この投稿を承認しますか？
+    approve_user_tip: このユーザーを承認しますか？
+    suggest_edits: 提案された編集
+    flag_post: 報告された投稿
+    flag_user: 報告されたユーザー
+    queued_post: キューに入れられた投稿
+    queued_user: キューに入れられたユーザー
+    filter_label: タイプ
+    reputation: 評価
+    flag_post_type: この投稿は {{ type }} として報告されました
+    flag_user_type: このユーザーは {{ type }} として報告されました
+    edit_post: 投稿を編集
+    list_post: 投稿一覧
+    unlist_post: 限定公開投稿
+  timeline:
+    undeleted: 復元する
+    deleted: 削除済み
+    downvote: 低評価
+    upvote: 高評価
+    accept: 承認
+    cancelled: キャンセル済み
+    commented: コメントしました
+    rollback: rollback
+    edited: 編集済み
+    answered: 回答済み
+    asked: 質問済み
+    closed: クローズ済み
+    reopened: 再オープン
+    created: 作成済み
+    pin: ピン留め済
+    unpin: ピン留め解除
+    show: 限定公開解除済み
+    hide: 限定公開済み
+    title: "履歴："
+    tag_title: "タイムライン："
+    show_votes: "投票を表示"
+    n_or_a: N/A
+    title_for_question: "タイムライン："
+    title_for_answer: "{{ title }} の {{ author }} 回答のタイムライン"
+    title_for_tag: "タグのタイムライン："
+    datetime: 日付時刻
+    type: タイプ
+    by: By
+    comment: コメント
+    no_data: "何も見つけられませんでした"
+  users:
+    title: ユーザー
+    users_with_the_most_reputation: 今週最も高い評価スコアを持つユーザ
+    users_with_the_most_vote: 今週一番多く投票したユーザー
+    staffs: コミュニティのスタッフ
+    reputation: 評価
+    votes: 投票
+  prompt:
+    leave_page: このページから移動してもよろしいですか？
+    changes_not_save: 変更が保存されない可能性があります
+  draft:
+    discard_confirm: 下書きを破棄してもよろしいですか？
+  messages:
+    post_deleted: この投稿は削除されました。
+    post_cancel_deleted: この投稿の削除が取り消されました。
+    post_pin: この投稿はピン留めされています。
+    post_unpin: この投稿のピン留めが解除されました。
+    post_hide_list: この投稿は一覧から非表示になっています。
+    post_show_list: この投稿は一覧に表示されています。
+    post_reopen: この投稿は再オープンされました。
+    post_list: この投稿は一覧に表示されています。
+    post_unlist: この投稿は一覧に登録されていません。
+    post_pending: Your post is awaiting review. This is a preview, it will be visible after it has been approved.
+    post_closed: この投稿はクローズされました。
+    answer_deleted: この回答は削除されました。
+    answer_cancel_deleted: この回答の削除が取り消されました。
+    change_user_role: このユーザーのロールが変更されました。
+    user_inactive: このユーザーは既に無効です。
+    user_normal: このユーザーは既に有効です。
+    user_suspended: このユーザーは凍結されています。
+    user_deleted: このユーザーは削除されました。
+    badge_activated: このバッジは有効化されました。
+    badge_inactivated: このバッジは無効化されています。
+    users_deleted: These users have been deleted.
+    posts_deleted: These questions have been deleted.
+    answers_deleted: These answers have been deleted.
+    copy: Copy to clipboard
+    copied: Copied
+    external_content_warning: External images/media are not displayed.
+
+

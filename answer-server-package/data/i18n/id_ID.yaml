@@ -1,0 +1,2341 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# The following fields are used for back-end
+backend:
+  base:
+    success:
+      other: Sukses.
+    unknown:
+      other: Kesalahan tidak diketahui.
+    request_format_error:
+      other: Permintaan tidak sah.
+    unauthorized_error:
+      other: Tidak diizinkan.
+    database_error:
+      other: Kesalahan data server.
+    forbidden_error:
+      other: Forbidden.
+    duplicate_request_error:
+      other: Duplicate submission.
+  action:
+    report:
+      other: Flag
+    edit:
+      other: Ubah
+    delete:
+      other: Hapus
+    close:
+      other: Tutup
+    reopen:
+      other: Buka kembali
+    forbidden_error:
+      other: Forbidden.
+    pin:
+      other: Pin
+    hide:
+      other: Unlist
+    unpin:
+      other: Unpin
+    show:
+      other: Daftar
+    invite_someone_to_answer:
+      other: Undang seseorang untuk menjawab
+    undelete:
+      other: Undelete
+    merge:
+      other: Merge
+  role:
+    name:
+      user:
+        other: Pengguna
+      admin:
+        other: Administrator
+      moderator:
+        other: Moderator
+    description:
+      user:
+        other: Default tanpa akses khusus.
+      admin:
+        other: Memiliki kontrol penuh atas situs.
+      moderator:
+        other: Memiliki kendali atas semua kiriman kecuali pengaturan administrator.
+  privilege:
+    level_1:
+      description:
+        other: Level 1 (less reputation required for private team, group)
+    level_2:
+      description:
+        other: Level 2 (low reputation required for startup community)
+    level_3:
+      description:
+        other: Level 3 (high reputation required for mature community)
+    level_custom:
+      description:
+        other: Custom Level
+    rank_question_add_label:
+      other: Tanyakan sesuatu
+    rank_answer_add_label:
+      other: Tulis jawaban
+    rank_comment_add_label:
+      other: Tulis komentar
+    rank_report_add_label:
+      other: Flag
+    rank_comment_vote_up_label:
+      other: Upvote comment
+    rank_link_url_limit_label:
+      other: Kirim lebih dari 2 tautan secara bersamaan
+    rank_question_vote_up_label:
+      other: Upvote question
+    rank_answer_vote_up_label:
+      other: Upvote answer
+    rank_question_vote_down_label:
+      other: Downvote question
+    rank_answer_vote_down_label:
+      other: Downvote answer
+    rank_invite_someone_to_answer_label:
+      other: Undang seseorang untuk menjawab
+    rank_tag_add_label:
+      other:
+    rank_tag_edit_label:
+      other: Edit tag description (need to review)
+    rank_question_edit_label:
+      other: Edit other's question (need to review)
+    rank_answer_edit_label:
+      other: Edit other's answer (need to review)
+    rank_question_edit_without_review_label:
+      other: Edit other's question without review
+    rank_answer_edit_without_review_label:
+      other: Edit other's answer without review
+    rank_question_audit_label:
+      other: Review question edits
+    rank_answer_audit_label:
+      other: Review answer edits
+    rank_tag_audit_label:
+      other: Review tag edits
+    rank_tag_edit_without_review_label:
+      other: Edit tag description without review
+    rank_tag_synonym_label:
+      other: Manage tag synonyms
+  email:
+    other:
+  e_mail:
+    other: Email
+  password:
+    other: Kata sandi
+  pass:
+    other: Password
+  old_pass:
+    other: Current password
+  original_text:
+    other: This post
+  email_or_password_wrong_error:
+    other: '"Email" dan kata sandi tidak cocok.'
+  error:
+    common:
+      invalid_url:
+        other: URL salah.
+      status_invalid:
+        other: Invalid status.
+    password:
+      space_invalid:
+        other: Password tidak boleh mengandung spasi.
+    admin:
+      cannot_update_their_password:
+        other: You cannot modify your password.
+      cannot_edit_their_profile:
+        other: You cannot modify your profile.
+      cannot_modify_self_status:
+        other: You cannot modify your status.
+      email_or_password_wrong:
+        other: Email dan kata sandi tidak cocok.
+    answer:
+      not_found:
+        other: Jawaban tidak ditemukan.
+      cannot_deleted:
+        other: Tidak memiliki izin untuk menghapus.
+      cannot_update:
+        other: Tidak memiliki izin untuk memperbarui.
+      question_closed_cannot_add:
+        other: Questions are closed and cannot be added.
+      content_cannot_empty:
+        other: Answer content cannot be empty.
+    comment:
+      edit_without_permission:
+        other: Tidak diizinkan untuk mengubah komentar.
+      not_found:
+        other: Komentar tidak ditemukan.
+      cannot_edit_after_deadline:
+        other: The comment time has been too long to modify.
+      content_cannot_empty:
+        other: Comment content cannot be empty.
+    email:
+      duplicate:
+        other: Email telah terdaftar.
+      need_to_be_verified:
+        other: Email harus terverifikasi.
+      verify_url_expired:
+        other: URL verifikasi email telah kadaluwarsa, silahkan kirim ulang.
+      illegal_email_domain_error:
+        other: Email is not allowed from that email domain. Please use another one.
+    lang:
+      not_found:
+        other: Bahasa tidak ditemukan.
+    object:
+      captcha_verification_failed:
+        other: Captcha salah.
+      disallow_follow:
+        other: Anda tidak diizinkan untuk mengikuti.
+      disallow_vote:
+        other: Anda tisak diizinkan untuk melakukan vote.
+      disallow_vote_your_self:
+        other: Anda tidak dapat melakukan voting untuk ulasan Anda sendiri.
+      not_found:
+        other: Objek tidak ditemukan.
+      verification_failed:
+        other: Verifikasi gagal.
+      email_or_password_incorrect:
+        other: Email dan kata sandi tidak cocok.
+      old_password_verification_failed:
+        other: Verifikasi password lama, gagal
+      new_password_same_as_previous_setting:
+        other: Kata sandi baru sama dengan kata sandi yang sebelumnya.
+      already_deleted:
+        other: This post has been deleted.
+    meta:
+      object_not_found:
+        other: Meta object not found
+    question:
+      already_deleted:
+        other: This post has been deleted.
+      under_review:
+        other: Your post is awaiting review. It will be visible after it has been approved.
+      not_found:
+        other: Pertanyaan tidak ditemukan.
+      cannot_deleted:
+        other: Tidak memiliki izin untuk menghapus.
+      cannot_close:
+        other: Tidak diizinkan untuk menutup.
+      cannot_update:
+        other: Tidak diizinkan untuk memperbarui.
+      content_cannot_empty:
+        other: Content cannot be empty.
+    rank:
+      fail_to_meet_the_condition:
+        other: Reputation rank fail to meet the condition.
+      vote_fail_to_meet_the_condition:
+        other: Thanks for the feedback. You need at least {{.Rank}} reputation to cast a vote.
+      no_enough_rank_to_operate:
+        other: You need at least {{.Rank}} reputation to do this.
+    report:
+      handle_failed:
+        other: Laporan penanganan gagal.
+      not_found:
+        other: Laporan tidak ditemukan.
+    tag:
+      already_exist:
+        other: Tag already exists.
+      not_found:
+        other: Tag tidak ditemukan.
+      recommend_tag_not_found:
+        other: Recommend tag is not exist.
+      recommend_tag_enter:
+        other: Silahkan isi setidaknya satu tag yang diperlukan.
+      not_contain_synonym_tags:
+        other: Tidak boleh mengandung Tag sinonim.
+      cannot_update:
+        other: Tidak memiliki izin untuk memperbaharui.
+      is_used_cannot_delete:
+        other: You cannot delete a tag that is in use.
+      cannot_set_synonym_as_itself:
+        other: Anda tidak bisa menetapkan sinonim dari tag saat ini dengan tag yang sama.
+    smtp:
+      config_from_name_cannot_be_email:
+        other: The from name cannot be a email address.
+    theme:
+      not_found:
+        other: Tema tidak ditemukan.
+    revision:
+      review_underway:
+        other: Tidak dapat mengedit saat ini, sedang ada review versi pada antrian.
+      no_permission:
+        other: No permission to revise.
+    user:
+      external_login_missing_user_id:
+        other: The third-party platform does not provide a unique UserID, so you cannot login, please contact the website administrator.
+      external_login_unbinding_forbidden:
+        other: Please set a login password for your account before you remove this login.
+      email_or_password_wrong:
+        other:
+          other: Email dan kata sandi tidak cocok.
+      not_found:
+        other: Pengguna tidak ditemukan.
+      suspended:
+        other: Pengguna ini telah ditangguhkan.
+      username_invalid:
+        other: Nama pengguna tidak sesuai.
+      username_duplicate:
+        other: Nama pengguna sudah digunakan.
+      set_avatar:
+        other: Set avatar gagal.
+      cannot_update_your_role:
+        other: Anda tidak dapat mengubah peran anda sendiri.
+      not_allowed_registration:
+        other: Currently the site is not open for registration.
+      not_allowed_login_via_password:
+        other: Currently the site is not allowed to login via password.
+      access_denied:
+        other: Access denied
+      page_access_denied:
+        other: You do not have access to this page.
+      add_bulk_users_format_error:
+        other: "Error {{.Field}} format near '{{.Content}}' at line {{.Line}}. {{.ExtraMessage}}"
+      add_bulk_users_amount_error:
+        other: "The number of users you add at once should be in the range of 1-{{.MaxAmount}}."
+      status_suspended_forever:
+        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+      status_suspended_until:
+        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+      status_deleted:
+        other: "This user was deleted."
+      status_inactive:
+        other: "This user is inactive."
+    config:
+      read_config_failed:
+        other: Gagal membaca konfigurasi
+    database:
+      connection_failed:
+        other: Koneksi ke database gagal
+      create_table_failed:
+        other: Gagal membuat tabel
+    install:
+      create_config_failed:
+        other: Can't create the config.yaml file.
+    upload:
+      unsupported_file_format:
+        other: Unsupported file format.
+    site_info:
+      config_not_found:
+        other: Site config not found.
+    badge:
+      object_not_found:
+        other: Badge object not found
+  reason:
+    spam:
+      name:
+        other: spam
+      desc:
+        other: This post is an advertisement, or vandalism. It is not useful or relevant to the current topic.
+    rude_or_abusive:
+      name:
+        other: rude or abusive
+      desc:
+        other: "A reasonable person would find this content inappropriate for respectful discourse."
+    a_duplicate:
+      name:
+        other: a duplicate
+      desc:
+        other: This question has been asked before and already has an answer.
+      placeholder:
+        other: Enter the existing question link
+    not_a_answer:
+      name:
+        other: not an answer
+      desc:
+        other: "This was posted as an answer, but it does not attempt to answer the question. It should possibly be an edit, a comment, another question,or deleted altogether."
+    no_longer_needed:
+      name:
+        other: no longer needed
+      desc:
+        other: This comment is outdated, conversational or not relevant to this post.
+    something:
+      name:
+        other: something else
+      desc:
+        other: This post requires staff attention for another reason not listed above.
+      placeholder:
+        other: Let us know specifically what you are concerned about
+    community_specific:
+      name:
+        other: a community-specific reason
+      desc:
+        other: This question doesn't meet a community guideline.
+    not_clarity:
+      name:
+        other: needs details or clarity
+      desc:
+        other: This question currently includes multiple questions in one. It should focus on one problem only.
+    looks_ok:
+      name:
+        other: looks OK
+      desc:
+        other: This post is good as-is and not low quality.
+    needs_edit:
+      name:
+        other: needs edit, and I did it
+      desc:
+        other: Improve and correct problems with this post yourself.
+    needs_close:
+      name:
+        other: needs close
+      desc:
+        other: A closed question can't answer, but still can edit, vote and comment.
+    needs_delete:
+      name:
+        other: needs delete
+      desc:
+        other: This post will be deleted.
+  question:
+    close:
+      duplicate:
+        name:
+          other: spam
+        desc:
+          other: Pertanyaan ini telah ditanyakan sebelumnya dan sudah ada jawabannya.
+      guideline:
+        name:
+          other: a community-specific reason
+        desc:
+          other: Pertanyaan ini tidak sesuai dengan pedoman komunitas.
+      multiple:
+        name:
+          other: membutuhkan detail atau kejelasan
+        desc:
+          other: This question currently includes multiple questions in one. It should focus on one problem only.
+      other:
+        name:
+          other: lainnya
+        desc:
+          other: Posting ini membutuhkan alasan lain yang tidak tercantum di atas.
+    operation_type:
+      asked:
+        other: ditanyakan
+      answered:
+        other: dijawab
+      modified:
+        other: dimodifikasi
+    deleted_title:
+      other: Deleted question
+    questions_title:
+      other: Questions
+  tag:
+    tags_title:
+      other: Tags
+    no_description:
+      other: The tag has no description.
+  notification:
+    action:
+      update_question:
+        other: pertanyaan yang diperbaharui
+      answer_the_question:
+        other: pertanyaan yang dijawab
+      update_answer:
+        other: jawaban yang diperbaharui
+      accept_answer:
+        other: pertanyaan yanag diterima
+      comment_question:
+        other: pertanyaan yang dikomentari
+      comment_answer:
+        other: jawaban yang dikomentari
+      reply_to_you:
+        other: membalas Anda
+      mention_you:
+        other: menyebutmu
+      your_question_is_closed:
+        other: Pertanyaanmu telah ditutup
+      your_question_was_deleted:
+        other: Pertanyaanmu telah dihapus
+      your_answer_was_deleted:
+        other: Jawabanmu telah dihapus
+      your_comment_was_deleted:
+        other: Komentarmu telah dihapus
+      up_voted_question:
+        other: upvoted question
+      down_voted_question:
+        other: downvoted question
+      up_voted_answer:
+        other: upvoted answer
+      down_voted_answer:
+        other: downvoted answer
+      up_voted_comment:
+        other: upvoted comment
+      invited_you_to_answer:
+        other: invited you to answer
+      earned_badge:
+        other: You've earned the "{{.BadgeName}}" badge
+  email_tpl:
+    change_email:
+      title:
+        other: "[{{.SiteName}}] Confirm your new email address"
+      body:
+        other: "Confirm your new email address for {{.SiteName}} by clicking on the following link:<br>\n<a href='{{.ChangeEmailUrl}}' target='_blank'>{{.ChangeEmailUrl}}</a><br><br>\n\nIf you did not request this change, please ignore this email.<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+    new_answer:
+      title:
+        other: "[{{.SiteName}}] {{.DisplayName}} answered your question"
+      body:
+        other: "<a href='{{.AnswerUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.AnswerSummary}}</blockquote><br>\n<a href='{{.AnswerUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+    invited_you_to_answer:
+      title:
+        other: "[{{.SiteName}}] {{.DisplayName}} invited you to answer"
+      body:
+        other: "<a href='{{.InviteUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>I think you may know the answer.</blockquote><br>\n<a href='{{.InviteUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+    new_comment:
+      title:
+        other: "[{{.SiteName}}] {{.DisplayName}} commented on your post"
+      body:
+        other: "<a href='{{.CommentUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.CommentSummary}}</blockquote><br>\n<a href='{{.CommentUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+    new_question:
+      title:
+        other: "[{{.SiteName}}] New question: {{.QuestionTitle}}"
+      body:
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+    pass_reset:
+      title:
+        other: "[{{.SiteName }}] Password reset"
+      body:
+        other: "Somebody asked to reset your password on {{.SiteName}}.<br><br>\n\nIf it was not you, you can safely ignore this email.<br><br>\n\nClick the following link to choose a new password:<br>\n<a href='{{.PassResetUrl}}' target='_blank'>{{.PassResetUrl}}</a>\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+    register:
+      title:
+        other: "[{{.SiteName}}] Confirm your new account"
+      body:
+        other: "Welcome to {{.SiteName}}!<br><br>\n\nClick the following link to confirm and activate your new account:<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\nIf the above link is not clickable, try copying and pasting it into the address bar of your web browser.\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+    test:
+      title:
+        other: "[{{.SiteName}}] Test Email"
+      body:
+        other: "This is a test email.\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+  action_activity_type:
+    upvote:
+      other: upvote
+    upvoted:
+      other: upvoted
+    downvote:
+      other: downvote
+    downvoted:
+      other: downvoted
+    accept:
+      other: accept
+    accepted:
+      other: accepted
+    edit:
+      other: edit
+  review:
+    queued_post:
+      other: Queued post
+    flagged_post:
+      other: Flagged post
+    suggested_post_edit:
+      other: Suggested edits
+  reaction:
+    tooltip:
+      other: "{{ .Names }} and {{ .Count }} more..."
+  badge:
+    default_badges:
+      autobiographer:
+        name:
+          other: Autobiographer
+        desc:
+          other: Filled out <a href="{{ .ProfileURL }}" target="_blank">profile</a> information.
+      certified:
+        name:
+          other: Certified
+        desc:
+          other: Completed our new user tutorial.
+      editor:
+        name:
+          other: Editor
+        desc:
+          other: First post edit.
+      first_flag:
+        name:
+          other: First Flag
+        desc:
+          other: First flagged a post.
+      first_upvote:
+        name:
+          other: First Upvote
+        desc:
+          other: First up voted a post.
+      first_link:
+        name:
+          other: First Link
+        desc:
+          other: First added a link to another post.
+      first_reaction:
+        name:
+          other: First Reaction
+        desc:
+          other: First reacted to the post.
+      first_share:
+        name:
+          other: First Share
+        desc:
+          other: First shared a post.
+      scholar:
+        name:
+          other: Scholar
+        desc:
+          other: Asked a question and accepted an answer.
+      commentator:
+        name:
+          other: Commentator
+        desc:
+          other: Leave 5 comments.
+      new_user_of_the_month:
+        name:
+          other: New User of the Month
+        desc:
+          other: Outstanding contributions in their first month.
+      read_guidelines:
+        name:
+          other: Read Guidelines
+        desc:
+          other: Read the [community guidelines].
+      reader:
+        name:
+          other: Reader
+        desc:
+          other: Read every answers in a topic with more than 10 answers.
+      welcome:
+        name:
+          other: Welcome
+        desc:
+          other: Received a up vote.
+      nice_share:
+        name:
+          other: Nice Share
+        desc:
+          other: Shared a post with 25 unique visitors.
+      good_share:
+        name:
+          other: Good Share
+        desc:
+          other: Shared a post with 300 unique visitors.
+      great_share:
+        name:
+          other: Great Share
+        desc:
+          other: Shared a post with 1000 unique visitors.
+      out_of_love:
+        name:
+          other: Out of Love
+        desc:
+          other: Used 50 up votes in a day.
+      higher_love:
+        name:
+          other: Higher Love
+        desc:
+          other: Used 50 up votes in a day 5 times.
+      crazy_in_love:
+        name:
+          other: Crazy in Love
+        desc:
+          other: Used 50 up votes in a day 20 times.
+      promoter:
+        name:
+          other: Promoter
+        desc:
+          other: Invited a user.
+      campaigner:
+        name:
+          other: Campaigner
+        desc:
+          other: Invited 3 basic users.
+      champion:
+        name:
+          other: Champion
+        desc:
+          other: Invited 5 members.
+      thank_you:
+        name:
+          other: Thank You
+        desc:
+          other: Has 20 up voted posts and gave 10 up votes.
+      gives_back:
+        name:
+          other: Gives Back
+        desc:
+          other: Has 100 up voted posts and gave 100 up votes.
+      empathetic:
+        name:
+          other: Empathetic
+        desc:
+          other: Has 500 up voted posts and gave 1000 up votes.
+      enthusiast:
+        name:
+          other: Enthusiast
+        desc:
+          other: Visited 10 consecutive days.
+      aficionado:
+        name:
+          other: Aficionado
+        desc:
+          other: Visited 100 consecutive days.
+      devotee:
+        name:
+          other: Devotee
+        desc:
+          other: Visited 365 consecutive days.
+      anniversary:
+        name:
+          other: Anniversary
+        desc:
+          other: Active member for a year, posted at least once.
+      appreciated:
+        name:
+          other: Appreciated
+        desc:
+          other: Received 1 up vote on 20 posts.
+      respected:
+        name:
+          other: Respected
+        desc:
+          other: Received 2 up votes on 100 posts.
+      admired:
+        name:
+          other: Admired
+        desc:
+          other: Received 5 up votes on 300 posts.
+      solved:
+        name:
+          other: Solved
+        desc:
+          other: Have an answer be accepted.
+      guidance_counsellor:
+        name:
+          other: Guidance Counsellor
+        desc:
+          other: Have 10 answers be accepted.
+      know_it_all:
+        name:
+          other: Know-it-All
+        desc:
+          other: Have 50 answers be accepted.
+      solution_institution:
+        name:
+          other: Solution Institution
+        desc:
+          other: Have 150 answers be accepted.
+      nice_answer:
+        name:
+          other: Nice Answer
+        desc:
+          other: Answer score of 10 or more.
+      good_answer:
+        name:
+          other: Good Answer
+        desc:
+          other: Answer score of 25 or more.
+      great_answer:
+        name:
+          other: Great Answer
+        desc:
+          other: Answer score of 50 or more.
+      nice_question:
+        name:
+          other: Nice Question
+        desc:
+          other: Question score of 10 or more.
+      good_question:
+        name:
+          other: Good Question
+        desc:
+          other: Question score of 25 or more.
+      great_question:
+        name:
+          other: Great Question
+        desc:
+          other: Question score of 50 or more.
+      popular_question:
+        name:
+          other: Popular Question
+        desc:
+          other: Question with 500 views.
+      notable_question:
+        name:
+          other: Notable Question
+        desc:
+          other: Question with 1,000 views.
+      famous_question:
+        name:
+          other: Famous Question
+        desc:
+          other: Question with 5,000 views.
+      popular_link:
+        name:
+          other: Popular Link
+        desc:
+          other: Posted an external link with 50 clicks.
+      hot_link:
+        name:
+          other: Hot Link
+        desc:
+          other: Posted an external link with 300 clicks.
+      famous_link:
+        name:
+          other: Famous Link
+        desc:
+          other: Posted an external link with 100 clicks.
+    default_badge_groups:
+      getting_started:
+        name:
+          other: Getting Started
+      community:
+        name:
+          other: Community
+      posting:
+        name:
+          other: Posting
+# The following fields are used for interface presentation(Front-end)
+ui:
+  how_to_format:
+    title: Cara memformat
+    desc: >-
+      <ul class="mb-0"><li><p class="mb-2">mention a post: <code>#post_id</code></p></li> <li><p class="mb-2">to make links</p><pre class="mb-2"><code>&lt;https://url.com&gt;<br/><br/>[Title](https://url.com)</code></pre></li><li><p class="mb-2">put returns between paragraphs</p></li><li><p class="mb-2"><em>_italic_</em> or **<strong>bold</strong>**</p></li><li><p class="mb-2">indent code by 4 spaces</p></li><li><p class="mb-2">quote by placing <code>&gt;</code> at start of line</p></li><li><p class="mb-2">backtick escapes <code>`like _this_`</code></p></li><li><p class="mb-2">create code fences with backticks <code>`</code></p><pre class="mb-0"><code>```<br/>code here<br/>```</code></pre></li></ul>
+  pagination:
+    prev: Sebelumnya
+    next: Selanjutnya
+  page_title:
+    question: Pertanyaan
+    questions: Pertanyaan
+    tag: Tag
+    tags: Tags
+    tag_wiki: tag wiki
+    create_tag: Create Tag
+    edit_tag: Ubah Tag
+    ask_a_question: Create Question
+    edit_question: Sunting Pertanyaan
+    edit_answer: Sunting jawaban
+    search: Cari
+    posts_containing: Postingan mengandung
+    settings: Pengaturan
+    notifications: Pemberitahuan
+    login: Log In
+    sign_up: Daftar
+    account_recovery: Pemulihan Akun
+    account_activation: Aktivasi Akun
+    confirm_email: Konfirmasi email
+    account_suspended: Akun Ditangguhkan
+    admin: Admin
+    change_email: Modifikasi email
+    install: Instalasi Answer
+    upgrade: Meng-upgrade Answer
+    maintenance: Pemeliharaan Website
+    users: Pengguna
+    oauth_callback: Processing
+    http_404: HTTP Error 404
+    http_50X: HTTP Error 500
+    http_403: HTTP Error 403
+    logout: Log Out
+  notifications:
+    title: Pemberitahuan
+    inbox: Kotak Masuk
+    achievement: Pencapaian
+    new_alerts: New alerts
+    all_read: Tandai Semua Jika Sudah Dibaca
+    show_more: Tampilkan lebih banyak
+    someone: Someone
+    inbox_type:
+      all: All
+      posts: Posts
+      invites: Invites
+      votes: Votes
+    answer: Answer
+    question: Question
+    badge_award: Badge
+  suspended:
+    title: Akun Anda telah ditangguhkan
+    until_time: "Akun anda ditangguhkan sampai {{ time }}."
+    forever: Pengguna ini ditangguhkan selamanya.
+    end: Anda tidak sesuai dengan syarat pedoman komunitas.
+    contact_us: Contact us
+  editor:
+    blockquote:
+      text: Blockquote
+    bold:
+      text: Strong
+    chart:
+      text: Chart
+      flow_chart: Diagram alir
+      sequence_diagram: Sequence diagram
+      class_diagram: Class diagram
+      state_diagram: State diagram
+      entity_relationship_diagram: Entity relationship diagram
+      user_defined_diagram: User defined diagram
+      gantt_chart: Gantt chart
+      pie_chart: Pie chart
+    code:
+      text: Code Sample
+      add_code: Tambahkan sample code
+      form:
+        fields:
+          code:
+            label: Code
+            msg:
+              empty: Code tidak boleh kosong.
+          language:
+            label: Language
+            placeholder: Deteksi otomatis
+      btn_cancel: Batal
+      btn_confirm: Tambah
+    formula:
+      text: Formula
+      options:
+        inline: Inline formula
+        block: Block formula
+    heading:
+      text: Heading
+      options:
+        h1: Heading 1
+        h2: Heading 2
+        h3: Heading 3
+        h4: Heading 4
+        h5: Heading 5
+        h6: Heading 6
+    help:
+      text: Help
+    hr:
+      text: Horizontal rule
+    image:
+      text: Gambar
+      add_image: Tambahkan gambar
+      tab_image: Unggah gambar
+      form_image:
+        fields:
+          file:
+            label: Image file
+            btn: Pilih gambar
+            msg:
+              empty: File tidak boleh kosong.
+              only_image: Hanya file Gambar yang diperbolehkan.
+              max_size: File size cannot exceed {{size}} MB.
+          desc:
+            label: Description
+      tab_url: URL gambar
+      form_url:
+        fields:
+          url:
+            label: URL gambar
+            msg:
+              empty: URL gambar tidak boleh kosong.
+          name:
+            label: Description
+      btn_cancel: Batal
+      btn_confirm: Tambah
+      uploading: Sedang mengunggah
+    indent:
+      text: Indent
+    outdent:
+      text: Outdent
+    italic:
+      text: Emphasis
+    link:
+      text: Hyperlink
+      add_link: Add hyperlink
+      form:
+        fields:
+          url:
+            label: URL
+            msg:
+              empty: URL cannot be empty.
+          name:
+            label: Description
+      btn_cancel: Batal
+      btn_confirm: Tambah
+    ordered_list:
+      text: Numbered list
+    unordered_list:
+      text: Bulleted list
+    table:
+      text: Table
+      heading: Heading
+      cell: Cell
+    file:
+      text: Attach files
+      not_supported: "Don’t support that file type. Try again with {{file_type}}."
+      max_size: "Attach files size cannot exceed {{size}} MB."
+  close_modal:
+    title: Postingan ini saya tutup sebagai...
+    btn_cancel: Batal
+    btn_submit: Submit
+    remark:
+      empty: Cannot be empty.
+    msg:
+      empty: Please select a reason.
+  report_modal:
+    flag_title: I am flagging to report this post as...
+    close_title: I am closing this post as...
+    review_question_title: Review question
+    review_answer_title: Review answer
+    review_comment_title: Review comment
+    btn_cancel: Cancel
+    btn_submit: Submit
+    remark:
+      empty: Cannot be empty.
+    msg:
+      empty: Please select a reason.
+      not_a_url: URL format is incorrect.
+      url_not_match: URL origin does not match the current website.
+  tag_modal:
+    title: Create new tag
+    form:
+      fields:
+        display_name:
+          label: Display name
+          msg:
+            empty: Display name cannot be empty.
+            range: Display name up to 35 characters.
+        slug_name:
+          label: URL slug
+          desc: URL slug up to 35 characters.
+          msg:
+            empty: URL slug cannot be empty.
+            range: URL slug up to 35 characters.
+            character: URL slug contains unallowed character set.
+        desc:
+          label: Description
+        revision:
+          label: Revision
+        edit_summary:
+          label: Edit summary
+          placeholder: >-
+            Briefly explain your changes (corrected spelling, fixed grammar, improved formatting)
+    btn_cancel: Cancel
+    btn_submit: Submit
+    btn_post: Post new tag
+  tag_info:
+    created_at: Dibuat
+    edited_at: Disunting
+    history: Riwayat
+    synonyms:
+      title: Sinonim
+      text: Tag berikut akan dipetakan ulang ke
+      empty: Sinonim tidak ditemukan.
+      btn_add: Tambahkan sinonim
+      btn_edit: Sunting
+      btn_save: Simpan
+    synonyms_text: Tag berikut akan dipetakan ulang ke
+    delete:
+      title: Hapus tagar ini
+      tip_with_posts: >-
+        <p>We do not allow <strong>deleting tag with posts</strong>.</p> <p>Please remove this tag from the posts first.</p>
+      tip_with_synonyms: >-
+        <p>We do not allow <strong>deleting tag with synonyms</strong>.</p> <p>Please remove the synonyms from this tag first.</p>
+      tip: Are you sure you wish to delete?
+      close: Tutup
+    merge:
+      title: Merge tag
+      source_tag_title: Source tag
+      source_tag_description: The source tag and its associated data will be remapped to the target tag.
+      target_tag_title: Target tag
+      target_tag_description: A synonym between these two tags will be created after merging.
+      no_results: No tags matched
+      btn_submit: Submit
+      btn_close: Close
+  edit_tag:
+    title: Ubah Tag
+    default_reason: Sunting tag
+    default_first_reason: Add tag
+    btn_save_edits: Simpan suntingan
+    btn_cancel: Batal
+  dates:
+    long_date: MMM D
+    long_date_with_year: "MMM D, YYYY"
+    long_date_with_time: "MMM D, YYYY [at] HH:mm"
+    now: sekarang
+    x_seconds_ago: "{{count}}s ago"
+    x_minutes_ago: "{{count}}m ago"
+    x_hours_ago: "{{count}}h ago"
+    hour: jam
+    day: hari
+    hours: hours
+    days: days
+    month: month
+    months: months
+    year: year
+  reaction:
+    heart: heart
+    smile: smile
+    frown: frown
+    btn_label: add or remove reactions
+    undo_emoji: undo {{ emoji }} reaction
+    react_emoji: react with {{ emoji }}
+    unreact_emoji: unreact with {{ emoji }}
+  comment:
+    btn_add_comment: Tambahkan Komentar
+    reply_to: Balas ke
+    btn_reply: Balas
+    btn_edit: Sunting
+    btn_delete: Hapus
+    btn_flag: Flag
+    btn_save_edits: Simpan suntingan
+    btn_cancel: Batal
+    show_more: "{{count}} more comments"
+    tip_question: >-
+      Gunakan komentar untuk meminta informasi lebih lanjut atau menyarankan perbaikan. Hindari menjawab pertanyaan di komentar.
+    tip_answer: >-
+      Gunakan komentar untuk membalas pengguna lain atau memberi tahu mereka tentang perubahan. Jika Anda menambahkan informasi baru, cukup edit posting Anda.
+    tip_vote: It adds something useful to the post
+  edit_answer:
+    title: Sunting jawaban
+    default_reason: Edit jawaban
+    default_first_reason: Add answer
+    form:
+      fields:
+        revision:
+          label: Revisi
+        answer:
+          label: Jawaban
+          feedback:
+            characters: content must be at least 6 characters in length.
+        edit_summary:
+          label: Edit summary
+          placeholder: >-
+            Briefly explain your changes (corrected spelling, fixed grammar, improved formatting)
+    btn_save_edits: Save edits
+    btn_cancel: Cancel
+  tags:
+    title: Tags
+    sort_buttons:
+      popular: Popular
+      name: Name
+      newest: Newest
+    button_follow: Follow
+    button_following: Following
+    tag_label: questions
+    search_placeholder: Filter by tag name
+    no_desc: The tag has no description.
+    more: More
+    wiki: Wiki
+  ask:
+    title: Create Question
+    edit_title: Edit Question
+    default_reason: Edit question
+    default_first_reason: Create question
+    similar_questions: Similar questions
+    form:
+      fields:
+        revision:
+          label: Revision
+        title:
+          label: Title
+          placeholder: What's your topic? Be specific.
+          msg:
+            empty: Title cannot be empty.
+            range: Title up to 150 characters
+        body:
+          label: Body
+          msg:
+            empty: Body cannot be empty.
+        tags:
+          label: Tags
+          msg:
+            empty: Tags cannot be empty.
+        answer:
+          label: Answer
+          msg:
+            empty: Answer cannot be empty.
+        edit_summary:
+          label: Edit summary
+          placeholder: >-
+            Briefly explain your changes (corrected spelling, fixed grammar, improved formatting)
+    btn_post_question: Post your question
+    btn_save_edits: Save edits
+    answer_question: Answer your own question
+    post_question&answer: Post your question and answer
+  tag_selector:
+    add_btn: Add tag
+    create_btn: Create new tag
+    search_tag: Search tag
+    hint: "Describe what your content is about, at least one tag is required."
+    no_result: No tags matched
+    tag_required_text: Required tag (at least one)
+  header:
+    nav:
+      question: Questions
+      tag: Tags
+      user: Pengguna
+      badges: Badges
+      profile: Profil
+      setting: Pengaturan
+      logout: Keluar
+      admin: Admin
+      review: Ulasan
+      bookmark: Bookmarks
+      moderation: Moderation
+    search:
+      placeholder: Cari
+  footer:
+    build_on: >-
+      Powered by <1> Apache Answer </1>- the open-source software that powers Q&A communities.<br />Made with love © {{cc}}.
+  upload_img:
+    name: Ubah
+    loading: sedang memuat...
+  pic_auth_code:
+    title: Capthcha
+    placeholder: Masukkan teks di atas
+    msg:
+      empty: Captcha tidak boleh kosong.
+  inactive:
+    first: >-
+      Kamu hampir selesai! Kami telah mengirimkan email aktivasi ke <bold>{{mail}}</bold>. Silakan ikuti petunjuk dalam email untuk mengaktifkan akun Anda.
+    info: "Jika tidak ada email masuk, mohon periksa folder spam Anda."
+    another: >-
+      Kami telah mengirimkan email aktivasi lain kepada Anda di <bold>{{mail}}</bold>. Mungkin butuh beberapa menit untuk tiba; pastikan untuk memeriksa folder spam Anda.
+    btn_name: Kirim ulang email aktivasi
+    change_btn_name: Ganti email
+    msg:
+      empty: Tidak bisa kosong.
+    resend_email:
+      url_label: Are you sure you want to resend the activation email?
+      url_text: You can also give the activation link above to the user.
+  login:
+    login_to_continue: Masuk untuk melanjutkan
+    info_sign: Belum punya akun? <1>Daftar</1>
+    info_login: Sudah punya akun? <1>Masuk</1>
+    agreements: Dengan mendaftar, Anda menyetujui <1>kebijakan privasi</1> dan <3>persyaratan layanan</3>.
+    forgot_pass: Lupa password?
+    name:
+      label: Nama
+      msg:
+        empty: Nama tidak boleh kosong.
+        range: Name must be between 2 to 30 characters in length.
+        character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+    email:
+      label: Email
+      msg:
+        empty: Email tidak boleh kosong.
+    password:
+      label: Kata sandi
+      msg:
+        empty: Kata sandi tidak boleh kosong.
+        different: Kata sandi yang dimasukkan tidak sama
+  account_forgot:
+    page_title: Lupa kata sandi Anda
+    btn_name: Tulis email pemulihan
+    send_success: >-
+      Jika akun cocok dengan <strong>{{mail}}</strong>, Anda akan segera menerima email berisi petunjuk tentang cara menyetel ulang sandi.
+    email:
+      label: Email
+      msg:
+        empty: Email tidak boleh kosong.
+  change_email:
+    btn_cancel: Batal
+    btn_update: Perbarui alamat email
+    send_success: >-
+      Jika akun cocok dengan <strong>{{mail}}</strong>, Anda akan segera menerima email berisi petunjuk tentang cara menyetel ulang sandi.
+    email:
+      label: New email
+      msg:
+        empty: Email tidak boleh kosong.
+  oauth:
+    connect: Connect with {{ auth_name }}
+    remove: Remove {{ auth_name }}
+  oauth_bind_email:
+    subtitle: Add a recovery email to your account.
+    btn_update: Update email address
+    email:
+      label: Email
+      msg:
+        empty: Email cannot be empty.
+    modal_title: Email already existes.
+    modal_content: This email address already registered. Are you sure you want to connect to the existing account?
+    modal_cancel: Change email
+    modal_confirm: Connect to the existing account
+  password_reset:
+    page_title: Atur ulang kata sandi
+    btn_name: Atur ulang kata sandi saya
+    reset_success: >-
+      Anda berhasil mengubah kata sandi Anda; Anda akan dialihkan ke halaman login.
+    link_invalid: >-
+      Maaf, link setel ulang sandi ini sudah tidak valid. Mungkin kata sandi Anda sudah diatur ulang?
+    to_login: Lanjutkan ke halaman Login
+    password:
+      label: Kata sandi
+      msg:
+        empty: Password cannot be empty.
+        length: The length needs to be between 8 and 32
+        different: The passwords entered on both sides are inconsistent
+    password_confirm:
+      label: Confirm new password
+  settings:
+    page_title: Settings
+    goto_modify: Go to modify
+    nav:
+      profile: Profile
+      notification: Notifications
+      account: Account
+      interface: Interface
+    profile:
+      heading: Profile
+      btn_name: Save
+      display_name:
+        label: Display name
+        msg: Display name cannot be empty.
+        msg_range: Display name must be 2-30 characters in length.
+      username:
+        label: Username
+        caption: People can mention you as "@username".
+        msg: Username cannot be empty.
+        msg_range: Username must be 2-30 characters in length.
+        character: 'Must use the character set "a-z", "0-9", " - . _"'
+      avatar:
+        label: Profile image
+        gravatar: Gravatar
+        gravatar_text: You can change image on
+        custom: Custom
+        custom_text: You can upload your image.
+        default: System
+        msg: Please upload an avatar
+      bio:
+        label: About me
+      website:
+        label: Website
+        placeholder: "https://example.com"
+        msg: Website incorrect format
+      location:
+        label: Location
+        placeholder: "City, Country"
+    notification:
+      heading: Email Notifications
+      turn_on: Turn on
+      inbox:
+        label: Inbox notifications
+        description: Answers to your questions, comments, invites, and more.
+      all_new_question:
+        label: All new questions
+        description: Get notified of all new questions. Up to 50 questions per week.
+      all_new_question_for_following_tags:
+        label: All new questions for following tags
+        description: Get notified of new questions for following tags.
+    account:
+      heading: Account
+      change_email_btn: Change email
+      change_pass_btn: Change password
+      change_email_info: >-
+        We've sent an email to that address. Please follow the confirmation instructions.
+      email:
+        label: Email
+      new_email:
+        label: New email
+        msg: New email cannot be empty.
+      pass:
+        label: Current password
+        msg: Password cannot be empty.
+      password_title: Password
+      current_pass:
+        label: Current password
+        msg:
+          empty: Current password cannot be empty.
+          length: The length needs to be between 8 and 32.
+          different: The two entered passwords do not match.
+      new_pass:
+        label: New password
+      pass_confirm:
+        label: Confirm new password
+    interface:
+      heading: Interface
+      lang:
+        label: Interface language
+        text: Bahasa antarmuka pengguna. Itu akan berubah ketika Anda me-refresh halaman.
+    my_logins:
+      title: My logins
+      label: Log in or sign up on this site using these accounts.
+      modal_title: Remove login
+      modal_content: Are you sure you want to remove this login from your account?
+      modal_confirm_btn: Remove
+      remove_success: Removed successfully
+  toast:
+    update: pembaruan sukses
+    update_password: Kata sandi berhasil diganti.
+    flag_success: Terima kasih telah menandai.
+    forbidden_operate_self: Dilarang melakukan operasi ini pada diri sendiri
+    review: Revisi Anda akan ditampilkan setelah ditinjau.
+    sent_success: Sent successfully
+  related_question:
+    title: Related
+    answers: jawaban
+  linked_question:
+    title: Linked
+    description: Posts linked to
+    no_linked_question: No contents linked from this content.
+  invite_to_answer:
+    title: People Asked
+    desc: Select people who you think might know the answer.
+    invite: Invite to answer
+    add: Add people
+    search: Search people
+  question_detail:
+    action: Action
+    Asked: Ditanyakan
+    asked: ditanyakan
+    update: Diubah
+    edit: disunting
+    commented: commented
+    Views: Dilihat
+    Follow: Ikuti
+    Following: Mengikuti
+    follow_tip: Follow this question to receive notifications
+    answered: dijawab
+    closed_in: Ditutup pada
+    show_exist: Gunakan pertanyaan yang sudah ada.
+    useful: Useful
+    question_useful: It is useful and clear
+    question_un_useful: It is unclear or not useful
+    question_bookmark: Bookmark this question
+    answer_useful: It is useful
+    answer_un_useful: It is not useful
+    answers:
+      title: Jawaban
+      score: Nilai
+      newest: Terbaru
+      oldest: Oldest
+      btn_accept: Terima
+      btn_accepted: Diterima
+    write_answer:
+      title: Jawaban Anda
+      edit_answer: Edit my existing answer
+      btn_name: Kirimkan jawaban Anda
+      add_another_answer: Tambahkan jawaban lain
+      confirm_title: Lanjutkan menjawab
+      continue: Lanjutkan
+      confirm_info: >-
+        <p>Yakin ingin menambahkan jawaban lain?</p><p>Sebagai gantinya, Anda dapat menggunakan tautan edit untuk menyaring dan menyempurnakan jawaban anda.</p>
+      empty: Jawaban tidak boleh kosong.
+      characters: content must be at least 6 characters in length.
+      tips:
+        header_1: Thanks for your answer
+        li1_1: Please be sure to <strong>answer the question</strong>. Provide details and share your research.
+        li1_2: Back up any statements you make with references or personal experience.
+        header_2: But <strong>avoid</strong> ...
+        li2_1: Asking for help, seeking clarification, or responding to other answers.
+    reopen:
+      confirm_btn: Reopen
+      title: Buka kembali postingan ini
+      content: Kamu yakin ingin membuka kembali?
+    list:
+      confirm_btn: List
+      title: List this post
+      content: Are you sure you want to list?
+    unlist:
+      confirm_btn: Unlist
+      title: Unlist this post
+      content: Are you sure you want to unlist?
+    pin:
+      title: Pin this post
+      content: Are you sure you wish to pinned globally? This post will appear at the top of all post lists.
+      confirm_btn: Pin
+  delete:
+    title: Hapus pos ini
+    question: >-
+      Kami tidak menyarankan <strong>menghapus pertanyaan dengan jawaban</strong> karena hal itu menghilangkan pengetahuan ini dari pembaca di masa mendatang.</p><p>Penghapusan berulang atas pertanyaan yang dijawab dapat mengakibatkan akun Anda diblokir untuk bertanya. Apakah Anda yakin ingin menghapus?
+    answer_accepted: >-
+      <p>Kami tidak menyarankan <strong>menghapus jawaban yang diterima</strong> karena hal itu menghilangkan pengetahuan ini dari pembaca di masa mendatang. </p> Penghapusan berulang dari jawaban yang diterima dapat menyebabkan akun Anda diblokir dari menjawab. Apakah Anda yakin ingin menghapus?
+    other: Anda yakin ingin menghapusnya?
+    tip_answer_deleted: Jawaban ini telah dihapus
+    undelete_title: Undelete this post
+    undelete_desc: Are you sure you wish to undelete?
+  btns:
+    confirm: Konfirmasi
+    cancel: Batal
+    edit: Edit
+    save: Simpan
+    delete: Hapus
+    undelete: Undelete
+    list: List
+    unlist: Unlist
+    unlisted: Unlisted
+    login: Masuk
+    signup: Daftar
+    logout: Keluar
+    verify: Verifikasi
+    create: Create
+    approve: Approve
+    reject: Reject
+    skip: Skip
+    discard_draft: Discard draft
+    pinned: Pinned
+    all: All
+    question: Question
+    answer: Answer
+    comment: Comment
+    refresh: Refresh
+    resend: Resend
+    deactivate: Deactivate
+    active: Active
+    suspend: Suspend
+    unsuspend: Unsuspend
+    close: Close
+    reopen: Reopen
+    ok: OK
+    light: Light
+    dark: Dark
+    system_setting: System setting
+    default: Default
+    reset: Reset
+    tag: Tag
+    post_lowercase: post
+    filter: Filter
+    ignore: Ignore
+    submit: Submit
+    normal: Normal
+    closed: Closed
+    deleted: Deleted
+    deleted_permanently: Deleted permanently
+    pending: Pending
+    more: More
+    view: View
+    card: Card
+    compact: Compact
+    display_below: Display below
+    always_display: Always display
+    or: or
+    back_sites: Back to sites
+  search:
+    title: Search Results
+    keywords: Keywords
+    options: Options
+    follow: Follow
+    following: Following
+    counts: "{{count}} Results"
+    counts_loading: "... Results"
+    more: More
+    sort_btns:
+      relevance: Relevance
+      newest: Newest
+      active: Active
+      score: Score
+      more: More
+    tips:
+      title: Advanced Search Tips
+      tag: "<1>[tag]</1> search with a tag"
+      user: "<1>user:username</1> search by author"
+      answer: "<1>answers:0</1> unanswered questions"
+      score: "<1>score:3</1> posts with a 3+ score"
+      question: "<1>is:question</1> search questions"
+      is_answer: "<1>is:answer</1> search answers"
+    empty: We couldn't find anything. <br /> Try different or less specific keywords.
+  share:
+    name: Share
+    copy: Copy link
+    via: Share post via...
+    copied: Copied
+    facebook: Share to Facebook
+    twitter: Share to X
+  cannot_vote_for_self: You can't vote for your own post.
+  modal_confirm:
+    title: Error...
+  delete_permanently:
+    title: Delete permanently
+    content: Are you sure you want to delete permanently?
+  account_result:
+    success: Your new account is confirmed; you will be redirected to the home page.
+    link: Continue to homepage
+    oops: Oops!
+    invalid: The link you used no longer works.
+    confirm_new_email: Your email has been updated.
+    confirm_new_email_invalid: >-
+      Sorry, this confirmation link is no longer valid. Perhaps your email was already changed?
+  unsubscribe:
+    page_title: Unsubscribe
+    success_title: Unsubscribe Successful
+    success_desc: You have been successfully removed from this subscriber list and won't receive any further emails from us.
+    link: Change settings
+  question:
+    following_tags: Following Tags
+    edit: Edit
+    save: Save
+    follow_tag_tip: Follow tags to curate your list of questions.
+    hot_questions: Hot Questions
+    all_questions: All Questions
+    x_questions: "{{ count }} Questions"
+    x_answers: "{{ count }} answers"
+    x_posts: "{{ count }} Posts"
+    questions: Questions
+    answers: Jawaban
+    newest: Terbaru
+    active: Aktif
+    hot: Hot
+    frequent: Frequent
+    recommend: Recommend
+    score: Nilai
+    unanswered: Belum dijawab
+    modified: diubah
+    answered: dijawab
+    asked: ditanyakan
+    closed: ditutup
+    follow_a_tag: Ikuti tagar
+    more: Lebih
+  personal:
+    overview: Ringkasan
+    answers: Jawaban
+    answer: jawaban
+    questions: Pertanyaan
+    question: pertanyaan
+    bookmarks: Bookmarks
+    reputation: Reputasi
+    comments: Komentar
+    votes: Vote
+    badges: Badges
+    newest: Terbaru
+    score: Nilai
+    edit_profile: Edit profile
+    visited_x_days: "Dikunjungi {{ count }} hari"
+    viewed: Dilihat
+    joined: Bergabung
+    comma: ","
+    last_login: Dilihat
+    about_me: Tentang Saya
+    about_me_empty: "// Hello, World !"
+    top_answers: Jawaban terpopuler
+    top_questions: Pertanyaan terpopuler
+    stats: Statistik
+    list_empty: Postingan tidak ditemukan.<br />Mungkin Anda ingin memilih tab lain?
+    content_empty: No posts found.
+    accepted: Diterima
+    answered: dijawab
+    asked: ditanyakan
+    downvoted: downvoted
+    mod_short: MOD
+    mod_long: Moderator
+    x_reputation: reputasi
+    x_votes: vote diterima
+    x_answers: jawaban
+    x_questions: pertanyaan
+    recent_badges: Recent Badges
+  install:
+    title: Installation
+    next: Selanjutnya
+    done: Selesai
+    config_yaml_error: Can't create the config.yaml file.
+    lang:
+      label: Please choose a language
+    db_type:
+      label: Database engine
+    db_username:
+      label: Username
+      placeholder: root
+      msg: Username cannot be empty.
+    db_password:
+      label: Password
+      placeholder: root
+      msg: Password cannot be empty.
+    db_host:
+      label: Database host
+      placeholder: "db:3306"
+      msg: Database host cannot be empty.
+    db_name:
+      label: Database name
+      placeholder: answer
+      msg: Database name cannot be empty.
+    db_file:
+      label: Database file
+      placeholder: /data/answer.db
+      msg: Database file cannot be empty.
+    ssl_enabled:
+      label: Enable SSL
+    ssl_enabled_on:
+      label: On
+    ssl_enabled_off:
+      label: Off
+    ssl_mode:
+      label: SSL Mode
+    ssl_root_cert:
+      placeholder: sslrootcert file path
+      msg: Path to sslrootcert file cannot be empty
+    ssl_cert:
+      placeholder: sslcert file path
+      msg: Path to sslcert file cannot be empty
+    ssl_key:
+      placeholder: sslkey file path
+      msg: Path to sslkey file cannot be empty
+    config_yaml:
+      title: Create config.yaml
+      label: The config.yaml file created.
+      desc: >-
+        You can create the <1>config.yaml</1> file manually in the <1>/var/wwww/xxx/</1> directory and paste the following text into it.
+      info: After you've done that, click "Next" button.
+    site_information: Site Information
+    admin_account: Admin Account
+    site_name:
+      label: Site name
+      msg: Site name cannot be empty.
+      msg_max_length: Site name must be at maximum 30 characters in length.
+    site_url:
+      label: Site URL
+      text: The address of your site.
+      msg:
+        empty: Site URL cannot be empty.
+        incorrect: Site URL incorrect format.
+        max_length: Site URL must be at maximum 512 characters in length.
+    contact_email:
+      label: Contact email
+      text: Email address of key contact responsible for this site.
+      msg:
+        empty: Contact email cannot be empty.
+        incorrect: Contact email incorrect format.
+    login_required:
+      label: Private
+      switch: Login required
+      text: Only logged in users can access this community.
+    admin_name:
+      label: Name
+      msg: Name cannot be empty.
+      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      msg_max_length: Name must be between 2 to 30 characters in length.
+    admin_password:
+      label: Password
+      text: >-
+        You will need this password to log in. Please store it in a secure location.
+      msg: Password cannot be empty.
+      msg_min_length: Password must be at least 8 characters in length.
+      msg_max_length: Password must be at maximum 32 characters in length.
+    admin_confirm_password:
+      label: "Confirm Password"
+      text: "Please re-enter your password to confirm."
+      msg: "Confirm password does not match."
+    admin_email:
+      label: Email
+      text: You will need this email to log in.
+      msg:
+        empty: Email cannot be empty.
+        incorrect: Email incorrect format.
+    ready_title: Your site is ready
+    ready_desc: >-
+      If you ever feel like changing more settings, visit <1>admin section</1>; find it in the site menu.
+    good_luck: "Have fun, and good luck!"
+    warn_title: Warning
+    warn_desc: >-
+      The file <1>config.yaml</1> already exists. If you need to reset any of the configuration items in this file, please delete it first.
+    install_now: You may try <1>installing now</1>.
+    installed: Already installed
+    installed_desc: >-
+      You appear to have already installed. To reinstall please clear your old database tables first.
+    db_failed: Koneksi ke database gagal
+    db_failed_desc: >-
+      This either means that the database information in your <1>config.yaml</1> file is incorrect or that contact with the database server could not be established. This could mean your host's database server is down.
+  counts:
+    views: views
+    votes: votes
+    answers: answers
+    accepted: Accepted
+  page_error:
+    http_error: HTTP Error {{ code }}
+    desc_403: You don't have permission to access this page.
+    desc_404: Unfortunately, this page doesn't exist.
+    desc_50X: The server encountered an error and could not complete your request.
+    back_home: Back to homepage
+  page_maintenance:
+    desc: "We are under maintenance, we'll be back soon."
+  nav_menus:
+    dashboard: Dasbor
+    contents: Konten
+    questions: Pertanyaan
+    answers: Jawaban
+    users: Pengguna
+    badges: Badges
+    flags: Flags
+    settings: Pengaturan
+    general: Umum
+    interface: Interface
+    smtp: SMTP
+    branding: Branding
+    legal: Legal
+    write: Write
+    tos: Terms of Service
+    privacy: Privasi
+    seo: SEO
+    customize: Kostumisasi
+    themes: Tema
+    login: Masuk
+    privileges: Privileges
+    plugins: Plugins
+    installed_plugins: Installed Plugins
+    apperance: Appearance
+  website_welcome: Welcome to {{site_name}}
+  user_center:
+    login: Login
+    qrcode_login_tip: Please use {{ agentName }} to scan the QR code and log in.
+    login_failed_email_tip: Login failed, please allow this app to access your email information before try again.
+  badges:
+    modal:
+      title: Congratulations
+      content: You've earned a new badge.
+      close: Close
+      confirm: View badges
+    title: Badges
+    awarded: Awarded
+    earned_×: Earned ×{{ number }}
+    ×_awarded: "{{ number }} awarded"
+    can_earn_multiple: You can earn this multiple times.
+    earned: Earned
+  admin:
+    admin_header:
+      title: Admin
+    dashboard:
+      title: Dasbor
+      welcome: Welcome to Admin!
+      site_statistics: Site statistics
+      questions: "Pertanyaan:"
+      resolved: "Resolved:"
+      unanswered: "Unanswered:"
+      answers: "Jawaban:"
+      comments: "Komentar:"
+      votes: "Vote:"
+      users: "Users:"
+      flags: "Flags:"
+      reviews: "Reviews:"
+      site_health: Site health
+      version: "Versi:"
+      https: "HTTPS:"
+      upload_folder: "Upload folder:"
+      run_mode: "Running mode:"
+      private: Private
+      public: Public
+      smtp: "SMTP:"
+      timezone: "Zona Waktu:"
+      system_info: System info
+      go_version: "Go version:"
+      database: "Database:"
+      database_size: "Database size:"
+      storage_used: "Penyimpanan yang terpakai:"
+      uptime: "Uptime:"
+      links: Links
+      plugins: Plugins
+      github: GitHub
+      blog: Blog
+      contact: Contact
+      forum: Forum
+      documents: Dokumen
+      feedback: Masukan
+      support: Dukungan
+      review: Review
+      config: Config
+      update_to: Update to
+      latest: Latest
+      check_failed: Check failed
+      "yes": "Yes"
+      "no": "No"
+      not_allowed: Not allowed
+      allowed: Allowed
+      enabled: Enabled
+      disabled: Disabled
+      writable: Writable
+      not_writable: Not writable
+    flags:
+      title: Flags
+      pending: Pending
+      completed: Completed
+      flagged: Flagged
+      flagged_type: Flagged {{ type }}
+      created: Created
+      action: Action
+      review: Review
+    user_role_modal:
+      title: Change user role to...
+      btn_cancel: Cancel
+      btn_submit: Submit
+    new_password_modal:
+      title: Set new password
+      form:
+        fields:
+          password:
+            label: Password
+            text: The user will be logged out and need to login again.
+            msg: Password must be at 8-32 characters in length.
+      btn_cancel: Cancel
+      btn_submit: Submit
+    edit_profile_modal:
+      title: Edit profile
+      form:
+        fields:
+          display_name:
+            label: Display name
+            msg_range: Display name must be 2-30 characters in length.
+          username:
+            label: Username
+            msg_range: Username must be 2-30 characters in length.
+          email:
+            label: Email
+            msg_invalid: Invalid Email Address.
+      edit_success: Edited successfully
+      btn_cancel: Cancel
+      btn_submit: Submit
+    user_modal:
+      title: Add new user
+      form:
+        fields:
+          users:
+            label: Bulk add user
+            placeholder: "John Smith, john@example.com, BUSYopr2\nAlice, alice@example.com, fpDntV8q"
+            text: Separate “name, email, password” with commas. One user per line.
+            msg: "Please enter the user's email, one per line."
+          display_name:
+            label: Display name
+            msg: Display name must be 2-30 characters in length.
+          email:
+            label: Email
+            msg: Email is not valid.
+          password:
+            label: Password
+            msg: Password must be at 8-32 characters in length.
+      btn_cancel: Cancel
+      btn_submit: Submit
+    users:
+      title: Users
+      name: Name
+      email: Email
+      reputation: Reputation
+      created_at: Created time
+      delete_at: Deleted time
+      suspend_at: Suspended time
+      suspend_until: Suspend until
+      status: Status
+      role: Role
+      action: Action
+      change: Ubah
+      all: Semua
+      staff: Staf
+      more: More
+      inactive: Tidak Aktif
+      suspended: Ditangguhkan
+      deleted: Dihapus
+      normal: Normal
+      Moderator: Moderator
+      Admin: Admin
+      User: Pengguna
+      filter:
+        placeholder: "Filter berdasarkan nama, user:id"
+      set_new_password: Atur password baru
+      edit_profile: Edit profile
+      change_status: Ubah status
+      change_role: Ubah role
+      show_logs: Tampilkan log
+      add_user: Tambahkan pengguna
+      deactivate_user:
+        title: Deactivate user
+        content: An inactive user must re-validate their email.
+      delete_user:
+        title: Delete this user
+        content: Are you sure you want to delete this user? This is permanent!
+        remove: Remove their content
+        label: Remove all questions, answers, comments, etc.
+        text: Don’t check this if you wish to only delete the user’s account.
+      suspend_user:
+        title: Suspend this user
+        content: A suspended user can't log in.
+        label: How long will the user be suspended for?
+        forever: Forever
+    questions:
+      page_title: Pertanyaan
+      unlisted: Unlisted
+      post: Post
+      votes: Vote
+      answers: Jawaban
+      created: Dibuat
+      status: Status
+      action: Action
+      change: Ubah
+      pending: Pending
+      filter:
+        placeholder: "Filter berdasarkan judul, question:id"
+    answers:
+      page_title: Jawaban
+      post: Post
+      votes: Votes
+      created: Created
+      status: Status
+      action: Action
+      change: Change
+      filter:
+        placeholder: "Filter by title, answer:id"
+    general:
+      page_title: General
+      name:
+        label: Site name
+        msg: Site name cannot be empty.
+        text: "The name of this site, as used in the title tag."
+      site_url:
+        label: Site URL
+        msg: Site url cannot be empty.
+        validate: Please enter a valid URL.
+        text: The address of your site.
+      short_desc:
+        label: Short site description
+        msg: Short site description cannot be empty.
+        text: "Short description, as used in the title tag on homepage."
+      desc:
+        label: Site description
+        msg: Site description cannot be empty.
+        text: "Describe this site in one sentence, as used in the meta description tag."
+      contact_email:
+        label: Contact email
+        msg: Contact email cannot be empty.
+        validate: Contact email is not valid.
+        text: Email address of key contact responsible for this site.
+      check_update:
+        label: Software updates
+        text: Automatically check for updates
+    interface:
+      page_title: Interface
+      language:
+        label: Interface language
+        msg: Interface language cannot be empty.
+        text: User interface language. It will change when you refresh the page.
+      time_zone:
+        label: Timezone
+        msg: Timezone cannot be empty.
+        text: Choose a city in the same timezone as you.
+      avatar:
+        label: Default avatar
+        text: For users without a custom avatar of their own.
+      gravatar_base_url:
+        label: Gravatar base URL
+        text: URL of the Gravatar provider's API base. Ignored when empty.
+    smtp:
+      page_title: SMTP
+      from_email:
+        label: From email
+        msg: From email cannot be empty.
+        text: The email address which emails are sent from.
+      from_name:
+        label: From name
+        msg: From name cannot be empty.
+        text: The name which emails are sent from.
+      smtp_host:
+        label: SMTP host
+        msg: SMTP host cannot be empty.
+        text: Your mail server.
+      encryption:
+        label: Enkripsi
+        msg: Enkripsi tidak boleh kosong.
+        text: For most servers SSL is the recommended option.
+        ssl: SSL
+        tls: TLS
+        none: Tidak ada
+      smtp_port:
+        label: SMTP port
+        msg: SMTP port must be number 1 ~ 65535.
+        text: Port untuk server email Anda.
+      smtp_username:
+        label: SMTP username
+        msg: Nama Pengguna SMTP tidak boleh kosong.
+      smtp_password:
+        label: SMTP password
+        msg: Password SMTP tidak boleh kosong.
+      test_email_recipient:
+        label: Test email recipients
+        text: Provide email address that will receive test sends.
+        msg: Test email recipients is invalid
+      smtp_authentication:
+        label: Enable authentication
+        title: SMTP authentication
+        msg: SMTP authentication cannot be empty.
+        "yes": "Yes"
+        "no": "No"
+    branding:
+      page_title: Branding
+      logo:
+        label: Logo
+        msg: Logo cannot be empty.
+        text: The logo image at the top left of your site. Use a wide rectangular image with a height of 56 and an aspect ratio greater than 3:1. If left blank, the site title text will be shown.
+      mobile_logo:
+        label: Mobile logo
+        text: The logo used on mobile version of your site. Use a wide rectangular image with a height of 56. If left blank, the image from the "logo" setting will be used.
+      square_icon:
+        label: Square icon
+        msg: Square icon cannot be empty.
+        text: Image used as the base for metadata icons. Should ideally be larger than 512x512.
+      favicon:
+        label: Favicon
+        text: A favicon for your site. To work correctly over a CDN it must be a png. Will be resized to 32x32. If left blank, "square icon" will be used.
+    legal:
+      page_title: Legal
+      terms_of_service:
+        label: Terms of service
+        text: "You can add terms of service content here. If you already have a document hosted elsewhere, provide the full URL here."
+      privacy_policy:
+        label: Privacy policy
+        text: "You can add privacy policy content here. If you already have a document hosted elsewhere, provide the full URL here."
+      external_content_display:
+        label: External content
+        text: "Content includes images, videos, and media embedded from external websites."
+        always_display: Always display external content
+        ask_before_display: Ask before displaying external content
+    write:
+      page_title: Write
+      restrict_answer:
+        title: Answer write
+        label: Each user can only write one answer for each question
+        text: "Turn off to allow users to write multiple answers to the same question, which may cause answers to be unfocused."
+      recommend_tags:
+        label: Recommend tags
+        text: "Recommend tags will show in the dropdown list by default."
+        msg:
+          contain_reserved: "recommended tags cannot contain reserved tags"
+      required_tag:
+        title: Set required tags
+        label: Set “Recommend tags” as required tags
+        text: "Every new question must have at least one recommend tag."
+      reserved_tags:
+        label: Reserved tags
+        text: "Reserved tags can only be used by moderator."
+      image_size:
+        label: Max image size (MB)
+        text: "The maximum image upload size."
+      attachment_size:
+        label: Max attachment size (MB)
+        text: "The maximum attachment files upload size."
+      image_megapixels:
+        label: Max image megapixels
+        text: "Maximum number of megapixels allowed for an image."
+      image_extensions:
+        label: Authorized image extensions
+        text: "A list of file extensions allowed for image display, separate with commas."
+      attachment_extensions:
+        label: Authorized attachment extensions
+        text: "A list of file extensions allowed for upload, separate with commas. WARNING: Allowing uploads may cause security issues."
+    seo:
+      page_title: SEO
+      permalink:
+        label: Permalink
+        text: Custom URL structures can improve the usability, and forward-compatibility of your links.
+      robots:
+        label: robots.txt
+        text: This will permanently override any related site settings.
+    themes:
+      page_title: Themes
+      themes:
+        label: Themes
+        text: Select an existing theme.
+      color_scheme:
+        label: Color scheme
+      navbar_style:
+        label: Navbar background style
+      primary_color:
+        label: Primary color
+        text: Modify the colors used by your themes
+    css_and_html:
+      page_title: CSS and HTML
+      custom_css:
+        label: Custom CSS
+        text: >
+
+      head:
+        label: Head
+        text: >
+
+      header:
+        label: Header
+        text: >
+
+      footer:
+        label: Footer
+        text: This will insert before &lt;/body>.
+      sidebar:
+        label: Sidebar
+        text: This will insert in sidebar.
+    login:
+      page_title: Login
+      membership:
+        title: Membership
+        label: Allow new registrations
+        text: Turn off to prevent anyone from creating a new account.
+      email_registration:
+        title: Email registration
+        label: Allow email registration
+        text: Turn off to prevent anyone creating new account through email.
+      allowed_email_domains:
+        title: Allowed email domains
+        text: Email domains that users must register accounts with. One domain per line. Ignored when empty.
+      private:
+        title: Private
+        label: Login required
+        text: Only logged in users can access this community.
+      password_login:
+        title: Password login
+        label: Allow email and password login
+        text: "WARNING: If turn off, you may be unable to log in if you have not previously configured other login method."
+    installed_plugins:
+      title: Installed Plugins
+      plugin_link: Plugins extend and expand the functionality. You may find plugins in the <1>Plugin Repository</1>.
+      filter:
+        all: All
+        active: Active
+        inactive: Inactive
+        outdated: Outdated
+      plugins:
+        label: Plugins
+        text: Select an existing plugin.
+      name: Name
+      version: Version
+      status: Status
+      action: Action
+      deactivate: Deactivate
+      activate: Activate
+      settings: Settings
+    settings_users:
+      title: Users
+      avatar:
+        label: Default avatar
+        text: For users without a custom avatar of their own.
+      gravatar_base_url:
+        label: Gravatar Base URL
+        text: URL of the Gravatar provider's API base. Ignored when empty.
+      profile_editable:
+        title: Profile editable
+      allow_update_display_name:
+        label: Allow users to change their display name
+      allow_update_username:
+        label: Allow users to change their username
+      allow_update_avatar:
+        label: Allow users to change their profile image
+      allow_update_bio:
+        label: Allow users to change their about me
+      allow_update_website:
+        label: Allow users to change their website
+      allow_update_location:
+        label: Allow users to change their location
+    privilege:
+      title: Privileges
+      level:
+        label: Reputation required level
+        text: Choose the reputation required for the privileges
+      msg:
+        should_be_number: the input should be number
+        number_larger_1: number should be equal or larger than 1
+    badges:
+      action: Action
+      active: Active
+      activate: Activate
+      all: All
+      awards: Awards
+      deactivate: Deactivate
+      filter:
+        placeholder: Filter by name, badge:id
+      group: Group
+      inactive: Inactive
+      name: Name
+      show_logs: Show logs
+      status: Status
+      title: Badges
+  form:
+    optional: (optional)
+    empty: cannot be empty
+    invalid: is invalid
+    btn_submit: Save
+    not_found_props: "Required property {{ key }} not found."
+    select: Select
+  page_review:
+    review: Review
+    proposed: proposed
+    question_edit: Question edit
+    answer_edit: Answer edit
+    tag_edit: Tag edit
+    edit_summary: Edit summary
+    edit_question: Edit question
+    edit_answer: Edit answer
+    edit_tag: Edit tag
+    empty: No review tasks left.
+    approve_revision_tip: Do you approve this revision?
+    approve_flag_tip: Do you approve this flag?
+    approve_post_tip: Do you approve this post?
+    approve_user_tip: Do you approve this user?
+    suggest_edits: Suggested edits
+    flag_post: Flag post
+    flag_user: Flag user
+    queued_post: Queued post
+    queued_user: Queued user
+    filter_label: Type
+    reputation: reputation
+    flag_post_type: Flagged this post as {{ type }}.
+    flag_user_type: Flagged this user as {{ type }}.
+    edit_post: Edit post
+    list_post: List post
+    unlist_post: Unlist post
+  timeline:
+    undeleted: undeleted
+    deleted: deleted
+    downvote: downvote
+    upvote: upvote
+    accept: accept
+    cancelled: cancelled
+    commented: commented
+    rollback: rollback
+    edited: edited
+    answered: answered
+    asked: asked
+    closed: closed
+    reopened: reopened
+    created: created
+    pin: pinned
+    unpin: unpinned
+    show: listed
+    hide: unlisted
+    title: "History for"
+    tag_title: "Timeline for"
+    show_votes: "Show votes"
+    n_or_a: N/A
+    title_for_question: "Timeline for"
+    title_for_answer: "Timeline for answer to {{ title }} by {{ author }}"
+    title_for_tag: "Timeline for tag"
+    datetime: Datetime
+    type: Type
+    by: By
+    comment: Comment
+    no_data: "We couldn't find anything."
+  users:
+    title: Users
+    users_with_the_most_reputation: Users with the highest reputation scores this week
+    users_with_the_most_vote: Users who voted the most this week
+    staffs: Our community staff
+    reputation: reputation
+    votes: votes
+  prompt:
+    leave_page: Are you sure you want to leave the page?
+    changes_not_save: Your changes may not be saved.
+  draft:
+    discard_confirm: Are you sure you want to discard your draft?
+  messages:
+    post_deleted: This post has been deleted.
+    post_cancel_deleted: This post has been undeleted.
+    post_pin: This post has been pinned.
+    post_unpin: This post has been unpinned.
+    post_hide_list: This post has been hidden from list.
+    post_show_list: This post has been shown to list.
+    post_reopen: This post has been reopened.
+    post_list: This post has been listed.
+    post_unlist: This post has been unlisted.
+    post_pending: Your post is awaiting review. This is a preview, it will be visible after it has been approved.
+    post_closed: This post has been closed.
+    answer_deleted: This answer has been deleted.
+    answer_cancel_deleted: This answer has been undeleted.
+    change_user_role: This user's role has been changed.
+    user_inactive: This user is already inactive.
+    user_normal: This user is already normal.
+    user_suspended: This user has been suspended.
+    user_deleted: This user has been deleted.
+    badge_activated: This badge has been activated.
+    badge_inactivated: This badge has been inactivated.
+    users_deleted: These users have been deleted.
+    posts_deleted: These questions have been deleted.
+    answers_deleted: These answers have been deleted.
+    copy: Copy to clipboard
+    copied: Copied
+    external_content_warning: External images/media are not displayed.
+
+

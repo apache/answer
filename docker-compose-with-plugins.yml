@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  answer:
+    image: answer-with-plugins:official
+    container_name: answer-with-plugins
+    restart: on-failure
+    ports:
+      - "9080:80"
+    volumes:
+      - answer-data:/data
+    environment:
+      - INSTALL_PORT=80
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  answer-data:
+    driver: local

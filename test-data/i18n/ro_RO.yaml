@@ -1,0 +1,2341 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# The following fields are used for back-end
+backend:
+  base:
+    success:
+      other: Succes.
+    unknown:
+      other: Eroare necunoscută.
+    request_format_error:
+      other: Formatul cererii nu este valid.
+    unauthorized_error:
+      other: Neautorizat.
+    database_error:
+      other: Eroare la serverul de date.
+    forbidden_error:
+      other: Interzis.
+    duplicate_request_error:
+      other: Trimitere dublă.
+  action:
+    report:
+      other: Steag
+    edit:
+      other: Editează
+    delete:
+      other: Ștergere
+    close:
+      other: Închide
+    reopen:
+      other: Redeschidere
+    forbidden_error:
+      other: Interzis.
+    pin:
+      other: Fixează
+    hide:
+      other: Dezlistare
+    unpin:
+      other: Anulați fixarea
+    show:
+      other: Listă
+    invite_someone_to_answer:
+      other: Editează
+    undelete:
+      other: Restabilește
+    merge:
+      other: Îmbinare
+  role:
+    name:
+      user:
+        other: Utilizator
+      admin:
+        other: Administrator
+      moderator:
+        other: Moderator
+    description:
+      user:
+        other: Implicit fără acces special.
+      admin:
+        other: Ai puterea deplină de a accesa site-ul.
+      moderator:
+        other: Are acces la toate postările cu excepţia setărilor administratorului.
+  privilege:
+    level_1:
+      description:
+        other: Nivel 1 (mai puțină reputație pentru echipa privată, grup)
+    level_2:
+      description:
+        other: Nivelul 2 (reputație scăzută necesară pentru comunitatea de pornire)
+    level_3:
+      description:
+        other: Nivelul 3 (reputație ridicată necesară pentru comunitatea mature)
+    level_custom:
+      description:
+        other: Nivel personalizat
+    rank_question_add_label:
+      other: Întreabă ceva
+    rank_answer_add_label:
+      other: Scrie răspunsul
+    rank_comment_add_label:
+      other: Scrie comentariu
+    rank_report_add_label:
+      other: Steag
+    rank_comment_vote_up_label:
+      other: Votează comentariul
+    rank_link_url_limit_label:
+      other: Postează mai mult de 2 link-uri simultan
+    rank_question_vote_up_label:
+      other: Votează întrebarea
+    rank_answer_vote_up_label:
+      other: Votează răspunsul
+    rank_question_vote_down_label:
+      other: Votează întrebarea ca negativa
+    rank_answer_vote_down_label:
+      other: Voteaza răspunsul ca negativ
+    rank_invite_someone_to_answer_label:
+      other: Invită pe cineva să răspundă
+    rank_tag_add_label:
+      other: Creează o etichetă nouă
+    rank_tag_edit_label:
+      other: Editați descrierea etichetei (este nevoie de revizuire)
+    rank_question_edit_label:
+      other: Editați altă întrebare (este nevoie de revizuire)
+    rank_answer_edit_label:
+      other: Editați altă întrebare (este nevoie de revizuire)
+    rank_question_edit_without_review_label:
+      other: Editează întrebarea celuilalt fără revizuire
+    rank_answer_edit_without_review_label:
+      other: Editează întrebarea celuilalt fără revizuire
+    rank_question_audit_label:
+      other: Revizuiește editarea întrebărilor
+    rank_answer_audit_label:
+      other: Revizuiește editările răspunsurilor
+    rank_tag_audit_label:
+      other: Revizuiește editarea etichetelor
+    rank_tag_edit_without_review_label:
+      other: Editează descrierea etichetei fără revizuire
+    rank_tag_synonym_label:
+      other: Gestionează sinonimele etichetelor
+  email:
+    other: E-mail
+  e_mail:
+    other: E-mail
+  password:
+    other: Parolă
+  pass:
+    other: Parolă
+  old_pass:
+    other: Parolă actuală
+  original_text:
+    other: Acest articol
+  email_or_password_wrong_error:
+    other: E-mailul și parola nu se potrivesc.
+  error:
+    common:
+      invalid_url:
+        other: URL invalid.
+      status_invalid:
+        other: Stare nevalidă.
+    password:
+      space_invalid:
+        other: Parola nu poate conține spații.
+    admin:
+      cannot_update_their_password:
+        other: Nu vă puteți modifica parola.
+      cannot_edit_their_profile:
+        other: Nu vă puteți modifica profilul.
+      cannot_modify_self_status:
+        other: Nu vă puteți modifica starea.
+      email_or_password_wrong:
+        other: E-mailul și parola nu se potrivesc.
+    answer:
+      not_found:
+        other: Răspunsul nu a fost găsit.
+      cannot_deleted:
+        other: Nu există permisiunea de ștergere.
+      cannot_update:
+        other: Nu există permisiunea de ștergere.
+      question_closed_cannot_add:
+        other: Întrebările sunt închise şi nu pot fi adăugate.
+      content_cannot_empty:
+        other: Conținutul răspunsului nu poate fi gol.
+    comment:
+      edit_without_permission:
+        other: Comentariul nu poate fi editat.
+      not_found:
+        other: Comentariul nu a fost găsit.
+      cannot_edit_after_deadline:
+        other: Comentariul a durat prea mult pentru a fi modificat.
+      content_cannot_empty:
+        other: Conținutul comentariului nu poate fi gol.
+    email:
+      duplicate:
+        other: Email-ul există deja.
+      need_to_be_verified:
+        other: E-mailul trebuie verificat.
+      verify_url_expired:
+        other: Adresa de e-mail verificată a expirat, vă rugăm să retrimiteți e-mailul.
+      illegal_email_domain_error:
+        other: E-mailul nu este permis din acel domeniu de e-mail. Vă rugăm să folosiți altul.
+    lang:
+      not_found:
+        other: Fișierul de limbă nu a fost găsit.
+    object:
+      captcha_verification_failed:
+        other: Captcha este greșit.
+      disallow_follow:
+        other: Nu vă este permis să urmăriți.
+      disallow_vote:
+        other: Nu ai permisiunea de a vota.
+      disallow_vote_your_self:
+        other: Nu poți vota pentru propria ta postare.
+      not_found:
+        other: Obiectul nu a fost găsit.
+      verification_failed:
+        other: Verificarea a eșuat.
+      email_or_password_incorrect:
+        other: E-mailul și parola nu se potrivesc.
+      old_password_verification_failed:
+        other: Verificarea parolei vechi a eșuat
+      new_password_same_as_previous_setting:
+        other: Noua parolă este identică cu cea anterioară.
+      already_deleted:
+        other: Acest articol a fost șters.
+    meta:
+      object_not_found:
+        other: Nu s-a găsit obiectul Meta
+    question:
+      already_deleted:
+        other: Această postare a fost ștearsă.
+      under_review:
+        other: Articolul tău este în așteptare. Acesta va fi vizibil după ce a fost aprobat.
+      not_found:
+        other: Întrebarea nu a fost găsită.
+      cannot_deleted:
+        other: Nu există permisiunea de ștergere.
+      cannot_close:
+        other: Nu există permisiunea de a închide.
+      cannot_update:
+        other: Nu aveți permisiunea de a actualiza.
+      content_cannot_empty:
+        other: Conținutul nu poate fi gol.
+    rank:
+      fail_to_meet_the_condition:
+        other: Rangul de reputaţie nu îndeplineşte condiţia.
+      vote_fail_to_meet_the_condition:
+        other: Mulțumim pentru feedback. Aveți nevoie cel puțin de reputația {{.Rank}} pentru a vota.
+      no_enough_rank_to_operate:
+        other: Aveți nevoie cel puțin de reputația {{.Rank}} pentru a face asta.
+    report:
+      handle_failed:
+        other: Procesarea raportării a eșuat.
+      not_found:
+        other: Raportul nu a fost găsit.
+    tag:
+      already_exist:
+        other: Eticheta există deja.
+      not_found:
+        other: Eticheta nu a fost găsită.
+      recommend_tag_not_found:
+        other: Eticheta recomandată nu există.
+      recommend_tag_enter:
+        other: Te rugăm să introduci cel puțin o etichetă necesară.
+      not_contain_synonym_tags:
+        other: Nu trebuie să conțină etichete sinonime.
+      cannot_update:
+        other: Nu aveți permisiunea de a actualiza.
+      is_used_cannot_delete:
+        other: Nu puteți șterge o etichetă care este în uz.
+      cannot_set_synonym_as_itself:
+        other: Nu se poate seta sinonimul etichetei curente ca atare.
+    smtp:
+      config_from_name_cannot_be_email:
+        other: Numele nu poate fi o adresă de e-mail.
+    theme:
+      not_found:
+        other: Tema nu a fost găsită.
+    revision:
+      review_underway:
+        other: Nu se poate edita momentan, există o versiune în coada de revizuire.
+      no_permission:
+        other: Nu ai permisiunea de a revizui.
+    user:
+      external_login_missing_user_id:
+        other: Platforma terță nu oferă un Id de utilizator unic, deci nu vă puteți autentifica, contactați administratorul site-ului.
+      external_login_unbinding_forbidden:
+        other: Vă rugăm să setaţi o parolă de conectare pentru contul dumneavoastră înainte de a elimina această autentificare.
+      email_or_password_wrong:
+        other:
+          other: E-mailul și parola nu se potrivesc.
+      not_found:
+        other: Utilizatorul nu a fost găsit.
+      suspended:
+        other: Utilizatorul a fost suspendat.
+      username_invalid:
+        other: Numele de utilizator nu este valid.
+      username_duplicate:
+        other: Numele de utilizator este deja luat.
+      set_avatar:
+        other: Setarea avatarului a eșuat.
+      cannot_update_your_role:
+        other: Nu vă puteți modifica rolul.
+      not_allowed_registration:
+        other: În prezent, site-ul nu este deschis pentru înregistrare.
+      not_allowed_login_via_password:
+        other: În prezent, site-ul nu este permis să se autentifice prin parolă.
+      access_denied:
+        other: Acces Blocat
+      page_access_denied:
+        other: Nu aveți acces la această pauză.
+      add_bulk_users_format_error:
+        other: "{{.Field}} format lângă '{{.Content}}' la linia {{.Line}}. {{.ExtraMessage}}"
+      add_bulk_users_amount_error:
+        other: "Numărul de utilizatori pe care îi adăugați odată trebuie să fie în intervalul 1-{{.MaxAmount}}."
+      status_suspended_forever:
+        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+      status_suspended_until:
+        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+      status_deleted:
+        other: "This user was deleted."
+      status_inactive:
+        other: "This user is inactive."
+    config:
+      read_config_failed:
+        other: Citirea configurației a eșuat
+    database:
+      connection_failed:
+        other: Conexiunea la baza de date a eșuat
+      create_table_failed:
+        other: Crearea tabelului a eșuat
+    install:
+      create_config_failed:
+        other: Nu se poate crea fișierul config.yaml.
+    upload:
+      unsupported_file_format:
+        other: Format de fișier incompatibil.
+    site_info:
+      config_not_found:
+        other: Configurarea site-ului nu a fost găsită.
+    badge:
+      object_not_found:
+        other: Nu s-a găsit obiectul Insignă
+  reason:
+    spam:
+      name:
+        other: nedorite
+      desc:
+        other: Acest post este o reclamă sau un vandalism. Nu este util sau relevant pentru subiectul actual.
+    rude_or_abusive:
+      name:
+        other: nepoliticos sau abuziv
+      desc:
+        other: "O persoană rezonabilă ar considera acest conținut nepotrivit pentru un discurs respectuos."
+    a_duplicate:
+      name:
+        other: un duplicat
+      desc:
+        other: Această întrebare a fost adresată înainte şi are deja un răspuns.
+      placeholder:
+        other: Introduceți link-ul de întrebare existent
+    not_a_answer:
+      name:
+        other: nu este un răspuns
+      desc:
+        other: "This was posted as an answer, but it does not attempt to answer the question. It should possibly be an edit, a comment, another question,or deleted altogether."
+    no_longer_needed:
+      name:
+        other: nu mai este necesar
+      desc:
+        other: Acest comentariu este învechit, conversaţional sau nu are relevanţă pentru această postare.
+    something:
+      name:
+        other: altceva
+      desc:
+        other: Acest post necesită atenție din partea personalului, din alt motiv nemenționat mai sus.
+      placeholder:
+        other: Spune-ne ce anume vă îngrijorează
+    community_specific:
+      name:
+        other: un motiv specific comunității
+      desc:
+        other: Această întrebare nu corespunde cu ghidul comunității.
+    not_clarity:
+      name:
+        other: are nevoie de detalii sau de claritate
+      desc:
+        other: Această întrebare include în prezent mai multe întrebări. Ar trebui să se concentreze asupra unei singure probleme.
+    looks_ok:
+      name:
+        other: arată OK
+      desc:
+        other: Această postare este bună și nu este de slabă calitate.
+    needs_edit:
+      name:
+        other: are nevoie de editare și am făcut-o
+      desc:
+        other: Îmbunătățește și corectează problemele cu această postare.
+    needs_close:
+      name:
+        other: necesită închidere
+      desc:
+        other: La o întrebare închisă nu poți răspunde, dar poți totuși să o editezi, să o votezi și să o comentezi.
+    needs_delete:
+      name:
+        other: necesită ștergere
+      desc:
+        other: Această postare va fi ștearsă.
+  question:
+    close:
+      duplicate:
+        name:
+          other: nedorite
+        desc:
+          other: Această întrebare a fost adresată înainte şi are deja un răspuns.
+      guideline:
+        name:
+          other: un motiv specific comunității
+        desc:
+          other: Această întrebare nu corespunde cu ghidul comunității.
+      multiple:
+        name:
+          other: necesită detalii sau claritate
+        desc:
+          other: This question currently includes multiple questions in one. It should focus on one problem only.
+      other:
+        name:
+          other: altceva
+        desc:
+          other: Acest post necesită un alt motiv care nu este listat mai sus.
+    operation_type:
+      asked:
+        other: întrebat
+      answered:
+        other: răspunse
+      modified:
+        other: modificat
+    deleted_title:
+      other: Întrebare ștearsă
+    questions_title:
+      other: Questions
+  tag:
+    tags_title:
+      other: Tags
+    no_description:
+      other: The tag has no description.
+  notification:
+    action:
+      update_question:
+        other: întrebarea actualizată
+      answer_the_question:
+        other: întrebare răspunsă
+      update_answer:
+        other: răspuns actualizat
+      accept_answer:
+        other: răspuns acceptat
+      comment_question:
+        other: întrebare comentată
+      comment_answer:
+        other: răspuns comentat
+      reply_to_you:
+        other: ți-a răspuns
+      mention_you:
+        other: te-a menționat
+      your_question_is_closed:
+        other: Întrebarea dumneavoastră a fost închisă
+      your_question_was_deleted:
+        other: Întâlnirea dumneavoastră a fost ştearsă
+      your_answer_was_deleted:
+        other: Răspunsul dumneavoastră a fost șters
+      your_comment_was_deleted:
+        other: Contul dumneavoastră a fost șters
+      up_voted_question:
+        other: votează întrebarea
+      down_voted_question:
+        other: votează întrebarea negativ
+      up_voted_answer:
+        other: votează răspunsul
+      down_voted_answer:
+        other: răspuns negativ
+      up_voted_comment:
+        other: votează comentariul
+      invited_you_to_answer:
+        other: te-a invitat să răspunzi
+      earned_badge:
+        other: You've earned the "{{.BadgeName}}" badge
+  email_tpl:
+    change_email:
+      title:
+        other: "[{{.SiteName}}] Confirmați noua dvs. adresă de e-mail"
+      body:
+        other: "Confirm your new email address for {{.SiteName}} by clicking on the following link:<br>\n<a href='{{.ChangeEmailUrl}}' target='_blank'>{{.ChangeEmailUrl}}</a><br><br>\n\nIf you did not request this change, please ignore this email.<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+    new_answer:
+      title:
+        other: "[{{.SiteName}}] {{.DisplayName}} a răspuns la întrebarea dvs"
+      body:
+        other: "<a href='{{.AnswerUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.AnswerSummary}}</blockquote><br>\n<a href='{{.AnswerUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+    invited_you_to_answer:
+      title:
+        other: "[{{.SiteName}}] {{.DisplayName}} vă invită să răspundeți"
+      body:
+        other: "<a href='{{.InviteUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>I think you may know the answer.</blockquote><br>\n<a href='{{.InviteUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+    new_comment:
+      title:
+        other: "[{{.SiteName}}] {{.DisplayName}} a răspuns la întrebarea dvs"
+      body:
+        other: "<a href='{{.CommentUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.CommentSummary}}</blockquote><br>\n<a href='{{.CommentUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+    new_question:
+      title:
+        other: "[{{.SiteName}}] Întrebare nouă: {{.QuestionTitle}}"
+      body:
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+    pass_reset:
+      title:
+        other: "[{{.SiteName }}] Resetare parolă"
+      body:
+        other: "Somebody asked to reset your password on {{.SiteName}}.<br><br>\n\nIf it was not you, you can safely ignore this email.<br><br>\n\nClick the following link to choose a new password:<br>\n<a href='{{.PassResetUrl}}' target='_blank'>{{.PassResetUrl}}</a>\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+    register:
+      title:
+        other: "[{{.SiteName}}] Confirmă noul tău cont"
+      body:
+        other: "Welcome to {{.SiteName}}!<br><br>\n\nClick the following link to confirm and activate your new account:<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\nIf the above link is not clickable, try copying and pasting it into the address bar of your web browser.\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+    test:
+      title:
+        other: "[{{.SiteName}}] Test de e-mail"
+      body:
+        other: "This is a test email.\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+  action_activity_type:
+    upvote:
+      other: votat
+    upvoted:
+      other: vot pozitiv
+    downvote:
+      other: vot negativ
+    downvoted:
+      other: vot negativ
+    accept:
+      other: acceptat
+    accepted:
+      other: acceptat
+    edit:
+      other: editează
+  review:
+    queued_post:
+      other: Posturi în așteptare
+    flagged_post:
+      other: Postare marcată
+    suggested_post_edit:
+      other: Suggested edits
+  reaction:
+    tooltip:
+      other: "{{ .Names }} and {{ .Count }} more..."
+  badge:
+    default_badges:
+      autobiographer:
+        name:
+          other: Autobiographer
+        desc:
+          other: Filled out <a href="{{ .ProfileURL }}" target="_blank">profile</a> information.
+      certified:
+        name:
+          other: Certified
+        desc:
+          other: Completed our new user tutorial.
+      editor:
+        name:
+          other: Editor
+        desc:
+          other: First post edit.
+      first_flag:
+        name:
+          other: First Flag
+        desc:
+          other: First flagged a post.
+      first_upvote:
+        name:
+          other: First Upvote
+        desc:
+          other: First up voted a post.
+      first_link:
+        name:
+          other: First Link
+        desc:
+          other: First added a link to another post.
+      first_reaction:
+        name:
+          other: First Reaction
+        desc:
+          other: First reacted to the post.
+      first_share:
+        name:
+          other: First Share
+        desc:
+          other: First shared a post.
+      scholar:
+        name:
+          other: Scholar
+        desc:
+          other: Asked a question and accepted an answer.
+      commentator:
+        name:
+          other: Commentator
+        desc:
+          other: Leave 5 comments.
+      new_user_of_the_month:
+        name:
+          other: New User of the Month
+        desc:
+          other: Contribuții restante în prima lor lună.
+      read_guidelines:
+        name:
+          other: Read Guidelines
+        desc:
+          other: Read the [community guidelines].
+      reader:
+        name:
+          other: Reader
+        desc:
+          other: Read every answers in a topic with more than 10 answers.
+      welcome:
+        name:
+          other: Welcome
+        desc:
+          other: Received a up vote.
+      nice_share:
+        name:
+          other: Nice Share
+        desc:
+          other: Shared a post with 25 unique visitors.
+      good_share:
+        name:
+          other: Good Share
+        desc:
+          other: Shared a post with 300 unique visitors.
+      great_share:
+        name:
+          other: Distribuire grozavă
+        desc:
+          other: Shared a post with 1000 unique visitors.
+      out_of_love:
+        name:
+          other: Out of Love
+        desc:
+          other: Used 50 up votes in a day.
+      higher_love:
+        name:
+          other: Higher Love
+        desc:
+          other: Used 50 up votes in a day 5 times.
+      crazy_in_love:
+        name:
+          other: Crazy in Love
+        desc:
+          other: Used 50 up votes in a day 20 times.
+      promoter:
+        name:
+          other: Promoter
+        desc:
+          other: Invited a user.
+      campaigner:
+        name:
+          other: Campaigner
+        desc:
+          other: Invited 3 basic users.
+      champion:
+        name:
+          other: Champion
+        desc:
+          other: Invited 5 members.
+      thank_you:
+        name:
+          other: Thank You
+        desc:
+          other: Has 20 up voted posts and gave 10 up votes.
+      gives_back:
+        name:
+          other: Gives Back
+        desc:
+          other: Has 100 up voted posts and gave 100 up votes.
+      empathetic:
+        name:
+          other: Empathetic
+        desc:
+          other: Has 500 up voted posts and gave 1000 up votes.
+      enthusiast:
+        name:
+          other: Enthusiast
+        desc:
+          other: Visited 10 consecutive days.
+      aficionado:
+        name:
+          other: Aficionado
+        desc:
+          other: Visited 100 consecutive days.
+      devotee:
+        name:
+          other: Devotee
+        desc:
+          other: Visited 365 consecutive days.
+      anniversary:
+        name:
+          other: Anniversary
+        desc:
+          other: Active member for a year, posted at least once.
+      appreciated:
+        name:
+          other: Appreciated
+        desc:
+          other: Received 1 up vote on 20 posts.
+      respected:
+        name:
+          other: Respected
+        desc:
+          other: Received 2 up votes on 100 posts.
+      admired:
+        name:
+          other: Admired
+        desc:
+          other: Received 5 up votes on 300 posts.
+      solved:
+        name:
+          other: Solved
+        desc:
+          other: Have an answer be accepted.
+      guidance_counsellor:
+        name:
+          other: Guidance Counsellor
+        desc:
+          other: Have 10 answers be accepted.
+      know_it_all:
+        name:
+          other: Know-it-All
+        desc:
+          other: Have 50 answers be accepted.
+      solution_institution:
+        name:
+          other: Solution Institution
+        desc:
+          other: Have 150 answers be accepted.
+      nice_answer:
+        name:
+          other: Nice Answer
+        desc:
+          other: Answer score of 10 or more.
+      good_answer:
+        name:
+          other: Good Answer
+        desc:
+          other: Answer score of 25 or more.
+      great_answer:
+        name:
+          other: Great Answer
+        desc:
+          other: Answer score of 50 or more.
+      nice_question:
+        name:
+          other: Nice Question
+        desc:
+          other: Question score of 10 or more.
+      good_question:
+        name:
+          other: Good Question
+        desc:
+          other: Question score of 25 or more.
+      great_question:
+        name:
+          other: Great Question
+        desc:
+          other: Question score of 50 or more.
+      popular_question:
+        name:
+          other: Popular Question
+        desc:
+          other: Question with 500 views.
+      notable_question:
+        name:
+          other: Notable Question
+        desc:
+          other: Question with 1,000 views.
+      famous_question:
+        name:
+          other: Famous Question
+        desc:
+          other: Question with 5,000 views.
+      popular_link:
+        name:
+          other: Popular Link
+        desc:
+          other: Posted an external link with 50 clicks.
+      hot_link:
+        name:
+          other: Hot Link
+        desc:
+          other: Posted an external link with 300 clicks.
+      famous_link:
+        name:
+          other: Famous Link
+        desc:
+          other: Posted an external link with 100 clicks.
+    default_badge_groups:
+      getting_started:
+        name:
+          other: Getting Started
+      community:
+        name:
+          other: Community
+      posting:
+        name:
+          other: Posting
+# The following fields are used for interface presentation(Front-end)
+ui:
+  how_to_format:
+    title: Cum se formatează
+    desc: >-
+      <ul class="mb-0"><li><p class="mb-2">mention a post: <code>#post_id</code></p></li> <li><p class="mb-2">to make links</p><pre class="mb-2"><code>&lt;https://url.com&gt;<br/><br/>[Title](https://url.com)</code></pre></li><li><p class="mb-2">put returns between paragraphs</p></li><li><p class="mb-2"><em>_italic_</em> or **<strong>bold</strong>**</p></li><li><p class="mb-2">indent code by 4 spaces</p></li><li><p class="mb-2">quote by placing <code>&gt;</code> at start of line</p></li><li><p class="mb-2">backtick escapes <code>`like _this_`</code></p></li><li><p class="mb-2">create code fences with backticks <code>`</code></p><pre class="mb-0"><code>```<br/>code here<br/>```</code></pre></li></ul>
+  pagination:
+    prev: Înapoi
+    next: Înainte
+  page_title:
+    question: Întrebare
+    questions: Întrebări
+    tag: Etichetă
+    tags: Etichete
+    tag_wiki: etichetă wiki
+    create_tag: Creați etichetă
+    edit_tag: Modificați eticheta
+    ask_a_question: Create Question
+    edit_question: Editați întrebarea
+    edit_answer: Editaţi răspunsul
+    search: Caută
+    posts_containing: Posturi care conțin
+    settings: Setări
+    notifications: Notificări
+    login: Conectează-te
+    sign_up: Înregistrează-te
+    account_recovery: Recuperarea contului
+    account_activation: Activare cont
+    confirm_email: Confirmare e-mail
+    account_suspended: Cont suspendat
+    admin: Administrator
+    change_email: Modifică E-mail
+    install: Instalează Answer
+    upgrade: Actualizare Answer
+    maintenance: Mentenanță website
+    users: Utilizatori
+    oauth_callback: Se procesează
+    http_404: Eroare HTTP 404
+    http_50X: Eroare HTTP 500
+    http_403: Eroare HTTP 403
+    logout: Deconectare
+  notifications:
+    title: Notificări
+    inbox: Mesaje primite
+    achievement: Realizări
+    new_alerts: Alerte noi
+    all_read: Marchează totul ca fiind citit
+    show_more: Arată mai mult
+    someone: Cineva
+    inbox_type:
+      all: Toate
+      posts: Postări
+      invites: Invitați
+      votes: Voturi
+    answer: Answer
+    question: Question
+    badge_award: Badge
+  suspended:
+    title: Contul dumneavoastră a fost suspendat
+    until_time: "Contul dumneavoastră a fost suspendat până la {{ time }}."
+    forever: Acest utilizator a fost suspendat pentru totdeauna.
+    end: Această întrebare nu corespunde cu ghidul comunității.
+    contact_us: Contactați-ne
+  editor:
+    blockquote:
+      text: Citat
+    bold:
+      text: Bolt
+    chart:
+      text: Diagramă
+      flow_chart: Diagrama fluxului
+      sequence_diagram: Diagrama secvenței
+      class_diagram: Diagrama clasei
+      state_diagram: Diagrama stării
+      entity_relationship_diagram: Diagrama relației entității
+      user_defined_diagram: Diagramă definită de utilizator
+      gantt_chart: Grafic Gantt
+      pie_chart: Grafic circular
+    code:
+      text: Exemplu de cod
+      add_code: Adaugă exemplu de cod
+      form:
+        fields:
+          code:
+            label: Cod
+            msg:
+              empty: Corpul mesajului trebuie să conțină text.
+          language:
+            label: Limbă
+            placeholder: Detectare automată
+      btn_cancel: Anulați
+      btn_confirm: Adaugă
+    formula:
+      text: Formulă
+      options:
+        inline: Formula inline
+        block: Formula blocului
+    heading:
+      text: Titlu
+      options:
+        h1: Titlu 1
+        h2: Titlu 2
+        h3: Titlu 3
+        h4: Titlu 4
+        h5: Titlu 5
+        h6: Titlu 6
+    help:
+      text: Ajutor
+    hr:
+      text: Linie orizontală
+    image:
+      text: Imagine
+      add_image: Adaugă imagine
+      tab_image: Incarca poza
+      form_image:
+        fields:
+          file:
+            label: Fișier imagine
+            btn: Selectați imaginea
+            msg:
+              empty: Fișierul nu poate fi gol.
+              only_image: Sunt permise doar fișierele imagine.
+              max_size: File size cannot exceed {{size}} MB.
+          desc:
+            label: Descriere
+      tab_url: URL-ul imaginii
+      form_url:
+        fields:
+          url:
+            label: URL-ul imaginii
+            msg:
+              empty: URL-ul imaginii nu poate fi gol.
+          name:
+            label: Descriere
+      btn_cancel: Anulați
+      btn_confirm: Adaugă
+      uploading: Se încarcă
+    indent:
+      text: Indentare
+    outdent:
+      text: Outdent
+    italic:
+      text: Accentuare
+    link:
+      text: Hyperlink
+      add_link: Adaugă hiperlink
+      form:
+        fields:
+          url:
+            label: URL
+            msg:
+              empty: URL-ul nu poate fi gol.
+          name:
+            label: Descriere
+      btn_cancel: Anulează
+      btn_confirm: Adaugă
+    ordered_list:
+      text: Listă numerotată
+    unordered_list:
+      text: Listă cu marcatori
+    table:
+      text: Tabelă
+      heading: Titlu
+      cell: Celulă
+    file:
+      text: Attach files
+      not_supported: "Don’t support that file type. Try again with {{file_type}}."
+      max_size: "Attach files size cannot exceed {{size}} MB."
+  close_modal:
+    title: Închid această postare ca...
+    btn_cancel: Anulează
+    btn_submit: Trimiteți
+    remark:
+      empty: Nu poate fi lăsat necompletat.
+    msg:
+      empty: Te rugăm să selectezi un motiv.
+  report_modal:
+    flag_title: Fac un semnal de alarmă pentru a raporta acest post ca...
+    close_title: Închid această postare ca...
+    review_question_title: Revizuiește întrebarea
+    review_answer_title: Revizuiește răspunsul
+    review_comment_title: Revizuiește comentariul
+    btn_cancel: Anulează
+    btn_submit: Trimiteți
+    remark:
+      empty: Nu poate fi lăsat necompletat.
+    msg:
+      empty: Te rugăm să selectezi un motiv.
+      not_a_url: URL format is incorrect.
+      url_not_match: URL origin does not match the current website.
+  tag_modal:
+    title: Creează o etichetă nouă
+    form:
+      fields:
+        display_name:
+          label: Nume afișat
+          msg:
+            empty: Numele afișat nu poate fi gol.
+            range: Nume afișat până la 35 de caractere.
+        slug_name:
+          label: Slug URL
+          desc: Slug-ul URL pana la 35 de caractere.
+          msg:
+            empty: Slug-ul URL nu poate fi gol.
+            range: Slug-ul URL pana la 35 de caractere.
+            character: URL-ul slug conţine un set de caractere nepermis.
+        desc:
+          label: Descriere
+        revision:
+          label: Versiunea
+        edit_summary:
+          label: Editează sumarul
+          placeholder: >-
+            Explicați pe scurt modificările (ortografie corectată, gramatică fixată, formatare îmbunătățită)
+    btn_cancel: Anulează
+    btn_submit: Trimiteți
+    btn_post: Postează o nouă etichetă
+  tag_info:
+    created_at: Creat
+    edited_at: Editat
+    history: Istoric
+    synonyms:
+      title: Sinonime
+      text: Următoarele etichete vor fi păstrate la
+      empty: Nu s-au găsit sinonime.
+      btn_add: Adaugă un sinonim
+      btn_edit: Editează
+      btn_save: Salvează
+    synonyms_text: Următoarele etichete vor rămâne la
+    delete:
+      title: Șterge această etichetă
+      tip_with_posts: >-
+        <p>We do not allow <strong>deleting tag with posts</strong>.</p> <p>Please remove this tag from the posts first.</p>
+      tip_with_synonyms: >-
+        <p>We do not allow <strong>deleting tag with synonyms</strong>.</p> <p>Please remove the synonyms from this tag first.</p>
+      tip: Sunteţi sigur că doriţi să ştergeţi?
+      close: Închide
+    merge:
+      title: Merge tag
+      source_tag_title: Source tag
+      source_tag_description: The source tag and its associated data will be remapped to the target tag.
+      target_tag_title: Target tag
+      target_tag_description: A synonym between these two tags will be created after merging.
+      no_results: No tags matched
+      btn_submit: Submit
+      btn_close: Close
+  edit_tag:
+    title: Editează eticheta
+    default_reason: Editare etichetă
+    default_first_reason: Adaugă etichetă
+    btn_save_edits: Salvați modificările
+    btn_cancel: Anulați
+  dates:
+    long_date: MMM D
+    long_date_with_year: "MMM D, YYYY"
+    long_date_with_time: "MMM D, AAAA [at] HH:mm"
+    now: acum
+    x_seconds_ago: "acum {{count}} sec"
+    x_minutes_ago: "acum {{count}} min"
+    x_hours_ago: "acum {{count}} ore"
+    hour: oră
+    day: zi
+    hours: ore
+    days: zile
+    month: month
+    months: months
+    year: year
+  reaction:
+    heart: heart
+    smile: smile
+    frown: frown
+    btn_label: add or remove reactions
+    undo_emoji: undo {{ emoji }} reaction
+    react_emoji: react with {{ emoji }}
+    unreact_emoji: unreact with {{ emoji }}
+  comment:
+    btn_add_comment: Adaugă comentariu
+    reply_to: Raspunde la
+    btn_reply: Răspunde
+    btn_edit: Editează
+    btn_delete: Ștergeți
+    btn_flag: Marcaj
+    btn_save_edits: Salvați modificările
+    btn_cancel: Anulați
+    show_more: "{{count}} alte comentarii"
+    tip_question: >-
+      Utilizați comentariile pentru a solicita mai multe informații sau pentru a sugera îmbunătățiri. Evitați răspunsul la întrebări în comentarii.
+    tip_answer: >-
+      Utilizați comentarii pentru a răspunde la alți utilizatori sau pentru a le notifica modificările. Dacă adăugați informații noi, editați postarea în loc să comentați.
+    tip_vote: Adaugă ceva util postării
+  edit_answer:
+    title: Editaţi răspunsul
+    default_reason: Editați răspunsul
+    default_first_reason: Adăugare răspuns
+    form:
+      fields:
+        revision:
+          label: Revizuire
+        answer:
+          label: Răspuns
+          feedback:
+            characters: conţinutul trebuie să aibă cel puţin 6 caractere.
+        edit_summary:
+          label: Editează sumarul
+          placeholder: >-
+            Explicați pe scurt modificările (ortografie corectată, gramatică fixă, formatare îmbunătățită)
+    btn_save_edits: Salvați modificările
+    btn_cancel: Anulează
+  tags:
+    title: Etichete
+    sort_buttons:
+      popular: Popular
+      name: Nume
+      newest: Cele mai noi
+    button_follow: Urmărește
+    button_following: Urmăriți
+    tag_label: întrebări
+    search_placeholder: Filtrare după numele etichetei
+    no_desc: Această echipă nu are o descriere.
+    more: Mai multe
+    wiki: Wiki
+  ask:
+    title: Create Question
+    edit_title: Editați întrebarea
+    default_reason: Editați întrebarea
+    default_first_reason: Create question
+    similar_questions: Întrebări similare
+    form:
+      fields:
+        revision:
+          label: Revizuire
+        title:
+          label: Titlu
+          placeholder: What's your topic? Be specific.
+          msg:
+            empty: Titlul nu poate fi gol.
+            range: Titlu de până la 150 de caractere
+        body:
+          label: Corp
+          msg:
+            empty: Corpul mesajului trebuie să conțină text.
+        tags:
+          label: Etichete
+          msg:
+            empty: Etichetele nu pot fi goale.
+        answer:
+          label: Răspuns
+          msg:
+            empty: Răspunsul nu poate fi gol.
+        edit_summary:
+          label: Editează sumarul
+          placeholder: >-
+            Explicați pe scurt modificările (ortografie corectată, gramatică fixă, formatare îmbunătățită)
+    btn_post_question: Postează întrebarea ta
+    btn_save_edits: Salvați modificările
+    answer_question: Răspundeți la propria întrebare
+    post_question&answer: Postează-ți întrebarea și răspunsul
+  tag_selector:
+    add_btn: Adaugă etichetă
+    create_btn: Creează o etichetă nouă
+    search_tag: Căutare etichetă
+    hint: "Describe what your content is about, at least one tag is required."
+    no_result: Nicio etichetă potrivită
+    tag_required_text: Etichetă necesară (cel puțin una)
+  header:
+    nav:
+      question: Întrebări
+      tag: Etichete
+      user: Utilizatori
+      badges: Badges
+      profile: Profil
+      setting: Setări
+      logout: Deconectaţi-vă
+      admin: Administrator
+      review: Recenzie
+      bookmark: Semne de carte
+      moderation: Moderare
+    search:
+      placeholder: Caută
+  footer:
+    build_on: >-
+      Susținut de <1> Apache Răspuns </1>- software-ul open-source care asigură Q&A comunități.<br />Făcut cu dragoste ©️ {{cc}}.
+  upload_img:
+    name: Schimbare
+    loading: încarcare...
+  pic_auth_code:
+    title: Captcha
+    placeholder: Introdu textul de mai sus
+    msg:
+      empty: Captcha nu poate fi gol.
+  inactive:
+    first: >-
+      Ești aproape gata! Am trimis un e-mail de activare la <bold>{{mail}}</bold>. Te rugăm să urmezi instrucțiunile din e-mail pentru a-ți activa contul.
+    info: "Dacă nu ajunge, verifică folderul Spam."
+    another: >-
+      Ți-am trimis un alt e-mail de activare la <bold>{{mail}}</bold>. Poate dura câteva minute până ajuns; asiguraţi-vă că verificaţi folderul Spam.
+    btn_name: Retrimitere link de activare
+    change_btn_name: Schimbați e-mailul
+    msg:
+      empty: Nu poate fi lăsat necompletat.
+    resend_email:
+      url_label: Sunteţi sigur că doriţi să retrimiteţi e-mailul de activare?
+      url_text: De asemenea, puteți da link-ul de activare de mai sus utilizatorului.
+  login:
+    login_to_continue: Conectează-te pentru a continua
+    info_sign: Nu ai un cont? Înregistrează-te
+    info_login: Ai deja un cont? <1>Autentifică-te</1>
+    agreements: Prin înregistrare, ești de acord cu <1>politica de confidențialitate</1> și <3>termenii și condițiile de utilizare</3>.
+    forgot_pass: Ai uitat parola?
+    name:
+      label: Nume
+      msg:
+        empty: Câmpul Nume trebuie completat.
+        range: Name must be between 2 to 30 characters in length.
+        character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+    email:
+      label: E-mail
+      msg:
+        empty: Câmpul e-mail nu poate fi gol.
+    password:
+      label: Parolă
+      msg:
+        empty: Parola nu poate fi goală.
+        different: Parolele introduse pe ambele părți sunt incompatibile
+  account_forgot:
+    page_title: Ati uitat parola
+    btn_name: Trimite-mi e-mail de recuperare
+    send_success: >-
+      Dacă un cont corespunde cu <strong>{{mail}}</strong>, ar trebui să primiți un e-mail cu instrucțiuni despre cum să resetați parola în scurt timp.
+    email:
+      label: E-mail
+      msg:
+        empty: Câmpul e-mail nu poate fi gol.
+  change_email:
+    btn_cancel: Anulați
+    btn_update: Actualizare adresă de e-mail
+    send_success: >-
+      Dacă un cont corespunde cu <strong>{{mail}}</strong>, ar trebui să primiți un e-mail cu instrucțiuni despre cum să resetați parola în scurt timp.
+    email:
+      label: E-mail nou
+      msg:
+        empty: Câmpul e-mail nu poate fi gol.
+  oauth:
+    connect: Conectează-te cu {{ auth_name }}
+    remove: Elimină {{ auth_name }}
+  oauth_bind_email:
+    subtitle: Adăugați un e-mail de recuperare la contul dvs.
+    btn_update: Actualizare adresă de e-mail
+    email:
+      label: E-mail
+      msg:
+        empty: E-mail-ul nu poate fi gol.
+    modal_title: E-mail deja existent.
+    modal_content: Această adresă de e-mail este deja înregistrată. Sigur doriți să vă conectați la contul existent?
+    modal_cancel: Schimbați e-mailul
+    modal_confirm: Conectează-te la contul existent
+  password_reset:
+    page_title: Resetează parola
+    btn_name: Resetează-mi parola
+    reset_success: >-
+      Ați schimbat cu succes parola; veți fi redirecționat către pagina de conectare.
+    link_invalid: >-
+      Ne pare rău, acest link de resetare a parolei nu mai este valabil. Poate că parola este deja resetată?
+    to_login: Continuă autentificarea în pagină
+    password:
+      label: Parolă
+      msg:
+        empty: Parola nu poate fi goală.
+        length: Lungimea trebuie să fie între 8 și 32
+        different: Parolele introduse pe ambele părți sunt incompatibile
+    password_confirm:
+      label: Confirmă parola nouă
+  settings:
+    page_title: Setări
+    goto_modify: Du-te pentru a modifica
+    nav:
+      profile: Profil
+      notification: Notificări
+      account: Cont
+      interface: Interfață
+    profile:
+      heading: Profil
+      btn_name: Salvează
+      display_name:
+        label: Nume afișat
+        msg: Numele afișat nu poate fi gol.
+        msg_range: Display name must be 2-30 characters in length.
+      username:
+        label: Nume de utilizator
+        caption: Oamenii te pot menționa ca "@utilizator".
+        msg: Numele de utilizator nu poate fi gol.
+        msg_range: Username must be 2-30 characters in length.
+        character: 'Trebuie să utilizați setul de caractere "a-z", "0-9", " - . _"'
+      avatar:
+        label: Imaginea de profil
+        gravatar: Gravatar
+        gravatar_text: Poți schimba imaginea pe
+        custom: Personalizat
+        custom_text: Poți să încarci imaginea.
+        default: Sistem
+        msg: Te rugăm să încarci un avatar
+      bio:
+        label: Despre mine
+      website:
+        label: Website
+        placeholder: "https://exemplu.com"
+        msg: Format incorect pentru website
+      location:
+        label: Locație
+        placeholder: "Oraş, Ţară"
+    notification:
+      heading: Notificări prin e-mail
+      turn_on: Pornire
+      inbox:
+        label: Notificări primite
+        description: Răspunde la întrebări, comentarii, invitații și multe altele.
+      all_new_question:
+        label: Adauga o intrebare noua
+        description: Primiți notificări despre toate întrebările noi. Până la 50 de întrebări pe săptămână.
+      all_new_question_for_following_tags:
+        label: Toate întrebările noi pentru etichetele următoare
+        description: Primiți notificări despre întrebări noi pentru următoarele etichete.
+    account:
+      heading: Cont
+      change_email_btn: Schimbați e-mailul
+      change_pass_btn: Schimbați parola
+      change_email_info: >-
+        Am trimis un e-mail la acea adresă. Vă rugăm să urmați instrucțiunile de confirmare.
+      email:
+        label: Email
+      new_email:
+        label: New email
+        msg: New email cannot be empty.
+      pass:
+        label: Parolă actuală
+        msg: Parola nu poate fi goală.
+      password_title: Parolă
+      current_pass:
+        label: Parola curentă
+        msg:
+          empty: Parola curentă nu poate fi goală.
+          length: Lungimea trebuie să fie între 8 și 32.
+          different: Cele două parole introduse nu se potrivesc.
+      new_pass:
+        label: Parola nouă
+      pass_confirm:
+        label: Confirmă parola nouă
+    interface:
+      heading: Interfață
+      lang:
+        label: Limba interfeței
+        text: Limba interfeței utilizatorului. Se va schimba atunci când se reîmprospătează pagina.
+    my_logins:
+      title: Autentificările mele
+      label: Autentifică-te sau înregistrează-te pe acest site folosind aceste conturi.
+      modal_title: Elimină autentificarea
+      modal_content: Sunteţi sigur că doriţi să eliminaţi această autentificare din contul dumneavoastră?
+      modal_confirm_btn: Eliminare
+      remove_success: Eliminată cu succes
+  toast:
+    update: actualizare reușită
+    update_password: Parola schimbata cu succes.
+    flag_success: Mulțumim pentru marcare.
+    forbidden_operate_self: Interzis să operezi singur
+    review: Revizuirea ta va arăta după recenzie.
+    sent_success: Trimis cu succes
+  related_question:
+    title: Related
+    answers: răspunsuri
+  linked_question:
+    title: Linked
+    description: Posts linked to
+    no_linked_question: No contents linked from this content.
+  invite_to_answer:
+    title: Persoane întrebate
+    desc: Invită persoane care crezi că știu răspunsul.
+    invite: Invită să răspundă
+    add: Adaugă persoane
+    search: Caută persoane
+  question_detail:
+    action: Acţiune
+    Asked: Întrebat
+    asked: întrebat
+    update: Modificat
+    edit: editat
+    commented: commented
+    Views: Văzute
+    Follow: Urmărește
+    Following: Urmăriți
+    follow_tip: Urmărește această întrebare pentru a primi notificări
+    answered: răspunse
+    closed_in: Închis în
+    show_exist: Arată întrebarea existentă.
+    useful: Utilă
+    question_useful: Acest lucru este util și clar
+    question_un_useful: Nu este clar sau nu este util
+    question_bookmark: Marchează această întrebare
+    answer_useful: Este util
+    answer_un_useful: Nu este util
+    answers:
+      title: Răspunsuri
+      score: Scor
+      newest: Cele mai noi
+      oldest: Cel mai vechi
+      btn_accept: Acceptă
+      btn_accepted: Acceptă
+    write_answer:
+      title: Răspunsul tău
+      edit_answer: Editează răspunsul meu existent
+      btn_name: Postează răspunsul tău
+      add_another_answer: Adaugă un alt răspuns
+      confirm_title: Continuă să răspunzi
+      continue: Continuare
+      confirm_info: >-
+        <p>Sunteţi sigur că doriţi să adăugaţi un alt răspuns?</p><p>Puteţi folosi link-ul de editare pentru a perfecţiona şi îmbunătăţi răspunsul existent, în schimb.</p>
+      empty: Răspunsul nu poate fi gol.
+      characters: conţinutul trebuie să aibă cel puţin 6 caractere.
+      tips:
+        header_1: Îți mulțumim pentru răspuns
+        li1_1: Asigurați-vă că <strong>răspundeți la întrebarea</strong>. Furnizați detalii și împărtășiți cercetările dvs.
+        li1_2: Faceți o copie de rezervă cu referințe sau experiență personală.
+        header_2: Dar <strong>evită</strong>...
+        li2_1: Solicită ajutor, caută clarificări sau răspunsuri la alte răspunsuri.
+    reopen:
+      confirm_btn: Redeschide
+      title: Redeschide această postare
+      content: Sunteţi sigur că doriţi să redeschideţi?
+    list:
+      confirm_btn: List
+      title: List this post
+      content: Are you sure you want to list?
+    unlist:
+      confirm_btn: Unlist
+      title: Unlist this post
+      content: Are you sure you want to unlist?
+    pin:
+      title: Fixează această postare
+      content: Sunteţi sigur că doriţi să fixaţi la nivel global? Acest post va apărea în partea de sus a tuturor listelor de postări.
+      confirm_btn: Fixează
+  delete:
+    title: Șterge această postare
+    question: >-
+      Nu recomandăm <strong>ștergerea întrebărilor cu răspunsuri</strong> deoarece acest lucru privează viitorii cititori de aceste cunoștințe.</p><p>Ștergerea repetată a întrebărilor cu răspuns poate duce la blocarea contului dvs. de a întreba. Sigur doriți să ștergeți?
+    answer_accepted: >-
+      <p>Nu recomandăm <strong>ștergerea răspunsului acceptat</strong> deoarece acest lucru privează viitorii cititori de aceste cunoștințe. </p> Ștergerea repetată a răspunsurilor acceptate poate duce la blocarea contului dvs. de a răspunde. Sigur doriți să ștergeți?
+    other: Sunteţi sigur că doriţi să ştergeţi?
+    tip_answer_deleted: Aceasta postare a fost stearsa
+    undelete_title: Anulează ștergerea acestei postări
+    undelete_desc: Sunteți sigur că doriți să adulați ștergerea?
+  btns:
+    confirm: Confirmați
+    cancel: Anulați
+    edit: Editează
+    save: Salvează
+    delete: Ștergeți
+    undelete: Restabilește
+    list: List
+    unlist: Unlist
+    unlisted: Unlisted
+    login: Autentifică-te
+    signup: Înscrieți-vă
+    logout: Deconectaţi-vă
+    verify: Verificare
+    create: Create
+    approve: Aprobă
+    reject: Respins
+    skip: Treci peste
+    discard_draft: Respingeți draftul
+    pinned: Fixat
+    all: Toate
+    question: Întrebare
+    answer: Răspuns
+    comment: Comentariu
+    refresh: Actualizare
+    resend: Retrimite
+    deactivate: Dezactivare
+    active: Activați
+    suspend: Suspendați
+    unsuspend: Anulează suspendare
+    close: Închide
+    reopen: Redeschide
+    ok: OK
+    light: Luminoasă
+    dark: Întunecată
+    system_setting: Setări de sistem
+    default: Default
+    reset: Resetează
+    tag: Tag
+    post_lowercase: post
+    filter: Filter
+    ignore: Ignore
+    submit: Submit
+    normal: Normal
+    closed: Closed
+    deleted: Deleted
+    deleted_permanently: Deleted permanently
+    pending: Pending
+    more: More
+    view: View
+    card: Card
+    compact: Compact
+    display_below: Display below
+    always_display: Always display
+    or: or
+    back_sites: Back to sites
+  search:
+    title: Rezultatele căutării
+    keywords: Cuvinte cheie
+    options: Opţiuni
+    follow: Urmărește
+    following: Urmăriți
+    counts: "{{count}} rezultatele"
+    counts_loading: "... Results"
+    more: Mai mult
+    sort_btns:
+      relevance: Relevanță
+      newest: Cele mai noi
+      active: Activ
+      score: Scor
+      more: Mai mult
+    tips:
+      title: Sfaturi de căutare avansate
+      tag: "<1>[tag]</1> search with a tag"
+      user: "<1>utilizator:username</1> căutare de către autor"
+      answer: "<1>răspunsuri:0</1> întrebări fără răspuns"
+      score: "<1>scor:3</1> postări cu un scor de 3+"
+      question: "<1>este:question</1> întrebări de căutare"
+      is_answer: "<1>este:răspuner</1> răspunsuri la căutare"
+    empty: Nu am putut găsi nimic. <br /> Încearcă cuvinte cheie diferite sau mai puţin specifice.
+  share:
+    name: Distribuiți
+    copy: Copiază linkul
+    via: Distribuie postarea prin...
+    copied: Copiat
+    facebook: Partajează pe Facebook
+    twitter: Share to X
+  cannot_vote_for_self: Nu poți vota pentru propria ta postare.
+  modal_confirm:
+    title: Eroare...
+  delete_permanently:
+    title: Delete permanently
+    content: Are you sure you want to delete permanently?
+  account_result:
+    success: Noul tău cont este confirmat; vei fi redirecționat către pagina de pornire.
+    link: Continuă la pagina principală
+    oops: Oops!
+    invalid: The link you used no longer works.
+    confirm_new_email: E-mailul dvs. a fost actualizat.
+    confirm_new_email_invalid: >-
+      Ne pare rău, acest link de confirmare nu mai este valabil. Poate că e-mailul dvs. a fost deja modificat?
+  unsubscribe:
+    page_title: Dezabonează-te
+    success_title: Dezabonare cu succes
+    success_desc: Ați fost eliminat cu succes din această listă de abonați și nu veți mai primi alte e-mailuri de la noi.
+    link: Modificați setările
+  question:
+    following_tags: Etichete urmărite
+    edit: Editează
+    save: Salvează
+    follow_tag_tip: Urmărește etichetele pentru a curăța lista ta de întrebări.
+    hot_questions: Întrebări importante
+    all_questions: Toate întrebările
+    x_questions: "{{ count }} Întrebări"
+    x_answers: "{{ count }} răspunsuri"
+    x_posts: "{{ count }} Posts"
+    questions: Întrebări
+    answers: Răspunsuri
+    newest: Cele mai noi
+    active: Activ
+    hot: Hot
+    frequent: Frequent
+    recommend: Recommend
+    score: Scor
+    unanswered: Fără răspuns
+    modified: modificat
+    answered: răspunse
+    asked: întrebat
+    closed: închise
+    follow_a_tag: Urmărește o etichetă
+    more: Mai multe
+  personal:
+    overview: Privire de ansamblu
+    answers: Răspunsuri
+    answer: răspuns
+    questions: Întrebări
+    question: întrebare
+    bookmarks: Semne de carte
+    reputation: Reputație
+    comments: Comentarii
+    votes: Voturi
+    badges: Badges
+    newest: Cele mai noi
+    score: Scor
+    edit_profile: Editare profil
+    visited_x_days: "{{ count }} zile vizitate"
+    viewed: Văzute
+    joined: Înscris
+    comma: ","
+    last_login: Văzut
+    about_me: Despre mine
+    about_me_empty: "// Salut, Lumea !"
+    top_answers: Top răspunsuri
+    top_questions: Top Intrebari
+    stats: Statistici
+    list_empty: Nici o postare găsită.<br />Poate doriţi să selectaţi o filă diferită?
+    content_empty: No posts found.
+    accepted: Acceptat
+    answered: răspunse
+    asked: întrebat
+    downvoted: vot negativ
+    mod_short: MOD
+    mod_long: Moderatori
+    x_reputation: reputație
+    x_votes: voturi primite
+    x_answers: răspunsuri
+    x_questions: întrebări
+    recent_badges: Recent Badges
+  install:
+    title: Installation
+    next: Înainte
+    done: Finalizat
+    config_yaml_error: Nu se poate crea fișierul config.yaml.
+    lang:
+      label: Vă rugăm să selectați limba
+    db_type:
+      label: Motorul Bazei de Date
+    db_username:
+      label: Nume de utilizator
+      placeholder: root
+      msg: Numele de utilizator nu poate fi gol.
+    db_password:
+      label: Parolă
+      placeholder: root
+      msg: Parola nu poate fi goală.
+    db_host:
+      label: Numele serverului de baze de date
+      placeholder: "db:3306"
+      msg: Adresa bazei de date nu poate fi goală.
+    db_name:
+      label: Numele bazei de date
+      placeholder: răspuns
+      msg: Numele bazei de date nu poate fi gol.
+    db_file:
+      label: Fișierul bazei de date
+      placeholder: /data/answer.db
+      msg: Fişierul bazei de date nu poate fi gol.
+    ssl_enabled:
+      label: Enable SSL
+    ssl_enabled_on:
+      label: On
+    ssl_enabled_off:
+      label: Off
+    ssl_mode:
+      label: SSL Mode
+    ssl_root_cert:
+      placeholder: sslrootcert file path
+      msg: Path to sslrootcert file cannot be empty
+    ssl_cert:
+      placeholder: sslcert file path
+      msg: Path to sslcert file cannot be empty
+    ssl_key:
+      placeholder: sslkey file path
+      msg: Path to sslkey file cannot be empty
+    config_yaml:
+      title: Crează config.yaml
+      label: Fișierul config.yaml a fost creat.
+      desc: >-
+        Puteți crea fișierul <1>config.yaml</1> manual în directorul <1>/var/wwww/xxx/</1> și inserați următorul text în el.
+      info: După ce ai făcut asta, apasă butonul "Înainte".
+    site_information: Informatii site
+    admin_account: Contul de admin
+    site_name:
+      label: Numele site-ului
+      msg: Numele site-ului nu poate fi gol.
+      msg_max_length: Numele site-ului trebuie să aibă maximum 30 de caractere lungime.
+    site_url:
+      label: URL-ul site-ului
+      text: Adresa site-ului dvs.
+      msg:
+        empty: URL-ul site-ului nu poate fi gol.
+        incorrect: Format incorect pentru URL-ul site-ului.
+        max_length: URL-ul site-ului trebuie să aibă maximum 512 caractere lungime.
+    contact_email:
+      label: E-mail de contact
+      text: Adresa de e-mail a persoanei cheie responsabile pentru acest site.
+      msg:
+        empty: E-mailul de contact nu poate fi gol.
+        incorrect: E-mail de contact are un format incorect.
+    login_required:
+      label: Privat
+      switch: Autentificare necesară
+      text: Numai utilizatorii autentificați pot accesa această comunitate.
+    admin_name:
+      label: Nume
+      msg: Câmpul Nume trebuie completat.
+      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      msg_max_length: Name must be between 2 to 30 characters in length.
+    admin_password:
+      label: Parolă
+      text: >-
+        Veți avea nevoie de această parolă pentru autentificare. Vă rugăm să o păstrați într-o locație sigură.
+      msg: Parola nu poate fi goală.
+      msg_min_length: Parola trebuie să aibă cel puțin 8 caractere.
+      msg_max_length: Parola trebuie să aibă cel puțin 32 caractere.
+    admin_confirm_password:
+      label: "Confirm Password"
+      text: "Please re-enter your password to confirm."
+      msg: "Confirm password does not match."
+    admin_email:
+      label: E-mail
+      text: Veţi avea nevoie de acest e-mail pentru a vă autentifica.
+      msg:
+        empty: Câmpul e-mail nu poate fi gol.
+        incorrect: Campul e-mail are formatul incorect.
+    ready_title: Your site is ready
+    ready_desc: >-
+      Dacă te simți vreodată ca și cum ai schimba mai multe setări, vizitează <1>secțiunea de administrare </1>; găsește-o în meniul site-ului.
+    good_luck: "Distracție plăcută și noroc!"
+    warn_title: Atenţie
+    warn_desc: >-
+      Fișierul <1>config.yaml</1> există deja. Dacă trebuie să resetați oricare dintre elementele de configurare din acest fișier, vă rugăm să îl ștergeți mai întâi.
+    install_now: Puteți încerca <1>să instalați acum</1>.
+    installed: Deja instalat
+    installed_desc: >-
+      Se pare că ai instalat deja. Pentru a reinstala vă rugăm să ștergeți mai întâi vechile tabele ale bazei de date.
+    db_failed: Conexiunea la baza de date a eșuat
+    db_failed_desc: >-
+      Acest lucru înseamnă fie că baza de date este în configurația ta <1>. config yaml</1> este incorect sau contactul cu serverul bazei de date nu a putut fi stabilit. Acest lucru ar putea însemna că serverul gazdei nu este în funcțiune.
+  counts:
+    views: vizualizări
+    votes: voturi
+    answers: răspunsuri
+    accepted: Acceptat
+  page_error:
+    http_error: HTTP - {{ code }}
+    desc_403: Nu ai permisiunea să accesezi pagina.
+    desc_404: Din păcate, această pagină nu există.
+    desc_50X: Serverul a întâmpinat o eroare și nu a putut finaliza cererea.
+    back_home: Înapoi la pagina principală
+  page_maintenance:
+    desc: "Suntem în mentenanță, ne vom întoarce în curând."
+  nav_menus:
+    dashboard: Panou de control
+    contents: Conţinut
+    questions: Întrebări
+    answers: Răspunsuri
+    users: Utilizatori
+    badges: Badges
+    flags: Marcaj
+    settings: Setări
+    general: General
+    interface: Interfață
+    smtp: SMTP
+    branding: Marcă
+    legal: Juridic
+    write: Scrie
+    tos: Condiții de utilizare
+    privacy: Confidențialitate
+    seo: SEO
+    customize: Personalizează
+    themes: Teme
+    login: Autentifică-te
+    privileges: Privilegii
+    plugins: Extensii
+    installed_plugins: Extensii instalate
+    apperance: Appearance
+  website_welcome: Bun venit la {{site_name}}
+  user_center:
+    login: Autentifică-te
+    qrcode_login_tip: Vă rugăm să folosiți {{ agentName }} pentru a scana codul QR și a vă autentifica.
+    login_failed_email_tip: Autentificare eșuată. Vă rugăm să permiteți acestei aplicații să vă acceseze informațiile de e-mail înainte de a încerca din nou.
+  badges:
+    modal:
+      title: Congratulations
+      content: You've earned a new badge.
+      close: Close
+      confirm: View badges
+    title: Badges
+    awarded: Awarded
+    earned_×: Earned ×{{ number }}
+    ×_awarded: "{{ number }} awarded"
+    can_earn_multiple: You can earn this multiple times.
+    earned: Earned
+  admin:
+    admin_header:
+      title: Administrator
+    dashboard:
+      title: Panou de control
+      welcome: Welcome to Admin!
+      site_statistics: Statisticile site-ului
+      questions: "Întrebări:"
+      resolved: "Resolved:"
+      unanswered: "Unanswered:"
+      answers: "Răspunsuri:"
+      comments: "Comentarii:"
+      votes: "Voturi:"
+      users: "Utilizatori:"
+      flags: "Marcaje:"
+      reviews: "Reviews:"
+      site_health: Site health
+      version: "Versiune:"
+      https: "HTTPS:"
+      upload_folder: "Director încărcare:"
+      run_mode: "Modul de rulare:"
+      private: Privat
+      public: Public
+      smtp: "SMTP:"
+      timezone: "Fusul orar:"
+      system_info: Informaţii despre sistem
+      go_version: "Versiune Go:"
+      database: "Baza de date:"
+      database_size: "Dimensiune bază de date:"
+      storage_used: "Spațiu utilizat:"
+      uptime: "Timpul de funcționare:"
+      links: Links
+      plugins: Pluginuri
+      github: GitHub
+      blog: Blog
+      contact: Contact
+      forum: Forum
+      documents: Ducumente
+      feedback: Feedback
+      support: Suport
+      review: Recenzie
+      config: Configurație
+      update_to: Actualizare la
+      latest: Recente
+      check_failed: Verificarea eșuată
+      "yes": "Da"
+      "no": "Nu"
+      not_allowed: Nu este permis
+      allowed: Permis
+      enabled: Activat
+      disabled: Dezactivat
+      writable: Inscriptibil
+      not_writable: Neinscriptibil
+    flags:
+      title: Steaguri
+      pending: În așteptare
+      completed: Finalizată
+      flagged: Semnalizat
+      flagged_type: Marcat {{ type }}
+      created: Creată
+      action: Actiune
+      review: Recenzie
+    user_role_modal:
+      title: Schimbă rolul utilizatorului la...
+      btn_cancel: Anulați
+      btn_submit: Trimiteți
+    new_password_modal:
+      title: Setați parola nouă
+      form:
+        fields:
+          password:
+            label: Parolă
+            text: Utilizatorul va fi deconectat și trebuie să se conecteze din nou.
+            msg: Parola trebuie să aibă o lungime de 8-32 caractere.
+      btn_cancel: Anulați
+      btn_submit: Trimiteți
+    edit_profile_modal:
+      title: Edit profile
+      form:
+        fields:
+          display_name:
+            label: Display name
+            msg_range: Display name must be 2-30 characters in length.
+          username:
+            label: Username
+            msg_range: Username must be 2-30 characters in length.
+          email:
+            label: Email
+            msg_invalid: Invalid Email Address.
+      edit_success: Edited successfully
+      btn_cancel: Cancel
+      btn_submit: Submit
+    user_modal:
+      title: Adaugă un nou utilizator
+      form:
+        fields:
+          users:
+            label: Adăugare utilizator în bloc
+            placeholder: "John Smith, john@example.com, BUSYopr2\nAlice, alice@example.com, fpDntV8q"
+            text: Separați “nume, email, parola” cu virgulă. Un utilizator pe linie.
+            msg: "Te rugăm să introduci e-mailul utilizatorului, câte unul pe linie."
+          display_name:
+            label: Nume afișat
+            msg: Display name must be 2-30 characters in length.
+          email:
+            label: E-mail
+            msg: E-mail nu este validă.
+          password:
+            label: Parolă
+            msg: Parola trebuie să aibă o lungime de 8-32 caractere.
+      btn_cancel: Anulați
+      btn_submit: Trimiteți
+    users:
+      title: Utilizatori
+      name: Nume
+      email: E-mail
+      reputation: Reputație
+      created_at: Created time
+      delete_at: Deleted time
+      suspend_at: Suspended time
+      suspend_until: Suspend until
+      status: Stare
+      role: Rol
+      action: Acţiune
+      change: Schimbare
+      all: Toate
+      staff: Personal
+      more: Mai mult
+      inactive: Inactiv
+      suspended: Suspendat
+      deleted: Şters
+      normal: Normal
+      Moderator: Moderator
+      Admin: Administrator
+      User: Utilizator
+      filter:
+        placeholder: "Filtrare după nume, utilizator:id"
+      set_new_password: Setați parola nouă
+      edit_profile: Edit profile
+      change_status: Schimba starea
+      change_role: Schimbare rol
+      show_logs: Arată jurnalele
+      add_user: Adaugă utilizator
+      deactivate_user:
+        title: Dezactivare utilizator
+        content: Un utilizator inactiv trebuie să își revalideze e-mailul.
+      delete_user:
+        title: Ștergeți acest utilizator
+        content: Sunteţi sigur că doriţi să ştergeţi acest utilizator? Acest lucru este permanent!
+        remove: Eliminaţi acest conţinut
+        label: Elimină toate întrebările, răspunsurile, comentariile etc.
+        text: Nu bifați acest lucru dacă doriți să ștergeți doar contul utilizatorului.
+      suspend_user:
+        title: Suspendă acest utilizator
+        content: Un utilizator suspendat nu se poate autentifica.
+        label: How long will the user be suspended for?
+        forever: Forever
+    questions:
+      page_title: Întrebări
+      unlisted: Unlisted
+      post: Postare
+      votes: Voturi
+      answers: Răspunsuri
+      created: Creată
+      status: Stare
+      action: Actiune
+      change: Schimbare
+      pending: În așteptare
+      filter:
+        placeholder: "Filtrează după titlu, întrebare: id"
+    answers:
+      page_title: Răspunsuri
+      post: Postare
+      votes: Voturi
+      created: Creată
+      status: Stare
+      action: Acţiune
+      change: Schimbare
+      filter:
+        placeholder: "Filtrează după titlu, întrebare: id"
+    general:
+      page_title: General
+      name:
+        label: Numele site-ului
+        msg: Numele site-ului nu poate fi gol.
+        text: "Numele acestui site, așa cum este folosit în eticheta de titlu."
+      site_url:
+        label: URL-ul site-ului
+        msg: Url-ul site-ului nu poate fi gol.
+        validate: Introduceți un URL valid.
+        text: Adresa site-ului dvs.
+      short_desc:
+        label: Scurtă descriere a site-ului
+        msg: Scurtă descriere a site-ului nu poate fi goală.
+        text: "Scurtă descriere, așa cum este folosit în eticheta titlu pe website."
+      desc:
+        label: Descriere site
+        msg: Descrierea site-ului nu poate fi goală.
+        text: "Descrie acest site într-o propoziție, așa cum este folosit în tag-ul meta descriere."
+      contact_email:
+        label: E-mail de contact
+        msg: E-mailul de contact nu poate fi gol.
+        validate: E-mailul de contact nu este valid.
+        text: Adresa de e-mail a persoanei cheie responsabile pentru acest site.
+      check_update:
+        label: Software updates
+        text: Automatically check for updates
+    interface:
+      page_title: Interfață
+      language:
+        label: Limba interfeței
+        msg: Limba interfata nu poate fi goala.
+        text: Limba interfeței utilizatorului. Se va schimba atunci când se reîmprospătează pagina.
+      time_zone:
+        label: Fusul orar
+        msg: Fusul orar nu poate fi gol.
+        text: Alege un oraș în același fus orar cu tine.
+      avatar:
+        label: Default avatar
+        text: For users without a custom avatar of their own.
+      gravatar_base_url:
+        label: Gravatar base URL
+        text: URL of the Gravatar provider's API base. Ignored when empty.
+    smtp:
+      page_title: SMTP
+      from_email:
+        label: De la e-mail
+        msg: Câmpul e-mail nu poate fi gol.
+        text: Adresa de e-mail de la care e-mailurile sunt trimise.
+      from_name:
+        label: Din numele
+        msg: Numele nu poate fi gol.
+        text: Numele de la care sunt trimise e-mailurile.
+      smtp_host:
+        label: Gazda SMTP
+        msg: Gazda SMTP nu poate fi goală.
+        text: Serverul tau de mail.
+      encryption:
+        label: Criptare
+        msg: Câmpul decriptare nu poate fi gol.
+        text: Pentru majoritatea serverelor SSL este opțiunea recomandată.
+        ssl: SSL
+        tls: TLS
+        none: Niciuna
+      smtp_port:
+        label: Portul SMTP
+        msg: Portul SMTP trebuie să fie numărul 1 ~ 65535.
+        text: Portul către serverul de mail.
+      smtp_username:
+        label: Utilizatorul SMTP
+        msg: Numele de utilizator SMTP nu poate fi gol.
+      smtp_password:
+        label: Parola SMTP
+        msg: Parola SMTP nu poate fi goală.
+      test_email_recipient:
+        label: Destinatari de e-mail test
+        text: Furnizați adresa de e-mail care va primi trimiterile de teste.
+        msg: Destinatarii de e-mail de test sunt invalizi
+      smtp_authentication:
+        label: Activare Authenticator
+        title: Autentificare SMTP
+        msg: Autentificarea SMTP nu poate fi goală.
+        "yes": "Da"
+        "no": "Nu"
+    branding:
+      page_title: Marcă
+      logo:
+        label: Logo
+        msg: Logo-ul nu poate fi gol.
+        text: Imaginea logo-ului din stânga sus a site-ului dvs. Utilizaţi o imagine dreptunghiulară largă cu o înălţime de 56 şi un raport de aspect mai mare de 3:1. Dacă nu se completează, textul pentru titlul site-ului va fi afișat.
+      mobile_logo:
+        label: Logo mobil
+        text: Logo-ul folosit pe versiunea mobila a site-ului dvs. Utilizați o imagine dreptunghiulară largă cu o înălțime de 56. Dacă nu o completați, va fi utilizată imaginea din setarea "logo".
+      square_icon:
+        label: Pictogramă pătrată
+        msg: Pictograma pătrată nu poate fi goală.
+        text: Imaginea folosită ca bază pentru pictogramele de metadate. Ar trebui să fie, în mod ideal, mai mare de 512x512.
+      favicon:
+        label: Favicon
+        text: O pictogramă favorită pentru site-ul dvs. Pentru a lucra corect peste un CDN trebuie să fie un png. Va fi redimensionată la 32x32. Dacă este lăsat necompletat, va fi folosită "iconiță pătrată".
+    legal:
+      page_title: Juridic
+      terms_of_service:
+        label: Termeni și condiții
+        text: "Puteți adăuga aici termeni de conținut pentru serviciu. Dacă aveți deja un document găzduit în altă parte, furnizați URL-ul complet aici."
+      privacy_policy:
+        label: Politică de confidențialitate
+        text: "Puteți adăuga aici termeni politicii de confidențialitate. Dacă aveți deja un document găzduit în altă parte, furnizați URL-ul complet aici."
+      external_content_display:
+        label: External content
+        text: "Content includes images, videos, and media embedded from external websites."
+        always_display: Always display external content
+        ask_before_display: Ask before displaying external content
+    write:
+      page_title: Scrie
+      restrict_answer:
+        title: Answer write
+        label: Fiecare utilizator poate scrie doar câte un răspuns pentru fiecare întrebare
+        text: "Turn off to allow users to write multiple answers to the same question, which may cause answers to be unfocused."
+      recommend_tags:
+        label: Etichete recomandate
+        text: "Recommend tags will show in the dropdown list by default."
+        msg:
+          contain_reserved: "recommended tags cannot contain reserved tags"
+      required_tag:
+        title: Set required tags
+        label: Set “Recommend tags” as required tags
+        text: "Fiecare întrebare nouă trebuie să aibă cel puțin o etichetă recomandată."
+      reserved_tags:
+        label: Etichete rezervate
+        text: "Reserved tags can only be used by moderator."
+      image_size:
+        label: Max image size (MB)
+        text: "The maximum image upload size."
+      attachment_size:
+        label: Max attachment size (MB)
+        text: "The maximum attachment files upload size."
+      image_megapixels:
+        label: Max image megapixels
+        text: "Maximum number of megapixels allowed for an image."
+      image_extensions:
+        label: Authorized image extensions
+        text: "A list of file extensions allowed for image display, separate with commas."
+      attachment_extensions:
+        label: Authorized attachment extensions
+        text: "A list of file extensions allowed for upload, separate with commas. WARNING: Allowing uploads may cause security issues."
+    seo:
+      page_title: SEO
+      permalink:
+        label: Legătură permanenta
+        text: Structurile URL personalizate pot îmbunătăți capacitatea de utilizare și compatibilitatea link-urilor tale.
+      robots:
+        label: robots.txt
+        text: Acest lucru va suprascrie permanent orice setări ale site-ului.
+    themes:
+      page_title: Teme
+      themes:
+        label: Teme
+        text: Selectaţi o temă existentă.
+      color_scheme:
+        label: Paletă de culori
+      navbar_style:
+        label: Navbar background style
+      primary_color:
+        label: Culoare primară
+        text: Modifică culorile folosite de temele tale
+    css_and_html:
+      page_title: CSS și HTML
+      custom_css:
+        label: CSS personalizat
+        text: >
+
+      head:
+        label: Cap
+        text: >
+
+      header:
+        label: Antet
+        text: >
+
+      footer:
+        label: Subsol
+        text: Se va insera înainte de &lt;/body>.
+      sidebar:
+        label: Bară laterală
+        text: Acesta va fi inserat în bara laterală.
+    login:
+      page_title: Autentifică-te
+      membership:
+        title: Calitatea de membru
+        label: Permite înregistrări noi
+        text: Dezactivați pentru a împiedica pe oricine să creeze un cont nou.
+      email_registration:
+        title: Înregistrare e-mail
+        label: Permite înregistrări noi
+        text: Dezactivați pentru a preveni crearea unui cont nou prin e-mail.
+      allowed_email_domains:
+        title: Domenii de e-mail permise
+        text: Domeniile de e-mail cu care utilizatorii trebuie să înregistreze conturi. Un domeniu pe linie. Se ignoră atunci când este gol.
+      private:
+        title: Privat
+        label: Autentificare necesară
+        text: Numai utilizatorii autentificați pot accesa această comunitate.
+      password_login:
+        title: Parola de login
+        label: Permiteți autentificarea prin e-mail și parolă
+        text: "AVERTISMENT: Dacă opriți, este posibil să nu vă puteți conecta dacă nu ați configurat anterior o altă metodă de autentificare."
+    installed_plugins:
+      title: Extensii instalate
+      plugin_link: Plugins extend and expand the functionality. You may find plugins in the <1>Plugin Repository</1>.
+      filter:
+        all: Toate
+        active: Activ
+        inactive: Inactiv
+        outdated: Învechit
+      plugins:
+        label: Extensii
+        text: Selectați un plugin existent.
+      name: Nume
+      version: Versiune
+      status: Stare
+      action: Acţiune
+      deactivate: Dezactivare
+      activate: Activare
+      settings: Setări
+    settings_users:
+      title: Utilizatori
+      avatar:
+        label: Avatarul implicit
+        text: Pentru utilizatorii fără un avatar personalizat propriu.
+      gravatar_base_url:
+        label: URL de bază Gravatar
+        text: URL-ul bazei API a furnizorului de Gravatar. Ignorat când este gol.
+      profile_editable:
+        title: Profil editabil
+      allow_update_display_name:
+        label: Permite utilizatorilor să își schimbe numele afișat
+      allow_update_username:
+        label: Permite utilizatorilor să își schimbe numele de utilizator
+      allow_update_avatar:
+        label: Permite utilizatorilor să își schimbe imaginea de profil
+      allow_update_bio:
+        label: Permite utilizatorilor să își schimbe propriul lor despre mine
+      allow_update_website:
+        label: Permite utilizatorilor să îşi schimbe website-ul
+      allow_update_location:
+        label: Permite utilizatorilor să își schimbe locația
+    privilege:
+      title: Privilegii
+      level:
+        label: Nivel necesar de reputație
+        text: Alegeți reputația necesară pentru privilegii
+      msg:
+        should_be_number: the input should be number
+        number_larger_1: number should be equal or larger than 1
+    badges:
+      action: Action
+      active: Active
+      activate: Activate
+      all: All
+      awards: Awards
+      deactivate: Deactivate
+      filter:
+        placeholder: Filter by name, badge:id
+      group: Group
+      inactive: Inactive
+      name: Name
+      show_logs: Show logs
+      status: Status
+      title: Badges
+  form:
+    optional: (opțional)
+    empty: nu poate fi lăsat necompletat
+    invalid: nu este valid
+    btn_submit: Salvează
+    not_found_props: "Proprietatea solicitată {{ key }} nu a fost găsită."
+    select: Selectează
+  page_review:
+    review: Recenzie
+    proposed: propus
+    question_edit: Editare întrebări
+    answer_edit: Editările răspunsului
+    tag_edit: Editare etichetă
+    edit_summary: Editează sumarul
+    edit_question: Editați întrebarea
+    edit_answer: Editați răspunsul
+    edit_tag: Editare etichetă
+    empty: Nu au mai rămas sarcini de evaluare.
+    approve_revision_tip: Do you approve this revision?
+    approve_flag_tip: Do you approve this flag?
+    approve_post_tip: Do you approve this post?
+    approve_user_tip: Do you approve this user?
+    suggest_edits: Suggested edits
+    flag_post: Flag post
+    flag_user: Flag user
+    queued_post: Queued post
+    queued_user: Queued user
+    filter_label: Tip
+    reputation: reputation
+    flag_post_type: Acest post a fost marcat de {{ type }}.
+    flag_user_type: Flagged this user as {{ type }}.
+    edit_post: Editează postarea
+    list_post: Listează postarea
+    unlist_post: Unlist post
+  timeline:
+    undeleted: restabilește
+    deleted: şterse
+    downvote: vot negativ
+    upvote: vot pozitiv
+    accept: acceptat
+    cancelled: anulat
+    commented: comentat
+    rollback: revenire
+    edited: editat
+    answered: răspunse
+    asked: întrebat
+    closed: închise
+    reopened: redeschise
+    created: creat
+    pin: fixat
+    unpin: nefixat
+    show: listă
+    hide: nelistat
+    title: "Istoric pentru"
+    tag_title: "Cronologie pentru"
+    show_votes: "Afișare voturi"
+    n_or_a: N/A
+    title_for_question: "Cronologie pentru"
+    title_for_answer: "Calendarul răspunsului la {{ title }} cu {{ author }}"
+    title_for_tag: "Cronologie pentru etichetă"
+    datetime: Dată și oră
+    type: Tip
+    by: De către
+    comment: Comentariu
+    no_data: "Nu a fost găsit nimic."
+  users:
+    title: Utilizatori
+    users_with_the_most_reputation: Utilizatori cu cele mai mari scoruri ale reputaţiei în această săptămână
+    users_with_the_most_vote: Utilizatorii care au votat cel mai mult săptămâna aceasta
+    staffs: Personalul acestei comunități
+    reputation: reputație
+    votes: voturi
+  prompt:
+    leave_page: Sunteți sigur că doriți să ieșiți din pagina asta?
+    changes_not_save: Modificările nu pot fi salvate.
+  draft:
+    discard_confirm: Ești sigur că vrei să renunți la ciornă?
+  messages:
+    post_deleted: Această postare a fost ștearsă.
+    post_cancel_deleted: This post has been undeleted.
+    post_pin: Această postare a fost fixată.
+    post_unpin: Această postare nu a fost fixată.
+    post_hide_list: Această postare a fost ascunsă din listă.
+    post_show_list: Această postare a fost afișată în listă.
+    post_reopen: Această postare a fost redeschisă.
+    post_list: This post has been listed.
+    post_unlist: This post has been unlisted.
+    post_pending: Your post is awaiting review. This is a preview, it will be visible after it has been approved.
+    post_closed: This post has been closed.
+    answer_deleted: This answer has been deleted.
+    answer_cancel_deleted: This answer has been undeleted.
+    change_user_role: This user's role has been changed.
+    user_inactive: This user is already inactive.
+    user_normal: This user is already normal.
+    user_suspended: This user has been suspended.
+    user_deleted: This user has been deleted.
+    badge_activated: This badge has been activated.
+    badge_inactivated: This badge has been inactivated.
+    users_deleted: These users have been deleted.
+    posts_deleted: These questions have been deleted.
+    answers_deleted: These answers have been deleted.
+    copy: Copy to clipboard
+    copied: Copied
+    external_content_warning: External images/media are not displayed.
+
+
