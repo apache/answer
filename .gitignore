@@ -31,5 +31,14 @@ vendor/
 
 dist/
 
+# Answer build artifacts
+answer-*
+data/
+data*/
+test-data/
+config-production.yaml
+*.bas
+package-*.sh
+
 # Lint setup generated file
 .husky/
