@@ -484,6 +484,7 @@ func copyDirEntries(sourceFs fs.FS, sourceDir, targetDir string, ignoreDir ...st
 
 		// Construct the absolute path for the source file/directory
 		srcPath := filepath.Join(sourceDir, path)
+		srcPath = filepath.ToSlash(srcPath)
 
 		// Construct the absolute path for the destination file/directory
 		dstPath := filepath.Join(targetDir, path)
