@@ -32,7 +32,7 @@ const Index = () => {
   const cc = `${fullYear} ${siteName}`;
 
   return (
-    <footer className="py-3 bg-light w-100">
+    <footer className="py-3 w-100">
       <p className="text-center mb-0 small">
         {/* Link to Terms of Service with right margin */}
         <Link to="/tos" className="me-3">
