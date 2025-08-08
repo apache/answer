@@ -51,6 +51,7 @@ import {
   Input,
   Button as SfButton,
   InputGroup,
+  TagSelector,
 } from './components';
 
 export * from './types';
@@ -258,6 +259,7 @@ const SchemaForm: ForwardRefRenderFunction<FormRef, FormProps> = (
           description,
           enum: enumValues = [],
           enumNames = [],
+          max_length = 0,
         } = properties[key];
         const { 'ui:widget': widget = 'input', 'ui:options': uiOpt } =
           uiSchema?.[key] || {};
@@ -413,11 +415,20 @@ const SchemaForm: ForwardRefRenderFunction<FormRef, FormProps> = (
                 />
               </InputGroup>
             ) : null}
+            {widget === 'tag_selector' ? (
+              <TagSelector
+                maxTagLength={max_length}
+                fieldName={key}
+                onChange={onChange}
+                formData={formData}
+                description={description}
+              />
+            ) : null}
             {/* Unified handling of `Feedback` and `Text` */}
             <Form.Control.Feedback type="invalid">
               {fieldState?.errorMsg}
             </Form.Control.Feedback>
-            {description ? (
+            {description && widget !== 'tag_selector' ? (
               <Form.Text dangerouslySetInnerHTML={{ __html: description }} />
             ) : null}
           </Form.Group>

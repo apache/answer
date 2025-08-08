@@ -44,12 +44,13 @@ export interface JSONSchema {
   required?: string[];
   properties: {
     [key: string]: {
-      type: 'string' | 'boolean' | 'number';
+      type?: 'string' | 'boolean' | 'number';
       title: string;
       description?: string;
       enum?: Array<string | boolean | number>;
       enumNames?: string[];
       default?: string | boolean | number | any[];
+      max_length?: number;
     };
   };
 }
@@ -152,7 +153,8 @@ export type UIWidget =
   | 'switch'
   | 'legend'
   | 'button'
-  | 'input_group';
+  | 'input_group'
+  | 'tag_selector';
 export interface UISchema {
   [key: string]: {
     'ui:widget'?: UIWidget;
