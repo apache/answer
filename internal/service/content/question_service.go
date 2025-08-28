@@ -413,8 +413,15 @@ func (qs *QuestionService) AddQuestion(ctx context.Context, req *schema.Question
 	})
 
 	if question.Status == entity.QuestionStatusAvailable {
-		qs.externalNotificationQueueService.Send(ctx,
-			schema.CreateNewQuestionNotificationMsg(question.ID, question.Title, question.UserID, tags))
+		newTags, newTagsErr := qs.tagCommon.GetTagListByNames(ctx, tagNameList)
+		if newTagsErr != nil {
+			log.Error("get question newTags error %v", newTagsErr)
+			qs.externalNotificationQueueService.Send(ctx,
+				schema.CreateNewQuestionNotificationMsg(question.ID, question.Title, question.UserID, tags))
+		} else {
+			qs.externalNotificationQueueService.Send(ctx,
+				schema.CreateNewQuestionNotificationMsg(question.ID, question.Title, question.UserID, newTags))
+		}
 	}
 	qs.eventQueueService.Send(ctx, schema.NewEvent(constant.EventQuestionCreate, req.UserID).TID(question.ID).
 		QID(question.ID, question.UserID))
