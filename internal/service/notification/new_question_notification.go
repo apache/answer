@@ -279,5 +279,17 @@ func (ns *ExternalNotificationService) newPluginQuestionNotification(
 	raw.QuestionUrl = display.QuestionURL(
 		seoInfo.Permalink, siteInfo.SiteUrl,
 		msg.NewQuestionTemplateRawData.QuestionID, msg.NewQuestionTemplateRawData.QuestionTitle)
+	if len(msg.NewQuestionTemplateRawData.QuestionAuthorUserID) > 0 {
+		triggerUser, exist, err := ns.userRepo.GetByUserID(ctx, msg.NewQuestionTemplateRawData.QuestionAuthorUserID)
+		if err != nil {
+			log.Errorf("get trigger user basic info failed: %v", err)
+			return
+		}
+		if exist {
+			raw.TriggerUserID = triggerUser.ID
+			raw.TriggerUserDisplayName = triggerUser.DisplayName
+			raw.TriggerUserUrl = display.UserURL(siteInfo.SiteUrl, triggerUser.Username)
+		}
+	}
 	return raw
 }
