@@ -288,7 +288,7 @@ ui:
     change_email: Modificar e-mail
     install: Instalação do Resposta
     upgrade: Atualização do Resposta
-    maintenance: Manutençã do Website
+    maintenance: Manutenção do Website
     users: Usuários
   notifications:
     title: Notificações
@@ -327,7 +327,7 @@ ui:
               empty: Código não pode ser vazio.
           language:
             label: Idioma (opcional)
-            placeholder: Tetecção automática
+            placeholder: Detecção automática
       btn_cancel: Cancelar
       btn_confirm: Adicionar
     formula:
@@ -351,7 +351,7 @@ ui:
     image:
       text: Imagem
       add_image: Adicionar imagem
-      tab_image: Enviar image,
+      tab_image: Enviar imagem
       form_image:
         fields:
           file:
@@ -380,7 +380,7 @@ ui:
     outdent:
       text: Não identado
     italic:
-      text: Emphase
+      text: Ênfase
     link:
       text: Superlink (Hyperlink)
       add_link: Adicionar superlink (hyperlink)
@@ -537,7 +537,7 @@ ui:
     title: Adicionar Pergunta
     edit_title: Editar Pergunta
     default_reason: Editar pergunta
-    similar_questions: Similar perguntas
+    similar_questions: Perguntas similares
     form:
       fields:
         revision:
@@ -564,10 +564,10 @@ ui:
           label: Resumo da edição
           placeholder: >-
             Explique resumidamente suas alterações (ortografia corrigida, gramática corrigida, formatação aprimorada)
-    btn_post_question: Publicação a sua pergunta
+    btn_post_question: Publicar a sua pergunta
     btn_save_edits: Salvar edições
     answer_question: Responda a sua própria pergunta
-    post_question&answer: Publicação a sua pergunta e resposta
+    post_question&answer: Publicar a sua pergunta e resposta
   tag_selector:
     add_btn: Adicionar marcador
     create_btn: Criar novo marcador
@@ -589,7 +589,7 @@ ui:
       placeholder: Procurar
   footer:
     build_on: >-
-      Built on <1> Answer </1>- the open-source software that powers Q&A communities.<br />Made with love © {{cc}}.
+      Desenvolvido com base no <1> Answer </1> — o software de código aberto que alimenta comunidades de perguntas e respostas.<br />Feito com amor © {{cc}}.
   upload_img:
     name: Mudar
     loading: carregando...
@@ -604,13 +604,13 @@ ui:
     info: "Se não chegar, verifique sua pasta de spam."
     another: >-
       Enviamos outro e-mail de ativação para você em <bold>{{mail}}</bold>. Pode levar alguns minutos para chegar; certifique-se de verificar sua pasta de spam.
-    btn_name: Resend activation email
+    btn_name: Reenviar e-mail de ativação
     change_btn_name: Mudar email
     msg:
       empty: Não pode ser vazio.
   login:
     page_title: Bem vindo ao {{site_name}}
-    login_to_continue: Entre para continue
+    login_to_continue: Entre para continuar
     info_sign: Não possui uma conta? <1>Cadastrar-se</1>
     info_login: Já possui uma conta? <1>Entre</1>
     agreements: Ao se registrar, você concorda com as <1>políticas de privacidades</1> e os <3>termos de serviços</3>.
@@ -776,9 +776,9 @@ ui:
   delete:
     title: Excluir esta postagem
     question: >-
-      Nós não recomendamos <strong>excluindo perguntas com respostas</strong> porque isso priva os futuros leitores desse conhecimento.</p><p>Repeated deletion of answered questions can result in a sua account being blocked from asking. Você tem certeza que deseja deletar?
+      Nós não recomendamos <strong> excluir perguntas com respostas</strong> porque isso priva os futuros leitores desse conhecimento.</p><p>A exclusão repetida de perguntas respondidas pode resultar no bloqueio de perguntas de sua conta. Você tem certeza que deseja excluir?
     answer_accepted: >-
-      <p>Nós não recomendamos <strong>deleting accepted answer</strong> porque isso priva os futuros leitores desse conhecimento. </p> Repeated deletion of accepted answers can result in a sua account being blocked from answering. Você tem certeza que deseja deletar?
+      <p>Não recomendamos <strong>excluir resposta aceita</strong> porque isso priva os futuros leitores desse conhecimento. </p> A exclusão repetida de respostas aceitas pode resultar no bloqueio de respostas de uma conta sua. Você tem certeza que deseja excluir?
     other: Você tem certeza que deseja deletar?
     tip_question_deleted: Esta postagem foi deletada
     tip_answer_deleted: Esta resposta foi deletada
@@ -834,7 +834,7 @@ ui:
     link: Continuar para a página inicial.
     invalid: >-
       Desculpe, este link de confirmação não é mais válido. Talvez a sua já está ativa.
-    confirm_new_email: Your email has been updated.
+    confirm_new_email: Seu e-mail foi atualizado.
     confirm_new_email_invalid: >-
       Desculpe, este link de confirmação não é mais válido. Talvez o seu e-mail já tenha sido alterado.
   unsubscribe:
@@ -846,7 +846,7 @@ ui:
     following_tags: Seguindo Marcadores
     edit: Editar
     save: Salvar
-    follow_tag_tip: Seguir tags to curate a sua lista de perguntas.
+    follow_tag_tip: Siga as tags para selecionar sua lista de perguntas.
     hot_questions: Perguntas quentes
     all_questions: Todas Perguntas
     x_questions: "{{ count }} perguntas"
@@ -878,7 +878,7 @@ ui:
     score: Pontuação
     edit_profile: Editar Perfil
     visited_x_days: "Visitado {{ count }} dias"
-    viewed: Viewed
+    viewed: Visualizado
     joined: Ingressou
     last_login: Visto
     about_me: Sobre mim
@@ -900,13 +900,13 @@ ui:
     x_questions: perguntas
   install:
     title: Instalação
-    next: Proximo
+    next: Próximo
     done: Completo
     config_yaml_error: Não é possível criar o arquivo config.yaml.
     lang:
       label: Por favor Escolha um Idioma
     db_type:
-      label: Database Engine
+      label: Mecanismo de banco de dados
     db_username:
       label: Nome de usuário
       placeholder: root
@@ -916,68 +916,68 @@ ui:
       placeholder: root
       msg: Senha não pode ser vazio.
     db_host:
-      label: Database Host
+      label: Host do banco de dados
       placeholder: "db:3306"
-      msg: Database Host não pode ser vazio.
+      msg: Host de banco de dados não pode ficar vazio.
     db_name:
-      label: Database Nome
+      label: Nome do banco de dados
       placeholder: answer
-      msg: Database Nome não pode ser vazio.
+      msg: O nome do banco de dados não pode ficar vazio.
     db_file:
-      label: Database File
+      label: Arquivo de banco de dados
       placeholder: /data/answer.db
-      msg: Database File não pode ser vazio.
+      msg: O arquivo de banco de dados não pode ficar vazio.
     config_yaml:
-      title: Create config.yaml
-      label: The config.yaml file created.
+      title: Criar config.yaml
+      label: O arquivo config.yaml foi criado.
       desc: >-
-        You can create the <1>config.yaml</1> file manually in the <1>/var/wwww/xxx/</1> directory and paste the following text into it.
-      info: After you've done that, click "Next" button.
-    site_information: Site Information
+        Você pode criar o arquivo <1>config.yaml</1> manualmente no diretório <1>/var/www/xxx/</1> e colar o seguinte texto nele.
+      info: Depois de fazer isso, clique no botão "Avançar".
+    site_information: Informações do site
     admin_account: Administrador Conta
     site_name:
       label: Site Nome
       msg: Site Nome não pode ser vazio.
     site_url:
       label: Site URL
-      text: The address of a sua site.
+      text: O endereço do seu site.
       msg:
         empty: Site URL não pode ser vazio.
-        incorrect: Site URL incorrect format.
+        incorrect: Formato incorreto da URL do site.
     contact_email:
-      label: E-mail par contato
-      text: Email address of key contact responsible for this site.
+      label: E-mail para contato
+      text: Endereço de e-mail do contato principal responsável por este site.
       msg:
-        empty: E-mail par contato não pode ser vazio.
-        incorrect: E-mail par contato incorrect format.
+        empty: E-mail para contato não pode ser vazio.
+        incorrect: E-mail para contato em formato incorreto.
     admin_name:
       label: Nome
       msg: Nome não pode ser vazio.
     admin_password:
       label: Senha
       text: >-
-        You will need this password to log in. Por favor store it in a secure location.
-      msg: Senha não pode ser vazio.
+        Você precisará dessa senha para efetuar login. Por favor, guarde-a em um local seguro.
+      msg: Senha não pode ser vazia.
     admin_email:
       label: Email
-      text: You will need this email to log in.
+      text: Você precisará deste e-mail para fazer login.
       msg:
         empty: Email não pode ser vazio.
-        incorrect: Email incorrect format.
-    ready_title: Your Resposta is Ready!
+        incorrect: Formato de e-mail incorreto.
+    ready_title: Sua resposta está pronta!
     ready_desc: >-
-      If you ever feel like changing more settings, visit <1>admin section</1>; find it in the site menu.
-    good_luck: "Have fun, and good luck!"
-    warn_title: Warning
+      Se você quiser alterar mais configurações, visite a <1>seção de administração</1>; encontre-a no menu do site.
+    good_luck: "Divirta-se e boa sorte!"
+    warn_title: Aviso
     warn_desc: >-
-      The file <1>config.yaml</1> already exists. If you need to reset any of the configuration items in this file, please delete it first.
-    install_now: You may try <1>installing now</1>.
-    installed: Already installed
+      O arquivo <1>config.yaml</1> já existe. Se precisar redefinir algum item de configuração neste arquivo, exclua-o primeiro.
+    install_now: Você pode tentar <1>instalar agora</1>.
+    installed: Já instalado
     installed_desc: >-
-      You appear to have already installed. To reinstall please clear a sua old database tables first.
-    db_failed: Database connection failed
+      Parece que você já instalou. Para reinstalar, limpe primeiro as tabelas antigas do seu banco de dados.
+    db_failed: Falha na conexão do banco de dados
     db_failed_desc: >-
-      This either means that the database information in a sua <1>config.yaml</1> file is incorrect or that contact with the database server could not be established. This could mean a sua host's database server is down.
+      Isso significa que as informações do banco de dados em um arquivo <1>config.yaml</1> do SUA estão incorretas ou que o contato com o servidor do banco de dados não pôde ser estabelecido. Isso pode significar que o servidor de banco de dados de um host SUA está inativo.
   counts:
     views: visualizações
     Votos: votos
@@ -987,7 +987,7 @@ ui:
     desc: "Infelizmente, esta postagem não existe mais."
     back_home: Voltar para a página inicial
   page_50X:
-    desc: O servidor encontrou um erro e não pôde concluir uma solicitação sua.
+    desc: O servidor encontrou um erro e não pôde concluir sua solicitação.
     back_home: Voltar para a página inicial
   page_maintenance:
     desc: "Estamos em manutenção, voltaremos em breve."
@@ -1037,7 +1037,7 @@ ui:
       answer_links: Links das Respostas
       documents: Documentos
       feedback: Opinião
-      support: Supporte
+      support: Suporte
       review: Revisar
       config: Configurações
       update_to: Atualizar ao
@@ -1233,7 +1233,7 @@ ui:
       smtp_port:
         label: SMTP Port
         msg: SMTP port must be number 1 ~ 65535.
-        text: The port to a sua mail server.
+        text: A porta para seu servidor de e-mail.
       smtp_username:
         label: SMTP Nome de usuário
         msg: SMTP username não pode ser vazio.
@@ -1241,9 +1241,9 @@ ui:
         label: SMTP Senha
         msg: SMTP password não pode ser vazio.
       test_email_recipient:
-        label: Test Email Recipients
-        text: Provide email address that will receive test sends.
-        msg: Test email recipients is invalid
+        label: Destinatários de e-mail de teste
+        text: Forneça o endereço de e-mail que receberá os envios de testes.
+        msg: Os destinatários do e-mail de teste são inválidos
       smtp_authentication:
         label: Enable authentication
         title: SMTP Authentication
@@ -1255,127 +1255,127 @@ ui:
       logo:
         label: Logo (opcional)
         msg: Logo não pode ser vazio.
-        text: The logo image at the top left of a sua site. Use a wide rectangular image with a height of 56 and an aspect ratio greater than 3:1. If left blank, the site title text will be shown.
+        text: A imagem do logotipo no canto superior esquerdo do seu site. Use uma imagem retangular larga com altura de 56 e proporção maior que 3:1. Se deixada em branco, o texto do título do site será exibido.
       mobile_logo:
         label: Mobile Logo (opcional)
-        text: The logo used on mobile version of a sua site. Use a wide rectangular image with a height of 56. If left blank, the image from the "logo" setting will be used.
+        text: O logotipo usado na versão mobile do seu site. Use uma imagem retangular larga com altura de 56. Se deixado em branco, a imagem da configuração "logotipo" será usada.
       square_icon:
         label: Square Icon (opcional)
         msg: Square icon não pode ser vazio.
-        text: Imagem used as the base for metadata icons. Should ideally be larger than 512x512.
+        text: Imagem usada como base para ícones de metadados. Idealmente, deve ser maior que 512x512.
       favicon:
         label: Favicon (opcional)
-        text: A favicon for a sua site. To work correctly over a CDN it must be a png. Will be resized to 32x32. If left blank, "square icon" will be used.
+        text: Um favicon para o seu site. Para funcionar corretamente em uma CDN, ele deve ser um png. Será redimensionado para 32x32. Se deixado em branco, o "ícone quadrado" será usado.
     legal:
       page_title: Legal
       terms_of_service:
-        label: Terms of Service
-        text: "You can add terms of service content here. If you already have a document hosted elsewhere, provide the full URL here."
+        label: Termos de Serviço
+        text: "Você pode adicionar conteúdo dos termos de serviço aqui. Se você já possui um documento hospedado em outro lugar, informe o URL completo aqui."
       privacy_policy:
-        label: Privacy Policy
-        text: "You can add privacy policy content here. If you already have a document hosted elsewhere, provide the full URL here."
+        label: Política de Privacidade
+        text: "Você pode adicionar o conteúdo da política de privacidade aqui. Se você já possui um documento hospedado em outro lugar, informe o URL completo aqui."
     write:
-      page_title: Write
+      page_title: Escrever
       recommend_tags:
-        label: Recommend Marcadores
-        text: "Por favor input tag slug above, one tag per line."
+        label: Recomendar Marcadores
+        text: "Por favor, insira o slug da tag acima, uma tag por linha."
       required_tag:
-        title: Required Tag
-        label: Set recommend tag as requirido
-        text: "Every new question must have ao menos one recommend tag."
+        title: Tag necessária
+        label: Definir tag recomendada como necessária
+        text: "Cada nova pergunta deve ter pelo menos uma tag de recomendação."
       reserved_tags:
-        label: Reserved Marcadores
-        text: "Reserved tags can only be added to a post by moderator."
+        label: Marcadores Reservados
+        text: "Tags reservadas só podem ser adicionadas a uma postagem pelo moderador."
     seo:
       page_title: SEO
       permalink:
         label: Permalink
-        text: Custom URL structures can improve the usability, and forward-compatibility of a sua links.
+        text: Estruturas de URL personalizadas podem melhorar a usabilidade e a compatibilidade futura de seus links.
       robots:
         label: robots.txt
-        text: This will permanently override any related site settings.
+        text: Isso substituirá permanentemente todas as configurações relacionadas do site.
     Temas:
       page_title: Temas
       Temas:
         label: Temas
-        text: Select an existing Tema.
+        text: Selecione um tema existente.
       navbar_style:
-        label: Navbar Style
-        text: Select an existing Tema.
+        label: Estilo da barra de navegação
+        text: Selecione um tema existente.
       primary_color:
-        label: Primary Color
-        text: Modify the colors used by a sua Temas
+        label: Cor primária
+        text: Modifique as cores usadas por seus Temas
     css_and_html:
-      page_title: CSS and HTML
+      page_title: CSS e HTML
       custom_css:
         label: Custom CSS
-        text: This will insert as <link>
+        text: Isto será inserido como <link>
       head:
         label: Head
-        text: This will insert before </head>
+        text: Isto será inserido antes de </head>
       header:
         label: Header
-        text: This will insert after <body>
+        text: Isto será inserido após <body>
       footer:
         label: Footer
-        text: This will insert before </html>.
+        text: Isso será inserido antes de </html>.
     login:
       page_title: Login
       membership:
-        title: Membership
-        label: Allow new registrations
-        text: Turn off to prevent anyone from creating a new account.
+        title: Associação
+        label: Permitir novos registros
+        text: Desative para impedir que alguém crie uma nova conta.
       private:
-        title: Private
+        title: Privado
         label: Login requirido
-        text: Only logged in users can access this community.
+        text: Somente usuários logados podem acessar esta comunidade.
   form:
     empty: não pode ser vazio
-    invalid: is invalid
+    invalid: é inválido
     btn_submit: Salvar
-    not_found_props: "Required property {{ key }} not found."
+    not_found_props: "Propriedade necessária {{ key }} não encontrada."
   page_review:
     review: Revisar
-    proposed: proposed
-    question_edit: Pergunta edit
-    answer_edit: Resposta edit
-    tag_edit: Tag edit
-    edit_summary: Editar summary
-    edit_question: Editar question
-    edit_answer: Editar answer
+    proposed: proposta
+    question_edit: Editar Pergunta
+    answer_edit: Editar Resposta 
+    tag_edit: Editar Tag
+    edit_summary: Editar resumo
+    edit_question: Editar pergunta
+    edit_answer: Editar resposta
     edit_tag: Editar tag
-    empty: No review tasks left.
+    empty: Não há mais tarefas de revisão.
   timeline:
-    undeleted: undeleted
-    deleted: deleted
-    downvote: downvote
-    upvote: upvote
-    accept: accept
-    cancelled: cancelled
-    commented: commented
+    undeleted: não excluído
+    deleted: apagado
+    downvote: voto negativo
+    upvote: voto positivo
+    accept: aceitar
+    cancelled: cancelado
+    commented: comentado
     rollback: rollback
-    edited: edited
-    answered: answered
-    asked: asked
-    closed: closed
-    reopened: reopened
-    created: created
-    title: "Histórico for"
-    tag_title: "Timeline for"
-    show_Votos: "Show Votos"
+    edited: editado
+    answered: respondido
+    asked: perguntado
+    closed: fechado
+    reopened: reaberto
+    created: criado
+    title: "Histórico para"
+    tag_title: "Linha do tempo para"
+    show_Votos: "Mostrar votos"
     n_or_a: N/A
-    title_for_question: "Timeline for"
-    title_for_answer: "Timeline for answer to {{ title }} by {{ author }}"
-    title_for_tag: "Timeline for tag"
+    title_for_question: "Linha do tempo para"
+    title_for_answer: "Linha do tempo para resposta a {{ title }} por {{ author }}"
+    title_for_tag: "Linha do tempo para tag"
     datetime: Datetime
-    type: Type
-    by: By
-    comment: Comment
-    no_data: "We couldn't find anything."
+    type: Tipo
+    by: Por
+    comment: Comentário
+    no_data: "Não conseguimos encontrar nada."
   users:
     title: Usuários
-    users_with_the_most_reputation: Usuários with the highest reputation scores
-    users_with_the_most_vote: Usuários who voted the most
-    staffs: Our community staff
-    reputation: reputation
+    users_with_the_most_reputation: Usuários com as maiores pontuações de reputação
+    users_with_the_most_vote: Usuários que mais votaram
+    staffs: Nossa equipe comunitária
+    reputation: reputação
     Votos: Votos
