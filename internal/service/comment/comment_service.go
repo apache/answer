@@ -21,7 +21,10 @@ package comment
 
 import (
 	"context"
+
 	"github.com/apache/answer/internal/service/event_queue"
+	"github.com/apache/answer/internal/service/review"
+
 	"time"
 
 	"github.com/apache/answer/internal/base/constant"
@@ -50,6 +53,7 @@ type CommentRepo interface {
 	AddComment(ctx context.Context, comment *entity.Comment) (err error)
 	RemoveComment(ctx context.Context, commentID string) (err error)
 	UpdateCommentContent(ctx context.Context, commentID string, original string, parsedText string) (err error)
+	UpdateCommentStatus(ctx context.Context, commentID string, status int) (err error)
 	GetComment(ctx context.Context, commentID string) (comment *entity.Comment, exist bool, err error)
 	GetCommentPage(ctx context.Context, commentQuery *CommentQuery) (
 		comments []*entity.Comment, total int64, err error)
@@ -88,6 +92,7 @@ type CommentService struct {
 	externalNotificationQueueService notice_queue.ExternalNotificationQueueService
 	activityQueueService             activity_queue.ActivityQueueService
 	eventQueueService                event_queue.EventQueueService
+	reviewService                    *review.ReviewService
 }
 
 // NewCommentService new comment service
@@ -103,6 +108,7 @@ func NewCommentService(
 	externalNotificationQueueService notice_queue.ExternalNotificationQueueService,
 	activityQueueService activity_queue.ActivityQueueService,
 	eventQueueService event_queue.EventQueueService,
+	reviewService *review.ReviewService,
 ) *CommentService {
 	return &CommentService{
 		commentRepo:                      commentRepo,
@@ -116,6 +122,7 @@ func NewCommentService(
 		externalNotificationQueueService: externalNotificationQueueService,
 		activityQueueService:             activityQueueService,
 		eventQueueService:                eventQueueService,
+		reviewService:                    reviewService,
 	}
 }
 
@@ -160,14 +167,21 @@ func (cs *CommentService) AddComment(ctx context.Context, req *schema.AddComment
 		return nil, err
 	}
 
+	comment.Status = cs.reviewService.AddCommentReview(ctx, comment, req.IP, req.UserAgent)
+	if err := cs.commentRepo.UpdateCommentStatus(ctx, comment.ID, comment.Status); err != nil {
+		return nil, err
+	}
+
 	resp = &schema.GetCommentResp{}
 	resp.SetFromComment(comment)
 	resp.MemberActions = permission.GetCommentPermission(ctx, req.UserID, resp.UserID,
 		time.Now(), req.CanEdit, req.CanDelete)
 
-	commentResp, err := cs.addCommentNotification(ctx, req, resp, comment, objInfo)
-	if err != nil {
-		return commentResp, err
+	if comment.Status == entity.CommentStatusAvailable {
+		commentResp, err := cs.addCommentNotification(ctx, req, resp, comment, objInfo)
+		if err != nil {
+			return commentResp, err
+		}
 	}
 
 	// get user info

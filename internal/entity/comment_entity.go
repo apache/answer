@@ -87,3 +87,8 @@ func (c *Comment) SetReplyCommentID(str string) {
 		c.ReplyCommentID = sql.NullInt64{Valid: false}
 	}
 }
+
+// GetMentionUsernameList get mention username list
+func (c *Comment) GetMentionUsernameList() []string {
+	return converter.GetMentionUsernameList(c.OriginalText)
+}

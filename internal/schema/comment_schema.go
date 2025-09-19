@@ -51,6 +51,9 @@ type AddCommentReq struct {
 	CanEdit bool `json:"-"`
 	// whether user can delete it
 	CanDelete bool `json:"-"`
+
+	IP        string `json:"-"`
+	UserAgent string `json:"-"`
 }
 
 func (req *AddCommentReq) Check() (errFields []*validator.FormErrorField, err error) {

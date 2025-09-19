@@ -19,8 +19,25 @@
 
 package converter
 
-import "github.com/segmentfault/pacman/utils"
+import (
+	"regexp"
+
+	"github.com/segmentfault/pacman/utils"
+)
 
 func DeleteUserDisplay(userID string) string {
 	return utils.EnShortID(StringToInt64(userID), 100)
+}
+
+func GetMentionUsernameList(text string) []string {
+	re := regexp.MustCompile(`\[@([^\]]+)\]\(/users/[^\)]+\)`)
+	matches := re.FindAllStringSubmatch(text, -1)
+
+	var usernames []string
+	for _, match := range matches {
+		if len(match) > 1 {
+			usernames = append(usernames, match[1])
+		}
+	}
+	return usernames
 }

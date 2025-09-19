@@ -92,6 +92,17 @@ func (cr *commentRepo) UpdateCommentContent(
 	return
 }
 
+// UpdateCommentStatus update comment status
+func (cr *commentRepo) UpdateCommentStatus(ctx context.Context, commentID string, status int) (err error) {
+	_, err = cr.data.DB.Context(ctx).ID(commentID).Update(&entity.Comment{
+		Status: status,
+	})
+	if err != nil {
+		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	return
+}
+
 // GetComment get comment one
 func (cr *commentRepo) GetComment(ctx context.Context, commentID string) (
 	comment *entity.Comment, exist bool, err error) {

@@ -20,6 +20,8 @@
 package controller
 
 import (
+	"net/http"
+
 	"github.com/apache/answer/internal/base/handler"
 	"github.com/apache/answer/internal/base/middleware"
 	"github.com/apache/answer/internal/base/reason"
@@ -34,7 +36,6 @@ import (
 	"github.com/apache/answer/pkg/uid"
 	"github.com/gin-gonic/gin"
 	"github.com/segmentfault/pacman/errors"
-	"net/http"
 )
 
 // CommentController comment controller
@@ -119,6 +120,9 @@ func (cc *CommentController) AddComment(ctx *gin.Context) {
 		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
 		return
 	}
+
+	req.UserAgent = ctx.GetHeader("User-Agent")
+	req.IP = ctx.ClientIP()
 
 	resp, err := cc.commentService.AddComment(ctx, req)
 	if !isAdmin || !linkUrlLimitUser {
