@@ -244,7 +244,7 @@ const Index: FC<Props> = ({ visible = false, data, callback }) => {
       {(!data.answered || showEditor) && (
         <Form.Group className="mb-3">
           <Form.Label>
-            <h5>{t('title')}</h5>
+            <h5>{t('title')} Test Title</h5>
           </Form.Label>
           <Form.Control
             isInvalid={formData.content.isInvalid}
