@@ -1292,7 +1292,7 @@ ui:
         caption: 用户可以通过 "@用户名" 来提及你。
         msg: 用户名不能为空
         msg_range: 显示名称长度必须为 2-30 个字符。
-        character: '只能由 "a-z"、"A-Z"、"0-9"、" - . _" 组成'
+        character: '只能由 "a-z"、"0-9"、"- . _" 组成'
       avatar:
         label: 头像
         gravatar: Gravatar

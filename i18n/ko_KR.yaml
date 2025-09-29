@@ -1292,7 +1292,7 @@ ui:
         caption: 다른 사용자가 "@사용자이름"으로 멘션할 수 있습니다.
         msg: 사용자 이름을 입력하세요.
         msg_range: 유저 이름은 2-30 자 길이여야 합니다.
-        character: '문자 집합 "a-z", "0-9", " - . _"을 사용해야 합니다.'
+        character: '문자 집합 "a-z", "0-9", "- . _"을 사용해야 합니다.'
       avatar:
         label: 프로필 이미지
         gravatar: Gravatar

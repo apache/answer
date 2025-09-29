@@ -1292,7 +1292,7 @@ ui:
         caption: Man kan nævne dig som "@username".
         msg: Brugernavn skal udfyldes.
         msg_range: Username must be 2-30 characters in length.
-        character: 'Skal bruge tegnsættet "a-z", "0-9", " - . _"'
+        character: 'Skal bruge tegnsættet "a-z", "0-9", "- . _"'
       avatar:
         label: Profilbillede
         gravatar: Gravatar

@@ -1292,7 +1292,7 @@ ui:
         caption: Mọi người có thể nhắc đến bạn với "@username".
         msg: Tên người dùng không thể trống.
         msg_range: Username must be 2-30 characters in length.
-        character: 'Chỉ sử dụng bộ ký tự "a-z", "0-9", " - . _"'
+        character: 'Chỉ sử dụng bộ ký tự "a-z", "0-9", "- . _"'
       avatar:
         label: Hình ảnh hồ sơ
         gravatar: Gravatar

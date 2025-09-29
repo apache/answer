@@ -1291,7 +1291,7 @@ ui:
         caption: ユーザーは "@username" としてあなたをメンションできます。
         msg: ユーザー名は空にできません。
         msg_range: Username must be 2-30 characters in length.
-        character: '文字セット "a-z", "0-9", " - . _" を使用してください。'
+        character: '文字セット "a-z", "0-9", "- . _" を使用してください。'
       avatar:
         label: プロフィール画像
         gravatar: Gravatar
@@ -1345,7 +1345,7 @@ ui:
       new_pass:
         label: 新しいパスワード
       pass_confirm:
-        label: 新しいパスワードの確認 
+        label: 新しいパスワードの確認
     interface:
       heading: 外観
       lang:

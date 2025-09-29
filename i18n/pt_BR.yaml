@@ -683,7 +683,7 @@ ui:
         caption: As pessoas poderão mensionar você com "@usuário".
         msg: Nome de usuário não pode ser vazio.
         msg_range: Nome de usuário até 30 caracteres.
-        character: 'Deve usar o conjunto de caracteres "a-z", "0-9", " - . _"'
+        character: 'Deve usar o conjunto de caracteres "a-z", "0-9", "- . _"'
       avatar:
         label: Perfil Imagem
         gravatar: Gravatar

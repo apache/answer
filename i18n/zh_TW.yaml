@@ -1292,7 +1292,7 @@ ui:
         caption: 用戶之間可以通過 "@用戶名" 進行交互。
         msg: 用戶名不能為空
         msg_range: Username must be 2-30 characters in length.
-        character: '必須由 "a-z", "0-9", " - . _" 組成'
+        character: '必須由 "a-z", "0-9", "- . _" 組成'
       avatar:
         label: Profile image
         gravatar: 頭像

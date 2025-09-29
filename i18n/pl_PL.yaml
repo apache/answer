@@ -1292,7 +1292,7 @@ ui:
         caption: Ludzie mogą oznaczać Cię jako "@nazwa_użytkownika".
         msg: Nazwa użytkownika nie może być pusta.
         msg_range: Username must be 2-30 characters in length.
-        character: 'Należy używać zestawu znaków "a-z", "0-9", " - . _"'
+        character: 'Należy używać zestawu znaków "a-z", "0-9", "- . _"'
       avatar:
         label: Zdjęcie profilowe
         gravatar: Gravatar

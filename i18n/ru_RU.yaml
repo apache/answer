@@ -1292,7 +1292,7 @@ ui:
         caption: Люди могут упоминать вас как "@username".
         msg: Имя пользователя не может быть пустым.
         msg_range: Username must be 2-30 characters in length.
-        character: 'Необходимо использовать набор символов "a-z", "0-9", " - . _"'
+        character: 'Необходимо использовать набор символов "a-z", "0-9", "- . _"'
       avatar:
         label: Изображение профиля
         gravatar: Gravatar

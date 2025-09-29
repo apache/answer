@@ -1292,7 +1292,7 @@ ui:
         caption: Oamenii te pot menționa ca "@utilizator".
         msg: Numele de utilizator nu poate fi gol.
         msg_range: Username must be 2-30 characters in length.
-        character: 'Trebuie să utilizați setul de caractere "a-z", "0-9", " - . _"'
+        character: 'Trebuie să utilizați setul de caractere "a-z", "0-9", "- . _"'
       avatar:
         label: Imaginea de profil
         gravatar: Gravatar
