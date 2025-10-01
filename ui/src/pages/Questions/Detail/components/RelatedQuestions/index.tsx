@@ -43,6 +43,10 @@ const Index: FC<Props> = ({ id }) => {
     return null;
   }
 
+  if (!isLoading && data?.count === 0) {
+    return null;
+  }
+
   return (
     <Card>
       <Card.Header>{t('title')}</Card.Header>
