@@ -22,6 +22,7 @@ package repo_test
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/repo/auth"
@@ -53,7 +54,7 @@ func Test_userAdminRepo_UpdateUserStatus(t *testing.T) {
 	assert.Equal(t, entity.UserStatusAvailable, got.Status)
 
 	err = userAdminRepo.UpdateUserStatus(context.TODO(), "1", entity.UserStatusSuspended, entity.EmailStatusAvailable,
-		"admin@admin.com")
+		"admin@admin.com", time.Now().Add(time.Minute*5))
 	assert.NoError(t, err)
 
 	got, exist, err = userAdminRepo.GetUserInfo(context.TODO(), "1")
@@ -62,7 +63,7 @@ func Test_userAdminRepo_UpdateUserStatus(t *testing.T) {
 	assert.Equal(t, entity.UserStatusSuspended, got.Status)
 
 	err = userAdminRepo.UpdateUserStatus(context.TODO(), "1", entity.UserStatusAvailable, entity.EmailStatusAvailable,
-		"admin@admin.com")
+		"admin@admin.com", time.Time{})
 	assert.NoError(t, err)
 
 	got, exist, err = userAdminRepo.GetUserInfo(context.TODO(), "1")
