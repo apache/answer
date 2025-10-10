@@ -229,7 +229,11 @@ func (qs *QuestionService) AddQuestionCheckTags(ctx context.Context, Tags []*ent
 	return []string{}, nil
 }
 func (qs *QuestionService) CheckAddQuestion(ctx context.Context, req *schema.QuestionAdd) (errorlist any, err error) {
-	if len(req.Tags) == 0 {
+	minimumTags, err := qs.tagCommon.GetMinimumTags(ctx, req.Tags)
+	if err != nil {
+		return
+	}
+	if len(req.Tags) < minimumTags {
 		errorlist := make([]*validator.FormErrorField, 0)
 		errorlist = append(errorlist, &validator.FormErrorField{
 			ErrorField: "tags",
@@ -284,7 +288,11 @@ func (qs *QuestionService) HasNewTag(ctx context.Context, tags []*schema.TagItem
 
 // AddQuestion add question
 func (qs *QuestionService) AddQuestion(ctx context.Context, req *schema.QuestionAdd) (questionInfo any, err error) {
-	if len(req.Tags) == 0 {
+	minimumTags, err := qs.tagCommon.GetMinimumTags(ctx, req.Tags)
+	if err != nil {
+		return
+	}
+	if len(req.Tags) < minimumTags {
 		errorlist := make([]*validator.FormErrorField, 0)
 		errorlist = append(errorlist, &validator.FormErrorField{
 			ErrorField: "tags",

@@ -76,6 +76,7 @@ type SiteBrandingReq struct {
 // SiteWriteReq site write request
 type SiteWriteReq struct {
 	RestrictAnswer                 bool            `validate:"omitempty" json:"restrict_answer"`
+	MinimumTags                    int             `validate:"omitempty" json:"min_tags"`
 	RequiredTag                    bool            `validate:"omitempty" json:"required_tag"`
 	RecommendTags                  []*SiteWriteTag `validate:"omitempty,dive" json:"recommend_tags"`
 	ReservedTags                   []*SiteWriteTag `validate:"omitempty,dive" json:"reserved_tags"`

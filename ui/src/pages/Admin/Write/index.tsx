@@ -37,6 +37,11 @@ const initFormData = {
     errorMsg: '',
     isInvalid: false,
   },
+  min_tags: {
+    value: 0,
+    errorMsg: '',
+    isInvalid: false,
+  },
   recommend_tags: {
     value: [] as Type.Tag[],
     errorMsg: '',
@@ -133,6 +138,7 @@ const Index: FC = () => {
     }
     const reqParams: Type.AdminSettingsWrite = {
       recommend_tags: formData.recommend_tags.value,
+      min_tags: Number(formData.min_tags.value),
       reserved_tags: formData.reserved_tags.value,
       required_tag: formData.required_tag.value,
       restrict_answer: formData.restrict_answer.value,
@@ -177,6 +183,7 @@ const Index: FC = () => {
       if (Array.isArray(res.recommend_tags)) {
         formData.recommend_tags.value = res.recommend_tags;
       }
+      formData.min_tags.value = res.min_tags;
       formData.required_tag.value = res.required_tag;
       formData.restrict_answer.value = res.restrict_answer;
       if (Array.isArray(res.reserved_tags)) {
@@ -247,7 +254,27 @@ const Index: FC = () => {
             errMsg={formData.recommend_tags.errorMsg}
           />
         </Form.Group>
-
+        <Form.Group className="mb-3" controlId="min_tags">
+          <Form.Label>{t('min_tags.label')}</Form.Label>
+          <Form.Control
+            type="number"
+            value={formData.min_tags.value}
+            isInvalid={formData.min_tags.isInvalid}
+            onChange={(evt) => {
+              handleValueChange({
+                min_tags: {
+                  value: evt.target.value,
+                  errorMsg: '',
+                  isInvalid: false,
+                },
+              });
+            }}
+          />
+          <Form.Text>{t('min_tags.text')}</Form.Text>
+          <Form.Control.Feedback type="invalid">
+            {formData.min_tags.errorMsg}
+          </Form.Control.Feedback>
+        </Form.Group>
         <Form.Group className="mb-3" controlId="required_tag">
           <Form.Label>{t('required_tag.title')}</Form.Label>
           <Form.Switch

@@ -292,6 +292,15 @@ func (ts *TagCommonService) ExistRecommend(ctx context.Context, tags []*schema.T
 	return false, nil
 }
 
+func (ts *TagCommonService) GetMinimumTags(ctx context.Context, tags []*schema.TagItem) (int, error) {
+	siteInfo, err := ts.siteInfoService.GetSiteWrite(ctx)
+	if err != nil {
+		return 1, err
+	}
+	minimumTags := siteInfo.MinimumTags
+	return minimumTags, nil
+}
+
 func (ts *TagCommonService) HasNewTag(ctx context.Context, tags []*schema.TagItem) (bool, error) {
 	tagNames := make([]string, 0)
 	tagMap := make(map[string]bool)
