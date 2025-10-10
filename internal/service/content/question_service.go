@@ -237,7 +237,7 @@ func (qs *QuestionService) CheckAddQuestion(ctx context.Context, req *schema.Que
 		errorlist := make([]*validator.FormErrorField, 0)
 		errorlist = append(errorlist, &validator.FormErrorField{
 			ErrorField: "tags",
-			ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.TagNotFound),
+			ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.TagMinCount),
 		})
 		err = errors.BadRequest(reason.RecommendTagEnter)
 		return errorlist, err
@@ -296,7 +296,7 @@ func (qs *QuestionService) AddQuestion(ctx context.Context, req *schema.Question
 		errorlist := make([]*validator.FormErrorField, 0)
 		errorlist = append(errorlist, &validator.FormErrorField{
 			ErrorField: "tags",
-			ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.TagNotFound),
+			ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.TagMinCount),
 		})
 		err = errors.BadRequest(reason.RecommendTagEnter)
 		return errorlist, err
