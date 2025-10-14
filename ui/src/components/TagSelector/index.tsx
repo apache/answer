@@ -29,6 +29,8 @@ import classNames from 'classnames';
 import { useTagModal, useToast } from '@/hooks';
 import type * as Type from '@/common/interface';
 import { queryTags, useUserPermission } from '@/services';
+import { writeSettingStore } from '@/stores';
+
 // import { OutsideClickListener } from '@/components';
 
 import './index.scss';
@@ -72,6 +74,7 @@ const TagSelector: FC<IProps> = ({
   const [searchValue, setSearchValue] = useState<string>('');
   const [tags, setTags] = useState<Type.Tag[] | null>([]);
   const [requiredTags, setRequiredTags] = useState<Type.Tag[] | null>(null);
+  const writeInfo = writeSettingStore((state) => state.write);
   const { t } = useTranslation('translation', { keyPrefix: 'tag_selector' });
   const { data: userPermission } = useUserPermission('tag.add');
   const canAddTag =
@@ -292,6 +295,20 @@ const TagSelector: FC<IProps> = ({
     }
   };
 
+  const handleTagHint = () => {
+    if (!writeInfo || writeInfo.min_tags === undefined || !writeInfo.min_tags) {
+      return t(`hint_zero_tags`);
+    }
+
+    if (writeInfo.min_tags === 1) {
+      return t(`hint`);
+    }
+
+    let str: string = t(`hint_more_than_one_tag`);
+    str = str.replace(`{{ min_tags_number }}`, writeInfo.min_tags.toString());
+    return str;
+  };
+
   useEffect(() => {
     if (canAddTag) {
       const tagArray: Type.Tag[] = filterTags(requiredTags);
@@ -461,7 +478,9 @@ const TagSelector: FC<IProps> = ({
           )}
         </Dropdown.Menu>
       </div>
-      {!hiddenDescription && <Form.Text>{formText || t('hint')}</Form.Text>}
+      {!hiddenDescription && (
+        <Form.Text>{formText || handleTagHint()}</Form.Text>
+      )}
       <Form.Control.Feedback type="invalid">{errMsg}</Form.Control.Feedback>
     </div>
   );
