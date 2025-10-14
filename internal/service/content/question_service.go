@@ -229,7 +229,7 @@ func (qs *QuestionService) AddQuestionCheckTags(ctx context.Context, Tags []*ent
 	return []string{}, nil
 }
 func (qs *QuestionService) CheckAddQuestion(ctx context.Context, req *schema.QuestionAdd) (errorlist any, err error) {
-	minimumTags, err := qs.tagCommon.GetMinimumTags(ctx, req.Tags)
+	minimumTags, err := qs.tagCommon.GetMinimumTags(ctx)
 	if err != nil {
 		return
 	}
@@ -288,7 +288,7 @@ func (qs *QuestionService) HasNewTag(ctx context.Context, tags []*schema.TagItem
 
 // AddQuestion add question
 func (qs *QuestionService) AddQuestion(ctx context.Context, req *schema.QuestionAdd) (questionInfo any, err error) {
-	minimumTags, err := qs.tagCommon.GetMinimumTags(ctx, req.Tags)
+	minimumTags, err := qs.tagCommon.GetMinimumTags(ctx)
 	if err != nil {
 		return
 	}
@@ -1111,7 +1111,11 @@ func (qs *QuestionService) InviteUserInfo(ctx context.Context, questionID string
 }
 
 func (qs *QuestionService) ChangeTag(ctx context.Context, objectTagData *schema.TagChange) error {
-	return qs.tagCommon.ObjectChangeTag(ctx, objectTagData)
+	minimumTags, err := qs.tagCommon.GetMinimumTags(ctx)
+	if err != nil {
+		return err
+	}
+	return qs.tagCommon.ObjectChangeTag(ctx, objectTagData, minimumTags)
 }
 
 func (qs *QuestionService) CheckChangeReservedTag(ctx context.Context, oldobjectTagData, objectTagData []*entity.Tag) (bool, bool, []string, []string) {

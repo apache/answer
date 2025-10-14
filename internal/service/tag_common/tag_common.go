@@ -292,7 +292,7 @@ func (ts *TagCommonService) ExistRecommend(ctx context.Context, tags []*schema.T
 	return false, nil
 }
 
-func (ts *TagCommonService) GetMinimumTags(ctx context.Context, tags []*schema.TagItem) (int, error) {
+func (ts *TagCommonService) GetMinimumTags(ctx context.Context) (int, error) {
 	siteInfo, err := ts.siteInfoService.GetSiteWrite(ctx)
 	if err != nil {
 		return 1, err
@@ -657,8 +657,9 @@ func (ts *TagCommonService) CheckChangeReservedTag(ctx context.Context, oldobjec
 }
 
 // ObjectChangeTag change object tag list
-func (ts *TagCommonService) ObjectChangeTag(ctx context.Context, objectTagData *schema.TagChange) (err error) {
-	if len(objectTagData.Tags) == 0 {
+func (ts *TagCommonService) ObjectChangeTag(ctx context.Context, objectTagData *schema.TagChange, minimumTags int) (err error) {
+	//checks if the tags sent in the put req are less than the minimum, if so, tag changes are not applied
+	if len(objectTagData.Tags) < minimumTags {
 		return nil
 	}
 

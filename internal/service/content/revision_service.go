@@ -214,7 +214,11 @@ func (rs *RevisionService) revisionAuditQuestion(ctx context.Context, revisionit
 		objectTagData := schema.TagChange{}
 		objectTagData.ObjectID = question.ID
 		objectTagData.Tags = objectTagTags
-		saveerr = rs.tagCommon.ObjectChangeTag(ctx, &objectTagData)
+		minimumTags, err := rs.tagCommon.GetMinimumTags(ctx)
+		if err != nil {
+			return err
+		}
+		saveerr = rs.tagCommon.ObjectChangeTag(ctx, &objectTagData, minimumTags)
 		if saveerr != nil {
 			return saveerr
 		}
