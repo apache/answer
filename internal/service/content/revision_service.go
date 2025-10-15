@@ -218,7 +218,7 @@ func (rs *RevisionService) revisionAuditQuestion(ctx context.Context, revisionit
 		if err != nil {
 			return err
 		}
-		saveerr = rs.tagCommon.ObjectChangeTag(ctx, &objectTagData, minimumTags)
+		_, saveerr = rs.tagCommon.ObjectChangeTag(ctx, &objectTagData, minimumTags)
 		if saveerr != nil {
 			return saveerr
 		}

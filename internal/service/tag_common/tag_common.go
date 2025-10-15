@@ -27,7 +27,9 @@ import (
 	"strings"
 
 	"github.com/apache/answer/internal/base/constant"
+	"github.com/apache/answer/internal/base/handler"
 	"github.com/apache/answer/internal/base/reason"
+	"github.com/apache/answer/internal/base/translator"
 	"github.com/apache/answer/internal/base/validator"
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
@@ -657,10 +659,18 @@ func (ts *TagCommonService) CheckChangeReservedTag(ctx context.Context, oldobjec
 }
 
 // ObjectChangeTag change object tag list
-func (ts *TagCommonService) ObjectChangeTag(ctx context.Context, objectTagData *schema.TagChange, minimumTags int) (err error) {
+func (ts *TagCommonService) ObjectChangeTag(ctx context.Context, objectTagData *schema.TagChange, minimumTags int) (errorlist []*validator.FormErrorField, err error) {
 	//checks if the tags sent in the put req are less than the minimum, if so, tag changes are not applied
 	if len(objectTagData.Tags) < minimumTags {
-		return nil
+
+		errorlist := make([]*validator.FormErrorField, 0)
+		errorlist = append(errorlist, &validator.FormErrorField{
+			ErrorField: "tags",
+			ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.TagMinCount),
+		})
+
+		err = errors.BadRequest(reason.TagMinCount)
+		return errorlist, err
 	}
 
 	thisObjTagNameList := make([]string, 0)
@@ -673,7 +683,7 @@ func (ts *TagCommonService) ObjectChangeTag(ctx context.Context, objectTagData *
 	// find tags name
 	tagListInDb, err := ts.tagCommonRepo.GetTagListByNames(ctx, thisObjTagNameList)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	tagInDbMapping := make(map[string]*entity.Tag)
@@ -701,7 +711,7 @@ func (ts *TagCommonService) ObjectChangeTag(ctx context.Context, objectTagData *
 	if len(addTagList) > 0 {
 		err = ts.tagCommonRepo.AddTagList(ctx, addTagList)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		for _, tag := range addTagList {
 			thisObjTagIDList = append(thisObjTagIDList, tag.ID)
@@ -714,7 +724,7 @@ func (ts *TagCommonService) ObjectChangeTag(ctx context.Context, objectTagData *
 			revisionDTO.Content = string(tagInfoJson)
 			revisionID, err := ts.revisionService.AddRevision(ctx, revisionDTO, true)
 			if err != nil {
-				return err
+				return nil, err
 			}
 			ts.activityQueueService.Send(ctx, &schema.ActivityMsg{
 				UserID:           objectTagData.UserID,
@@ -728,9 +738,9 @@ func (ts *TagCommonService) ObjectChangeTag(ctx context.Context, objectTagData *
 
 	err = ts.CreateOrUpdateTagRelList(ctx, objectTagData.ObjectID, thisObjTagIDList)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return nil, nil
 }
 
 func (ts *TagCommonService) CountTagRelByTagID(ctx context.Context, tagID string) (count int64, err error) {

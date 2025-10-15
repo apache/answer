@@ -239,7 +239,7 @@ func (qs *QuestionService) CheckAddQuestion(ctx context.Context, req *schema.Que
 			ErrorField: "tags",
 			ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.TagMinCount),
 		})
-		err = errors.BadRequest(reason.RecommendTagEnter)
+		err = errors.BadRequest(reason.TagMinCount)
 		return errorlist, err
 	}
 	recommendExist, err := qs.tagCommon.ExistRecommend(ctx, req.Tags)
@@ -298,7 +298,7 @@ func (qs *QuestionService) AddQuestion(ctx context.Context, req *schema.Question
 			ErrorField: "tags",
 			ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.TagMinCount),
 		})
-		err = errors.BadRequest(reason.RecommendTagEnter)
+		err = errors.BadRequest(reason.TagMinCount)
 		return errorlist, err
 	}
 	recommendExist, err := qs.tagCommon.ExistRecommend(ctx, req.Tags)
@@ -378,9 +378,9 @@ func (qs *QuestionService) AddQuestion(ctx context.Context, req *schema.Question
 	objectTagData.ObjectID = question.ID
 	objectTagData.Tags = req.Tags
 	objectTagData.UserID = req.UserID
-	err = qs.ChangeTag(ctx, &objectTagData)
+	errorlist, err := qs.ChangeTag(ctx, &objectTagData)
 	if err != nil {
-		return
+		return errorlist, err
 	}
 	_ = qs.questionRepo.UpdateSearch(ctx, question.ID)
 
@@ -1008,9 +1008,9 @@ func (qs *QuestionService) UpdateQuestion(ctx context.Context, req *schema.Quest
 		objectTagData.ObjectID = question.ID
 		objectTagData.Tags = req.Tags
 		objectTagData.UserID = req.UserID
-		tagerr := qs.ChangeTag(ctx, &objectTagData)
+		errorlist, tagerr := qs.ChangeTag(ctx, &objectTagData)
 		if tagerr != nil {
-			return questionInfo, tagerr
+			return errorlist, tagerr
 		}
 	}
 
@@ -1110,10 +1110,10 @@ func (qs *QuestionService) InviteUserInfo(ctx context.Context, questionID string
 	return qs.questioncommon.InviteUserInfo(ctx, questionID)
 }
 
-func (qs *QuestionService) ChangeTag(ctx context.Context, objectTagData *schema.TagChange) error {
+func (qs *QuestionService) ChangeTag(ctx context.Context, objectTagData *schema.TagChange) (errorlist []*validator.FormErrorField, err error) {
 	minimumTags, err := qs.tagCommon.GetMinimumTags(ctx)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	return qs.tagCommon.ObjectChangeTag(ctx, objectTagData, minimumTags)
 }
