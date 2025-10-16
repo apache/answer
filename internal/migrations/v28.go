@@ -41,6 +41,7 @@ func addOptionalTags(ctx context.Context, x *xorm.Engine) error {
 	}
 	if exist {
 		type OldSiteWriteReq struct {
+			MinimumContent                 int                    `json:"min_content"`
 			RestrictAnswer                 bool                   `json:"restrict_answer"`
 			MinimumTags                    int                    `json:"min_tags"`
 			RequiredTag                    bool                   `json:"required_tag"`
@@ -55,6 +56,7 @@ func addOptionalTags(ctx context.Context, x *xorm.Engine) error {
 		content := &OldSiteWriteReq{}
 		_ = json.Unmarshal([]byte(writeSiteInfo.Content), content)
 		content.MinimumTags = 1
+		content.MinimumContent = 6
 		data, _ := json.Marshal(content)
 		writeSiteInfo.Content = string(data)
 		_, err = x.Context(ctx).ID(writeSiteInfo.ID).Cols("content").Update(writeSiteInfo)

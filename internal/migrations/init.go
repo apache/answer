@@ -289,6 +289,7 @@ func (m *Mentor) initSiteInfoPrivilegeRank() {
 
 func (m *Mentor) initSiteInfoWrite() {
 	writeData := map[string]interface{}{
+		"min_content":                      6,
 		"restrict_answer":                  true,
 		"min_tags":                         1,
 		"required_tag":                     false,

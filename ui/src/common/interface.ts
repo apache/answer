@@ -440,6 +440,7 @@ export interface AdminSettingsLegal {
 export interface AdminSettingsWrite {
   restrict_answer?: boolean;
   min_tags?: number,
+  min_content?:number,
   recommend_tags?: Tag[];
   required_tag?: boolean;
   reserved_tags?: Tag[];

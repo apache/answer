@@ -30,6 +30,7 @@ const Index = create<IProps>((set) => ({
   write: {
     restrict_answer: true,
     min_tags: 1,
+    min_content: 6,
     recommend_tags: [],
     required_tag: false,
     reserved_tags: [],
