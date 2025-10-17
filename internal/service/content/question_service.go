@@ -242,6 +242,19 @@ func (qs *QuestionService) CheckAddQuestion(ctx context.Context, req *schema.Que
 		err = errors.BadRequest(reason.TagMinCount)
 		return errorlist, err
 	}
+	minimumContentLength, err := qs.questioncommon.GetMinimumContentLength(ctx)
+	if err != nil {
+		return
+	}
+	if len(req.Content) < minimumContentLength {
+		errorlist := make([]*validator.FormErrorField, 0)
+		errorlist = append(errorlist, &validator.FormErrorField{
+			ErrorField: "content",
+			ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.QuestionContentLessThanMinimum),
+		})
+		err = errors.BadRequest(reason.QuestionContentLessThanMinimum)
+		return errorlist, err
+	}
 	recommendExist, err := qs.tagCommon.ExistRecommend(ctx, req.Tags)
 	if err != nil {
 		return
@@ -299,6 +312,19 @@ func (qs *QuestionService) AddQuestion(ctx context.Context, req *schema.Question
 			ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.TagMinCount),
 		})
 		err = errors.BadRequest(reason.TagMinCount)
+		return errorlist, err
+	}
+	minimumContentLength, err := qs.questioncommon.GetMinimumContentLength(ctx)
+	if err != nil {
+		return
+	}
+	if len(req.Content) < minimumContentLength {
+		errorlist := make([]*validator.FormErrorField, 0)
+		errorlist = append(errorlist, &validator.FormErrorField{
+			ErrorField: "content",
+			ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.QuestionContentLessThanMinimum),
+		})
+		err = errors.BadRequest(reason.QuestionContentLessThanMinimum)
 		return errorlist, err
 	}
 	recommendExist, err := qs.tagCommon.ExistRecommend(ctx, req.Tags)
@@ -906,6 +932,20 @@ func (qs *QuestionService) UpdateQuestion(ctx context.Context, req *schema.Quest
 	question.PostUpdateTime = now
 	question.UserID = dbinfo.UserID
 	question.LastEditUserID = req.UserID
+
+	minimumContentLength, err := qs.questioncommon.GetMinimumContentLength(ctx)
+	if err != nil {
+		return
+	}
+	if len(req.Content) < minimumContentLength {
+		errorlist := make([]*validator.FormErrorField, 0)
+		errorlist = append(errorlist, &validator.FormErrorField{
+			ErrorField: "content",
+			ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.QuestionContentLessThanMinimum),
+		})
+		err = errors.BadRequest(reason.QuestionContentLessThanMinimum)
+		return errorlist, err
+	}
 
 	oldTags, tagerr := qs.tagCommon.GetObjectEntityTag(ctx, question.ID)
 	if tagerr != nil {

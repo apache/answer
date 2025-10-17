@@ -47,6 +47,7 @@ const (
 	QuestionAlreadyDeleted           = "error.question.already_deleted"
 	QuestionUnderReview              = "error.question.under_review"
 	QuestionContentCannotEmpty       = "error.question.content_cannot_empty"
+	QuestionContentLessThanMinimum   = "error.question.content_less_than_minumum"
 	AnswerNotFound                   = "error.answer.not_found"
 	AnswerCannotDeleted              = "error.answer.cannot_deleted"
 	AnswerCannotUpdate               = "error.answer.cannot_update"
