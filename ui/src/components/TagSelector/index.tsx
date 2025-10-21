@@ -304,9 +304,9 @@ const TagSelector: FC<IProps> = ({
       return t(`hint`);
     }
 
-    let str: string = t(`hint_more_than_one_tag`);
-    str = str.replace(`{{ min_tags_number }}`, writeInfo.min_tags.toString());
-    return str;
+    return t(`hint_more_than_one_tag`, {
+      min_tags_number: writeInfo.min_tags,
+    });
   };
 
   useEffect(() => {

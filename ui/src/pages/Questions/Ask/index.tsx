@@ -435,12 +435,9 @@ const Ask = () => {
       return t(`form.fields.body.hint.optional_body`);
     }
 
-    let str: string = t(`form.fields.body.hint.minimum_characters`);
-    str = str.replace(
-      `{{ min_content_length }}`,
-      writeInfo.min_content.toString(),
-    );
-    return str;
+    return t(`form.fields.body.hint.minimum_characters`, {
+      min_content_length: writeInfo.min_content,
+    });
   };
 
   return (

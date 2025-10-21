@@ -1164,7 +1164,7 @@ ui:
             empty: Body cannot be empty.
           hint:
             optional_body: Share what the question is about.
-            minimum_characters: "Share what the question is about, at least {{ min_content_length }} characters are required."
+            minimum_characters: "Share what the question is about, at least {{min_content_length}} characters are required."
         tags:
           label: Tags
           msg:
@@ -1188,7 +1188,7 @@ ui:
     search_tag: Search tag
     hint: Describe what your content is about, at least one tag is required.
     hint_zero_tags: Describe what your content is about.
-    hint_more_than_one_tag: "Describe what your content is about, at least {{ min_tags_number }} tags are required."
+    hint_more_than_one_tag: "Describe what your content is about, at least {{min_tags_number}} tags are required."
     no_result: No tags matched
     tag_required_text: Required tag (at least one)
   header:
