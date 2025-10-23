@@ -75,9 +75,9 @@ type SiteBrandingReq struct {
 
 // SiteWriteReq site write request
 type SiteWriteReq struct {
-	MinimumContent                 int             `validate:"omitempty,min=0" json:"min_content"`
+	MinimumContent                 int             `validate:"omitempty,gte=0,lte=65535" json:"min_content"`
 	RestrictAnswer                 bool            `validate:"omitempty" json:"restrict_answer"`
-	MinimumTags                    int             `validate:"omitempty" json:"min_tags"`
+	MinimumTags                    int             `validate:"omitempty,gte=0,lte=5" json:"min_tags"`
 	RequiredTag                    bool            `validate:"omitempty" json:"required_tag"`
 	RecommendTags                  []*SiteWriteTag `validate:"omitempty,dive" json:"recommend_tags"`
 	ReservedTags                   []*SiteWriteTag `validate:"omitempty,dive" json:"reserved_tags"`
