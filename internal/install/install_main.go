@@ -23,8 +23,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/apache/answer/internal/base/path"
 	"github.com/apache/answer/internal/base/translator"
-	"github.com/apache/answer/internal/cli"
 )
 
 var (
@@ -35,7 +35,7 @@ var (
 func Run(configPath string) {
 	confPath = configPath
 	// initialize translator for return internationalization error when installing.
-	_, err := translator.NewTranslator(&translator.I18n{BundleDir: cli.I18nPath})
+	_, err := translator.NewTranslator(&translator.I18n{BundleDir: path.I18nPath})
 	if err != nil {
 		panic(err)
 	}

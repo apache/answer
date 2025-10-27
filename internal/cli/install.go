@@ -23,45 +23,17 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"sync"
 
 	"github.com/apache/answer/configs"
 	"github.com/apache/answer/i18n"
+	"github.com/apache/answer/internal/base/path"
 	"github.com/apache/answer/pkg/dir"
 	"github.com/apache/answer/pkg/writer"
 )
 
-const (
-	DefaultConfigFileName                  = "config.yaml"
-	DefaultCacheFileName                   = "cache.db"
-	DefaultReservedUsernamesConfigFileName = "reserved-usernames.json"
-)
-
-var (
-	ConfigFileDir     = "/conf/"
-	UploadFilePath    = "/uploads/"
-	I18nPath          = "/i18n/"
-	CacheDir          = "/cache/"
-	formatAllPathONCE sync.Once
-)
-
-// GetConfigFilePath get config file path
-func GetConfigFilePath() string {
-	return filepath.Join(ConfigFileDir, DefaultConfigFileName)
-}
-
-func FormatAllPath(dataDirPath string) {
-	formatAllPathONCE.Do(func() {
-		ConfigFileDir = filepath.Join(dataDirPath, ConfigFileDir)
-		UploadFilePath = filepath.Join(dataDirPath, UploadFilePath)
-		I18nPath = filepath.Join(dataDirPath, I18nPath)
-		CacheDir = filepath.Join(dataDirPath, CacheDir)
-	})
-}
-
 // InstallAllInitialEnvironment install all initial environment
 func InstallAllInitialEnvironment(dataDirPath string) {
-	FormatAllPath(dataDirPath)
+	path.FormatAllPath(dataDirPath)
 	installUploadDir()
 	InstallI18nBundle(false)
 	fmt.Println("install all initial environment done")
@@ -69,7 +41,7 @@ func InstallAllInitialEnvironment(dataDirPath string) {
 
 func InstallConfigFile(configFilePath string) error {
 	if len(configFilePath) == 0 {
-		configFilePath = filepath.Join(ConfigFileDir, DefaultConfigFileName)
+		configFilePath = filepath.Join(path.ConfigFileDir, path.DefaultConfigFileName)
 	}
 	fmt.Println("[config-file] try to create at ", configFilePath)
 
@@ -79,7 +51,7 @@ func InstallConfigFile(configFilePath string) error {
 		return nil
 	}
 
-	if err := dir.CreateDirIfNotExist(ConfigFileDir); err != nil {
+	if err := dir.CreateDirIfNotExist(path.ConfigFileDir); err != nil {
 		fmt.Printf("[config-file] create directory fail %s\n", err.Error())
 		return fmt.Errorf("create directory fail %s", err.Error())
 	}
@@ -95,10 +67,10 @@ func InstallConfigFile(configFilePath string) error {
 
 func installUploadDir() {
 	fmt.Println("[upload-dir] try to install...")
-	if err := dir.CreateDirIfNotExist(UploadFilePath); err != nil {
+	if err := dir.CreateDirIfNotExist(path.UploadFilePath); err != nil {
 		fmt.Printf("[upload-dir] install fail %s\n", err.Error())
 	} else {
-		fmt.Printf("[upload-dir] install success, upload directory is %s\n", UploadFilePath)
+		fmt.Printf("[upload-dir] install success, upload directory is %s\n", path.UploadFilePath)
 	}
 }
 
@@ -108,7 +80,7 @@ func InstallI18nBundle(replace bool) {
 	if len(os.Getenv("SKIP_REPLACE_I18N")) > 0 {
 		replace = false
 	}
-	if err := dir.CreateDirIfNotExist(I18nPath); err != nil {
+	if err := dir.CreateDirIfNotExist(path.I18nPath); err != nil {
 		fmt.Println(err.Error())
 		return
 	}
@@ -120,7 +92,7 @@ func InstallI18nBundle(replace bool) {
 	}
 	fmt.Printf("[i18n] find i18n bundle %d\n", len(i18nList))
 	for _, item := range i18nList {
-		path := filepath.Join(I18nPath, item.Name())
+		path := filepath.Join(path.I18nPath, item.Name())
 		content, err := i18n.I18n.ReadFile(item.Name())
 		if err != nil {
 			continue

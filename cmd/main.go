@@ -28,7 +28,7 @@ import (
 	"github.com/apache/answer/internal/base/conf"
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/cron"
-	"github.com/apache/answer/internal/cli"
+	"github.com/apache/answer/internal/base/path"
 	"github.com/apache/answer/internal/schema"
 	"github.com/gin-gonic/gin"
 	"github.com/segmentfault/pacman"
@@ -67,7 +67,7 @@ func Main() {
 }
 
 func runApp() {
-	c, err := conf.ReadConfig(cli.GetConfigFilePath())
+	c, err := conf.ReadConfig(path.GetConfigFilePath())
 	if err != nil {
 		panic(err)
 	}
