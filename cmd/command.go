@@ -20,11 +20,13 @@
 package answercmd
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strings"
 
 	"github.com/apache/answer/internal/base/conf"
+	"github.com/apache/answer/internal/base/path"
 	"github.com/apache/answer/internal/cli"
 	"github.com/apache/answer/internal/install"
 	"github.com/apache/answer/internal/migrations"
@@ -53,6 +55,10 @@ var (
 	i18nSourcePath string
 	// i18nTargetPath i18n to path
 	i18nTargetPath string
+	// resetPasswordEmail user email for password reset
+	resetPasswordEmail string
+	// resetPasswordPassword new password for password reset
+	resetPasswordPassword string
 )
 
 func init() {
@@ -76,7 +82,10 @@ func init() {
 
 	i18nCmd.Flags().StringVarP(&i18nTargetPath, "target", "t", "", "i18n target path, eg: -t ./i18n/target")
 
-	for _, cmd := range []*cobra.Command{initCmd, checkCmd, runCmd, dumpCmd, upgradeCmd, buildCmd, pluginCmd, configCmd, i18nCmd} {
+	resetPasswordCmd.Flags().StringVarP(&resetPasswordEmail, "email", "e", "", "user email address")
+	resetPasswordCmd.Flags().StringVarP(&resetPasswordPassword, "password", "p", "", "new password (not recommended, will be recorded in shell history)")
+
+	for _, cmd := range []*cobra.Command{initCmd, checkCmd, runCmd, dumpCmd, upgradeCmd, buildCmd, pluginCmd, configCmd, i18nCmd, resetPasswordCmd} {
 		rootCmd.AddCommand(cmd)
 	}
 }
@@ -96,8 +105,8 @@ To run answer, use:
 		Short: "Run Answer",
 		Long:  `Start running Answer`,
 		Run: func(_ *cobra.Command, _ []string) {
-			cli.FormatAllPath(dataDirPath)
-			fmt.Println("config file path: ", cli.GetConfigFilePath())
+			path.FormatAllPath(dataDirPath)
+			fmt.Println("config file path: ", path.GetConfigFilePath())
 			fmt.Println("Answer is starting..........................")
 			runApp()
 		},
@@ -111,10 +120,10 @@ To run answer, use:
 			// check config file and database. if config file exists and database is already created, init done
 			cli.InstallAllInitialEnvironment(dataDirPath)
 
-			configFileExist := cli.CheckConfigFile(cli.GetConfigFilePath())
+			configFileExist := cli.CheckConfigFile(path.GetConfigFilePath())
 			if configFileExist {
 				fmt.Println("config file exists, try to read the config...")
-				c, err := conf.ReadConfig(cli.GetConfigFilePath())
+				c, err := conf.ReadConfig(path.GetConfigFilePath())
 				if err != nil {
 					fmt.Println("read config failed: ", err.Error())
 					return
@@ -128,7 +137,7 @@ To run answer, use:
 			}
 
 			// start installation server to install
-			install.Run(cli.GetConfigFilePath())
+			install.Run(path.GetConfigFilePath())
 		},
 	}
 
@@ -138,9 +147,9 @@ To run answer, use:
 		Long:  `Upgrade Answer to the latest version`,
 		Run: func(_ *cobra.Command, _ []string) {
 			log.SetLogger(log.NewStdLogger(os.Stdout))
-			cli.FormatAllPath(dataDirPath)
+			path.FormatAllPath(dataDirPath)
 			cli.InstallI18nBundle(true)
-			c, err := conf.ReadConfig(cli.GetConfigFilePath())
+			c, err := conf.ReadConfig(path.GetConfigFilePath())
 			if err != nil {
 				fmt.Println("read config failed: ", err.Error())
 				return
@@ -159,8 +168,8 @@ To run answer, use:
 		Long:  `Back up database into an SQL file`,
 		Run: func(_ *cobra.Command, _ []string) {
 			fmt.Println("Answer is backing up data")
-			cli.FormatAllPath(dataDirPath)
-			c, err := conf.ReadConfig(cli.GetConfigFilePath())
+			path.FormatAllPath(dataDirPath)
+			c, err := conf.ReadConfig(path.GetConfigFilePath())
 			if err != nil {
 				fmt.Println("read config failed: ", err.Error())
 				return
@@ -179,9 +188,9 @@ To run answer, use:
 		Short: "Check the required environment",
 		Long:  `Check if the current environment meets the startup requirements`,
 		Run: func(_ *cobra.Command, _ []string) {
-			cli.FormatAllPath(dataDirPath)
+			path.FormatAllPath(dataDirPath)
 			fmt.Println("Start checking the required environment...")
-			if cli.CheckConfigFile(cli.GetConfigFilePath()) {
+			if cli.CheckConfigFile(path.GetConfigFilePath()) {
 				fmt.Println("config file exists [✔]")
 			} else {
 				fmt.Println("config file not exists [x]")
@@ -193,7 +202,7 @@ To run answer, use:
 				fmt.Println("upload directory not exists [x]")
 			}
 
-			c, err := conf.ReadConfig(cli.GetConfigFilePath())
+			c, err := conf.ReadConfig(path.GetConfigFilePath())
 			if err != nil {
 				fmt.Println("read config failed: ", err.Error())
 				return
@@ -246,9 +255,9 @@ To run answer, use:
 		Short: "Set some config to default value",
 		Long:  `Set some config to default value`,
 		Run: func(_ *cobra.Command, _ []string) {
-			cli.FormatAllPath(dataDirPath)
+			path.FormatAllPath(dataDirPath)
 
-			c, err := conf.ReadConfig(cli.GetConfigFilePath())
+			c, err := conf.ReadConfig(path.GetConfigFilePath())
 			if err != nil {
 				fmt.Println("read config failed: ", err.Error())
 				return
@@ -294,6 +303,32 @@ To run answer, use:
 				fmt.Printf("merge i18n files failed %v\n", err)
 			} else {
 				fmt.Printf("merge i18n files successfully\n")
+			}
+		},
+	}
+
+	resetPasswordCmd = &cobra.Command{
+		Use:     "passwd",
+		Aliases: []string{"password", "reset-password"},
+		Short:   "Reset user password",
+		Long:    "Reset user password by email address.",
+		Example: `  # Interactive mode (recommended, safest)
+  answer passwd -C ./answer-data
+
+  # Specify email only (will prompt for password securely)
+  answer passwd -C ./answer-data --email user@example.com
+  answer passwd -C ./answer-data -e user@example.com
+
+  # Specify email and password (NOT recommended, will be recorded in shell history)
+  answer passwd -C ./answer-data -e user@example.com -p newpassword123`,
+		Run: func(cmd *cobra.Command, args []string) {
+			opts := &cli.ResetPasswordOptions{
+				Email:    resetPasswordEmail,
+				Password: resetPasswordPassword,
+			}
+			if err := cli.ResetPassword(context.Background(), dataDirPath, opts); err != nil {
+				fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+				os.Exit(1)
 			}
 		},
 	}

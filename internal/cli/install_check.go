@@ -23,6 +23,7 @@ import (
 	"fmt"
 
 	"github.com/apache/answer/internal/base/data"
+	"github.com/apache/answer/internal/base/path"
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/pkg/dir"
 )
@@ -32,7 +33,7 @@ func CheckConfigFile(configPath string) bool {
 }
 
 func CheckUploadDir() bool {
-	return dir.CheckDirExist(UploadFilePath)
+	return dir.CheckDirExist(path.UploadFilePath)
 }
 
 // CheckDBConnection check database whether the connection is normal

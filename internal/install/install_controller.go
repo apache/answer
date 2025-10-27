@@ -30,6 +30,7 @@ import (
 	"github.com/apache/answer/internal/base/conf"
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/base/handler"
+	"github.com/apache/answer/internal/base/path"
 	"github.com/apache/answer/internal/base/reason"
 	"github.com/apache/answer/internal/base/translator"
 	"github.com/apache/answer/internal/cli"
@@ -62,7 +63,7 @@ func LangOptions(ctx *gin.Context) {
 // @Success 200 {object} handler.RespBody{}
 // @Router /installation/language/config [get]
 func GetLangMapping(ctx *gin.Context) {
-	t, err := translator.NewTranslator(&translator.I18n{BundleDir: cli.I18nPath})
+	t, err := translator.NewTranslator(&translator.I18n{BundleDir: path.I18nPath})
 	if err != nil {
 		handler.HandleResponse(ctx, err, nil)
 		return
@@ -186,9 +187,9 @@ func InitEnvironment(ctx *gin.Context) {
 	}
 	c.Data.Database.Driver = req.DbType
 	c.Data.Database.Connection = req.GetConnection()
-	c.Data.Cache.FilePath = filepath.Join(cli.CacheDir, cli.DefaultCacheFileName)
-	c.I18n.BundleDir = cli.I18nPath
-	c.ServiceConfig.UploadPath = cli.UploadFilePath
+	c.Data.Cache.FilePath = filepath.Join(path.CacheDir, path.DefaultCacheFileName)
+	c.I18n.BundleDir = path.I18nPath
+	c.ServiceConfig.UploadPath = path.UploadFilePath
 
 	if err := conf.RewriteConfig(confPath, c); err != nil {
 		log.Errorf("rewrite config failed %s", err)
