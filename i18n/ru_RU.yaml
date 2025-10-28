@@ -234,6 +234,8 @@ backend:
         other: Нет разрешения на обновление.
       content_cannot_empty:
         other: Content cannot be empty.
+      content_less_than_minumum:
+        other: Not enough content entered.
     rank:
       fail_to_meet_the_condition:
         other: Ранг репутации не соответствует условию.
@@ -263,6 +265,8 @@ backend:
         other: Вы не можете удалить метку, которая используется.
       cannot_set_synonym_as_itself:
         other: Вы не можете установить синоним текущего тега.
+      minimum_count:
+        other: Not enough tags were entered.
     smtp:
       config_from_name_cannot_be_email:
         other: Поле отправителя не может содержать email адрес.
@@ -841,6 +845,7 @@ ui:
     http_50X: Ошибка HTTP 500
     http_403: Ошибка HTTP 403
     logout: Выйти
+    posts: Posts
   notifications:
     title: Уведомления
     inbox: Входящие
@@ -1141,6 +1146,9 @@ ui:
           label: 'Вопрос:'
           msg:
             empty: Вопрос не может быть пустым.
+          hint:
+            optional_body: Describe what the question is about.
+            minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
         tags:
           label: Теги
           msg:
@@ -1161,7 +1169,9 @@ ui:
     add_btn: Тег
     create_btn: новый тег
     search_tag: Поиск тега
-    hint: "Describe what your content is about, at least one tag is required."
+    hint: Describe what your content is about, at least one tag is required.
+    hint_zero_tags: Describe what your content is about.
+    hint_more_than_one_tag: "Describe what your content is about, at least {{min_tags_number}} tags are required."
     no_result: Нет соответствующих тэгов
     tag_required_text: Обязательный тег (хотя бы один)
   header:
@@ -1214,7 +1224,7 @@ ui:
       msg:
         empty: Имя пользователя не должно быть пустым.
         range: Name must be between 2 to 30 characters in length.
-        character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+        character: 'Must use the character set "a-z", "0-9", " - . _"'
     email:
       label: Email адрес
       msg:
@@ -1292,7 +1302,7 @@ ui:
         caption: Люди могут упоминать вас как "@username".
         msg: Имя пользователя не может быть пустым.
         msg_range: Username must be 2-30 characters in length.
-        character: 'Необходимо использовать набор символов "a-z", "0-9", "- . _"'
+        character: 'Must use the character set "a-z", "0-9", "- . _"'
       avatar:
         label: Изображение профиля
         gravatar: Gravatar
@@ -1381,9 +1391,11 @@ ui:
     search: Поиск людей
   question_detail:
     action: Действия
+    created: Created
     Asked: Спросил(а)
     asked: спросил(а)
     update: Изменён
+    Edited: Edited
     edit: отредактировал
     commented: commented
     Views: Просмотрен
@@ -1695,7 +1707,7 @@ ui:
     admin_name:
       label: Имя
       msg: Имя не может быть пустым.
-      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      character: 'Must use the character set "a-z", "0-9", " - . _"'
       msg_max_length: Name must be between 2 to 30 characters in length.
     admin_password:
       label: Пароль
@@ -2078,10 +2090,16 @@ ui:
         ask_before_display: Ask before displaying external content
     write:
       page_title: Написать
+      min_content:
+        label: Minimum question body length
+        text: Minimum allowed question body length in characters.
       restrict_answer:
         title: Answer write
         label: Каждый пользователь может написать только один ответ на каждый вопрос
         text: "Turn off to allow users to write multiple answers to the same question, which may cause answers to be unfocused."
+      min_tags:
+        label: "Minimum tags per question"
+        text: "Minimum number of tags required in a question."
       recommend_tags:
         label: Рекомендованные теги
         text: "Recommend tags will show in the dropdown list by default."

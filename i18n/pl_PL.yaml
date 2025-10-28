@@ -234,6 +234,8 @@ backend:
         other: Brak uprawnień do edycji.
       content_cannot_empty:
         other: Content cannot be empty.
+      content_less_than_minumum:
+        other: Not enough content entered.
     rank:
       fail_to_meet_the_condition:
         other: Ranga nie spełnia warunku.
@@ -263,6 +265,8 @@ backend:
         other: Nie możesz usunąć tagu, który jest w użyciu.
       cannot_set_synonym_as_itself:
         other: Nie można ustawić synonimu aktualnego tagu jako takiego.
+      minimum_count:
+        other: Not enough tags were entered.
     smtp:
       config_from_name_cannot_be_email:
         other: Nazwą nadawcy nie może być adresem e-mail.
@@ -841,6 +845,7 @@ ui:
     http_50X: Błąd HTTP 500
     http_403: Błąd HTTP 403
     logout: Wyloguj się
+    posts: Posts
   notifications:
     title: Powiadomienia
     inbox: Skrzynka odbiorcza
@@ -1141,6 +1146,9 @@ ui:
           label: Treść
           msg:
             empty: Treść nie może być pusta.
+          hint:
+            optional_body: Describe what the question is about.
+            minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
         tags:
           label: Tagi
           msg:
@@ -1161,7 +1169,9 @@ ui:
     add_btn: Dodaj tag
     create_btn: Utwórz nowy tag
     search_tag: Wyszukaj tag
-    hint: "Describe what your content is about, at least one tag is required."
+    hint: Describe what your content is about, at least one tag is required.
+    hint_zero_tags: Describe what your content is about.
+    hint_more_than_one_tag: "Describe what your content is about, at least {{min_tags_number}} tags are required."
     no_result: Nie znaleziono pasujących tagów
     tag_required_text: Wymagany tag (co najmniej jeden)
   header:
@@ -1214,7 +1224,7 @@ ui:
       msg:
         empty: Imię nie może być puste.
         range: Name must be between 2 to 30 characters in length.
-        character: 'Możesz użyć dozwolone znaki "a-z", "A-Z", "0-9", " - . _"'
+        character: 'Must use the character set "a-z", "0-9", " - . _"'
     email:
       label: Adres e-mail
       msg:
@@ -1292,7 +1302,7 @@ ui:
         caption: Ludzie mogą oznaczać Cię jako "@nazwa_użytkownika".
         msg: Nazwa użytkownika nie może być pusta.
         msg_range: Username must be 2-30 characters in length.
-        character: 'Należy używać zestawu znaków "a-z", "0-9", "- . _"'
+        character: 'Must use the character set "a-z", "0-9", "- . _"'
       avatar:
         label: Zdjęcie profilowe
         gravatar: Gravatar
@@ -1381,9 +1391,11 @@ ui:
     search: Wyszukaj osoby
   question_detail:
     action: Akcja
+    created: Created
     Asked: Zadane
     asked: zadał(a)
     update: Zmodyfikowane
+    Edited: Edited
     edit: edytowany
     commented: skomentowano
     Views: Wyświetlone
@@ -1695,7 +1707,7 @@ ui:
     admin_name:
       label: Imię
       msg: Imię nie może być puste.
-      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      character: 'Must use the character set "a-z", "0-9", " - . _"'
       msg_max_length: Name must be between 2 to 30 characters in length.
     admin_password:
       label: Hasło
@@ -2078,10 +2090,16 @@ ui:
         ask_before_display: Ask before displaying external content
     write:
       page_title: Pisanie
+      min_content:
+        label: Minimum question body length
+        text: Minimum allowed question body length in characters.
       restrict_answer:
         title: Answer write
         label: Każdy użytkownik może napisać tylko jedną odpowiedź na każde pytanie
         text: "Turn off to allow users to write multiple answers to the same question, which may cause answers to be unfocused."
+      min_tags:
+        label: "Minimum tags per question"
+        text: "Minimum number of tags required in a question."
       recommend_tags:
         label: Rekomendowane tagi
         text: "Recommend tags will show in the dropdown list by default."

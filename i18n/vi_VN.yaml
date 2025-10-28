@@ -234,6 +234,8 @@ backend:
         other: Không có quyền cập nhật.
       content_cannot_empty:
         other: Content cannot be empty.
+      content_less_than_minumum:
+        other: Not enough content entered.
     rank:
       fail_to_meet_the_condition:
         other: Xếp hạng danh tiếng không đạt được điều kiện.
@@ -263,6 +265,8 @@ backend:
         other: Bạn không thể xóa thẻ đang được sử dụng.
       cannot_set_synonym_as_itself:
         other: Bạn không thể đặt từ đồng nghĩa của thẻ hiện tại là chính nó.
+      minimum_count:
+        other: Not enough tags were entered.
     smtp:
       config_from_name_cannot_be_email:
         other: Tên người gửi không thể là địa chỉ email.
@@ -841,6 +845,7 @@ ui:
     http_50X: Lỗi HTTP 500
     http_403: Lỗi HTTP 403
     logout: Đăng xuất
+    posts: Posts
   notifications:
     title: Các thông báo
     inbox: Hộp thư đến
@@ -1141,6 +1146,9 @@ ui:
           label: Nội dung
           msg:
             empty: Nội dung không thể trống.
+          hint:
+            optional_body: Describe what the question is about.
+            minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
         tags:
           label: Thẻ
           msg:
@@ -1161,7 +1169,9 @@ ui:
     add_btn: Thêm thẻ
     create_btn: Tạo thẻ mới
     search_tag: Tìm kiếm thẻ
-    hint: "Describe what your content is about, at least one tag is required."
+    hint: Describe what your content is about, at least one tag is required.
+    hint_zero_tags: Describe what your content is about.
+    hint_more_than_one_tag: "Describe what your content is about, at least {{min_tags_number}} tags are required."
     no_result: Không có thẻ phù hợp
     tag_required_text: Thẻ bắt buộc (ít nhất một)
   header:
@@ -1214,7 +1224,7 @@ ui:
       msg:
         empty: Tên không thể trống.
         range: Tên phải có độ dài từ 2 đến 30 ký tự.
-        character: 'Chỉ sử dụng bộ ký tự "a-z", "0-9", , "A-Z", " - . _"'
+        character: 'Must use the character set "a-z", "0-9", " - . _"'
     email:
       label: Email
       msg:
@@ -1292,7 +1302,7 @@ ui:
         caption: Mọi người có thể nhắc đến bạn với "@username".
         msg: Tên người dùng không thể trống.
         msg_range: Username must be 2-30 characters in length.
-        character: 'Chỉ sử dụng bộ ký tự "a-z", "0-9", "- . _"'
+        character: 'Must use the character set "a-z", "0-9", "- . _"'
       avatar:
         label: Hình ảnh hồ sơ
         gravatar: Gravatar
@@ -1381,9 +1391,11 @@ ui:
     search: Tìm kiếm người
   question_detail:
     action: Hành động
+    created: Created
     Asked: Đã hỏi
     asked: đã hỏi
     update: Đã chỉnh sửa
+    Edited: Edited
     edit: đã chỉnh sửa
     commented: đã bình luận
     Views: Lượt xem
@@ -1695,7 +1707,7 @@ ui:
     admin_name:
       label: Tên
       msg: Tên không thể trống.
-      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      character: 'Must use the character set "a-z", "0-9", " - . _"'
       msg_max_length: Name must be between 2 to 30 characters in length.
     admin_password:
       label: Mật khẩu
@@ -2078,10 +2090,16 @@ ui:
         ask_before_display: Ask before displaying external content
     write:
       page_title: Viết
+      min_content:
+        label: Minimum question body length
+        text: Minimum allowed question body length in characters.
       restrict_answer:
         title: Câu trả lời chỉnh sửa
         label: Each user can only write one answer for each question
         text: "Tắt để cho phép người dùng viết nhiều câu trả lời cho cùng một câu hỏi, điều này có thể khiến các câu trả lời bị mất trọng tâm."
+      min_tags:
+        label: "Minimum tags per question"
+        text: "Minimum number of tags required in a question."
       recommend_tags:
         label: Thẻ được đề xuất
         text: "Các thẻ gợi ý sẽ hiển thị trong danh sách thả xuống theo mặc định."

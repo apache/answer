@@ -234,6 +234,8 @@ backend:
         other: Güncelleme izni yok.
       content_cannot_empty:
         other: İçerik boş olamaz.
+      content_less_than_minumum:
+        other: Not enough content entered.
     rank:
       fail_to_meet_the_condition:
         other: İtibar seviyesi koşulu karşılamıyor.
@@ -263,6 +265,8 @@ backend:
         other: Kullanımda olan bir etiketi silemezsiniz.
       cannot_set_synonym_as_itself:
         other: Bir etiketin eş anlamlısını kendisi olarak ayarlayamazsınız.
+      minimum_count:
+        other: Not enough tags were entered.
     smtp:
       config_from_name_cannot_be_email:
         other: Gönderen adı bir e-posta adresi olamaz.
@@ -841,6 +845,7 @@ ui:
     http_50X: HTTP Hatası 500
     http_403: HTTP Hatası 403
     logout: Çıkış Yap
+    posts: Posts
   notifications:
     title: Bildirimler
     inbox: Gelen Kutusu
@@ -1141,6 +1146,9 @@ ui:
           label: İçerik
           msg:
             empty: İçerik boş olamaz.
+          hint:
+            optional_body: Describe what the question is about.
+            minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
         tags:
           label: Etiketler
           msg:
@@ -1161,7 +1169,9 @@ ui:
     add_btn: Etiket ekle
     create_btn: Yeni etiket oluştur
     search_tag: Etiket ara
-    hint: "Describe what your content is about, at least one tag is required."
+    hint: Describe what your content is about, at least one tag is required.
+    hint_zero_tags: Describe what your content is about.
+    hint_more_than_one_tag: "Describe what your content is about, at least {{min_tags_number}} tags are required."
     no_result: Eşleşen etiket bulunamadı
     tag_required_text: Gerekli etiket (en az bir tane)
   header:
@@ -1214,7 +1224,7 @@ ui:
       msg:
         empty: İsim boş olamaz.
         range: İsim 2 ile 30 karakter arasında olmalıdır.
-        character: '"a-z", "A-Z", "0-9", "- . _" karakter setini kullanmalısınız'
+        character: 'Must use the character set "a-z", "0-9", " - . _"'
     email:
       label: E-posta
       msg:
@@ -1292,7 +1302,7 @@ ui:
         caption: İnsanlar size "@kullaniciadi" şeklinde bahsedebilir.
         msg: Kullanıcı adı boş olamaz.
         msg_range: Kullanıcı adı 2-30 karakter uzunluğunda olmalıdır.
-        character: '"a-z", "0-9", "- . _" karakter setini kullanmalısınız'
+        character: 'Must use the character set "a-z", "0-9", "- . _"'
       avatar:
         label: Profil resmi
         gravatar: Gravatar
@@ -1381,9 +1391,11 @@ ui:
     search: Kişi ara
   question_detail:
     action: Eylem
+    created: Created
     Asked: Soruldu
     asked: sordu
     update: Değiştirildi
+    Edited: Edited
     edit: düzenledi
     commented: yorum yaptı
     Views: Görüntülendi
@@ -1695,7 +1707,7 @@ ui:
     admin_name:
       label: İsim
       msg: İsim boş olamaz.
-      character: '"a-z", "A-Z", "0-9", "- . _" karakter setini kullanmalısınız'
+      character: 'Must use the character set "a-z", "0-9", " - . _"'
       msg_max_length: İsim 2 ile 30 karakter arasında olmalıdır.
     admin_password:
       label: Parola
@@ -2078,10 +2090,16 @@ ui:
         ask_before_display: Harici içeriği göstermeden önce sor
     write:
       page_title: Yazma
+      min_content:
+        label: Minimum question body length
+        text: Minimum allowed question body length in characters.
       restrict_answer:
         title: Cevap yazma
         label: Her kullanıcı aynı soru için sadece bir cevap yazabilir
         text: "Kullanıcıların aynı soruya birden fazla cevap yazmasına izin vermek için kapatın, bu cevapların odaktan uzaklaşmasına neden olabilir."
+      min_tags:
+        label: "Minimum tags per question"
+        text: "Minimum number of tags required in a question."
       recommend_tags:
         label: Önerilen etiketler
         text: "Önerilen etiketler varsayılan olarak açılır listede gösterilecektir."

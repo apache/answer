@@ -234,6 +234,8 @@ backend:
         other: Sin permiso para actualizar.
       content_cannot_empty:
         other: Content cannot be empty.
+      content_less_than_minumum:
+        other: Not enough content entered.
     rank:
       fail_to_meet_the_condition:
         other: El rango de reputación no cumple la condición.
@@ -263,6 +265,8 @@ backend:
         other: No puedes eliminar una etiqueta que está en uso.
       cannot_set_synonym_as_itself:
         other: No se puede establecer como sinónimo de una etiqueta la propia etiqueta.
+      minimum_count:
+        other: Not enough tags were entered.
     smtp:
       config_from_name_cannot_be_email:
         other: El nombre no puede ser una dirección de correo electrónico.
@@ -841,6 +845,7 @@ ui:
     http_50X: HTTP Error 500
     http_403: HTTP Error 403
     logout: Cerrar sesión
+    posts: Posts
   notifications:
     title: Notificaciones
     inbox: Buzón de entrada
@@ -1141,6 +1146,9 @@ ui:
           label: Cuerpo
           msg:
             empty: Cuerpo no puede estar vacío.
+          hint:
+            optional_body: Describe what the question is about.
+            minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
         tags:
           label: Etiquetas
           msg:
@@ -1161,7 +1169,9 @@ ui:
     add_btn: Añadir etiqueta
     create_btn: Crear nueva etiqueta
     search_tag: Buscar etiqueta
-    hint: "Describe what your content is about, at least one tag is required."
+    hint: Describe what your content is about, at least one tag is required.
+    hint_zero_tags: Describe what your content is about.
+    hint_more_than_one_tag: "Describe what your content is about, at least {{min_tags_number}} tags are required."
     no_result: Ninguna etiqueta coincide
     tag_required_text: Etiqueta requerida (al menos una)
   header:
@@ -1214,7 +1224,7 @@ ui:
       msg:
         empty: El nombre no puede estar vacío.
         range: El nombre debe tener entre 2 y 30 caracteres de largo.
-        character: 'Debe usar el juego de caracteres "a-z", "A-Z", "0-9", " - . _"'
+        character: 'Must use the character set "a-z", "0-9", " - . _"'
     email:
       label: Correo electrónico
       msg:
@@ -1292,7 +1302,7 @@ ui:
         caption: La gente puede mencionarte con "@nombredeusuario".
         msg: El nombre de usuario no puede estar vacío.
         msg_range: Username must be 2-30 characters in length.
-        character: 'Debe usar el conjunto de caracteres "a-z", "0-9", "- . _"'
+        character: 'Must use the character set "a-z", "0-9", "- . _"'
       avatar:
         label: Imagen de perfil
         gravatar: Gravatar
@@ -1381,9 +1391,11 @@ ui:
     search: Buscar personas
   question_detail:
     action: Acción
+    created: Created
     Asked: Preguntada
     asked: preguntada
     update: Modificada
+    Edited: Edited
     edit: editada
     commented: comentado
     Views: Visto
@@ -1695,7 +1707,7 @@ ui:
     admin_name:
       label: Nombre
       msg: El nombre no puede estar vacío.
-      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      character: 'Must use the character set "a-z", "0-9", " - . _"'
       msg_max_length: Name must be between 2 to 30 characters in length.
     admin_password:
       label: Contraseña
@@ -2078,10 +2090,16 @@ ui:
         ask_before_display: Ask before displaying external content
     write:
       page_title: Escribir
+      min_content:
+        label: Minimum question body length
+        text: Minimum allowed question body length in characters.
       restrict_answer:
         title: Escribir respuesta
         label: Cada usuario solo puede escribir una respuesta por pregunta
         text: "Desactivar para permitir a los usuarios escribir múltiples respuestas a la misma pregunta, lo que puede causar que las respuestas no estén enfocadas."
+      min_tags:
+        label: "Minimum tags per question"
+        text: "Minimum number of tags required in a question."
       recommend_tags:
         label: Etiquetas recomendadas
         text: "Las etiquetas recomendadas se mostrarán en la lista desplegable por defecto."

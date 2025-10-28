@@ -234,6 +234,8 @@ backend:
         other: 업데이트 권한이 없습니다.
       content_cannot_empty:
         other: 내용은 비워둘 수 없습니다.
+      content_less_than_minumum:
+        other: Not enough content entered.
     rank:
       fail_to_meet_the_condition:
         other: 등급이 조건을 충족하지 못합니다.
@@ -263,6 +265,8 @@ backend:
         other: 사용 중인 태그는 삭제할 수 없습니다.
       cannot_set_synonym_as_itself:
         other: 현재 태그의 동의어로 자기 자신을 설정할 수 없습니다.
+      minimum_count:
+        other: Not enough tags were entered.
     smtp:
       config_from_name_cannot_be_email:
         other: 발신자 이름은 이메일 주소가 될 수 없습니다.
@@ -307,13 +311,13 @@ backend:
       add_bulk_users_amount_error:
         other: "한 번에 추가할 수 있는 사용자 수는 1-{{.MaxAmount}} 범위 내에 있어야 합니다."
       status_suspended_forever:
-        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+        other: "<strong>이 사용자는 무기한 접근이 금지 되었습니다.</strong> 이 사용자는 커뮤니티의 지침을 충족시키지 않았습니다."
       status_suspended_until:
-        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+        other: "<strong>이 사용자는 {{.SuspendedUntil}} 까지 접근이 금지 되었습니다.</strong> 이 사용자는 커뮤니티의 지침을 충족시키지 않았습니다."
       status_deleted:
-        other: "This user was deleted."
+        other: "삭제된 사용자입니다."
       status_inactive:
-        other: "This user is inactive."
+        other: "비활성 사용자입니다."
     config:
       read_config_failed:
         other: 컨피그파일 읽기를 실패했습니다
@@ -356,7 +360,7 @@ backend:
       name:
         other: 답변이 아닙니다
       desc:
-        other: "질문에 적절한 대답이 아닙니다. 편집, 댓글, 다른 질문, 또는 완전히 삭제된 것이어야 합니다."
+        other: "이 내용은 답변으로 게시 되었지만, 질문에 대한 답변 시도가 아닙니다. 이는 수정, 댓글, 다른 질문으로 올리는 것이 적절하거나, 삭제하는 것이 적절할 수도 있습니다."
     no_longer_needed:
       name:
         other: 더 이상 필요하지 않습니다.
@@ -512,7 +516,7 @@ backend:
       title:
         other: "[{{.SiteName}}] 새 계정 확인"
       body:
-        other: "{{.SiteName}} 에 오신 것을 환영합니다!<br><br>\n\n새 계정을 확인하고 활성화하려면 다음 링크를 클릭하세요:<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\n위 링크가 클릭되지 않으면 웹 브라우저의 주소창에 복사하여 붙여넣어 보세요.\n<br><br>\n\n--<br>\n참고: 이것은 자동 시스템 이메일입니다. 응답해도 확인되지 않으므로 이 메시지에 회신하지 마세요."
+        other: "{{.SiteName}} 에 오신 것을 환영합니다!<br><br>\n\n새 계정을 확인하고 활성화하려면 다음 링크를 클릭하세요:<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\n위 링크가 동작하지 않으면 복사하여 브라우저의 주소 입력에 직접 붙여넣으세요.\n<br><br>\n\n--<br>\n참고: 이것은 자동 시스템 이메일입니다. 응답해도 확인되지 않으므로 이 메시지에 회신하지 마세요."
     test:
       title:
         other: "[{{.SiteName}}] 테스트 이메일"
@@ -602,7 +606,7 @@ backend:
           other: 첫 달의 뛰어난 기여.
       read_guidelines:
         name:
-          other: 가이드라인 읽기
+          other: 가이드라인 읽음
         desc:
           other: '[커뮤니티 가이드라인] 을 읽어보세요.'
       reader:
@@ -817,7 +821,7 @@ ui:
     tag_wiki: 태그 위키
     create_tag: 태그 생성
     edit_tag: 태그 수정
-    ask_a_question: Create Question
+    ask_a_question: 질문 생성
     edit_question: 질문 수정
     edit_answer: 답변 수정
     search: 검색
@@ -841,6 +845,7 @@ ui:
     http_50X: HTTP 오류 500
     http_403: HTTP 오류 403
     logout: 로그아웃
+    posts: Posts
   notifications:
     title: 알림
     inbox: 받은 편지함
@@ -1064,9 +1069,9 @@ ui:
     day: 일
     hours: 시간
     days: 일
-    month: month
-    months: months
-    year: year
+    month: 월
+    months: 개월
+    year: 년
   reaction:
     heart: 하트
     smile: 스마일
@@ -1122,10 +1127,10 @@ ui:
     more: 더 보기
     wiki: 위키
   ask:
-    title: Create Question
+    title: 질문 생성
     edit_title: 질문 수정
     default_reason: 질문 수정
-    default_first_reason: Create question
+    default_first_reason: 질문 생성
     similar_questions: 유사한 질문
     form:
       fields:
@@ -1133,7 +1138,7 @@ ui:
           label: 개정
         title:
           label: 제목
-          placeholder: What's your topic? Be specific.
+          placeholder: 주제는 무엇인가요? 상세하게 작성해주세요.
           msg:
             empty: 제목을 입력하세요.
             range: 제목은 최대 150자까지 입력 가능합니다.
@@ -1141,6 +1146,9 @@ ui:
           label: 본문
           msg:
             empty: 본문을 입력하세요.
+          hint:
+            optional_body: Describe what the question is about.
+            minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
         tags:
           label: 태그
           msg:
@@ -1161,7 +1169,9 @@ ui:
     add_btn: 태그 추가
     create_btn: 새 태그 생성
     search_tag: 태그 검색
-    hint: "Describe what your content is about, at least one tag is required."
+    hint: 질문의 주제를 설명하세요. 적어도 하나의 태그가 필요합니다.
+    hint_zero_tags: Describe what your content is about.
+    hint_more_than_one_tag: "Describe what your content is about, at least {{min_tags_number}} tags are required."
     no_result: 일치하는 태그가 없습니다.
     tag_required_text: 필수 태그 (적어도 하나)
   header:
@@ -1214,7 +1224,7 @@ ui:
       msg:
         empty: 이름을 입력하세요.
         range: 이름은 2 자에서 30 자 사이여야 합니다.
-        character: '문자 집합 "a-z", "0-9", " - . _"를 사용해야 합니다'
+        character: 'Must use the character set "a-z", "0-9", " - . _"'
     email:
       label: 이메일
       msg:
@@ -1292,7 +1302,7 @@ ui:
         caption: 다른 사용자가 "@사용자이름"으로 멘션할 수 있습니다.
         msg: 사용자 이름을 입력하세요.
         msg_range: 유저 이름은 2-30 자 길이여야 합니다.
-        character: '문자 집합 "a-z", "0-9", "- . _"을 사용해야 합니다.'
+        character: 'Must use the character set "a-z", "0-9", "- . _"'
       avatar:
         label: 프로필 이미지
         gravatar: Gravatar
@@ -1367,12 +1377,12 @@ ui:
     review: 검토 후에 귀하의 수정 사항이 표시됩니다.
     sent_success: 전송 성공
   related_question:
-    title: Related
+    title: 관련된 질문
     answers: 답변
   linked_question:
-    title: Linked
-    description: Posts linked to
-    no_linked_question: No contents linked from this content.
+    title: 링크된 질문
+    description: 이 질문을 링크한 질문
+    no_linked_question: 이 질문에 연결된 질문 없음.
   invite_to_answer:
     title: 질문자 초대
     desc: 답변을 알고 있을 것으로 생각되는 사람을 선택하세요.
@@ -1381,9 +1391,11 @@ ui:
     search: 사람 검색
   question_detail:
     action: 동작
+    created: Created
     Asked: 질문함
     asked: 질문 작성
     update: 수정됨
+    Edited: Edited
     edit: 편집됨
     commented: 댓글 작성
     Views: 조회수
@@ -1512,7 +1524,7 @@ ui:
     follow: 팔로우
     following: 팔로잉 중
     counts: "{{count}} 개의 결과"
-    counts_loading: "... Results"
+    counts_loading: "... 개의 결과"
     more: 더 보기
     sort_btns:
       relevance: 관련성
@@ -1564,7 +1576,7 @@ ui:
     all_questions: 모든 질문
     x_questions: "{{ count }} 개의 질문"
     x_answers: "{{ count }} 개의 답변"
-    x_posts: "{{ count }} Posts"
+    x_posts: "{{ count }} 개의 글"
     questions: 질문
     answers: 답변
     newest: 최신순
@@ -1695,7 +1707,7 @@ ui:
     admin_name:
       label: 이름
       msg: 이름을 입력하세요.
-      character: '"a-z", "A-Z", "0-9", " - . _" 문자 집합을 사용해야 합니다'
+      character: 'Must use the character set "a-z", "0-9", " - . _"'
       msg_max_length: 이름은 2 자 이상 30 자 이하여야 합니다.
     admin_password:
       label: 비밀번호
@@ -1903,7 +1915,7 @@ ui:
       created_at: 생성 시간
       delete_at: 삭제된 시간
       suspend_at: 정지된 시간
-      suspend_until: Suspend until
+      suspend_until: 정지 기한
       status: 상태
       role: 역할
       action: 동작
@@ -1938,8 +1950,8 @@ ui:
       suspend_user:
         title: 이 사용자 정지
         content: 정지된 사용자는 로그인할 수 없습니다.
-        label: How long will the user be suspended for?
-        forever: Forever
+        label: 사용자를 며칠 접근 금지 하시겠습니까?
+        forever: 무기한
     questions:
       page_title: 질문
       unlisted: 비공개
@@ -2001,11 +2013,11 @@ ui:
         msg: 시간대를 선택하세요.
         text: 본인과 같은 시간대의 도시를 선택하세요.
       avatar:
-        label: Default avatar
-        text: For users without a custom avatar of their own.
+        label: 기본 아바타
+        text: 사용자 정의 아바타가 없는 사용자에게 표시됩니다.
       gravatar_base_url:
-        label: Gravatar base URL
-        text: URL of the Gravatar provider's API base. Ignored when empty.
+        label: Gravatar 기본 URL
+        text: Gravatar 공급자의 API 기본 URL입니다. 비어 있으면 무시됩니다.
     smtp:
       page_title: SMTP
       from_email:
@@ -2078,10 +2090,16 @@ ui:
         ask_before_display: 외부 콘텐츠 표시 전 확인
     write:
       page_title: 작성
+      min_content:
+        label: Minimum question body length
+        text: Minimum allowed question body length in characters.
       restrict_answer:
         title: 답변 작성
         label: 각 사용자는 각 질문에 대해 단 하나의 답변만 작성할 수 있습니다.
         text: "기존 답변을 개선하고 향상시키기 위해 편집 링크를 사용할 수 있습니다."
+      min_tags:
+        label: "Minimum tags per question"
+        text: "Minimum number of tags required in a question."
       recommend_tags:
         label: 추천 태그
         text: "추천 태그가 기본적으로 드롭다운 목록에 표시됩니다."

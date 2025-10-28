@@ -234,6 +234,8 @@ backend:
         other: Pas de permission pour mettre à jour.
       content_cannot_empty:
         other: Le contenu ne peut pas être vide.
+      content_less_than_minumum:
+        other: Not enough content entered.
     rank:
       fail_to_meet_the_condition:
         other: Le rang de réputation ne remplit pas la condition.
@@ -263,6 +265,8 @@ backend:
         other: Vous ne pouvez pas supprimer un tag utilisé.
       cannot_set_synonym_as_itself:
         other: Vous ne pouvez pas définir le synonyme de la balise actuelle comme elle-même.
+      minimum_count:
+        other: Not enough tags were entered.
     smtp:
       config_from_name_cannot_be_email:
         other: Le nom d'expéditeur ne peut pas être une adresse e-mail.
@@ -841,6 +845,7 @@ ui:
     http_50X: Erreur HTTP 500
     http_403: Erreur HTTP 403
     logout: Se déconnecter
+    posts: Posts
   notifications:
     title: Notifications
     inbox: Boîte de réception
@@ -1141,6 +1146,9 @@ ui:
           label: Corps
           msg:
             empty: Le corps ne peut pas être vide.
+          hint:
+            optional_body: Describe what the question is about.
+            minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
         tags:
           label: Étiquettes
           msg:
@@ -1161,7 +1169,9 @@ ui:
     add_btn: Ajouter une étiquette
     create_btn: Créer une nouvelle étiquette
     search_tag: Rechercher une étiquette
-    hint: "Describe what your content is about, at least one tag is required."
+    hint: Describe what your content is about, at least one tag is required.
+    hint_zero_tags: Describe what your content is about.
+    hint_more_than_one_tag: "Describe what your content is about, at least {{min_tags_number}} tags are required."
     no_result: Aucune étiquette correspondante
     tag_required_text: Étiquette requise (au moins une)
   header:
@@ -1214,7 +1224,7 @@ ui:
       msg:
         empty: Le nom ne peut pas être vide.
         range: Le nom doit contenir entre 2 et 30 caractères.
-        character: 'Doit utiliser le jeu de caractères "a-z", "0-9", " - . _"'
+        character: 'Must use the character set "a-z", "0-9", " - . _"'
     email:
       label: Email
       msg:
@@ -1292,7 +1302,7 @@ ui:
         caption: Les gens peuvent vous mentionner avec "@username".
         msg: Le nom d'utilisateur ne peut pas être vide.
         msg_range: Le nom d'utilisateur doit contenir entre 2 et 30 caractères.
-        character: 'Doit utiliser seulement les caractères "a-z", "0-9", "- . _"'
+        character: 'Must use the character set "a-z", "0-9", "- . _"'
       avatar:
         label: Photo de profil
         gravatar: Gravatar
@@ -1381,9 +1391,11 @@ ui:
     search: Rechercher des personnes
   question_detail:
     action: Action
+    created: Created
     Asked: Demandé
     asked: demandé
     update: Modifié
+    Edited: Edited
     edit: modifié
     commented: commenté
     Views: Consultée
@@ -1695,7 +1707,7 @@ ui:
     admin_name:
       label: Nom
       msg: Le nom ne peut pas être vide.
-      character: 'Utiliser seulement les caractères "a-z", "0-9", " - . _"'
+      character: 'Must use the character set "a-z", "0-9", " - . _"'
       msg_max_length: La longueur du nom doit être comprise entre 2 et 30 caractères.
     admin_password:
       label: Mot de passe
@@ -2078,10 +2090,16 @@ ui:
         ask_before_display: Demander avant d'afficher le contenu externe
     write:
       page_title: Écrire
+      min_content:
+        label: Minimum question body length
+        text: Minimum allowed question body length in characters.
       restrict_answer:
         title: Écriture de la réponse
         label: Chaque utilisateur ne peut écrire qu'une seule réponse pour chaque question
         text: "Désactivez pour permettre aux utilisateurs d'écrire plusieurs réponses à la même question, ce qui peut causer une perte de concentration des réponses."
+      min_tags:
+        label: "Minimum tags per question"
+        text: "Minimum number of tags required in a question."
       recommend_tags:
         label: Tags recommandés
         text: "Les balises recommandées apparaîtront par défaut dans la liste déroulante."

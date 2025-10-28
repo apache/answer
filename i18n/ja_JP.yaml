@@ -234,6 +234,8 @@ backend:
         other: 更新する権限がありません。
       content_cannot_empty:
         other: Content cannot be empty.
+      content_less_than_minumum:
+        other: Not enough content entered.
     rank:
       fail_to_meet_the_condition:
         other: 評判ランクが条件を満たしていません
@@ -263,6 +265,8 @@ backend:
         other: 使用中のタグは削除できません。
       cannot_set_synonym_as_itself:
         other: 現在のタグの同義語をそのものとして設定することはできません。
+      minimum_count:
+        other: Not enough tags were entered.
     smtp:
       config_from_name_cannot_be_email:
         other: Fromの名前はメールアドレスにできません。
@@ -840,6 +844,7 @@ ui:
     http_50X: HTTP エラー 500
     http_403: HTTP エラー 403
     logout: ログアウト
+    posts: Posts
   notifications:
     title: 通知
     inbox: 受信トレイ
@@ -1140,6 +1145,9 @@ ui:
           label: 本文
           msg:
             empty: 本文を空にすることはできません。
+          hint:
+            optional_body: Describe what the question is about.
+            minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
         tags:
           label: タグ
           msg:
@@ -1160,7 +1168,9 @@ ui:
     add_btn: タグを追加
     create_btn: 新しタグを作成
     search_tag: タグを検索
-    hint: "Describe what your content is about, at least one tag is required."
+    hint: Describe what your content is about, at least one tag is required.
+    hint_zero_tags: Describe what your content is about.
+    hint_more_than_one_tag: "Describe what your content is about, at least {{min_tags_number}} tags are required."
     no_result: 一致するタグはありません
     tag_required_text: 必須タグ (少なくとも 1 つ)
   header:
@@ -1213,7 +1223,7 @@ ui:
       msg:
         empty: 名前を空にすることはできません。
         range: 2～30文字の名前を設定してください。
-        character: '文字セット "a-z", "A-Z", "0-9", " - " を使用する必要があります。'
+        character: 'Must use the character set "a-z", "0-9", " - . _"'
     email:
       label: メールアドレス
       msg:
@@ -1291,7 +1301,7 @@ ui:
         caption: ユーザーは "@username" としてあなたをメンションできます。
         msg: ユーザー名は空にできません。
         msg_range: Username must be 2-30 characters in length.
-        character: '文字セット "a-z", "0-9", "- . _" を使用してください。'
+        character: 'Must use the character set "a-z", "0-9", "- . _"'
       avatar:
         label: プロフィール画像
         gravatar: Gravatar
@@ -1380,9 +1390,11 @@ ui:
     search: ユーザーを検索
   question_detail:
     action: 動作
+    created: Created
     Asked: 質問済み
     asked: 質問済み
     update: 修正済み
+    Edited: Edited
     edit: 編集済み
     commented: コメントしました
     Views: 閲覧回数
@@ -1696,7 +1708,7 @@ ui:
     admin_name:
       label: 名前
       msg: 名前を空にすることはできません。
-      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      character: 'Must use the character set "a-z", "0-9", " - . _"'
       msg_max_length: Name must be between 2 to 30 characters in length.
     admin_password:
       label: パスワード
@@ -2079,10 +2091,16 @@ ui:
         ask_before_display: Ask before displaying external content
     write:
       page_title: 編集
+      min_content:
+        label: Minimum question body length
+        text: Minimum allowed question body length in characters.
       restrict_answer:
         title: 回答を書く
         label: 各ユーザーは同じ質問に対して1つの回答しか書けません
         text: "ユーザが同じ質問に複数の回答を書き込めるようにするにはオフにします。これにより回答がフォーカスされていない可能性があります。"
+      min_tags:
+        label: "Minimum tags per question"
+        text: "Minimum number of tags required in a question."
       recommend_tags:
         label: おすすめタグ
         text: "デフォルトでドロップダウンリストに推奨タグが表示されます。"

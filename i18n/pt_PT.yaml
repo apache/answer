@@ -234,6 +234,8 @@ backend:
         other: Sem permissão para atualizar.
       content_cannot_empty:
         other: Content cannot be empty.
+      content_less_than_minumum:
+        other: Not enough content entered.
     rank:
       fail_to_meet_the_condition:
         other: A classificação não atende à condição.
@@ -263,6 +265,8 @@ backend:
         other: Não é possível excluir um marcador em uso.
       cannot_set_synonym_as_itself:
         other: Você não pode definir o sinônimo do marcador atual como a si mesmo.
+      minimum_count:
+        other: Not enough tags were entered.
     smtp:
       config_from_name_cannot_be_email:
         other: O De Nome não pode ser um endereço de e-mail.
@@ -841,6 +845,7 @@ ui:
     http_50X: HTTP Erro 500
     http_403: HTTP Erro 403
     logout: Encerrar Sessão
+    posts: Posts
   notifications:
     title: Notificações
     inbox: Caixa de entrada
@@ -1141,6 +1146,9 @@ ui:
           label: Corpo
           msg:
             empty: Corpo da mensagem não pode ser vazio.
+          hint:
+            optional_body: Describe what the question is about.
+            minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
         tags:
           label: Marcadores
           msg:
@@ -1161,7 +1169,9 @@ ui:
     add_btn: Adicionar marcador
     create_btn: Criar novo marcador
     search_tag: Procurar marcador
-    hint: "Describe what your content is about, at least one tag is required."
+    hint: Describe what your content is about, at least one tag is required.
+    hint_zero_tags: Describe what your content is about.
+    hint_more_than_one_tag: "Describe what your content is about, at least {{min_tags_number}} tags are required."
     no_result: Nenhum marcador correspondente
     tag_required_text: Marcador obrigatório (ao menos um)
   header:
@@ -1214,7 +1224,7 @@ ui:
       msg:
         empty: Nome não pode ser vazio.
         range: O nome deve ter entre 2 e 30 caracteres.
-        character: 'Deve usar o conjunto de caracteres "a-z", "0-9", " - . _"'
+        character: 'Must use the character set "a-z", "0-9", " - . _"'
     email:
       label: E-mail
       msg:
@@ -1292,7 +1302,7 @@ ui:
         caption: As pessoas poderão mensionar você com "@usuário".
         msg: Nome de usuário não pode ser vazio.
         msg_range: Username must be 2-30 characters in length.
-        character: 'Deve usar o conjunto de caracteres "a-z", "0-9", "- . _"'
+        character: 'Must use the character set "a-z", "0-9", "- . _"'
       avatar:
         label: Perfil Imagem
         gravatar: Gravatar
@@ -1381,9 +1391,11 @@ ui:
     search: Procurar pessoas
   question_detail:
     action: Acção
+    created: Created
     Asked: Perguntado
     asked: perguntado
     update: Modificado
+    Edited: Edited
     edit: modificado
     commented: comentado
     Views: Visualizado
@@ -1695,7 +1707,7 @@ ui:
     admin_name:
       label: Nome
       msg: Nome não pode ser vazio.
-      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      character: 'Must use the character set "a-z", "0-9", " - . _"'
       msg_max_length: Name must be between 2 to 30 characters in length.
     admin_password:
       label: Senha
@@ -2078,10 +2090,16 @@ ui:
         ask_before_display: Ask before displaying external content
     write:
       page_title: Escrever
+      min_content:
+        label: Minimum question body length
+        text: Minimum allowed question body length in characters.
       restrict_answer:
         title: Escrever resposta
         label: Each user can only write one answer for each question
         text: "Desative para permitir que os usuários escrevam várias respostas para a mesma pergunta, o que pode fazer com que as respostas fiquem menos focadas."
+      min_tags:
+        label: "Minimum tags per question"
+        text: "Minimum number of tags required in a question."
       recommend_tags:
         label: Recommend Marcadores
         text: "Os marcadores recomendados serão exibidos na lista dropdown por padrão."

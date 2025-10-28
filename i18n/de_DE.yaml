@@ -234,6 +234,8 @@ backend:
         other: Keine Berechtigung zum Aktualisieren.
       content_cannot_empty:
         other: Der Inhalt darf nicht leer sein.
+      content_less_than_minumum:
+        other: Not enough content entered.
     rank:
       fail_to_meet_the_condition:
         other: Ansehenssrang erfüllt die Bedingung nicht.
@@ -263,6 +265,8 @@ backend:
         other: Du kannst keinen Tag löschen, der in Gebrauch ist.
       cannot_set_synonym_as_itself:
         other: Du kannst das Synonym des aktuellen Tags nicht als sich selbst festlegen.
+      minimum_count:
+        other: Not enough tags were entered.
     smtp:
       config_from_name_cannot_be_email:
         other: Der Absendername kann keine E-Mail-Adresse sein.
@@ -841,6 +845,7 @@ ui:
     http_50X: HTTP-Fehler 500
     http_403: HTTP Fehler 403
     logout: Ausloggen
+    posts: Posts
   notifications:
     title: Benachrichtigungen
     inbox: Posteingang
@@ -1141,6 +1146,9 @@ ui:
           label: Körper
           msg:
             empty: Körper darf nicht leer sein.
+          hint:
+            optional_body: Describe what the question is about.
+            minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
         tags:
           label: Stichworte
           msg:
@@ -1161,7 +1169,9 @@ ui:
     add_btn: Schlagwort hinzufügen
     create_btn: Neuen Tag erstellen
     search_tag: Tag suchen
-    hint: "Describe what your content is about, at least one tag is required."
+    hint: Describe what your content is about, at least one tag is required.
+    hint_zero_tags: Describe what your content is about.
+    hint_more_than_one_tag: "Describe what your content is about, at least {{min_tags_number}} tags are required."
     no_result: Keine Tags gefunden
     tag_required_text: Benötigter Tag (mindestens eins)
   header:
@@ -1214,7 +1224,7 @@ ui:
       msg:
         empty: Der Name darf nicht leer sein.
         range: Der Name muss zwischen 2 und 30 Zeichen lang sein.
-        character: 'Muss den Zeichensatz "a-z", "A-Z", "0-9", " - . _" verwenden'
+        character: 'Must use the character set "a-z", "0-9", " - . _"'
     email:
       label: E-Mail
       msg:
@@ -1292,7 +1302,7 @@ ui:
         caption: Leute können dich als "@Benutzername" erwähnen.
         msg: Benutzername darf nicht leer sein.
         msg_range: Der Benutzername muss zwischen 2 und 30 Zeichen lang sein.
-        character: 'Muss den Zeichensatz "a-z", "0-9", "- . _" verwenden'
+        character: 'Must use the character set "a-z", "0-9", "- . _"'
       avatar:
         label: Profilbild
         gravatar: Gravatar
@@ -1381,9 +1391,11 @@ ui:
     search: Personen suchen
   question_detail:
     action: Aktion
+    created: Created
     Asked: Gefragt
     asked: gefragt
     update: Geändert
+    Edited: Edited
     edit: bearbeitet
     commented: kommentiert
     Views: Gesehen
@@ -1695,7 +1707,7 @@ ui:
     admin_name:
       label: Name
       msg: Der Name darf nicht leer sein.
-      character: 'Muss den Zeichensatz "a-z", "A-Z", "0-9", " - . _" verwenden'
+      character: 'Must use the character set "a-z", "0-9", " - . _"'
       msg_max_length: Der Name muss zwischen 2 und 30 Zeichen lang sein.
     admin_password:
       label: Passwort
@@ -2078,10 +2090,16 @@ ui:
         ask_before_display: Vor der Anzeige externer Inhalte fragen
     write:
       page_title: Schreiben
+      min_content:
+        label: Minimum question body length
+        text: Minimum allowed question body length in characters.
       restrict_answer:
         title: Antwort bearbeiten
         label: Jeder Benutzer kann für jede Frage nur eine Antwort schreiben
         text: "Schalten Sie aus, um es Benutzern zu ermöglichen, mehrere Antworten auf dieselbe Frage zu schreiben, was dazu führen kann, dass Antworten nicht im Fokus stehen."
+      min_tags:
+        label: "Minimum tags per question"
+        text: "Minimum number of tags required in a question."
       recommend_tags:
         label: Empfohlene Tags
         text: "Empfohlene Tags werden standardmäßig in der Dropdown-Liste angezeigt."

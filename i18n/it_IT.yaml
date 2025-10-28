@@ -58,7 +58,7 @@ backend:
     undelete:
       other: Ripristina
     merge:
-      other: Merge
+      other: Unisci
   role:
     name:
       user:
@@ -140,7 +140,7 @@ backend:
   pass:
     other: Password
   old_pass:
-    other: Current password
+    other: Password attuale
   original_text:
     other: Questo post
   email_or_password_wrong_error:
@@ -173,7 +173,7 @@ backend:
       question_closed_cannot_add:
         other: Le domande sono chiuse e non possono essere aggiunte.
       content_cannot_empty:
-        other: Answer content cannot be empty.
+        other: Il contenuto della risposta non può essere vuoto.
     comment:
       edit_without_permission:
         other: Non si hanno di privilegi sufficienti per modificare il commento.
@@ -182,7 +182,7 @@ backend:
       cannot_edit_after_deadline:
         other: Il tempo per editare è scaduto.
       content_cannot_empty:
-        other: Comment content cannot be empty.
+        other: Il commento non può essere vuoto.
     email:
       duplicate:
         other: Email già esistente.
@@ -233,7 +233,9 @@ backend:
       cannot_update:
         other: Nessun permesso per l'aggiornamento.
       content_cannot_empty:
-        other: Content cannot be empty.
+        other: Il contenuto non può essere vuoto.
+      content_less_than_minumum:
+        other: Not enough content entered.
     rank:
       fail_to_meet_the_condition:
         other: Il rango di reputazione non soddisfa le condizioni.
@@ -263,6 +265,8 @@ backend:
         other: Non è possibile eliminare un tag in uso.
       cannot_set_synonym_as_itself:
         other: Non puoi impostare il sinonimo del tag corrente come se stesso.
+      minimum_count:
+        other: Not enough tags were entered.
     smtp:
       config_from_name_cannot_be_email:
         other: Il mittente non può essere un indirizzo email.
@@ -307,13 +311,13 @@ backend:
       add_bulk_users_amount_error:
         other: "Il numero di utenti che aggiungi contemporaneamente dovrebbe essere compreso tra 1 e {{.MaxAmount}}."
       status_suspended_forever:
-        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+        other: "<strong>Questo utente è stato sospeso per sempre.</strong> Questo utente non soddisfa le linee guida della comunità."
       status_suspended_until:
-        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+        other: "<strong>Questo utente è stato sospeso fino a {{.SuspendedUntil}}.</strong> Questo utente non soddisfa le linee guida della comunità."
       status_deleted:
-        other: "This user was deleted."
+        other: "Utente eliminato."
       status_inactive:
-        other: "This user is inactive."
+        other: "L'utente è inattivo."
     config:
       read_config_failed:
         other: Configurazione lettura fallita
@@ -502,7 +506,7 @@ backend:
       title:
         other: "[{{.SiteName}}] Nuova domanda: {{.QuestionTitle}}"
       body:
-        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNota: Si tratta di un'email di sistema automatica, non rispondere a questo messaggio perché la tua risposta non sarà visualizzata.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Cancellati</a></small>"
     pass_reset:
       title:
         other: "[{{.SiteName }}] Reimpostazione della password"
@@ -574,7 +578,7 @@ backend:
         name:
           other: Primo Link
         desc:
-          other: First added a link to another post.
+          other: Per prima cosa è stato aggiunto un link ad un altro post.
       first_reaction:
         name:
           other: Prima Reazione
@@ -817,7 +821,7 @@ ui:
     tag_wiki: tag wiki
     create_tag: Crea tag
     edit_tag: Modifica Tag
-    ask_a_question: Create Question
+    ask_a_question: Crea domanda
     edit_question: Modifica Domanda
     edit_answer: Modifica risposta
     search: Cerca
@@ -841,6 +845,7 @@ ui:
     http_50X: Errore HTTP 500
     http_403: Errore HTTP 403
     logout: Disconnetti
+    posts: Posts
   notifications:
     title: Notifiche
     inbox: Posta in arrivo
@@ -1038,9 +1043,9 @@ ui:
       tip: Sei sicuro di voler cancellare?
       close: Chiudi
     merge:
-      title: Merge tag
-      source_tag_title: Source tag
-      source_tag_description: The source tag and its associated data will be remapped to the target tag.
+      title: Unisci tag
+      source_tag_title: Cerca tag
+      source_tag_description: Il tag sorgente e i dati associati verranno rimappati al tag di destinazione.
       target_tag_title: Target tag
       target_tag_description: A synonym between these two tags will be created after merging.
       no_results: No tags matched
@@ -1141,6 +1146,9 @@ ui:
           label: Contenuto
           msg:
             empty: Il corpo del testo non può essere vuoto.
+          hint:
+            optional_body: Describe what the question is about.
+            minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
         tags:
           label: Tags
           msg:
@@ -1161,7 +1169,9 @@ ui:
     add_btn: Aggiungi tag
     create_btn: Crea un nuovo tag
     search_tag: Cerca tag
-    hint: "Describe what your content is about, at least one tag is required."
+    hint: Describe what your content is about, at least one tag is required.
+    hint_zero_tags: Describe what your content is about.
+    hint_more_than_one_tag: "Describe what your content is about, at least {{min_tags_number}} tags are required."
     no_result: Nessun tag corrispondente
     tag_required_text: Tag richiesto (almeno uno)
   header:
@@ -1214,7 +1224,7 @@ ui:
       msg:
         empty: Il nome non può essere vuoto.
         range: Il nome deve essere di lunghezza compresa tra 2 e 30 caratteri.
-        character: 'È necessario utilizzare il set di caratteri "a-z", "0-9", " - . _"'
+        character: 'Must use the character set "a-z", "0-9", " - . _"'
     email:
       label: E-mail
       msg:
@@ -1292,7 +1302,7 @@ ui:
         caption: Gli altri utenti possono menzionarti con @{{username}}.
         msg: Il nome utente non può essere vuoto.
         msg_range: Username must be 2-30 characters in length.
-        character: 'È necessario utilizzare il set di caratteri "a-z", "0-9", "- . _"'
+        character: 'Must use the character set "a-z", "0-9", "- . _"'
       avatar:
         label: Immagine del profilo
         gravatar: Gravatar
@@ -1381,9 +1391,11 @@ ui:
     search: Cerca persone
   question_detail:
     action: Azione
+    created: Created
     Asked: Chiesto
     asked: chiesto
     update: Modificato
+    Edited: Edited
     edit: modificato
     commented: commentato
     Views: Visualizzati
@@ -1695,7 +1707,7 @@ ui:
     admin_name:
       label: Nome
       msg: Il nome non può essere vuoto.
-      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      character: 'Must use the character set "a-z", "0-9", " - . _"'
       msg_max_length: Name must be between 2 to 30 characters in length.
     admin_password:
       label: Password
@@ -1865,7 +1877,7 @@ ui:
         fields:
           display_name:
             label: Visualizza nome
-            msg_range: Display name must be 2-30 characters in length.
+            msg_range: Il nome visualizzato deve essere di 2-30 caratteri di lunghezza.
           username:
             label: Nome utente
             msg_range: Username must be 2-30 characters in length.
@@ -1903,7 +1915,7 @@ ui:
       created_at: Created time
       delete_at: Deleted time
       suspend_at: Suspended time
-      suspend_until: Suspend until
+      suspend_until: Sospendi fino al
       status: Stato
       role: Ruolo
       action: Azione
@@ -1938,8 +1950,8 @@ ui:
       suspend_user:
         title: Sospendi questo utente
         content: Un utente sospeso non può accedere.
-        label: How long will the user be suspended for?
-        forever: Forever
+        label: Per quanto tempo vuoi sospendere l'utente?
+        forever: Per sempre
     questions:
       page_title: Domande
       unlisted: Rimosso dall'elenco
@@ -2001,8 +2013,8 @@ ui:
         msg: Il fuso orario non può essere vuoto.
         text: Scegli una città con il tuo stesso fuso orario.
       avatar:
-        label: Default avatar
-        text: For users without a custom avatar of their own.
+        label: Avatar Predefinito
+        text: Per gli utenti senza un proprio avatar personalizzato.
       gravatar_base_url:
         label: Gravatar base URL
         text: URL of the Gravatar provider's API base. Ignored when empty.
@@ -2078,10 +2090,16 @@ ui:
         ask_before_display: Ask before displaying external content
     write:
       page_title: Scrivi
+      min_content:
+        label: Minimum question body length
+        text: Minimum allowed question body length in characters.
       restrict_answer:
         title: Risposta a scrivere
         label: Ogni utente può scrivere una sola risposta per ogni domanda
         text: "Disattiva per consentire agli utenti di scrivere risposte multiple alla stessa domanda, il che potrebbe causare una risposta sfocata."
+      min_tags:
+        label: "Minimum tags per question"
+        text: "Minimum number of tags required in a question."
       recommend_tags:
         label: Raccomanda tag
         text: "I tag consigliati verranno mostrati nell'elenco a discesa per impostazione predefinita."

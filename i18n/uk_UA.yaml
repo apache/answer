@@ -234,6 +234,8 @@ backend:
         other: Немає дозволу на оновлення.
       content_cannot_empty:
         other: Content cannot be empty.
+      content_less_than_minumum:
+        other: Not enough content entered.
     rank:
       fail_to_meet_the_condition:
         other: Ранг репутації не відповідає умові.
@@ -263,6 +265,8 @@ backend:
         other: Ви не можете видалити теґ, який використовується.
       cannot_set_synonym_as_itself:
         other: Ви не можете встановити синонім поточного тегу як сам тег.
+      minimum_count:
+        other: Not enough tags were entered.
     smtp:
       config_from_name_cannot_be_email:
         other: Ім’я відправника не може бути електронною адресою.
@@ -841,6 +845,7 @@ ui:
     http_50X: Помилка HTTP 500
     http_403: Помилка HTTP 403
     logout: Вийти
+    posts: Posts
   notifications:
     title: Сповіщення
     inbox: Вхідні
@@ -1141,6 +1146,9 @@ ui:
           label: Тіло
           msg:
             empty: Тіло не може бути порожнім.
+          hint:
+            optional_body: Describe what the question is about.
+            minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
         tags:
           label: Теґи
           msg:
@@ -1161,7 +1169,9 @@ ui:
     add_btn: Додати теґ
     create_btn: Створити новий теґ
     search_tag: Шукати теґ
-    hint: "Describe what your content is about, at least one tag is required."
+    hint: Describe what your content is about, at least one tag is required.
+    hint_zero_tags: Describe what your content is about.
+    hint_more_than_one_tag: "Describe what your content is about, at least {{min_tags_number}} tags are required."
     no_result: Не знайдено тегів
     tag_required_text: Обов'язковий тег (принаймні один)
   header:
@@ -1214,7 +1224,7 @@ ui:
       msg:
         empty: Ім'я не може бути порожнім.
         range: Ім'я повинно мати довжину від 2 до 30 символів.
-        character: 'Необхідно використовувати набір символів "a-z", "A-Z", "0-9", " - . _"'
+        character: 'Must use the character set "a-z", "0-9", " - . _"'
     email:
       label: Електронна пошта
       msg:
@@ -1292,7 +1302,7 @@ ui:
         caption: Користувачі можуть згадувати вас як "@username".
         msg: Ім’я користувача не може бути порожнім.
         msg_range: Username must be 2-30 characters in length.
-        character: 'Необхідно використовувати набір символів "a-z", "0-9", "-. _"'
+        character: 'Must use the character set "a-z", "0-9", "- . _"'
       avatar:
         label: Зображення профілю
         gravatar: Gravatar
@@ -1381,9 +1391,11 @@ ui:
     search: Шукати людей
   question_detail:
     action: Дія
+    created: Created
     Asked: Запитали
     asked: запитали
     update: Змінено
+    Edited: Edited
     edit: відредаговано
     commented: прокоментовано
     Views: Переглянуто
@@ -1695,7 +1707,7 @@ ui:
     admin_name:
       label: Ім’я
       msg: Ім'я не може бути порожнім.
-      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      character: 'Must use the character set "a-z", "0-9", " - . _"'
       msg_max_length: Name must be between 2 to 30 characters in length.
     admin_password:
       label: Пароль
@@ -2078,10 +2090,16 @@ ui:
         ask_before_display: Ask before displaying external content
     write:
       page_title: Написати
+      min_content:
+        label: Minimum question body length
+        text: Minimum allowed question body length in characters.
       restrict_answer:
         title: Відповідь на запис
         label: Кожен користувач може написати лише одну відповідь на кожне запитання
         text: "Вимкнути, щоб дозволити користувачам писати кілька відповідей на одне і те ж питання, що може призвести до розфокусування відповідей."
+      min_tags:
+        label: "Minimum tags per question"
+        text: "Minimum number of tags required in a question."
       recommend_tags:
         label: Рекомендовані теги
         text: "За замовчуванням рекомендовані теги будуть показані у спадному списку."

@@ -234,6 +234,8 @@ backend:
         other: Ingen tilladelse til at opdatere.
       content_cannot_empty:
         other: Content cannot be empty.
+      content_less_than_minumum:
+        other: Not enough content entered.
     rank:
       fail_to_meet_the_condition:
         other: Omdømmelse rang opfylder ikke betingelsen.
@@ -263,6 +265,8 @@ backend:
         other: Du kan ikke slette et tag, der er i brug.
       cannot_set_synonym_as_itself:
         other: Du kan ikke indstille synonymet for det nuværende tag som sig selv.
+      minimum_count:
+        other: Not enough tags were entered.
     smtp:
       config_from_name_cannot_be_email:
         other: Fra-navnet kan ikke være en e-mail-adresse.
@@ -841,6 +845,7 @@ ui:
     http_50X: Http Fejl 500
     http_403: HTTP Fejl 403
     logout: Log Ud
+    posts: Posts
   notifications:
     title: Notifikationer
     inbox: Indbakke
@@ -1141,6 +1146,9 @@ ui:
           label: Brødtekst
           msg:
             empty: Brødtekst skal udfyldes.
+          hint:
+            optional_body: Describe what the question is about.
+            minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
         tags:
           label: Tags
           msg:
@@ -1161,7 +1169,9 @@ ui:
     add_btn: Tilføj tag
     create_btn: Opret et nyt tag
     search_tag: Søg tag
-    hint: "Describe what your content is about, at least one tag is required."
+    hint: Describe what your content is about, at least one tag is required.
+    hint_zero_tags: Describe what your content is about.
+    hint_more_than_one_tag: "Describe what your content is about, at least {{min_tags_number}} tags are required."
     no_result: Ingen tags matchede
     tag_required_text: Påkrævet tag (mindst én)
   header:
@@ -1214,7 +1224,7 @@ ui:
       msg:
         empty: Navn må ikke være tomt.
         range: Name must be between 2 to 30 characters in length.
-        character: 'Skal bruge tegnsættet "a-z", "A-Z", "0-9", " - . _"'
+        character: 'Must use the character set "a-z", "0-9", " - . _"'
     email:
       label: E-mail
       msg:
@@ -1292,7 +1302,7 @@ ui:
         caption: Man kan nævne dig som "@username".
         msg: Brugernavn skal udfyldes.
         msg_range: Username must be 2-30 characters in length.
-        character: 'Skal bruge tegnsættet "a-z", "0-9", "- . _"'
+        character: 'Must use the character set "a-z", "0-9", "- . _"'
       avatar:
         label: Profilbillede
         gravatar: Gravatar
@@ -1381,9 +1391,11 @@ ui:
     search: Søg personer
   question_detail:
     action: Handling
+    created: Created
     Asked: Spurgt
     asked: spurgt
     update: Ændret
+    Edited: Edited
     edit: redigeret
     commented: kommenteret
     Views: Set
@@ -1695,7 +1707,7 @@ ui:
     admin_name:
       label: Navn
       msg: Navn skal udfyldes.
-      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      character: 'Must use the character set "a-z", "0-9", " - . _"'
       msg_max_length: Name must be between 2 to 30 characters in length.
     admin_password:
       label: Adgangskode
@@ -2078,10 +2090,16 @@ ui:
         ask_before_display: Ask before displaying external content
     write:
       page_title: Skriv
+      min_content:
+        label: Minimum question body length
+        text: Minimum allowed question body length in characters.
       restrict_answer:
         title: Skriv svar
         label: Hver bruger kan kun skrive et svar for det samme spørgsmål
         text: "Slå fra for at give brugerne mulighed for at skrive flere svar på det samme spørgsmål, hvilket kan forårsage svar at være ufokuseret."
+      min_tags:
+        label: "Minimum tags per question"
+        text: "Minimum number of tags required in a question."
       recommend_tags:
         label: Anbefal tags
         text: "Anbefal tags vil som standard blive vist i dropdown-listen."

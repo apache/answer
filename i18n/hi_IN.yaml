@@ -234,6 +234,8 @@ backend:
         other: No permission to update.
       content_cannot_empty:
         other: Content cannot be empty.
+      content_less_than_minumum:
+        other: Not enough content entered.
     rank:
       fail_to_meet_the_condition:
         other: Reputation rank fail to meet the condition.
@@ -263,6 +265,8 @@ backend:
         other: You cannot delete a tag that is in use.
       cannot_set_synonym_as_itself:
         other: You cannot set the synonym of the current tag as itself.
+      minimum_count:
+        other: Not enough tags were entered.
     smtp:
       config_from_name_cannot_be_email:
         other: The from name cannot be a email address.
@@ -841,6 +845,7 @@ ui:
     http_50X: HTTP Error 500
     http_403: HTTP Error 403
     logout: Log Out
+    posts: Posts
   notifications:
     title: Notifications
     inbox: Inbox
@@ -1141,6 +1146,9 @@ ui:
           label: Body
           msg:
             empty: Body cannot be empty.
+          hint:
+            optional_body: Describe what the question is about.
+            minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
         tags:
           label: Tags
           msg:
@@ -1161,7 +1169,9 @@ ui:
     add_btn: Add tag
     create_btn: Create new tag
     search_tag: Search tag
-    hint: "Describe what your content is about, at least one tag is required."
+    hint: Describe what your content is about, at least one tag is required.
+    hint_zero_tags: Describe what your content is about.
+    hint_more_than_one_tag: "Describe what your content is about, at least {{min_tags_number}} tags are required."
     no_result: No tags matched
     tag_required_text: Required tag (at least one)
   header:
@@ -1214,7 +1224,7 @@ ui:
       msg:
         empty: Name cannot be empty.
         range: Name must be between 2 to 30 characters in length.
-        character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+        character: 'Must use the character set "a-z", "0-9", " - . _"'
     email:
       label: Email
       msg:
@@ -1381,9 +1391,11 @@ ui:
     search: Search people
   question_detail:
     action: Action
+    created: Created
     Asked: Asked
     asked: asked
     update: Modified
+    Edited: Edited
     edit: edited
     commented: commented
     Views: Viewed
@@ -1695,7 +1707,7 @@ ui:
     admin_name:
       label: Name
       msg: Name cannot be empty.
-      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      character: 'Must use the character set "a-z", "0-9", " - . _"'
       msg_max_length: Name must be between 2 to 30 characters in length.
     admin_password:
       label: Password
@@ -2078,10 +2090,16 @@ ui:
         ask_before_display: Ask before displaying external content
     write:
       page_title: Write
+      min_content:
+        label: Minimum question body length
+        text: Minimum allowed question body length in characters.
       restrict_answer:
         title: Answer write
         label: Each user can only write one answer for each question
         text: "Turn off to allow users to write multiple answers to the same question, which may cause answers to be unfocused."
+      min_tags:
+        label: "Minimum tags per question"
+        text: "Minimum number of tags required in a question."
       recommend_tags:
         label: Recommend tags
         text: "Recommend tags will show in the dropdown list by default."

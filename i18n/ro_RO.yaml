@@ -234,6 +234,8 @@ backend:
         other: Nu aveți permisiunea de a actualiza.
       content_cannot_empty:
         other: Conținutul nu poate fi gol.
+      content_less_than_minumum:
+        other: Not enough content entered.
     rank:
       fail_to_meet_the_condition:
         other: Rangul de reputaţie nu îndeplineşte condiţia.
@@ -263,6 +265,8 @@ backend:
         other: Nu puteți șterge o etichetă care este în uz.
       cannot_set_synonym_as_itself:
         other: Nu se poate seta sinonimul etichetei curente ca atare.
+      minimum_count:
+        other: Not enough tags were entered.
     smtp:
       config_from_name_cannot_be_email:
         other: Numele nu poate fi o adresă de e-mail.
@@ -841,6 +845,7 @@ ui:
     http_50X: Eroare HTTP 500
     http_403: Eroare HTTP 403
     logout: Deconectare
+    posts: Posts
   notifications:
     title: Notificări
     inbox: Mesaje primite
@@ -1141,6 +1146,9 @@ ui:
           label: Corp
           msg:
             empty: Corpul mesajului trebuie să conțină text.
+          hint:
+            optional_body: Describe what the question is about.
+            minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
         tags:
           label: Etichete
           msg:
@@ -1161,7 +1169,9 @@ ui:
     add_btn: Adaugă etichetă
     create_btn: Creează o etichetă nouă
     search_tag: Căutare etichetă
-    hint: "Describe what your content is about, at least one tag is required."
+    hint: Describe what your content is about, at least one tag is required.
+    hint_zero_tags: Describe what your content is about.
+    hint_more_than_one_tag: "Describe what your content is about, at least {{min_tags_number}} tags are required."
     no_result: Nicio etichetă potrivită
     tag_required_text: Etichetă necesară (cel puțin una)
   header:
@@ -1214,7 +1224,7 @@ ui:
       msg:
         empty: Câmpul Nume trebuie completat.
         range: Name must be between 2 to 30 characters in length.
-        character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+        character: 'Must use the character set "a-z", "0-9", " - . _"'
     email:
       label: E-mail
       msg:
@@ -1292,7 +1302,7 @@ ui:
         caption: Oamenii te pot menționa ca "@utilizator".
         msg: Numele de utilizator nu poate fi gol.
         msg_range: Username must be 2-30 characters in length.
-        character: 'Trebuie să utilizați setul de caractere "a-z", "0-9", "- . _"'
+        character: 'Must use the character set "a-z", "0-9", "- . _"'
       avatar:
         label: Imaginea de profil
         gravatar: Gravatar
@@ -1381,9 +1391,11 @@ ui:
     search: Caută persoane
   question_detail:
     action: Acţiune
+    created: Created
     Asked: Întrebat
     asked: întrebat
     update: Modificat
+    Edited: Edited
     edit: editat
     commented: commented
     Views: Văzute
@@ -1695,7 +1707,7 @@ ui:
     admin_name:
       label: Nume
       msg: Câmpul Nume trebuie completat.
-      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      character: 'Must use the character set "a-z", "0-9", " - . _"'
       msg_max_length: Name must be between 2 to 30 characters in length.
     admin_password:
       label: Parolă
@@ -2078,10 +2090,16 @@ ui:
         ask_before_display: Ask before displaying external content
     write:
       page_title: Scrie
+      min_content:
+        label: Minimum question body length
+        text: Minimum allowed question body length in characters.
       restrict_answer:
         title: Answer write
         label: Fiecare utilizator poate scrie doar câte un răspuns pentru fiecare întrebare
         text: "Turn off to allow users to write multiple answers to the same question, which may cause answers to be unfocused."
+      min_tags:
+        label: "Minimum tags per question"
+        text: "Minimum number of tags required in a question."
       recommend_tags:
         label: Etichete recomandate
         text: "Recommend tags will show in the dropdown list by default."

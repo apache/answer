@@ -234,6 +234,8 @@ backend:
         other: 没有更新权限。
       content_cannot_empty:
         other: 内容不能为空。
+      content_less_than_minumum:
+        other: 输入的内容不足。
     rank:
       fail_to_meet_the_condition:
         other: 声望值未达到要求。
@@ -263,6 +265,8 @@ backend:
         other: 你不能删除这个正在使用的标签。
       cannot_set_synonym_as_itself:
         other: 你不能将当前标签设为自己的同义词。
+      minimum_count:
+        other: 没有输入足够的标签。
     smtp:
       config_from_name_cannot_be_email:
         other: 发件人名称不能是邮箱地址。
@@ -1142,6 +1146,9 @@ ui:
           label: 内容
           msg:
             empty: 内容不能为空。
+          hint:
+            optional_body: 描述这个问题是什么。
+            minimum_characters: "详细描述这个问题，至少需要 {{min_content_length}} 字符。"
         tags:
           label: 标签
           msg:
@@ -1162,7 +1169,9 @@ ui:
     add_btn: 添加标签
     create_btn: 创建新标签
     search_tag: 搜索标签
-    hint: "描述您的内容是关于什么，至少需要一个标签。"
+    hint: 描述您的内容是关于什么，至少需要一个标签。
+    hint_zero_tags: 描述您的内容与什么有关。
+    hint_more_than_one_tag: "描述您的内容是关于什么，至少需要{{min_tags_number}}个标签。"
     no_result: 没有匹配的标签
     tag_required_text: 必选标签（至少一个）
   header:
@@ -1215,7 +1224,7 @@ ui:
       msg:
         empty: 名字不能为空
         range: 名称长度必须在 2 至 30 个字符之间。
-        character: '只能由 "a-z"、"0-9"、" - . _" 组成'
+        character: '只能由 "a-z", "0-9", " - . _" 组成'
     email:
       label: 邮箱
       msg:
@@ -1293,7 +1302,7 @@ ui:
         caption: 用户可以通过 "@用户名" 来提及你。
         msg: 用户名不能为空
         msg_range: 显示名称长度必须为 2-30 个字符。
-        character: '只能由 "a-z"、"0-9"、"- . _" 组成'
+        character: '只能由 "a-z", "0-9", " - . _" 组成'
       avatar:
         label: 头像
         gravatar: Gravatar
@@ -1698,7 +1707,7 @@ ui:
     admin_name:
       label: 名字
       msg: 名字不能为空。
-      character: '只能由 "a-z"、"0-9"、" - . _" 组成'
+      character: '只能由 "a-z", "0-9", " - . _" 组成'
       msg_max_length: 名称长度必须在 2 至 30 个字符之间。
     admin_password:
       label: 密码
@@ -2081,10 +2090,16 @@ ui:
         ask_before_display: 在显示外部内容之前询问
     write:
       page_title: 编辑
+      min_content:
+        label: 最小问题长度
+        text: 最小允许的问题内容长度（字符）。
       restrict_answer:
         title: 回答编辑
         label: 每个用户对于每个问题只能有一个回答
         text: "用户可以使用编辑按钮优化已有的回答"
+      min_tags:
+        label: "问题的最少标签数"
+        text: "一个问题所需标签的最小数量。"
       recommend_tags:
         label: 推荐标签
         text: "推荐标签将默认显示在下拉列表中。"

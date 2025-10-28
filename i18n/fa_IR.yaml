@@ -234,6 +234,8 @@ backend:
         other: اجازه بروزرسانی ندارید.
       content_cannot_empty:
         other: Content cannot be empty.
+      content_less_than_minumum:
+        other: Not enough content entered.
     rank:
       fail_to_meet_the_condition:
         other: شهرت ناکافی.
@@ -263,6 +265,8 @@ backend:
         other: نمی توانید تگی که در حال استفاده است را حذف کنید.
       cannot_set_synonym_as_itself:
         other: شما نمی توانید مترادفی برای برچسب فعلی به عوان خودش تنظیم کنین.
+      minimum_count:
+        other: Not enough tags were entered.
     smtp:
       config_from_name_cannot_be_email:
         other: '"از طرفه" نمی تواند آدرس ایمیل باشد.'
@@ -356,7 +360,7 @@ backend:
       name:
         other: این یک پاسخ نیست
       desc:
-        other: "This was posted as an answer, but it does not attempt to answer the question. It should possibly be an edit, a comment, another question,or deleted altogether."
+        other: "."
     no_longer_needed:
       name:
         other: دیگر نیازی نیست
@@ -841,6 +845,7 @@ ui:
     http_50X: خطای 500 HTTP
     http_403: خطای 403 HTTP
     logout: خروج
+    posts: Posts
   notifications:
     title: اعلانات
     inbox: پیغام‌های دریافتی
@@ -1141,6 +1146,9 @@ ui:
           label: بدنه
           msg:
             empty: بدنه نمی تواند خالی باشد.
+          hint:
+            optional_body: Describe what the question is about.
+            minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
         tags:
           label: برچسب ها
           msg:
@@ -1161,7 +1169,9 @@ ui:
     add_btn: اضافه کردن برچسب
     create_btn: ایجاد یک برچسب جدید
     search_tag: جست‌وجوی برچسب‌
-    hint: "Describe what your content is about, at least one tag is required."
+    hint: Describe what your content is about, at least one tag is required.
+    hint_zero_tags: Describe what your content is about.
+    hint_more_than_one_tag: "Describe what your content is about, at least {{min_tags_number}} tags are required."
     no_result: هیچ تگی مطابقت ندارد
     tag_required_text: تگ نیاز هست (حداقل یک مورد)
   header:
@@ -1214,7 +1224,7 @@ ui:
       msg:
         empty: نام نمی‌تواند خالی باشد.
         range: Name must be between 2 to 30 characters in length.
-        character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+        character: 'Must use the character set "a-z", "0-9", " - . _"'
     email:
       label: ایمیل
       msg:
@@ -1292,7 +1302,7 @@ ui:
         caption: دیگران میتوانند به شما به بصورت "@username" اشاره کنند.
         msg: نام کاربری نمی تواند خالی باشد.
         msg_range: Username must be 2-30 characters in length.
-        character: 'باید از حروف "a-z", "0-9", "- . _" استفاده شود'
+        character: 'Must use the character set "a-z", "0-9", "- . _"'
       avatar:
         label: عکس پروفایل
         gravatar: Gravatar
@@ -1381,9 +1391,11 @@ ui:
     search: جستجوی افراد
   question_detail:
     action: عملیات
+    created: Created
     Asked: پرسیده شده
     asked: پرسیده شده
     update: تغییر یافته
+    Edited: Edited
     edit: ویرایش شده
     commented: commented
     Views: مشاهده شده
@@ -1695,7 +1707,7 @@ ui:
     admin_name:
       label: نام
       msg: نام نمی‌تواند خالی باشد.
-      character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+      character: 'Must use the character set "a-z", "0-9", " - . _"'
       msg_max_length: Name must be between 2 to 30 characters in length.
     admin_password:
       label: رمز عبور
@@ -2078,10 +2090,16 @@ ui:
         ask_before_display: Ask before displaying external content
     write:
       page_title: نوشتن
+      min_content:
+        label: Minimum question body length
+        text: Minimum allowed question body length in characters.
       restrict_answer:
         title: Answer write
         label: Each user can only write one answer for each question
         text: "Turn off to allow users to write multiple answers to the same question, which may cause answers to be unfocused."
+      min_tags:
+        label: "Minimum tags per question"
+        text: "Minimum number of tags required in a question."
       recommend_tags:
         label: Recommend tags
         text: "Recommend tags will show in the dropdown list by default."
