@@ -29,6 +29,17 @@ interface Props {
   onChange?: (fd: Type.FormDataType) => void;
   formData: Type.FormDataType;
   readOnly: boolean;
+  minValue?: number;
+  inputMode?:
+    | 'text'
+    | 'search'
+    | 'none'
+    | 'tel'
+    | 'url'
+    | 'email'
+    | 'numeric'
+    | 'decimal'
+    | undefined;
 }
 const Index: FC<Props> = ({
   type = 'text',
@@ -37,6 +48,8 @@ const Index: FC<Props> = ({
   onChange,
   formData,
   readOnly = false,
+  minValue = 0,
+  inputMode = 'text',
 }) => {
   const fieldObject = formData[fieldName];
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,6 +73,8 @@ const Index: FC<Props> = ({
       placeholder={placeholder}
       type={type}
       value={fieldObject?.value || ''}
+      min={minValue}
+      inputMode={inputMode}
       onChange={handleChange}
       disabled={readOnly}
       isInvalid={fieldObject?.isInvalid}

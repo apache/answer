@@ -368,6 +368,9 @@ const SchemaForm: ForwardRefRenderFunction<FormRef, FormProps> = (
             {widget === 'input' ? (
               <Input
                 type={uiOpt && 'inputType' in uiOpt ? uiOpt.inputType : 'text'}
+                inputMode={
+                  uiOpt && 'inputMode' in uiOpt ? uiOpt.inputMode : 'text'
+                }
                 placeholder={
                   uiOpt && 'placeholder' in uiOpt ? uiOpt.placeholder : ''
                 }

@@ -90,6 +90,8 @@ const Index: FC = () => {
             }
             return true;
           },
+          inputType: 'number',
+          inputMode: 'numeric',
         },
       };
     });

@@ -88,6 +88,16 @@ export interface InputOptions extends BaseUIOptions {
     | 'time'
     | 'url'
     | 'week';
+  inputMode?:
+    | 'text'
+    | 'search'
+    | 'none'
+    | 'tel'
+    | 'url'
+    | 'email'
+    | 'numeric'
+    | 'decimal'
+    | undefined;
 }
 export interface SelectOptions extends BaseUIOptions {}
 export interface UploadOptions extends BaseUIOptions {
