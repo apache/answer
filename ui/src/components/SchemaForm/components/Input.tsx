@@ -29,7 +29,8 @@ interface Props {
   onChange?: (fd: Type.FormDataType) => void;
   formData: Type.FormDataType;
   readOnly: boolean;
-  minValue?: number;
+  min?: number;
+  max?: number;
   inputMode?:
     | 'text'
     | 'search'
@@ -48,7 +49,8 @@ const Index: FC<Props> = ({
   onChange,
   formData,
   readOnly = false,
-  minValue = 0,
+  min = 0,
+  max = 65355,
   inputMode = 'text',
 }) => {
   const fieldObject = formData[fieldName];
@@ -73,7 +75,8 @@ const Index: FC<Props> = ({
       placeholder={placeholder}
       type={type}
       value={fieldObject?.value || ''}
-      min={minValue}
+      min={min}
+      max={max}
       inputMode={inputMode}
       onChange={handleChange}
       disabled={readOnly}

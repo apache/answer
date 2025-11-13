@@ -49,6 +49,8 @@ export interface JSONSchema {
       description?: string;
       enum?: Array<string | boolean | number>;
       enumNames?: string[];
+      min?: number;
+      max?: number;
       default?: string | boolean | number | any[];
       max_length?: number;
     };
