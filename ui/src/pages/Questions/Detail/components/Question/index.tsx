@@ -189,7 +189,7 @@ const Index: FC<Props> = ({ data, initPage, hasAnswer, isLogged }) => {
         <Comment
           objectId={data?.id}
           mode="question"
-          commentId={String(searchParams.get('commentId'))}>
+          commentId={searchParams.get('commentId')}>
           <Operate
             qid={data?.id}
             type="question"

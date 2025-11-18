@@ -53,7 +53,7 @@ import './index.scss';
 interface IProps {
   objectId: string;
   mode?: 'answer' | 'question';
-  commentId?: string;
+  commentId?: string | null;
   children?: React.ReactNode;
 }
 
