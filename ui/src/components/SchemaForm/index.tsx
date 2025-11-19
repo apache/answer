@@ -260,7 +260,7 @@ const SchemaForm: ForwardRefRenderFunction<FormRef, FormProps> = (
           enum: enumValues = [],
           enumNames = [],
           max_length = 0,
-          max = 65355,
+          max,
           min = 0,
         } = properties[key];
         const { 'ui:widget': widget = 'input', 'ui:options': uiOpt } =

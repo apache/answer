@@ -50,10 +50,14 @@ const Index: FC<Props> = ({
   formData,
   readOnly = false,
   min = 0,
-  max = 65355,
+  max,
   inputMode = 'text',
 }) => {
   const fieldObject = formData[fieldName];
+  const numberInputProps =
+    type === 'number'
+      ? { min, ...(max != null && max > 0 ? { max } : {}) }
+      : {};
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = evt.currentTarget;
     const state = {
@@ -75,8 +79,7 @@ const Index: FC<Props> = ({
       placeholder={placeholder}
       type={type}
       value={fieldObject?.value || ''}
-      min={min}
-      max={max}
+      {...numberInputProps}
       inputMode={inputMode}
       onChange={handleChange}
       disabled={readOnly}
