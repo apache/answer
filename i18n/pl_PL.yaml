@@ -486,43 +486,42 @@ backend:
       title:
         other: "[{{.SiteName}}] Potwierdź swój nowy adres e-mail"
       body:
-        other: "Confirm your new email address for {{.SiteName}} by clicking on the following link:<br>\n<a href='{{.ChangeEmailUrl}}' target='_blank'>{{.ChangeEmailUrl}}</a><br><br>\n\nIf you did not request this change, please ignore this email.<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+        other: "Potwierdź swój nowy adres e-mail dla {{.SiteName}}, klikając poniższy link:<br>\n<a href='{{.ChangeEmailUrl}}' target='_blank'>{{.ChangeEmailUrl}}</a><br><br>\n\nJeśli nie prosiłeś(-aś) o zmianę adresu e-mail, zignoruj tę wiadomość.<br><br>\n\n--<br>\nUwaga: to jest automatyczna wiadomość systemowa, nie odpowiadaj na nią, ponieważ odpowiedź nie będzie odczytana."
     new_answer:
       title:
         other: "[{{.SiteName}}] {{.DisplayName}} odpowiedział(-a) na pytanie"
       body:
-        other: "<a href='{{.AnswerUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.AnswerSummary}}</blockquote><br>\n<a href='{{.AnswerUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.AnswerUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}} napisał(-a):<br>\n<blockquote>{{.AnswerSummary}}</blockquote><br>\n<a href='{{.AnswerUrl}}'>Zobacz na {{.SiteName}}</a><br><br>\n\n--<br>\nUwaga: to jest automatyczna wiadomość systemowa, nie odpowiadaj na nią, ponieważ odpowiedź nie będzie odczytana.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Zrezygnuj z subskrypcji</a></small>"
     invited_you_to_answer:
       title:
-        other: "[{{.SiteName}}] {{.DisplayName}} zaprosił(a) Cię do odpowiedzi"
+        other: "[{{.SiteName}}] {{.DisplayName}} zaprosił(-a) Cię do odpowiedzi"
       body:
-        other: "<a href='{{.InviteUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>I think you may know the answer.</blockquote><br>\n<a href='{{.InviteUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.InviteUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}} napisał(-a):<br>\n<blockquote>Myślę, że możesz znać odpowiedź.</blockquote><br>\n<a href='{{.InviteUrl}}'>Zobacz na {{.SiteName}}</a><br><br>\n\n--<br>\nUwaga: to jest automatyczna wiadomość systemowa, nie odpowiadaj na nią, ponieważ odpowiedź nie będzie odczytana.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Zrezygnuj z subskrypcji</a></small>"
     new_comment:
       title:
-        other: "[{{.SiteName}}] {{.DisplayName}} skomentował/-a Twój wpis"
+        other: "[{{.SiteName}}] {{.DisplayName}} skomentował(-a) Twój wpis"
       body:
-        other: "<a href='{{.CommentUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.CommentSummary}}</blockquote><br>\n<a href='{{.CommentUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.CommentUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}} napisał(-a):<br>\n<blockquote>{{.CommentSummary}}</blockquote><br>\n<a href='{{.CommentUrl}}'>Zobacz na {{.SiteName}}</a><br><br>\n\n--<br>\nUwaga: to jest automatyczna wiadomość systemowa, nie odpowiadaj na nią, ponieważ odpowiedź nie będzie odczytana.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Zrezygnuj z subskrypcji</a></small>"
     new_question:
       title:
         other: "[{{.SiteName}}] Nowe pytanie: {{.QuestionTitle}}"
       body:
-        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nUwaga: to jest automatyczna wiadomość systemowa, nie odpowiadaj na nią, ponieważ odpowiedź nie będzie odczytana.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Zrezygnuj z subskrypcji</a></small>"
     pass_reset:
       title:
-        other: "[{{.SiteName }}] Reset hasła"
+        other: "[{{.SiteName}}] Reset hasła"
       body:
-        other: "Somebody asked to reset your password on {{.SiteName}}.<br><br>\n\nIf it was not you, you can safely ignore this email.<br><br>\n\nClick the following link to choose a new password:<br>\n<a href='{{.PassResetUrl}}' target='_blank'>{{.PassResetUrl}}</a>\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+        other: "Otrzymaliśmy prośbę o zresetowanie Twojego hasła w serwisie {{.SiteName}}.<br><br>\n\nJeśli to nie Ty wysłałeś(-aś) tę prośbę, możesz bezpiecznie zignorować tę wiadomość.<br><br>\n\nKliknij poniższy link, aby ustawić nowe hasło:<br>\n<a href='{{.PassResetUrl}}' target='_blank'>{{.PassResetUrl}}</a>\n<br><br>\n\n--<br>\nUwaga: to jest automatyczna wiadomość systemowa, nie odpowiadaj na nią, ponieważ odpowiedź nie będzie odczytana."
     register:
       title:
         other: "[{{.SiteName}}] Potwierdź swoje nowe konto"
       body:
-        other: "Welcome to {{.SiteName}}!<br><br>\n\nClick the following link to confirm and activate your new account:<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\nIf the above link is not clickable, try copying and pasting it into the address bar of your web browser.\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+        other: "Witamy w {{.SiteName}}!<br><br>\n\nKliknij poniższy link, aby potwierdzić i aktywować swoje nowe konto:<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\nJeśli powyższy link nie jest klikalny, spróbuj skopiować go i wkleić do paska adresu przeglądarki.\n<br><br>\n\n--<br>\nUwaga: to jest automatyczna wiadomość systemowa, nie odpowiadaj na nią, ponieważ odpowiedź nie będzie odczytana."
     test:
       title:
         other: "[{{.SiteName}}] Wiadomość testowa"
       body:
-        other: "This is a test email.\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
-  action_activity_type:
+        other: "To jest testowa wiadomość e-mail.\n<br><br>\n\n--<br>\nUwaga: to jest automatyczna wiadomość systemowa, nie odpowiadaj na nią, ponieważ odpowiedź nie będzie odczytana."
     upvote:
       other: oceń pozytywnie
     upvoted:
@@ -573,244 +572,300 @@ backend:
         name:
           other: Pierwszy pozytywny głos
         desc:
-          other: First up voted a post.
+          other: Po raz pierwszy oddano pozytywny głos na post.
       first_link:
         name:
           other: Pierwszy odnośnik
         desc:
-          other: First added a link to another post.
+          other: Po raz pierwszy dodano link do innego wpisu.
+
       first_reaction:
         name:
-          other: Pierwsza Reakcja
+          other: Pierwsza reakcja
         desc:
-          other: First reacted to the post.
+          other: Po raz pierwszy zareagowano na wpis.
+
       first_share:
         name:
-          other: Pierwsze udostępnianie
+          other: Pierwsze udostępnienie
         desc:
-          other: First shared a post.
+          other: Po raz pierwszy udostępniono wpis.
+
       scholar:
         name:
           other: Scholar
         desc:
-          other: Zadane pytania i zaakceptowane odpowiedź.
+          other: Zadano pytanie i zaakceptowano odpowiedź.
+
       commentator:
         name:
-          other: Commentator
+          other: Komentator
         desc:
-          other: Pozostaw 5 komentarzy.
+          other: Pozostawiono 5 komentarzy.
+
       new_user_of_the_month:
         name:
           other: Nowy użytkownik miesiąca
         desc:
-          other: Outstanding contributions in their first month.
+          other: Wyjątkowy wkład w pierwszym miesiącu aktywności.
+
       read_guidelines:
         name:
-          other: Read Guidelines
+          other: Przeczytano zasady
         desc:
-          other: Read the [community guidelines].
+          other: Przeczytano [zasady społeczności].
+
       reader:
         name:
-          other: Reader
+          other: Czytelnik
         desc:
-          other: Read every answers in a topic with more than 10 answers.
+          other: Przeczytano wszystkie odpowiedzi w wątku mającym ponad 10 odpowiedzi.
+
       welcome:
         name:
-          other: Welcome
+          other: Witamy
         desc:
-          other: Received a up vote.
+          other: Otrzymano pozytywny głos.
+
       nice_share:
         name:
-          other: Nice Share
+          other: Udane udostępnienie
         desc:
-          other: Shared a post with 25 unique visitors.
+          other: Udostępniono wpis, który odwiedziło 25 unikalnych użytkowników.
+
       good_share:
         name:
-          other: Good Share
+          other: Dobre udostępnienie
         desc:
-          other: Shared a post with 300 unique visitors.
+          other: Udostępniono wpis, który odwiedziło 300 unikalnych użytkowników.
+
       great_share:
         name:
-          other: Great Share
+          other: Świetne udostępnienie
         desc:
-          other: Shared a post with 1000 unique visitors.
+          other: Udostępniono wpis, który odwiedziło 1000 unikalnych użytkowników.
+
       out_of_love:
         name:
-          other: Out of Love
+          other: Z miłości
         desc:
-          other: Used 50 up votes in a day.
+          other: Wykorzystano 50 pozytywnych głosów w ciągu dnia.
+
       higher_love:
         name:
-          other: Higher Love
+          other: Więcej miłości
         desc:
-          other: Used 50 up votes in a day 5 times.
+          other: Wykorzystano 50 pozytywnych głosów w ciągu dnia - 5 razy.
+
       crazy_in_love:
         name:
-          other: Crazy in Love
+          other: Szaleństwo miłości
         desc:
-          other: Used 50 up votes in a day 20 times.
+          other: Wykorzystano 50 pozytywnych głosów w ciągu dnia - 20 razy.
+
       promoter:
         name:
-          other: Promoter
+          other: Promotor
         desc:
-          other: Invited a user.
+          other: Zaproszono użytkownika.
+
       campaigner:
         name:
-          other: Campaigner
+          other: Kampanier
         desc:
-          other: Invited 3 basic users.
+          other: Zaproszono 3 podstawowych użytkowników.
+
       champion:
         name:
-          other: Champion
+          other: Mistrz
         desc:
-          other: Invited 5 members.
+          other: Zaproszono 5 użytkowników.
+
       thank_you:
         name:
-          other: Thank You
+          other: Dziękuję
         desc:
-          other: Has 20 up voted posts and gave 10 up votes.
+          other: Otrzymano 20 pozytywnych głosów i oddano 10.
+
       gives_back:
         name:
-          other: Gives Back
+          other: Oddający dalej
         desc:
-          other: Has 100 up voted posts and gave 100 up votes.
+          other: Otrzymano 100 pozytywnych głosów i oddano 100.
+
       empathetic:
         name:
-          other: Empathetic
+          other: Empatyczny
         desc:
-          other: Has 500 up voted posts and gave 1000 up votes.
+          other: Otrzymano 500 pozytywnych głosów i oddano 1000.
+
       enthusiast:
         name:
-          other: Enthusiast
+          other: Entuzjasta
         desc:
-          other: Visited 10 consecutive days.
+          other: Odwiedzono serwis 10 dni z rzędu.
+
       aficionado:
         name:
-          other: Aficionado
+          other: Koneser
         desc:
-          other: Visited 100 consecutive days.
+          other: Odwiedzono serwis 100 dni z rzędu.
+
       devotee:
         name:
-          other: Devotee
+          other: Wytrwały
         desc:
-          other: Visited 365 consecutive days.
+          other: Odwiedzono serwis 365 dni z rzędu.
+
       anniversary:
         name:
-          other: Anniversary
+          other: Rocznica
         desc:
-          other: Active member for a year, posted at least once.
+          other: Aktywny użytkownik od roku, co najmniej jeden wpis.
+
       appreciated:
         name:
-          other: Appreciated
+          other: Doceniony
         desc:
-          other: Received 1 up vote on 20 posts.
+          other: Otrzymano 1 pozytywny głos na 20 wpisach.
+
       respected:
         name:
-          other: Respected
+          other: Szanujący
         desc:
-          other: Received 2 up votes on 100 posts.
+          other: Otrzymano 2 pozytywne głosy na 100 wpisach.
+
       admired:
         name:
-          other: Admired
+          other: Podziwiany
         desc:
-          other: Received 5 up votes on 300 posts.
+          other: Otrzymano 5 pozytywnych głosów na 300 wpisach.
+
       solved:
         name:
-          other: Solved
+          other: Rozwiązane
         desc:
-          other: Have an answer be accepted.
+          other: Udzielono odpowiedzi, która została zaakceptowana.
+
       guidance_counsellor:
         name:
-          other: Guidance Counsellor
+          other: Doradca
         desc:
-          other: Have 10 answers be accepted.
+          other: 10 udzielonych odpowiedzi zostało zaakceptowanych.
+
       know_it_all:
         name:
-          other: Know-it-All
+          other: Wszystkowiedzący
         desc:
-          other: Have 50 answers be accepted.
+          other: 50 udzielonych odpowiedzi zostało zaakceptowanych.
+
       solution_institution:
         name:
-          other: Solution Institution
+          other: Instytucja rozwiązań
         desc:
-          other: Have 150 answers be accepted.
+          other: 150 udzielonych odpowiedzi zostało zaakceptowanych.
+
       nice_answer:
         name:
-          other: Nice Answer
+          other: Dobra odpowiedź
         desc:
-          other: Answer score of 10 or more.
+          other: Odpowiedź z wynikiem co najmniej 10.
+
       good_answer:
         name:
-          other: Good Answer
+          other: Bardzo dobra odpowiedź
         desc:
-          other: Answer score of 25 or more.
+          other: Odpowiedź z wynikiem co najmniej 25.
+
       great_answer:
         name:
-          other: Great Answer
+          other: Świetna odpowiedź
         desc:
-          other: Answer score of 50 or more.
+          other: Odpowiedź z wynikiem co najmniej 50.
+
       nice_question:
         name:
-          other: Nice Question
+          other: Dobre pytanie
         desc:
-          other: Question score of 10 or more.
+          other: Pytanie z wynikiem co najmniej 10.
+
       good_question:
         name:
-          other: Good Question
+          other: Bardzo dobre pytanie
         desc:
-          other: Question score of 25 or more.
+          other: Pytanie z wynikiem co najmniej 25.
+
       great_question:
         name:
-          other: Great Question
+          other: Świetne pytanie
         desc:
-          other: Question score of 50 or more.
+          other: Pytanie z wynikiem co najmniej 50.
+
       popular_question:
         name:
-          other: Popular Question
+          other: Popularne pytanie
         desc:
-          other: Question with 500 views.
+          other: Pytanie z 500 wyświetleniami.
+
       notable_question:
         name:
-          other: Notable Question
+          other: Zauważalne pytanie
         desc:
-          other: Question with 1,000 views.
+          other: Pytanie z 1000 wyświetleniami.
+
       famous_question:
         name:
-          other: Famous Question
+          other: Słynne pytanie
         desc:
-          other: Question with 5,000 views.
+          other: Pytanie z 5000 wyświetleniami.
+
       popular_link:
         name:
-          other: Popular Link
+          other: Popularny link
         desc:
-          other: Posted an external link with 50 clicks.
+          other: Opublikowano zewnętrzny link z 50 kliknięciami.
+
       hot_link:
         name:
-          other: Hot Link
+          other: Gorący link
         desc:
-          other: Posted an external link with 300 clicks.
+          other: Opublikowano zewnętrzny link z 300 kliknięciami.
+
       famous_link:
         name:
-          other: Famous Link
+          other: Słynny link
         desc:
-          other: Posted an external link with 100 clicks.
+          other: Opublikowano zewnętrzny link z 1000 kliknięciami.
     default_badge_groups:
       getting_started:
         name:
-          other: Getting Started
+          other: Pierwsze kroki
       community:
         name:
-          other: Community
+          other: Społeczność
       posting:
         name:
-          other: Posting
+          other: Publikowanie
 # The following fields are used for interface presentation(Front-end)
 ui:
   how_to_format:
     title: Jak formatować
     desc: >-
-      <ul class="mb-0"><li><p class="mb-2">mention a post: <code>#post_id</code></p></li> <li><p class="mb-2">to make links</p><pre class="mb-2"><code>&lt;https://url.com&gt;<br/><br/>[Title](https://url.com)</code></pre></li><li><p class="mb-2">put returns between paragraphs</p></li><li><p class="mb-2"><em>_italic_</em> or **<strong>bold</strong>**</p></li><li><p class="mb-2">indent code by 4 spaces</p></li><li><p class="mb-2">quote by placing <code>&gt;</code> at start of line</p></li><li><p class="mb-2">backtick escapes <code>`like _this_`</code></p></li><li><p class="mb-2">create code fences with backticks <code>`</code></p><pre class="mb-0"><code>```<br/>code here<br/>```</code></pre></li></ul>
-  pagination:
+      <ul class="mb-0">
+        <li><p class="mb-2">wspomnij wpis: <code>#post_id</code></p></li>
+        <li><p class="mb-2">tworzenie linków</p>
+          <pre class="mb-2"><code>&lt;https://url.com&gt;<br/><br/>[Tytuł](https://url.com)</code></pre>
+        </li>
+        <li><p class="mb-2">oddziel akapity pustą linią</p></li>
+        <li><p class="mb-2"><em>_kursywa_</em> lub **<strong>pogrubienie</strong>**</p></li>
+        <li><p class="mb-2">zagnieźdź kod, dodając 4 spacje na początku wiersza</p></li>
+        <li><p class="mb-2">cytuj, dodając <code>&gt;</code> na początku wiersza</p></li>
+        <li><p class="mb-2">użyj odwrotnego apostrofu (backtick) do zagnieżdżonego kodu <code>`tak _to_ działa`</code></p></li>
+        <li><p class="mb-2">twórz bloki kodu przy pomocy potrójnych odwrotnych apostrofów <code>`</code></p>
+          <pre class="mb-0"><code>```<br/>kod tutaj<br/>```</code></pre>
+        </li>
+      </ul>
+    pagination:
     prev: Poprzedni
     next: Następny
   page_title:
@@ -970,9 +1025,9 @@ ui:
       heading: Nagłówek
       cell: Komórka
     file:
-      text: Attach files
-      not_supported: "Don’t support that file type. Try again with {{file_type}}."
-      max_size: "Attach files size cannot exceed {{size}} MB."
+      text: Dołącz pliki
+      not_supported: "Ten typ pliku nie jest obsługiwany. Spróbuj ponownie z {{file_type}}."
+      max_size: "Rozmiar dołączanych plików nie może przekraczać {{size}} MB."
   close_modal:
     title: Zamykam ten post jako...
     btn_cancel: Anuluj
@@ -1037,20 +1092,22 @@ ui:
     delete:
       title: Usuń ten tag
       tip_with_posts: >-
-        <p>We do not allow <strong>deleting tag with posts</strong>.</p> <p>Please remove this tag from the posts first.</p>
+        <p>Nie można <strong>usunąć tagu, który jest używany w postach</strong>.</p>
+        <p>Najpierw usuń ten tag z powiązanych postów.</p>
       tip_with_synonyms: >-
-        <p>We do not allow <strong>deleting tag with synonyms</strong>.</p> <p>Please remove the synonyms from this tag first.</p>
+        <p>Nie można <strong>usunąć tagu, który ma synonimy</strong>.</p>
+        <p>Najpierw usuń synonimy przypisane do tego tagu.</p>
       tip: Czy na pewno chcesz usunąć?
       close: Zamknij
     merge:
-      title: Merge tag
-      source_tag_title: Source tag
-      source_tag_description: The source tag and its associated data will be remapped to the target tag.
-      target_tag_title: Target tag
-      target_tag_description: A synonym between these two tags will be created after merging.
-      no_results: No tags matched
-      btn_submit: Submit
-      btn_close: Close
+      title: Scal tag
+      source_tag_title: Źródłowy tag
+      source_tag_description: Źródłowy tag i wszystkie powiązane dane zostaną przemapowane na tag docelowy.
+      target_tag_title: Docelowy tag
+      target_tag_description: Po scaleniu zostanie utworzony synonim między tymi dwoma tagami.
+      no_results: Brak pasujących tagów
+      btn_submit: Zatwierdź
+      btn_close: Zamknij
   edit_tag:
     title: Edytuj tag
     default_reason: Edytuj tag
@@ -1058,20 +1115,20 @@ ui:
     btn_save_edits: Zapisz edycje
     btn_cancel: Anuluj
   dates:
-    long_date: MMM D
-    long_date_with_year: "MMM D, YYYY"
-    long_date_with_time: "MMM D, YYYY [o] HH:mm"
+    long_date: D MMM
+    long_date_with_year: "YYYY MMM D"
+    long_date_with_time: "YYYY MMM D [o] HH:mm"
     now: teraz
-    x_seconds_ago: "{{count}} s temu"
-    x_minutes_ago: "{{count}} min temu"
-    x_hours_ago: "{{count}} h temu"
+    x_seconds_ago: "{{count}} sek. temu"
+    x_minutes_ago: "{{count}} min. temu"
+    x_hours_ago: "{{count}} godz. temu"
     hour: godzina
     day: dzień
     hours: godziny
     days: dni
     month: month
     months: months
-    year: year
+    year: rok
   reaction:
     heart: serce
     smile: uśmiech
@@ -1127,7 +1184,7 @@ ui:
     more: Więcej
     wiki: Wiki
   ask:
-    title: Create Question
+    title: Utwórz pytanie
     edit_title: Edytuj pytanie
     default_reason: Edytuj pytanie
     default_first_reason: Create question
@@ -1138,7 +1195,7 @@ ui:
           label: Rewizja
         title:
           label: Tytuł
-          placeholder: What's your topic? Be specific.
+          placeholder: Jaki jest temat? Bądź konkretny.
           msg:
             empty: Tytuł nie może być pusty.
             range: Tytuł do 150 znaków
@@ -1147,8 +1204,8 @@ ui:
           msg:
             empty: Treść nie może być pusta.
           hint:
-            optional_body: Describe what the question is about.
-            minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
+            optional_body: Opisz, czego dotyczy pytanie.
+            minimum_characters: "Opisz, czego dotyczy pytanie — wymagane jest co najmniej {{min_content_length}} znaków."
         tags:
           label: Tagi
           msg:
@@ -1169,9 +1226,9 @@ ui:
     add_btn: Dodaj tag
     create_btn: Utwórz nowy tag
     search_tag: Wyszukaj tag
-    hint: Describe what your content is about, at least one tag is required.
-    hint_zero_tags: Describe what your content is about.
-    hint_more_than_one_tag: "Describe what your content is about, at least {{min_tags_number}} tags are required."
+    hint: Opisz, czego dotyczy Twoja treść — wymagany jest co najmniej jeden tag.
+    hint_zero_tags: Opisz, czego dotyczy Twoja treść.
+    hint_more_than_one_tag: "Opisz, czego dotyczy Twoja treść — wymagane są co najmniej {{min_tags_number}} tagi."
     no_result: Nie znaleziono pasujących tagów
     tag_required_text: Wymagany tag (co najmniej jeden)
   header:
@@ -1179,7 +1236,7 @@ ui:
       question: Pytania
       tag: Tagi
       user: Użytkownicy
-      badges: Badges
+      badges: Odznaki
       profile: Profil
       setting: Ustawienia
       logout: Wyloguj
@@ -1296,13 +1353,13 @@ ui:
       display_name:
         label: Nazwa wyświetlana
         msg: Wyświetlana nazwa nie może być pusta.
-        msg_range: Display name must be 2-30 characters in length.
+        msg_range: Wyświetlana nazwa musi mieć od 2 do 30 znaków długości.
       username:
         label: Nazwa użytkownika
         caption: Ludzie mogą oznaczać Cię jako "@nazwa_użytkownika".
         msg: Nazwa użytkownika nie może być pusta.
-        msg_range: Username must be 2-30 characters in length.
-        character: 'Must use the character set "a-z", "0-9", "- . _"'
+        msg_range: Nazwa użytkownika musi mieć od 2 do 30 znaków długości.
+        character: 'Muszą być znaki ze zbioru "a-z", "0-9", "- . _"'
       avatar:
         label: Zdjęcie profilowe
         gravatar: Gravatar
@@ -1391,11 +1448,11 @@ ui:
     search: Wyszukaj osoby
   question_detail:
     action: Akcja
-    created: Created
+    created: Utworzono
     Asked: Zadane
     asked: zadał(a)
     update: Zmodyfikowane
-    Edited: Edited
+    Edited: Wyedytowane
     edit: edytowany
     commented: skomentowano
     Views: Wyświetlone
@@ -1442,7 +1499,7 @@ ui:
     list:
       confirm_btn: Lista
       title: Pokaż ten post
-      content: Are you sure you want to list?
+      content: Czy na pewno chcesz wyświetlić tę listę?
     unlist:
       confirm_btn: Usuń z listy
       title: Usuń ten post z listy
@@ -1507,16 +1564,16 @@ ui:
     normal: Normalny
     closed: Zamknięty
     deleted: Usunięty
-    deleted_permanently: Deleted permanently
+    deleted_permanently: Usunięto trwale
     pending: Oczekujący
     more: Więcej
-    view: View
-    card: Card
-    compact: Compact
-    display_below: Display below
-    always_display: Always display
-    or: or
-    back_sites: Back to sites
+    view: Podgląd
+    card: Karta
+    compact: Kompakt
+    display_below: Wyświetl poniżej
+    always_display: Wyświetlaj zawsze
+    or: lub
+    back_sites: Powrót do stron
   search:
     title: Wyniki wyszukiwania
     keywords: Słowa kluczowe
@@ -1524,7 +1581,7 @@ ui:
     follow: Obserwuj
     following: Obserwuje
     counts: "Liczba wyników: {{count}}"
-    counts_loading: "... Results"
+    counts_loading: "... Wyniki"
     more: Więcej
     sort_btns:
       relevance: Relewantność
@@ -1547,13 +1604,13 @@ ui:
     via: Udostępnij post za pośrednictwem...
     copied: Skopiowano
     facebook: Udostępnij na Facebooku
-    twitter: Share to X
+    twitter: Udostępnij na X
   cannot_vote_for_self: Nie możesz głosować na własne posty.
   modal_confirm:
     title: Błąd...
   delete_permanently:
-    title: Delete permanently
-    content: Are you sure you want to delete permanently?
+    title: Usuń trwale
+    content: Czy na pewno chcesz usunąć to trwale?
   account_result:
     success: Twoje nowe konto zostało potwierdzone; zostaniesz przekierowany na stronę główną.
     link: Kontynuuj do strony głównej
@@ -1582,7 +1639,7 @@ ui:
     newest: Najnowsze
     active: Aktywne
     hot: Gorące
-    frequent: Frequent
+    frequent: Częste
     recommend: Polecane
     score: Ocena
     unanswered: Bez odpowiedzi
@@ -1628,7 +1685,7 @@ ui:
     x_votes: otrzymane głosy
     x_answers: odpowiedzi
     x_questions: pytania
-    recent_badges: Recent Badges
+    recent_badges: Ostatnie odznaki
   install:
     title: Instalacja
     next: Dalej
@@ -1667,14 +1724,14 @@ ui:
     ssl_mode:
       label: SSL Mode
     ssl_root_cert:
-      placeholder: sslrootcert file path
-      msg: Path to sslrootcert file cannot be empty
+      placeholder: Ścieżka do pliku sslrootcert
+      msg: Ścieżka do pliku sslrootcert nie może być pusta
     ssl_cert:
-      placeholder: sslcert file path
-      msg: Path to sslcert file cannot be empty
+      placeholder: Ścieżka do pliku sslcert
+      msg: Ścieżka do pliku sslcert nie może być pusta
     ssl_key:
-      placeholder: sslkey file path
-      msg: Path to sslkey file cannot be empty
+      placeholder: Ścieżka do pliku sslkey
+      msg: Ścieżka do pliku sslkey nie może być pusta
     config_yaml:
       title: Utwórz plik config.yaml
       label: Plik config.yaml utworzony.
@@ -1717,9 +1774,9 @@ ui:
       msg_min_length: Hasło musi mieć co najmniej 8 znaków.
       msg_max_length: Hasło musi mieć maksymalnie 32 znaki.
     admin_confirm_password:
-      label: "Confirm Password"
-      text: "Please re-enter your password to confirm."
-      msg: "Confirm password does not match."
+      label: "Potwierdź hasło"
+      text: "Wprowadź ponownie swoje hasło, aby potwierdzić."
+      msg: "Potwierdzenie hasła nie jest zgodne."
     admin_email:
       label: Email
       text: Będziesz potrzebować tego adresu e-mail do logowania.
@@ -1777,7 +1834,7 @@ ui:
     privileges: Uprawnienia
     plugins: Wtyczki
     installed_plugins: Zainstalowane wtyczki
-    apperance: Appearance
+    apperance: Wygląd
   website_welcome: Witamy w serwisie {{site_name}}
   user_center:
     login: Zaloguj się
@@ -1786,15 +1843,15 @@ ui:
   badges:
     modal:
       title: Gratulacje
-      content: You've earned a new badge.
-      close: Close
-      confirm: View badges
-    title: Badges
-    awarded: Awarded
-    earned_×: Earned ×{{ number }}
-    ×_awarded: "{{ number }} awarded"
-    can_earn_multiple: You can earn this multiple times.
-    earned: Earned
+      content: Zdobyłeś nową odznakę.
+      close: Zamknij
+      confirm: Zobacz odznaki
+    title: Odznaki
+    awarded: Przyznano
+    earned_×: Zdobyto ×{{ number }}
+    ×_awarded: „{{ number }} przyznano”
+    can_earn_multiple: Możesz zdobyć tę odznakę wielokrotnie.
+    earned: Zdobyto
   admin:
     admin_header:
       title: Administrator
@@ -1803,15 +1860,15 @@ ui:
       welcome: Witaj Administratorze!
       site_statistics: Statystyki witryny
       questions: "Pytania:"
-      resolved: "Resolved:"
-      unanswered: "Unanswered:"
+      resolved: "Rozwiązane:"
+      unanswered: "Bez odpowiedzi:"
       answers: "Odpowiedzi:"
       comments: "Komentarze:"
       votes: "Głosy:"
       users: "Użytkownicy:"
-      flags: "Flagi:"
-      reviews: "Reviews:"
-      site_health: Site health
+      flags: "Zgłoszenia:"
+      reviews: "Przeglądy:"
+      site_health: "Stan serwisu"
       version: "Wersja:"
       https: "HTTPS:"
       upload_folder: "Prześlij folder:"
@@ -1876,14 +1933,14 @@ ui:
       form:
         fields:
           display_name:
-            label: Display name
-            msg_range: Display name must be 2-30 characters in length.
+            label: Wyświetlana nazwa
+            msg_range: Wyświetlana nazwa musi mieć od 2 do 30 znaków.
           username:
-            label: Nazwa
-            msg_range: Username must be 2-30 characters in length.
+            label: Nazwa użytkownika
+            msg_range: Nazwa użytkownika musi mieć od 2 do 30 znaków.
           email:
             label: Email
-            msg_invalid: Błędny adresy email.
+            msg_invalid: Błędny adres e-mail.
       edit_success: Edycja zakończona pomyślnie
       btn_cancel: Anuluj
       btn_submit: Prześlij
@@ -1898,7 +1955,7 @@ ui:
             msg: "Podaj adresy e-mail użytkowników, jeden w każdej linii."
           display_name:
             label: Nazwa wyświetlana
-            msg: Display name must be 2-30 characters in length.
+            msg: Wyświetlana nazwa musi mieć od 2 do 30 znaków.
           email:
             label: E-mail
             msg: Email nie jest prawidłowy.
@@ -1912,10 +1969,10 @@ ui:
       name: Imię
       email: E-mail
       reputation: Reputacja
-      created_at: Created time
-      delete_at: Deleted time
-      suspend_at: Suspended time
-      suspend_until: Suspend until
+      created_at: Czas utworzenia
+      delete_at: Czas usunięcia
+      suspend_at: Czas zawieszenia
+      suspend_until: Zawieszone do
       status: Status
       role: Rola
       action: Akcja
@@ -1950,8 +2007,8 @@ ui:
       suspend_user:
         title: Zawieś tego użytkownika
         content: Zawieszony użytkownik nie może się logować.
-        label: How long will the user be suspended for?
-        forever: Forever
+        label: Na jak długo użytkownik zostanie zawieszony?
+        forever: Na zawsze
     questions:
       page_title: Pytania
       unlisted: Unlisted
@@ -2013,11 +2070,11 @@ ui:
         msg: Strefa czasowa nie może być pusta.
         text: Wybierz miasto w tej samej strefie czasowej, co Ty.
       avatar:
-        label: Default avatar
-        text: For users without a custom avatar of their own.
+        label: Domyślny awatar
+        text: Dla użytkowników, którzy nie ustawili własnego awatara.
       gravatar_base_url:
-        label: Gravatar base URL
-        text: URL of the Gravatar provider's API base. Ignored when empty.
+        label: Bazowy URL Gravatara
+        text: Adres bazowy API dostawcy Gravatara. Ignorowane, jeśli puste.
     smtp:
       page_title: SMTP
       from_email:
@@ -2096,37 +2153,37 @@ ui:
       restrict_answer:
         title: Answer write
         label: Każdy użytkownik może napisać tylko jedną odpowiedź na każde pytanie
-        text: "Turn off to allow users to write multiple answers to the same question, which may cause answers to be unfocused."
+        text: "Wyłącz, aby pozwolić użytkownikom pisać wiele odpowiedzi na to samo pytanie, co może powodować, że odpowiedzi będą mniej skupione."
       min_tags:
-        label: "Minimum tags per question"
-        text: "Minimum number of tags required in a question."
+        label: "Minimalna liczba tagów na pytanie"
+        text: "Minimalna liczba tagów wymagana w pytaniu."
       recommend_tags:
         label: Rekomendowane tagi
-        text: "Recommend tags will show in the dropdown list by default."
+        text: "Rekomendowane tagi będą domyślnie wyświetlane na liście wyboru."
         msg:
-          contain_reserved: "recommended tags cannot contain reserved tags"
+          contain_reserved: "Rekomendowane tagi nie mogą zawierać tagów zarezerwowanych."
       required_tag:
-        title: Set required tags
-        label: Set “Recommend tags” as required tags
+        title: Ustaw wymagane tagi
+        label: Ustaw „Rekomendowane tagi” jako wymagane
         text: "Każde nowe pytanie musi mieć przynajmniej jeden rekomendowany tag."
       reserved_tags:
         label: Zarezerwowane tagi
-        text: "Reserved tags can only be used by moderator."
+        text: "Zarezerwowane tagi mogą być używane tylko przez moderatorów."
       image_size:
-        label: Max image size (MB)
-        text: "The maximum image upload size."
+        label: Maksymalny rozmiar obrazu (MB)
+        text: "Maksymalny dopuszczalny rozmiar przesyłanego obrazu."
       attachment_size:
-        label: Max attachment size (MB)
-        text: "The maximum attachment files upload size."
+        label: Maksymalny rozmiar załącznika (MB)
+        text: "Maksymalny dopuszczalny rozmiar przesyłanych plików."
       image_megapixels:
-        label: Max image megapixels
-        text: "Maximum number of megapixels allowed for an image."
+        label: Maksymalna liczba megapikseli
+        text: "Maksymalna liczba megapikseli dopuszczona dla obrazu."
       image_extensions:
-        label: Authorized image extensions
-        text: "A list of file extensions allowed for image display, separate with commas."
+        label: Dozwolone rozszerzenia obrazów
+        text: "Lista rozszerzeń plików dozwolonych dla obrazów; oddziel po przecinkach."
       attachment_extensions:
-        label: Authorized attachment extensions
-        text: "A list of file extensions allowed for upload, separate with commas. WARNING: Allowing uploads may cause security issues."
+        label: Dozwolone rozszerzenia załączników
+        text: "Lista rozszerzeń plików dozwolonych do przesyłania; oddziel po przecinkach. UWAGA: Zezwolenie na przesyłanie plików może powodować ryzyko bezpieczeństwa."
     seo:
       page_title: SEO
       permalink:
@@ -2190,7 +2247,7 @@ ui:
         text: "OSTRZEŻENIE: Jeśli wyłączone, już się nie zalogujesz, jeśli wcześniej nie skonfigurowałeś innej metody logowania."
     installed_plugins:
       title: Zainstalowane wtyczki
-      plugin_link: Plugins extend and expand the functionality. You may find plugins in the <1>Plugin Repository</1>.
+      plugin_link: Wtyczki rozszerzają i rozbudowują funkcjonalność. Wtyczki znajdziesz w <1>Repozytorium Wtyczek</1>.
       filter:
         all: Wszystkie
         active: Aktywne
@@ -2232,25 +2289,25 @@ ui:
       title: Uprawnienia
       level:
         label: Wymagany poziom reputacji
-        text: Wybierz reputację wymaganą dla uprawnień
+        text: Wybierz reputację wymaganą dla tego uprawnienia
       msg:
-        should_be_number: the input should be number
-        number_larger_1: number should be equal or larger than 1
+        should_be_number: Wartość musi być liczbą
+        number_larger_1: Liczba musi być równa 1 lub większa
     badges:
-      action: Action
-      active: Active
-      activate: Activate
-      all: All
-      awards: Awards
-      deactivate: Deactivate
+      action: Akcja
+      active: Aktywne
+      activate: Aktywuj
+      all: Wszystkie
+      awards: Przyznane
+      deactivate: Dezaktywuj
       filter:
-        placeholder: Filter by name, badge:id
+        placeholder: Filtruj po nazwie, badge:id
       group: Grupa
-      inactive: Inactive
-      name: Name
+      inactive: Nieaktywne
+      name: Nazwa
       show_logs: Wyświetl dzienniki
       status: Status
-      title: Badges
+      title: Odznaki
   form:
     optional: (opcjonalne)
     empty: nie może być puste
@@ -2273,11 +2330,11 @@ ui:
     approve_flag_tip: Czy akceptujesz tę flagę?
     approve_post_tip: Czy zatwierdzasz ten post?
     approve_user_tip: Czy zatwierdzasz tego użytkownika?
-    suggest_edits: Suggested edits
+    suggest_edits: Sugerowane edycje
     flag_post: Oznacz wpis
     flag_user: Oznacz użytkownika
-    queued_post: Queued post
-    queued_user: Queued user
+    queued_post: Oczekujący post
+    queued_user: Oczekujący użytkownik
     filter_label: Typ
     reputation: reputacja
     flag_post_type: Oznaczono ten wpis jako {{ type }}.
@@ -2330,7 +2387,7 @@ ui:
     discard_confirm: Czy na pewno chcesz odrzucić swoją wersję roboczą?
   messages:
     post_deleted: Ten post został usunięty.
-    post_cancel_deleted: This post has been undeleted.
+    post_cancel_deleted: Usunięcie tego posta zostało anulowane.
     post_pin: Ten post został przypięty.
     post_unpin: Ten post został odpięty.
     post_hide_list: Ten post został ukryty na liście.
@@ -2339,21 +2396,20 @@ ui:
     post_list: Ten wpis został umieszczony na liście.
     post_unlist: Ten wpis został usunięty z listy.
     post_pending: Twój wpis oczekuje na recenzje. Będzie widoczny po jej akceptacji.
-    post_closed: This post has been closed.
-    answer_deleted: This answer has been deleted.
-    answer_cancel_deleted: This answer has been undeleted.
-    change_user_role: This user's role has been changed.
-    user_inactive: This user is already inactive.
-    user_normal: This user is already normal.
-    user_suspended: This user has been suspended.
-    user_deleted: This user has been deleted.
-    badge_activated: This badge has been activated.
-    badge_inactivated: This badge has been inactivated.
-    users_deleted: These users have been deleted.
-    posts_deleted: These questions have been deleted.
-    answers_deleted: These answers have been deleted.
-    copy: Copy to clipboard
-    copied: Copied
-    external_content_warning: External images/media are not displayed.
-
+    post_closed: Ten post został zamknięty.
+    answer_deleted: Ta odpowiedź została usunięta.
+    answer_cancel_deleted: Ta odpowiedź została przywrócona.
+    change_user_role: Rola tego użytkownika została zmieniona.
+    user_inactive: Ten użytkownik jest już nieaktywny.
+    user_normal: Ten użytkownik jest już aktywny.
+    user_suspended: Ten użytkownik został zawieszony.
+    user_deleted: Ten użytkownik został usunięty.
+    badge_activated: Ta odznaka została aktywowana.
+    badge_inactivated: Ta odznaka została dezaktywowana.
+    users_deleted: Ci użytkownicy zostali usunięci.
+    posts_deleted: Te pytania zostały usunięte.
+    answers_deleted: Te odpowiedzi zostały usunięte.
+    copy: Skopiuj do schowka
+    copied: Skopiowano
+    external_content_warning: Zewnętrzne obrazy/media nie są wyświetlane.
 
