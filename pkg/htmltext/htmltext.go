@@ -96,10 +96,16 @@ func convertChinese(content string) string {
 }
 
 func cutLongTitle(title string) string {
-	if len(title) > 150 {
-		return title[0:150]
+	maxBytes := 150
+	if len(title) <= maxBytes {
+		return title
 	}
-	return title
+
+	truncated := title[:maxBytes]
+	for len(truncated) > 0 && !utf8.ValidString(truncated) {
+		truncated = truncated[:len(truncated)-1]
+	}
+	return truncated
 }
 
 // FetchExcerpt return the excerpt from the HTML string

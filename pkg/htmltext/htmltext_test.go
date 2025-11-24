@@ -21,6 +21,7 @@ package htmltext
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -176,6 +177,27 @@ func TestFetchRangedExcerpt(t *testing.T) {
 	expected = "...你好😂world"
 	actual = FetchRangedExcerpt("<p>hello你好😂world</p>", "...", 5, 100)
 	assert.Equal(t, expected, actual)
+}
+
+func TestCutLongTitle(t *testing.T) {
+	// Short title, no cutting needed
+	short := "hello"
+	assert.Equal(t, short, cutLongTitle(short))
+
+	// Exactly max bytes, no cutting needed
+	exact150 := strings.Repeat("a", 150)
+	assert.Equal(t, 150, len(cutLongTitle(exact150)))
+
+	// Just over max bytes, should be cut
+	exact151 := strings.Repeat("a", 151)
+	assert.Equal(t, 150, len(cutLongTitle(exact151)))
+
+	// Multi-byte rune at boundary gets removed properly
+	asciiPart := strings.Repeat("a", 149) // 149 bytes
+	multiByteChar := "中"                  // 3 bytes - will span bytes 149-151
+	title := asciiPart + multiByteChar    // 152 bytes total
+
+	assert.Equal(t, asciiPart, cutLongTitle(title))
 }
 
 func TestFetchMatchedExcerpt(t *testing.T) {
