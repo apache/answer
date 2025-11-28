@@ -31,7 +31,7 @@ import (
 )
 
 // HandleResponse Handle response body
-func HandleResponse(ctx *gin.Context, err error, data interface{}) {
+func HandleResponse(ctx *gin.Context, err error, data any) {
 	lang := GetLang(ctx)
 	// no error
 	if err == nil {
@@ -61,7 +61,7 @@ func HandleResponse(ctx *gin.Context, err error, data interface{}) {
 }
 
 // BindAndCheck bind request and check
-func BindAndCheck(ctx *gin.Context, data interface{}) bool {
+func BindAndCheck(ctx *gin.Context, data any) bool {
 	lang := GetLang(ctx)
 	ctx.Set(constant.AcceptLanguageFlag, lang)
 	if err := ctx.ShouldBind(data); err != nil {
@@ -79,7 +79,7 @@ func BindAndCheck(ctx *gin.Context, data interface{}) bool {
 }
 
 // BindAndCheckReturnErr bind request and check
-func BindAndCheckReturnErr(ctx *gin.Context, data interface{}) (errFields []*validator.FormErrorField) {
+func BindAndCheckReturnErr(ctx *gin.Context, data any) (errFields []*validator.FormErrorField) {
 	lang := GetLang(ctx)
 	if err := ctx.ShouldBind(data); err != nil {
 		log.Errorf("http_handle BindAndCheck fail, %s", err.Error())

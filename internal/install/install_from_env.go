@@ -133,7 +133,7 @@ func initBaseInfo(env *Env) (err error) {
 	return requestAPI(req, "POST", "/installation/base-info", InitBaseInfo)
 }
 
-func requestAPI(req interface{}, method, url string, handlerFunc gin.HandlerFunc) error {
+func requestAPI(req any, method, url string, handlerFunc gin.HandlerFunc) error {
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
 	body, _ := json.Marshal(req)

@@ -200,7 +200,7 @@ func (r *GetOtherUserInfoByUsernameResp) ConvertFromUserEntityWithLang(ctx conte
 			r.SuspendedUntil = userInfo.SuspendedUntil.Unix()
 			trans := translator.GlobalTrans.Tr(lang, "ui.dates.long_date_with_time")
 			suspendedUntilFormatted := day.Format(userInfo.SuspendedUntil.Unix(), trans, "UTC")
-			r.StatusMsg = translator.TrWithData(lang, reason.UserStatusSuspendedUntil, map[string]interface{}{
+			r.StatusMsg = translator.TrWithData(lang, reason.UserStatusSuspendedUntil, map[string]any{
 				"SuspendedUntil": suspendedUntilFormatted,
 			})
 		}

@@ -97,7 +97,7 @@ type GetRevisionResp struct {
 	Title           string        `json:"title"`
 	UrlTitle        string        `json:"url_title"`
 	Content         string        `json:"-"`
-	ContentParsed   interface{}   `json:"content"`
+	ContentParsed   any           `json:"content"`
 	Status          int           `json:"status"`
 	CreatedAt       time.Time     `json:"-"`
 	CreatedAtParsed int64         `json:"create_at"`

@@ -107,8 +107,8 @@ func (sr *searchRepo) SearchContents(ctx context.Context, words []string, tagIDs
 		ub    *builder.Builder
 		qfs   = qFields
 		afs   = aFields
-		argsQ = []interface{}{}
-		argsA = []interface{}{}
+		argsQ = []any{}
+		argsA = []any{}
 	)
 
 	if order == "relevance" {
@@ -212,8 +212,8 @@ func (sr *searchRepo) SearchContents(ctx context.Context, words []string, tagIDs
 		return
 	}
 
-	queryArgs := []interface{}{}
-	countArgs := []interface{}{}
+	queryArgs := []any{}
+	countArgs := []any{}
 
 	queryArgs = append(queryArgs, querySQL)
 	queryArgs = append(queryArgs, argsQ...)
@@ -246,7 +246,7 @@ func (sr *searchRepo) SearchQuestions(ctx context.Context, words []string, tagID
 	words = filterWords(words)
 	var (
 		qfs  = qFields
-		args = []interface{}{}
+		args = []any{}
 	)
 	if order == "relevance" {
 		if len(words) > 0 {
@@ -313,8 +313,8 @@ func (sr *searchRepo) SearchQuestions(ctx context.Context, words []string, tagID
 		args = append(args, answers)
 	}
 
-	queryArgs := []interface{}{}
-	countArgs := []interface{}{}
+	queryArgs := []any{}
+	countArgs := []any{}
 
 	countSQL, _, err := builder.MySQL().Select("count(*) total").From(b, "c").ToSQL()
 	if err != nil {
@@ -358,7 +358,7 @@ func (sr *searchRepo) SearchAnswers(ctx context.Context, words []string, tagIDs 
 
 	var (
 		afs  = aFields
-		args = []interface{}{}
+		args = []any{}
 	)
 	if order == "relevance" {
 		if len(words) > 0 {
@@ -409,8 +409,8 @@ func (sr *searchRepo) SearchAnswers(ctx context.Context, words []string, tagIDs 
 		args = append(args, questionID)
 	}
 
-	queryArgs := []interface{}{}
-	countArgs := []interface{}{}
+	queryArgs := []any{}
+	countArgs := []any{}
 
 	countSQL, _, err := builder.MySQL().Select("count(*) total").From(b, "c").ToSQL()
 	if err != nil {
@@ -575,9 +575,9 @@ func (sr *searchRepo) parseResult(ctx context.Context, res []map[string][]byte, 
 	return resultList, nil
 }
 
-func addRelevanceField(searchFields, words, fields []string) (res []string, args []interface{}) {
+func addRelevanceField(searchFields, words, fields []string) (res []string, args []any) {
 	relevanceRes := []string{}
-	args = []interface{}{}
+	args = []any{}
 
 	for _, searchField := range searchFields {
 		var (
@@ -585,7 +585,7 @@ func addRelevanceField(searchFields, words, fields []string) (res []string, args
 			replacement  = "REPLACE(%s, ?, '')"
 			replaceField = searchField
 			replaced     string
-			argsField    = []interface{}{}
+			argsField    = []any{}
 		)
 
 		res = fields

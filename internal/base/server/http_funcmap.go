@@ -64,7 +64,7 @@ var funcMap = template.FuncMap{
 	"formatLinkNofollow": func(data string) template.HTML {
 		return template.HTML(FormatLinkNofollow(data))
 	},
-	"translator": func(la i18n.Language, data string, params ...interface{}) string {
+	"translator": func(la i18n.Language, data string, params ...any) string {
 		trans := translator.GlobalTrans.Tr(la, data)
 
 		if len(params) > 0 && len(params)%2 == 0 {
@@ -128,8 +128,8 @@ var funcMap = template.FuncMap{
 		trans = translator.GlobalTrans.Tr(la, "ui.dates.long_date_with_year")
 		return day.Format(timestamp, trans, tz)
 	},
-	"wrapComments": func(comments []*schema.GetCommentResp, la i18n.Language, tz string) map[string]interface{} {
-		return map[string]interface{}{
+	"wrapComments": func(comments []*schema.GetCommentResp, la i18n.Language, tz string) map[string]any {
+		return map[string]any{
 			"comments": comments,
 			"language": la,
 			"timezone": tz,

@@ -187,7 +187,7 @@ func GetValidatorByLang(lang i18n.Language) *MyValidator {
 }
 
 // Check /
-func (m *MyValidator) Check(value interface{}) (errFields []*FormErrorField, err error) {
+func (m *MyValidator) Check(value any) (errFields []*FormErrorField, err error) {
 	defer func() {
 		if len(errFields) == 0 {
 			return
@@ -261,7 +261,7 @@ type Checker interface {
 	Check() (errField []*FormErrorField, err error)
 }
 
-func getObjectTagByFieldName(obj interface{}, fieldName string) (tag string) {
+func getObjectTagByFieldName(obj any, fieldName string) (tag string) {
 	defer func() {
 		if err := recover(); err != nil {
 			log.Error(err)

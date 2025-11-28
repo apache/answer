@@ -330,24 +330,24 @@ type UserAnswerInfo struct {
 	CreateTime   int    `json:"create_time"`
 	UpdateTime   int    `json:"update_time"`
 	QuestionInfo struct {
-		Title    string        `json:"title"`
-		UrlTitle string        `json:"url_title"`
-		Tags     []interface{} `json:"tags"`
+		Title    string `json:"title"`
+		UrlTitle string `json:"url_title"`
+		Tags     []any  `json:"tags"`
 	} `json:"question_info"`
 }
 
 type UserQuestionInfo struct {
-	ID               string        `json:"question_id"`
-	Title            string        `json:"title"`
-	UrlTitle         string        `json:"url_title"`
-	VoteCount        int           `json:"vote_count"`
-	Tags             []interface{} `json:"tags"`
-	ViewCount        int           `json:"view_count"`
-	AnswerCount      int           `json:"answer_count"`
-	CollectionCount  int           `json:"collection_count"`
-	CreatedAt        int64         `json:"created_at"`
-	AcceptedAnswerID string        `json:"accepted_answer_id"`
-	Status           string        `json:"status"`
+	ID               string `json:"question_id"`
+	Title            string `json:"title"`
+	UrlTitle         string `json:"url_title"`
+	VoteCount        int    `json:"vote_count"`
+	Tags             []any  `json:"tags"`
+	ViewCount        int    `json:"view_count"`
+	AnswerCount      int    `json:"answer_count"`
+	CollectionCount  int    `json:"collection_count"`
+	CreatedAt        int64  `json:"created_at"`
+	AcceptedAnswerID string `json:"accepted_answer_id"`
+	Status           string `json:"status"`
 }
 
 const (

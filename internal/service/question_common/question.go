@@ -622,7 +622,7 @@ func (qs *QuestionCommon) SitemapCron(ctx context.Context) {
 	}
 }
 
-func (qs *QuestionCommon) SetCache(ctx context.Context, cachekey string, info interface{}) error {
+func (qs *QuestionCommon) SetCache(ctx context.Context, cachekey string, info any) error {
 	infoStr, err := json.Marshal(info)
 	if err != nil {
 		return errors.InternalServer(reason.UnknownError).WithError(err).WithStack()
