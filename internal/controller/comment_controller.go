@@ -246,6 +246,7 @@ func (cc *CommentController) GetCommentWithPage(ctx *gin.Context) {
 		return
 	}
 	req.ObjectID = uid.DeShortID(req.ObjectID)
+	req.CommentID = uid.DeShortID(req.CommentID)
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
 	canList, err := cc.rankService.CheckOperationPermissions(ctx, req.UserID, []string{
 		permission.CommentEdit,

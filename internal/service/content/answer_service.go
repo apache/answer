@@ -346,14 +346,6 @@ func (as *AnswerService) Update(ctx context.Context, req *schema.AnswerUpdateReq
 		return "", errors.BadRequest(reason.AnswerCannotUpdate)
 	}
 
-	questionInfo, exist, err := as.questionRepo.GetQuestion(ctx, req.QuestionID)
-	if err != nil {
-		return "", err
-	}
-	if !exist {
-		return "", errors.BadRequest(reason.QuestionNotFound)
-	}
-
 	answerInfo, exist, err := as.answerRepo.GetByID(ctx, req.ID)
 	if err != nil {
 		return "", err
@@ -361,9 +353,16 @@ func (as *AnswerService) Update(ctx context.Context, req *schema.AnswerUpdateReq
 	if !exist {
 		return "", errors.BadRequest(reason.AnswerNotFound)
 	}
-
 	if answerInfo.Status == entity.AnswerStatusDeleted {
 		return "", errors.BadRequest(reason.AnswerCannotUpdate)
+	}
+
+	questionInfo, exist, err := as.questionRepo.GetQuestion(ctx, answerInfo.QuestionID)
+	if err != nil {
+		return "", err
+	}
+	if !exist {
+		return "", errors.BadRequest(reason.QuestionNotFound)
 	}
 
 	//If the content is the same, ignore it
@@ -374,7 +373,7 @@ func (as *AnswerService) Update(ctx context.Context, req *schema.AnswerUpdateReq
 	insertData := &entity.Answer{}
 	insertData.ID = req.ID
 	insertData.UserID = answerInfo.UserID
-	insertData.QuestionID = req.QuestionID
+	insertData.QuestionID = questionInfo.ID
 	insertData.OriginalText = req.Content
 	insertData.ParsedText = req.HTML
 	insertData.UpdatedAt = time.Now()
@@ -403,7 +402,7 @@ func (as *AnswerService) Update(ctx context.Context, req *schema.AnswerUpdateReq
 		if err = as.answerRepo.UpdateAnswer(ctx, insertData, []string{"original_text", "parsed_text", "updated_at", "last_edit_user_id"}); err != nil {
 			return "", err
 		}
-		err = as.questionCommon.UpdatePostTime(ctx, req.QuestionID)
+		err = as.questionCommon.UpdatePostTime(ctx, questionInfo.ID)
 		if err != nil {
 			return insertData.ID, err
 		}

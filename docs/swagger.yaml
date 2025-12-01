@@ -1589,7 +1589,7 @@ definitions:
       content:
         description: content
         maxLength: 65535
-        minLength: 6
+        minLength: 0
         type: string
       tags:
         description: tags
@@ -1602,8 +1602,6 @@ definitions:
         minLength: 6
         type: string
     required:
-    - content
-    - tags
     - title
     type: object
   schema.QuestionAddByAnswer:
@@ -1620,7 +1618,7 @@ definitions:
       content:
         description: content
         maxLength: 65535
-        minLength: 6
+        minLength: 0
         type: string
       mention_username_list:
         items:
@@ -1638,8 +1636,6 @@ definitions:
         type: string
     required:
     - answer_content
-    - content
-    - tags
     - title
     type: object
   schema.QuestionInfoResp:
@@ -1826,7 +1822,7 @@ definitions:
       content:
         description: content
         maxLength: 65535
-        minLength: 6
+        minLength: 0
         type: string
       edit_summary:
         description: edit summary
@@ -1849,9 +1845,7 @@ definitions:
         minLength: 6
         type: string
     required:
-    - content
     - id
-    - tags
     - title
     type: object
   schema.QuestionUpdateInviteUser:
@@ -2453,6 +2447,14 @@ definitions:
         type: integer
       max_image_size:
         type: integer
+      min_content:
+        maximum: 65535
+        minimum: 0
+        type: integer
+      min_tags:
+        maximum: 5
+        minimum: 0
+        type: integer
       recommend_tags:
         items:
           $ref: '#/definitions/schema.SiteWriteTag'
@@ -2481,6 +2483,14 @@ definitions:
       max_image_megapixel:
         type: integer
       max_image_size:
+        type: integer
+      min_content:
+        maximum: 65535
+        minimum: 0
+        type: integer
+      min_tags:
+        maximum: 5
+        minimum: 0
         type: integer
       recommend_tags:
         items:

@@ -40,7 +40,6 @@ import (
 	tagcommon "github.com/apache/answer/internal/service/tag_common"
 	"github.com/apache/answer/plugin"
 	"github.com/jinzhu/copier"
-	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
 )
 
@@ -159,10 +158,9 @@ func (s *SiteInfoService) SaveSiteGeneral(ctx context.Context, req schema.SiteGe
 }
 
 func (s *SiteInfoService) SaveSiteInterface(ctx context.Context, req schema.SiteInterfaceReq) (err error) {
-	// check language
+	// If the language is invalid, set it to the default language "en_US"
 	if !translator.CheckLanguageIsValid(req.Language) {
-		err = errors.BadRequest(reason.LangNotFound)
-		return
+		req.Language = "en_US"
 	}
 
 	content, _ := json.Marshal(req)

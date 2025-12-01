@@ -49,6 +49,8 @@ export interface JSONSchema {
       description?: string;
       enum?: Array<string | boolean | number>;
       enumNames?: string[];
+      min?: number;
+      max?: number;
       default?: string | boolean | number | any[];
       max_length?: number;
     };
@@ -88,6 +90,16 @@ export interface InputOptions extends BaseUIOptions {
     | 'time'
     | 'url'
     | 'week';
+  inputMode?:
+    | 'text'
+    | 'search'
+    | 'none'
+    | 'tel'
+    | 'url'
+    | 'email'
+    | 'numeric'
+    | 'decimal'
+    | undefined;
 }
 export interface SelectOptions extends BaseUIOptions {}
 export interface UploadOptions extends BaseUIOptions {

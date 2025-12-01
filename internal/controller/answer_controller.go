@@ -318,7 +318,6 @@ func (ac *AnswerController) UpdateAnswer(ctx *gin.Context) {
 		handler.HandleResponse(ctx, err, nil)
 		return
 	}
-	req.QuestionID = uid.DeShortID(req.QuestionID)
 	linkUrlLimitUser := canList[2]
 	isAdmin := middleware.GetUserIsAdminModerator(ctx)
 	if !isAdmin || !linkUrlLimitUser {

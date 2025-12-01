@@ -261,6 +261,8 @@ const Index: FC = () => {
           <Form.Label>{t('min_tags.label')}</Form.Label>
           <Form.Control
             type="number"
+            inputMode="numeric"
+            min={0}
             value={formData.min_tags.value}
             isInvalid={formData.min_tags.isInvalid}
             onChange={(evt) => {
@@ -302,6 +304,8 @@ const Index: FC = () => {
           <Form.Label>{t('min_content.label')}</Form.Label>
           <Form.Control
             type="number"
+            inputMode="numeric"
+            min={0}
             value={formData.min_content.value}
             isInvalid={formData.min_content.isInvalid}
             onChange={(evt) => {
@@ -344,6 +348,8 @@ const Index: FC = () => {
           <Form.Label>{t('image_size.label')}</Form.Label>
           <Form.Control
             type="number"
+            inputMode="numeric"
+            min={0}
             value={formData.max_image_size.value}
             isInvalid={formData.max_image_size.isInvalid}
             onChange={(evt) => {
@@ -366,6 +372,8 @@ const Index: FC = () => {
           <Form.Label>{t('attachment_size.label')}</Form.Label>
           <Form.Control
             type="number"
+            inputMode="numeric"
+            min={0}
             value={formData.max_attachment_size.value}
             isInvalid={formData.max_attachment_size.isInvalid}
             onChange={(evt) => {
@@ -388,6 +396,8 @@ const Index: FC = () => {
           <Form.Label>{t('image_megapixels.label')}</Form.Label>
           <Form.Control
             type="number"
+            inputMode="numeric"
+            min={0}
             isInvalid={formData.max_image_megapixel.isInvalid}
             value={formData.max_image_megapixel.value}
             onChange={(evt) => {
