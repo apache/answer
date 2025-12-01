@@ -135,7 +135,7 @@ func (ip *ImporterService) ImportQuestion(ctx context.Context, questionInfo plug
 		return err
 	}
 	if !req.CanAddTag && hasNewTag {
-		lang := handler.GetLang(ctx.(*gin.Context))
+		lang := handler.GetLangByCtx(ctx.(*gin.Context))
 		msg := translator.TrWithData(lang, reason.NoEnoughRankToOperate, &schema.PermissionTrTplData{Rank: requireRanks[6]})
 		log.Errorf("error: %v", msg)
 		return errors.BadRequest(msg)

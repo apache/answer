@@ -106,7 +106,7 @@ func (cc *CommentController) AddComment(ctx *gin.Context) {
 		if !captchaPass {
 			errFields := append([]*validator.FormErrorField{}, &validator.FormErrorField{
 				ErrorField: "captcha_code",
-				ErrorMsg:   translator.Tr(handler.GetLang(ctx), reason.CaptchaVerificationFailed),
+				ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.CaptchaVerificationFailed),
 			})
 			handler.HandleResponse(ctx, errors.BadRequest(reason.CaptchaVerificationFailed), errFields)
 			return
@@ -154,7 +154,7 @@ func (cc *CommentController) RemoveComment(ctx *gin.Context) {
 		if !captchaPass {
 			errFields := append([]*validator.FormErrorField{}, &validator.FormErrorField{
 				ErrorField: "captcha_code",
-				ErrorMsg:   translator.Tr(handler.GetLang(ctx), reason.CaptchaVerificationFailed),
+				ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.CaptchaVerificationFailed),
 			})
 			handler.HandleResponse(ctx, errors.BadRequest(reason.CaptchaVerificationFailed), errFields)
 			return
@@ -215,7 +215,7 @@ func (cc *CommentController) UpdateComment(ctx *gin.Context) {
 		if !captchaPass {
 			errFields := append([]*validator.FormErrorField{}, &validator.FormErrorField{
 				ErrorField: "captcha_code",
-				ErrorMsg:   translator.Tr(handler.GetLang(ctx), reason.CaptchaVerificationFailed),
+				ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.CaptchaVerificationFailed),
 			})
 			handler.HandleResponse(ctx, errors.BadRequest(reason.CaptchaVerificationFailed), errFields)
 			return

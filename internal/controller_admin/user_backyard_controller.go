@@ -177,7 +177,7 @@ func (uc *UserAdminController) EditUserProfile(ctx *gin.Context) {
 
 	errFields, err := uc.userService.EditUserProfile(ctx, req)
 	for _, field := range errFields {
-		field.ErrorMsg = translator.Tr(handler.GetLang(ctx), field.ErrorMsg)
+		field.ErrorMsg = translator.Tr(handler.GetLangByCtx(ctx), field.ErrorMsg)
 	}
 	handler.HandleResponse(ctx, err, errFields)
 }
