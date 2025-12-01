@@ -54,7 +54,7 @@ const Index: FC = () => {
       </div>
       <div className="flex-fill w-100">
         <div className="d-flex justify-content-center px-0 px-md-4">
-          <div className="answer-container">
+          <div className="answer-container main-mx-with">
             <Row className="py-4">
               <Col className="page-main flex-auto">
                 <Outlet />
@@ -65,7 +65,11 @@ const Index: FC = () => {
             </Row>
           </div>
         </div>
-        <Footer />
+        <div className="d-flex justify-content-center px-0 px-md-4">
+          <div className="main-mx-with">
+            <Footer />
+          </div>
+        </div>
       </div>
     </div>
   );

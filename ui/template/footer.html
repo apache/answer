@@ -19,21 +19,25 @@
 
 -->
 {{define "footer"}}
-        <footer class="py-3 bg-light w-100">
-          <p class="text-center mb-0 small">
-            <a class="me-3" href="{{$.baseURL}}/tos" data-discover="true">
-              {{translator $.language "ui.admin.legal.terms_of_service.label"}}
-            </a>
-            <a href="{{$.baseURL}}/privacy" data-discover="true">
-              {{translator $.language "ui.admin.legal.privacy_policy.label"}}
-            </a>
-          </p>
-          <p class="text-center mb-0 small text-secondary">
-            {{$cc := (join " " .siteinfo.Year .siteinfo.General.Name) -}}
-            {{- $ft := translator $.language "ui.footer.build_on" "cc" $cc -}}
-            {{templateHTML (replaceHTMLTag $ft "<a href=\"https://answer.apache.org/\" target=\"_blank\"> Answer </a>")}}
-          </p>
-        </footer>
+        <div class="main-mx-with">
+          <div class="row">
+            <footer class="py-3 d-flex flex-wrap align-items-center justify-content-between text-secondary small">
+              <div class="d-flex align-items-center">
+                {{$cc := (join " " .siteinfo.General.Name .siteinfo.Year)}}
+                <div className="me-3">{{- $ft := translator $.language "ui.footer.build_on" "cc" $cc -}}</div>
+                <a class="me-3" href="{{$.baseURL}}/tos" data-discover="true" class="link-secondary">
+                  {{translator $.language "ui.admin.legal.terms_of_service.label"}}
+                </a>
+                <a href="{{$.baseURL}}/privacy" data-discover="true" class="link-secondary">
+                  {{translator $.language "ui.admin.legal.privacy_policy.label"}}
+                </a>
+              </div>
+              <div class="text-center mb-0 small text-secondary link-secondary">
+                {{templateHTML (replaceHTMLTag $ft "<a href=\"https://answer.apache.org/\" target=\"_blank\"> Answer </a>")}}
+              </div>
+            </footer>
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -34,9 +34,12 @@ const Index: FC = () => {
       </div>
       <div className="flex-fill w-100 overflow-x-hidden">
         <div className="d-flex justify-content-center px-0 px-md-4">
-          <div className="answer-container">
+          <div className="answer-container main-mx-with">
             <Outlet />
-
+          </div>
+        </div>
+        <div className="d-flex justify-content-center">
+          <div className="main-mx-with">
             <Footer />
           </div>
         </div>
