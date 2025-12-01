@@ -21,8 +21,9 @@ package converter
 
 import (
 	"fmt"
-	"github.com/segmentfault/pacman/log"
 	"strconv"
+
+	"github.com/segmentfault/pacman/log"
 )
 
 func StringToInt64(str string) int64 {

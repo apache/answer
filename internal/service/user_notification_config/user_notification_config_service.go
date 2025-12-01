@@ -21,6 +21,7 @@ package user_notification_config
 
 import (
 	"context"
+
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"

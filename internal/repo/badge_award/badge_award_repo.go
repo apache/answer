@@ -22,6 +22,7 @@ package badge_award
 import (
 	"context"
 	"fmt"
+
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/base/pager"
 	"github.com/apache/answer/internal/base/reason"

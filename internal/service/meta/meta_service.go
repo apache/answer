@@ -23,9 +23,10 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"github.com/apache/answer/internal/service/event_queue"
 	"strconv"
 	"strings"
+
+	"github.com/apache/answer/internal/service/event_queue"
 
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/handler"

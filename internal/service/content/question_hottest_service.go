@@ -21,11 +21,12 @@ package content
 
 import (
 	"context"
+	"math"
+	"time"
+
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
 	"github.com/segmentfault/pacman/log"
-	"math"
-	"time"
 )
 
 func (q *QuestionService) RefreshHottestCron(ctx context.Context) {

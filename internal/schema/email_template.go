@@ -21,6 +21,7 @@ package schema
 
 import (
 	"encoding/json"
+
 	"github.com/apache/answer/internal/base/constant"
 )
 

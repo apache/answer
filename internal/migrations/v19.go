@@ -21,6 +21,7 @@ package migrations
 
 import (
 	"context"
+
 	"github.com/apache/answer/internal/entity"
 	"xorm.io/xorm"
 )

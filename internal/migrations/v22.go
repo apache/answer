@@ -22,6 +22,7 @@ package migrations
 import (
 	"context"
 	"fmt"
+
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/repo/unique"

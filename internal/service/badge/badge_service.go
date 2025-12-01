@@ -21,6 +21,8 @@ package badge
 
 import (
 	"context"
+	"strings"
+
 	"github.com/apache/answer/internal/base/handler"
 	"github.com/apache/answer/internal/base/reason"
 	"github.com/apache/answer/internal/base/translator"
@@ -32,7 +34,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
-	"strings"
 )
 
 type BadgeRepo interface {

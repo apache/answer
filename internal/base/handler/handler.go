@@ -21,13 +21,14 @@ package handler
 
 import (
 	"errors"
+	"net/http"
+
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/reason"
 	"github.com/apache/answer/internal/base/validator"
 	"github.com/gin-gonic/gin"
 	myErrors "github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
-	"net/http"
 )
 
 // HandleResponse Handle response body

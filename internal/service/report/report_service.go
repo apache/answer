@@ -21,6 +21,7 @@ package report
 
 import (
 	"encoding/json"
+
 	"github.com/apache/answer/internal/service/event_queue"
 
 	"github.com/apache/answer/internal/base/constant"

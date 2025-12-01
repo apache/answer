@@ -21,6 +21,7 @@ package badge
 
 import (
 	"context"
+
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/handler"
 	"github.com/apache/answer/internal/base/reason"

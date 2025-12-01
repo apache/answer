@@ -25,7 +25,7 @@ import (
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/base/reason"
 	"github.com/apache/answer/internal/entity"
-	"github.com/apache/answer/internal/service/meta_common"
+	metacommon "github.com/apache/answer/internal/service/meta_common"
 	"github.com/segmentfault/pacman/errors"
 	"xorm.io/builder"
 	"xorm.io/xorm"

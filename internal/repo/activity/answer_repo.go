@@ -22,8 +22,9 @@ package activity
 import (
 	"context"
 	"fmt"
-	"github.com/segmentfault/pacman/log"
 	"time"
+
+	"github.com/segmentfault/pacman/log"
 	"xorm.io/builder"
 
 	"github.com/apache/answer/internal/base/constant"

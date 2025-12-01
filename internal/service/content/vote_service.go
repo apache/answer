@@ -22,8 +22,9 @@ package content
 import (
 	"context"
 	"fmt"
-	"github.com/apache/answer/internal/service/event_queue"
 	"strings"
+
+	"github.com/apache/answer/internal/service/event_queue"
 
 	"github.com/apache/answer/internal/service/activity_common"
 

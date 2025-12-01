@@ -21,8 +21,9 @@ package schema
 
 import (
 	"encoding/json"
-	"github.com/apache/answer/internal/entity"
 	"sort"
+
+	"github.com/apache/answer/internal/entity"
 )
 
 const (
