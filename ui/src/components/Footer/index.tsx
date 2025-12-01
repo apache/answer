@@ -21,6 +21,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Trans, useTranslation } from 'react-i18next';
 
+import Row from 'react-bootstrap/Row';
 import dayjs from 'dayjs';
 
 import { siteInfoStore } from '@/stores';
@@ -29,34 +30,37 @@ const Index = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'footer' }); // Scoped translations for footer
   const fullYear = dayjs().format('YYYY');
   const siteName = siteInfoStore((state) => state.siteInfo.name);
-  const cc = `${fullYear} ${siteName}`;
+  const cc = `${siteName} © ${fullYear}`;
 
   return (
-    <footer className="py-3 w-100">
-      <p className="text-center mb-0 small">
-        {/* Link to Terms of Service with right margin */}
-        <Link to="/tos" className="me-3">
-          {t('label', { keyPrefix: 'admin.legal.terms_of_service' })}
-        </Link>
+    <Row>
+      <footer className="py-3 d-flex flex-wrap align-items-center justify-content-between text-secondary small">
+        <div className="d-flex align-items-center">
+          <div className="me-3">{cc}</div>
 
-        {/* Link to Privacy Policy with right margin for spacing */}
-        <Link to="/privacy">
-          {t('label', { keyPrefix: 'admin.legal.privacy_policy' })}
-        </Link>
-      </p>
-      <p className="text-center mb-0 small">
-        <Trans i18nKey="footer.build_on" values={{ cc }}>
-          Powered by
-          {/* eslint-disable-next-line react/jsx-no-target-blank */}
-          <a href="https://answer.apache.org" target="_blank">
-            Apache Answer
-          </a>
-          - the open-source software that powers Q&A communities.
-          <br />
-          Made with love. © 2022 Answer.
-        </Trans>
-      </p>
-    </footer>
+          <Link to="/tos" className="me-3 link-secondary">
+            {t('terms', { keyPrefix: 'nav_menus' })}
+          </Link>
+
+          {/* Link to Privacy Policy with right margin for spacing */}
+          <Link to="/privacy" className="link-secondary">
+            {t('privacy', { keyPrefix: 'nav_menus' })}
+          </Link>
+        </div>
+        <div>
+          <Trans i18nKey="footer.build_on" values={{ cc }}>
+            Powered by
+            <a
+              href="https://answer.apache.org"
+              target="_blank"
+              className="link-secondary"
+              rel="noreferrer">
+              Apache Answer
+            </a>
+          </Trans>
+        </div>
+      </footer>
+    </Row>
   );
 };
 

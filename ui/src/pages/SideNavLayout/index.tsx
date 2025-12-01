@@ -36,9 +36,10 @@ const Index: FC = () => {
         <div className="d-flex justify-content-center px-0 px-md-4">
           <div className="answer-container">
             <Outlet />
+
+            <Footer />
           </div>
         </div>
-        <Footer />
       </div>
     </div>
   );

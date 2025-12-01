@@ -1208,9 +1208,7 @@ ui:
     search:
       placeholder: Search
   footer:
-    build_on: >-
-      Powered by <1> Apache Answer </1>- the open-source software that powers Q&A
-      communities.<br />Made with love © {{cc}}.
+    build_on: Powered by <1> Apache Answer </1>
   upload_img:
     name: Change
     loading: loading...
@@ -1807,6 +1805,7 @@ ui:
     branding: Branding
     legal: Legal
     write: Write
+    terms: Terms
     tos: Terms of Service
     privacy: Privacy
     seo: SEO

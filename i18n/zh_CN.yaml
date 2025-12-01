@@ -1190,8 +1190,7 @@ ui:
     search:
       placeholder: 搜索
   footer:
-    build_on: >-
-      由 <1>Apache Answer</1> 提供动力 - 驱动问答社区的开源软件。<br />用爱制造 © {{cc}}.
+    build_on: 由 <1>Apache Answer</1> 提供动力
   upload_img:
     name: 更改
     loading: 加载中...
@@ -1768,6 +1767,7 @@ ui:
     branding: 品牌
     legal: 法律条款
     write: 撰写
+    terms: 服务条款
     tos: 服务条款
     privacy: 隐私政策
     seo: SEO
