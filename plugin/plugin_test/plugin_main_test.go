@@ -78,7 +78,7 @@ func TestMain(t *testing.M) {
 		dbSetting = dbSettingMapping[string(schemas.SQLITE)]
 	}
 	if dbSetting.Driver == string(schemas.SQLITE) {
-		os.RemoveAll(dbSetting.Connection)
+		_ = os.RemoveAll(dbSetting.Connection)
 	}
 
 	defer func() {

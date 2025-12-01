@@ -93,6 +93,9 @@ func (ss *SearchService) searchByPlugin(ctx context.Context, finder plugin.Searc
 	} else if cond.SearchAnswer() {
 		res, resp.Total, err = finder.SearchAnswers(ctx, cond.Convert2PluginSearchCond(dto.Page, dto.Size, dto.Order))
 	}
+	if err != nil {
+		return resp, err
+	}
 
 	resp.SearchResults, err = ss.searchRepo.ParseSearchPluginResult(ctx, res, cond.Words)
 	return resp, err

@@ -400,7 +400,7 @@ func (us *UserAdminService) EditUserProfile(ctx context.Context, req *schema.Edi
 	if req.UserID == req.LoginUserID {
 		return nil, errors.BadRequest(reason.AdminCannotEditTheirProfile)
 	}
-	userInfo, exist, err := us.userRepo.GetUserInfo(ctx, req.UserID)
+	_, exist, err := us.userRepo.GetUserInfo(ctx, req.UserID)
 	if err != nil {
 		return nil, err
 	}
@@ -415,7 +415,7 @@ func (us *UserAdminService) EditUserProfile(ctx context.Context, req *schema.Edi
 		}), errors.BadRequest(reason.UsernameInvalid)
 	}
 
-	userInfo, exist, err = us.userCommonService.GetByUsername(ctx, req.Username)
+	userInfo, exist, err := us.userCommonService.GetByUsername(ctx, req.Username)
 	if err != nil {
 		return nil, err
 	}
@@ -620,11 +620,12 @@ func (us *UserAdminService) SendUserActivation(ctx context.Context, req *schema.
 }
 
 func (us *UserAdminService) DeletePermanently(ctx context.Context, req *schema.DeletePermanentlyReq) (err error) {
-	if req.Type == constant.DeletePermanentlyUsers {
+	switch req.Type {
+	case constant.DeletePermanentlyUsers:
 		return us.userRepo.DeletePermanentlyUsers(ctx)
-	} else if req.Type == constant.DeletePermanentlyQuestions {
+	case constant.DeletePermanentlyQuestions:
 		return us.questionCommonRepo.DeletePermanentlyQuestions(ctx)
-	} else if req.Type == constant.DeletePermanentlyAnswers {
+	case constant.DeletePermanentlyAnswers:
 		return us.answerCommonRepo.DeletePermanentlyAnswers(ctx)
 	}
 

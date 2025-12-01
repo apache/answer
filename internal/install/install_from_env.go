@@ -22,6 +22,7 @@ package install
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -143,7 +144,7 @@ func requestAPI(req any, method, url string, handlerFunc gin.HandlerFunc) error 
 	}
 	handlerFunc(c)
 	if w.Code != http.StatusOK {
-		return fmt.Errorf(gjson.Get(w.Body.String(), "msg").String())
+		return errors.New(gjson.Get(w.Body.String(), "msg").String())
 	}
 	return nil
 }

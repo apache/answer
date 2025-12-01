@@ -42,7 +42,9 @@ func SetDefaultConfig(dbConf *data.Database, cacheConf *data.CacheConf, field *C
 	if err != nil {
 		return err
 	}
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	cache, cacheCleanup, err := data.NewCache(cacheConf)
 	if err != nil {
@@ -50,7 +52,7 @@ func SetDefaultConfig(dbConf *data.Database, cacheConf *data.CacheConf, field *C
 	}
 	defer func() {
 		if cache != nil {
-			cache.Flush(context.Background())
+			_ = cache.Flush(context.Background())
 			cacheCleanup()
 		}
 	}()

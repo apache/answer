@@ -17,7 +17,18 @@
 
 version: "2"
 linters:
-  default: none
+  exclusions:
+    paths:
+      - answer-data
+      - ui
+      - i18n
+  enable:
+    - asasalint # checks for pass []any as any in variadic func(...any)
+    - asciicheck # checks that your code does not contain non-ASCII identifiers
+    - bidichk # checks for dangerous unicode character sequences
+    - bodyclose # checks whether HTTP response body is closed successfully
+    - canonicalheader # checks whether net/http.Header uses canonical header
+    - copyloopvar # detects places where loop variables are copied (Go 1.22+)
 
 formatters:
   enable:

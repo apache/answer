@@ -32,7 +32,6 @@ import (
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/renderer"
-	"github.com/yuin/goldmark/renderer/html"
 	goldmarkHTML "github.com/yuin/goldmark/renderer/html"
 	"github.com/yuin/goldmark/util"
 )
@@ -141,7 +140,7 @@ func (r *DangerousHTMLRenderer) renderLink(w util.BufWriter, source []byte, node
 	if entering && r.renderLinkIsUrl(string(n.Destination)) {
 		_, _ = w.WriteString("<a href=\"")
 		// _, _ = w.WriteString("<a test=\"1\" rel=\"nofollow\" href=\"")
-		if r.Unsafe || !html.IsDangerousURL(n.Destination) {
+		if r.Unsafe || !goldmarkHTML.IsDangerousURL(n.Destination) {
 			_, _ = w.Write(util.EscapeHTML(util.URLEscape(n.Destination, true)))
 		}
 		_ = w.WriteByte('"')
@@ -151,7 +150,7 @@ func (r *DangerousHTMLRenderer) renderLink(w util.BufWriter, source []byte, node
 			_ = w.WriteByte('"')
 		}
 		if n.Attributes() != nil {
-			html.RenderAttributes(w, n, html.LinkAttributeFilter)
+			goldmarkHTML.RenderAttributes(w, n, goldmarkHTML.LinkAttributeFilter)
 		}
 		_ = w.WriteByte('>')
 	} else {
@@ -175,7 +174,7 @@ func (r *DangerousHTMLRenderer) renderAutoLink(w util.BufWriter, source []byte, 
 	_, _ = w.Write(util.EscapeHTML(util.URLEscape(url, false)))
 	if n.Attributes() != nil {
 		_ = w.WriteByte('"')
-		html.RenderAttributes(w, n, html.LinkAttributeFilter)
+		goldmarkHTML.RenderAttributes(w, n, goldmarkHTML.LinkAttributeFilter)
 		_ = w.WriteByte('>')
 	} else {
 		_, _ = w.WriteString(`">`)

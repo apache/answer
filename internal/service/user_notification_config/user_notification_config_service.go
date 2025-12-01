@@ -68,21 +68,21 @@ func (us *UserNotificationConfigService) GetUserNotificationConfig(ctx context.C
 
 func (us *UserNotificationConfigService) UpdateUserNotificationConfig(
 	ctx context.Context, req *schema.UpdateUserNotificationConfigReq) (err error) {
-	req.NotificationConfig.Format()
+	req.Format()
 
 	err = us.userNotificationConfigRepo.Save(ctx,
-		us.convertToEntity(ctx, req.UserID, constant.InboxSource, req.NotificationConfig.Inbox))
+		us.convertToEntity(ctx, req.UserID, constant.InboxSource, req.Inbox))
 	if err != nil {
 		return err
 	}
 	err = us.userNotificationConfigRepo.Save(ctx,
-		us.convertToEntity(ctx, req.UserID, constant.AllNewQuestionSource, req.NotificationConfig.AllNewQuestion))
+		us.convertToEntity(ctx, req.UserID, constant.AllNewQuestionSource, req.AllNewQuestion))
 	if err != nil {
 		return err
 	}
 	err = us.userNotificationConfigRepo.Save(ctx,
 		us.convertToEntity(ctx, req.UserID, constant.AllNewQuestionForFollowingTagsSource,
-			req.NotificationConfig.AllNewQuestionForFollowingTags))
+			req.AllNewQuestionForFollowingTags))
 	if err != nil {
 		return err
 	}

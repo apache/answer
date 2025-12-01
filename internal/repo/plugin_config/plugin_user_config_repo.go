@@ -71,7 +71,7 @@ func (ur *pluginUserConfigRepo) SaveUserPluginConfig(ctx context.Context, userID
 		return nil, nil
 	})
 	if err != nil {
-		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
 	return nil
 }

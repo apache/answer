@@ -274,7 +274,9 @@ func (ds *dashboardService) remoteVersion(ctx context.Context) string {
 		log.Errorf("request remote version failed: %s", err)
 		return ""
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 
 	respByte, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -358,7 +360,7 @@ func (ds *dashboardService) GetDatabaseSize() (dbSize string) {
 		if err != nil {
 			log.Warnf("get db size failed: %s", err)
 		} else {
-			if res != nil && len(res) > 0 && res[0]["db_size"] != nil {
+			if len(res) > 0 && res[0]["db_size"] != nil {
 				dbSizeStr, _ := res[0]["db_size"].(string)
 				dbSize = dir.FormatFileSize(converter.StringToInt64(dbSizeStr))
 			}
@@ -370,7 +372,7 @@ func (ds *dashboardService) GetDatabaseSize() (dbSize string) {
 		if err != nil {
 			log.Warnf("get db size failed: %s", err)
 		} else {
-			if res != nil && len(res) > 0 && res[0]["db_size"] != nil {
+			if len(res) > 0 && res[0]["db_size"] != nil {
 				dbSizeStr, _ := res[0]["db_size"].(int32)
 				dbSize = dir.FormatFileSize(int64(dbSizeStr))
 			}

@@ -82,8 +82,8 @@ func (ns *NotificationService) GetRedDot(ctx context.Context, req *schema.GetRed
 	achievementKey := fmt.Sprintf(constant.RedDotCacheKey, constant.NotificationTypeAchievement, req.UserID)
 
 	redBot := &schema.RedDot{}
-	redBot.Inbox, _, err = ns.data.Cache.GetInt64(ctx, inboxKey)
-	redBot.Achievement, _, err = ns.data.Cache.GetInt64(ctx, achievementKey)
+	redBot.Inbox, _, _ = ns.data.Cache.GetInt64(ctx, inboxKey)
+	redBot.Achievement, _, _ = ns.data.Cache.GetInt64(ctx, achievementKey)
 
 	// get review amount
 	if req.CanReviewAnswer || req.CanReviewQuestion || req.CanReviewTag {

@@ -101,7 +101,6 @@ func Paginator(page, pageSize int, nums int64) *schema.Paginator {
 	case page >= 3 && totalpages > 5:
 		start := page - 3 + 1
 		pages = make([]int, 5)
-		prevpage = page - 3
 		for i := range pages {
 			pages[i] = start + i
 		}

@@ -277,7 +277,7 @@ func (qs *QuestionService) CheckAddQuestion(ctx context.Context, req *schema.Que
 	if tagerr != nil {
 		return errorlist, tagerr
 	}
-	if !req.QuestionPermission.CanUseReservedTag {
+	if !req.CanUseReservedTag {
 		taglist, err := qs.AddQuestionCheckTags(ctx, Tags)
 		errMsg := fmt.Sprintf(`"%s" can only be used by moderators.`,
 			strings.Join(taglist, ","))
@@ -350,7 +350,7 @@ func (qs *QuestionService) AddQuestion(ctx context.Context, req *schema.Question
 	if tagerr != nil {
 		return questionInfo, tagerr
 	}
-	if !req.QuestionPermission.CanUseReservedTag {
+	if !req.CanUseReservedTag {
 		taglist, err := qs.AddQuestionCheckTags(ctx, tags)
 		errMsg := fmt.Sprintf(`"%s" can only be used by moderators.`,
 			strings.Join(taglist, ","))
@@ -1397,13 +1397,17 @@ func (qs *QuestionService) GetQuestionsByTitle(ctx context.Context, title string
 		for _, question := range res {
 			questionIDs = append(questionIDs, question.ID)
 		}
-		questions, err = qs.questionRepo.FindByID(ctx, questionIDs)
+		var questionErr error
+		questions, questionErr = qs.questionRepo.FindByID(ctx, questionIDs)
+		if questionErr != nil {
+			return resp, questionErr
+		}
 	} else {
-		questions, err = qs.questionRepo.GetQuestionsByTitle(ctx, title, 10)
-	}
-
-	if err != nil {
-		return resp, err
+		var questionErr error
+		questions, questionErr = qs.questionRepo.GetQuestionsByTitle(ctx, title, 10)
+		if questionErr != nil {
+			return resp, questionErr
+		}
 	}
 	for _, question := range questions {
 		item := &schema.QuestionBaseInfo{}
@@ -1723,7 +1727,7 @@ func (qs *QuestionService) SitemapCron(ctx context.Context) {
 		log.Error(err)
 		return
 	}
-	ctx = context.WithValue(ctx, constant.ShortIDFlag, siteSeo.IsShortLink())
+	ctx = context.WithValue(ctx, constant.ShortIDContextKey, siteSeo.IsShortLink())
 	qs.questioncommon.SitemapCron(ctx)
 }
 

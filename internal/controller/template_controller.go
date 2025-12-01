@@ -162,11 +162,9 @@ func (tc *TemplateController) Index(ctx *gin.Context) {
 	siteInfo := tc.SiteInfo(ctx)
 	siteInfo.Canonical = siteInfo.General.SiteUrl
 
-	UrlUseTitle := false
-	if siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitle ||
-		siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitleByShortID {
-		UrlUseTitle = true
-	}
+	UrlUseTitle := siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitle ||
+		siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitleByShortID
+
 	siteInfo.Title = ""
 	tc.html(ctx, http.StatusOK, "question.html", siteInfo, gin.H{
 		"data":        data,
@@ -205,11 +203,9 @@ func (tc *TemplateController) QuestionList(ctx *gin.Context) {
 		siteInfo.Canonical = fmt.Sprintf("%s/questions?page=%d", siteInfo.General.SiteUrl, page)
 	}
 
-	UrlUseTitle := false
-	if siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitle ||
-		siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitleByShortID {
-		UrlUseTitle = true
-	}
+	UrlUseTitle := siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitle ||
+		siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitleByShortID
+
 	siteInfo.Title = fmt.Sprintf("%s - %s", translator.Tr(handler.GetLang(ctx), constant.QuestionsTitleTrKey), siteInfo.General.Name)
 	tc.html(ctx, http.StatusOK, "question.html", siteInfo, gin.H{
 		"data":        data,
@@ -371,11 +367,8 @@ func (tc *TemplateController) QuestionInfo(ctx *gin.Context) {
 		return
 	}
 
-	UrlUseTitle := false
-	if siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitle ||
-		siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitleByShortID {
-		UrlUseTitle = true
-	}
+	UrlUseTitle := siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitle ||
+		siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitleByShortID
 
 	//related question
 	userID := middleware.GetLoginUserIDFromContext(ctx)
@@ -434,7 +427,7 @@ func (tc *TemplateController) QuestionInfo(ctx *gin.Context) {
 	for _, tag := range detail.Tags {
 		tags = append(tags, tag.DisplayName)
 	}
-	siteInfo.Keywords = strings.Replace(strings.Trim(fmt.Sprint(tags), "[]"), " ", ",", -1)
+	siteInfo.Keywords = strings.ReplaceAll(strings.Trim(fmt.Sprint(tags), "[]"), " ", ",")
 	siteInfo.Title = fmt.Sprintf("%s - %s", detail.Title, siteInfo.General.Name)
 	tc.html(ctx, http.StatusOK, "question-detail.html", siteInfo, gin.H{
 		"id":              id,
@@ -504,11 +497,9 @@ func (tc *TemplateController) TagInfo(ctx *gin.Context) {
 	}
 	siteInfo.Keywords = tagInfo.DisplayName
 
-	UrlUseTitle := false
-	if siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitle ||
-		siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitleByShortID {
-		UrlUseTitle = true
-	}
+	UrlUseTitle := siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitle ||
+		siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitleByShortID
+
 	siteInfo.Title = fmt.Sprintf("'%s' %s - %s", tagInfo.DisplayName, translator.Tr(handler.GetLang(ctx), constant.QuestionsTitleTrKey), siteInfo.General.Name)
 	tc.html(ctx, http.StatusOK, "tag-detail.html", siteInfo, gin.H{
 		"tag":           tagInfo,
@@ -570,11 +561,9 @@ func (tc *TemplateController) Page404(ctx *gin.Context) {
 }
 
 func (tc *TemplateController) html(ctx *gin.Context, code int, tpl string, siteInfo *schema.TemplateSiteInfoResp, data gin.H) {
-	var (
-		prefix     = ""
-		cssPath    = ""
-		scriptPath = make([]string, len(tc.scriptPath))
-	)
+	prefix := ""
+	cssPath := ""
+	scriptPath := make([]string, len(tc.scriptPath))
 
 	_ = plugin.CallCDN(func(fn plugin.CDN) error {
 		prefix = fn.GetStaticPrefix()
@@ -612,7 +601,7 @@ func (tc *TemplateController) html(ctx *gin.Context, code int, tpl string, siteI
 	data["description"] = siteInfo.Description
 	data["language"] = handler.GetLang(ctx)
 	data["timezone"] = siteInfo.Interface.TimeZone
-	language := strings.Replace(siteInfo.Interface.Language, "_", "-", -1)
+	language := strings.ReplaceAll(siteInfo.Interface.Language, "_", "-")
 	data["lang"] = language
 	data["HeadCode"] = siteInfo.CustomCssHtml.CustomHead
 	data["HeaderCode"] = siteInfo.CustomCssHtml.CustomHeader

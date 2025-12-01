@@ -503,6 +503,7 @@ func (ar *answerRepo) updateSearch(ctx context.Context, answerID string) (err er
 	err = st.Find(&tagListList)
 	if err != nil {
 		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+		return
 	}
 	for _, tag := range tagListList {
 		tags = append(tags, tag.TagID)

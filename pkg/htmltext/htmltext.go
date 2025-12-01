@@ -194,7 +194,9 @@ func GetPicByUrl(Url string) string {
 	if err != nil {
 		return ""
 	}
-	defer res.Body.Close()
+	defer func() {
+		_ = res.Body.Close()
+	}()
 	pix, err := io.ReadAll(res.Body)
 	if err != nil {
 		return ""

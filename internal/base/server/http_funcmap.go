@@ -21,7 +21,6 @@ package server
 
 import (
 	"html/template"
-	"math"
 	"regexp"
 	"strconv"
 	"strings"
@@ -107,15 +106,15 @@ var funcMap = template.FuncMap{
 		}
 
 		if between >= 60 && between < 3600 {
-			min := math.Floor(float64(between / 60))
+			min := between / 60
 			trans = translator.GlobalTrans.Tr(la, "ui.dates.x_minutes_ago")
-			return strings.ReplaceAll(trans, "{{count}}", strconv.FormatFloat(min, 'f', 0, 64))
+			return strings.ReplaceAll(trans, "{{count}}", strconv.FormatInt(min, 10))
 		}
 
 		if between >= 3600 && between < 3600*24 {
-			h := math.Floor(float64(between / 3600))
+			h := between / 3600
 			trans = translator.GlobalTrans.Tr(la, "ui.dates.x_hours_ago")
-			return strings.ReplaceAll(trans, "{{count}}", strconv.FormatFloat(h, 'f', 0, 64))
+			return strings.ReplaceAll(trans, "{{count}}", strconv.FormatInt(h, 10))
 		}
 
 		if between >= 3600*24 &&

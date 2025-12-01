@@ -61,6 +61,9 @@ func addBadges(ctx context.Context, x *xorm.Engine) (err error) {
 		if exist {
 			badge.ID = beans.ID
 			_, err = x.Context(ctx).ID(beans.ID).Update(badge)
+			if err != nil {
+				return fmt.Errorf("update badge failed: %w", err)
+			}
 			continue
 		}
 		badge.ID, err = uniqueIDRepo.GenUniqueIDStr(ctx, new(entity.Badge).TableName())

@@ -75,7 +75,9 @@ func decodeAndCheckImageFile(localFilePath string, maxImageMegapixel int, checke
 		log.Errorf("open file error: %v", err)
 		return false
 	}
-	defer file.Close()
+	defer func() {
+		_ = file.Close()
+	}()
 
 	if err = checker(file, maxImageMegapixel); err != nil {
 		log.Errorf("check image format error: %v", err)

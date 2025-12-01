@@ -345,7 +345,7 @@ func (s *SiteInfoService) GetPrivilegesConfig(ctx context.Context) (resp *schema
 		return nil, err
 	}
 	privilegeOptions := schema.DefaultPrivilegeOptions
-	if privilege.CustomPrivileges != nil && len(privilege.CustomPrivileges) > 0 {
+	if len(privilege.CustomPrivileges) > 0 {
 		privilegeOptions = append(privilegeOptions, &schema.PrivilegeOption{
 			Level:      schema.PrivilegeLevelCustom,
 			LevelDesc:  reason.PrivilegeLevelCustomDesc,
@@ -358,7 +358,7 @@ func (s *SiteInfoService) GetPrivilegesConfig(ctx context.Context) (resp *schema
 		Options:       s.translatePrivilegeOptions(ctx, privilegeOptions),
 		SelectedLevel: schema.PrivilegeLevel3,
 	}
-	if privilege != nil && privilege.Level > 0 {
+	if privilege.Level > 0 {
 		resp.SelectedLevel = privilege.Level
 	}
 	return resp, nil

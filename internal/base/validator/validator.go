@@ -142,7 +142,7 @@ func Sanitizer(fl validator.FieldLevel) (res bool) {
 	switch field.Kind() {
 	case reflect.String:
 		filter := bluemonday.UGCPolicy()
-		content := strings.Replace(filter.Sanitize(field.String()), "&amp;", "&", -1)
+		content := strings.ReplaceAll(filter.Sanitize(field.String()), "&amp;", "&")
 		field.SetString(content)
 		return true
 	case reflect.Chan, reflect.Map, reflect.Slice, reflect.Array:

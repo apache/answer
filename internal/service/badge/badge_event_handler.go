@@ -32,7 +32,6 @@ import (
 type BadgeEventService struct {
 	data              *data.Data
 	eventQueueService event_queue.EventQueueService
-	badgeAwardRepo    BadgeAwardRepo
 	badgeRepo         BadgeRepo
 	eventRuleRepo     EventRuleRepo
 	badgeAwardService *BadgeAwardService

@@ -70,7 +70,7 @@ func (ns *ExternalNotificationService) sendNewAnswerNotificationEmail(ctx contex
 
 	// If receiver has set language, use it to send email.
 	if len(lang) > 0 {
-		ctx = context.WithValue(ctx, constant.AcceptLanguageFlag, i18n.Language(lang))
+		ctx = context.WithValue(ctx, constant.AcceptLanguageContextKey, i18n.Language(lang))
 	}
 	title, body, err := ns.emailService.NewAnswerTemplate(ctx, rawData)
 	if err != nil {

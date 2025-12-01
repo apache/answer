@@ -151,7 +151,7 @@ func (uc *UserController) UserEmailLogin(ctx *gin.Context) {
 
 	resp, err := uc.userService.EmailLogin(ctx, req)
 	if err != nil {
-		_, _ = uc.actionService.ActionRecordAdd(ctx, entity.CaptchaActionPassword, ctx.ClientIP())
+		uc.actionService.ActionRecordAdd(ctx, entity.CaptchaActionPassword, ctx.ClientIP())
 		errFields := append([]*validator.FormErrorField{}, &validator.FormErrorField{
 			ErrorField: "e_mail",
 			ErrorMsg:   translator.Tr(handler.GetLang(ctx), reason.EmailOrPasswordWrong),
@@ -404,10 +404,7 @@ func (uc *UserController) UserModifyPassWord(ctx *gin.Context) {
 			handler.HandleResponse(ctx, errors.BadRequest(reason.CaptchaVerificationFailed), errFields)
 			return
 		}
-		_, err := uc.actionService.ActionRecordAdd(ctx, entity.CaptchaActionEditUserinfo, req.UserID)
-		if err != nil {
-			log.Error(err)
-		}
+		uc.actionService.ActionRecordAdd(ctx, entity.CaptchaActionEditUserinfo, req.UserID)
 	}
 
 	oldPassVerification, err := uc.userService.UserModifyPassWordVerification(ctx, req)

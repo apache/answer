@@ -66,8 +66,5 @@ func addQuestionLinkedCount(ctx context.Context, x *xorm.Engine) error {
 		}
 	}
 
-	type Question struct {
-		LinkedCount int `xorm:"not null default 0 INT(11) linked_count"`
-	}
 	return x.Context(ctx).Sync(new(entity.Question))
 }

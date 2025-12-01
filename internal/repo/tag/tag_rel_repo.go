@@ -198,6 +198,7 @@ func (tr *tagRelRepo) GetTagRelDefaultStatusByObjectID(ctx context.Context, obje
 	exist, err := tr.data.DB.Context(ctx).ID(objectID).Cols("show", "status").Get(&question)
 	if err != nil {
 		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+		return
 	}
 	if exist && (question.Show == entity.QuestionHide || question.Status == entity.QuestionStatusDeleted) {
 		return entity.TagRelStatusHide, nil

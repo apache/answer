@@ -89,7 +89,9 @@ func (cs *CaptchaService) CaptchaActionPassword(ctx context.Context, unit string
 		return false
 	}
 	if now-actionInfo.LastTime != 0 && now-actionInfo.LastTime > setTime {
-		cs.captchaRepo.SetActionType(ctx, unit, entity.CaptchaActionPassword, "", 0)
+		if err := cs.captchaRepo.SetActionType(ctx, unit, entity.CaptchaActionPassword, "", 0); err != nil {
+			log.Error(err)
+		}
 	}
 	return true
 }
@@ -105,7 +107,9 @@ func (cs *CaptchaService) CaptchaActionEditUserinfo(ctx context.Context, unit st
 		return false
 	}
 	if now-actionInfo.LastTime != 0 && now-actionInfo.LastTime > setTime {
-		cs.captchaRepo.SetActionType(ctx, unit, entity.CaptchaActionEditUserinfo, "", 0)
+		if err := cs.captchaRepo.SetActionType(ctx, unit, entity.CaptchaActionEditUserinfo, "", 0); err != nil {
+			log.Error(err)
+		}
 	}
 	return true
 }
@@ -154,10 +158,7 @@ func (cs *CaptchaService) CaptchaActionEdit(ctx context.Context, unit string, ac
 		return true
 	}
 	setNum := 10
-	if actionInfo.Num >= setNum {
-		return false
-	}
-	return true
+	return actionInfo.Num < setNum
 }
 
 func (cs *CaptchaService) CaptchaActionInvitationAnswer(ctx context.Context, unit string, actionInfo *entity.ActionRecordInfo) bool {
@@ -165,10 +166,7 @@ func (cs *CaptchaService) CaptchaActionInvitationAnswer(ctx context.Context, uni
 		return true
 	}
 	setNum := 30
-	if actionInfo.Num >= setNum {
-		return false
-	}
-	return true
+	return actionInfo.Num < setNum
 }
 
 func (cs *CaptchaService) CaptchaActionSearch(ctx context.Context, unit string, actionInfo *entity.ActionRecordInfo) bool {
@@ -182,7 +180,9 @@ func (cs *CaptchaService) CaptchaActionSearch(ctx context.Context, unit string, 
 		return false
 	}
 	if now-actionInfo.LastTime > setTime {
-		cs.captchaRepo.SetActionType(ctx, unit, entity.CaptchaActionSearch, "", 0)
+		if err := cs.captchaRepo.SetActionType(ctx, unit, entity.CaptchaActionSearch, "", 0); err != nil {
+			log.Error(err)
+		}
 	}
 	return true
 }
@@ -218,8 +218,5 @@ func (cs *CaptchaService) CaptchaActionVote(ctx context.Context, unit string, ac
 		return true
 	}
 	setNum := 40
-	if actionInfo.Num >= setNum {
-		return false
-	}
-	return true
+	return actionInfo.Num < setNum
 }

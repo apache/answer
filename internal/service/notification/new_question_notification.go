@@ -176,7 +176,7 @@ func (ns *ExternalNotificationService) sendNewQuestionNotificationEmail(ctx cont
 	}
 	// If receiver has set language, use it to send email.
 	if len(userInfo.Language) > 0 {
-		ctx = context.WithValue(ctx, constant.AcceptLanguageFlag, i18n.Language(userInfo.Language))
+		ctx = context.WithValue(ctx, constant.AcceptLanguageContextKey, i18n.Language(userInfo.Language))
 	}
 	title, body, err := ns.emailService.NewQuestionTemplate(ctx, rawData)
 	if err != nil {
