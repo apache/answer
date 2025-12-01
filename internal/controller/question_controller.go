@@ -287,7 +287,6 @@ func (qc *QuestionController) GetQuestionInviteUserInfo(ctx *gin.Context) {
 	questionID := uid.DeShortID(ctx.Query("id"))
 	resp, err := qc.questionService.InviteUserInfo(ctx, questionID)
 	handler.HandleResponse(ctx, err, resp)
-
 }
 
 // SimilarQuestion godoc
@@ -578,7 +577,7 @@ func (qc *QuestionController) AddQuestionByAnswer(ctx *gin.Context) {
 		handler.HandleResponse(ctx, errors.BadRequest(reason.RequestFormatError), errFields)
 		return
 	}
-	//add the question id to the answer
+	// add the question id to the answer
 	questionInfo, ok := resp.(*schema.QuestionInfoResp)
 	if ok {
 		answerReq := &schema.AnswerAddReq{}

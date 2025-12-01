@@ -69,7 +69,6 @@ func NewPluginCommonService(
 	data *data.Data,
 	importerService *importer.ImporterService,
 ) *PluginCommonService {
-
 	p := &PluginCommonService{
 		configService:        configService,
 		pluginConfigRepo:     pluginConfigRepo,

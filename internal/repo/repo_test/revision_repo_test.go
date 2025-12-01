@@ -29,6 +29,7 @@ import (
 	"github.com/apache/answer/internal/repo/revision"
 	"github.com/apache/answer/internal/repo/unique"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var q = &entity.Question{
@@ -69,29 +70,29 @@ func Test_revisionRepo_AddRevision(t *testing.T) {
 
 	// create question
 	err := questionRepo.AddQuestion(context.TODO(), q)
-	assert.NoError(t, err)
-	assert.NotEqual(t, "", q.ID)
+	require.NoError(t, err)
+	assert.NotEmpty(t, q.ID)
 
 	content, err := json.Marshal(q)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	// auto update false
 	rev := getRev(q.ID, q.Title, string(content))
 	err = revisionRepo.AddRevision(context.TODO(), rev, false)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	qr, _, _ := questionRepo.GetQuestion(context.TODO(), q.ID)
 	assert.NotEqual(t, rev.ID, qr.RevisionID)
 
 	// auto update false
 	rev = getRev(q.ID, q.Title, string(content))
 	err = revisionRepo.AddRevision(context.TODO(), rev, true)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	qr, _, _ = questionRepo.GetQuestion(context.TODO(), q.ID)
 	assert.Equal(t, rev.ID, qr.RevisionID)
 
 	// recovery
 	t.Cleanup(func() {
 		err = questionRepo.RemoveQuestion(context.TODO(), q.ID)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 }
 
@@ -103,7 +104,7 @@ func Test_revisionRepo_GetLastRevisionByObjectID(t *testing.T) {
 
 	Test_revisionRepo_AddRevision(t)
 	rev, exists, err := revisionRepo.GetLastRevisionByObjectID(context.TODO(), q.ID)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.True(t, exists)
 	assert.NotNil(t, rev)
 }
@@ -115,6 +116,6 @@ func Test_revisionRepo_GetRevisionList(t *testing.T) {
 	)
 	Test_revisionRepo_AddRevision(t)
 	revs, err := revisionRepo.GetRevisionList(context.TODO(), &entity.Revision{ObjectID: q.ID})
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.GreaterOrEqual(t, len(revs), 1)
 }

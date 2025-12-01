@@ -235,7 +235,6 @@ func (rs *RevisionService) revisionAuditQuestion(ctx context.Context, revisionit
 func (rs *RevisionService) revisionAuditAnswer(ctx context.Context, revisionitem *schema.GetRevisionResp) (err error) {
 	answerinfo, ok := revisionitem.ContentParsed.(*schema.AnswerInfo)
 	if ok {
-
 		var PostUpdateTime time.Time
 		dbquestion, exist, dberr := rs.questionRepo.GetQuestion(ctx, answerinfo.QuestionID)
 		if dberr != nil || !exist {

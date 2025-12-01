@@ -29,6 +29,13 @@ linters:
     - bodyclose # checks whether HTTP response body is closed successfully
     - canonicalheader # checks whether net/http.Header uses canonical header
     - copyloopvar # detects places where loop variables are copied (Go 1.22+)
+    - gocritic # provides diagnostics that check for bugs, performance and style issues
+    - misspell # finds commonly misspelled English words in comments and strings
+    - modernize # detects code that can be modernized to use newer Go features
+    - testifylint # checks usage of github.com/stretchr/testify
+    - unconvert # removes unnecessary type conversions
+    - unparam # reports unused function parameters
+    - whitespace # detects leading and trailing whitespace
 
 formatters:
   enable:

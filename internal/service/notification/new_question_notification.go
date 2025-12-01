@@ -55,8 +55,7 @@ func (ns *ExternalNotificationService) handleNewQuestionNotification(ctx context
 			if !channel.Enable {
 				continue
 			}
-			switch channel.Key {
-			case constant.EmailChannel:
+			if channel.Key == constant.EmailChannel {
 				ns.sendNewQuestionNotificationEmail(ctx, subscriber.UserID, &schema.NewQuestionTemplateRawData{
 					QuestionTitle:   msg.NewQuestionTemplateRawData.QuestionTitle,
 					QuestionID:      msg.NewQuestionTemplateRawData.QuestionID,

@@ -68,13 +68,14 @@ func (ss *SearchService) Search(ctx context.Context, dto *schema.SearchDTO) (res
 	resp = &schema.SearchResp{}
 	// search plugin is not found, call system search
 	if finder == nil {
-		if cond.SearchAll() {
+		switch {
+		case cond.SearchAll():
 			resp.SearchResults, resp.Total, err =
 				ss.searchRepo.SearchContents(ctx, cond.Words, cond.Tags, cond.UserID, cond.VoteAmount, dto.Page, dto.Size, dto.Order)
-		} else if cond.SearchQuestion() {
+		case cond.SearchQuestion():
 			resp.SearchResults, resp.Total, err =
 				ss.searchRepo.SearchQuestions(ctx, cond.Words, cond.Tags, cond.NotAccepted, cond.Views, cond.AnswerAmount, dto.Page, dto.Size, dto.Order)
-		} else if cond.SearchAnswer() {
+		case cond.SearchAnswer():
 			resp.SearchResults, resp.Total, err =
 				ss.searchRepo.SearchAnswers(ctx, cond.Words, cond.Tags, cond.Accepted, cond.QuestionID, dto.Page, dto.Size, dto.Order)
 		}
@@ -86,11 +87,12 @@ func (ss *SearchService) Search(ctx context.Context, dto *schema.SearchDTO) (res
 func (ss *SearchService) searchByPlugin(ctx context.Context, finder plugin.Search, cond *schema.SearchCondition, dto *schema.SearchDTO) (resp *schema.SearchResp, err error) {
 	var res []plugin.SearchResult
 	resp = &schema.SearchResp{}
-	if cond.SearchAll() {
+	switch {
+	case cond.SearchAll():
 		res, resp.Total, err = finder.SearchContents(ctx, cond.Convert2PluginSearchCond(dto.Page, dto.Size, dto.Order))
-	} else if cond.SearchQuestion() {
+	case cond.SearchQuestion():
 		res, resp.Total, err = finder.SearchQuestions(ctx, cond.Convert2PluginSearchCond(dto.Page, dto.Size, dto.Order))
-	} else if cond.SearchAnswer() {
+	case cond.SearchAnswer():
 		res, resp.Total, err = finder.SearchAnswers(ctx, cond.Convert2PluginSearchCond(dto.Page, dto.Size, dto.Order))
 	}
 	if err != nil {

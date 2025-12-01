@@ -45,8 +45,7 @@ func (ns *ExternalNotificationService) handleNewAnswerNotification(ctx context.C
 		if !channel.Enable {
 			continue
 		}
-		switch channel.Key {
-		case constant.EmailChannel:
+		if channel.Key == constant.EmailChannel {
 			ns.sendNewAnswerNotificationEmail(ctx, msg.ReceiverUserID, msg.ReceiverEmail, msg.ReceiverLang, msg.NewAnswerTemplateRawData)
 		}
 	}

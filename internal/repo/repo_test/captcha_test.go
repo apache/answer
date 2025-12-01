@@ -25,6 +25,7 @@ import (
 
 	"github.com/apache/answer/internal/repo/captcha"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var (
@@ -36,23 +37,23 @@ var (
 func Test_captchaRepo_DelActionType(t *testing.T) {
 	captchaRepo := captcha.NewCaptchaRepo(testDataSource)
 	err := captchaRepo.SetActionType(context.TODO(), ip, actionType, "", amount)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	actionInfo, err := captchaRepo.GetActionType(context.TODO(), ip, actionType)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, amount, actionInfo.Num)
 
 	err = captchaRepo.DelActionType(context.TODO(), ip, actionType)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 }
 
 func Test_captchaRepo_SetCaptcha(t *testing.T) {
 	captchaRepo := captcha.NewCaptchaRepo(testDataSource)
 	key, capt := "key", "1234"
 	err := captchaRepo.SetCaptcha(context.TODO(), key, capt)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	gotCaptcha, err := captchaRepo.GetCaptcha(context.TODO(), key)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, capt, gotCaptcha)
 }

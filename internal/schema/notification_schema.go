@@ -53,7 +53,7 @@ var NotificationInboxType = map[string]int{
 
 type NotificationContent struct {
 	ID                 string         `json:"id"`
-	TriggerUserID      string         `json:"-"` //show userid
+	TriggerUserID      string         `json:"-"` // show userid
 	ReceiverUserID     string         `json:"-"` // receiver userid
 	UserInfo           *UserBasicInfo `json:"user_info,omitempty"`
 	ObjectInfo         ObjectInfo     `json:"object_info"`
@@ -169,8 +169,8 @@ func (r *RedDotBadgeAwardCache) RemoveBadgeAward(notificationID string) {
 }
 
 type NotificationSearch struct {
-	Page         int    `json:"page" form:"page"`           //Query number of pages
-	PageSize     int    `json:"page_size" form:"page_size"` //Search page size
+	Page         int    `json:"page" form:"page"`           // Query number of pages
+	PageSize     int    `json:"page_size" form:"page_size"` // Search page size
 	Type         int    `json:"-" form:"-"`
 	TypeStr      string `json:"type" form:"type"`             // inbox achievement
 	InboxTypeStr string `json:"inbox_type" form:"inbox_type"` // inbox achievement

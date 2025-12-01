@@ -155,7 +155,7 @@ func (ns *NotificationCommon) AddNotification(ctx context.Context, msg *schema.N
 		}
 		req.Rank = rank
 		if exist {
-			//modify notification
+			// modify notification
 			updateContent := &schema.NotificationContent{}
 			err := json.Unmarshal([]byte(notificationInfo.Content), updateContent)
 			if err != nil {

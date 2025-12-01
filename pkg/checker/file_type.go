@@ -28,6 +28,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"github.com/segmentfault/pacman/log"
@@ -38,12 +39,7 @@ import (
 // WANING Only checks the file extension is not reliable, but `http.DetectContentType` and `mimetype` are not reliable for all file types.
 func IsUnAuthorizedExtension(fileName string, allowedExtensions []string) bool {
 	ext := strings.ToLower(strings.Trim(filepath.Ext(fileName), "."))
-	for _, extension := range allowedExtensions {
-		if extension == ext {
-			return false
-		}
-	}
-	return true
+	return !slices.Contains(allowedExtensions, ext)
 }
 
 // DecodeAndCheckImageFile currently answers support image type is

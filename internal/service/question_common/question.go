@@ -179,17 +179,17 @@ func (qs *QuestionCommon) UpdateCollectionCount(ctx context.Context, questionID 
 	return qs.questionRepo.UpdateCollectionCount(ctx, questionID)
 }
 
-func (qs *QuestionCommon) UpdateAccepted(ctx context.Context, questionID, AnswerID string) error {
+func (qs *QuestionCommon) UpdateAccepted(ctx context.Context, questionID, answerID string) error {
 	question := &entity.Question{}
 	question.ID = questionID
-	question.AcceptedAnswerID = AnswerID
+	question.AcceptedAnswerID = answerID
 	return qs.questionRepo.UpdateAccepted(ctx, question)
 }
 
-func (qs *QuestionCommon) UpdateLastAnswer(ctx context.Context, questionID, AnswerID string) error {
+func (qs *QuestionCommon) UpdateLastAnswer(ctx context.Context, questionID, answerID string) error {
 	question := &entity.Question{}
 	question.ID = questionID
-	question.LastAnswerID = AnswerID
+	question.LastAnswerID = answerID
 	return qs.questionRepo.UpdateLastAnswer(ctx, question)
 }
 
@@ -232,7 +232,7 @@ func (qs *QuestionCommon) InviteUserInfo(ctx context.Context, questionID string)
 	if !has {
 		return InviteUserInfo, errors.NotFound(reason.QuestionNotFound)
 	}
-	//InviteUser
+	// InviteUser
 	if dbinfo.InviteUserID != "" {
 		InviteUserIDs := make([]string, 0)
 		err := json.Unmarshal([]byte(dbinfo.InviteUserID), &InviteUserIDs)
@@ -681,7 +681,6 @@ func (qs *QuestionCommon) ShowFormat(ctx context.Context, data *entity.Question)
 				info.LastAnsweredUserID = answerInfo.UserID
 			}
 		}
-
 	}
 	info.Tags = make([]*schema.TagResp, 0)
 	return &info

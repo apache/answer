@@ -146,7 +146,6 @@ func (as *AnswerService) RemoveAnswer(ctx context.Context, req *schema.RemoveAns
 		if !exist {
 			return errors.BadRequest(reason.AnswerCannotDeleted)
 		}
-
 	}
 
 	err = as.answerRepo.RemoveAnswer(ctx, req.ID)
@@ -180,10 +179,10 @@ func (as *AnswerService) RemoveAnswer(ctx context.Context, req *schema.RemoveAns
 
 	// #2372 In order to simplify the process and complexity, as well as to consider if it is in-house,
 	// facing the problem of recovery.
-	//err = as.answerActivityService.DeleteAnswer(ctx, answerInfo.ID, answerInfo.CreatedAt, answerInfo.VoteCount)
-	//if err != nil {
-	//	log.Errorf("delete answer activity change failed: %s", err.Error())
-	//}
+	// err = as.answerActivityService.DeleteAnswer(ctx, answerInfo.ID, answerInfo.CreatedAt, answerInfo.VoteCount)
+	// if err != nil {
+	// 	log.Errorf("delete answer activity change failed: %s", err.Error())
+	// }
 	as.activityQueueService.Send(ctx, &schema.ActivityMsg{
 		UserID:           req.UserID,
 		TriggerUserID:    converter.StringToInt64(req.UserID),
@@ -264,7 +263,7 @@ func (as *AnswerService) Insert(ctx context.Context, req *schema.AnswerAddReq) (
 	insertData.RevisionID = "0"
 	insertData.LastEditUserID = "0"
 	insertData.Status = entity.AnswerStatusPending
-	//insertData.UpdatedAt = now
+	// insertData.UpdatedAt = now
 	if err = as.answerRepo.AddAnswer(ctx, insertData); err != nil {
 		return "", err
 	}
@@ -365,7 +364,7 @@ func (as *AnswerService) Update(ctx context.Context, req *schema.AnswerUpdateReq
 		return "", errors.BadRequest(reason.QuestionNotFound)
 	}
 
-	//If the content is the same, ignore it
+	// If the content is the same, ignore it
 	if answerInfo.OriginalText == req.Content {
 		return "", nil
 	}

@@ -509,7 +509,6 @@ func (uc *UserController) ActionRecord(ctx *gin.Context) {
 		resp, err := uc.actionService.ActionRecord(ctx, req)
 		handler.HandleResponse(ctx, err, resp)
 	}
-
 }
 
 // GetUserNotificationConfig get user's notification config

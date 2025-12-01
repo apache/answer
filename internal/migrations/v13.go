@@ -136,7 +136,7 @@ func addPrivilegeForInviteSomeoneToAnswer(ctx context.Context, x *xorm.Engine) e
 }
 
 func updateQuestionCount(ctx context.Context, x *xorm.Engine) error {
-	//question answer count
+	// question answer count
 	answers := make([]AnswerV13, 0)
 	err := x.Context(ctx).Find(&answers, &AnswerV13{Status: entity.AnswerStatusAvailable})
 	if err != nil {
@@ -216,7 +216,7 @@ func updateTagCount(ctx context.Context, x *xorm.Engine) error {
 		}
 	}
 
-	//select tag count
+	// select tag count
 	newTagRelList := make([]entity.TagRel, 0)
 	err = x.Context(ctx).Find(&newTagRelList, &entity.TagRel{Status: entity.TagRelStatusAvailable})
 	if err != nil {

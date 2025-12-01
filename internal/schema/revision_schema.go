@@ -53,7 +53,7 @@ const RevisionAuditReject = "reject"
 type RevisionAuditReq struct {
 	// object id
 	ID                string `validate:"required" comment:"id" form:"id"`
-	Operation         string `validate:"required" comment:"operation" form:"operation"` //approve or reject
+	Operation         string `validate:"required" comment:"operation" form:"operation"` // approve or reject
 	UserID            string `json:"-"`
 	CanReviewQuestion bool   `json:"-"`
 	CanReviewAnswer   bool   `json:"-"`

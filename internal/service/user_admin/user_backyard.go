@@ -470,14 +470,15 @@ func (us *UserAdminService) GetUserPage(ctx context.Context, req *schema.GetUser
 	user := &entity.User{}
 	_ = copier.Copy(user, req)
 
-	if req.IsInactive() {
+	switch {
+	case req.IsInactive():
 		user.MailStatus = entity.EmailStatusToBeVerified
 		user.Status = entity.UserStatusAvailable
-	} else if req.IsSuspended() {
+	case req.IsSuspended():
 		user.Status = entity.UserStatusSuspended
-	} else if req.IsDeleted() {
+	case req.IsDeleted():
 		user.Status = entity.UserStatusDeleted
-	} else {
+	default:
 		user.MailStatus = entity.EmailStatusAvailable
 		user.Status = entity.UserStatusAvailable
 	}
@@ -486,8 +487,8 @@ func (us *UserAdminService) GetUserPage(ctx context.Context, req *schema.GetUser
 		if email, e := mail.ParseAddress(req.Query); e == nil {
 			user.EMail = email.Address
 			req.Query = ""
-		} else if strings.HasPrefix(req.Query, "user:") {
-			id := strings.TrimSpace(strings.TrimPrefix(req.Query, "user:"))
+		} else if after, ok := strings.CutPrefix(req.Query, "user:"); ok {
+			id := strings.TrimSpace(after)
 			idSearch := true
 			for _, r := range id {
 				if !unicode.IsDigit(r) {
@@ -521,18 +522,19 @@ func (us *UserAdminService) GetUserPage(ctx context.Context, req *schema.GetUser
 			DisplayName: u.DisplayName,
 			Avatar:      avatarMapping[u.ID].GetURL(),
 		}
-		if u.Status == entity.UserStatusDeleted {
+		switch {
+		case u.Status == entity.UserStatusDeleted:
 			t.Status = constant.UserDeleted
 			t.DeletedAt = u.DeletedAt.Unix()
-		} else if u.Status == entity.UserStatusSuspended {
+		case u.Status == entity.UserStatusSuspended:
 			t.Status = constant.UserSuspended
 			t.SuspendedAt = u.SuspendedAt.Unix()
 			if !u.SuspendedUntil.IsZero() {
 				t.SuspendedUntil = u.SuspendedUntil.Unix()
 			}
-		} else if u.MailStatus == entity.EmailStatusToBeVerified {
+		case u.MailStatus == entity.EmailStatusToBeVerified:
 			t.Status = constant.UserInactive
-		} else {
+		default:
 			t.Status = constant.UserNormal
 		}
 		resp = append(resp, t)
@@ -646,7 +648,6 @@ func (us *UserAdminService) CheckAndUnsuspendExpiredUsers(ctx context.Context) e
 		if user.Status == entity.UserStatusSuspended &&
 			!user.SuspendedUntil.IsZero() &&
 			user.SuspendedUntil.Before(now) {
-
 			log.Infof("Unsuspending user %s (ID: %s) - suspension expired at %v",
 				user.Username, user.ID, user.SuspendedUntil)
 

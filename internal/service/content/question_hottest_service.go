@@ -30,7 +30,6 @@ import (
 )
 
 func (q *QuestionService) RefreshHottestCron(ctx context.Context) {
-
 	var (
 		page     = 1
 		pageSize = 100

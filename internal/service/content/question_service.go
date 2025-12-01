@@ -216,9 +216,9 @@ func (qs *QuestionService) ReopenQuestion(ctx context.Context, req *schema.Reope
 	return nil
 }
 
-func (qs *QuestionService) AddQuestionCheckTags(ctx context.Context, Tags []*entity.Tag) ([]string, error) {
+func (qs *QuestionService) AddQuestionCheckTags(ctx context.Context, tags []*entity.Tag) ([]string, error) {
 	list := make([]string, 0)
-	for _, tag := range Tags {
+	for _, tag := range tags {
 		if tag.Reserved {
 			list = append(list, tag.DisplayName)
 		}
@@ -374,14 +374,14 @@ func (qs *QuestionService) AddQuestion(ctx context.Context, req *schema.Question
 	question.AcceptedAnswerID = "0"
 	question.LastAnswerID = "0"
 	question.LastEditUserID = "0"
-	//question.PostUpdateTime = nil
+	// question.PostUpdateTime = nil
 	question.Status = entity.QuestionStatusPending
 	question.RevisionID = "0"
 	question.CreatedAt = now
 	question.PostUpdateTime = now
 	question.Pin = entity.QuestionUnPin
 	question.Show = entity.QuestionShow
-	//question.UpdatedAt = nil
+	// question.UpdatedAt = nil
 	err = qs.questionRepo.AddQuestion(ctx, question)
 	if err != nil {
 		return
@@ -416,10 +416,7 @@ func (qs *QuestionService) AddQuestion(ctx context.Context, req *schema.Question
 		Title:    question.Title,
 	}
 
-	questionWithTagsRevision, err := qs.changeQuestionToRevision(ctx, question, tags)
-	if err != nil {
-		return nil, err
-	}
+	questionWithTagsRevision := qs.changeQuestionToRevision(ctx, question, tags)
 	infoJSON, _ := json.Marshal(questionWithTagsRevision)
 	revisionDTO.Content = string(infoJSON)
 	revisionID, err := qs.revisionService.AddRevision(ctx, revisionDTO, true)
@@ -554,7 +551,7 @@ func (qs *QuestionService) RemoveQuestion(ctx context.Context, req *schema.Remov
 	if err != nil {
 		return err
 	}
-	//if the status is deleted, return directly
+	// if the status is deleted, return directly
 	if questionInfo.Status == entity.QuestionStatusDeleted {
 		return nil
 	}
@@ -613,7 +610,7 @@ func (qs *QuestionService) RemoveQuestion(ctx context.Context, req *schema.Remov
 		}
 	}
 
-	//tag count
+	// tag count
 	tagIDs := make([]string, 0)
 	Tags, tagerr := qs.tagCommon.GetObjectEntityTag(ctx, req.ID)
 	if tagerr != nil {
@@ -684,7 +681,7 @@ func (qs *QuestionService) UpdateQuestionCheckTags(ctx context.Context, req *sch
 
 	isChange := qs.tagCommon.CheckTagsIsChange(ctx, tagNameList, oldtagNameList)
 
-	//If the content is the same, ignore it
+	// If the content is the same, ignore it
 	if dbinfo.Title == req.Title && dbinfo.OriginalText == req.Content && !isChange {
 		return
 	}
@@ -798,7 +795,7 @@ func (qs *QuestionService) UpdateQuestionInviteUser(ctx context.Context, req *sc
 		return errors.BadRequest(reason.QuestionNotFound)
 	}
 
-	//verify invite user
+	// verify invite user
 	inviteUserInfoList, err := qs.userCommon.BatchGetUserBasicInfoByUserNames(ctx, req.InviteUser)
 	if err != nil {
 		log.Error("BatchGetUserBasicInfoByUserNames error", err.Error())
@@ -826,7 +823,7 @@ func (qs *QuestionService) UpdateQuestionInviteUser(ctx context.Context, req *sc
 	if saveerr != nil {
 		return saveerr
 	}
-	//send notification
+	// send notification
 	oldInviteUserIDsStr := originQuestion.InviteUserID
 	oldInviteUserIDs := make([]string, 0)
 	needSendNotificationUserIDs := make([]string, 0)
@@ -964,7 +961,7 @@ func (qs *QuestionService) UpdateQuestion(ctx context.Context, req *schema.Quest
 
 	isChange := qs.tagCommon.CheckTagsIsChange(ctx, tagNameList, oldtagNameList)
 
-	//If the content is the same, ignore it
+	// If the content is the same, ignore it
 	if dbinfo.Title == req.Title && dbinfo.OriginalText == req.Content && !isChange {
 		return
 	}
@@ -1015,7 +1012,7 @@ func (qs *QuestionService) UpdateQuestion(ctx context.Context, req *schema.Quest
 		return errorlist, err
 	}
 
-	//Administrators and themselves do not need to be audited
+	// Administrators and themselves do not need to be audited
 
 	revisionDTO := &schema.AddRevisionDTO{
 		UserID:   question.UserID,
@@ -1031,11 +1028,11 @@ func (qs *QuestionService) UpdateQuestion(ctx context.Context, req *schema.Quest
 	// It's not you or the administrator that needs to be reviewed
 	if !canUpdate {
 		revisionDTO.Status = entity.RevisionUnreviewedStatus
-		revisionDTO.UserID = req.UserID //use revision userid
+		revisionDTO.UserID = req.UserID // use revision userid
 	} else {
-		//Direct modification
+		// Direct modification
 		revisionDTO.Status = entity.RevisionReviewPassStatus
-		//update question to db
+		// update question to db
 		question.ParsedText, err = qs.questioncommon.UpdateQuestionLink(ctx, question.ID, "", question.ParsedText, question.OriginalText)
 		if err != nil {
 			return questionInfo, err
@@ -1054,10 +1051,7 @@ func (qs *QuestionService) UpdateQuestion(ctx context.Context, req *schema.Quest
 		}
 	}
 
-	questionWithTagsRevision, err := qs.changeQuestionToRevision(ctx, question, Tags)
-	if err != nil {
-		return nil, err
-	}
+	questionWithTagsRevision := qs.changeQuestionToRevision(ctx, question, Tags)
 	infoJSON, _ := json.Marshal(questionWithTagsRevision)
 	revisionDTO.Content = string(infoJSON)
 	revisionID, err := qs.revisionService.AddRevision(ctx, revisionDTO, true)
@@ -1165,7 +1159,6 @@ func (qs *QuestionService) CheckChangeReservedTag(ctx context.Context, oldobject
 // PersonalQuestionPage get question list by user
 func (qs *QuestionService) PersonalQuestionPage(ctx context.Context, req *schema.PersonalQuestionPageReq) (
 	pageModel *pager.PageModel, err error) {
-
 	userinfo, exist, err := qs.userCommon.GetUserBasicInfoByUserName(ctx, req.Username)
 	if err != nil {
 		return nil, err
@@ -1250,7 +1243,6 @@ func (qs *QuestionService) PersonalAnswerPage(ctx context.Context, req *schema.P
 		info.QuestionID = item.QuestionID
 		if item.QuestionInfo.Status == entity.QuestionStatusDeleted {
 			info.QuestionInfo.Title = "Deleted question"
-
 		}
 		userAnswerlist = append(userAnswerlist, info)
 	}
@@ -1489,7 +1481,8 @@ func (qs *QuestionService) GetQuestionPage(ctx context.Context, req *schema.Ques
 			if err != nil {
 				return nil, 0, err
 			}
-			tagIDs = append(synTagIds, tagInfo.ID)
+			tagIDs = append(tagIDs, synTagIds...)
+			tagIDs = append(tagIDs, tagInfo.ID)
 		} else {
 			return questions, 0, nil
 		}
@@ -1585,10 +1578,10 @@ func (qs *QuestionService) AdminSetQuestionStatus(ctx context.Context, req *sche
 	if setStatus == entity.QuestionStatusDeleted {
 		// #2372 In order to simplify the process and complexity, as well as to consider if it is in-house,
 		// facing the problem of recovery.
-		//err = qs.answerActivityService.DeleteQuestion(ctx, questionInfo.ID, questionInfo.CreatedAt, questionInfo.VoteCount)
-		//if err != nil {
-		//	log.Errorf("admin delete question then rank rollback error %s", err.Error())
-		//}
+		// err = qs.answerActivityService.DeleteQuestion(ctx, questionInfo.ID, questionInfo.CreatedAt, questionInfo.VoteCount)
+		// if err != nil {
+		// 	log.Errorf("admin delete question then rank rollback error %s", err.Error())
+		// }
 		qs.activityQueueService.Send(ctx, &schema.ActivityMsg{
 			UserID:           questionInfo.UserID,
 			TriggerUserID:    converter.StringToInt64(req.UserID),
@@ -1642,7 +1635,6 @@ func (qs *QuestionService) AdminSetQuestionStatus(ctx context.Context, req *sche
 func (qs *QuestionService) AdminQuestionPage(
 	ctx context.Context, req *schema.AdminQuestionPageReq) (
 	resp *pager.PageModel, err error) {
-
 	list := make([]*schema.AdminQuestionInfo, 0)
 	questionList, count, err := qs.questionRepo.AdminQuestionPage(ctx, req)
 	if err != nil {
@@ -1708,8 +1700,8 @@ func (qs *QuestionService) AdminAnswerPage(ctx context.Context, req *schema.Admi
 	return pager.NewPageModel(count, answerResp), nil
 }
 
-func (qs *QuestionService) changeQuestionToRevision(ctx context.Context, questionInfo *entity.Question, tags []*entity.Tag) (
-	questionRevision *entity.QuestionWithTagsRevision, err error) {
+func (qs *QuestionService) changeQuestionToRevision(_ context.Context, questionInfo *entity.Question, tags []*entity.Tag) (
+	questionRevision *entity.QuestionWithTagsRevision) {
 	questionRevision = &entity.QuestionWithTagsRevision{}
 	questionRevision.Question = *questionInfo
 
@@ -1718,7 +1710,7 @@ func (qs *QuestionService) changeQuestionToRevision(ctx context.Context, questio
 		_ = copier.Copy(item, tag)
 		questionRevision.Tags = append(questionRevision.Tags, item)
 	}
-	return questionRevision, nil
+	return questionRevision
 }
 
 func (qs *QuestionService) SitemapCron(ctx context.Context) {

@@ -153,7 +153,7 @@ func initDatabaseImage(dbSetting TestDBSetting) (connection string, cleanup func
 		return "", nil, fmt.Errorf("could not connect to docker: %s", err)
 	}
 
-	//resource, err := pool.Run(dbSetting.ImageName, dbSetting.ImageVersion, dbSetting.ENV)
+	// resource, err := pool.Run(dbSetting.ImageName, dbSetting.ImageVersion, dbSetting.ENV)
 	resource, err := pool.RunWithOptions(&dockertest.RunOptions{
 		Repository: dbSetting.ImageName,
 		Tag:        dbSetting.ImageVersion,

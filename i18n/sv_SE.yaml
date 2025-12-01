@@ -162,7 +162,7 @@ backend:
       cannot_modify_self_status:
         other: Du får inte ändra din status.
       email_or_password_wrong:
-        other: Fel e-post eller lösenord. 
+        other: Fel e-post eller lösenord.
     answer:
       not_found:
         other: Svar hittades inte.
@@ -189,12 +189,12 @@ backend:
       need_to_be_verified:
         other: E-postadressen ska vara verifierad.
       verify_url_expired:
-        other: Länken för att verifiera e-postadressen har gått ut. Vänligen skicka igen. 
+        other: Länken för att verifiera e-postadressen har gått ut. Vänligen skicka igen.
       illegal_email_domain_error:
-        other: E-post från den domänen tillåts inte. Vänligen använt en annan. 
+        other: E-post från den domänen tillåts inte. Vänligen använt en annan.
     lang:
       not_found:
-        other: Språkfilen hittas inte. 
+        other: Språkfilen hittas inte.
     object:
       captcha_verification_failed:
         other: Fel Captcha.
@@ -234,7 +234,7 @@ backend:
         other: No permission to update.
       content_cannot_empty:
         other: Content cannot be empty.
-      content_less_than_minumum:
+      content_less_than_minimum:
         other: Not enough content entered.
     rank:
       fail_to_meet_the_condition:

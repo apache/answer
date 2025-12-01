@@ -135,7 +135,6 @@ func (us *uploaderService) UploadAvatarFile(ctx *gin.Context, userID string) (ur
 	}
 	us.fileRecordService.AddFileRecord(ctx, userID, avatarFilePath, url, string(plugin.UserAvatar))
 	return url, nil
-
 }
 
 func (us *uploaderService) AvatarThumbFile(ctx *gin.Context, fileName string, size int) (url string, err error) {
@@ -304,7 +303,6 @@ func (us *uploaderService) UploadBrandingFile(ctx *gin.Context, userID string) (
 	}
 	us.fileRecordService.AddFileRecord(ctx, userID, avatarFilePath, url, string(plugin.AdminBranding))
 	return url, nil
-
 }
 
 func (us *uploaderService) uploadImageFile(ctx *gin.Context, file *multipart.FileHeader, fileSubPath string) (

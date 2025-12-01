@@ -263,14 +263,13 @@ func (tc *TemplateController) QuestionInfoRedirect(ctx *gin.Context, siteInfo *s
 		if needChangeShortID {
 			return true, url
 		}
-		//not have title
+		// not have title
 		if titleIsAnswerID || len(title) == 0 {
 			return false, ""
 		}
 
 		return true, url
 	} else {
-
 		detail, err := tc.templateRenderController.QuestionDetail(ctx, questionID)
 		if err != nil {
 			tc.Page404(ctx)
@@ -284,7 +283,7 @@ func (tc *TemplateController) QuestionInfoRedirect(ctx *gin.Context, siteInfo *s
 		if len(ctx.Request.URL.Query()) > 0 {
 			url = fmt.Sprintf("%s?%s", url, ctx.Request.URL.RawQuery)
 		}
-		//have title
+		// have title
 		if len(title) > 0 && !titleIsAnswerID && correctTitle {
 			if needChangeShortID {
 				return true, url
@@ -370,7 +369,7 @@ func (tc *TemplateController) QuestionInfo(ctx *gin.Context) {
 	UrlUseTitle := siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitle ||
 		siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitleByShortID
 
-	//related question
+	// related question
 	userID := middleware.GetLoginUserIDFromContext(ctx)
 	relatedQuestion, _, _ := tc.questionService.SimilarQuestion(ctx, id, userID)
 
@@ -553,7 +552,6 @@ func (tc *TemplateController) UserInfo(ctx *gin.Context) {
 		"topQuestions": questionList,
 		"topAnswers":   answerList,
 	})
-
 }
 
 func (tc *TemplateController) Page404(ctx *gin.Context) {

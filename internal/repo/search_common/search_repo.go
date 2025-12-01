@@ -190,7 +190,7 @@ func (sr *searchRepo) SearchContents(ctx context.Context, words []string, tagIDs
 		argsA = append(argsA, votes)
 	}
 
-	//b = b.Union("all", ub)
+	// b = b.Union("all", ub)
 	ubSQL, _, err := ub.ToSQL()
 	if err != nil {
 		return
@@ -447,7 +447,7 @@ func (sr *searchRepo) SearchAnswers(ctx context.Context, words []string, tagIDs 
 	return
 }
 
-func (sr *searchRepo) parseOrder(ctx context.Context, order string) (res string) {
+func (sr *searchRepo) parseOrder(_ context.Context, order string) (res string) {
 	switch order {
 	case "newest":
 		res = "created_at desc"

@@ -33,7 +33,6 @@ func (t *TemplateRenderController) CommentList(
 	comments map[string][]*schema.GetCommentResp,
 	err error,
 ) {
-
 	comments = make(map[string][]*schema.GetCommentResp, len(objectIDs))
 
 	for _, objectID := range objectIDs {

@@ -96,7 +96,7 @@ func (us *UserNotificationConfigService) SetDefaultUserNotificationConfig(ctx co
 		string(constant.InboxSource), `[{"key":"email","enable":true}]`)
 }
 
-func (us *UserNotificationConfigService) convertToEntity(ctx context.Context, userID string,
+func (us *UserNotificationConfigService) convertToEntity(_ context.Context, userID string,
 	source constant.NotificationSource, channel schema.NotificationChannelConfig) (c *entity.UserNotificationConfig) {
 	var channels schema.NotificationChannels
 	channels = append(channels, &channel)

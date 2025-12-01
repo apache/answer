@@ -178,9 +178,8 @@ func (cs *CommentService) AddComment(ctx context.Context, req *schema.AddComment
 		time.Now(), req.CanEdit, req.CanDelete)
 
 	if comment.Status == entity.CommentStatusAvailable {
-		commentResp, err := cs.addCommentNotification(ctx, req, resp, comment, objInfo)
-		if err != nil {
-			return commentResp, err
+		if err := cs.addCommentNotification(ctx, req, resp, comment, objInfo); err != nil {
+			return nil, err
 		}
 	}
 
@@ -220,7 +219,7 @@ func (cs *CommentService) AddComment(ctx context.Context, req *schema.AddComment
 
 func (cs *CommentService) addCommentNotification(
 	ctx context.Context, req *schema.AddCommentReq, resp *schema.GetCommentResp,
-	comment *entity.Comment, objInfo *schema.SimpleObjectInfo) (*schema.GetCommentResp, error) {
+	comment *entity.Comment, objInfo *schema.SimpleObjectInfo) error {
 	// The priority of the notification
 	// 1. reply to user
 	// 2. comment mention to user
@@ -231,7 +230,7 @@ func (cs *CommentService) addCommentNotification(
 	if len(resp.ReplyUserID) > 0 && resp.ReplyUserID != req.UserID {
 		replyUser, exist, err := cs.userCommon.GetUserBasicInfoByID(ctx, resp.ReplyUserID)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		if exist {
 			resp.ReplyUsername = replyUser.Username
@@ -241,7 +240,7 @@ func (cs *CommentService) addCommentNotification(
 		cs.notificationCommentReply(ctx, replyUser.ID, comment.ID, req.UserID,
 			objInfo.QuestionID, objInfo.Title, htmltext.FetchExcerpt(comment.ParsedText, "...", 240))
 		alreadyNotifiedUserID[replyUser.ID] = true
-		return nil, nil
+		return nil
 	}
 
 	if len(req.MentionUsernameList) > 0 {
@@ -250,7 +249,7 @@ func (cs *CommentService) addCommentNotification(
 		for _, userID := range alreadyNotifiedUserIDs {
 			alreadyNotifiedUserID[userID] = true
 		}
-		return nil, nil
+		return nil
 	}
 
 	if objInfo.ObjectType == constant.QuestionObjectType && !alreadyNotifiedUserID[objInfo.ObjectCreatorUserID] {
@@ -260,7 +259,7 @@ func (cs *CommentService) addCommentNotification(
 		cs.notificationAnswerComment(ctx, objInfo.QuestionID, objInfo.Title, objInfo.AnswerID,
 			objInfo.ObjectCreatorUserID, comment.ID, req.UserID, htmltext.FetchExcerpt(comment.ParsedText, "...", 240))
 	}
-	return nil, nil
+	return nil
 }
 
 // RemoveComment delete comment

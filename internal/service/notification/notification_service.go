@@ -226,15 +226,12 @@ func (ns *NotificationService) GetNotificationPage(ctx context.Context, searchCo
 	if err != nil {
 		return nil, err
 	}
-	resp, err = ns.formatNotificationPage(ctx, notifications)
-	if err != nil {
-		return nil, err
-	}
+	resp = ns.formatNotificationPage(ctx, notifications)
 	return pager.NewPageModel(total, resp), nil
 }
 
 func (ns *NotificationService) formatNotificationPage(ctx context.Context, notifications []*entity.Notification) (
-	resp []*schema.NotificationContent, err error) {
+	resp []*schema.NotificationContent) {
 	lang := handler.GetLangByCtx(ctx)
 	enableShortID := handler.GetEnableShortID(ctx)
 	userIDs := make([]string, 0)
@@ -287,13 +284,13 @@ func (ns *NotificationService) formatNotificationPage(ctx context.Context, notif
 	}
 
 	if len(userIDs) == 0 {
-		return resp, nil
+		return resp
 	}
 
 	users, err := ns.userRepo.BatchGetByID(ctx, userIDs)
 	if err != nil {
 		log.Error(err)
-		return resp, nil
+		return resp
 	}
 	userIDMapping := make(map[string]*entity.User, len(users))
 	for _, user := range users {
@@ -314,5 +311,5 @@ func (ns *NotificationService) formatNotificationPage(ctx context.Context, notif
 			}
 		}
 	}
-	return resp, nil
+	return resp
 }

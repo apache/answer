@@ -134,9 +134,7 @@ var funcMap = template.FuncMap{
 			"timezone": tz,
 		}
 	},
-	"urlTitle": func(title string) string {
-		return htmltext.UrlTitle(title)
-	},
+	"urlTitle": htmltext.UrlTitle,
 }
 
 func FormatLinkNofollow(html string) string {

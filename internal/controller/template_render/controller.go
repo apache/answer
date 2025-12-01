@@ -78,10 +78,10 @@ func Paginator(page, pageSize int, nums int64) *schema.Paginator {
 		pageSize = 10
 	}
 
-	var prevpage int //Previous page address
-	var nextpage int //Address on the last page
-	//Generate the total number of pages based on the total number of nums and the number of prepage pages
-	totalpages := int(math.Ceil(float64(nums) / float64(pageSize))) //Total number of Pages
+	var prevpage int // Previous page address
+	var nextpage int // Address on the last page
+	// Generate the total number of pages based on the total number of nums and the number of prepage pages
+	totalpages := int(math.Ceil(float64(nums) / float64(pageSize))) // Total number of Pages
 	if page > totalpages {
 		page = totalpages
 	}
@@ -90,7 +90,7 @@ func Paginator(page, pageSize int, nums int64) *schema.Paginator {
 	}
 	var pages []int
 	switch {
-	case page >= totalpages-5 && totalpages > 5: //The last 5 pages
+	case page >= totalpages-5 && totalpages > 5: // The last 5 pages
 		start := totalpages - 5 + 1
 		prevpage = page - 1
 		nextpage = int(math.Min(float64(totalpages), float64(page+1)))

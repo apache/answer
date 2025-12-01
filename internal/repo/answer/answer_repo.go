@@ -335,7 +335,7 @@ func (ar *answerRepo) SearchList(ctx context.Context, search *entity.AnswerSearc
 	var err error
 	rows := make([]*entity.Answer, 0)
 	if search.Page > 0 {
-		search.Page = search.Page - 1
+		search.Page--
 	} else {
 		search.Page = 0
 	}

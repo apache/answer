@@ -52,7 +52,7 @@ func (r *SiteGeneralReq) FormatSiteUrl() {
 	}
 	r.SiteUrl = fmt.Sprintf("%s://%s", parsedUrl.Scheme, parsedUrl.Host)
 	if len(parsedUrl.Path) > 0 {
-		r.SiteUrl = r.SiteUrl + parsedUrl.Path
+		r.SiteUrl += parsedUrl.Path
 		r.SiteUrl = strings.TrimSuffix(r.SiteUrl, "/")
 	}
 }

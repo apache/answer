@@ -81,19 +81,16 @@ func TestMain(t *testing.M) {
 		_ = os.RemoveAll(dbSetting.Connection)
 	}
 
-	defer func() {
-		if tearDown != nil {
-			tearDown()
-		}
-	}()
 	if err := initTestDataSource(dbSetting); err != nil {
 		panic(err)
 	}
 	log.Info("init test database successfully")
 
-	if ret := t.Run(); ret != 0 {
-		os.Exit(ret)
+	ret := t.Run()
+	if tearDown != nil {
+		tearDown()
 	}
+	os.Exit(ret)
 }
 
 type TestDBSetting struct {
@@ -155,7 +152,7 @@ func initDatabaseImage(dbSetting TestDBSetting) (connection string, cleanup func
 		return "", nil, fmt.Errorf("could not connect to docker: %s", err)
 	}
 
-	//resource, err := pool.Run(dbSetting.ImageName, dbSetting.ImageVersion, dbSetting.ENV)
+	// resource, err := pool.Run(dbSetting.ImageName, dbSetting.ImageVersion, dbSetting.ENV)
 	resource, err := pool.RunWithOptions(&dockertest.RunOptions{
 		Repository: dbSetting.ImageName,
 		Tag:        dbSetting.ImageVersion,

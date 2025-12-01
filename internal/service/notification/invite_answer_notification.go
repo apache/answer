@@ -45,8 +45,7 @@ func (ns *ExternalNotificationService) handleInviteAnswerNotification(ctx contex
 		if !channel.Enable {
 			continue
 		}
-		switch channel.Key {
-		case constant.EmailChannel:
+		if channel.Key == constant.EmailChannel {
 			ns.sendInviteAnswerNotificationEmail(ctx, msg.ReceiverUserID, msg.ReceiverEmail, msg.ReceiverLang, msg.NewInviteAnswerTemplateRawData)
 		}
 	}

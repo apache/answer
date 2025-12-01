@@ -74,7 +74,7 @@ func NewTagService(
 
 // RemoveTag delete tag
 func (ts *TagService) RemoveTag(ctx context.Context, req *schema.RemoveTagReq) (err error) {
-	//If the tag has associated problems, it cannot be deleted
+	// If the tag has associated problems, it cannot be deleted
 	tagCount, err := ts.tagCommonService.CountTagRelByTagID(ctx, req.TagID)
 	if err != nil {
 		return err
@@ -83,7 +83,7 @@ func (ts *TagService) RemoveTag(ctx context.Context, req *schema.RemoveTagReq) (
 		return errors.BadRequest(reason.TagIsUsedCannotDelete)
 	}
 
-	//If the tag has associated problems, it cannot be deleted
+	// If the tag has associated problems, it cannot be deleted
 	tagSynonymCount, err := ts.tagRepo.GetTagSynonymCount(ctx, req.TagID)
 	if err != nil {
 		return err

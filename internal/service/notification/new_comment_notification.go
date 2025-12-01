@@ -45,8 +45,7 @@ func (ns *ExternalNotificationService) handleNewCommentNotification(ctx context.
 		if !channel.Enable {
 			continue
 		}
-		switch channel.Key {
-		case constant.EmailChannel:
+		if channel.Key == constant.EmailChannel {
 			ns.sendNewCommentNotificationEmail(ctx, msg.ReceiverUserID, msg.ReceiverEmail, msg.ReceiverLang, msg.NewCommentTemplateRawData)
 		}
 	}
