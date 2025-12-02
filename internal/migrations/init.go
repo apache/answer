@@ -28,6 +28,7 @@ import (
 	"github.com/apache/answer/internal/base/constant"
 
 	"github.com/apache/answer/internal/base/data"
+	"github.com/apache/answer/internal/repo/revision"
 	"github.com/apache/answer/internal/repo/unique"
 	"github.com/apache/answer/internal/schema"
 	"github.com/segmentfault/pacman/log"
@@ -311,6 +312,7 @@ func (m *Mentor) initSiteInfoWrite() {
 
 func (m *Mentor) initDefaultContent() {
 	uniqueIDRepo := unique.NewUniqueIDRepo(&data.Data{DB: m.engine})
+	revisionRepo := revision.NewRevisionRepo(&data.Data{DB: m.engine}, uniqueIDRepo)
 	now := time.Now()
 
 	tagId, err := uniqueIDRepo.GenUniqueIDStr(m.ctx, entity.Tag{}.TableName())
@@ -343,7 +345,7 @@ func (m *Mentor) initDefaultContent() {
 		return
 	}
 
-	tag := entity.Tag{
+	tag := &entity.Tag{
 		ID:            tagId,
 		SlugName:      "support",
 		DisplayName:   "support",
@@ -419,13 +421,71 @@ func (m *Mentor) initDefaultContent() {
 	if m.err != nil {
 		return
 	}
+	tagContent, err := json.Marshal(tag)
+	if err != nil {
+		m.err = err
+		return
+	}
+	m.err = revisionRepo.AddRevision(m.ctx, &entity.Revision{
+		UserID:   tag.UserID,
+		ObjectID: tag.ID,
+		Title:    tag.SlugName,
+		Content:  string(tagContent),
+		Status:   entity.RevisionReviewPassStatus,
+	}, true)
+	if m.err != nil {
+		return
+	}
+	tagForRevision := &entity.TagSimpleInfoForRevision{
+		ID:              tag.ID,
+		MainTagID:       tag.MainTagID,
+		MainTagSlugName: tag.MainTagSlugName,
+		SlugName:        tag.SlugName,
+		DisplayName:     tag.DisplayName,
+		Recommend:       tag.Recommend,
+		Reserved:        tag.Reserved,
+		RevisionID:      tag.RevisionID,
+	}
 
 	_, m.err = m.engine.Context(m.ctx).Insert(q1)
 	if m.err != nil {
 		return
 	}
+	q1Revision := &entity.QuestionWithTagsRevision{
+		Question: *q1,
+		Tags:     []*entity.TagSimpleInfoForRevision{tagForRevision},
+	}
+	q1Content, err := json.Marshal(q1Revision)
+	if err != nil {
+		m.err = err
+		return
+	}
+	m.err = revisionRepo.AddRevision(m.ctx, &entity.Revision{
+		UserID:   q1.UserID,
+		ObjectID: q1.ID,
+		Title:    q1.Title,
+		Content:  string(q1Content),
+		Status:   entity.RevisionReviewPassStatus,
+	}, true)
+	if m.err != nil {
+		return
+	}
 
 	_, m.err = m.engine.Context(m.ctx).Insert(a1)
+	if m.err != nil {
+		return
+	}
+	a1Content, err := json.Marshal(a1)
+	if err != nil {
+		m.err = err
+		return
+	}
+	m.err = revisionRepo.AddRevision(m.ctx, &entity.Revision{
+		UserID:   a1.UserID,
+		ObjectID: a1.ID,
+		Content:  string(a1Content),
+		Status:   entity.RevisionReviewPassStatus,
+	}, true)
 	if m.err != nil {
 		return
 	}
@@ -443,8 +503,41 @@ func (m *Mentor) initDefaultContent() {
 	if m.err != nil {
 		return
 	}
+	q2Revision := &entity.QuestionWithTagsRevision{
+		Question: *q2,
+		Tags:     []*entity.TagSimpleInfoForRevision{tagForRevision},
+	}
+	q2Content, err := json.Marshal(q2Revision)
+	if err != nil {
+		m.err = err
+		return
+	}
+	m.err = revisionRepo.AddRevision(m.ctx, &entity.Revision{
+		UserID:   q2.UserID,
+		ObjectID: q2.ID,
+		Title:    q2.Title,
+		Content:  string(q2Content),
+		Status:   entity.RevisionReviewPassStatus,
+	}, true)
+	if m.err != nil {
+		return
+	}
 
 	_, m.err = m.engine.Context(m.ctx).Insert(a2)
+	if m.err != nil {
+		return
+	}
+	a2Content, err := json.Marshal(a2)
+	if err != nil {
+		m.err = err
+		return
+	}
+	m.err = revisionRepo.AddRevision(m.ctx, &entity.Revision{
+		UserID:   a2.UserID,
+		ObjectID: a2.ID,
+		Content:  string(a2Content),
+		Status:   entity.RevisionReviewPassStatus,
+	}, true)
 	if m.err != nil {
 		return
 	}
