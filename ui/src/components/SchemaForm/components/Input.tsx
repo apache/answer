@@ -64,7 +64,7 @@ const Index: FC<Props> = ({
       ...formData,
       [name]: {
         ...formData[name],
-        value,
+        value: type === 'number' ? Number(value) : value,
         isInvalid: false,
       },
     };

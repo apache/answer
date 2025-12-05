@@ -59,7 +59,7 @@ const Smtp: FC = () => {
         enumNames: ['TLS', 'SSL', 'None'],
       },
       smtp_port: {
-        type: 'string',
+        type: 'number',
         title: t('smtp_port.label'),
         description: t('smtp_port.text'),
       },
@@ -160,7 +160,7 @@ const Smtp: FC = () => {
       from_name: formData.from_name.value,
       smtp_host: formData.smtp_host.value,
       encryption: formData.encryption.value,
-      smtp_port: Number(formData.smtp_port.value),
+      smtp_port: formData.smtp_port.value,
       smtp_authentication: formData.smtp_authentication.value,
       ...(formData.smtp_authentication.value
         ? { smtp_username: formData.smtp_username.value }
