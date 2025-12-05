@@ -234,7 +234,7 @@ backend:
         other: Nu aveți permisiunea de a actualiza.
       content_cannot_empty:
         other: Conținutul nu poate fi gol.
-      content_less_than_minumum:
+      content_less_than_minimum:
         other: Not enough content entered.
     rank:
       fail_to_meet_the_condition:

@@ -264,7 +264,7 @@ func (ds *dashboardService) voteCount(ctx context.Context) int64 {
 	return voteCount
 }
 
-func (ds *dashboardService) remoteVersion(ctx context.Context) string {
+func (ds *dashboardService) remoteVersion(_ context.Context) string {
 	req, _ := http.NewRequest("GET", "https://answer.apache.org/data/latest.json?from_version="+constant.Version, nil)
 	req.Header.Set("User-Agent", "Answer/"+constant.Version)
 	httpClient := &http.Client{}
@@ -274,7 +274,9 @@ func (ds *dashboardService) remoteVersion(ctx context.Context) string {
 		log.Errorf("request remote version failed: %s", err)
 		return ""
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 
 	respByte, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -357,11 +359,9 @@ func (ds *dashboardService) GetDatabaseSize() (dbSize string) {
 		res, err := ds.data.DB.QueryInterface(sql)
 		if err != nil {
 			log.Warnf("get db size failed: %s", err)
-		} else {
-			if res != nil && len(res) > 0 && res[0]["db_size"] != nil {
-				dbSizeStr, _ := res[0]["db_size"].(string)
-				dbSize = dir.FormatFileSize(converter.StringToInt64(dbSizeStr))
-			}
+		} else if len(res) > 0 && res[0]["db_size"] != nil {
+			dbSizeStr, _ := res[0]["db_size"].(string)
+			dbSize = dir.FormatFileSize(converter.StringToInt64(dbSizeStr))
 		}
 	case schemas.POSTGRES:
 		sql := fmt.Sprintf("SELECT pg_database_size('%s') AS db_size",
@@ -369,11 +369,9 @@ func (ds *dashboardService) GetDatabaseSize() (dbSize string) {
 		res, err := ds.data.DB.QueryInterface(sql)
 		if err != nil {
 			log.Warnf("get db size failed: %s", err)
-		} else {
-			if res != nil && len(res) > 0 && res[0]["db_size"] != nil {
-				dbSizeStr, _ := res[0]["db_size"].(int32)
-				dbSize = dir.FormatFileSize(int64(dbSizeStr))
-			}
+		} else if len(res) > 0 && res[0]["db_size"] != nil {
+			dbSizeStr, _ := res[0]["db_size"].(int32)
+			dbSize = dir.FormatFileSize(int64(dbSizeStr))
 		}
 	case schemas.SQLITE:
 		dirSize, err := dir.DirSize(ds.data.DB.DataSourceName())

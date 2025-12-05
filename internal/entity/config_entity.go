@@ -21,6 +21,7 @@ package entity
 
 import (
 	"encoding/json"
+
 	"github.com/segmentfault/pacman/log"
 
 	"github.com/apache/answer/pkg/converter"

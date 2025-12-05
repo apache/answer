@@ -141,7 +141,7 @@ func (ur *UserRankRepo) TriggerUserRank(ctx context.Context,
 	return false, nil
 }
 
-func (ur *UserRankRepo) checkUserMinRank(ctx context.Context, session *xorm.Session, userID string, deltaRank int) (
+func (ur *UserRankRepo) checkUserMinRank(_ context.Context, session *xorm.Session, userID string, deltaRank int) (
 	isReachStandard bool, err error,
 ) {
 	bean := &entity.User{ID: userID}

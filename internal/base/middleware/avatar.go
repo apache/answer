@@ -80,7 +80,6 @@ func (am *AvatarMiddleware) AvatarThumb() gin.HandlerFunc {
 			}
 			ctx.Abort()
 			return
-
 		} else {
 			urlInfo, err := url.Parse(uri)
 			if err != nil {

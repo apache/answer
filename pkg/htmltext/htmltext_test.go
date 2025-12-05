@@ -186,11 +186,11 @@ func TestCutLongTitle(t *testing.T) {
 
 	// Exactly max bytes, no cutting needed
 	exact150 := strings.Repeat("a", 150)
-	assert.Equal(t, 150, len(cutLongTitle(exact150)))
+	assert.Len(t, cutLongTitle(exact150), 150)
 
 	// Just over max bytes, should be cut
 	exact151 := strings.Repeat("a", 151)
-	assert.Equal(t, 150, len(cutLongTitle(exact151)))
+	assert.Len(t, cutLongTitle(exact151), 150)
 
 	// Multi-byte rune at boundary gets removed properly
 	asciiPart := strings.Repeat("a", 149) // 149 bytes

@@ -77,14 +77,14 @@ func UrlTitle(title string) (text string) {
 }
 
 func clearEmoji(s string) string {
-	ret := ""
+	var ret strings.Builder
 	rs := []rune(s)
-	for i := 0; i < len(rs); i++ {
+	for i := range rs {
 		if len(string(rs[i])) != 4 {
-			ret += string(rs[i])
+			ret.WriteString(string(rs[i]))
 		}
 	}
-	return ret
+	return ret.String()
 }
 
 func convertChinese(content string) string {
@@ -164,7 +164,7 @@ func FetchRangedExcerpt(html, trimMarker string, offset int, limit int) (text st
 		text = trimMarker + text
 	}
 	if end < len(runeText) {
-		text = text + trimMarker
+		text += trimMarker
 	}
 
 	return
@@ -189,12 +189,14 @@ func FetchMatchedExcerpt(html string, words []string, trimMarker string, trimLen
 	return FetchRangedExcerpt(html, trimMarker, runeOffset, runeLimit)
 }
 
-func GetPicByUrl(Url string) string {
-	res, err := http.Get(Url)
+func GetPicByUrl(url string) string {
+	res, err := http.Get(url)
 	if err != nil {
 		return ""
 	}
-	defer res.Body.Close()
+	defer func() {
+		_ = res.Body.Close()
+	}()
 	pix, err := io.ReadAll(res.Body)
 	if err != nil {
 		return ""

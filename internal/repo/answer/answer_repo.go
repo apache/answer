@@ -335,7 +335,7 @@ func (ar *answerRepo) SearchList(ctx context.Context, search *entity.AnswerSearc
 	var err error
 	rows := make([]*entity.Answer, 0)
 	if search.Page > 0 {
-		search.Page = search.Page - 1
+		search.Page--
 	} else {
 		search.Page = 0
 	}
@@ -503,6 +503,7 @@ func (ar *answerRepo) updateSearch(ctx context.Context, answerID string) (err er
 	err = st.Find(&tagListList)
 	if err != nil {
 		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+		return
 	}
 	for _, tag := range tagListList {
 		tags = append(tags, tag.TagID)

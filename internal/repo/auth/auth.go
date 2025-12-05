@@ -22,6 +22,7 @@ package auth
 import (
 	"context"
 	"encoding/json"
+
 	"github.com/apache/answer/internal/service/auth"
 
 	"github.com/apache/answer/internal/base/constant"

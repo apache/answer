@@ -66,19 +66,19 @@ func (ar *FollowRepo) GetFollowAmount(ctx context.Context, objectID string) (fol
 		model := &entity.Question{}
 		_, err = ar.data.DB.Context(ctx).Where("id = ?", objectID).Cols("`follow_count`").Get(model)
 		if err == nil {
-			follows = int(model.FollowCount)
+			follows = model.FollowCount
 		}
 	case "user":
 		model := &entity.User{}
 		_, err = ar.data.DB.Context(ctx).Where("id = ?", objectID).Cols("`follow_count`").Get(model)
 		if err == nil {
-			follows = int(model.FollowCount)
+			follows = model.FollowCount
 		}
 	case "tag":
 		model := &entity.Tag{}
 		_, err = ar.data.DB.Context(ctx).Where("id = ?", objectID).Cols("`follow_count`").Get(model)
 		if err == nil {
-			follows = int(model.FollowCount)
+			follows = model.FollowCount
 		}
 	default:
 		err = errors.InternalServer(reason.DisallowFollow).WithMsg("this object can't be followed")

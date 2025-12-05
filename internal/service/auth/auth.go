@@ -138,7 +138,7 @@ func (as *AuthService) RemoveTokensExceptCurrentUser(ctx context.Context, userID
 	as.authRepo.RemoveUserTokens(ctx, userID, accessToken)
 }
 
-//Admin
+// Admin
 
 func (as *AuthService) GetAdminUserCacheInfo(ctx context.Context, accessToken string) (userInfo *entity.UserCacheInfo, err error) {
 	return as.authRepo.GetAdminUserCacheInfo(ctx, accessToken)

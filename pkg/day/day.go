@@ -20,6 +20,7 @@
 package day
 
 import (
+	"strings"
 	"time"
 )
 
@@ -50,16 +51,16 @@ func Format(unix int64, format, tz string) (formatted string) {
 	for i := l; i >= 0; i-- {
 		format = strings.ReplaceAll(format, placeholders[i].old, placeholders[i].new)
 	}*/
-	toFormat := ""
+	var toFormat strings.Builder
 	from := []rune(format)
 	for len(from) > 0 {
 		to, suffix := nextStdChunk(from)
-		toFormat += string(to)
+		toFormat.WriteString(string(to))
 		from = suffix
 	}
 
 	_, _ = time.LoadLocation(tz)
-	formatted = time.Unix(unix, 0).Format(toFormat)
+	formatted = time.Unix(unix, 0).Format(toFormat.String())
 	return
 }
 

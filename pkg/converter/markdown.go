@@ -32,7 +32,6 @@ import (
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/renderer"
-	"github.com/yuin/goldmark/renderer/html"
 	goldmarkHTML "github.com/yuin/goldmark/renderer/html"
 	"github.com/yuin/goldmark/util"
 )
@@ -108,7 +107,7 @@ func (r *DangerousHTMLRenderer) renderRawHTML(w util.BufWriter, source []byte, n
 	}
 	n := node.(*ast.RawHTML)
 	l := n.Segments.Len()
-	for i := 0; i < l; i++ {
+	for i := range l {
 		segment := n.Segments.At(i)
 		if string(source[segment.Start:segment.Stop]) == "<kbd>" || string(source[segment.Start:segment.Stop]) == "</kbd>" {
 			_, _ = w.Write(segment.Value(source))
@@ -123,15 +122,13 @@ func (r *DangerousHTMLRenderer) renderHTMLBlock(w util.BufWriter, source []byte,
 	n := node.(*ast.HTMLBlock)
 	if entering {
 		l := n.Lines().Len()
-		for i := 0; i < l; i++ {
+		for i := range l {
 			line := n.Lines().At(i)
 			r.Writer.SecureWrite(w, line.Value(source))
 		}
-	} else {
-		if n.HasClosure() {
-			closure := n.ClosureLine
-			r.Writer.SecureWrite(w, closure.Value(source))
-		}
+	} else if n.HasClosure() {
+		closure := n.ClosureLine
+		r.Writer.SecureWrite(w, closure.Value(source))
 	}
 	return ast.WalkContinue, nil
 }
@@ -141,7 +138,7 @@ func (r *DangerousHTMLRenderer) renderLink(w util.BufWriter, source []byte, node
 	if entering && r.renderLinkIsUrl(string(n.Destination)) {
 		_, _ = w.WriteString("<a href=\"")
 		// _, _ = w.WriteString("<a test=\"1\" rel=\"nofollow\" href=\"")
-		if r.Unsafe || !html.IsDangerousURL(n.Destination) {
+		if r.Unsafe || !goldmarkHTML.IsDangerousURL(n.Destination) {
 			_, _ = w.Write(util.EscapeHTML(util.URLEscape(n.Destination, true)))
 		}
 		_ = w.WriteByte('"')
@@ -151,7 +148,7 @@ func (r *DangerousHTMLRenderer) renderLink(w util.BufWriter, source []byte, node
 			_ = w.WriteByte('"')
 		}
 		if n.Attributes() != nil {
-			html.RenderAttributes(w, n, html.LinkAttributeFilter)
+			goldmarkHTML.RenderAttributes(w, n, goldmarkHTML.LinkAttributeFilter)
 		}
 		_ = w.WriteByte('>')
 	} else {
@@ -175,7 +172,7 @@ func (r *DangerousHTMLRenderer) renderAutoLink(w util.BufWriter, source []byte, 
 	_, _ = w.Write(util.EscapeHTML(util.URLEscape(url, false)))
 	if n.Attributes() != nil {
 		_ = w.WriteByte('"')
-		html.RenderAttributes(w, n, html.LinkAttributeFilter)
+		goldmarkHTML.RenderAttributes(w, n, goldmarkHTML.LinkAttributeFilter)
 		_ = w.WriteByte('>')
 	} else {
 		_, _ = w.WriteString(`">`)
@@ -185,8 +182,8 @@ func (r *DangerousHTMLRenderer) renderAutoLink(w util.BufWriter, source []byte, 
 	return ast.WalkContinue, nil
 }
 
-func (r *DangerousHTMLRenderer) renderLinkIsUrl(verifyUrl string) bool {
-	isURL := govalidator.IsURL(verifyUrl)
-	isPath, _ := regexp.MatchString(`^/`, verifyUrl)
+func (r *DangerousHTMLRenderer) renderLinkIsUrl(verifyURL string) bool {
+	isURL := govalidator.IsURL(verifyURL)
+	isPath, _ := regexp.MatchString(`^/`, verifyURL)
 	return isURL || isPath
 }

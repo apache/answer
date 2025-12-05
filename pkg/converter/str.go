@@ -21,8 +21,9 @@ package converter
 
 import (
 	"fmt"
-	"github.com/segmentfault/pacman/log"
 	"strconv"
+
+	"github.com/segmentfault/pacman/log"
 )
 
 func StringToInt64(str string) int64 {
@@ -47,7 +48,7 @@ func IntToString(data int64) string {
 
 // InterfaceToString converts data to string
 // It will be used in template render
-func InterfaceToString(data interface{}) string {
+func InterfaceToString(data any) string {
 	switch t := data.(type) {
 	case int:
 		i := data.(int)

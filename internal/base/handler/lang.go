@@ -38,7 +38,7 @@ func GetLang(ctx *gin.Context) i18n.Language {
 
 // GetLangByCtx get language from header
 func GetLangByCtx(ctx context.Context) i18n.Language {
-	acceptLanguage, ok := ctx.Value(constant.AcceptLanguageFlag).(i18n.Language)
+	acceptLanguage, ok := ctx.Value(constant.AcceptLanguageContextKey).(i18n.Language)
 	if ok {
 		return acceptLanguage
 	}

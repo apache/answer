@@ -23,9 +23,10 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"github.com/apache/answer/internal/service/event_queue"
 	"strconv"
 	"strings"
+
+	"github.com/apache/answer/internal/service/event_queue"
 
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/handler"
@@ -96,7 +97,8 @@ func (ms *MetaService) AddOrUpdateReaction(ctx context.Context, req *schema.Upda
 		return nil, err
 	}
 	var event *schema.EventMsg
-	if objectType == constant.AnswerObjectType {
+	switch objectType {
+	case constant.AnswerObjectType:
 		answerInfo, exist, err := ms.answerRepo.GetAnswer(ctx, req.ObjectID)
 		if err != nil {
 			return nil, err
@@ -106,7 +108,7 @@ func (ms *MetaService) AddOrUpdateReaction(ctx context.Context, req *schema.Upda
 		}
 		event = schema.NewEvent(constant.EventAnswerReact, req.UserID).TID(answerInfo.ID).
 			AID(answerInfo.ID, answerInfo.UserID)
-	} else if objectType == constant.QuestionObjectType {
+	case constant.QuestionObjectType:
 		questionInfo, exist, err := ms.questionRepo.GetQuestion(ctx, req.ObjectID)
 		if err != nil {
 			return nil, err
@@ -116,7 +118,7 @@ func (ms *MetaService) AddOrUpdateReaction(ctx context.Context, req *schema.Upda
 		}
 		event = schema.NewEvent(constant.EventQuestionReact, req.UserID).TID(questionInfo.ID).
 			QID(questionInfo.ID, questionInfo.UserID)
-	} else {
+	default:
 		return nil, myErrors.BadRequest(reason.ObjectNotFound)
 	}
 
@@ -158,9 +160,10 @@ func (ms *MetaService) AddOrUpdateReaction(ctx context.Context, req *schema.Upda
 
 // updateReaction update reaction
 func (ms *MetaService) updateReaction(req *schema.UpdateReactionReq, reactions *schema.ReactionsSummaryMeta) {
-	if req.Reaction == "activate" {
+	switch req.Reaction {
+	case "activate":
 		reactions.AddReactionSummary(req.Emoji, req.UserID)
-	} else if req.Reaction == "deactivate" {
+	case "deactivate":
 		reactions.RemoveReactionSummary(req.Emoji, req.UserID)
 	}
 }

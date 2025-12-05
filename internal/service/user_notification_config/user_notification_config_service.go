@@ -21,6 +21,7 @@ package user_notification_config
 
 import (
 	"context"
+
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
@@ -67,21 +68,21 @@ func (us *UserNotificationConfigService) GetUserNotificationConfig(ctx context.C
 
 func (us *UserNotificationConfigService) UpdateUserNotificationConfig(
 	ctx context.Context, req *schema.UpdateUserNotificationConfigReq) (err error) {
-	req.NotificationConfig.Format()
+	req.Format()
 
 	err = us.userNotificationConfigRepo.Save(ctx,
-		us.convertToEntity(ctx, req.UserID, constant.InboxSource, req.NotificationConfig.Inbox))
+		us.convertToEntity(ctx, req.UserID, constant.InboxSource, req.Inbox))
 	if err != nil {
 		return err
 	}
 	err = us.userNotificationConfigRepo.Save(ctx,
-		us.convertToEntity(ctx, req.UserID, constant.AllNewQuestionSource, req.NotificationConfig.AllNewQuestion))
+		us.convertToEntity(ctx, req.UserID, constant.AllNewQuestionSource, req.AllNewQuestion))
 	if err != nil {
 		return err
 	}
 	err = us.userNotificationConfigRepo.Save(ctx,
 		us.convertToEntity(ctx, req.UserID, constant.AllNewQuestionForFollowingTagsSource,
-			req.NotificationConfig.AllNewQuestionForFollowingTags))
+			req.AllNewQuestionForFollowingTags))
 	if err != nil {
 		return err
 	}
@@ -95,7 +96,7 @@ func (us *UserNotificationConfigService) SetDefaultUserNotificationConfig(ctx co
 		string(constant.InboxSource), `[{"key":"email","enable":true}]`)
 }
 
-func (us *UserNotificationConfigService) convertToEntity(ctx context.Context, userID string,
+func (us *UserNotificationConfigService) convertToEntity(_ context.Context, userID string,
 	source constant.NotificationSource, channel schema.NotificationChannelConfig) (c *entity.UserNotificationConfig) {
 	var channels schema.NotificationChannels
 	channels = append(channels, &channel)

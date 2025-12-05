@@ -44,7 +44,6 @@ func NewHTTPServer(debug bool,
 	pluginAPIRouter *router.PluginAPIRouter,
 	uiConf *UI,
 ) *gin.Engine {
-
 	if debug {
 		gin.SetMode(gin.DebugMode)
 	} else {

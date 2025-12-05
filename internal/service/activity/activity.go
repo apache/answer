@@ -26,7 +26,7 @@ import (
 	"strings"
 
 	"github.com/apache/answer/internal/service/activity_common"
-	"github.com/apache/answer/internal/service/meta_common"
+	metacommon "github.com/apache/answer/internal/service/meta_common"
 
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/handler"

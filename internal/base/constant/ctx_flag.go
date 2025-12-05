@@ -23,3 +23,10 @@ const (
 	AcceptLanguageFlag = "Accept-Language"
 	ShortIDFlag        = "Short-ID-Enabled"
 )
+
+type ContextKey string
+
+const (
+	AcceptLanguageContextKey ContextKey = ContextKey(AcceptLanguageFlag)
+	ShortIDContextKey        ContextKey = ContextKey(ShortIDFlag)
+)

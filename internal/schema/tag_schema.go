@@ -109,7 +109,7 @@ type GetTagPageResp struct {
 	DisplayName string `json:"display_name"`
 	// excerpt
 	Excerpt string `json:"excerpt"`
-	//description
+	// description
 	Description string `json:"description"`
 	// original text
 	OriginalText string `json:"original_text"`

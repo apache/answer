@@ -56,7 +56,7 @@ type SiteInfoCommonService interface {
 	GetSiteCustomCssHTML(ctx context.Context) (resp *schema.SiteCustomCssHTMLResp, err error)
 	GetSiteTheme(ctx context.Context) (resp *schema.SiteThemeResp, err error)
 	GetSiteSeo(ctx context.Context) (resp *schema.SiteSeoResp, err error)
-	GetSiteInfoByType(ctx context.Context, siteType string, resp interface{}) (err error)
+	GetSiteInfoByType(ctx context.Context, siteType string, resp any) (err error)
 	IsBrandingFileUsed(ctx context.Context, filePath string) bool
 }
 
@@ -224,7 +224,7 @@ func (s *siteInfoCommonService) EnableShortID(ctx context.Context) (enabled bool
 	return siteSeo.IsShortLink()
 }
 
-func (s *siteInfoCommonService) GetSiteInfoByType(ctx context.Context, siteType string, resp interface{}) (err error) {
+func (s *siteInfoCommonService) GetSiteInfoByType(ctx context.Context, siteType string, resp any) (err error) {
 	siteInfo, exist, err := s.siteInfoRepo.GetByType(ctx, siteType)
 	if err != nil {
 		return err

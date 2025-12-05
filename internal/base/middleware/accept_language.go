@@ -20,13 +20,14 @@
 package middleware
 
 import (
+	"strings"
+
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/handler"
 	"github.com/apache/answer/internal/base/translator"
 	"github.com/gin-gonic/gin"
 	"github.com/segmentfault/pacman/i18n"
 	"golang.org/x/text/language"
-	"strings"
 )
 
 // ExtractAndSetAcceptLanguage extract accept language from header and set to context

@@ -27,7 +27,7 @@ import (
 
 // GetEnableShortID get language from header
 func GetEnableShortID(ctx context.Context) bool {
-	flag, ok := ctx.Value(constant.ShortIDFlag).(bool)
+	flag, ok := ctx.Value(constant.ShortIDContextKey).(bool)
 	if ok {
 		return flag
 	}

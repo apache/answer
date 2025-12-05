@@ -119,7 +119,9 @@ func (us *uploaderService) UploadAvatarFile(ctx *gin.Context, userID string) (ur
 	if err != nil {
 		return "", errors.BadRequest(reason.RequestFormatError).WithError(err)
 	}
-	file.Close()
+	defer func() {
+		_ = file.Close()
+	}()
 	fileExt := strings.ToLower(path.Ext(fileHeader.Filename))
 	if _, ok := plugin.DefaultFileTypeCheckMapping[plugin.UserAvatar][fileExt]; !ok {
 		return "", errors.BadRequest(reason.RequestFormatError).WithError(err)
@@ -133,7 +135,6 @@ func (us *uploaderService) UploadAvatarFile(ctx *gin.Context, userID string) (ur
 	}
 	us.fileRecordService.AddFileRecord(ctx, userID, avatarFilePath, url, string(plugin.UserAvatar))
 	return url, nil
-
 }
 
 func (us *uploaderService) AvatarThumbFile(ctx *gin.Context, fileName string, size int) (url string, err error) {
@@ -148,12 +149,12 @@ func (us *uploaderService) AvatarThumbFile(ctx *gin.Context, fileName string, si
 
 	thumbFileName := fmt.Sprintf("%d_%d@%s", size, size, fileName)
 	thumbFilePath := fmt.Sprintf("%s/%s/%s", us.serviceConfig.UploadPath, constant.AvatarThumbSubPath, thumbFileName)
-	avatarFile, err := os.ReadFile(thumbFilePath)
+	_, err = os.ReadFile(thumbFilePath)
 	if err == nil {
 		return thumbFilePath, nil
 	}
 	filePath := fmt.Sprintf("%s/%s/%s", us.serviceConfig.UploadPath, constant.AvatarSubPath, fileName)
-	avatarFile, err = os.ReadFile(filePath)
+	avatarFile, err := os.ReadFile(filePath)
 	if err != nil {
 		return "", errors.NotFound(reason.UnknownError).WithError(err)
 	}
@@ -179,7 +180,9 @@ func (us *uploaderService) AvatarThumbFile(ctx *gin.Context, fileName string, si
 	if err != nil {
 		return "", errors.InternalServer(reason.UnknownError).WithError(err).WithStack()
 	}
-	defer out.Close()
+	defer func() {
+		_ = out.Close()
+	}()
 
 	thumbReader := bytes.NewReader(buf.Bytes())
 	if _, err = io.Copy(out, thumbReader); err != nil {
@@ -208,7 +211,9 @@ func (us *uploaderService) UploadPostFile(ctx *gin.Context, userID string) (
 	if err != nil {
 		return "", errors.BadRequest(reason.RequestFormatError).WithError(err)
 	}
-	defer file.Close()
+	defer func() {
+		_ = file.Close()
+	}()
 	if checker.IsUnAuthorizedExtension(fileHeader.Filename, siteWrite.AuthorizedImageExtensions) {
 		return "", errors.BadRequest(reason.RequestFormatError).WithError(err)
 	}
@@ -244,7 +249,9 @@ func (us *uploaderService) UploadPostAttachment(ctx *gin.Context, userID string)
 	if err != nil {
 		return "", errors.BadRequest(reason.RequestFormatError).WithError(err)
 	}
-	defer file.Close()
+	defer func() {
+		_ = file.Close()
+	}()
 	if checker.IsUnAuthorizedExtension(fileHeader.Filename, resp.AuthorizedAttachmentExtensions) {
 		return "", errors.BadRequest(reason.RequestFormatError).WithError(err)
 	}
@@ -280,7 +287,9 @@ func (us *uploaderService) UploadBrandingFile(ctx *gin.Context, userID string) (
 	if err != nil {
 		return "", errors.BadRequest(reason.RequestFormatError).WithError(err)
 	}
-	file.Close()
+	defer func() {
+		_ = file.Close()
+	}()
 	fileExt := strings.ToLower(path.Ext(fileHeader.Filename))
 	if _, ok := plugin.DefaultFileTypeCheckMapping[plugin.AdminBranding][fileExt]; !ok {
 		return "", errors.BadRequest(reason.RequestFormatError).WithError(err)
@@ -294,7 +303,6 @@ func (us *uploaderService) UploadBrandingFile(ctx *gin.Context, userID string) (
 	}
 	us.fileRecordService.AddFileRecord(ctx, userID, avatarFilePath, url, string(plugin.AdminBranding))
 	return url, nil
-
 }
 
 func (us *uploaderService) uploadImageFile(ctx *gin.Context, file *multipart.FileHeader, fileSubPath string) (
@@ -316,7 +324,9 @@ func (us *uploaderService) uploadImageFile(ctx *gin.Context, file *multipart.Fil
 	if err != nil {
 		return "", errors.InternalServer(reason.UnknownError).WithError(err).WithStack()
 	}
-	defer src.Close()
+	defer func() {
+		_ = src.Close()
+	}()
 
 	if !checker.DecodeAndCheckImageFile(filePath, siteWrite.GetMaxImageMegapixel()) {
 		return "", errors.BadRequest(reason.UploadFileUnsupportedFileFormat)

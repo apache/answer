@@ -41,7 +41,6 @@ import (
 	"github.com/apache/answer/internal/service/review"
 	"github.com/apache/answer/internal/service/revision"
 	"github.com/apache/answer/internal/service/tag_common"
-	tagcommon "github.com/apache/answer/internal/service/tag_common"
 	usercommon "github.com/apache/answer/internal/service/user_common"
 	"github.com/apache/answer/pkg/converter"
 	"github.com/apache/answer/pkg/htmltext"
@@ -62,7 +61,7 @@ type RevisionService struct {
 	questionRepo             questioncommon.QuestionRepo
 	answerRepo               answercommon.AnswerRepo
 	tagRepo                  tag_common.TagRepo
-	tagCommon                *tagcommon.TagCommonService
+	tagCommon                *tag_common.TagCommonService
 	notificationQueueService notice_queue.NotificationQueueService
 	activityQueueService     activity_queue.ActivityQueueService
 	reportRepo               report_common.ReportRepo
@@ -79,7 +78,7 @@ func NewRevisionService(
 	questionRepo questioncommon.QuestionRepo,
 	answerRepo answercommon.AnswerRepo,
 	tagRepo tag_common.TagRepo,
-	tagCommon *tagcommon.TagCommonService,
+	tagCommon *tag_common.TagCommonService,
 	notificationQueueService notice_queue.NotificationQueueService,
 	activityQueueService activity_queue.ActivityQueueService,
 	reportRepo report_common.ReportRepo,
@@ -236,7 +235,6 @@ func (rs *RevisionService) revisionAuditQuestion(ctx context.Context, revisionit
 func (rs *RevisionService) revisionAuditAnswer(ctx context.Context, revisionitem *schema.GetRevisionResp) (err error) {
 	answerinfo, ok := revisionitem.ContentParsed.(*schema.AnswerInfo)
 	if ok {
-
 		var PostUpdateTime time.Time
 		dbquestion, exist, dberr := rs.questionRepo.GetQuestion(ctx, answerinfo.QuestionID)
 		if dberr != nil || !exist {

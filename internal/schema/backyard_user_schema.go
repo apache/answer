@@ -222,7 +222,7 @@ func (req *AddUsersReq) ParseUsers(ctx context.Context) (errFields []*validator.
 	}
 
 	// check users amount
-	if len(req.Users) <= 0 || len(req.Users) > constant.DefaultBulkUser {
+	if len(req.Users) == 0 || len(req.Users) > constant.DefaultBulkUser {
 		errFields = append([]*validator.FormErrorField{}, &validator.FormErrorField{
 			ErrorField: "users",
 			ErrorMsg: translator.TrWithData(handler.GetLangByCtx(ctx), reason.AddBulkUsersAmountError,
