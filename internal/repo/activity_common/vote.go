@@ -21,6 +21,7 @@ package activity_common
 
 import (
 	"context"
+
 	"github.com/apache/answer/pkg/uid"
 
 	"github.com/apache/answer/internal/base/data"

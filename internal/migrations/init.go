@@ -208,7 +208,7 @@ func (m *Mentor) initSiteInfoGeneralData() {
 }
 
 func (m *Mentor) initSiteInfoLoginConfig() {
-	loginConfig := map[string]interface{}{
+	loginConfig := map[string]any{
 		"allow_new_registrations":   true,
 		"allow_email_registrations": true,
 		"allow_password_login":      true,
@@ -223,7 +223,7 @@ func (m *Mentor) initSiteInfoLoginConfig() {
 }
 
 func (m *Mentor) initSiteInfoLegalConfig() {
-	legalConfig := map[string]interface{}{
+	legalConfig := map[string]any{
 		"external_content_display": m.userData.ExternalContentDisplay,
 	}
 	legalConfigDataBytes, _ := json.Marshal(legalConfig)
@@ -244,7 +244,7 @@ func (m *Mentor) initSiteInfoThemeConfig() {
 }
 
 func (m *Mentor) initSiteInfoSEOConfig() {
-	seoData := map[string]interface{}{
+	seoData := map[string]any{
 		"permalink": constant.PermalinkQuestionID,
 		"robots":    defaultSEORobotTxt + m.userData.SiteURL + "/sitemap.xml",
 	}
@@ -276,7 +276,7 @@ func (m *Mentor) initSiteInfoUsersConfig() {
 }
 
 func (m *Mentor) initSiteInfoPrivilegeRank() {
-	privilegeRankData := map[string]interface{}{
+	privilegeRankData := map[string]any{
 		"level": schema.PrivilegeLevel2,
 	}
 	privilegeRankDataBytes, _ := json.Marshal(privilegeRankData)
@@ -288,7 +288,7 @@ func (m *Mentor) initSiteInfoPrivilegeRank() {
 }
 
 func (m *Mentor) initSiteInfoWrite() {
-	writeData := map[string]interface{}{
+	writeData := map[string]any{
 		"min_content":                      6,
 		"restrict_answer":                  true,
 		"min_tags":                         1,

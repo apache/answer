@@ -88,7 +88,7 @@ func (kv *KVOperator) getSession(ctx context.Context) (*xorm.Session, func()) {
 		session = kv.data.DB.NewSession().Context(ctx)
 		cleanup = func() {
 			if session != nil {
-				session.Close()
+				_ = session.Close()
 			}
 		}
 	}
@@ -281,7 +281,7 @@ func (kv *KVOperator) Tx(ctx context.Context, fn func(ctx context.Context, kv *K
 	if kv.session == nil {
 		session := kv.data.DB.NewSession().Context(ctx)
 		if err := session.Begin(); err != nil {
-			session.Close()
+			_ = session.Close()
 			return fmt.Errorf("%w: begin transaction failed: %v", ErrKVTransactionFailed, err)
 		}
 
@@ -291,7 +291,7 @@ func (kv *KVOperator) Tx(ctx context.Context, fn func(ctx context.Context, kv *K
 					log.Errorf("rollback failed: %v", rollbackErr)
 				}
 			}
-			session.Close()
+			_ = session.Close()
 		}()
 
 		txKv = &KVOperator{

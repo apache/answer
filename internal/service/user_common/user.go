@@ -85,9 +85,9 @@ func NewUserCommon(
 	}
 }
 
-func (us *UserCommon) GetUserBasicInfoByID(ctx context.Context, ID string) (
+func (us *UserCommon) GetUserBasicInfoByID(ctx context.Context, id string) (
 	userBasicInfo *schema.UserBasicInfo, exist bool, err error) {
-	userInfo, exist, err := us.userRepo.GetByUserID(ctx, ID)
+	userInfo, exist, err := us.userRepo.GetByUserID(ctx, id)
 	if err != nil {
 		return nil, exist, err
 	}

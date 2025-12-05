@@ -314,7 +314,6 @@ func (us *UserService) UserModifyPassword(ctx context.Context, req *schema.UserM
 // UpdateInfo update user info
 func (us *UserService) UpdateInfo(ctx context.Context, req *schema.UpdateInfoRequest) (
 	errFields []*validator.FormErrorField, err error) {
-
 	if len(req.Username) > 0 {
 		if checker.IsInvalidUsername(req.Username) {
 			return append(errFields, &validator.FormErrorField{
@@ -598,7 +597,7 @@ func (us *UserService) UserVerifyEmail(ctx context.Context, req *schema.UserVeri
 
 // verifyPassword
 // Compare whether the password is correct
-func (us *UserService) verifyPassword(ctx context.Context, loginPass, userPass string) bool {
+func (us *UserService) verifyPassword(_ context.Context, loginPass, userPass string) bool {
 	if len(loginPass) == 0 && len(userPass) == 0 {
 		return true
 	}
@@ -608,8 +607,8 @@ func (us *UserService) verifyPassword(ctx context.Context, loginPass, userPass s
 
 // encryptPassword
 // The password does irreversible encryption.
-func (us *UserService) encryptPassword(ctx context.Context, Pass string) (string, error) {
-	hashPwd, err := bcrypt.GenerateFromPassword([]byte(Pass), bcrypt.DefaultCost)
+func (us *UserService) encryptPassword(_ context.Context, pass string) (string, error) {
+	hashPwd, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
 	// This encrypted string can be saved to the database and can be used as password matching verification
 	return string(hashPwd), err
 }

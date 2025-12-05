@@ -10,6 +10,15 @@ Revision=$(shell git rev-parse --short HEAD 2>/dev/null || echo "")
 GO_FLAGS=-ldflags="-X github.com/apache/answer/cmd.Version=$(VERSION) -X 'github.com/apache/answer/cmd.Revision=$(Revision)' -X 'github.com/apache/answer/cmd.Time=`date +%s`' -extldflags -static"
 GO=$(GO_ENV) "$(shell which go)"
 
+GOLANGCI_VERSION ?= v2.6.2
+TOOLS_BIN := $(shell mkdir -p build/tools && realpath build/tools)
+
+GOLANGCI = $(TOOLS_BIN)/golangci-lint-$(GOLANGCI_VERSION)
+$(GOLANGCI):
+	rm -f $(TOOLS_BIN)/golangci-lint*
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/$(GOLANGCI_VERSION)/install.sh | sh -s -- -b $(TOOLS_BIN) $(GOLANGCI_VERSION)
+	mv $(TOOLS_BIN)/golangci-lint $(TOOLS_BIN)/golangci-lint-$(GOLANGCI_VERSION)
+
 build: generate
 	@$(GO) build $(GO_FLAGS) -o $(BIN) $(DIR_SRC)
 
@@ -50,8 +59,12 @@ install-ui-packages:
 ui:
 	@cd ui && pnpm pre-install && pnpm build && cd -
 
-lint: generate
+lint: generate $(GOLANGCI)
 	@bash ./script/check-asf-header.sh
-	@gofmt -w -l .
+	$(GOLANGCI) run
+
+lint-fix: generate $(GOLANGCI)
+	@bash ./script/check-asf-header.sh
+	$(GOLANGCI) run --fix
 
 all: clean build

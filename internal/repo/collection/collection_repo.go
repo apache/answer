@@ -21,6 +21,7 @@ package collection
 
 import (
 	"context"
+
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/base/handler"
@@ -166,7 +167,7 @@ func (cr *collectionRepo) GetCollectionPage(ctx context.Context, page, pageSize 
 
 // SearchObjectCollected check object is collected or not
 func (cr *collectionRepo) SearchObjectCollected(ctx context.Context, userID string, objectIds []string) (map[string]bool, error) {
-	for i := 0; i < len(objectIds); i++ {
+	for i := range objectIds {
 		objectIds[i] = uid.DeShortID(objectIds[i])
 	}
 
@@ -192,7 +193,7 @@ func (cr *collectionRepo) SearchList(ctx context.Context, search *entity.Collect
 	var err error
 	rows := make([]*entity.Collection, 0)
 	if search.Page > 0 {
-		search.Page = search.Page - 1
+		search.Page--
 	} else {
 		search.Page = 0
 	}

@@ -43,7 +43,7 @@ Sitemap: `
 )
 
 var (
-	tables = []interface{}{
+	tables = []any{
 		&entity.Activity{},
 		&entity.Answer{},
 		&entity.Collection{},

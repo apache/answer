@@ -45,8 +45,7 @@ func (ns *ExternalNotificationService) handleNewAnswerNotification(ctx context.C
 		if !channel.Enable {
 			continue
 		}
-		switch channel.Key {
-		case constant.EmailChannel:
+		if channel.Key == constant.EmailChannel {
 			ns.sendNewAnswerNotificationEmail(ctx, msg.ReceiverUserID, msg.ReceiverEmail, msg.ReceiverLang, msg.NewAnswerTemplateRawData)
 		}
 	}
@@ -70,7 +69,7 @@ func (ns *ExternalNotificationService) sendNewAnswerNotificationEmail(ctx contex
 
 	// If receiver has set language, use it to send email.
 	if len(lang) > 0 {
-		ctx = context.WithValue(ctx, constant.AcceptLanguageFlag, i18n.Language(lang))
+		ctx = context.WithValue(ctx, constant.AcceptLanguageContextKey, i18n.Language(lang))
 	}
 	title, body, err := ns.emailService.NewAnswerTemplate(ctx, rawData)
 	if err != nil {

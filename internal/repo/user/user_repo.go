@@ -51,7 +51,7 @@ func NewUserRepo(data *data.Data) usercommon.UserRepo {
 
 // AddUser add user
 func (ur *userRepo) AddUser(ctx context.Context, user *entity.User) (err error) {
-	_, err = ur.data.DB.Transaction(func(session *xorm.Session) (interface{}, error) {
+	_, err = ur.data.DB.Transaction(func(session *xorm.Session) (any, error) {
 		session = session.Context(ctx)
 		userInfo := &entity.User{}
 		exist, err := session.Where("username = ?", user.Username).Get(userInfo)

@@ -8080,9 +8080,6 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
-                "question_id": {
-                    "type": "string"
-                },
                 "title": {
                     "type": "string"
                 }
@@ -10920,7 +10917,7 @@ const docTemplate = `{
                 },
                 "theme_config": {
                     "type": "object",
-                    "additionalProperties": true
+                    "additionalProperties": {}
                 }
             }
         },
@@ -10935,7 +10932,7 @@ const docTemplate = `{
                 },
                 "theme_config": {
                     "type": "object",
-                    "additionalProperties": true
+                    "additionalProperties": {}
                 },
                 "theme_options": {
                     "type": "array",

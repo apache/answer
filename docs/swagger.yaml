@@ -399,8 +399,6 @@ definitions:
         type: string
       id:
         type: string
-      question_id:
-        type: string
       title:
         type: string
     required:
@@ -2364,7 +2362,7 @@ definitions:
         maxLength: 255
         type: string
       theme_config:
-        additionalProperties: true
+        additionalProperties: {}
         type: object
     required:
     - theme
@@ -2376,7 +2374,7 @@ definitions:
       theme:
         type: string
       theme_config:
-        additionalProperties: true
+        additionalProperties: {}
         type: object
       theme_options:
         items:

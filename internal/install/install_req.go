@@ -65,13 +65,14 @@ func (r *CheckDatabaseReq) GetConnection() string {
 	}
 	if r.DbType == string(schemas.POSTGRES) {
 		host, port := parsePgSQLHostPort(r.DbHost)
-		if !r.Ssl {
+		switch {
+		case !r.Ssl:
 			return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 				host, port, r.DbUsername, r.DbPassword, r.DbName)
-		} else if r.SslMode == "require" {
+		case r.SslMode == "require":
 			return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 				host, port, r.DbUsername, r.DbPassword, r.DbName, r.SslMode)
-		} else if r.SslMode == "verify-ca" || r.SslMode == "verify-full" {
+		case r.SslMode == "verify-ca" || r.SslMode == "verify-full":
 			connection := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 				host, port, r.DbUsername, r.DbPassword, r.DbName, r.SslMode)
 			if len(r.SslRootCert) > 0 && dir.CheckFileExist(r.SslRootCert) {
@@ -150,7 +151,7 @@ func (r *InitBaseInfoReq) FormatSiteUrl() {
 	}
 	r.SiteURL = fmt.Sprintf("%s://%s", parsedUrl.Scheme, parsedUrl.Host)
 	if len(parsedUrl.Path) > 0 {
-		r.SiteURL = r.SiteURL + parsedUrl.Path
+		r.SiteURL += parsedUrl.Path
 		r.SiteURL = strings.TrimSuffix(r.SiteURL, "/")
 	}
 }

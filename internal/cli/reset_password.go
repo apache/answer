@@ -77,7 +77,9 @@ func ResetPassword(ctx context.Context, dataDirPath string, opts *ResetPasswordO
 	if err != nil {
 		return fmt.Errorf("connect database failed: %w", err)
 	}
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	cache, cacheCleanup, err := data.NewCache(config.Data.Cache)
 	if err != nil {

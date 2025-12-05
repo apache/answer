@@ -22,10 +22,9 @@ package content
 import (
 	"context"
 	"fmt"
-	"github.com/apache/answer/internal/service/event_queue"
 	"strings"
 
-	"github.com/apache/answer/internal/service/activity_common"
+	"github.com/apache/answer/internal/service/event_queue"
 
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/handler"
@@ -63,7 +62,6 @@ type VoteService struct {
 	answerRepo        answercommon.AnswerRepo
 	commentCommonRepo comment_common.CommentCommonRepo
 	objectService     *object_info.ObjService
-	activityRepo      activity_common.ActivityRepo
 	eventQueueService event_queue.EventQueueService
 }
 

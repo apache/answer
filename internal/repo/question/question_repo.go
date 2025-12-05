@@ -89,9 +89,9 @@ func (qr *questionRepo) RemoveQuestion(ctx context.Context, id string) (err erro
 }
 
 // UpdateQuestion update question
-func (qr *questionRepo) UpdateQuestion(ctx context.Context, question *entity.Question, Cols []string) (err error) {
+func (qr *questionRepo) UpdateQuestion(ctx context.Context, question *entity.Question, cols []string) (err error) {
 	question.ID = uid.DeShortID(question.ID)
-	_, err = qr.data.DB.Context(ctx).Where("id =?", question.ID).Cols(Cols...).Update(question)
+	_, err = qr.data.DB.Context(ctx).Where("id =?", question.ID).Cols(cols...).Update(question)
 	if err != nil {
 		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
@@ -344,7 +344,7 @@ func (qr *questionRepo) GetUserQuestionCount(ctx context.Context, userID string,
 
 func (qr *questionRepo) SitemapQuestions(ctx context.Context, page, pageSize int) (
 	questionIDList []*schema.SiteMapQuestionInfo, err error) {
-	page = page - 1
+	page--
 	questionIDList = make([]*schema.SiteMapQuestionInfo, 0)
 
 	// try to get sitemap data from cache
@@ -524,7 +524,7 @@ func (qr *questionRepo) AdminQuestionPage(ctx context.Context, search *schema.Ad
 
 	rows := make([]*entity.Question, 0)
 	if search.Page > 0 {
-		search.Page = search.Page - 1
+		search.Page--
 	} else {
 		search.Page = 0
 	}

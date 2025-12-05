@@ -22,6 +22,7 @@ package install
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -133,7 +134,7 @@ func initBaseInfo(env *Env) (err error) {
 	return requestAPI(req, "POST", "/installation/base-info", InitBaseInfo)
 }
 
-func requestAPI(req interface{}, method, url string, handlerFunc gin.HandlerFunc) error {
+func requestAPI(req any, method, url string, handlerFunc gin.HandlerFunc) error {
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
 	body, _ := json.Marshal(req)
@@ -143,7 +144,7 @@ func requestAPI(req interface{}, method, url string, handlerFunc gin.HandlerFunc
 	}
 	handlerFunc(c)
 	if w.Code != http.StatusOK {
-		return fmt.Errorf(gjson.Get(w.Body.String(), "msg").String())
+		return errors.New(gjson.Get(w.Body.String(), "msg").String())
 	}
 	return nil
 }

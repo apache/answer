@@ -117,7 +117,9 @@ func ReadConfig(configFilePath string) (c *AllConfig, err error) {
 func RewriteConfig(configFilePath string, allConfig *AllConfig) error {
 	buf := bytes.Buffer{}
 	enc := yaml.NewEncoder(&buf)
-	defer enc.Close()
+	defer func() {
+		_ = enc.Close()
+	}()
 	enc.SetIndent(2)
 	if err := enc.Encode(allConfig); err != nil {
 		return err

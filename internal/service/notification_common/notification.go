@@ -155,7 +155,7 @@ func (ns *NotificationCommon) AddNotification(ctx context.Context, msg *schema.N
 		}
 		req.Rank = rank
 		if exist {
-			//modify notification
+			// modify notification
 			updateContent := &schema.NotificationContent{}
 			err := json.Unmarshal([]byte(notificationInfo.Content), updateContent)
 			if err != nil {
@@ -206,6 +206,9 @@ func (ns *NotificationCommon) AddNotification(ctx context.Context, msg *schema.N
 	}
 	if req.ObjectInfo.ObjectType == constant.BadgeAwardObjectType {
 		err = ns.AddBadgeAwardAlertCache(ctx, info.UserID, info.ID, req.ObjectInfo.ObjectMap["badge_id"])
+		if err != nil {
+			log.Error("AddBadgeAwardAlertCache Error", err.Error())
+		}
 	}
 
 	go ns.SendNotificationToAllFollower(ctx, msg, questionID)

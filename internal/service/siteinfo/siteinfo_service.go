@@ -183,7 +183,7 @@ func (s *SiteInfoService) SaveSiteBranding(ctx context.Context, req *schema.Site
 }
 
 // SaveSiteWrite save site configuration about write
-func (s *SiteInfoService) SaveSiteWrite(ctx context.Context, req *schema.SiteWriteReq) (resp interface{}, err error) {
+func (s *SiteInfoService) SaveSiteWrite(ctx context.Context, req *schema.SiteWriteReq) (resp any, err error) {
 	recommendTags, reservedTags := make([]string, 0), make([]string, 0)
 	recommendTagMapping, reservedTagMapping := make(map[string]bool), make(map[string]bool)
 	for _, tag := range req.ReservedTags {
@@ -345,7 +345,7 @@ func (s *SiteInfoService) GetPrivilegesConfig(ctx context.Context) (resp *schema
 		return nil, err
 	}
 	privilegeOptions := schema.DefaultPrivilegeOptions
-	if privilege.CustomPrivileges != nil && len(privilege.CustomPrivileges) > 0 {
+	if len(privilege.CustomPrivileges) > 0 {
 		privilegeOptions = append(privilegeOptions, &schema.PrivilegeOption{
 			Level:      schema.PrivilegeLevelCustom,
 			LevelDesc:  reason.PrivilegeLevelCustomDesc,
@@ -358,7 +358,7 @@ func (s *SiteInfoService) GetPrivilegesConfig(ctx context.Context) (resp *schema
 		Options:       s.translatePrivilegeOptions(ctx, privilegeOptions),
 		SelectedLevel: schema.PrivilegeLevel3,
 	}
-	if privilege != nil && privilege.Level > 0 {
+	if privilege.Level > 0 {
 		resp.SelectedLevel = privilege.Level
 	}
 	return resp, nil

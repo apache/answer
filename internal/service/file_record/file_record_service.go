@@ -174,7 +174,6 @@ func (fs *FileRecordService) PurgeDeletedFiles(ctx context.Context) {
 	if err != nil {
 		log.Errorf("create deleted directory error: %v", err)
 	}
-	return
 }
 
 func (fs *FileRecordService) DeleteAndMoveFileRecord(ctx context.Context, fileRecord *entity.FileRecord) error {

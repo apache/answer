@@ -591,7 +591,6 @@ func (ts *TagCommonService) CheckTag(ctx context.Context, tags []string, userID 
 		err = errors.BadRequest(reason.TagNotFound).WithMsg(fmt.Sprintf("tag [%s] does not exist",
 			strings.Join(addTagMsgList, ",")))
 		return err
-
 	}
 
 	return nil
@@ -660,9 +659,8 @@ func (ts *TagCommonService) CheckChangeReservedTag(ctx context.Context, oldobjec
 
 // ObjectChangeTag change object tag list
 func (ts *TagCommonService) ObjectChangeTag(ctx context.Context, objectTagData *schema.TagChange, minimumTags int) (errorlist []*validator.FormErrorField, err error) {
-	//checks if the tags sent in the put req are less than the minimum, if so, tag changes are not applied
+	// checks if the tags sent in the put req are less than the minimum, if so, tag changes are not applied
 	if len(objectTagData.Tags) < minimumTags {
-
 		errorlist := make([]*validator.FormErrorField, 0)
 		errorlist = append(errorlist, &validator.FormErrorField{
 			ErrorField: "tags",
@@ -884,11 +882,11 @@ func (ts *TagCommonService) UpdateTag(ctx context.Context, req *schema.UpdateTag
 		return errors.BadRequest(reason.TagNotFound)
 	}
 
-	//Adding equivalent slug formatting for tag update
+	// Adding equivalent slug formatting for tag update
 	slugName := strings.ReplaceAll(req.SlugName, " ", "-")
 	slugName = strings.ToLower(slugName)
 
-	//If the content is the same, ignore it
+	// If the content is the same, ignore it
 	if tagInfo.OriginalText == req.OriginalText &&
 		tagInfo.DisplayName == req.DisplayName &&
 		tagInfo.SlugName == slugName {
