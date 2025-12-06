@@ -26,7 +26,18 @@ const {
 const webpack = require('webpack');
 
 const path = require("path");
-const i18nPath = path.resolve(__dirname, "../i18n");
+
+let i18nRoot = path.resolve(__dirname, '../i18n');
+/**
+ * ANSWER_I18N_PATH: same with create-answer-plugin, which will merge plugin i18n and /i18n of repo.
+ * you can change i18nRoot to your i18n directory.(Without modifying /i18n in this repo).
+ * it is useful for secondary development.
+ *    such as, merge /myi18n in my repo and /i18n in this repo to the path.(merge by myself)
+ */
+if (process.env.ANSWER_I18N_PATH) {
+  i18nRoot = process.env.ANSWER_I18N_PATH;
+}
+const i18nPath = i18nRoot;
 
 module.exports = {
   webpack: function(config, env) {
