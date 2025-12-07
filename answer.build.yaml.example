@@ -1,0 +1,14 @@
+# use buildDir or buildAbsDir
+buildDir: "../answer-builds/build"
+buildAbsDir: ""
+# default new_answer
+outputPath: "new_answer"
+# default the github repository
+answerModule: ""
+plugins:
+    - "github.com/apache/answer-plugins/connector-basic@latest"
+    - "github.com/apache/answer-plugins/reviewer-basic@latest"
+    - "github.com/apache/answer-plugins/captcha-basic@latest"
+    - "github.com/apache/answer-plugins/quick-links@latest"
+# whether if you want to reserve buildDir, default is delete it
+reserveBuild: false

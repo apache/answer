@@ -34,6 +34,7 @@ import (
 	"github.com/Masterminds/semver/v3"
 	"github.com/apache/answer/pkg/dir"
 	"github.com/apache/answer/pkg/writer"
+	"github.com/segmentfault/pacman/contrib/conf/viper"
 	"github.com/segmentfault/pacman/log"
 	"gopkg.in/yaml.v3"
 )
@@ -76,6 +77,7 @@ type buildingMaterial struct {
 	outputPath              string
 	tmpDir                  string
 	originalAnswerInfo      OriginalAnswerInfo
+	reserveBuild            bool
 }
 
 type OriginalAnswerInfo struct {
@@ -93,23 +95,74 @@ type pluginInfo struct {
 	Version string
 }
 
-func newAnswerBuilder(buildDir, outputPath string, plugins []string, originalAnswerInfo OriginalAnswerInfo) *answerBuilder {
+type BuildConfig struct {
+	BuildDir     string   `json:"buildDir" mapstructure:"buildDir" yaml:"buildDir"`
+	BuildAbsDir  string   `json:"buildAbsDir" mapstructure:"buildAbsDir" yaml:"buildAbsDir"`
+	OutputPath   string   `json:"outputPath" mapstructure:"outputPath" yaml:"outputPath"`
+	Plugins      []string `json:"plugins" mapstructure:"plugins" yaml:"plugins"`
+	AnswerModule string   `json:"answerModule" mapstructure:"answerModule" yaml:"answerModule"`
+	ReserveBuild bool     `json:"reserveBuild" mapstructure:"reserveBuild" yaml:"reserveBuild"`
+}
+
+func newAnswerBuilder(buildConfigPath, buildDir, outputPath string, plugins []string, originalAnswerInfo OriginalAnswerInfo) (*answerBuilder, error) {
 	material := &buildingMaterial{originalAnswerInfo: originalAnswerInfo}
 	parentDir, _ := filepath.Abs(".")
-	if buildDir != "" {
-		material.tmpDir = filepath.Join(parentDir, buildDir)
+	if buildConfigPath == "" {
+		fmt.Printf("try to build a new answer with plugins:\n%s\n", strings.Join(plugins, "\n"))
+
+		if buildDir != "" {
+			material.tmpDir = filepath.Join(parentDir, buildDir)
+		} else {
+			material.tmpDir, _ = os.MkdirTemp(parentDir, "answer_build")
+		}
+		if len(outputPath) == 0 {
+			outputPath = filepath.Join(parentDir, "new_answer")
+		}
+		material.outputPath, _ = filepath.Abs(outputPath)
+		material.plugins = formatPlugins(plugins)
+		material.answerModuleReplacement = os.Getenv("ANSWER_MODULE")
 	} else {
-		material.tmpDir, _ = os.MkdirTemp(parentDir, "answer_build")
+		config, err := viper.NewWithPath(buildConfigPath)
+		if err != nil {
+			return nil, err
+		}
+		var c BuildConfig
+		if err = config.Parse(&c); err != nil {
+			return nil, err
+		}
+
+		fmt.Printf("try to build a new answer with plugins:\n%s\n", strings.Join(c.Plugins, "\n"))
+
+		isBuildDirTemp := false
+		if strings.TrimSpace(c.BuildAbsDir) != "" {
+			material.tmpDir = strings.TrimSpace(c.BuildAbsDir)
+		} else if strings.TrimSpace(c.BuildDir) != "" {
+			material.tmpDir = filepath.Join(parentDir, strings.TrimSpace(c.BuildDir))
+		} else {
+			isBuildDirTemp = true
+			material.tmpDir, _ = os.MkdirTemp(parentDir, "answer_build")
+		}
+		if !isBuildDirTemp && c.ReserveBuild {
+			dirPath := filepath.Dir(material.tmpDir)
+			_ = os.MkdirAll(dirPath, os.ModePerm)
+			material.tmpDir, _ = os.MkdirTemp(dirPath, filepath.Base(material.tmpDir))
+		}
+		if len(c.OutputPath) == 0 {
+			material.outputPath = filepath.Join(parentDir, "new_answer")
+		} else {
+			material.outputPath = strings.TrimSpace(c.OutputPath)
+		}
+		material.plugins = formatPlugins(c.Plugins)
+		if c.AnswerModule != "" {
+			material.answerModuleReplacement, _ = filepath.Abs(c.AnswerModule)
+		} else {
+			material.answerModuleReplacement = os.Getenv("ANSWER_MODULE")
+		}
+		material.reserveBuild = c.ReserveBuild
 	}
-	if len(outputPath) == 0 {
-		outputPath = filepath.Join(parentDir, "new_answer")
-	}
-	material.outputPath, _ = filepath.Abs(outputPath)
-	material.plugins = formatPlugins(plugins)
-	material.answerModuleReplacement = os.Getenv("ANSWER_MODULE")
 	return &answerBuilder{
 		buildingMaterial: material,
-	}
+	}, nil
 }
 
 func (a *answerBuilder) DoTask(task func(b *buildingMaterial) error) {
@@ -120,8 +173,11 @@ func (a *answerBuilder) DoTask(task func(b *buildingMaterial) error) {
 }
 
 // BuildNewAnswer builds a new answer with specified plugins
-func BuildNewAnswer(buildDir, outputPath string, plugins []string, originalAnswerInfo OriginalAnswerInfo) (err error) {
-	builder := newAnswerBuilder(buildDir, outputPath, plugins, originalAnswerInfo)
+func BuildNewAnswer(buildConfigPath, buildDir, outputPath string, plugins []string, originalAnswerInfo OriginalAnswerInfo) (err error) {
+	builder, err := newAnswerBuilder(buildConfigPath, buildDir, outputPath, plugins, originalAnswerInfo)
+	if err != nil {
+		return err
+	}
 	builder.DoTask(createMainGoFile)
 	builder.DoTask(downloadGoModFile)
 	builder.DoTask(movePluginToVendor)
@@ -507,6 +563,11 @@ func buildBinary(b *buildingMaterial) (err error) {
 
 // cleanByproduct delete tmp dir
 func cleanByproduct(b *buildingMaterial) (err error) {
+	if b.reserveBuild {
+		fmt.Printf("sikp clean build temp dir\n")
+		return nil
+	}
+	fmt.Printf("remove build temp dir\n")
 	return os.RemoveAll(b.tmpDir)
 }
 

@@ -23,7 +23,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/apache/answer/internal/base/conf"
 	"github.com/apache/answer/internal/base/path"
@@ -40,6 +39,8 @@ var (
 	dataDirPath string
 	// dumpDataPath dump data path
 	dumpDataPath string
+	// build config path, if exists, ignore other build args
+	buildConfigPath string
 	// place to build new answer
 	buildDir string
 	// plugins needed to build in answer application
@@ -67,6 +68,8 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&dataDirPath, "data-path", "C", "/data/", "data path, eg: -C ./data/")
 
 	dumpCmd.Flags().StringVarP(&dumpDataPath, "path", "p", "./", "dump data path, eg: -p ./dump/data/")
+
+	buildCmd.Flags().StringVarP(&buildConfigPath, "config", "c", "", "build config path, if exists, ignore other build args")
 
 	buildCmd.Flags().StringSliceVarP(&buildWithPlugins, "with", "w", []string{}, "plugins needed to build")
 
@@ -222,8 +225,7 @@ To run answer, use:
 		Short: "Build Answer with plugins",
 		Long:  `Build a new Answer with plugins that you need`,
 		Run: func(_ *cobra.Command, _ []string) {
-			fmt.Printf("try to build a new answer with plugins:\n%s\n", strings.Join(buildWithPlugins, "\n"))
-			err := cli.BuildNewAnswer(buildDir, buildOutput, buildWithPlugins, cli.OriginalAnswerInfo{
+			err := cli.BuildNewAnswer(buildConfigPath, buildDir, buildOutput, buildWithPlugins, cli.OriginalAnswerInfo{
 				Version:  Version,
 				Revision: Revision,
 				Time:     Time,

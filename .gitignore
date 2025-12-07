@@ -9,6 +9,8 @@
 /.idea
 /.fleet
 /.vscode/*.log
+/answer_build*/
+/answer.build.yaml
 /cmd/answer/*.sh
 /cmd/answer/answer
 /cmd/answer/uploads/*
