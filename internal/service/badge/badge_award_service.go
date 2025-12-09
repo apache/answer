@@ -28,7 +28,7 @@ import (
 	"github.com/apache/answer/internal/base/translator"
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
-	"github.com/apache/answer/internal/service/notice_queue"
+	"github.com/apache/answer/internal/service/noticequeue"
 	"github.com/apache/answer/internal/service/object_info"
 	usercommon "github.com/apache/answer/internal/service/user_common"
 	"github.com/apache/answer/pkg/uid"
@@ -62,7 +62,7 @@ type BadgeAwardService struct {
 	badgeRepo                BadgeRepo
 	userCommon               *usercommon.UserCommon
 	objectInfoService        *object_info.ObjService
-	notificationQueueService notice_queue.NotificationQueueService
+	notificationQueueService noticequeue.Service
 }
 
 func NewBadgeAwardService(
@@ -70,7 +70,7 @@ func NewBadgeAwardService(
 	badgeRepo BadgeRepo,
 	userCommon *usercommon.UserCommon,
 	objectInfoService *object_info.ObjService,
-	notificationQueueService notice_queue.NotificationQueueService,
+	notificationQueueService noticequeue.Service,
 ) *BadgeAwardService {
 	return &BadgeAwardService{
 		badgeAwardRepo:           badgeAwardRepo,

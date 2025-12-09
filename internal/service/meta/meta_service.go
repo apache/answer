@@ -26,7 +26,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/apache/answer/internal/service/event_queue"
+	"github.com/apache/answer/internal/service/eventqueue"
 
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/handler"
@@ -48,7 +48,7 @@ type MetaService struct {
 	userCommon        *usercommon.UserCommon
 	questionRepo      questioncommon.QuestionRepo
 	answerRepo        answercommon.AnswerRepo
-	eventQueueService event_queue.EventQueueService
+	eventQueueService eventqueue.Service
 }
 
 func NewMetaService(
@@ -56,7 +56,7 @@ func NewMetaService(
 	userCommon *usercommon.UserCommon,
 	answerRepo answercommon.AnswerRepo,
 	questionRepo questioncommon.QuestionRepo,
-	eventQueueService event_queue.EventQueueService,
+	eventQueueService eventqueue.Service,
 ) *MetaService {
 	return &MetaService{
 		metaCommonService: metaCommonService,

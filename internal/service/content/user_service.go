@@ -25,7 +25,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/apache/answer/internal/service/event_queue"
+	"github.com/apache/answer/internal/service/eventqueue"
 	"github.com/apache/answer/pkg/token"
 
 	"github.com/apache/answer/internal/base/constant"
@@ -68,7 +68,7 @@ type UserService struct {
 	userNotificationConfigRepo    user_notification_config.UserNotificationConfigRepo
 	userNotificationConfigService *user_notification_config.UserNotificationConfigService
 	questionService               *questioncommon.QuestionCommon
-	eventQueueService             event_queue.EventQueueService
+	eventQueueService             eventqueue.Service
 	fileRecordService             *file_record.FileRecordService
 }
 
@@ -84,7 +84,7 @@ func NewUserService(userRepo usercommon.UserRepo,
 	userNotificationConfigRepo user_notification_config.UserNotificationConfigRepo,
 	userNotificationConfigService *user_notification_config.UserNotificationConfigService,
 	questionService *questioncommon.QuestionCommon,
-	eventQueueService event_queue.EventQueueService,
+	eventQueueService eventqueue.Service,
 	fileRecordService *file_record.FileRecordService,
 ) *UserService {
 	return &UserService{

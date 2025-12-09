@@ -24,7 +24,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/apache/answer/internal/service/event_queue"
+	"github.com/apache/answer/internal/service/eventqueue"
 
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/handler"
@@ -62,7 +62,7 @@ type VoteService struct {
 	answerRepo        answercommon.AnswerRepo
 	commentCommonRepo comment_common.CommentCommonRepo
 	objectService     *object_info.ObjService
-	eventQueueService event_queue.EventQueueService
+	eventQueueService eventqueue.Service
 }
 
 func NewVoteService(
@@ -72,7 +72,7 @@ func NewVoteService(
 	answerRepo answercommon.AnswerRepo,
 	commentCommonRepo comment_common.CommentCommonRepo,
 	objectService *object_info.ObjService,
-	eventQueueService event_queue.EventQueueService,
+	eventQueueService eventqueue.Service,
 ) *VoteService {
 	return &VoteService{
 		voteRepo:          voteRepo,

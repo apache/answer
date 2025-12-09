@@ -32,7 +32,7 @@ import (
 	"github.com/apache/answer/internal/base/middleware"
 	"github.com/apache/answer/internal/base/pager"
 	"github.com/apache/answer/internal/service/content"
-	"github.com/apache/answer/internal/service/event_queue"
+	"github.com/apache/answer/internal/service/eventqueue"
 	"github.com/apache/answer/plugin"
 
 	"github.com/apache/answer/internal/base/constant"
@@ -59,7 +59,7 @@ type TemplateController struct {
 	cssPath                  string
 	templateRenderController *templaterender.TemplateRenderController
 	siteInfoService          siteinfo_common.SiteInfoCommonService
-	eventQueueService        event_queue.EventQueueService
+	eventQueueService        eventqueue.Service
 	userService              *content.UserService
 	questionService          *content.QuestionService
 }
@@ -68,7 +68,7 @@ type TemplateController struct {
 func NewTemplateController(
 	templateRenderController *templaterender.TemplateRenderController,
 	siteInfoService siteinfo_common.SiteInfoCommonService,
-	eventQueueService event_queue.EventQueueService,
+	eventQueueService eventqueue.Service,
 	userService *content.UserService,
 	questionService *content.QuestionService,
 ) *TemplateController {

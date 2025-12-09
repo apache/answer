@@ -22,7 +22,7 @@ package comment
 import (
 	"context"
 
-	"github.com/apache/answer/internal/service/event_queue"
+	"github.com/apache/answer/internal/service/eventqueue"
 	"github.com/apache/answer/internal/service/review"
 
 	"time"
@@ -33,10 +33,10 @@ import (
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/activity_common"
-	"github.com/apache/answer/internal/service/activity_queue"
+	"github.com/apache/answer/internal/service/activityqueue"
 	"github.com/apache/answer/internal/service/comment_common"
 	"github.com/apache/answer/internal/service/export"
-	"github.com/apache/answer/internal/service/notice_queue"
+	"github.com/apache/answer/internal/service/noticequeue"
 	"github.com/apache/answer/internal/service/object_info"
 	"github.com/apache/answer/internal/service/permission"
 	usercommon "github.com/apache/answer/internal/service/user_common"
@@ -88,10 +88,10 @@ type CommentService struct {
 	objectInfoService                *object_info.ObjService
 	emailService                     *export.EmailService
 	userRepo                         usercommon.UserRepo
-	notificationQueueService         notice_queue.NotificationQueueService
-	externalNotificationQueueService notice_queue.ExternalNotificationQueueService
-	activityQueueService             activity_queue.ActivityQueueService
-	eventQueueService                event_queue.EventQueueService
+	notificationQueueService         noticequeue.Service
+	externalNotificationQueueService noticequeue.ExternalService
+	activityQueueService             activityqueue.Service
+	eventQueueService                eventqueue.Service
 	reviewService                    *review.ReviewService
 }
 
@@ -104,10 +104,10 @@ func NewCommentService(
 	voteCommon activity_common.VoteRepo,
 	emailService *export.EmailService,
 	userRepo usercommon.UserRepo,
-	notificationQueueService notice_queue.NotificationQueueService,
-	externalNotificationQueueService notice_queue.ExternalNotificationQueueService,
-	activityQueueService activity_queue.ActivityQueueService,
-	eventQueueService event_queue.EventQueueService,
+	notificationQueueService noticequeue.Service,
+	externalNotificationQueueService noticequeue.ExternalService,
+	activityQueueService activityqueue.Service,
+	eventQueueService eventqueue.Service,
 	reviewService *review.ReviewService,
 ) *CommentService {
 	return &CommentService{
