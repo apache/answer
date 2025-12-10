@@ -22,7 +22,6 @@ package router
 import (
 	"embed"
 	"fmt"
-	"github.com/apache/answer/plugin"
 	"io/fs"
 	"net/http"
 	"os"
@@ -31,6 +30,7 @@ import (
 	"github.com/apache/answer/internal/controller"
 	"github.com/apache/answer/internal/service/siteinfo_common"
 	"github.com/apache/answer/pkg/htmltext"
+	"github.com/apache/answer/plugin"
 	"github.com/apache/answer/ui"
 	"github.com/gin-gonic/gin"
 	"github.com/segmentfault/pacman/log"
@@ -111,10 +111,10 @@ func (a *UIRouter) Register(r *gin.Engine, baseURLPath string) {
 			if err != nil {
 				log.Error(err)
 			}
-			if branding.Favicon != "" {
+			if branding != nil && branding.Favicon != "" {
 				c.String(http.StatusOK, htmltext.GetPicByUrl(branding.Favicon))
 				return
-			} else if branding.SquareIcon != "" {
+			} else if branding != nil && branding.SquareIcon != "" {
 				c.String(http.StatusOK, htmltext.GetPicByUrl(branding.SquareIcon))
 				return
 			} else {

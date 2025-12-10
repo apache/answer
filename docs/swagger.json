@@ -8053,9 +8053,6 @@
                 "id": {
                     "type": "string"
                 },
-                "question_id": {
-                    "type": "string"
-                },
                 "title": {
                     "type": "string"
                 }
@@ -9753,8 +9750,6 @@
         "schema.QuestionAdd": {
             "type": "object",
             "required": [
-                "content",
-                "tags",
                 "title"
             ],
             "properties": {
@@ -9769,7 +9764,7 @@
                     "description": "content",
                     "type": "string",
                     "maxLength": 65535,
-                    "minLength": 6
+                    "minLength": 0
                 },
                 "tags": {
                     "description": "tags",
@@ -9790,8 +9785,6 @@
             "type": "object",
             "required": [
                 "answer_content",
-                "content",
-                "tags",
                 "title"
             ],
             "properties": {
@@ -9811,7 +9804,7 @@
                     "description": "content",
                     "type": "string",
                     "maxLength": 65535,
-                    "minLength": 6
+                    "minLength": 0
                 },
                 "mention_username_list": {
                     "type": "array",
@@ -10092,9 +10085,7 @@
         "schema.QuestionUpdate": {
             "type": "object",
             "required": [
-                "content",
                 "id",
-                "tags",
                 "title"
             ],
             "properties": {
@@ -10109,7 +10100,7 @@
                     "description": "content",
                     "type": "string",
                     "maxLength": 65535,
-                    "minLength": 6
+                    "minLength": 0
                 },
                 "edit_summary": {
                     "description": "edit summary",
@@ -10899,7 +10890,7 @@
                 },
                 "theme_config": {
                     "type": "object",
-                    "additionalProperties": true
+                    "additionalProperties": {}
                 }
             }
         },
@@ -10914,7 +10905,7 @@
                 },
                 "theme_config": {
                     "type": "object",
-                    "additionalProperties": true
+                    "additionalProperties": {}
                 },
                 "theme_options": {
                     "type": "array",
@@ -11020,6 +11011,16 @@
                 "max_image_size": {
                     "type": "integer"
                 },
+                "min_content": {
+                    "type": "integer",
+                    "maximum": 65535,
+                    "minimum": 0
+                },
+                "min_tags": {
+                    "type": "integer",
+                    "maximum": 5,
+                    "minimum": 0
+                },
                 "recommend_tags": {
                     "type": "array",
                     "items": {
@@ -11063,6 +11064,16 @@
                 },
                 "max_image_size": {
                     "type": "integer"
+                },
+                "min_content": {
+                    "type": "integer",
+                    "maximum": 65535,
+                    "minimum": 0
+                },
+                "min_tags": {
+                    "type": "integer",
+                    "maximum": 5,
+                    "minimum": 0
                 },
                 "recommend_tags": {
                     "type": "array",

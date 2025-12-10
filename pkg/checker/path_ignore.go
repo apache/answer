@@ -20,6 +20,7 @@
 package checker
 
 import (
+	"slices"
 	"sync"
 
 	"github.com/apache/answer/configs"
@@ -46,21 +47,11 @@ func initPathIgnore() {
 // IsUsersIgnorePath checks whether the username is in ignore path
 func IsUsersIgnorePath(username string) bool {
 	ignorePathInit.Do(initPathIgnore)
-	for _, u := range pathIgnore.Users {
-		if u == username {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(pathIgnore.Users, username)
 }
 
 // IsQuestionsIgnorePath checks whether the questionID is in ignore path
 func IsQuestionsIgnorePath(questionID string) bool {
 	ignorePathInit.Do(initPathIgnore)
-	for _, u := range pathIgnore.Questions {
-		if u == questionID {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(pathIgnore.Questions, questionID)
 }

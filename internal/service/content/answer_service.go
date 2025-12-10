@@ -146,7 +146,6 @@ func (as *AnswerService) RemoveAnswer(ctx context.Context, req *schema.RemoveAns
 		if !exist {
 			return errors.BadRequest(reason.AnswerCannotDeleted)
 		}
-
 	}
 
 	err = as.answerRepo.RemoveAnswer(ctx, req.ID)
@@ -180,10 +179,10 @@ func (as *AnswerService) RemoveAnswer(ctx context.Context, req *schema.RemoveAns
 
 	// #2372 In order to simplify the process and complexity, as well as to consider if it is in-house,
 	// facing the problem of recovery.
-	//err = as.answerActivityService.DeleteAnswer(ctx, answerInfo.ID, answerInfo.CreatedAt, answerInfo.VoteCount)
-	//if err != nil {
-	//	log.Errorf("delete answer activity change failed: %s", err.Error())
-	//}
+	// err = as.answerActivityService.DeleteAnswer(ctx, answerInfo.ID, answerInfo.CreatedAt, answerInfo.VoteCount)
+	// if err != nil {
+	// 	log.Errorf("delete answer activity change failed: %s", err.Error())
+	// }
 	as.activityQueueService.Send(ctx, &schema.ActivityMsg{
 		UserID:           req.UserID,
 		TriggerUserID:    converter.StringToInt64(req.UserID),
@@ -264,7 +263,7 @@ func (as *AnswerService) Insert(ctx context.Context, req *schema.AnswerAddReq) (
 	insertData.RevisionID = "0"
 	insertData.LastEditUserID = "0"
 	insertData.Status = entity.AnswerStatusPending
-	//insertData.UpdatedAt = now
+	// insertData.UpdatedAt = now
 	if err = as.answerRepo.AddAnswer(ctx, insertData); err != nil {
 		return "", err
 	}
@@ -346,14 +345,6 @@ func (as *AnswerService) Update(ctx context.Context, req *schema.AnswerUpdateReq
 		return "", errors.BadRequest(reason.AnswerCannotUpdate)
 	}
 
-	questionInfo, exist, err := as.questionRepo.GetQuestion(ctx, req.QuestionID)
-	if err != nil {
-		return "", err
-	}
-	if !exist {
-		return "", errors.BadRequest(reason.QuestionNotFound)
-	}
-
 	answerInfo, exist, err := as.answerRepo.GetByID(ctx, req.ID)
 	if err != nil {
 		return "", err
@@ -361,12 +352,19 @@ func (as *AnswerService) Update(ctx context.Context, req *schema.AnswerUpdateReq
 	if !exist {
 		return "", errors.BadRequest(reason.AnswerNotFound)
 	}
-
 	if answerInfo.Status == entity.AnswerStatusDeleted {
 		return "", errors.BadRequest(reason.AnswerCannotUpdate)
 	}
 
-	//If the content is the same, ignore it
+	questionInfo, exist, err := as.questionRepo.GetQuestion(ctx, answerInfo.QuestionID)
+	if err != nil {
+		return "", err
+	}
+	if !exist {
+		return "", errors.BadRequest(reason.QuestionNotFound)
+	}
+
+	// If the content is the same, ignore it
 	if answerInfo.OriginalText == req.Content {
 		return "", nil
 	}
@@ -374,7 +372,7 @@ func (as *AnswerService) Update(ctx context.Context, req *schema.AnswerUpdateReq
 	insertData := &entity.Answer{}
 	insertData.ID = req.ID
 	insertData.UserID = answerInfo.UserID
-	insertData.QuestionID = req.QuestionID
+	insertData.QuestionID = questionInfo.ID
 	insertData.OriginalText = req.Content
 	insertData.ParsedText = req.HTML
 	insertData.UpdatedAt = time.Now()
@@ -403,7 +401,7 @@ func (as *AnswerService) Update(ctx context.Context, req *schema.AnswerUpdateReq
 		if err = as.answerRepo.UpdateAnswer(ctx, insertData, []string{"original_text", "parsed_text", "updated_at", "last_edit_user_id"}); err != nil {
 			return "", err
 		}
-		err = as.questionCommon.UpdatePostTime(ctx, req.QuestionID)
+		err = as.questionCommon.UpdatePostTime(ctx, questionInfo.ID)
 		if err != nil {
 			return insertData.ID, err
 		}

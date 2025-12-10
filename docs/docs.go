@@ -8080,9 +8080,6 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
-                "question_id": {
-                    "type": "string"
-                },
                 "title": {
                     "type": "string"
                 }
@@ -9780,8 +9777,6 @@ const docTemplate = `{
         "schema.QuestionAdd": {
             "type": "object",
             "required": [
-                "content",
-                "tags",
                 "title"
             ],
             "properties": {
@@ -9796,7 +9791,7 @@ const docTemplate = `{
                     "description": "content",
                     "type": "string",
                     "maxLength": 65535,
-                    "minLength": 6
+                    "minLength": 0
                 },
                 "tags": {
                     "description": "tags",
@@ -9817,8 +9812,6 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "answer_content",
-                "content",
-                "tags",
                 "title"
             ],
             "properties": {
@@ -9838,7 +9831,7 @@ const docTemplate = `{
                     "description": "content",
                     "type": "string",
                     "maxLength": 65535,
-                    "minLength": 6
+                    "minLength": 0
                 },
                 "mention_username_list": {
                     "type": "array",
@@ -10119,9 +10112,7 @@ const docTemplate = `{
         "schema.QuestionUpdate": {
             "type": "object",
             "required": [
-                "content",
                 "id",
-                "tags",
                 "title"
             ],
             "properties": {
@@ -10136,7 +10127,7 @@ const docTemplate = `{
                     "description": "content",
                     "type": "string",
                     "maxLength": 65535,
-                    "minLength": 6
+                    "minLength": 0
                 },
                 "edit_summary": {
                     "description": "edit summary",
@@ -10926,7 +10917,7 @@ const docTemplate = `{
                 },
                 "theme_config": {
                     "type": "object",
-                    "additionalProperties": true
+                    "additionalProperties": {}
                 }
             }
         },
@@ -10941,7 +10932,7 @@ const docTemplate = `{
                 },
                 "theme_config": {
                     "type": "object",
-                    "additionalProperties": true
+                    "additionalProperties": {}
                 },
                 "theme_options": {
                     "type": "array",
@@ -11047,6 +11038,16 @@ const docTemplate = `{
                 "max_image_size": {
                     "type": "integer"
                 },
+                "min_content": {
+                    "type": "integer",
+                    "maximum": 65535,
+                    "minimum": 0
+                },
+                "min_tags": {
+                    "type": "integer",
+                    "maximum": 5,
+                    "minimum": 0
+                },
                 "recommend_tags": {
                     "type": "array",
                     "items": {
@@ -11090,6 +11091,16 @@ const docTemplate = `{
                 },
                 "max_image_size": {
                     "type": "integer"
+                },
+                "min_content": {
+                    "type": "integer",
+                    "maximum": 65535,
+                    "minimum": 0
+                },
+                "min_tags": {
+                    "type": "integer",
+                    "maximum": 5,
+                    "minimum": 0
                 },
                 "recommend_tags": {
                     "type": "array",

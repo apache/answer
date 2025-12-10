@@ -21,9 +21,10 @@ package export
 
 import (
 	"context"
+	"time"
+
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/tidwall/gjson"
-	"time"
 
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/base/reason"

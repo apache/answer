@@ -234,7 +234,7 @@ backend:
         other: Pas de permission pour mettre à jour.
       content_cannot_empty:
         other: Le contenu ne peut pas être vide.
-      content_less_than_minumum:
+      content_less_than_minimum:
         other: Not enough content entered.
     rank:
       fail_to_meet_the_condition:

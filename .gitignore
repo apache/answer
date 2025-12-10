@@ -28,7 +28,7 @@ vendor/
 /answer-data/
 /answer
 /new_answer
-
+build/tools/
 dist/
 
 # Lint setup generated file

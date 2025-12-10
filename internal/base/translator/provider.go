@@ -76,14 +76,14 @@ func NewTranslator(c *I18n) (tr i18n.Translator, err error) {
 
 		// parse the backend translation
 		originalTr := struct {
-			Backend map[string]map[string]interface{} `yaml:"backend"`
-			UI      map[string]interface{}            `yaml:"ui"`
-			Plugin  map[string]interface{}            `yaml:"plugin"`
+			Backend map[string]map[string]any `yaml:"backend"`
+			UI      map[string]any            `yaml:"ui"`
+			Plugin  map[string]any            `yaml:"plugin"`
 		}{}
 		if err = yaml.Unmarshal(buf, &originalTr); err != nil {
 			return nil, err
 		}
-		translation := make(map[string]interface{}, 0)
+		translation := make(map[string]any, 0)
 		for k, v := range originalTr.Backend {
 			translation[k] = v
 		}

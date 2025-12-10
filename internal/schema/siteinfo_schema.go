@@ -52,7 +52,7 @@ func (r *SiteGeneralReq) FormatSiteUrl() {
 	}
 	r.SiteUrl = fmt.Sprintf("%s://%s", parsedUrl.Scheme, parsedUrl.Host)
 	if len(parsedUrl.Path) > 0 {
-		r.SiteUrl = r.SiteUrl + parsedUrl.Path
+		r.SiteUrl += parsedUrl.Path
 		r.SiteUrl = strings.TrimSuffix(r.SiteUrl, "/")
 	}
 }
@@ -178,9 +178,9 @@ type SiteCustomCssHTMLReq struct {
 
 // SiteThemeReq site theme config
 type SiteThemeReq struct {
-	Theme       string                 `validate:"required,gt=0,lte=255" json:"theme"`
-	ThemeConfig map[string]interface{} `validate:"omitempty" json:"theme_config"`
-	ColorScheme string                 `validate:"omitempty,gt=0,lte=100" json:"color_scheme"`
+	Theme       string         `validate:"required,gt=0,lte=255" json:"theme"`
+	ThemeConfig map[string]any `validate:"omitempty" json:"theme_config"`
+	ColorScheme string         `validate:"omitempty,gt=0,lte=100" json:"color_scheme"`
 }
 
 type SiteSeoReq struct {
@@ -213,10 +213,10 @@ type SiteUsersResp SiteUsersReq
 
 // SiteThemeResp site theme response
 type SiteThemeResp struct {
-	ThemeOptions []*ThemeOption         `json:"theme_options"`
-	Theme        string                 `json:"theme"`
-	ThemeConfig  map[string]interface{} `json:"theme_config"`
-	ColorScheme  string                 `json:"color_scheme"`
+	ThemeOptions []*ThemeOption `json:"theme_options"`
+	Theme        string         `json:"theme"`
+	ThemeConfig  map[string]any `json:"theme_config"`
+	ColorScheme  string         `json:"color_scheme"`
 }
 
 func (s *SiteThemeResp) TrTheme(ctx context.Context) {

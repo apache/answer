@@ -17,25 +17,43 @@
  * under the License.
  */
 
-package repo_test
+package router
 
 import (
-	"context"
+	"errors"
+	"net/http"
+	"net/http/httptest"
 	"testing"
-	"time"
 
-	"github.com/apache/answer/internal/repo/export"
+	"github.com/apache/answer/internal/service/mock"
+	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
 )
 
-func Test_emailRepo_VerifyCode(t *testing.T) {
-	emailRepo := export.NewEmailRepo(testDataSource)
-	code, content := "1111", "{\"source_type\":\"\",\"e_mail\":\"\",\"user_id\":\"1\",\"skip_validation_latest_code\":false}"
-	err := emailRepo.SetCode(context.TODO(), "1", code, content, time.Minute)
-	require.NoError(t, err)
+func TestUIRouter_FaviconWithNilBranding(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
-	verifyContent, err := emailRepo.VerifyCode(context.TODO(), code)
-	require.NoError(t, err)
-	assert.Equal(t, content, verifyContent)
+	mockSiteInfoService := mock.NewMockSiteInfoCommonService(ctrl)
+
+	// Simulate a database error
+	mockSiteInfoService.EXPECT().
+		GetSiteBranding(gomock.Any()).
+		Return(nil, errors.New("database connection failed"))
+
+	router := &UIRouter{
+		siteInfoService: mockSiteInfoService,
+	}
+
+	gin.SetMode(gin.TestMode)
+	r := gin.New()
+	router.Register(r, "")
+
+	req := httptest.NewRequest(http.MethodGet, "/favicon.ico", nil)
+	w := httptest.NewRecorder()
+
+	r.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusOK, w.Code)
 }

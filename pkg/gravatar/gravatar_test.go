@@ -20,8 +20,9 @@
 package gravatar
 
 import (
-	"github.com/apache/answer/internal/base/constant"
 	"testing"
+
+	"github.com/apache/answer/internal/base/constant"
 
 	"github.com/stretchr/testify/assert"
 )

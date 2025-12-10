@@ -469,7 +469,6 @@ func (cs *ReviewService) notificationCommentOnTheQuestion(ctx context.Context, c
 		cs.notificationAnswerComment(ctx, objInfo.QuestionID, objInfo.Title, objInfo.AnswerID,
 			objInfo.ObjectCreatorUserID, comment.ID, comment.UserID, htmltext.FetchExcerpt(comment.ParsedText, "...", 240))
 	}
-	return
 }
 
 func (cs *ReviewService) notificationCommentReply(ctx context.Context, replyUserID, commentID, commentUserID,

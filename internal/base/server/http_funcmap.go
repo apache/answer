@@ -21,7 +21,6 @@ package server
 
 import (
 	"html/template"
-	"math"
 	"regexp"
 	"strconv"
 	"strings"
@@ -64,7 +63,7 @@ var funcMap = template.FuncMap{
 	"formatLinkNofollow": func(data string) template.HTML {
 		return template.HTML(FormatLinkNofollow(data))
 	},
-	"translator": func(la i18n.Language, data string, params ...interface{}) string {
+	"translator": func(la i18n.Language, data string, params ...any) string {
 		trans := translator.GlobalTrans.Tr(la, data)
 
 		if len(params) > 0 && len(params)%2 == 0 {
@@ -107,15 +106,15 @@ var funcMap = template.FuncMap{
 		}
 
 		if between >= 60 && between < 3600 {
-			min := math.Floor(float64(between / 60))
+			min := between / 60
 			trans = translator.GlobalTrans.Tr(la, "ui.dates.x_minutes_ago")
-			return strings.ReplaceAll(trans, "{{count}}", strconv.FormatFloat(min, 'f', 0, 64))
+			return strings.ReplaceAll(trans, "{{count}}", strconv.FormatInt(min, 10))
 		}
 
 		if between >= 3600 && between < 3600*24 {
-			h := math.Floor(float64(between / 3600))
+			h := between / 3600
 			trans = translator.GlobalTrans.Tr(la, "ui.dates.x_hours_ago")
-			return strings.ReplaceAll(trans, "{{count}}", strconv.FormatFloat(h, 'f', 0, 64))
+			return strings.ReplaceAll(trans, "{{count}}", strconv.FormatInt(h, 10))
 		}
 
 		if between >= 3600*24 &&
@@ -128,16 +127,14 @@ var funcMap = template.FuncMap{
 		trans = translator.GlobalTrans.Tr(la, "ui.dates.long_date_with_year")
 		return day.Format(timestamp, trans, tz)
 	},
-	"wrapComments": func(comments []*schema.GetCommentResp, la i18n.Language, tz string) map[string]interface{} {
-		return map[string]interface{}{
+	"wrapComments": func(comments []*schema.GetCommentResp, la i18n.Language, tz string) map[string]any {
+		return map[string]any{
 			"comments": comments,
 			"language": la,
 			"timezone": tz,
 		}
 	},
-	"urlTitle": func(title string) string {
-		return htmltext.UrlTitle(title)
-	},
+	"urlTitle": htmltext.UrlTitle,
 }
 
 func FormatLinkNofollow(html string) string {

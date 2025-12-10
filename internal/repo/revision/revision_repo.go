@@ -64,7 +64,7 @@ func (rr *revisionRepo) AddRevision(ctx context.Context, revision *entity.Revisi
 	if !rr.allowRecord(revision.ObjectType) {
 		return nil
 	}
-	_, err = rr.data.DB.Transaction(func(session *xorm.Session) (interface{}, error) {
+	_, err = rr.data.DB.Transaction(func(session *xorm.Session) (any, error) {
 		session = session.Context(ctx)
 		_, err = session.Insert(revision)
 		if err != nil {

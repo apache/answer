@@ -29,6 +29,18 @@ interface Props {
   onChange?: (fd: Type.FormDataType) => void;
   formData: Type.FormDataType;
   readOnly: boolean;
+  min?: number;
+  max?: number;
+  inputMode?:
+    | 'text'
+    | 'search'
+    | 'none'
+    | 'tel'
+    | 'url'
+    | 'email'
+    | 'numeric'
+    | 'decimal'
+    | undefined;
 }
 const Index: FC<Props> = ({
   type = 'text',
@@ -37,8 +49,15 @@ const Index: FC<Props> = ({
   onChange,
   formData,
   readOnly = false,
+  min = 0,
+  max,
+  inputMode = 'text',
 }) => {
   const fieldObject = formData[fieldName];
+  const numberInputProps =
+    type === 'number'
+      ? { min, ...(max != null && max > 0 ? { max } : {}) }
+      : {};
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = evt.currentTarget;
     const state = {
@@ -60,6 +79,8 @@ const Index: FC<Props> = ({
       placeholder={placeholder}
       type={type}
       value={fieldObject?.value || ''}
+      {...numberInputProps}
+      inputMode={inputMode}
       onChange={handleChange}
       disabled={readOnly}
       isInvalid={fieldObject?.isInvalid}

@@ -21,6 +21,7 @@ package badge
 
 import (
 	"context"
+
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
@@ -31,7 +32,6 @@ import (
 type BadgeEventService struct {
 	data              *data.Data
 	eventQueueService event_queue.EventQueueService
-	badgeAwardRepo    BadgeAwardRepo
 	badgeRepo         BadgeRepo
 	eventRuleRepo     EventRuleRepo
 	badgeAwardService *BadgeAwardService

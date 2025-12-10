@@ -21,6 +21,7 @@ package plugin_config
 
 import (
 	"context"
+
 	"github.com/apache/answer/internal/base/pager"
 	"xorm.io/xorm"
 
@@ -44,7 +45,7 @@ func NewPluginUserConfigRepo(data *data.Data) plugin_common.PluginUserConfigRepo
 
 func (ur *pluginUserConfigRepo) SaveUserPluginConfig(ctx context.Context, userID string,
 	pluginSlugName, configValue string) (err error) {
-	_, err = ur.data.DB.Transaction(func(session *xorm.Session) (interface{}, error) {
+	_, err = ur.data.DB.Transaction(func(session *xorm.Session) (any, error) {
 		session = session.Context(ctx)
 		old := &entity.PluginUserConfig{
 			UserID:         userID,
@@ -70,7 +71,7 @@ func (ur *pluginUserConfigRepo) SaveUserPluginConfig(ctx context.Context, userID
 		return nil, nil
 	})
 	if err != nil {
-		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
 	return nil
 }

@@ -55,8 +55,7 @@ func (ns *ExternalNotificationService) handleNewQuestionNotification(ctx context
 			if !channel.Enable {
 				continue
 			}
-			switch channel.Key {
-			case constant.EmailChannel:
+			if channel.Key == constant.EmailChannel {
 				ns.sendNewQuestionNotificationEmail(ctx, subscriber.UserID, &schema.NewQuestionTemplateRawData{
 					QuestionTitle:   msg.NewQuestionTemplateRawData.QuestionTitle,
 					QuestionID:      msg.NewQuestionTemplateRawData.QuestionID,
@@ -176,7 +175,7 @@ func (ns *ExternalNotificationService) sendNewQuestionNotificationEmail(ctx cont
 	}
 	// If receiver has set language, use it to send email.
 	if len(userInfo.Language) > 0 {
-		ctx = context.WithValue(ctx, constant.AcceptLanguageFlag, i18n.Language(userInfo.Language))
+		ctx = context.WithValue(ctx, constant.AcceptLanguageContextKey, i18n.Language(userInfo.Language))
 	}
 	title, body, err := ns.emailService.NewQuestionTemplate(ctx, rawData)
 	if err != nil {

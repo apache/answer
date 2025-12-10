@@ -78,7 +78,6 @@ type GetAnswerInfoResp struct {
 
 type AnswerUpdateReq struct {
 	ID           string `json:"id"`
-	QuestionID   string `json:"question_id"`
 	Title        string `json:"title"`
 	Content      string `validate:"required,notblank,gte=6,lte=65535" json:"content"`
 	EditSummary  string `validate:"omitempty" json:"edit_summary"`

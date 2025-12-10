@@ -34,7 +34,6 @@ import (
 	"github.com/Masterminds/semver/v3"
 	"github.com/apache/answer/pkg/dir"
 	"github.com/apache/answer/pkg/writer"
-	"github.com/apache/answer/ui"
 	"github.com/segmentfault/pacman/log"
 	"gopkg.in/yaml.v3"
 )
@@ -300,50 +299,6 @@ func copyUIFiles(b *buildingMaterial) (err error) {
 	return nil
 }
 
-// overwriteIndexTs overwrites index.ts file in ui/src/plugins/ dir
-func overwriteIndexTs(b *buildingMaterial) (err error) {
-	localUIPluginDir := filepath.Join(b.tmpDir, "vendor/github.com/apache/answer/ui/src/plugins/")
-
-	folders, err := getFolders(localUIPluginDir)
-	if err != nil {
-		return fmt.Errorf("failed to get folders: %w", err)
-	}
-
-	content := generateIndexTsContent(folders)
-	err = os.WriteFile(filepath.Join(localUIPluginDir, "index.ts"), []byte(content), 0644)
-	if err != nil {
-		return fmt.Errorf("failed to write index.ts: %w", err)
-	}
-	return nil
-}
-
-func getFolders(dir string) ([]string, error) {
-	var folders []string
-	files, err := os.ReadDir(dir)
-	if err != nil {
-		return nil, err
-	}
-	for _, file := range files {
-		if file.IsDir() && file.Name() != "builtin" {
-			folders = append(folders, file.Name())
-		}
-	}
-	return folders, nil
-}
-
-func generateIndexTsContent(folders []string) string {
-	builder := &strings.Builder{}
-	builder.WriteString("export default null;\n")
-	// Line 2:1:  Delete `⏎`  prettier/prettier
-	if len(folders) > 0 {
-		builder.WriteString("\n")
-	}
-	for _, folder := range folders {
-		builder.WriteString(fmt.Sprintf("export { default as %s } from '%s';\n", folder, folder))
-	}
-	return builder.String()
-}
-
 // buildUI run pnpm install and pnpm build commands to build ui
 func buildUI(b *buildingMaterial) (err error) {
 	localUIBuildDir := filepath.Join(b.tmpDir, "vendor/github.com/apache/answer/ui")
@@ -360,13 +315,6 @@ func buildUI(b *buildingMaterial) (err error) {
 		return err
 	}
 	return nil
-}
-
-func replaceNecessaryFile(b *buildingMaterial) (err error) {
-	fmt.Printf("try to replace ui build directory\n")
-	uiBuildDir := filepath.Join(b.tmpDir, "vendor/github.com/apache/answer/ui")
-	err = copyDirEntries(ui.Build, ".", uiBuildDir)
-	return err
 }
 
 // mergeI18nFiles merge i18n files

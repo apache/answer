@@ -216,7 +216,7 @@ func (m *statusManager) UnmarshalJSON(data []byte) error {
 
 // Translate translates the key to the current language of the context
 func Translate(ctx *GinContext, key string) string {
-	return translator.Tr(handler.GetLang(ctx), key)
+	return translator.Tr(handler.GetLangByCtx(ctx), key)
 }
 
 // TranslateWithData translates the key to the language with data

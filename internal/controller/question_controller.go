@@ -94,7 +94,7 @@ func (qc *QuestionController) RemoveQuestion(ctx *gin.Context) {
 		if !captchaPass {
 			errFields := append([]*validator.FormErrorField{}, &validator.FormErrorField{
 				ErrorField: "captcha_code",
-				ErrorMsg:   translator.Tr(handler.GetLang(ctx), reason.CaptchaVerificationFailed),
+				ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.CaptchaVerificationFailed),
 			})
 			handler.HandleResponse(ctx, errors.BadRequest(reason.CaptchaVerificationFailed), errFields)
 			return
@@ -287,7 +287,6 @@ func (qc *QuestionController) GetQuestionInviteUserInfo(ctx *gin.Context) {
 	questionID := uid.DeShortID(ctx.Query("id"))
 	resp, err := qc.questionService.InviteUserInfo(ctx, questionID)
 	handler.HandleResponse(ctx, err, resp)
-
 }
 
 // SimilarQuestion godoc
@@ -420,7 +419,7 @@ func (qc *QuestionController) AddQuestion(ctx *gin.Context) {
 		if !captchaPass {
 			errFields := append([]*validator.FormErrorField{}, &validator.FormErrorField{
 				ErrorField: "captcha_code",
-				ErrorMsg:   translator.Tr(handler.GetLang(ctx), reason.CaptchaVerificationFailed),
+				ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.CaptchaVerificationFailed),
 			})
 			handler.HandleResponse(ctx, errors.BadRequest(reason.CaptchaVerificationFailed), errFields)
 			return
@@ -446,7 +445,7 @@ func (qc *QuestionController) AddQuestion(ctx *gin.Context) {
 		return
 	}
 	if !req.CanAddTag && hasNewTag {
-		lang := handler.GetLang(ctx)
+		lang := handler.GetLangByCtx(ctx)
 		msg := translator.TrWithData(lang, reason.NoEnoughRankToOperate, &schema.PermissionTrTplData{Rank: requireRanks[6]})
 		handler.HandleResponse(ctx, errors.Forbidden(reason.NoEnoughRankToOperate).WithMsg(msg), nil)
 		return
@@ -525,7 +524,7 @@ func (qc *QuestionController) AddQuestionByAnswer(ctx *gin.Context) {
 		if !captchaPass {
 			errFields := append([]*validator.FormErrorField{}, &validator.FormErrorField{
 				ErrorField: "captcha_code",
-				ErrorMsg:   translator.Tr(handler.GetLang(ctx), reason.CaptchaVerificationFailed),
+				ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.CaptchaVerificationFailed),
 			})
 			handler.HandleResponse(ctx, errors.BadRequest(reason.CaptchaVerificationFailed), errFields)
 			return
@@ -578,7 +577,7 @@ func (qc *QuestionController) AddQuestionByAnswer(ctx *gin.Context) {
 		handler.HandleResponse(ctx, errors.BadRequest(reason.RequestFormatError), errFields)
 		return
 	}
-	//add the question id to the answer
+	// add the question id to the answer
 	questionInfo, ok := resp.(*schema.QuestionInfoResp)
 	if ok {
 		answerReq := &schema.AnswerAddReq{}
@@ -647,7 +646,7 @@ func (qc *QuestionController) UpdateQuestion(ctx *gin.Context) {
 		if !captchaPass {
 			errFields := append([]*validator.FormErrorField{}, &validator.FormErrorField{
 				ErrorField: "captcha_code",
-				ErrorMsg:   translator.Tr(handler.GetLang(ctx), reason.CaptchaVerificationFailed),
+				ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.CaptchaVerificationFailed),
 			})
 			handler.HandleResponse(ctx, errors.BadRequest(reason.CaptchaVerificationFailed), errFields)
 			return
@@ -682,7 +681,7 @@ func (qc *QuestionController) UpdateQuestion(ctx *gin.Context) {
 		return
 	}
 	if !req.CanAddTag && hasNewTag {
-		lang := handler.GetLang(ctx)
+		lang := handler.GetLangByCtx(ctx)
 		msg := translator.TrWithData(lang, reason.NoEnoughRankToOperate, &schema.PermissionTrTplData{Rank: requireRanks[4]})
 		handler.HandleResponse(ctx, errors.Forbidden(reason.NoEnoughRankToOperate).WithMsg(msg), nil)
 		return
@@ -766,7 +765,7 @@ func (qc *QuestionController) UpdateQuestionInviteUser(ctx *gin.Context) {
 		if !captchaPass {
 			errFields := append([]*validator.FormErrorField{}, &validator.FormErrorField{
 				ErrorField: "captcha_code",
-				ErrorMsg:   translator.Tr(handler.GetLang(ctx), reason.CaptchaVerificationFailed),
+				ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.CaptchaVerificationFailed),
 			})
 			handler.HandleResponse(ctx, errors.BadRequest(reason.CaptchaVerificationFailed), errFields)
 			return

@@ -260,6 +260,8 @@ const SchemaForm: ForwardRefRenderFunction<FormRef, FormProps> = (
           enum: enumValues = [],
           enumNames = [],
           max_length = 0,
+          max,
+          min = 0,
         } = properties[key];
         const { 'ui:widget': widget = 'input', 'ui:options': uiOpt } =
           uiSchema?.[key] || {};
@@ -368,9 +370,14 @@ const SchemaForm: ForwardRefRenderFunction<FormRef, FormProps> = (
             {widget === 'input' ? (
               <Input
                 type={uiOpt && 'inputType' in uiOpt ? uiOpt.inputType : 'text'}
+                inputMode={
+                  uiOpt && 'inputMode' in uiOpt ? uiOpt.inputMode : 'text'
+                }
                 placeholder={
                   uiOpt && 'placeholder' in uiOpt ? uiOpt.placeholder : ''
                 }
+                min={min}
+                max={max}
                 fieldName={key}
                 onChange={onChange}
                 formData={formData}
@@ -405,9 +412,14 @@ const SchemaForm: ForwardRefRenderFunction<FormRef, FormProps> = (
                   type={
                     uiOpt && 'inputType' in uiOpt ? uiOpt.inputType : 'text'
                   }
+                  inputMode={
+                    uiOpt && 'inputMode' in uiOpt ? uiOpt.inputMode : 'text'
+                  }
                   placeholder={
                     uiOpt && 'placeholder' in uiOpt ? uiOpt.placeholder : ''
                   }
+                  min={min}
+                  max={max}
                   fieldName={key}
                   onChange={onChange}
                   formData={formData}

@@ -21,6 +21,8 @@ package badge
 
 import (
 	"context"
+	"strconv"
+
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/base/reason"
@@ -29,7 +31,6 @@ import (
 	"github.com/apache/answer/internal/service/badge"
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
-	"strconv"
 )
 
 // eventRuleRepo event rule repo

@@ -39,7 +39,7 @@ func addFileRecord(ctx context.Context, x *xorm.Engine) error {
 	if err != nil {
 		return fmt.Errorf("get legal config failed: %w", err)
 	}
-	legalConfig := make(map[string]interface{})
+	legalConfig := make(map[string]any)
 	if exist {
 		if err := json.Unmarshal([]byte(legalInfo.Content), &legalConfig); err != nil {
 			return fmt.Errorf("unmarshal legal config failed: %w", err)

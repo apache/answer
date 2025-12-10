@@ -45,7 +45,7 @@ func NewUserRoleRelRepo(data *data.Data) role.UserRoleRelRepo {
 
 // SaveUserRoleRel save user role rel
 func (ur *userRoleRelRepo) SaveUserRoleRel(ctx context.Context, userID string, roleID int) (err error) {
-	_, err = ur.data.DB.Transaction(func(session *xorm.Session) (interface{}, error) {
+	_, err = ur.data.DB.Transaction(func(session *xorm.Session) (any, error) {
 		session = session.Context(ctx)
 		item := &entity.UserRoleRel{UserID: userID}
 		exist, err := session.Get(item)
