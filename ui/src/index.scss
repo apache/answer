@@ -53,7 +53,9 @@ img[src=''] {
 }
 
 .page-main {
-  overflow-x: auto;
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .btn-link {
