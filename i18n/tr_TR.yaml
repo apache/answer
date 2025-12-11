@@ -845,7 +845,7 @@ ui:
     http_50X: HTTP Hatası 500
     http_403: HTTP Hatası 403
     logout: Çıkış Yap
-    posts: Posts
+    posts: Gönderiler
   notifications:
     title: Bildirimler
     inbox: Gelen Kutusu
@@ -1224,7 +1224,7 @@ ui:
       msg:
         empty: İsim boş olamaz.
         range: İsim 2 ile 30 karakter arasında olmalıdır.
-        character: 'Must use the character set "a-z", "0-9", " - . _"'
+        character: 'Yalnızca "a-z", "0-9", " - . _" karakterleri kullanılabilir'
     email:
       label: E-posta
       msg:

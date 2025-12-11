@@ -58,7 +58,7 @@ backend:
     undelete:
       other: Obnovit
     merge:
-      other: Merge
+      other: Sloučit
   role:
     name:
       user:

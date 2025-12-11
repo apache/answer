@@ -865,7 +865,6 @@ ui:
           <pre class="mb-0"><code>```<br/>kod tutaj<br/>```</code></pre>
         </li>
       </ul>
-    pagination:
     prev: Poprzedni
     next: Następny
   page_title:
