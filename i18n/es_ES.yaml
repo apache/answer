@@ -1190,8 +1190,7 @@ ui:
     search:
       placeholder: Buscar
   footer:
-    build_on: >-
-      Sitio creado por <1> Apache Answer </1>- el software libre que impulsa comunidades de Q&A.<br />Hecho con amor © {{cc}}.
+    build_on: Powered by <1> Apache Answer </1>
   upload_img:
     name: Cambiar
     loading: cargando...
@@ -1768,6 +1767,7 @@ ui:
     branding: Marca
     legal: Legal
     write: Escribir
+    terms: Terms
     tos: Términos de servicio
     privacy: Privacidad
     seo: ESTE

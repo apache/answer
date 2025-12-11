@@ -1190,8 +1190,7 @@ ui:
     search:
       placeholder: Cerca
   footer:
-    build_on: >-
-      Basato su <1> Apache Answer </1>, il software open source che alimenta le comunità di domande e risposte.<br />Fatto con amore © {{cc}}.
+    build_on: Powered by <1> Apache Answer </1>
   upload_img:
     name: Modifica
     loading: caricamento in corso...
@@ -1768,6 +1767,7 @@ ui:
     branding: Marchio
     legal: Legale
     write: Scrivi
+    terms: Terms
     tos: Termini del servizio
     privacy: Privacy
     seo: SEO

@@ -1190,8 +1190,7 @@ ui:
     search:
       placeholder: Пошук
   footer:
-    build_on: >-
-      Працює на основі <1> Apache Answer </1> - програмного забезпечення з відкритим вихідним кодом, яке забезпечує роботу спільнот запитань та відповідей.<br />Зроблено з любов'ю © {{cc}}.
+    build_on: Powered by <1> Apache Answer </1>
   upload_img:
     name: Змінити
     loading: завантаження...
@@ -1768,6 +1767,7 @@ ui:
     branding: Брендинг
     legal: Правила та умови
     write: Написати
+    terms: Terms
     tos: Умови використання
     privacy: Приватність
     seo: SEO

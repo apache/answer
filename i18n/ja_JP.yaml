@@ -1189,8 +1189,7 @@ ui:
     search:
       placeholder: 検索
   footer:
-    build_on: >-
-      Powered by <1> Apache Answer </1>- the open-source software that powers Q&A communities.<br />Made with love © {{cc}}.
+    build_on: Powered by <1> Apache Answer </1>
   upload_img:
     name: 変更
     loading: 読み込み中…
@@ -1355,7 +1354,7 @@ ui:
       new_pass:
         label: 新しいパスワード
       pass_confirm:
-        label: 新しいパスワードの確認
+        label: 新しいパスワードの確認 
     interface:
       heading: 外観
       lang:
@@ -1769,6 +1768,7 @@ ui:
     branding: ブランディング
     legal: 法的事項
     write: 書き
+    terms: Terms
     tos: 利用規約
     privacy: プライバシー
     seo: SEO

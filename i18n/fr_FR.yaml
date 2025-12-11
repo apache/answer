@@ -1190,8 +1190,7 @@ ui:
     search:
       placeholder: Rechercher
   footer:
-    build_on: >-
-      Propulsé par <1> Apache Answer </1>- le logiciel open-source qui alimente les communautés de Q&A.<br />Fait avec amour ©️ {{cc}}.
+    build_on: Powered by <1> Apache Answer </1>
   upload_img:
     name: Remplacer
     loading: chargement en cours...
@@ -1768,6 +1767,7 @@ ui:
     branding: Marque
     legal: Légal
     write: Écrire
+    terms: Terms
     tos: Conditions d'utilisation
     privacy: Confidentialité
     seo: SEO

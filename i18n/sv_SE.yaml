@@ -1190,8 +1190,7 @@ ui:
     search:
       placeholder: Sök
   footer:
-    build_on: >-
-      Powered by <1> Apache Answer </1>- the open-source software that powers Q&A communities.<br />Made with love © {{cc}}.
+    build_on: Powered by <1> Apache Answer </1>
   upload_img:
     name: Ändra
     loading: loading...
@@ -1768,6 +1767,7 @@ ui:
     branding: Branding
     legal: Legal
     write: Write
+    terms: Terms
     tos: Användarvillkor
     privacy: Privacy
     seo: SEO

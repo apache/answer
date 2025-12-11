@@ -1190,8 +1190,7 @@ ui:
     search:
       placeholder: 검색
   footer:
-    build_on: >-
-      Powered by <1> Apache Answer </1> - Q&A 커뮤니티를 지원하는 오픈 소스 소프트웨어입니다.<br />Made with love © {{cc}}.
+    build_on: Powered by <1> Apache Answer </1>
   upload_img:
     name: 변경
     loading: 로딩 중...
@@ -1768,6 +1767,7 @@ ui:
     branding: 브랜딩
     legal: 법적 사항
     write: 글 작성
+    terms: Terms
     tos: 이용 약관
     privacy: 개인정보 보호
     seo: 검색 엔진 최적화

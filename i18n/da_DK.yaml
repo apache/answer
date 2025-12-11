@@ -1190,8 +1190,7 @@ ui:
     search:
       placeholder: Søg
   footer:
-    build_on: >-
-      Drevet af <1> Apache Answer</1>- open source-softwaren, der driver Q&A-fællesskaber.<br />Fremstillet med kærlighed ©️ {{cc}}.
+    build_on: Powered by <1> Apache Answer </1>
   upload_img:
     name: Skift
     loading: indlæser...
@@ -1768,6 +1767,7 @@ ui:
     branding: Branding
     legal: Jura
     write: Skriv
+    terms: Terms
     tos: Betingelser for brug
     privacy: Privatliv
     seo: SEO

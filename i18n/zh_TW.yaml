@@ -1190,8 +1190,7 @@ ui:
     search:
       placeholder: 搜尋
   footer:
-    build_on: >-
-      Powered by <1> Apache Answer </1>- the open-source software that powers Q&A communities.<br />Made with love © {{cc}}.
+    build_on: Powered by <1> Apache Answer </1>
   upload_img:
     name: 更改
     loading: 讀取中...
@@ -1768,6 +1767,7 @@ ui:
     branding: 品牌
     legal: 法律條款
     write: 撰寫
+    terms: Terms
     tos: 服務條款
     privacy: 隱私政策
     seo: SEO

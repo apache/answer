@@ -1190,8 +1190,7 @@ ui:
     search:
       placeholder: جستجو
   footer:
-    build_on: >-
-      پشتیبانی شده توسط <1> Apache Answer </1> - نرم‌افزار منبع باز که باهمستان های پرسش و پاسخ را تقویت می کند.<br />ساخته شده با عشق © {{cc}}.
+    build_on: Powered by <1> Apache Answer </1>
   upload_img:
     name: تغییر
     loading: درحال بارگذاری...
@@ -1768,6 +1767,7 @@ ui:
     branding: نام تجاری
     legal: قانونی
     write: نوشتن
+    terms: Terms
     tos: قوانین
     privacy: حریم خصوصی
     seo: سئو

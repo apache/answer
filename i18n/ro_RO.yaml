@@ -1190,8 +1190,7 @@ ui:
     search:
       placeholder: Caută
   footer:
-    build_on: >-
-      Susținut de <1> Apache Răspuns </1>- software-ul open-source care asigură Q&A comunități.<br />Făcut cu dragoste ©️ {{cc}}.
+    build_on: Powered by <1> Apache Answer </1>
   upload_img:
     name: Schimbare
     loading: încarcare...
@@ -1768,6 +1767,7 @@ ui:
     branding: Marcă
     legal: Juridic
     write: Scrie
+    terms: Terms
     tos: Condiții de utilizare
     privacy: Confidențialitate
     seo: SEO

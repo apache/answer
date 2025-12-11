@@ -1246,8 +1246,7 @@ ui:
     search:
       placeholder: Szukaj
   footer:
-    build_on: >-
-      Zbudowane na platformie <1> Apache Answer </1> - oprogramowanie open-source, które napędza społeczności pytań i odpowiedzi.<br />Stworzone z miłością © {{cc}}.
+    build_on: Powered by <1> Apache Answer </1>
   upload_img:
     name: Zmień
     loading: Wczytywanie...
@@ -1824,6 +1823,7 @@ ui:
     branding: Marka
     legal: Prawne
     write: Pisanie
+    terms: Terms
     tos: Warunki korzystania z usługi
     privacy: Prywatność
     seo: SEO

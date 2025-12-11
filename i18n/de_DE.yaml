@@ -1190,8 +1190,7 @@ ui:
     search:
       placeholder: Suchen
   footer:
-    build_on: >-
-      Betrieben von <1> Apache Answer </1>- die Open-Source-Software, die Q&A-Communities betreibt.<br />Made with love © {{cc}}.
+    build_on: Powered by <1> Apache Answer </1>
   upload_img:
     name: Ändern
     loading: wird geladen...
@@ -1768,6 +1767,7 @@ ui:
     branding: Branding
     legal: Rechtliches
     write: Schreiben
+    terms: Terms
     tos: Nutzungsbedingungen
     privacy: Privatsphäre
     seo: SEO

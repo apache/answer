@@ -1190,8 +1190,7 @@ ui:
     search:
       placeholder: Vyhľadávanie
   footer:
-    build_on: >-
-      Powered by <1> Apache Answer </1>- the open-source software that powers Q&A communities.<br />Made with love © {{cc}}.
+    build_on: Powered by <1> Apache Answer </1>
   upload_img:
     name: Zmena
     loading: načítavanie...
@@ -1768,6 +1767,7 @@ ui:
     branding: Budovanie značky
     legal: legálne
     write: písať
+    terms: Terms
     tos: Podmienky služby
     privacy: Súkromie
     seo: SEO

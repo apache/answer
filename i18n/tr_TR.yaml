@@ -234,8 +234,8 @@ backend:
         other: Güncelleme izni yok.
       content_cannot_empty:
         other: İçerik boş olamaz.
-      content_less_than_minumum:
-        other: Yeterli içerik girilmedi.
+      content_less_than_minimum:
+        other: Not enough content entered.
     rank:
       fail_to_meet_the_condition:
         other: İtibar seviyesi koşulu karşılamıyor.
@@ -1190,8 +1190,7 @@ ui:
     search:
       placeholder: Ara
   footer:
-    build_on: >-
-      <1>Apache Answer</1> tarafından desteklenmektedir - S&C topluluklarına güç veren açık kaynaklı yazılım.<br />Sevgiyle yapıldı © {{cc}}.
+    build_on: Powered by <1> Apache Answer </1>
   upload_img:
     name: Değiştir
     loading: yükleniyor...
@@ -1768,6 +1767,7 @@ ui:
     branding: Marka
     legal: Yasal
     write: Yaz
+    terms: Terms
     tos: Kullanım Şartları
     privacy: Gizlilik
     seo: SEO

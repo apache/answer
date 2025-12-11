@@ -1190,8 +1190,7 @@ ui:
     search:
       placeholder: Tìm kiếm
   footer:
-    build_on: >-
-      Được hỗ trợ bởi <1> Apache Answer </1>- phần mềm mã nguồn mở dành cho cộng đồng hỏi đáp.<br />Được tạo với tình yêu © {{cc}}.
+    build_on: Powered by <1> Apache Answer </1>
   upload_img:
     name: Thay đổi
     loading: đang tải...
@@ -1768,6 +1767,7 @@ ui:
     branding: Thương hiệu
     legal: Pháp lý
     write: Viết
+    terms: Terms
     tos: Điều khoản dịch vụ
     privacy: Quyền riêng tư
     seo: SEO

@@ -1190,8 +1190,7 @@ ui:
     search:
       placeholder: Procurar
   footer:
-    build_on: >-
-      Construído com <1> Apache answer </1> o software de código aberto que ajuda comunidades de Q&A.<br />Feito com amor © {{cc}}.
+    build_on: Powered by <1> Apache Answer </1>
   upload_img:
     name: Mudar
     loading: carregando...
@@ -1768,6 +1767,7 @@ ui:
     branding: Marca
     legal: Informação legal
     write: Escrever
+    terms: Terms
     tos: Termos de Serviços
     privacy: Privacidade
     seo: SEO
