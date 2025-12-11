@@ -28,7 +28,7 @@ import (
 	"github.com/segmentfault/pacman/log"
 
 	"github.com/apache/answer/internal/base/constant"
-	"github.com/apache/answer/internal/service/notice_queue"
+	"github.com/apache/answer/internal/service/noticequeue"
 	"github.com/apache/answer/pkg/converter"
 
 	"github.com/apache/answer/internal/base/pager"
@@ -51,7 +51,7 @@ type VoteRepo struct {
 	data                     *data.Data
 	activityRepo             activity_common.ActivityRepo
 	userRankRepo             rank.UserRankRepo
-	notificationQueueService notice_queue.NotificationQueueService
+	notificationQueueService noticequeue.Service
 }
 
 // NewVoteRepo new repository
@@ -59,7 +59,7 @@ func NewVoteRepo(
 	data *data.Data,
 	activityRepo activity_common.ActivityRepo,
 	userRankRepo rank.UserRankRepo,
-	notificationQueueService notice_queue.NotificationQueueService,
+	notificationQueueService noticequeue.Service,
 ) content.VoteRepo {
 	return &VoteRepo{
 		data:                     data,

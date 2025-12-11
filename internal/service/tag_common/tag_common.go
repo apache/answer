@@ -33,7 +33,7 @@ import (
 	"github.com/apache/answer/internal/base/validator"
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
-	"github.com/apache/answer/internal/service/activity_queue"
+	"github.com/apache/answer/internal/service/activityqueue"
 	"github.com/apache/answer/internal/service/revision_common"
 	"github.com/apache/answer/internal/service/siteinfo_common"
 	"github.com/apache/answer/pkg/converter"
@@ -89,7 +89,7 @@ type TagCommonService struct {
 	tagRelRepo           TagRelRepo
 	tagRepo              TagRepo
 	siteInfoService      siteinfo_common.SiteInfoCommonService
-	activityQueueService activity_queue.ActivityQueueService
+	activityQueueService activityqueue.Service
 }
 
 // NewTagCommonService new tag service
@@ -99,7 +99,7 @@ func NewTagCommonService(
 	tagRepo TagRepo,
 	revisionService *revision_common.RevisionService,
 	siteInfoService siteinfo_common.SiteInfoCommonService,
-	activityQueueService activity_queue.ActivityQueueService,
+	activityQueueService activityqueue.Service,
 ) *TagCommonService {
 	return &TagCommonService{
 		tagCommonRepo:        tagCommonRepo,

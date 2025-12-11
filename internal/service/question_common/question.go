@@ -34,7 +34,7 @@ import (
 	"github.com/apache/answer/internal/base/handler"
 	"github.com/apache/answer/internal/base/reason"
 	"github.com/apache/answer/internal/service/activity_common"
-	"github.com/apache/answer/internal/service/activity_queue"
+	"github.com/apache/answer/internal/service/activityqueue"
 	"github.com/apache/answer/internal/service/config"
 	metacommon "github.com/apache/answer/internal/service/meta_common"
 	"github.com/apache/answer/internal/service/revision"
@@ -103,7 +103,7 @@ type QuestionCommon struct {
 	AnswerCommon         *answercommon.AnswerCommon
 	metaCommonService    *metacommon.MetaCommonService
 	configService        *config.ConfigService
-	activityQueueService activity_queue.ActivityQueueService
+	activityQueueService activityqueue.Service
 	revisionRepo         revision.RevisionRepo
 	siteInfoService      siteinfo_common.SiteInfoCommonService
 	data                 *data.Data
@@ -119,7 +119,7 @@ func NewQuestionCommon(questionRepo QuestionRepo,
 	answerCommon *answercommon.AnswerCommon,
 	metaCommonService *metacommon.MetaCommonService,
 	configService *config.ConfigService,
-	activityQueueService activity_queue.ActivityQueueService,
+	activityQueueService activityqueue.Service,
 	revisionRepo revision.RevisionRepo,
 	siteInfoService siteinfo_common.SiteInfoCommonService,
 	data *data.Data,
