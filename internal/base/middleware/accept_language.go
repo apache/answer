@@ -23,7 +23,6 @@ import (
 	"strings"
 
 	"github.com/apache/answer/internal/base/constant"
-	"github.com/apache/answer/internal/base/handler"
 	"github.com/apache/answer/internal/base/translator"
 	"github.com/gin-gonic/gin"
 	"github.com/segmentfault/pacman/i18n"
@@ -33,8 +32,8 @@ import (
 // ExtractAndSetAcceptLanguage extract accept language from header and set to context
 func ExtractAndSetAcceptLanguage(ctx *gin.Context) {
 	// The language of our front-end configuration, like en_US
-	lang := handler.GetLang(ctx)
-	tag, _, err := language.ParseAcceptLanguage(string(lang))
+	acceptLanguage := ctx.GetHeader(constant.AcceptLanguageFlag)
+	tag, _, err := language.ParseAcceptLanguage(acceptLanguage)
 	if err != nil || len(tag) == 0 {
 		ctx.Set(constant.AcceptLanguageFlag, i18n.LanguageEnglish)
 		return

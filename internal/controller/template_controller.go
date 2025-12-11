@@ -206,7 +206,7 @@ func (tc *TemplateController) QuestionList(ctx *gin.Context) {
 	UrlUseTitle := siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitle ||
 		siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitleByShortID
 
-	siteInfo.Title = fmt.Sprintf("%s - %s", translator.Tr(handler.GetLang(ctx), constant.QuestionsTitleTrKey), siteInfo.General.Name)
+	siteInfo.Title = fmt.Sprintf("%s - %s", translator.Tr(handler.GetLangByCtx(ctx), constant.QuestionsTitleTrKey), siteInfo.General.Name)
 	tc.html(ctx, http.StatusOK, "question.html", siteInfo, gin.H{
 		"data":        data,
 		"useTitle":    UrlUseTitle,
@@ -461,7 +461,7 @@ func (tc *TemplateController) TagList(ctx *gin.Context) {
 	if req.Page > 1 {
 		siteInfo.Canonical = fmt.Sprintf("%s/tags?page=%d", siteInfo.General.SiteUrl, req.Page)
 	}
-	siteInfo.Title = fmt.Sprintf("%s - %s", translator.Tr(handler.GetLang(ctx), constant.TagsListTitleTrKey), siteInfo.General.Name)
+	siteInfo.Title = fmt.Sprintf("%s - %s", translator.Tr(handler.GetLangByCtx(ctx), constant.TagsListTitleTrKey), siteInfo.General.Name)
 	tc.html(ctx, http.StatusOK, "tags.html", siteInfo, gin.H{
 		"page": page,
 		"data": data,
@@ -492,14 +492,14 @@ func (tc *TemplateController) TagInfo(ctx *gin.Context) {
 	}
 	siteInfo.Description = htmltext.FetchExcerpt(tagInfo.ParsedText, "...", 240)
 	if len(tagInfo.ParsedText) == 0 {
-		siteInfo.Description = translator.Tr(handler.GetLang(ctx), constant.TagHasNoDescription)
+		siteInfo.Description = translator.Tr(handler.GetLangByCtx(ctx), constant.TagHasNoDescription)
 	}
 	siteInfo.Keywords = tagInfo.DisplayName
 
 	UrlUseTitle := siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitle ||
 		siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitleByShortID
 
-	siteInfo.Title = fmt.Sprintf("'%s' %s - %s", tagInfo.DisplayName, translator.Tr(handler.GetLang(ctx), constant.QuestionsTitleTrKey), siteInfo.General.Name)
+	siteInfo.Title = fmt.Sprintf("'%s' %s - %s", tagInfo.DisplayName, translator.Tr(handler.GetLangByCtx(ctx), constant.QuestionsTitleTrKey), siteInfo.General.Name)
 	tc.html(ctx, http.StatusOK, "tag-detail.html", siteInfo, gin.H{
 		"tag":           tagInfo,
 		"questionList":  questionList,
@@ -597,7 +597,7 @@ func (tc *TemplateController) html(ctx *gin.Context, code int, tpl string, siteI
 		data["title"] = siteInfo.General.Name
 	}
 	data["description"] = siteInfo.Description
-	data["language"] = handler.GetLang(ctx)
+	data["language"] = handler.GetLangByCtx(ctx)
 	data["timezone"] = siteInfo.Interface.TimeZone
 	language := strings.ReplaceAll(siteInfo.Interface.Language, "_", "-")
 	data["lang"] = language

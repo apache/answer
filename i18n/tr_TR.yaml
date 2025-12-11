@@ -234,8 +234,8 @@ backend:
         other: Güncelleme izni yok.
       content_cannot_empty:
         other: İçerik boş olamaz.
-      content_less_than_minimum:
-        other: Not enough content entered.
+      content_less_than_minumum:
+        other: Yeterli içerik girilmedi.
     rank:
       fail_to_meet_the_condition:
         other: İtibar seviyesi koşulu karşılamıyor.
@@ -266,7 +266,7 @@ backend:
       cannot_set_synonym_as_itself:
         other: Bir etiketin eş anlamlısını kendisi olarak ayarlayamazsınız.
       minimum_count:
-        other: Not enough tags were entered.
+        other: Yeterli sayıda etiket girilmedi.
     smtp:
       config_from_name_cannot_be_email:
         other: Gönderen adı bir e-posta adresi olamaz.
@@ -311,13 +311,13 @@ backend:
       add_bulk_users_amount_error:
         other: "Bir kerede eklediğiniz kullanıcı sayısı 1-{{.MaxAmount}} aralığında olmalıdır."
       status_suspended_forever:
-        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+        other: "<strong>Bu kullanıcı süresiz olarak askıya alındı.</strong> Bu kullanıcı topluluk kurallarını karşılamıyor."
       status_suspended_until:
-        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+        other: "<strong>Bu kullanıcı {{.SuspendedUntil}} tarihine kadar askıya alındı.</strong> Bu kullanıcı topluluk kurallarını karşılamıyor."
       status_deleted:
-        other: "This user was deleted."
+        other: "Bu kullanıcı silindi."
       status_inactive:
-        other: "This user is inactive."
+        other: "Bu kullanıcı aktif değil."
     config:
       read_config_failed:
         other: Yapılandırma okunamadı.
@@ -821,7 +821,7 @@ ui:
     tag_wiki: etiket wikisi
     create_tag: Etiket Oluştur
     edit_tag: Etiketi Düzenle
-    ask_a_question: Create Question
+    ask_a_question: Soru Oluştur
     edit_question: Soruyu Düzenle
     edit_answer: Cevabı Düzenle
     search: Ara
@@ -1069,9 +1069,9 @@ ui:
     day: gün
     hours: saatler
     days: günler
-    month: month
-    months: months
-    year: year
+    month: ay
+    months: aylar
+    year: yıl
   reaction:
     heart: kalp
     smile: gülümseme
@@ -1127,10 +1127,10 @@ ui:
     more: Daha Fazla
     wiki: Wiki
   ask:
-    title: Create Question
+    title: Soru Oluştur
     edit_title: Soruyu Düzenle
     default_reason: Soruyu düzenle
-    default_first_reason: Create question
+    default_first_reason: Soru oluştur
     similar_questions: Benzer sorular
     form:
       fields:
@@ -1138,7 +1138,7 @@ ui:
           label: Revizyon
         title:
           label: Başlık
-          placeholder: What's your topic? Be specific.
+          placeholder: Konunuz nedir? Ayrıntılı belirtin.
           msg:
             empty: Başlık boş olamaz.
             range: Başlık en fazla 150 karakter olabilir
@@ -1147,8 +1147,8 @@ ui:
           msg:
             empty: İçerik boş olamaz.
           hint:
-            optional_body: Describe what the question is about.
-            minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
+            optional_body: Sorunun ne hakkında olduğunu açıklayın.
+            minimum_characters: "Sorunun ne hakkında olduğunu açıklayın, en az {{min_content_length}} karakter gereklidir."
         tags:
           label: Etiketler
           msg:
@@ -1169,9 +1169,9 @@ ui:
     add_btn: Etiket ekle
     create_btn: Yeni etiket oluştur
     search_tag: Etiket ara
-    hint: Describe what your content is about, at least one tag is required.
-    hint_zero_tags: Describe what your content is about.
-    hint_more_than_one_tag: "Describe what your content is about, at least {{min_tags_number}} tags are required."
+    hint: İçeriğinizin ne hakkında olduğunu açıklayın, en az bir etiket gereklidir.
+    hint_zero_tags: İçeriğinizin ne hakkında olduğunu açıklayın.
+    hint_more_than_one_tag: "İçeriğinizin ne hakkında olduğunu açıklayın, en az {{min_tags_number}} etiket gereklidir."
     no_result: Eşleşen etiket bulunamadı
     tag_required_text: Gerekli etiket (en az bir tane)
   header:
@@ -1377,12 +1377,12 @@ ui:
     review: Revizyonunuz incelendikten sonra görünecek.
     sent_success: Başarıyla gönderildi
   related_question:
-    title: Related
+    title: İlgili
     answers: cevap
   linked_question:
-    title: Linked
-    description: Posts linked to
-    no_linked_question: No contents linked from this content.
+    title: Bağlantılı
+    description: Bağlantılı gönderiler
+    no_linked_question: Bu içerikten bağlantı verilen içerik yok.
   invite_to_answer:
     title: İnsanları Davet Et
     desc: Cevap verebileceğini düşündüğünüz kişileri davet edin.
@@ -1391,11 +1391,11 @@ ui:
     search: Kişi ara
   question_detail:
     action: Eylem
-    created: Created
+    created: Oluşturuldu
     Asked: Soruldu
     asked: sordu
     update: Değiştirildi
-    Edited: Edited
+    Edited: Düzenlendi
     edit: düzenledi
     commented: yorum yaptı
     Views: Görüntülendi
@@ -1403,7 +1403,7 @@ ui:
     Following: Takip Ediliyor
     follow_tip: Bildirim almak için bu soruyu takip edin
     answered: cevapladı
-    closed_in: Şurada kapatıldı
+    closed_in: Burada kapatıldı
     show_exist: Var olan soruyu göster.
     useful: Faydalı
     question_useful: Faydalı ve açık
@@ -2098,8 +2098,8 @@ ui:
         label: Her kullanıcı aynı soru için sadece bir cevap yazabilir
         text: "Kullanıcıların aynı soruya birden fazla cevap yazmasına izin vermek için kapatın, bu cevapların odaktan uzaklaşmasına neden olabilir."
       min_tags:
-        label: "Minimum tags per question"
-        text: "Minimum number of tags required in a question."
+        label: "Soru başına minimum etiket"
+        text: "Bir soruda bulunması gereken minimum etiket sayısı."
       recommend_tags:
         label: Önerilen etiketler
         text: "Önerilen etiketler varsayılan olarak açılır listede gösterilecektir."
