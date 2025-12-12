@@ -38,7 +38,7 @@ const Index: FC = () => {
             <Outlet />
           </div>
         </div>
-        <div className="d-flex justify-content-center">
+        <div className="d-flex justify-content-center px-0 px-md-4">
           <div className="main-mx-with">
             <Footer />
           </div>
