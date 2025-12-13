@@ -3,7 +3,7 @@ name: Release Charts
 on:
   push:
     branches:
-      - oci # change when done testing
+      - main
     paths:
       - 'charts/*'
 
@@ -41,4 +41,4 @@ jobs:
       - name: Push chart to GHCR
         run: |
           helm package charts
-          helm push answer-*.tgz oci://ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/charts # TODO remove when testing done
+          helm push answer-*.tgz oci://ghcr.io/${GITHUB_REPOSITORY_OWNER}/charts
