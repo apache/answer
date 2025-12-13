@@ -23,9 +23,7 @@ replicaCount: 1
 
 image:
   repository: apache/answer
-  pullPolicy: Always
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  pullPolicy: IfNotPresent
 
 # Environment variables
 # Configure environment variables below
