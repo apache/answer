@@ -23,6 +23,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
+	"strings"
 
 	"github.com/google/wire"
 	myTran "github.com/segmentfault/pacman/contrib/i18n"
@@ -100,6 +102,7 @@ func NewTranslator(c *I18n) (tr i18n.Translator, err error) {
 		// add translator use backend translation
 		if err = myTran.AddTranslator(content, file.Name()); err != nil {
 			log.Debugf("add translator failed: %s %s", file.Name(), err)
+			reportTranslatorFormatError(file.Name(), buf)
 			continue
 		}
 	}
@@ -159,4 +162,166 @@ func TrWithData(lang i18n.Language, key string, templateData any) string {
 		return GlobalTrans.TrWithData(i18n.DefaultLanguage, key, templateData)
 	}
 	return translation
+}
+
+// reportTranslatorFormatError re-parses the YAML file to locate the invalid entry
+// when go-i18n fails to add the translator.
+func reportTranslatorFormatError(fileName string, content []byte) {
+	var raw any
+	if err := yaml.Unmarshal(content, &raw); err != nil {
+		log.Errorf("parse translator file %s failed when diagnosing format error: %s", fileName, err)
+		return
+	}
+	if err := inspectTranslatorNode(raw, nil, true); err != nil {
+		log.Errorf("translator file %s invalid: %s", fileName, err)
+	}
+}
+
+func inspectTranslatorNode(node any, path []string, isRoot bool) error {
+	switch data := node.(type) {
+	case nil:
+		if isRoot {
+			return fmt.Errorf("root value is empty")
+		}
+		return fmt.Errorf("%s contains an empty value", formatTranslationPath(path))
+	case string:
+		if isRoot {
+			return fmt.Errorf("root value must be an object but found string")
+		}
+		return nil
+	case bool, int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32, float64:
+		if isRoot {
+			return fmt.Errorf("root value must be an object but found %T", data)
+		}
+		return fmt.Errorf("%s expects a string translation but found %T", formatTranslationPath(path), data)
+	case map[string]any:
+		if isMessageMap(data) {
+			return nil
+		}
+		keys := make([]string, 0, len(data))
+		for key := range data {
+			keys = append(keys, key)
+		}
+		sort.Strings(keys)
+		for _, key := range keys {
+			if err := inspectTranslatorNode(data[key], append(path, key), false); err != nil {
+				return err
+			}
+		}
+		return nil
+	case map[string]string:
+		mapped := make(map[string]any, len(data))
+		for k, v := range data {
+			mapped[k] = v
+		}
+		return inspectTranslatorNode(mapped, path, isRoot)
+	case map[any]any:
+		if isMessageMap(data) {
+			return nil
+		}
+		type kv struct {
+			key string
+			val any
+		}
+		items := make([]kv, 0, len(data))
+		for key, val := range data {
+			strKey, ok := key.(string)
+			if !ok {
+				return fmt.Errorf("%s uses a non-string key %#v", formatTranslationPath(path), key)
+			}
+			items = append(items, kv{key: strKey, val: val})
+		}
+		sort.Slice(items, func(i, j int) bool {
+			return items[i].key < items[j].key
+		})
+		for _, item := range items {
+			if err := inspectTranslatorNode(item.val, append(path, item.key), false); err != nil {
+				return err
+			}
+		}
+		return nil
+	case []any:
+		for idx, child := range data {
+			nextPath := append(path, fmt.Sprintf("[%d]", idx))
+			if err := inspectTranslatorNode(child, nextPath, false); err != nil {
+				return err
+			}
+		}
+		return nil
+	case []map[string]any:
+		for idx, child := range data {
+			nextPath := append(path, fmt.Sprintf("[%d]", idx))
+			if err := inspectTranslatorNode(child, nextPath, false); err != nil {
+				return err
+			}
+		}
+		return nil
+	default:
+		if isRoot {
+			return fmt.Errorf("root value must be an object but found %T", data)
+		}
+		return fmt.Errorf("%s contains unsupported value type %T", formatTranslationPath(path), data)
+	}
+}
+
+var translatorReservedKeys = []string{
+	"id", "description", "hash", "leftdelim", "rightdelim",
+	"zero", "one", "two", "few", "many", "other",
+}
+
+func isMessageMap(data any) bool {
+	switch v := data.(type) {
+	case map[string]any:
+		for _, key := range translatorReservedKeys {
+			val, ok := v[key]
+			if !ok {
+				continue
+			}
+			if _, ok := val.(string); ok {
+				return true
+			}
+		}
+	case map[string]string:
+		for _, key := range translatorReservedKeys {
+			val, ok := v[key]
+			if !ok {
+				continue
+			}
+			if val != "" {
+				return true
+			}
+		}
+	case map[any]any:
+		for _, key := range translatorReservedKeys {
+			val, ok := v[key]
+			if !ok {
+				continue
+			}
+			if _, ok := val.(string); ok {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func formatTranslationPath(path []string) string {
+	if len(path) == 0 {
+		return "root"
+	}
+	var b strings.Builder
+	for _, part := range path {
+		if part == "" {
+			continue
+		}
+		if part[0] == '[' {
+			b.WriteString(part)
+			continue
+		}
+		if b.Len() > 0 {
+			b.WriteByte('.')
+		}
+		b.WriteString(part)
+	}
+	return b.String()
 }
