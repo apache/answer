@@ -109,9 +109,14 @@ const Users: FC = () => {
       return new Promise((resolve, reject) => {
         addUsers(userModel)
           .then(() => {
-            if (/all|staff/.test(curFilter) && curPage === 1) {
-              refreshUsers();
-            }
+            toastStore.getState().show({
+              msg: t('user_added', { keyPrefix: 'messages' }),
+              variant: 'success',
+            });
+            urlSearchParams.set('filter', 'normal');
+            urlSearchParams.delete('page');
+            setUrlSearchParams(urlSearchParams);
+            refreshUsers();
             resolve(true);
           })
           .catch((e) => {
