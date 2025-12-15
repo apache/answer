@@ -864,8 +864,7 @@ ui:
         <li><p class="mb-2">twórz bloki kodu przy pomocy potrójnych odwrotnych apostrofów <code>`</code></p>
           <pre class="mb-0"><code>```<br/>kod tutaj<br/>```</code></pre>
         </li>
-
-    </ul>
+      </ul>
     prev: Poprzedni
     next: Następny
   page_title:

@@ -235,7 +235,7 @@ backend:
       content_cannot_empty:
         other: İçerik boş olamaz.
       content_less_than_minimum:
-        other: Yeterli içerik girilmedi.
+        other: Not enough content entered.
     rank:
       fail_to_meet_the_condition:
         other: İtibar seviyesi koşulu karşılamıyor.
