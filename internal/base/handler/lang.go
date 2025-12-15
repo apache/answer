@@ -23,11 +23,22 @@ import (
 	"context"
 
 	"github.com/apache/answer/internal/base/constant"
+	"github.com/gin-gonic/gin"
 	"github.com/segmentfault/pacman/i18n"
 )
 
 // GetLangByCtx get language from header
 func GetLangByCtx(ctx context.Context) i18n.Language {
+	if ginCtx, ok := ctx.(*gin.Context); ok {
+		acceptLanguage, ok := ginCtx.Get(constant.AcceptLanguageFlag)
+		if ok {
+			if acceptLanguage, ok := acceptLanguage.(i18n.Language); ok {
+				return acceptLanguage
+			}
+			return i18n.DefaultLanguage
+		}
+	}
+
 	acceptLanguage, ok := ctx.Value(constant.AcceptLanguageContextKey).(i18n.Language)
 	if ok {
 		return acceptLanguage
