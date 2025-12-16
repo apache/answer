@@ -191,6 +191,13 @@ func InitEnvironment(ctx *gin.Context) {
 	c.I18n.BundleDir = path.I18nPath
 	c.ServiceConfig.UploadPath = path.UploadFilePath
 
+	// Set server port from INSTALL_PORT environment variable if provided
+	installPort := os.Getenv("INSTALL_PORT")
+	if len(installPort) > 0 {
+		c.Server.HTTP.Addr = "0.0.0.0:" + installPort
+		c.Swaggerui.Address = ":" + installPort
+	}
+
 	if err := conf.RewriteConfig(confPath, c); err != nil {
 		log.Errorf("rewrite config failed %s", err)
 		handler.HandleResponse(ctx, errors.BadRequest(reason.ReadConfigFailed), nil)
