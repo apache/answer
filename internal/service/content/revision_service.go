@@ -32,9 +32,9 @@ import (
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/activity"
-	"github.com/apache/answer/internal/service/activity_queue"
+	"github.com/apache/answer/internal/service/activityqueue"
 	answercommon "github.com/apache/answer/internal/service/answer_common"
-	"github.com/apache/answer/internal/service/notice_queue"
+	"github.com/apache/answer/internal/service/noticequeue"
 	"github.com/apache/answer/internal/service/object_info"
 	questioncommon "github.com/apache/answer/internal/service/question_common"
 	"github.com/apache/answer/internal/service/report_common"
@@ -62,8 +62,8 @@ type RevisionService struct {
 	answerRepo               answercommon.AnswerRepo
 	tagRepo                  tag_common.TagRepo
 	tagCommon                *tag_common.TagCommonService
-	notificationQueueService notice_queue.NotificationQueueService
-	activityQueueService     activity_queue.ActivityQueueService
+	notificationQueueService noticequeue.Service
+	activityQueueService     activityqueue.Service
 	reportRepo               report_common.ReportRepo
 	reviewService            *review.ReviewService
 	reviewActivity           activity.ReviewActivityRepo
@@ -79,8 +79,8 @@ func NewRevisionService(
 	answerRepo answercommon.AnswerRepo,
 	tagRepo tag_common.TagRepo,
 	tagCommon *tag_common.TagCommonService,
-	notificationQueueService notice_queue.NotificationQueueService,
-	activityQueueService activity_queue.ActivityQueueService,
+	notificationQueueService noticequeue.Service,
+	activityQueueService activityqueue.Service,
 	reportRepo report_common.ReportRepo,
 	reviewService *review.ReviewService,
 	reviewActivity activity.ReviewActivityRepo,

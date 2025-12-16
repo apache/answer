@@ -25,13 +25,13 @@ import (
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
-	"github.com/apache/answer/internal/service/event_queue"
+	"github.com/apache/answer/internal/service/eventqueue"
 	"github.com/segmentfault/pacman/log"
 )
 
 type BadgeEventService struct {
 	data              *data.Data
-	eventQueueService event_queue.EventQueueService
+	eventQueueService eventqueue.Service
 	badgeRepo         BadgeRepo
 	eventRuleRepo     EventRuleRepo
 	badgeAwardService *BadgeAwardService
@@ -45,7 +45,7 @@ type EventRuleRepo interface {
 
 func NewBadgeEventService(
 	data *data.Data,
-	eventQueueService event_queue.EventQueueService,
+	eventQueueService eventqueue.Service,
 	badgeRepo BadgeRepo,
 	eventRuleRepo EventRuleRepo,
 	badgeAwardService *BadgeAwardService,

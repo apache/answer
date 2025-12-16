@@ -24,7 +24,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/apache/answer/internal/service/event_queue"
+	"github.com/apache/answer/internal/service/eventqueue"
 
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/reason"
@@ -32,11 +32,11 @@ import (
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/activity"
 	"github.com/apache/answer/internal/service/activity_common"
-	"github.com/apache/answer/internal/service/activity_queue"
+	"github.com/apache/answer/internal/service/activityqueue"
 	answercommon "github.com/apache/answer/internal/service/answer_common"
 	collectioncommon "github.com/apache/answer/internal/service/collection_common"
 	"github.com/apache/answer/internal/service/export"
-	"github.com/apache/answer/internal/service/notice_queue"
+	"github.com/apache/answer/internal/service/noticequeue"
 	"github.com/apache/answer/internal/service/permission"
 	questioncommon "github.com/apache/answer/internal/service/question_common"
 	"github.com/apache/answer/internal/service/review"
@@ -65,11 +65,11 @@ type AnswerService struct {
 	voteRepo                         activity_common.VoteRepo
 	emailService                     *export.EmailService
 	roleService                      *role.UserRoleRelService
-	notificationQueueService         notice_queue.NotificationQueueService
-	externalNotificationQueueService notice_queue.ExternalNotificationQueueService
-	activityQueueService             activity_queue.ActivityQueueService
+	notificationQueueService         noticequeue.Service
+	externalNotificationQueueService noticequeue.ExternalService
+	activityQueueService             activityqueue.Service
 	reviewService                    *review.ReviewService
-	eventQueueService                event_queue.EventQueueService
+	eventQueueService                eventqueue.Service
 }
 
 func NewAnswerService(
@@ -85,11 +85,11 @@ func NewAnswerService(
 	voteRepo activity_common.VoteRepo,
 	emailService *export.EmailService,
 	roleService *role.UserRoleRelService,
-	notificationQueueService notice_queue.NotificationQueueService,
-	externalNotificationQueueService notice_queue.ExternalNotificationQueueService,
-	activityQueueService activity_queue.ActivityQueueService,
+	notificationQueueService noticequeue.Service,
+	externalNotificationQueueService noticequeue.ExternalService,
+	activityQueueService activityqueue.Service,
 	reviewService *review.ReviewService,
-	eventQueueService event_queue.EventQueueService,
+	eventQueueService eventqueue.Service,
 ) *AnswerService {
 	return &AnswerService{
 		answerRepo:                       answerRepo,
