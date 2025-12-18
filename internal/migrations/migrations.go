@@ -104,6 +104,7 @@ var migrations = []Migration{
 	NewMigration("v1.5.1", "add plugin kv storage", addPluginKVStorage, true),
 	NewMigration("v1.6.0", "move user config to interface", moveUserConfigToInterface, true),
 	NewMigration("v1.7.0", "add optional tags", addOptionalTags, true),
+	NewMigration("v1.7.1", "expand avatar column length", expandAvatarColumnLength, false),
 }
 
 func GetMigrations() []Migration {
