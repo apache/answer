@@ -1,0 +1,25 @@
+debug: false
+server:
+  http:
+    addr: 0.0.0.0:80
+data:
+  database:
+    driver: sqlite3
+    connection: ./data/answer.db
+  cache:
+    file_path: data/cache/cache.db
+i18n:
+  bundle_dir: data/i18n
+service_config:
+  upload_path: data/uploads
+  clean_up_uploads: true
+  clean_orphan_uploads_period_hours: 48
+  purge_deleted_files_period_days: 30
+swaggerui:
+  show: true
+  protocol: http
+  host: 127.0.0.1
+  address: :80
+ui:
+  base_url: ""
+  api_base_url: ""

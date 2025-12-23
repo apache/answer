@@ -31,11 +31,17 @@ import (
 	"github.com/apache/answer/internal/base/path"
 	"github.com/apache/answer/internal/schema"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"github.com/segmentfault/pacman"
 	"github.com/segmentfault/pacman/contrib/log/zap"
 	"github.com/segmentfault/pacman/contrib/server/http"
 	"github.com/segmentfault/pacman/log"
 )
+
+func init() {
+	// Load .env if present, ignore error to keep backward compatibility
+	_ = godotenv.Load()
+}
 
 // go build -ldflags "-X github.com/apache/answer/cmd.Version=x.y.z"
 var (
