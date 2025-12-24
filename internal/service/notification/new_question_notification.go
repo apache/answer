@@ -238,14 +238,17 @@ func (ns *ExternalNotificationService) syncNewQuestionNotificationToPlugin(ctx c
 				}
 			}
 
-			userInfo, exist, err := ns.userExternalLoginRepo.GetByUserID(ctx, fn.Info().SlugName, subscriberUserID)
+			externalLogins, err := ns.userExternalLoginRepo.GetUserExternalLoginList(ctx, subscriberUserID)
 			if err != nil {
-				log.Errorf("get user external login info failed: %v", err)
-				return nil
+				log.Errorf("get user external login list failed for user %s: %v", subscriberUserID, err)
+			} else if len(externalLogins) > 0 {
+				newMsg.ReceiverExternalID = externalLogins[0].ExternalID
+				if len(externalLogins) > 1 {
+					log.Debugf("user %s has %d SSO logins, using most recent: provider=%s",
+						subscriberUserID, len(externalLogins), externalLogins[0].Provider)
+				}
 			}
-			if exist {
-				newMsg.ReceiverExternalID = userInfo.ExternalID
-			}
+
 			fn.Notify(newMsg)
 		}
 		return nil

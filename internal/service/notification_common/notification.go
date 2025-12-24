@@ -423,15 +423,14 @@ func (ns *NotificationCommon) syncNotificationToPlugin(ctx context.Context, objI
 		}
 	}
 
+	externalLogins, err := ns.userExternalLoginRepo.GetUserExternalLoginList(ctx, msg.ReceiverUserID)
+	if err != nil {
+		log.Errorf("get user external login list failed for user %s: %v", msg.ReceiverUserID, err)
+	} else if len(externalLogins) > 0 {
+		pluginNotificationMsg.ReceiverExternalID = externalLogins[0].ExternalID
+	}
+
 	_ = plugin.CallNotification(func(fn plugin.Notification) error {
-		userInfo, exist, err := ns.userExternalLoginRepo.GetByUserID(ctx, fn.Info().SlugName, msg.ReceiverUserID)
-		if err != nil {
-			log.Errorf("get user external login info failed: %v", err)
-			return nil
-		}
-		if exist {
-			pluginNotificationMsg.ReceiverExternalID = userInfo.ExternalID
-		}
 		fn.Notify(pluginNotificationMsg)
 		return nil
 	})
