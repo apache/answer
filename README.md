@@ -46,15 +46,6 @@ You can also check out the [plugins here](https://answer.apache.org/plugins).
 - [mockgen](https://github.com/uber-go/mock?tab=readme-ov-file#installation) >= 0.6.0
 - [wire](https://github.com/google/wire/) >= 0.5.0
 
-### Environment Configuration
-
-    You may create a `.env` file in the project root.
-    Copy `.env.example` and fill required values.
-
-    ```bash
-    cp .env.example .env
-
-
 ### Build
 
 ```bash
