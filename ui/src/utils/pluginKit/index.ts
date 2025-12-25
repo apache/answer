@@ -86,6 +86,7 @@ class Plugins {
 
   async refresh() {
     this.plugins = [];
+    this.replacementPlugins.clear();
     this.isInitialized = false;
     this.initializationError = null;
     this.initialization = this.init();
