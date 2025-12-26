@@ -455,6 +455,11 @@ func (as *AnswerService) AcceptAnswer(ctx context.Context, req *schema.AcceptAns
 		if !exist {
 			return errors.BadRequest(reason.AnswerNotFound)
 		}
+
+		// check answer belong to question
+		if acceptedAnswerInfo.QuestionID != req.QuestionID {
+			return errors.BadRequest(reason.AnswerNotFound)
+		}
 		acceptedAnswerInfo.ID = uid.DeShortID(acceptedAnswerInfo.ID)
 	}
 
