@@ -238,6 +238,7 @@ func (ns *ExternalNotificationService) syncNewQuestionNotificationToPlugin(ctx c
 				}
 			}
 
+			// Get all external logins as fallback
 			externalLogins, err := ns.userExternalLoginRepo.GetUserExternalLoginList(ctx, subscriberUserID)
 			if err != nil {
 				log.Errorf("get user external login list failed for user %s: %v", subscriberUserID, err)
@@ -249,6 +250,15 @@ func (ns *ExternalNotificationService) syncNewQuestionNotificationToPlugin(ctx c
 				}
 			}
 
+			// Try to get external login specific to this plugin (takes precedence over fallback)
+			userInfo, exist, err := ns.userExternalLoginRepo.GetByUserID(ctx, fn.Info().SlugName, subscriberUserID)
+			if err != nil {
+				log.Errorf("get user external login info failed: %v", err)
+				return nil
+			}
+			if exist {
+				newMsg.ReceiverExternalID = userInfo.ExternalID
+			}
 			fn.Notify(newMsg)
 		}
 		return nil
