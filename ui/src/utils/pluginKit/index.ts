@@ -42,6 +42,15 @@ import { Plugin, PluginInfo, PluginType } from './interface';
  * @field description: Plugin description, optionally configurable. Usually read from the `i18n` file
  */
 
+// Define which plugin types are singleton by design
+const SingletonTypes: Set<PluginType> = new Set<PluginType>([
+  PluginType.EditorReplacement,
+]);
+
+function isSingletonType(type: PluginType): boolean {
+  return SingletonTypes.has(type);
+}
+
 class Plugins {
   plugins: Plugin[] = [];
 
@@ -179,9 +188,8 @@ class Plugins {
       return;
     }
 
-    // Handle singleton plugins (only one per type allowed)
-    const mode = plugin.info.registrationMode || 'multiple';
-    if (mode === 'singleton') {
+    // Handle singleton-by-type plugins (only one per type allowed)
+    if (isSingletonType(plugin.info.type)) {
       const existingPlugin = this.replacementPlugins.get(plugin.info.type);
       if (existingPlugin) {
         const error = new Error(

@@ -39,7 +39,6 @@ export interface PluginInfo {
   name?: string;
   description?: string;
   route?: string;
-  registrationMode?: 'multiple' | 'singleton';
 }
 
 export interface Plugin {
