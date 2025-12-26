@@ -87,7 +87,7 @@ func (ur *userExternalLoginRepo) GetByUserID(ctx context.Context, provider, user
 func (ur *userExternalLoginRepo) GetUserExternalLoginList(ctx context.Context, userID string) (
 	resp []*entity.UserExternalLogin, err error) {
 	resp = make([]*entity.UserExternalLogin, 0)
-	err = ur.data.DB.Context(ctx).Where("user_id = ?", userID).Find(&resp)
+	err = ur.data.DB.Context(ctx).Where("user_id = ?", userID).OrderBy("updated_at DESC").Find(&resp)
 	if err != nil {
 		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
