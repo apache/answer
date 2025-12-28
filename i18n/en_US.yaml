@@ -2383,6 +2383,7 @@ ui:
     user_normal: This user is already normal.
     user_suspended: This user has been suspended.
     user_deleted: This user has been deleted.
+    user_added: User has been added successfully.
     badge_activated: This badge has been activated.
     badge_inactivated: This badge has been inactivated.
     users_deleted: These users have been deleted.
