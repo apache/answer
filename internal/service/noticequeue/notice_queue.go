@@ -24,13 +24,13 @@ import (
 	"github.com/apache/answer/internal/schema"
 )
 
-type Service = *queue.Queue[*schema.NotificationMsg]
+type Service queue.Service[*schema.NotificationMsg]
 
 func NewService() Service {
 	return queue.New[*schema.NotificationMsg]("notification", 128)
 }
 
-type ExternalService = *queue.Queue[*schema.ExternalNotificationMsg]
+type ExternalService queue.Service[*schema.ExternalNotificationMsg]
 
 func NewExternalService() ExternalService {
 	return queue.New[*schema.ExternalNotificationMsg]("external_notification", 128)

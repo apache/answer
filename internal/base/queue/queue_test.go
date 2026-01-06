@@ -21,6 +21,7 @@ package queue
 
 import (
 	"context"
+	"fmt"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -208,4 +209,45 @@ func TestQueue_ConcurrentRegisterHandler(t *testing.T) {
 		}()
 	}
 	wg.Wait()
+}
+
+// TestQueue_SendCloseRace is a regression test for the race condition between
+// Send and Close. Without proper synchronization, concurrent Send and Close
+// calls could cause a "send on closed channel" panic.
+// Run with: go test -race -run TestQueue_SendCloseRace
+func TestQueue_SendCloseRace(t *testing.T) {
+	for i := range 100 {
+		t.Run(fmt.Sprintf("iteration_%d", i), func(t *testing.T) {
+			// Use large buffer to avoid blocking on channel send while holding RLock
+			q := New[*testMessage]("test-race", 1000)
+			q.RegisterHandler(func(ctx context.Context, msg *testMessage) error {
+				return nil
+			})
+
+			var wg sync.WaitGroup
+
+			// Use cancellable context so senders can exit when Close is called
+			ctx, cancel := context.WithCancel(context.Background())
+
+			// Start multiple senders
+			for j := range 10 {
+				wg.Add(1)
+				go func(id int) {
+					defer wg.Done()
+					for k := range 100 {
+						q.Send(ctx, &testMessage{ID: id*1000 + k})
+					}
+				}(j)
+			}
+
+			// Close while senders are still running
+			go func() {
+				time.Sleep(time.Microsecond * 10)
+				cancel() // Cancel context to unblock any waiting senders
+				q.Close()
+			}()
+
+			wg.Wait()
+		})
+	}
 }

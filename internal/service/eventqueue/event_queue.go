@@ -24,7 +24,7 @@ import (
 	"github.com/apache/answer/internal/schema"
 )
 
-type Service = *queue.Queue[*schema.EventMsg]
+type Service queue.Service[*schema.EventMsg]
 
 func NewService() Service {
 	return queue.New[*schema.EventMsg]("event", 128)

@@ -26,6 +26,17 @@ import (
 	"github.com/segmentfault/pacman/log"
 )
 
+type Service[T any] interface {
+	// Send enqueues a message to be processed asynchronously.
+	Send(ctx context.Context, msg T)
+
+	// RegisterHandler sets the handler function for processing messages.
+	RegisterHandler(handler func(ctx context.Context, msg T) error)
+
+	// Close gracefully shuts down the queue, waiting for pending messages to be processed.
+	Close()
+}
+
 // Queue is a generic message queue service that processes messages asynchronously.
 // It is thread-safe and supports graceful shutdown.
 type Queue[T any] struct {
@@ -51,10 +62,9 @@ func New[T any](name string, bufferSize int) *Queue[T] {
 // It will block if the queue is full.
 func (q *Queue[T]) Send(ctx context.Context, msg T) {
 	q.mu.RLock()
-	closed := q.closed
-	q.mu.RUnlock()
+	defer q.mu.RUnlock()
 
-	if closed {
+	if q.closed {
 		log.Warnf("[%s] queue is closed, dropping message", q.name)
 		return
 	}
