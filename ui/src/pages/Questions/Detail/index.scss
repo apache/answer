@@ -58,7 +58,24 @@
 
 .answer-item {
   border-top: 1px solid var(--an-answer-item-border-top);
+  margin-bottom: 1em;
 }
+
+/* Border for question and answer */
+.answer-item ,
+.questionDetailPage > div:nth-child(1) > div:nth-child(1){
+  border: var(--bs-border-width) solid var(--bs-border-color-translucent);
+  padding: 12px;
+  border-radius: var(--bs-border-radius);
+}
+
+/* find accepted answer, and change its border to differentiate */
+.answer-item:has(> .mb-3.lh-1) {
+    border: green;
+    border-width: medium;
+    border-style: solid;
+}
+
 
 .smile-btn.active::before {
   position: fixed;
