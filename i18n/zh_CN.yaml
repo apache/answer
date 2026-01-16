@@ -846,6 +846,16 @@ ui:
     http_403: HTTP 错误 403
     logout: 退出
     posts: 帖子
+    ai_assistant: AI 助手
+  ai_assistant:
+    description: 有问题吗？尽管提问，即可获得解答、不同观点及实用建议。
+    recent_conversations: 最近的对话
+    show_more: 展示更多
+    new: 新建对话
+    ai_generate: 由帖子生成的 AI 内容，可能并不准确。
+    copy: 复制
+    ask_a_follow_up: 继续提问
+    ask_placeholder: 提出问题
   notifications:
     title: 通知
     inbox: 收件箱
@@ -1778,6 +1788,10 @@ ui:
     plugins: 插件
     installed_plugins: 已安装插件
     apperance: 外观
+    AI: AI
+    conversations: 对话
+    ai_settings: 设置
+    mcp: MCP
   website_welcome: 欢迎来到 {{site_name}}
   user_center:
     login: 登录
@@ -2252,6 +2266,37 @@ ui:
       show_logs: 显示日志
       status: 状态
       title: 徽章
+    ai_settings:
+      title: 模型
+      enabled:
+        label: AI 启用
+        check: 启用 AI 功能
+      provider:
+        label: 提供者
+      api_host:
+        label: API 主机
+        msg: API 主机必填
+      api_key:
+        label: API Key
+        check: 校验
+        check_success: "连接成功."
+        msg: API key 必填
+      model:
+        label: 模型
+        msg: 模型必填
+      add_success: AI 设置已成功更新.
+    conversations:
+      title: 对话
+      topic: 话题
+      helpful: 有用的
+      unhelpful: 无用的
+      created: 创建于
+      action: 操作
+      empty: 没有会话记录。
+      delete_modal:
+        title: 删除对话
+        content: 你确定要删除此对话吗？这是永久的！
+        delete_success: 对话删除成功.
   form:
     optional: (选填)
     empty: 不能为空
