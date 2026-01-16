@@ -17,18 +17,30 @@
  * under the License.
  */
 
-export * from './activity';
-export * from './personal';
-export * from './notification';
-export * from './question';
-export * from './search';
-export * from './tag';
-export * from './settings';
-export * from './legal';
-export * from './timeline';
-export * from './revision';
-export * from './user';
-export * from './Oauth';
-export * from './review';
-export * from './badges';
-export * from './ai';
+import { FC, memo } from 'react';
+import { Outlet } from 'react-router-dom';
+
+import { SideNav } from '@/components';
+
+import '@/common/sideNavLayout.scss';
+
+const Index: FC = () => {
+  return (
+    <div className="d-flex flex-fill">
+      <div
+        className="position-sticky px-3 border-end py-4 d-none d-xl-block"
+        id="pcSideNav">
+        <SideNav />
+      </div>
+      <div className="flex-fill w-100 d-flex flex-column">
+        <div className="d-flex justify-content-center flex-grow-1 px-0 px-md-4">
+          <div className="d-flex flex-column flex-1 main-mx-with">
+            <Outlet />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default memo(Index);

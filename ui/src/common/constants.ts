@@ -95,6 +95,14 @@ export const ADMIN_NAV_MENUS = [
     children: [{ name: 'questions' }, { name: 'answers' }],
   },
   {
+    name: 'AI',
+    icon: 'robot',
+    children: [
+      { name: 'conversations' },
+      { name: 'ai_settings', path: 'ai-settings' },
+    ],
+  },
+  {
     name: 'users',
     icon: 'people-fill',
   },
@@ -127,6 +135,7 @@ export const ADMIN_NAV_MENUS = [
       { name: 'seo' },
       { name: 'login' },
       { name: 'privileges' },
+      { name: 'mcp' },
     ],
   },
   {

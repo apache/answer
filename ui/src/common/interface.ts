@@ -420,6 +420,7 @@ export interface SiteSettings {
   version: string;
   revision: string;
   site_legal: AdminSettingsLegal;
+  ai_enabled: boolean;
 }
 
 export interface AdminSettingBranding {
@@ -808,4 +809,59 @@ export interface BadgeDetailListItem {
 export interface BadgeDetailListRes {
   count: number;
   list: BadgeDetailListItem[];
+}
+
+export interface AiConfig {
+  enabled: boolean;
+  chosen_provider: string;
+  ai_providers: Array<{
+    provider: string;
+    api_host: string;
+    api_key: string;
+    model: string;
+  }>;
+}
+
+export interface AiProviderItem {
+  name: string;
+  display_name: string;
+  default_api_host: string;
+}
+
+export interface ConversationListItem {
+  conversation_id: string;
+  created_at: number;
+  topic: string;
+}
+
+export interface AdminConversationListItem {
+  id: string;
+  topic: string;
+  helpful_count: number;
+  unhelpful_count: number;
+  created_at: number;
+  user_info: UserInfoBase;
+}
+
+export interface ConversationDetailItem {
+  chat_completion_id: string;
+  content: string;
+  role: string;
+  helpful: number;
+  unhelpful: number;
+  created_at: number;
+}
+
+export interface ConversationDetail {
+  conversation_id: string;
+  created_at: number;
+  records: ConversationDetailItem[];
+  topic: string;
+  updated_at: number;
+}
+
+export interface VoteConversationParams {
+  cancel: boolean;
+  chat_completion_id: string;
+  vote_type: 'helpful' | 'unhelpful';
 }

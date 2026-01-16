@@ -22,7 +22,7 @@ import { Nav } from 'react-bootstrap';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { loggedUserInfoStore, sideNavStore } from '@/stores';
+import { loggedUserInfoStore, sideNavStore, aiControlStore } from '@/stores';
 import { Icon, PluginRender } from '@/components';
 import { PluginType } from '@/utils/pluginKit';
 import request from '@/utils/request';
@@ -34,6 +34,7 @@ const Index: FC = () => {
   const { pathname } = useLocation();
   const { user: userInfo } = loggedUserInfoStore();
   const { can_revision, revision } = sideNavStore();
+  const { ai_enabled } = aiControlStore();
   const navigate = useNavigate();
 
   return (
@@ -46,6 +47,17 @@ const Index: FC = () => {
         <Icon name="question-circle-fill" className="me-2" />
         <span>{t('header.nav.question')}</span>
       </NavLink>
+
+      {ai_enabled && (
+        <NavLink
+          to="/ai-assistant"
+          className={() =>
+            pathname === '/ai-assistant' ? 'nav-link active' : 'nav-link'
+          }>
+          <Icon name="chat-square-text-fill" className="me-2" />
+          <span>{t('ai_assistant', { keyPrefix: 'page_title' })}</span>
+        </NavLink>
+      )}
 
       <NavLink
         to="/tags"

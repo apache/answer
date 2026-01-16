@@ -31,6 +31,7 @@ import {
   pageTagStore,
   writeSettingStore,
   siteLealStore,
+  aiControlStore,
 } from '@/stores';
 import { RouteAlias } from '@/router/alias';
 import {
@@ -387,6 +388,9 @@ export const initAppSettingsStore = async () => {
     });
     siteLealStore.getState().update({
       external_content_display: appSettings.site_legal.external_content_display,
+    });
+    aiControlStore.getState().update({
+      ai_enabled: appSettings.ai_enabled,
     });
   }
 };

@@ -25,3 +25,4 @@ export * from './users';
 export * from './dashboard';
 export * from './plugins';
 export * from './badges';
+export * from './ai';

@@ -17,18 +17,24 @@
  * under the License.
  */
 
-export * from './activity';
-export * from './personal';
-export * from './notification';
-export * from './question';
-export * from './search';
-export * from './tag';
-export * from './settings';
-export * from './legal';
-export * from './timeline';
-export * from './revision';
-export * from './user';
-export * from './Oauth';
-export * from './review';
-export * from './badges';
-export * from './ai';
+import { create } from 'zustand';
+
+interface AiControlStore {
+  ai_enabled: boolean;
+  update: (params: { ai_enabled: boolean }) => void;
+  reset: () => void;
+}
+
+const aiControlStore = create<AiControlStore>((set) => ({
+  ai_enabled: false,
+  update: (params: { ai_enabled: boolean }) =>
+    set((state) => {
+      return {
+        ...state,
+        ...params,
+      };
+    }),
+  reset: () => set({ ai_enabled: false }),
+}));
+
+export default aiControlStore;

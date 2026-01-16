@@ -1,0 +1,19 @@
+.sender-wrap {
+  z-index: 10;
+  margin-top: auto;
+  background-color: var(--bs-body-bg);
+  .input {
+    resize: none;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+  .input:focus {
+    box-shadow: none !important;
+    border-width: 0 !important;
+  }
+
+  .form-control-focus {
+    box-shadow: 0 0 0 0.25rem rgba(0, 51, 255, 0.25) !important;
+    border-color: rgb(128, 153, 255) !important;
+  }
+}

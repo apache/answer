@@ -34,6 +34,7 @@ import errorCodeStore from './errorCode';
 import sideNavStore from './sideNav';
 import commentReplyStore from './commentReply';
 import siteLealStore from './siteLegal';
+import aiControlStore from './aiControl';
 
 export {
   toastStore,
@@ -53,4 +54,5 @@ export {
   commentReplyStore,
   writeSettingStore,
   siteLealStore,
+  aiControlStore,
 };
