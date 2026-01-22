@@ -62,10 +62,23 @@ func (sc *SiteInfoController) GetGeneral(ctx *gin.Context) {
 // @Security ApiKeyAuth
 // @Tags admin
 // @Produce json
-// @Success 200 {object} handler.RespBody{data=schema.SiteInterfaceResp}
+// @Success 200 {object} handler.RespBody{data=schema.SiteInterfaceSettingsResp}
 // @Router /answer/admin/api/siteinfo/interface [get]
 func (sc *SiteInfoController) GetInterface(ctx *gin.Context) {
 	resp, err := sc.siteInfoService.GetSiteInterface(ctx)
+	handler.HandleResponse(ctx, err, resp)
+}
+
+// GetUsersSettings get site interface
+// @Summary get site interface
+// @Description get site interface
+// @Security ApiKeyAuth
+// @Tags admin
+// @Produce json
+// @Success 200 {object} handler.RespBody{data=schema.SiteUsersSettingsResp}
+// @Router /answer/admin/api/siteinfo/users-settings [get]
+func (sc *SiteInfoController) GetUsersSettings(ctx *gin.Context) {
+	resp, err := sc.siteInfoService.GetSiteUsersSettings(ctx)
 	handler.HandleResponse(ctx, err, resp)
 }
 
@@ -82,29 +95,68 @@ func (sc *SiteInfoController) GetSiteBranding(ctx *gin.Context) {
 	handler.HandleResponse(ctx, err, resp)
 }
 
-// GetSiteWrite get site interface
-// @Summary get site interface
-// @Description get site interface
+// GetSiteTag get site tags setting
+// @Summary get site tags setting
+// @Description get site tags setting
 // @Security ApiKeyAuth
 // @Tags admin
 // @Produce json
-// @Success 200 {object} handler.RespBody{data=schema.SiteWriteResp}
-// @Router /answer/admin/api/siteinfo/write [get]
-func (sc *SiteInfoController) GetSiteWrite(ctx *gin.Context) {
-	resp, err := sc.siteInfoService.GetSiteWrite(ctx)
+// @Success 200 {object} handler.RespBody{data=schema.SiteTagsResp}
+// @Router /answer/admin/api/siteinfo/tag [get]
+func (sc *SiteInfoController) GetSiteTag(ctx *gin.Context) {
+	resp, err := sc.siteInfoService.GetSiteTag(ctx)
 	handler.HandleResponse(ctx, err, resp)
 }
 
-// GetSiteLegal Set the legal information for the site
-// @Summary Set the legal information for the site
-// @Description Set the legal information for the site
+// GetSiteQuestion get site questions setting
+// @Summary get site questions setting
+// @Description get site questions setting
 // @Security ApiKeyAuth
 // @Tags admin
 // @Produce json
-// @Success 200 {object} handler.RespBody{data=schema.SiteLegalResp}
-// @Router /answer/admin/api/siteinfo/legal [get]
-func (sc *SiteInfoController) GetSiteLegal(ctx *gin.Context) {
-	resp, err := sc.siteInfoService.GetSiteLegal(ctx)
+// @Success 200 {object} handler.RespBody{data=schema.SiteQuestionsResp}
+// @Router /answer/admin/api/siteinfo/question [get]
+func (sc *SiteInfoController) GetSiteQuestion(ctx *gin.Context) {
+	resp, err := sc.siteInfoService.GetSiteQuestion(ctx)
+	handler.HandleResponse(ctx, err, resp)
+}
+
+// GetSiteAdvanced get site advanced setting
+// @Summary get site advanced setting
+// @Description get site advanced setting
+// @Security ApiKeyAuth
+// @Tags admin
+// @Produce json
+// @Success 200 {object} handler.RespBody{data=schema.SiteAdvancedResp}
+// @Router /answer/admin/api/siteinfo/advanced [get]
+func (sc *SiteInfoController) GetSiteAdvanced(ctx *gin.Context) {
+	resp, err := sc.siteInfoService.GetSiteAdvanced(ctx)
+	handler.HandleResponse(ctx, err, resp)
+}
+
+// GetSitePolicies Get the policies information for the site
+// @Summary Get the policies information for the site
+// @Description Get the policies information for the site
+// @Security ApiKeyAuth
+// @Tags admin
+// @Produce json
+// @Success 200 {object} handler.RespBody{data=schema.SitePoliciesResp}
+// @Router /answer/admin/api/siteinfo/polices [get]
+func (sc *SiteInfoController) GetSitePolicies(ctx *gin.Context) {
+	resp, err := sc.siteInfoService.GetSitePolicies(ctx)
+	handler.HandleResponse(ctx, err, resp)
+}
+
+// GetSiteSecurity Get the security information for the site
+// @Summary Get the security information for the site
+// @Description Get the security information for the site
+// @Security ApiKeyAuth
+// @Tags admin
+// @Produce json
+// @Success 200 {object} handler.RespBody{data=schema.SiteSecurityResp}
+// @Router /answer/admin/api/siteinfo/security [get]
+func (sc *SiteInfoController) GetSiteSecurity(ctx *gin.Context) {
+	resp, err := sc.siteInfoService.GetSiteSecurity(ctx)
 	handler.HandleResponse(ctx, err, resp)
 }
 
@@ -261,6 +313,24 @@ func (sc *SiteInfoController) UpdateInterface(ctx *gin.Context) {
 	handler.HandleResponse(ctx, err, nil)
 }
 
+// UpdateUsersSettings update users settings
+// @Summary update site info users settings
+// @Description update site info users settings
+// @Security ApiKeyAuth
+// @Tags admin
+// @Produce json
+// @Param data body schema.SiteUsersSettingsReq true "general"
+// @Success 200 {object} handler.RespBody{}
+// @Router /answer/admin/api/siteinfo/users-settings [put]
+func (sc *SiteInfoController) UpdateUsersSettings(ctx *gin.Context) {
+	req := schema.SiteUsersSettingsReq{}
+	if handler.BindAndCheck(ctx, &req) {
+		return
+	}
+	err := sc.siteInfoService.SaveSiteUsersSettings(ctx, req)
+	handler.HandleResponse(ctx, err, nil)
+}
+
 // UpdateBranding update site branding
 // @Summary update site info branding
 // @Description update site info branding
@@ -288,41 +358,97 @@ func (sc *SiteInfoController) UpdateBranding(ctx *gin.Context) {
 	handler.HandleResponse(ctx, saveErr, nil)
 }
 
-// UpdateSiteWrite update site write info
-// @Summary update site write info
-// @Description update site write info
+// UpdateSiteQuestion update site question settings
+// @Summary update site question settings
+// @Description update site question settings
 // @Security ApiKeyAuth
 // @Tags admin
 // @Produce json
-// @Param data body schema.SiteWriteReq true "write info"
+// @Param data body schema.SiteQuestionsReq true "questions settings"
 // @Success 200 {object} handler.RespBody{}
-// @Router /answer/admin/api/siteinfo/write [put]
-func (sc *SiteInfoController) UpdateSiteWrite(ctx *gin.Context) {
-	req := &schema.SiteWriteReq{}
+// @Router /answer/admin/api/siteinfo/question [put]
+func (sc *SiteInfoController) UpdateSiteQuestion(ctx *gin.Context) {
+	req := &schema.SiteQuestionsReq{}
+	if handler.BindAndCheck(ctx, req) {
+		return
+	}
+
+	resp, err := sc.siteInfoService.SaveSiteQuestions(ctx, req)
+	handler.HandleResponse(ctx, err, resp)
+}
+
+// UpdateSiteTag update site tag settings
+// @Summary update site tag settings
+// @Description update site tag settings
+// @Security ApiKeyAuth
+// @Tags admin
+// @Produce json
+// @Param data body schema.SiteTagsReq true "tags settings"
+// @Success 200 {object} handler.RespBody{}
+// @Router /answer/admin/api/siteinfo/tag [put]
+func (sc *SiteInfoController) UpdateSiteTag(ctx *gin.Context) {
+	req := &schema.SiteTagsReq{}
 	if handler.BindAndCheck(ctx, req) {
 		return
 	}
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
 
-	resp, err := sc.siteInfoService.SaveSiteWrite(ctx, req)
+	resp, err := sc.siteInfoService.SaveSiteTags(ctx, req)
 	handler.HandleResponse(ctx, err, resp)
 }
 
-// UpdateSiteLegal update site legal info
-// @Summary update site legal info
-// @Description update site legal info
+// UpdateSiteAdvanced update site advanced info
+// @Summary update site advanced info
+// @Description update site advanced info
 // @Security ApiKeyAuth
 // @Tags admin
 // @Produce json
-// @Param data body schema.SiteLegalReq true "write info"
+// @Param data body schema.SiteAdvancedReq true "advanced settings"
 // @Success 200 {object} handler.RespBody{}
-// @Router /answer/admin/api/siteinfo/legal [put]
-func (sc *SiteInfoController) UpdateSiteLegal(ctx *gin.Context) {
-	req := &schema.SiteLegalReq{}
+// @Router /answer/admin/api/siteinfo/advanced [put]
+func (sc *SiteInfoController) UpdateSiteAdvanced(ctx *gin.Context) {
+	req := &schema.SiteAdvancedReq{}
 	if handler.BindAndCheck(ctx, req) {
 		return
 	}
-	err := sc.siteInfoService.SaveSiteLegal(ctx, req)
+
+	resp, err := sc.siteInfoService.SaveSiteAdvanced(ctx, req)
+	handler.HandleResponse(ctx, err, resp)
+}
+
+// UpdateSitePolices update site policies configuration
+// @Summary update site policies configuration
+// @Description update site policies configuration
+// @Security ApiKeyAuth
+// @Tags admin
+// @Produce json
+// @Param data body schema.SitePoliciesReq true "write info"
+// @Success 200 {object} handler.RespBody{}
+// @Router /answer/admin/api/siteinfo/polices [put]
+func (sc *SiteInfoController) UpdateSitePolices(ctx *gin.Context) {
+	req := &schema.SitePoliciesReq{}
+	if handler.BindAndCheck(ctx, req) {
+		return
+	}
+	err := sc.siteInfoService.SaveSitePolicies(ctx, req)
+	handler.HandleResponse(ctx, err, nil)
+}
+
+// UpdateSiteSecurity update site security configuration
+// @Summary update site security configuration
+// @Description update site security configuration
+// @Security ApiKeyAuth
+// @Tags admin
+// @Produce json
+// @Param data body schema.SiteSecurityReq true "write info"
+// @Success 200 {object} handler.RespBody{}
+// @Router /answer/admin/api/siteinfo/security [put]
+func (sc *SiteInfoController) UpdateSiteSecurity(ctx *gin.Context) {
+	req := &schema.SiteSecurityReq{}
+	if handler.BindAndCheck(ctx, req) {
+		return
+	}
+	err := sc.siteInfoService.SaveSiteSecurity(ctx, req)
 	handler.HandleResponse(ctx, err, nil)
 }
 

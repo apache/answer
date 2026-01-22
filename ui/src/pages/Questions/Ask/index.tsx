@@ -267,10 +267,10 @@ const Ask = () => {
     }
   };
   const handleContentChange = (value: string) => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       content: { value, errorMsg: '', isInvalid: false },
-    });
+    }));
   };
   const handleTagsChange = (value) =>
     setFormData({

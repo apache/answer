@@ -78,6 +78,7 @@ const Index = () => {
         );
 
         setIsChecking(false);
+
         if (!data) {
           setFormData({
             ...formData,
@@ -304,107 +305,112 @@ const Index = () => {
 
   return (
     <div>
-      <h3 className="mb-4">{t('title')}</h3>
-      <Form noValidate onSubmit={handleSubmit}>
-        <Form.Group className="mb-3" controlId="enabled">
-          <Form.Label>{t('enabled.label')}</Form.Label>
-          <Form.Switch
-            type="switch"
-            id="enabled"
-            label={t('enabled.check')}
-            checked={formData.enabled.value}
-            onChange={(e) =>
-              handleValueChange({
-                enabled: {
-                  value: e.target.checked,
-                  errorMsg: '',
-                  isInvalid: false,
-                },
-              })
-            }
-          />
-          <Form.Control.Feedback type="invalid">
-            {formData.enabled.errorMsg}
-          </Form.Control.Feedback>
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="provider">
-          <Form.Label>{t('provider.label')}</Form.Label>
-          <Form.Select
-            isInvalid={formData.provider.isInvalid}
-            value={formData.provider.value}
-            onChange={(e) => handleProviderChange(e.target.value)}>
-            {aiProviders?.map((provider) => (
-              <option key={provider.name} value={provider.name}>
-                {provider.display_name}
-              </option>
-            ))}
-          </Form.Select>
-          <Form.Control.Feedback type="invalid">
-            {formData.provider.errorMsg}
-          </Form.Control.Feedback>
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="api_host">
-          <Form.Label>{t('api_host.label')}</Form.Label>
-          <Form.Control
-            type="text"
-            autoComplete="off"
-            placeholder={apiHostPlaceholder}
-            isInvalid={formData.api_host.isInvalid}
-            value={formData.api_host.value}
-            onChange={(e) =>
-              handleValueChange({
-                api_host: {
-                  value: e.target.value,
-                  errorMsg: '',
-                  isInvalid: false,
-                },
-              })
-            }
-          />
-          <Form.Control.Feedback type="invalid">
-            {formData.api_host.errorMsg}
-          </Form.Control.Feedback>
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="api_key">
-          <Form.Label>{t('api_key.label')}</Form.Label>
-          <InputGroup>
-            <Form.Control
-              type="password"
-              autoComplete="new-password"
-              isInvalid={formData.api_key.isInvalid}
-              isValid={formData.api_key.isValid}
-              value={formData.api_key.value}
+      <h3 className="mb-4">{t('ai_settings', { keyPrefix: 'nav_menus' })}</h3>
+      <div className="max-w-748">
+        <Form noValidate onSubmit={handleSubmit}>
+          <Form.Group className="mb-3" controlId="enabled">
+            <Form.Label>{t('enabled.label')}</Form.Label>
+            <Form.Switch
+              type="switch"
+              id="enabled"
+              label={t('enabled.check')}
+              checked={formData.enabled.value}
               onChange={(e) =>
                 handleValueChange({
-                  api_key: {
-                    value: e.target.value,
+                  enabled: {
+                    value: e.target.checked,
                     errorMsg: '',
                     isInvalid: false,
-                    isValid: false,
                   },
                 })
               }
             />
-            <Button
-              variant="outline-secondary"
-              className="rounded-end"
-              onClick={() => checkAiConfigData(null)}
-              disabled={isChecking}>
-              {t('api_key.check')}
-            </Button>
-            <Form.Control.Feedback
-              type={formData.api_key.isValid ? 'valid' : 'invalid'}>
-              {formData.api_key.errorMsg}
+            <Form.Text className="text-muted">{t('enabled.text')}</Form.Text>
+            <Form.Control.Feedback type="invalid">
+              {formData.enabled.errorMsg}
             </Form.Control.Feedback>
-          </InputGroup>
-        </Form.Group>
+          </Form.Group>
 
-        <Form.Group className="mb-3" controlId="model">
-          <Form.Label>{t('model.label')}</Form.Label>
-          <Form.Select
+          <Form.Group className="mb-3" controlId="provider">
+            <Form.Label>{t('provider.label')}</Form.Label>
+            <Form.Select
+              isInvalid={formData.provider.isInvalid}
+              value={formData.provider.value}
+              onChange={(e) => handleProviderChange(e.target.value)}>
+              {aiProviders?.map((provider) => (
+                <option key={provider.name} value={provider.name}>
+                  {provider.display_name}
+                </option>
+              ))}
+            </Form.Select>
+            <Form.Control.Feedback type="invalid">
+              {formData.provider.errorMsg}
+            </Form.Control.Feedback>
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="api_host">
+            <Form.Label>{t('api_host.label')}</Form.Label>
+            <Form.Control
+              type="text"
+              autoComplete="off"
+              placeholder={apiHostPlaceholder}
+              isInvalid={formData.api_host.isInvalid}
+              value={formData.api_host.value}
+              onChange={(e) =>
+                handleValueChange({
+                  api_host: {
+                    value: e.target.value,
+                    errorMsg: '',
+                    isInvalid: false,
+                  },
+                })
+              }
+            />
+            <Form.Control.Feedback type="invalid">
+              {formData.api_host.errorMsg}
+            </Form.Control.Feedback>
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="api_key">
+            <Form.Label>{t('api_key.label')}</Form.Label>
+            <InputGroup>
+              <Form.Control
+                type="password"
+                autoComplete="new-password"
+                isInvalid={formData.api_key.isInvalid}
+                isValid={formData.api_key.isValid}
+                value={formData.api_key.value}
+                onChange={(e) =>
+                  handleValueChange({
+                    api_key: {
+                      value: e.target.value,
+                      errorMsg: '',
+                      isInvalid: false,
+                      isValid: false,
+                    },
+                  })
+                }
+              />
+              <Button
+                variant="outline-secondary"
+                className="rounded-end"
+                onClick={() => checkAiConfigData(null)}
+                disabled={isChecking}>
+                {t('api_key.check')}
+              </Button>
+              <Form.Control.Feedback
+                type={formData.api_key.isValid ? 'valid' : 'invalid'}>
+                {formData.api_key.errorMsg}
+              </Form.Control.Feedback>
+            </InputGroup>
+          </Form.Group>
+
+          <div className="mb-3">
+            <label htmlFor="model" className="form-label">
+              {t('model.label')}
+            </label>
+            {/* <Form.Select
+            list="datalistOptions"
             isInvalid={formData.model.isInvalid}
             value={formData.model.value}
             onChange={(e) =>
@@ -423,14 +429,38 @@ const Index = () => {
                 </option>
               );
             })}
-          </Form.Select>
-          <Form.Control.Feedback type="invalid">
-            {formData.model.errorMsg}
-          </Form.Control.Feedback>
-        </Form.Group>
+          </Form.Select> */}
+            <input
+              className="form-control"
+              list="datalistOptions"
+              id="model"
+              value={formData.model.value}
+              onChange={(e) =>
+                handleValueChange({
+                  model: {
+                    value: e.target.value,
+                    errorMsg: '',
+                    isInvalid: false,
+                  },
+                })
+              }
+            />
+            <datalist id="datalistOptions">
+              {modelsData?.map((model) => {
+                return (
+                  <option key={model.id} value={model.id}>
+                    {model.id}
+                  </option>
+                );
+              })}
+            </datalist>
 
-        <Button type="submit">{t('save', { keyPrefix: 'btns' })}</Button>
-      </Form>
+            <div className="invalid-feedback">{formData.model.errorMsg}</div>
+          </div>
+
+          <Button type="submit">{t('save', { keyPrefix: 'btns' })}</Button>
+        </Form>
+      </div>
     </div>
   );
 };

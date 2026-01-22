@@ -20,7 +20,7 @@ import { Dropdown } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
 import { Modal, Icon } from '@/components';
-import { deleteAdminConversation } from '@/enterprise/services';
+import { deleteAdminConversation } from '@/services';
 import { useToast } from '@/hooks';
 
 interface Props {

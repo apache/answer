@@ -41,11 +41,11 @@ func (am *AuthUserMiddleware) VisitAuth() gin.HandlerFunc {
 			return
 		}
 
-		siteLogin, err := am.siteInfoCommonService.GetSiteLogin(ctx)
+		siteSecurity, err := am.siteInfoCommonService.GetSiteSecurity(ctx)
 		if err != nil {
 			return
 		}
-		if !siteLogin.LoginRequired {
+		if !siteSecurity.LoginRequired {
 			ctx.Next()
 			return
 		}

@@ -46,3 +46,13 @@ export const changeQuestionStatus = (
     status,
   });
 };
+
+export const getQuestionSetting = () => {
+  return request.get<Type.AdminQuestionSetting>(
+    '/answer/admin/api/siteinfo/question',
+  );
+};
+
+export const updateQuestionSetting = (params: Type.AdminQuestionSetting) => {
+  return request.put('/answer/admin/api/siteinfo/question', params);
+};

@@ -290,7 +290,7 @@ const SchemaForm: ForwardRefRenderFunction<FormRef, FormProps> = (
             controlId={key}
             className={classnames(
               groupClassName,
-              formData[key].hidden ? 'd-none' : null,
+              formData[key]?.hidden ? 'd-none' : null,
             )}>
             {/* Uniform processing `label` */}
             {title && !uiSimplify ? <Form.Label>{title}</Form.Label> : null}
@@ -437,12 +437,12 @@ const SchemaForm: ForwardRefRenderFunction<FormRef, FormProps> = (
               />
             ) : null}
             {/* Unified handling of `Feedback` and `Text` */}
-            <Form.Control.Feedback type="invalid">
-              {fieldState?.errorMsg}
-            </Form.Control.Feedback>
             {description && widget !== 'tag_selector' ? (
               <Form.Text dangerouslySetInnerHTML={{ __html: description }} />
             ) : null}
+            <Form.Control.Feedback type="invalid">
+              {fieldState?.errorMsg}
+            </Form.Control.Feedback>
           </Form.Group>
         );
       })}

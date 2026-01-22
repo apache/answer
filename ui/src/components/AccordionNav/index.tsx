@@ -28,16 +28,32 @@ import { floppyNavigation } from '@/utils';
 import { Icon } from '@/components';
 import './index.css';
 
+export interface MenuItem {
+  name: string;
+  path?: string;
+  pathPrefix?: string;
+  icon?: string;
+  displayName?: string;
+  badgeContent?: string | number;
+  children?: MenuItem[];
+}
+
 function MenuNode({
   menu,
   callback,
   activeKey,
   expanding = false,
   path = '/',
+}: {
+  menu: MenuItem;
+  callback: (evt: any, menu: MenuItem, href: string, isLeaf: boolean) => void;
+  activeKey: string;
+  expanding?: boolean;
+  path?: string;
 }) {
   const { t } = useTranslation('translation', { keyPrefix: 'nav_menus' });
-  const isLeaf = !menu.children.length;
-  const href = isLeaf ? `${path}${menu.path}` : '#';
+  const isLeaf = !menu.children || menu.children.length === 0;
+  const href = isLeaf ? `${path}${menu.path || ''}` : '#';
 
   return (
     <Nav.Item key={menu.path} className="w-100">
@@ -51,7 +67,14 @@ function MenuNode({
           }}
           className={classNames(
             'text-nowrap d-flex flex-nowrap align-items-center w-100',
-            { expanding, active: activeKey === menu.path },
+            {
+              expanding,
+              active:
+                activeKey === menu.path ||
+                (menu.path && activeKey.startsWith(`${menu.path}/`)) ||
+                // if pathPrefix is set, activate when activeKey starts with the pathPrefix
+                (menu.pathPrefix && activeKey.startsWith(menu.pathPrefix)),
+            },
           )}>
           {menu?.icon && <Icon name={menu.icon} className="me-2" />}
 
@@ -75,7 +98,13 @@ function MenuNode({
           }}
           className={classNames(
             'text-nowrap d-flex flex-nowrap align-items-center w-100',
-            { expanding, active: activeKey === menu.path },
+            {
+              expanding,
+              active:
+                activeKey === menu.path ||
+                (menu.path && activeKey.startsWith(`${menu.path}/`)) ||
+                (menu.pathPrefix && activeKey.startsWith(menu.pathPrefix)),
+            },
           )}>
           {menu?.icon && <Icon name={menu.icon} className="me-2" />}
           <span className="me-auto text-truncate">
@@ -90,8 +119,8 @@ function MenuNode({
         </Nav.Link>
       )}
 
-      {menu.children.length ? (
-        <Accordion.Collapse eventKey={menu.path} className="ms-4">
+      {menu.children && menu.children.length > 0 ? (
+        <Accordion.Collapse eventKey={menu.path || menu.name} className="ms-4">
           <>
             {menu.children.map((leaf) => {
               return (
@@ -100,7 +129,7 @@ function MenuNode({
                   callback={callback}
                   activeKey={activeKey}
                   path={path}
-                  key={leaf.path}
+                  key={leaf.path || leaf.name}
                 />
               );
             })}
@@ -112,7 +141,7 @@ function MenuNode({
 }
 
 interface AccordionProps {
-  menus: any[];
+  menus: MenuItem[];
   path?: string;
 }
 const AccordionNav: FC<AccordionProps> = ({ menus = [], path = '/' }) => {
@@ -137,19 +166,27 @@ const AccordionNav: FC<AccordionProps> = ({ menus = [], path = '/' }) => {
   });
 
   const splat = pathMatch && pathMatch.params['*'];
-  let activeKey = menus[0].path;
+  let activeKey: string = menus[0]?.path || menus[0]?.name || '';
+
   if (splat) {
     activeKey = splat;
   }
+
   const getOpenKey = () => {
     let openKey = '';
     menus.forEach((li) => {
-      if (li.children.length) {
+      if (li.children && li.children.length > 0) {
         const matchedChild = li.children.find((el) => {
-          return el.path === activeKey;
+          // exact match or path prefix match
+          return (
+            el.path === activeKey ||
+            (el.path && activeKey.startsWith(`${el.path}/`)) ||
+            // if pathPrefix is set, activate when activeKey starts with the pathPrefix
+            (el.pathPrefix && activeKey.startsWith(el.pathPrefix))
+          );
         });
         if (matchedChild) {
-          openKey = li.path;
+          openKey = li.path || li.name || '';
         }
       }
     });
@@ -181,8 +218,8 @@ const AccordionNav: FC<AccordionProps> = ({ menus = [], path = '/' }) => {
               path={path}
               callback={menuClick}
               activeKey={activeKey}
-              expanding={openKey === li.path}
-              key={li.path}
+              expanding={openKey === (li.path || li.name)}
+              key={li.path || li.name}
             />
           );
         })}

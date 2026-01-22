@@ -32,6 +32,7 @@ import {
   Empty,
   QueryGroup,
   Modal,
+  TabNav,
 } from '@/components';
 import * as Type from '@/common/interface';
 import { useUserModal } from '@/hooks';
@@ -45,6 +46,7 @@ import {
   deletePermanently,
 } from '@/services';
 import { formatCount } from '@/utils';
+import { ADMIN_USERS_NAV_MENUS } from '@/common/constants';
 
 import DeleteUserModal from './components/DeleteUserModal';
 import Action from './components/Action';
@@ -208,6 +210,7 @@ const Users: FC = () => {
   return (
     <>
       <h3 className="mb-4">{t('title')}</h3>
+      <TabNav menus={ADMIN_USERS_NAV_MENUS} />
       <div className="d-flex flex-wrap justify-content-between align-items-center">
         <Stack direction="horizontal" gap={3} className="mb-3">
           <QueryGroup

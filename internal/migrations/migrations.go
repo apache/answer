@@ -105,6 +105,7 @@ var migrations = []Migration{
 	NewMigration("v1.6.0", "move user config to interface", moveUserConfigToInterface, true),
 	NewMigration("v1.7.0", "add optional tags", addOptionalTags, true),
 	NewMigration("v1.7.2", "expand avatar column length", expandAvatarColumnLength, false),
+	NewMigration("v1.8.0", "change admin menu", updateAdminMenuSettings, true),
 }
 
 func GetMigrations() []Migration {

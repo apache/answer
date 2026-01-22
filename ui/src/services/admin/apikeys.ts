@@ -17,22 +17,35 @@
  * under the License.
  */
 
-import { create } from 'zustand';
+import useSWR from 'swr';
 
-interface LealStore {
-  external_content_display: string;
-  update: (params: { external_content_display: string }) => void;
-}
+import request from '@/utils/request';
+import type * as Type from '@/common/interface';
 
-const siteLealStore = create<LealStore>((set) => ({
-  external_content_display: 'always_display',
-  update: (params) =>
-    set((state) => {
-      return {
-        ...state,
-        ...params,
-      };
-    }),
-}));
+export const useQueryApiKeys = () => {
+  const apiUrl = `/answer/admin/api/api-key/all`;
+  const { data, error, mutate } = useSWR<Type.AdminApiKeysItem[], Error>(
+    apiUrl,
+    request.instance.get,
+  );
+  return {
+    data,
+    isLoading: !data && !error,
+    error,
+    mutate,
+  };
+};
 
-export default siteLealStore;
+export const addApiKey = (params: Type.AddOrEditApiKeyParams) => {
+  return request.post('/answer/admin/api/api-key', params);
+};
+
+export const updateApiKey = (params: Type.AddOrEditApiKeyParams) => {
+  return request.put('/answer/admin/api/api-key', params);
+};
+
+export const deleteApiKey = (id: string) => {
+  return request.delete('/answer/admin/api/api-key', {
+    id,
+  });
+};

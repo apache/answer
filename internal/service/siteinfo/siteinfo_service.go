@@ -89,8 +89,13 @@ func (s *SiteInfoService) GetSiteGeneral(ctx context.Context) (resp *schema.Site
 }
 
 // GetSiteInterface get site info interface
-func (s *SiteInfoService) GetSiteInterface(ctx context.Context) (resp *schema.SiteInterfaceResp, err error) {
+func (s *SiteInfoService) GetSiteInterface(ctx context.Context) (resp *schema.SiteInterfaceSettingsResp, err error) {
 	return s.siteInfoCommonService.GetSiteInterface(ctx)
+}
+
+// GetSiteUsersSettings get site info users settings
+func (s *SiteInfoService) GetSiteUsersSettings(ctx context.Context) (resp *schema.SiteUsersSettingsResp, err error) {
+	return s.siteInfoCommonService.GetSiteUsersSettings(ctx)
 }
 
 // GetSiteBranding get site info branding
@@ -103,16 +108,13 @@ func (s *SiteInfoService) GetSiteUsers(ctx context.Context) (resp *schema.SiteUs
 	return s.siteInfoCommonService.GetSiteUsers(ctx)
 }
 
-// GetSiteWrite get site info write
-func (s *SiteInfoService) GetSiteWrite(ctx context.Context) (resp *schema.SiteWriteResp, err error) {
-	resp = &schema.SiteWriteResp{}
-	siteInfo, exist, err := s.siteInfoRepo.GetByType(ctx, constant.SiteTypeWrite)
+// GetSiteTag get site info write
+func (s *SiteInfoService) GetSiteTag(ctx context.Context) (resp *schema.SiteTagsResp, err error) {
+	resp = &schema.SiteTagsResp{}
+	resp, err = s.siteInfoCommonService.GetSiteTag(ctx)
 	if err != nil {
 		log.Error(err)
 		return resp, nil
-	}
-	if exist {
-		_ = json.Unmarshal([]byte(siteInfo.Content), resp)
 	}
 
 	resp.RecommendTags, err = s.tagCommonService.GetSiteWriteRecommendTag(ctx)
@@ -126,9 +128,24 @@ func (s *SiteInfoService) GetSiteWrite(ctx context.Context) (resp *schema.SiteWr
 	return resp, nil
 }
 
-// GetSiteLegal get site legal info
-func (s *SiteInfoService) GetSiteLegal(ctx context.Context) (resp *schema.SiteLegalResp, err error) {
-	return s.siteInfoCommonService.GetSiteLegal(ctx)
+// GetSiteQuestion get site questions settings
+func (s *SiteInfoService) GetSiteQuestion(ctx context.Context) (resp *schema.SiteQuestionsResp, err error) {
+	return s.siteInfoCommonService.GetSiteQuestion(ctx)
+}
+
+// GetSiteAdvanced get site advanced settings
+func (s *SiteInfoService) GetSiteAdvanced(ctx context.Context) (resp *schema.SiteAdvancedResp, err error) {
+	return s.siteInfoCommonService.GetSiteAdvanced(ctx)
+}
+
+// GetSitePolicies get site legal info
+func (s *SiteInfoService) GetSitePolicies(ctx context.Context) (resp *schema.SitePoliciesResp, err error) {
+	return s.siteInfoCommonService.GetSitePolicies(ctx)
+}
+
+// GetSiteSecurity get site security info
+func (s *SiteInfoService) GetSiteSecurity(ctx context.Context) (resp *schema.SiteSecurityResp, err error) {
+	return s.siteInfoCommonService.GetSiteSecurity(ctx)
 }
 
 // GetSiteLogin get site login info
@@ -165,10 +182,20 @@ func (s *SiteInfoService) SaveSiteInterface(ctx context.Context, req schema.Site
 
 	content, _ := json.Marshal(req)
 	data := entity.SiteInfo{
-		Type:    constant.SiteTypeInterface,
+		Type:    constant.SiteTypeInterfaceSettings,
 		Content: string(content),
 	}
-	return s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeInterface, &data)
+	return s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeInterfaceSettings, &data)
+}
+
+// SaveSiteUsersSettings save site users settings
+func (s *SiteInfoService) SaveSiteUsersSettings(ctx context.Context, req schema.SiteUsersSettingsReq) (err error) {
+	content, _ := json.Marshal(req)
+	data := entity.SiteInfo{
+		Type:    constant.SiteTypeInterfaceSettings,
+		Content: string(content),
+	}
+	return s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeUsersSettings, &data)
 }
 
 // SaveSiteBranding save site branding information
@@ -182,8 +209,30 @@ func (s *SiteInfoService) SaveSiteBranding(ctx context.Context, req *schema.Site
 	return s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeBranding, data)
 }
 
-// SaveSiteWrite save site configuration about write
-func (s *SiteInfoService) SaveSiteWrite(ctx context.Context, req *schema.SiteWriteReq) (resp any, err error) {
+// SaveSiteAdvanced save site advanced configuration
+func (s *SiteInfoService) SaveSiteAdvanced(ctx context.Context, req *schema.SiteAdvancedReq) (resp any, err error) {
+	content, _ := json.Marshal(req)
+	data := &entity.SiteInfo{
+		Type:    constant.SiteTypeAdvanced,
+		Content: string(content),
+		Status:  1,
+	}
+	return nil, s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeAdvanced, data)
+}
+
+// SaveSiteQuestions save site questions configuration
+func (s *SiteInfoService) SaveSiteQuestions(ctx context.Context, req *schema.SiteQuestionsReq) (resp any, err error) {
+	content, _ := json.Marshal(req)
+	data := &entity.SiteInfo{
+		Type:    constant.SiteTypeQuestions,
+		Content: string(content),
+		Status:  1,
+	}
+	return nil, s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeQuestions, data)
+}
+
+// SaveSiteTags save site tags configuration
+func (s *SiteInfoService) SaveSiteTags(ctx context.Context, req *schema.SiteTagsReq) (resp any, err error) {
 	recommendTags, reservedTags := make([]string, 0), make([]string, 0)
 	recommendTagMapping, reservedTagMapping := make(map[string]bool), make(map[string]bool)
 	for _, tag := range req.ReservedTags {
@@ -210,22 +259,33 @@ func (s *SiteInfoService) SaveSiteWrite(ctx context.Context, req *schema.SiteWri
 
 	content, _ := json.Marshal(req)
 	data := &entity.SiteInfo{
-		Type:    constant.SiteTypeWrite,
+		Type:    constant.SiteTypeTags,
 		Content: string(content),
 		Status:  1,
 	}
-	return nil, s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeWrite, data)
+	return nil, s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeTags, data)
 }
 
-// SaveSiteLegal save site legal configuration
-func (s *SiteInfoService) SaveSiteLegal(ctx context.Context, req *schema.SiteLegalReq) (err error) {
+// SaveSitePolicies save site policies configuration
+func (s *SiteInfoService) SaveSitePolicies(ctx context.Context, req *schema.SitePoliciesReq) (err error) {
 	content, _ := json.Marshal(req)
 	data := &entity.SiteInfo{
-		Type:    constant.SiteTypeLegal,
+		Type:    constant.SiteTypePolicies,
 		Content: string(content),
 		Status:  1,
 	}
-	return s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeLegal, data)
+	return s.siteInfoRepo.SaveByType(ctx, constant.SiteTypePolicies, data)
+}
+
+// SaveSiteSecurity save site security configuration
+func (s *SiteInfoService) SaveSiteSecurity(ctx context.Context, req *schema.SiteSecurityReq) (err error) {
+	content, _ := json.Marshal(req)
+	data := &entity.SiteInfo{
+		Type:    constant.SiteTypeSecurity,
+		Content: string(content),
+		Status:  1,
+	}
+	return s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeSecurity, data)
 }
 
 // SaveSiteLogin save site legal configuration
@@ -320,13 +380,13 @@ func (s *SiteInfoService) GetSeo(ctx context.Context) (resp *schema.SiteSeoReq, 
 	if err = s.siteInfoCommonService.GetSiteInfoByType(ctx, constant.SiteTypeSeo, resp); err != nil {
 		return resp, err
 	}
-	loginConfig, err := s.GetSiteLogin(ctx)
+	siteSecurity, err := s.GetSiteSecurity(ctx)
 	if err != nil {
 		log.Error(err)
 		return resp, nil
 	}
 	// If the site is set to privacy mode, prohibit crawling any page.
-	if loginConfig.LoginRequired {
+	if siteSecurity.LoginRequired {
 		resp.Robots = "User-agent: *\nDisallow: /"
 		return resp, nil
 	}

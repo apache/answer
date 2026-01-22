@@ -80,7 +80,7 @@ func (am *AuthUserMiddleware) Auth() gin.HandlerFunc {
 func (am *AuthUserMiddleware) EjectUserBySiteInfo() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		mustLogin := false
-		siteInfo, _ := am.siteInfoCommonService.GetSiteLogin(ctx)
+		siteInfo, _ := am.siteInfoCommonService.GetSiteSecurity(ctx)
 		if siteInfo != nil {
 			mustLogin = siteInfo.LoginRequired
 		}
@@ -197,7 +197,7 @@ func (am *AuthUserMiddleware) AdminAuth() gin.HandlerFunc {
 
 func (am *AuthUserMiddleware) CheckPrivateMode() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		resp, err := am.siteInfoCommonService.GetSiteLogin(ctx)
+		resp, err := am.siteInfoCommonService.GetSiteSecurity(ctx)
 		if err != nil {
 			ShowIndexPage(ctx)
 			ctx.Abort()

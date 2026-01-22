@@ -1826,9 +1826,17 @@ ui:
     plugins: Plugins
     installed_plugins: Installed Plugins
     apperance: Appearance
-    AI: AI
-    conversations: Conversations
-    ai_settings: Settings
+    community: Community
+    advanced: Advanced
+    tags: Tags
+    rules: Rules
+    policies: Policies
+    security: Security
+    files: Files
+    apikeys: API Keys
+    intelligence: Intelligence
+    ai_assistant: AI Assistant
+    ai_settings: AI Settings
     mcp: MCP
   website_welcome: Welcome to {{site_name}}
   user_center:
@@ -2142,7 +2150,7 @@ ui:
         always_display: Always display external content
         ask_before_display: Ask before displaying external content
     write:
-      page_title: Write
+      page_title: Files
       min_content:
         label: Minimum question body length
         text: Minimum allowed question body length in characters.
@@ -2305,11 +2313,34 @@ ui:
       show_logs: Show logs
       status: Status
       title: Badges
+    apikeys:
+      title: API Keys
+      add_api_key: Add API Key
+      desc: Description
+      scope: Scope
+      key: Key
+      created: Created
+      last_used: Last used
+      add_or_edit_modal:
+        add_title: Add API Key
+        edit_title: Edit API Key
+        description: Description
+        description_required: Description is required.
+        scope: Scope
+        global: Global
+        read-only: Read-only
+      created_modal:
+        title: API key created
+        api_key: API key
+        description: This key will not be displayed again. Make sure you take a copy before continuing.
+      delete_modal:
+        title: Delete API Key
+        content: Any applications or scripts using this key will no longer be able to access the API. This is permanent!
     ai_settings:
-      title: Model
       enabled:
         label: AI enabled
         check: Enable AI features
+        text: The AI model must be configured correctly before it can be used.
       provider:
         label: Provider
       api_host:
@@ -2325,7 +2356,6 @@ ui:
         msg: Model is required
       add_success: AI settings updated successfully.
     conversations:
-      title: Conversations
       topic: Topic
       helpful: Helpful
       unhelpful: Unhelpful
@@ -2336,6 +2366,17 @@ ui:
         title: Delete conversation
         content: Are you sure you want to delete this conversation? This is permanent!
         delete_success: Conversation deleted successfully.
+    mcp:
+      mcp_server:
+        label: MCP server
+        switch: Enabled
+      type:
+        label: Type
+      url:
+        label: URL
+      http_header:
+        label: HTTP header
+        text: Please replace {key} with the API Key.
   form:
     optional: (optional)
     empty: cannot be empty

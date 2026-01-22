@@ -109,12 +109,12 @@ func (us *uploaderService) UploadAvatarFile(ctx *gin.Context, userID string) (ur
 		return url, nil
 	}
 
-	siteWrite, err := us.siteInfoService.GetSiteWrite(ctx)
+	siteAdvanced, err := us.siteInfoService.GetSiteAdvanced(ctx)
 	if err != nil {
 		return "", err
 	}
 
-	ctx.Request.Body = http.MaxBytesReader(ctx.Writer, ctx.Request.Body, siteWrite.GetMaxImageSize())
+	ctx.Request.Body = http.MaxBytesReader(ctx.Writer, ctx.Request.Body, siteAdvanced.GetMaxImageSize())
 	file, fileHeader, err := ctx.Request.FormFile("file")
 	if err != nil {
 		return "", errors.BadRequest(reason.RequestFormatError).WithError(err)
@@ -201,12 +201,12 @@ func (us *uploaderService) UploadPostFile(ctx *gin.Context, userID string) (
 		return url, nil
 	}
 
-	siteWrite, err := us.siteInfoService.GetSiteWrite(ctx)
+	siteAdvanced, err := us.siteInfoService.GetSiteAdvanced(ctx)
 	if err != nil {
 		return "", err
 	}
 
-	ctx.Request.Body = http.MaxBytesReader(ctx.Writer, ctx.Request.Body, siteWrite.GetMaxImageSize())
+	ctx.Request.Body = http.MaxBytesReader(ctx.Writer, ctx.Request.Body, siteAdvanced.GetMaxImageSize())
 	file, fileHeader, err := ctx.Request.FormFile("file")
 	if err != nil {
 		return "", errors.BadRequest(reason.RequestFormatError).WithError(err)
@@ -214,7 +214,7 @@ func (us *uploaderService) UploadPostFile(ctx *gin.Context, userID string) (
 	defer func() {
 		_ = file.Close()
 	}()
-	if checker.IsUnAuthorizedExtension(fileHeader.Filename, siteWrite.AuthorizedImageExtensions) {
+	if checker.IsUnAuthorizedExtension(fileHeader.Filename, siteAdvanced.AuthorizedImageExtensions) {
 		return "", errors.BadRequest(reason.RequestFormatError).WithError(err)
 	}
 
@@ -239,7 +239,7 @@ func (us *uploaderService) UploadPostAttachment(ctx *gin.Context, userID string)
 		return url, nil
 	}
 
-	resp, err := us.siteInfoService.GetSiteWrite(ctx)
+	resp, err := us.siteInfoService.GetSiteAdvanced(ctx)
 	if err != nil {
 		return "", err
 	}
@@ -277,12 +277,12 @@ func (us *uploaderService) UploadBrandingFile(ctx *gin.Context, userID string) (
 		return url, nil
 	}
 
-	siteWrite, err := us.siteInfoService.GetSiteWrite(ctx)
+	siteAdvanced, err := us.siteInfoService.GetSiteAdvanced(ctx)
 	if err != nil {
 		return "", err
 	}
 
-	ctx.Request.Body = http.MaxBytesReader(ctx.Writer, ctx.Request.Body, siteWrite.GetMaxImageSize())
+	ctx.Request.Body = http.MaxBytesReader(ctx.Writer, ctx.Request.Body, siteAdvanced.GetMaxImageSize())
 	file, fileHeader, err := ctx.Request.FormFile("file")
 	if err != nil {
 		return "", errors.BadRequest(reason.RequestFormatError).WithError(err)
@@ -311,7 +311,7 @@ func (us *uploaderService) uploadImageFile(ctx *gin.Context, file *multipart.Fil
 	if err != nil {
 		return "", err
 	}
-	siteWrite, err := us.siteInfoService.GetSiteWrite(ctx)
+	siteAdvanced, err := us.siteInfoService.GetSiteAdvanced(ctx)
 	if err != nil {
 		return "", err
 	}
@@ -328,7 +328,7 @@ func (us *uploaderService) uploadImageFile(ctx *gin.Context, file *multipart.Fil
 		_ = src.Close()
 	}()
 
-	if !checker.DecodeAndCheckImageFile(filePath, siteWrite.GetMaxImageMegapixel()) {
+	if !checker.DecodeAndCheckImageFile(filePath, siteAdvanced.GetMaxImageMegapixel()) {
 		return "", errors.BadRequest(reason.UploadFileUnsupportedFileFormat)
 	}
 
@@ -364,17 +364,17 @@ func (us *uploaderService) uploadAttachmentFile(ctx *gin.Context, file *multipar
 
 func (us *uploaderService) tryToUploadByPlugin(ctx *gin.Context, source plugin.UploadSource) (
 	url string, err error) {
-	siteWrite, err := us.siteInfoService.GetSiteWrite(ctx)
+	siteAdvanced, err := us.siteInfoService.GetSiteAdvanced(ctx)
 	if err != nil {
 		return "", err
 	}
 	cond := plugin.UploadFileCondition{
 		Source:                         source,
-		MaxImageSize:                   siteWrite.MaxImageSize,
-		MaxAttachmentSize:              siteWrite.MaxAttachmentSize,
-		MaxImageMegapixel:              siteWrite.MaxImageMegapixel,
-		AuthorizedImageExtensions:      siteWrite.AuthorizedImageExtensions,
-		AuthorizedAttachmentExtensions: siteWrite.AuthorizedAttachmentExtensions,
+		MaxImageSize:                   siteAdvanced.MaxImageSize,
+		MaxAttachmentSize:              siteAdvanced.MaxAttachmentSize,
+		MaxImageMegapixel:              siteAdvanced.MaxImageMegapixel,
+		AuthorizedImageExtensions:      siteAdvanced.AuthorizedImageExtensions,
+		AuthorizedAttachmentExtensions: siteAdvanced.AuthorizedAttachmentExtensions,
 	}
 	_ = plugin.CallStorage(func(fn plugin.Storage) error {
 		resp := fn.UploadFile(ctx, cond)

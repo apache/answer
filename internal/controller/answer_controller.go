@@ -242,7 +242,7 @@ func (ac *AnswerController) AddAnswer(ctx *gin.Context) {
 		return
 	}
 
-	write, err := ac.siteInfoCommonService.GetSiteWrite(ctx)
+	write, err := ac.siteInfoCommonService.GetSiteQuestion(ctx)
 	if err != nil {
 		handler.HandleResponse(ctx, err, nil)
 		return

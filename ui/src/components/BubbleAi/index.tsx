@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { marked } from 'marked';
 import copy from 'copy-to-clipboard';
 
-import { voteConversation } from '@/enterprise/services';
+import { voteConversation } from '@/services';
 import { Icon, htmlRender } from '@/components';
 
 interface IProps {

@@ -900,7 +900,7 @@ func (qs *QuestionCommon) tryToGetQuestionIDFromMsg(ctx context.Context, closeMs
 }
 
 func (qs *QuestionCommon) GetMinimumContentLength(ctx context.Context) (int, error) {
-	siteInfo, err := qs.siteInfoService.GetSiteWrite(ctx)
+	siteInfo, err := qs.siteInfoService.GetSiteQuestion(ctx)
 	if err != nil {
 		return 6, err
 	}

@@ -656,7 +656,7 @@ func (tc *TemplateController) SitemapPage(ctx *gin.Context) {
 }
 
 func (tc *TemplateController) checkPrivateMode(ctx *gin.Context) bool {
-	resp, err := tc.siteInfoService.GetSiteLogin(ctx)
+	resp, err := tc.siteInfoService.GetSiteSecurity(ctx)
 	if err != nil {
 		log.Error(err)
 		return false

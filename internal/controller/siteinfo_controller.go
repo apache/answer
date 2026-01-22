@@ -60,6 +60,11 @@ func (sc *SiteInfoController) GetSiteInfo(ctx *gin.Context) {
 		log.Error(err)
 	}
 
+	resp.UsersSettings, err = sc.siteInfoService.GetSiteUsersSettings(ctx)
+	if err != nil {
+		log.Error(err)
+	}
+
 	resp.Branding, err = sc.siteInfoService.GetSiteBranding(ctx)
 	if err != nil {
 		log.Error(err)
@@ -87,12 +92,23 @@ func (sc *SiteInfoController) GetSiteInfo(ctx *gin.Context) {
 	if err != nil {
 		log.Error(err)
 	}
-	resp.Write, err = sc.siteInfoService.GetSiteWrite(ctx)
+	resp.Questions, err = sc.siteInfoService.GetSiteQuestion(ctx)
 	if err != nil {
 		log.Error(err)
 	}
-	if legal, err := sc.siteInfoService.GetSiteLegal(ctx); err == nil {
+	resp.Tags, err = sc.siteInfoService.GetSiteTag(ctx)
+	if err != nil {
+		log.Error(err)
+	}
+	resp.Advanced, err = sc.siteInfoService.GetSiteAdvanced(ctx)
+	if err != nil {
+		log.Error(err)
+	}
+	if legal, err := sc.siteInfoService.GetSiteSecurity(ctx); err == nil {
 		resp.Legal = &schema.SiteLegalSimpleResp{ExternalContentDisplay: legal.ExternalContentDisplay}
+	}
+	if security, err := sc.siteInfoService.GetSiteSecurity(ctx); err == nil {
+		resp.Security = security
 	}
 
 	handler.HandleResponse(ctx, nil, resp)
@@ -111,7 +127,7 @@ func (sc *SiteInfoController) GetSiteLegalInfo(ctx *gin.Context) {
 	if handler.BindAndCheck(ctx, req) {
 		return
 	}
-	siteLegal, err := sc.siteInfoService.GetSiteLegal(ctx)
+	siteLegal, err := sc.siteInfoService.GetSitePolicies(ctx)
 	if err != nil {
 		handler.HandleResponse(ctx, err, nil)
 		return

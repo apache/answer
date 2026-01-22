@@ -1770,7 +1770,7 @@ ui:
     users: 用户管理
     badges: 徽章
     flags: 举报管理
-    settings: 站点设置
+    settings: 设置
     general: 一般
     interface: 界面
     smtp: SMTP
@@ -1788,9 +1788,17 @@ ui:
     plugins: 插件
     installed_plugins: 已安装插件
     apperance: 外观
-    AI: AI
-    conversations: 对话
-    ai_settings: 设置
+    community: 社区
+    advanced: 高级
+    tags: 标签
+    rules: 规则
+    policies: 政策
+    security: 安全
+    files: 文件
+    apikeys: API Keys
+    intelligence: 人工智能
+    ai_assistant: AI 助手
+    ai_settings: AI 设置
     mcp: MCP
   website_welcome: 欢迎来到 {{site_name}}
   user_center:
@@ -2103,7 +2111,7 @@ ui:
         always_display: 总是显示外部内容
         ask_before_display: 在显示外部内容之前询问
     write:
-      page_title: 编辑
+      page_title: 文件
       min_content:
         label: 最小问题长度
         text: 最小允许的问题内容长度（字符）。
@@ -2266,11 +2274,34 @@ ui:
       show_logs: 显示日志
       status: 状态
       title: 徽章
+    apikeys:
+      title: API Keys
+      add_api_key: 添加 API Key
+      desc: 描述
+      scope: 范围
+      key: Key
+      created: 创建时间
+      last_used: 最后使用时间
+      add_or_edit_modal:
+        add_title: 添加 API Key
+        edit_title: 编辑 API Key
+        description: 描述
+        description_required: 描述必填.
+        scope: 范围
+        global: 全局
+        read-only: 只读
+      created_modal:
+        title: API key 创建成功
+        api_key: API key
+        description: 此密钥将不会再显示。请确保在继续之前复制一份。
+      delete_modal:
+        title: 删除 API Key
+        content: 任何使用此密钥的应用程序或脚本将无法再访问 API。这是永久性的！
     ai_settings:
-      title: 模型
       enabled:
         label: AI 启用
         check: 启用 AI 功能
+        text: AI 模型必须正确配置才能使用。
       provider:
         label: 提供者
       api_host:
@@ -2286,7 +2317,6 @@ ui:
         msg: 模型必填
       add_success: AI 设置已成功更新.
     conversations:
-      title: 对话
       topic: 话题
       helpful: 有用的
       unhelpful: 无用的
@@ -2297,6 +2327,17 @@ ui:
         title: 删除对话
         content: 你确定要删除此对话吗？这是永久的！
         delete_success: 对话删除成功.
+    mcp:
+      mcp_server:
+        label: MCP 服务
+        switch: 启用
+      type:
+        label: 类型
+      url:
+        label: URL
+      http_header:
+        label: HTTP header
+        text: 请将 {key} 替换为 API Key。
   form:
     optional: (选填)
     empty: 不能为空

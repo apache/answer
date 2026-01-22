@@ -32,8 +32,9 @@ import {
   Empty,
   QueryGroup,
   Modal,
+  TabNav,
 } from '@/components';
-import { ADMIN_LIST_STATUS } from '@/common/constants';
+import { ADMIN_LIST_STATUS, ADMIN_QA_NAV_MENUS } from '@/common/constants';
 import * as Type from '@/common/interface';
 import { deletePermanently, useAnswerSearch } from '@/services';
 import { escapeRemove } from '@/utils';
@@ -96,7 +97,10 @@ const Answers: FC = () => {
   };
   return (
     <>
-      <h3 className="mb-4">{t('page_title')}</h3>
+      <h3 className="mb-4">
+        {t('page_title', { keyPrefix: 'admin.questions' })}
+      </h3>
+      <TabNav menus={ADMIN_QA_NAV_MENUS} />
       <div className="d-flex flex-wrap justify-content-between align-items-center">
         <Stack direction="horizontal" gap={3} className="mb-3">
           <QueryGroup

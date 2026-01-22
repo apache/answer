@@ -45,7 +45,7 @@ const Index = () => {
 
   return (
     <div className="d-flex flex-column flex-grow-1 position-relative">
-      <h3 className="mb-4">{t('title')}</h3>
+      <h3 className="mb-4">{t('ai_assistant', { keyPrefix: 'nav_menus' })}</h3>
       <Table responsive="md">
         <thead>
           <tr>

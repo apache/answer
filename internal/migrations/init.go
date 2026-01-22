@@ -74,14 +74,17 @@ func (m *Mentor) InitDB() error {
 	m.do("init role power rel", m.initRolePowerRel)
 	m.do("init admin user role rel", m.initAdminUserRoleRel)
 	m.do("init site info interface", m.initSiteInfoInterface)
+	m.do("init site info users settings", m.initSiteInfoUsersSettings)
 	m.do("init site info general config", m.initSiteInfoGeneralData)
 	m.do("init site info login config", m.initSiteInfoLoginConfig)
 	m.do("init site info theme config", m.initSiteInfoThemeConfig)
 	m.do("init site info seo config", m.initSiteInfoSEOConfig)
 	m.do("init site info user config", m.initSiteInfoUsersConfig)
 	m.do("init site info privilege rank", m.initSiteInfoPrivilegeRank)
-	m.do("init site info write", m.initSiteInfoWrite)
-	m.do("init site info legal", m.initSiteInfoLegalConfig)
+	m.do("init site info write", m.initSiteInfoAdvanced)
+	m.do("init site info write", m.initSiteInfoQuestions)
+	m.do("init site info write", m.initSiteInfoTags)
+	m.do("init site info security", m.initSiteInfoSecurityConfig)
 	m.do("init default content", m.initDefaultContent)
 	m.do("init default badges", m.initDefaultBadges)
 	return m.err
@@ -181,15 +184,26 @@ func (m *Mentor) initSiteInfoInterface() {
 	}
 
 	interfaceData := map[string]string{
-		"language":          m.userData.Language,
-		"time_zone":         localTimezone,
-		"default_avatar":    "gravatar",
-		"gravatar_base_url": "https://www.gravatar.com/avatar/",
+		"language":  m.userData.Language,
+		"time_zone": localTimezone,
 	}
 	interfaceDataBytes, _ := json.Marshal(interfaceData)
 	_, m.err = m.engine.Context(m.ctx).Insert(&entity.SiteInfo{
-		Type:    "interface",
+		Type:    "interface_settings",
 		Content: string(interfaceDataBytes),
+		Status:  1,
+	})
+}
+
+func (m *Mentor) initSiteInfoUsersSettings() {
+	usersSettings := map[string]any{
+		"default_avatar":    "gravatar",
+		"gravatar_base_url": "https://www.gravatar.com/avatar/",
+	}
+	usersSettingsDataBytes, _ := json.Marshal(usersSettings)
+	_, m.err = m.engine.Context(m.ctx).Insert(&entity.SiteInfo{
+		Type:    "users_settings",
+		Content: string(usersSettingsDataBytes),
 		Status:  1,
 	})
 }
@@ -213,7 +227,6 @@ func (m *Mentor) initSiteInfoLoginConfig() {
 		"allow_new_registrations":   true,
 		"allow_email_registrations": true,
 		"allow_password_login":      true,
-		"login_required":            m.userData.LoginRequired,
 	}
 	loginConfigDataBytes, _ := json.Marshal(loginConfig)
 	_, m.err = m.engine.Context(m.ctx).Insert(&entity.SiteInfo{
@@ -223,14 +236,16 @@ func (m *Mentor) initSiteInfoLoginConfig() {
 	})
 }
 
-func (m *Mentor) initSiteInfoLegalConfig() {
-	legalConfig := map[string]any{
+func (m *Mentor) initSiteInfoSecurityConfig() {
+	securityConfig := map[string]any{
+		"login_required":           m.userData.LoginRequired,
 		"external_content_display": m.userData.ExternalContentDisplay,
+		"check_update":             true,
 	}
-	legalConfigDataBytes, _ := json.Marshal(legalConfig)
+	securityConfigDataBytes, _ := json.Marshal(securityConfig)
 	_, m.err = m.engine.Context(m.ctx).Insert(&entity.SiteInfo{
-		Type:    "legal",
-		Content: string(legalConfigDataBytes),
+		Type:    "security",
+		Content: string(securityConfigDataBytes),
 		Status:  1,
 	})
 }
@@ -288,24 +303,46 @@ func (m *Mentor) initSiteInfoPrivilegeRank() {
 	})
 }
 
-func (m *Mentor) initSiteInfoWrite() {
-	writeData := map[string]any{
-		"min_content":                      6,
-		"restrict_answer":                  true,
-		"min_tags":                         1,
-		"required_tag":                     false,
-		"recommend_tags":                   []string{},
-		"reserved_tags":                    []string{},
+func (m *Mentor) initSiteInfoAdvanced() {
+	advancedData := map[string]any{
 		"max_image_size":                   4,
 		"max_attachment_size":              8,
 		"max_image_megapixel":              40,
 		"authorized_image_extensions":      []string{"jpg", "jpeg", "png", "gif", "webp"},
 		"authorized_attachment_extensions": []string{},
 	}
-	writeDataBytes, _ := json.Marshal(writeData)
+	advancedDataBytes, _ := json.Marshal(advancedData)
 	_, m.err = m.engine.Context(m.ctx).Insert(&entity.SiteInfo{
-		Type:    "write",
-		Content: string(writeDataBytes),
+		Type:    "advanced",
+		Content: string(advancedDataBytes),
+		Status:  1,
+	})
+}
+
+func (m *Mentor) initSiteInfoQuestions() {
+	questionsData := map[string]any{
+		"min_tags":        1,
+		"min_content":     6,
+		"restrict_answer": true,
+	}
+	questionsDataBytes, _ := json.Marshal(questionsData)
+	_, m.err = m.engine.Context(m.ctx).Insert(&entity.SiteInfo{
+		Type:    "questions",
+		Content: string(questionsDataBytes),
+		Status:  1,
+	})
+}
+
+func (m *Mentor) initSiteInfoTags() {
+	tagsData := map[string]any{
+		"required_tag":   false,
+		"recommend_tags": []string{},
+		"reserved_tags":  []string{},
+	}
+	tagsDataBytes, _ := json.Marshal(tagsData)
+	_, m.err = m.engine.Context(m.ctx).Insert(&entity.SiteInfo{
+		Type:    "tags",
+		Content: string(tagsDataBytes),
 		Status:  1,
 	})
 }

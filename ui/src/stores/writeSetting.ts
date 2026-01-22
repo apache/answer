@@ -19,11 +19,17 @@
 
 import { create } from 'zustand';
 
-import { AdminSettingsWrite } from '@/common/interface';
+import {
+  AdminSettingsWrite,
+  AdminQuestionSetting,
+  AdminTagsSetting,
+} from '@/common/interface';
 
 interface IProps {
-  write: AdminSettingsWrite;
-  update: (params: AdminSettingsWrite) => void;
+  write: AdminSettingsWrite & AdminQuestionSetting & AdminTagsSetting;
+  update: (
+    params: AdminSettingsWrite | AdminQuestionSetting | AdminTagsSetting,
+  ) => void;
 }
 
 const Index = create<IProps>((set) => ({

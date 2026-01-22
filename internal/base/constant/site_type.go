@@ -20,10 +20,13 @@
 package constant
 
 const (
-	SiteTypeGeneral       = "general"
-	SiteTypeInterface     = "interface"
-	SiteTypeBranding      = "branding"
-	SiteTypeWrite         = "write"
+	SiteTypeGeneral = "general"
+	// Deprecated: split SiteTypeInterfaceSettings and SiteTypeUsersSettings for better clarity
+	SiteTypeInterface = "interface"
+	SiteTypeBranding  = "branding"
+	// Deprecated: use SiteTypeAdvanced, SiteTypeQuestions, and SiteTypeTags instead
+	SiteTypeWrite = "write"
+	// Deprecated: use SiteTypePolicies and SiteTypeSecurity instead
 	SiteTypeLegal         = "legal"
 	SiteTypeSeo           = "seo"
 	SiteTypeLogin         = "login"
@@ -31,4 +34,14 @@ const (
 	SiteTypeTheme         = "theme"
 	SiteTypePrivileges    = "privileges"
 	SiteTypeUsers         = "users"
+
+	SiteTypeAdvanced  = "advanced"
+	SiteTypeQuestions = "questions"
+	SiteTypeTags      = "tags"
+
+	SiteTypeUsersSettings     = "users_settings"
+	SiteTypeInterfaceSettings = "interface_settings"
+
+	SiteTypePolicies = "policies"
+	SiteTypeSecurity = "security"
 )

@@ -20,7 +20,7 @@
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Row, Col } from 'react-bootstrap';
-import { Outlet, useMatch } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
 import { usePageTags } from '@/hooks';
 import { AdminSideNav, Footer } from '@/components';
@@ -28,19 +28,8 @@ import { AdminSideNav, Footer } from '@/components';
 import '@/common/sideNavLayout.scss';
 import './index.scss';
 
-const g10Paths = [
-  'dashboard',
-  'questions',
-  'answers',
-  'users',
-  'badges',
-  'flags',
-  'installed-plugins',
-];
 const Index: FC = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'page_title' });
-  const pathMatch = useMatch('/admin/:path');
-  const curPath = pathMatch?.params.path || 'dashboard';
 
   usePageTags({
     title: t('admin'),
@@ -59,9 +48,6 @@ const Index: FC = () => {
               <Col className="page-main flex-auto">
                 <Outlet />
               </Col>
-              {g10Paths.find((v) => curPath === v) ? null : (
-                <Col className="page-right-side" />
-              )}
             </Row>
           </div>
         </div>

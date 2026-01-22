@@ -45,13 +45,18 @@ type siteInfoCommonService struct {
 
 type SiteInfoCommonService interface {
 	GetSiteGeneral(ctx context.Context) (resp *schema.SiteGeneralResp, err error)
-	GetSiteInterface(ctx context.Context) (resp *schema.SiteInterfaceResp, err error)
+	GetSiteInterface(ctx context.Context) (resp *schema.SiteInterfaceSettingsResp, err error)
+	GetSiteUsersSettings(ctx context.Context) (resp *schema.SiteUsersSettingsResp, err error)
 	GetSiteBranding(ctx context.Context) (resp *schema.SiteBrandingResp, err error)
 	GetSiteUsers(ctx context.Context) (resp *schema.SiteUsersResp, err error)
 	FormatAvatar(ctx context.Context, originalAvatarData, email string, userStatus int) *schema.AvatarInfo
 	FormatListAvatar(ctx context.Context, userList []*entity.User) (userID2AvatarMapping map[string]*schema.AvatarInfo)
 	GetSiteWrite(ctx context.Context) (resp *schema.SiteWriteResp, err error)
-	GetSiteLegal(ctx context.Context) (resp *schema.SiteLegalResp, err error)
+	GetSiteAdvanced(ctx context.Context) (resp *schema.SiteAdvancedResp, err error)
+	GetSiteQuestion(ctx context.Context) (resp *schema.SiteQuestionsResp, err error)
+	GetSiteTag(ctx context.Context) (resp *schema.SiteTagsResp, err error)
+	GetSitePolicies(ctx context.Context) (resp *schema.SitePoliciesResp, err error)
+	GetSiteSecurity(ctx context.Context) (resp *schema.SiteSecurityResp, err error)
 	GetSiteLogin(ctx context.Context) (resp *schema.SiteLoginResp, err error)
 	GetSiteCustomCssHTML(ctx context.Context) (resp *schema.SiteCustomCssHTMLResp, err error)
 	GetSiteTheme(ctx context.Context) (resp *schema.SiteThemeResp, err error)
@@ -69,7 +74,7 @@ func NewSiteInfoCommonService(siteInfoRepo SiteInfoRepo) SiteInfoCommonService {
 
 // GetSiteGeneral get site info general
 func (s *siteInfoCommonService) GetSiteGeneral(ctx context.Context) (resp *schema.SiteGeneralResp, err error) {
-	resp = &schema.SiteGeneralResp{CheckUpdate: true}
+	resp = &schema.SiteGeneralResp{}
 	if err = s.GetSiteInfoByType(ctx, constant.SiteTypeGeneral, resp); err != nil {
 		return nil, err
 	}
@@ -78,9 +83,18 @@ func (s *siteInfoCommonService) GetSiteGeneral(ctx context.Context) (resp *schem
 }
 
 // GetSiteInterface get site info interface
-func (s *siteInfoCommonService) GetSiteInterface(ctx context.Context) (resp *schema.SiteInterfaceResp, err error) {
-	resp = &schema.SiteInterfaceResp{}
-	if err = s.GetSiteInfoByType(ctx, constant.SiteTypeInterface, resp); err != nil {
+func (s *siteInfoCommonService) GetSiteInterface(ctx context.Context) (resp *schema.SiteInterfaceSettingsResp, err error) {
+	resp = &schema.SiteInterfaceSettingsResp{}
+	if err = s.GetSiteInfoByType(ctx, constant.SiteTypeInterfaceSettings, resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// GetSiteUsersSettings get site info interface
+func (s *siteInfoCommonService) GetSiteUsersSettings(ctx context.Context) (resp *schema.SiteUsersSettingsResp, err error) {
+	resp = &schema.SiteUsersSettingsResp{}
+	if err = s.GetSiteInfoByType(ctx, constant.SiteTypeUsersSettings, resp); err != nil {
 		return nil, err
 	}
 	return resp, nil
@@ -123,7 +137,7 @@ func (s *siteInfoCommonService) FormatListAvatar(ctx context.Context, userList [
 
 func (s *siteInfoCommonService) getAvatarDefaultConfig(ctx context.Context) (string, string) {
 	gravatarBaseURL, defaultAvatar := constant.DefaultGravatarBaseURL, constant.DefaultAvatar
-	usersConfig, err := s.GetSiteInterface(ctx)
+	usersConfig, err := s.GetSiteUsersSettings(ctx)
 	if err != nil {
 		log.Error(err)
 	}
@@ -167,10 +181,46 @@ func (s *siteInfoCommonService) GetSiteWrite(ctx context.Context) (resp *schema.
 	return resp, nil
 }
 
-// GetSiteLegal get site info write
-func (s *siteInfoCommonService) GetSiteLegal(ctx context.Context) (resp *schema.SiteLegalResp, err error) {
-	resp = &schema.SiteLegalResp{}
-	if err = s.GetSiteInfoByType(ctx, constant.SiteTypeLegal, resp); err != nil {
+// GetSiteAdvanced get site info advanced
+func (s *siteInfoCommonService) GetSiteAdvanced(ctx context.Context) (resp *schema.SiteAdvancedResp, err error) {
+	resp = &schema.SiteAdvancedResp{}
+	if err = s.GetSiteInfoByType(ctx, constant.SiteTypeAdvanced, resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// GetSiteQuestion get site info question
+func (s *siteInfoCommonService) GetSiteQuestion(ctx context.Context) (resp *schema.SiteQuestionsResp, err error) {
+	resp = &schema.SiteQuestionsResp{}
+	if err = s.GetSiteInfoByType(ctx, constant.SiteTypeQuestions, resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// GetSiteTag get site info tag
+func (s *siteInfoCommonService) GetSiteTag(ctx context.Context) (resp *schema.SiteTagsResp, err error) {
+	resp = &schema.SiteTagsResp{}
+	if err = s.GetSiteInfoByType(ctx, constant.SiteTypeTags, resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// GetSitePolicies get site info policies
+func (s *siteInfoCommonService) GetSitePolicies(ctx context.Context) (resp *schema.SitePoliciesResp, err error) {
+	resp = &schema.SitePoliciesResp{}
+	if err = s.GetSiteInfoByType(ctx, constant.SiteTypePolicies, resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// GetSiteSecurity get site security config
+func (s *siteInfoCommonService) GetSiteSecurity(ctx context.Context) (resp *schema.SiteSecurityResp, err error) {
+	resp = &schema.SiteSecurityResp{CheckUpdate: true}
+	if err = s.GetSiteInfoByType(ctx, constant.SiteTypeSecurity, resp); err != nil {
 		return nil, err
 	}
 	return resp, nil

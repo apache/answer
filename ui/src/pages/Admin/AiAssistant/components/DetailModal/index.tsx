@@ -2,8 +2,8 @@ import { FC, memo } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
-import { BubbleAi, BubbleUser } from '@/enterprise/components';
-import { useQueryAdminConversationDetail } from '@/enterprise/services';
+import { BubbleAi, BubbleUser } from '@/components';
+import { useQueryAdminConversationDetail } from '@/services';
 
 interface IProps {
   visible: boolean;

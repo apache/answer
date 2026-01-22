@@ -67,6 +67,7 @@ import AdminSideNav from './AdminSideNav';
 import BubbleAi from './BubbleAi';
 import BubbleUser from './BubbleUser';
 import Sender from './Sender';
+import TabNav from './TabNav';
 
 export {
   Avatar,
@@ -121,5 +122,6 @@ export {
   BubbleAi,
   BubbleUser,
   Sender,
+  TabNav,
 };
 export type { EditorRef, JSONSchema, UISchema };
