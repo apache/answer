@@ -122,22 +122,12 @@ export const brandSetting = (params: Type.AdminSettingBranding) => {
   return request.put('/answer/admin/api/siteinfo/branding', params);
 };
 
-export const getRequireAndReservedTag = () => {
-  return request.get('/answer/admin/api/siteinfo/write');
+export const getAdminFilesSetting = () => {
+  return request.get('/answer/admin/api/siteinfo/advanced');
 };
 
-export const postRequireAndReservedTag = (params) => {
-  return request.put('/answer/admin/api/siteinfo/write', params);
-};
-
-export const getLegalSetting = () => {
-  return request.get<Type.AdminSettingsLegal>(
-    '/answer/admin/api/siteinfo/legal',
-  );
-};
-
-export const putLegalSetting = (params: Type.AdminSettingsLegal) => {
-  return request.put('/answer/admin/api/siteinfo/legal', params);
+export const updateAdminFilesSetting = (params: Type.AdminSettingsWrite) => {
+  return request.put('/answer/admin/api/siteinfo/advanced', params);
 };
 
 export const getSeoSetting = () => {
@@ -194,4 +184,24 @@ export const getPrivilegeSetting = () => {
 
 export const putPrivilegeSetting = (params: AdminSettingsPrivilegeReq) => {
   return request.put('/answer/admin/api/setting/privileges', params);
+};
+
+export const getPoliciesSetting = () => {
+  return request.get<Type.AdminSettingsLegal>(
+    '/answer/admin/api/siteinfo/polices',
+  );
+};
+
+export const putPoliciesSetting = (params: Type.AdminSettingsLegal) => {
+  return request.put('/answer/admin/api/siteinfo/polices', params);
+};
+
+export const getSecuritySetting = () => {
+  return request.get<Type.AdminSettingsSecurity>(
+    '/answer/admin/api/siteinfo/security',
+  );
+};
+
+export const putSecuritySetting = (params: Type.AdminSettingsSecurity) => {
+  return request.put('/answer/admin/api/siteinfo/security', params);
 };

@@ -1816,6 +1816,13 @@ ui:
     plugins: Plugins
     installed_plugins: Installed Plugins
     apperance: Appearance
+    community: Community
+    advanced: Advanced
+    tags: Tags
+    rules: Rules
+    policies: Policies
+    security: Security
+    files: Files
   website_welcome: Welcome to {{site_name}}
   user_center:
     login: Login
@@ -2128,7 +2135,7 @@ ui:
         always_display: Always display external content
         ask_before_display: Ask before displaying external content
     write:
-      page_title: Write
+      page_title: Files
       min_content:
         label: Minimum question body length
         text: Minimum allowed question body length in characters.

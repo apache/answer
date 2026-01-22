@@ -83,6 +83,11 @@ export const ADMIN_LIST_STATUS = {
   },
 };
 
+/**
+ * ADMIN_NAV_MENUS is the navigation menu for the admin panel.
+ * pathPrefix is used to activate the menu item when the activeKey starts with the pathPrefix.
+ */
+
 export const ADMIN_NAV_MENUS = [
   {
     name: 'dashboard',
@@ -92,15 +97,19 @@ export const ADMIN_NAV_MENUS = [
   {
     name: 'contents',
     icon: 'file-earmark-text-fill',
-    children: [{ name: 'questions' }, { name: 'answers' }],
+    children: [
+      { name: 'questions', path: 'qa/questions', pathPrefix: 'qa/' },
+      { name: 'tags', path: 'tags/settings', pathPrefix: 'tags/' },
+    ],
   },
   {
-    name: 'users',
+    name: 'community',
     icon: 'people-fill',
-  },
-  {
-    name: 'badges',
-    icon: 'award-fill',
+    children: [
+      { name: 'users', pathPrefix: 'users/' },
+      { name: 'badges' },
+      { name: 'rules', path: 'rules/privileges', pathPrefix: 'rules/' },
+    ],
   },
   {
     name: 'apperance',
@@ -113,20 +122,19 @@ export const ADMIN_NAV_MENUS = [
         name: 'customize',
       },
       { name: 'branding' },
+      { name: 'interface' },
     ],
   },
   {
-    name: 'settings',
+    name: 'advanced',
     icon: 'gear-fill',
     children: [
       { name: 'general' },
-      { name: 'interface' },
-      { name: 'smtp' },
-      { name: 'legal' },
-      { name: 'write' },
-      { name: 'seo' },
+      { name: 'security' },
+      { name: 'files' },
       { name: 'login' },
-      { name: 'privileges' },
+      { name: 'seo' },
+      { name: 'smtp' },
     ],
   },
   {
@@ -139,6 +147,30 @@ export const ADMIN_NAV_MENUS = [
       },
     ],
   },
+];
+
+export const ADMIN_QA_NAV_MENUS = [
+  { name: 'questions', path: '/admin/qa/questions' },
+  { name: 'answers', path: '/admin/qa/answers' },
+  { name: 'settings', path: '/admin/qa/settings' },
+];
+
+export const ADMIN_TAGS_NAV_MENUS = [
+  // { name: 'tags', path: '/admin/tags' },
+  {
+    name: 'settings',
+    path: '/admin/tags/settings',
+  },
+];
+
+export const ADMIN_USERS_NAV_MENUS = [
+  { name: 'users', path: '/admin/users' },
+  { name: 'settings', path: '/admin/users/settings' },
+];
+
+export const ADMIN_RULES_NAV_MENUS = [
+  { name: 'privileges', path: '/admin/rules/privileges' },
+  { name: 'policies', path: '/admin/rules/policies' },
 ];
 
 export const TIMEZONES = [

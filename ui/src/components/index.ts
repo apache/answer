@@ -64,6 +64,7 @@ import CardBadge from './CardBadge';
 import PinList from './PinList';
 import MobileSideNav from './MobileSideNav';
 import AdminSideNav from './AdminSideNav';
+import TabNav from './TabNav';
 
 export {
   Avatar,
@@ -115,5 +116,6 @@ export {
   PinList,
   MobileSideNav,
   AdminSideNav,
+  TabNav,
 };
 export type { EditorRef, JSONSchema, UISchema };

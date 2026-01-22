@@ -364,7 +364,6 @@ export interface AdminSettingsGeneral {
   description: string;
   site_url: string;
   contact_email: string;
-  check_update: boolean;
   permalink?: number;
 }
 
@@ -382,8 +381,6 @@ export interface HelmetUpdate extends Omit<HelmetBase, 'pageTitle'> {
 export interface AdminSettingsInterface {
   language: string;
   time_zone?: string;
-  default_avatar: string;
-  gravatar_base_url: string;
 }
 
 export interface AdminSettingsSmtp {
@@ -405,6 +402,14 @@ export interface AdminSettingsUsers {
   allow_update_location: boolean;
   allow_update_username: boolean;
   allow_update_website: boolean;
+  default_avatar: string;
+  gravatar_base_url: string;
+}
+
+export interface AdminSettingsSecurity {
+  external_content_display: string;
+  check_update: boolean;
+  login_required: boolean;
 }
 
 export interface SiteSettings {
@@ -416,10 +421,12 @@ export interface SiteSettings {
   theme: AdminSettingsTheme;
   site_seo: AdminSettingsSeo;
   site_users: AdminSettingsUsers;
-  site_write: AdminSettingsWrite;
+  site_advanced: AdminSettingsWrite;
+  site_questions: AdminQuestionSetting;
+  site_tags: AdminTagsSetting;
   version: string;
   revision: string;
-  site_legal: AdminSettingsLegal;
+  site_security: AdminSettingsSecurity;
 }
 
 export interface AdminSettingBranding {
@@ -430,7 +437,6 @@ export interface AdminSettingBranding {
 }
 
 export interface AdminSettingsLegal {
-  external_content_display: string;
   privacy_policy_original_text?: string;
   privacy_policy_parsed_text?: string;
   terms_of_service_original_text?: string;
@@ -438,12 +444,6 @@ export interface AdminSettingsLegal {
 }
 
 export interface AdminSettingsWrite {
-  restrict_answer?: boolean;
-  min_tags?: number;
-  min_content?: number;
-  recommend_tags?: Tag[];
-  required_tag?: boolean;
-  reserved_tags?: Tag[];
   max_image_size?: number;
   max_attachment_size?: number;
   max_image_megapixel?: number;
@@ -484,7 +484,6 @@ export interface AdminSettingsCustom {
 
 export interface AdminSettingsLogin {
   allow_new_registrations: boolean;
-  login_required: boolean;
   allow_email_registrations: boolean;
   allow_email_domains: string[];
   allow_password_login: boolean;
@@ -808,4 +807,16 @@ export interface BadgeDetailListItem {
 export interface BadgeDetailListRes {
   count: number;
   list: BadgeDetailListItem[];
+}
+
+export interface AdminQuestionSetting {
+  min_tags: number;
+  min_content: number;
+  restrict_answer: boolean;
+}
+
+export interface AdminTagsSetting {
+  recommend_tags: Tag[];
+  required_tag: boolean;
+  reserved_tags: Tag[];
 }

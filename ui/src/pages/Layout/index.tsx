@@ -28,7 +28,7 @@ import {
   toastStore,
   loginToContinueStore,
   errorCodeStore,
-  siteLealStore,
+  siteSecurityStore,
   themeSettingStore,
 } from '@/stores';
 import {
@@ -49,7 +49,7 @@ const Layout: FC = () => {
   const location = useLocation();
   const { msg: toastMsg, variant, clear: toastClear } = toastStore();
   const externalToast = useExternalToast();
-  const externalContentDisplay = siteLealStore(
+  const externalContentDisplay = siteSecurityStore(
     (state) => state.external_content_display,
   );
   const closeToast = () => {
@@ -59,7 +59,6 @@ const Layout: FC = () => {
   const { show: showLoginToContinueModal } = loginToContinueStore();
   const { data: notificationData } = useQueryNotificationStatus();
   const layout = themeSettingStore((state) => state.layout);
-  console.log(layout);
   useEffect(() => {
     // handle footnote links
     const fixFootnoteLinks = () => {

@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 import cloneDeep from 'lodash/cloneDeep';
 
 import { AccordionNav, Icon } from '@/components';
+import type { MenuItem } from '@/components/AccordionNav';
 import { ADMIN_NAV_MENUS } from '@/common/constants';
 import { useQueryPlugins } from '@/services';
 import { interfaceStore } from '@/stores';
@@ -37,16 +38,18 @@ const AdminSideNav = () => {
       have_config: true,
     });
 
-  const menus = cloneDeep(ADMIN_NAV_MENUS);
+  const menus = cloneDeep(ADMIN_NAV_MENUS) as MenuItem[];
   if (configurablePlugins && configurablePlugins.length > 0) {
     menus.forEach((item) => {
       if (item.name === 'plugins' && item.children) {
         item.children = [
           ...item.children,
-          ...configurablePlugins.map((plugin) => ({
-            name: plugin.slug_name,
-            displayName: plugin.name,
-          })),
+          ...configurablePlugins.map(
+            (plugin): MenuItem => ({
+              name: plugin.slug_name,
+              displayName: plugin.name,
+            }),
+          ),
         ];
       }
     });

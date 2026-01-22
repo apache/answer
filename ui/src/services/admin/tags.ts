@@ -17,22 +17,13 @@
  * under the License.
  */
 
-import { create } from 'zustand';
+import request from '@/utils/request';
+import type * as Type from '@/common/interface';
 
-interface LealStore {
-  external_content_display: string;
-  update: (params: { external_content_display: string }) => void;
-}
+export const getAdminTagsSetting = () => {
+  return request.get<Type.AdminTagsSetting>('/answer/admin/api/siteinfo/tag');
+};
 
-const siteLealStore = create<LealStore>((set) => ({
-  external_content_display: 'always_display',
-  update: (params) =>
-    set((state) => {
-      return {
-        ...state,
-        ...params,
-      };
-    }),
-}));
-
-export default siteLealStore;
+export const updateAdminTagsSetting = (params: Type.AdminTagsSetting) => {
+  return request.put('/answer/admin/api/siteinfo/tag', params);
+};

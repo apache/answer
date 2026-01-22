@@ -58,12 +58,6 @@ const Index: FC = () => {
         title: t('allowed_email_domains.title'),
         description: t('allowed_email_domains.text'),
       },
-      login_required: {
-        type: 'boolean',
-        title: t('private.title'),
-        description: t('private.text'),
-        default: false,
-      },
     },
   };
   const uiSchema: UISchema = {
@@ -88,12 +82,6 @@ const Index: FC = () => {
     allow_email_domains: {
       'ui:widget': 'textarea',
     },
-    login_required: {
-      'ui:widget': 'switch',
-      'ui:options': {
-        label: t('private.label'),
-      },
-    },
   };
   const [formData, setFormData] = useState(initFormData(schema));
   const { update: updateLoginSetting } = loginSettingStore((_) => _);
@@ -116,7 +104,6 @@ const Index: FC = () => {
       allow_new_registrations: formData.allow_new_registrations.value,
       allow_email_registrations: formData.allow_email_registrations.value,
       allow_email_domains: allowedEmailDomains,
-      login_required: formData.login_required.value,
       allow_password_login: formData.allow_password_login.value,
     };
 
@@ -151,7 +138,6 @@ const Index: FC = () => {
           formMeta.allow_email_domains.value =
             setting.allow_email_domains.join('\n');
         }
-        formMeta.login_required.value = setting.login_required;
         formMeta.allow_password_login.value = setting.allow_password_login;
         setFormData({ ...formMeta });
       }
@@ -165,13 +151,15 @@ const Index: FC = () => {
   return (
     <>
       <h3 className="mb-4">{t('page_title')}</h3>
-      <SchemaForm
-        schema={schema}
-        formData={formData}
-        onSubmit={onSubmit}
-        uiSchema={uiSchema}
-        onChange={handleOnChange}
-      />
+      <div className="max-w-748">
+        <SchemaForm
+          schema={schema}
+          formData={formData}
+          onSubmit={onSubmit}
+          uiSchema={uiSchema}
+          onChange={handleOnChange}
+        />
+      </div>
     </>
   );
 };

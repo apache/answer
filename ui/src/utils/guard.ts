@@ -30,7 +30,7 @@ import {
   loginToContinueStore,
   pageTagStore,
   writeSettingStore,
-  siteLealStore,
+  siteSecurityStore,
 } from '@/stores';
 import { RouteAlias } from '@/router/alias';
 import {
@@ -263,8 +263,8 @@ export const singUpAgent = () => {
 
 export const shouldLoginRequired = () => {
   const gr: TGuardResult = { ok: true };
-  const loginSetting = loginSettingStore.getState().login;
-  if (!loginSetting.login_required) {
+  const { login_required } = siteSecurityStore.getState();
+  if (!login_required) {
     return gr;
   }
   const us = deriveLoginState();
@@ -382,12 +382,11 @@ export const initAppSettingsStore = async () => {
     themeSettingStore.getState().update(appSettings.theme);
     seoSettingStore.getState().update(appSettings.site_seo);
     writeSettingStore.getState().update({
-      restrict_answer: appSettings.site_write.restrict_answer,
-      ...appSettings.site_write,
+      ...appSettings.site_advanced,
+      ...appSettings.site_questions,
+      ...appSettings.site_tags,
     });
-    siteLealStore.getState().update({
-      external_content_display: appSettings.site_legal.external_content_display,
-    });
+    siteSecurityStore.getState().update(appSettings.site_security);
   }
 };
 

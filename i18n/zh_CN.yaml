@@ -1778,6 +1778,13 @@ ui:
     plugins: 插件
     installed_plugins: 已安装插件
     apperance: 外观
+    community: 社区
+    advanced: 高级
+    tags: 标签
+    rules: 规则
+    policies: 政策
+    security: 安全
+    files: 文件
   website_welcome: 欢迎来到 {{site_name}}
   user_center:
     login: 登录
@@ -2089,7 +2096,7 @@ ui:
         always_display: 总是显示外部内容
         ask_before_display: 在显示外部内容之前询问
     write:
-      page_title: 编辑
+      page_title: 文件
       min_content:
         label: 最小问题长度
         text: 最小允许的问题内容长度（字符）。
