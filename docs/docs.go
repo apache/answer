@@ -11323,6 +11323,13 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 100
                 },
+                "layout": {
+                    "type": "string",
+                    "enum": [
+                        "Full-width",
+                        "Fixed-width"
+                    ]
+                },
                 "theme": {
                     "type": "string",
                     "maxLength": 255
@@ -11337,6 +11344,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "color_scheme": {
+                    "type": "string"
+                },
+                "layout": {
                     "type": "string"
                 },
                 "theme": {

@@ -2442,6 +2442,11 @@ definitions:
       color_scheme:
         maxLength: 100
         type: string
+      layout:
+        enum:
+        - Full-width
+        - Fixed-width
+        type: string
       theme:
         maxLength: 255
         type: string
@@ -2454,6 +2459,8 @@ definitions:
   schema.SiteThemeResp:
     properties:
       color_scheme:
+        type: string
+      layout:
         type: string
       theme:
         type: string
