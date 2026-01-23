@@ -1,3 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 import { useEffect, useState, useRef, FC } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
@@ -43,17 +62,17 @@ const Sender: FC<IProps> = ({
 
     textarea.style.height = '32px';
 
-    const minHeight = 32; // 最小高度
-    const maxHeight = 96; // 最大高度
+    const minHeight = 32; // minimum height
+    const maxHeight = 96; // maximum height
 
-    // 计算需要的高度
+    // calculate the height needed
     const { scrollHeight } = textarea;
     const newHeight = Math.min(Math.max(scrollHeight, minHeight), maxHeight);
 
-    // 设置新高度
+    // set the new height
     textarea.style.height = `${newHeight}px`;
 
-    // 控制滚动条显示
+    // control the scrollbar display
     if (scrollHeight > maxHeight) {
       textarea.style.overflowY = 'auto';
     } else {

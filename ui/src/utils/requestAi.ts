@@ -18,14 +18,14 @@ interface RequestAiOptions extends RequestInit {
   passingError?: boolean;
 }
 
-// 创建一个跟踪当前请求的状态对象
+// create a object to track the current request state
 const requestState = {
   currentReader: null as ReadableStreamDefaultReader<Uint8Array> | null,
   abortController: null as AbortController | null,
   isProcessing: false,
 };
 
-// HTTP 错误处理函数（基于 request.ts 的逻辑）
+// HTTP error handling function (based on request.ts logic)
 const handleHttpError = async (
   response: Response,
   options: RequestAiOptions,
@@ -162,22 +162,22 @@ const handleHttpError = async (
 };
 const requestAi = async (url: string, options: RequestAiOptions) => {
   try {
-    // 如果有之前的请求正在处理，取消它
+    // if there is a previous request being processed, cancel it
     if (requestState.isProcessing && requestState.abortController) {
       requestState.abortController.abort();
     }
 
-    // 创建新的AbortController
+    // create a new AbortController
     const abortController = new AbortController();
     requestState.abortController = abortController;
 
-    // 合并传入的signal与新创建的signal
+    // merge the incoming signal with the new created signal
     const combinedSignal = options.signal || abortController.signal;
 
-    // 标记为正在处理
+    // mark as being processed
     requestState.isProcessing = true;
 
-    // 获取认证信息和语言设置（与 request.ts 保持一致）
+    // get the authentication information and language settings (consistent with request.ts)
     const token = Storage.get(LOGGED_TOKEN_STORAGE_KEY) || '';
     console.log(token);
     const lang = getCurrentLang();
@@ -194,7 +194,7 @@ const requestAi = async (url: string, options: RequestAiOptions) => {
       },
     });
 
-    // 统一错误处理（基于 request.ts 的逻辑）
+    // unified error handling (based on request.ts logic)
     if (!response.ok) {
       await handleHttpError(response, options);
       return;
@@ -205,7 +205,7 @@ const requestAi = async (url: string, options: RequestAiOptions) => {
       throw new Error('ReadableStream not supported');
     }
 
-    // 存储当前reader以便稍后可以取消
+    // store the current reader so it can be cancelled later
     requestState.currentReader = reader;
 
     const decoder = new TextDecoder();
@@ -231,10 +231,10 @@ const requestAi = async (url: string, options: RequestAiOptions) => {
         lines.forEach((line) => {
           if (line.trim()) {
             try {
-              // 处理特殊的 [DONE] 信号
+              // handle the special [DONE] signal
               const cleanedLine = line.replace(/^data: /, '').trim();
               if (cleanedLine === '[DONE]') {
-                return; // 跳过 [DONE] 信号的处理
+                return; // skip the [DONE] signal processing
               }
 
               if (cleanedLine) {
@@ -247,7 +247,7 @@ const requestAi = async (url: string, options: RequestAiOptions) => {
           }
         });
 
-        // 检查是否已取消
+        // check if it has been cancelled
         if (combinedSignal.aborted) {
           requestState.isProcessing = false;
           requestState.currentReader = null;
@@ -257,9 +257,9 @@ const requestAi = async (url: string, options: RequestAiOptions) => {
         await processStream();
       } catch (error) {
         if ((error as Error).message === 'Request was aborted') {
-          options.onComplete?.(); // 取消也视为完成
+          options.onComplete?.();
         } else {
-          throw error; // 重新抛出其他错误
+          throw error; // rethrow other errors
         }
       }
     };
@@ -269,7 +269,7 @@ const requestAi = async (url: string, options: RequestAiOptions) => {
     const errorMessage =
       error instanceof Error ? error.message : 'Unknown error';
 
-    // 如果是取消导致的错误，不作为错误处理
+    // if the error is caused by cancellation, do not treat it as an error
     if (
       errorMessage !== 'The user aborted a request' &&
       errorMessage !== 'Request was aborted'
@@ -278,7 +278,7 @@ const requestAi = async (url: string, options: RequestAiOptions) => {
       options.onError?.(new Error(errorMessage));
     } else {
       console.log('Request was cancelled by user');
-      options.onComplete?.(); // 取消也视为完成
+      options.onComplete?.(); // cancellation is also considered complete
     }
   } finally {
     requestState.isProcessing = false;
@@ -286,7 +286,7 @@ const requestAi = async (url: string, options: RequestAiOptions) => {
   }
 };
 
-// 添加一个取消当前请求的函数
+// add a function to cancel the current request
 const cancelCurrentRequest = () => {
   if (requestState.abortController) {
     requestState.abortController.abort();
