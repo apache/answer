@@ -116,10 +116,10 @@ const Index = () => {
   }, [formData.content.value, formData.description.value]);
 
   const handleAnswerChange = (value: string) =>
-    setFormData({
-      ...formData,
-      content: { ...formData.content, value },
-    });
+    setFormData((prev) => ({
+      ...prev,
+      content: { ...prev.content, value },
+    }));
   const handleSummaryChange = (evt) => {
     const v = evt.currentTarget.value;
     setFormData({
