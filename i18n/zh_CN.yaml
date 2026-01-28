@@ -848,14 +848,14 @@ ui:
     posts: 帖子
     ai_assistant: AI 助手
   ai_assistant:
-    description: 有问题吗？尽管提问，即可获得解答、不同观点及实用建议。
-    recent_conversations: 最近的对话
-    show_more: 展示更多
-    new: 新建对话
-    ai_generate: 由帖子生成的 AI 内容，可能并不准确。
+    description: 有问题？问它并获得答案、观点和建议。
+    recent_conversations: 新对话
+    show_more: 显示更多
+    new: 新聊天
+    ai_generate: 来自帖子的 AI，可能不准确。
     copy: 复制
-    ask_a_follow_up: 继续提问
-    ask_placeholder: 提出问题
+    ask_a_follow_up: 提出后续问题
+    ask_placeholder: 提问
   notifications:
     title: 通知
     inbox: 收件箱
@@ -1200,7 +1200,7 @@ ui:
     search:
       placeholder: 搜索
   footer:
-    build_on: 由 <1>Apache Answer</1> 提供动力
+    build_on: Powered by <1> Apache Answer </1>
   upload_img:
     name: 更改
     loading: 加载中...
@@ -1770,7 +1770,7 @@ ui:
     users: 用户管理
     badges: 徽章
     flags: 举报管理
-    settings: 设置
+    settings: 站点设置
     general: 一般
     interface: 界面
     smtp: SMTP
@@ -1789,14 +1789,14 @@ ui:
     installed_plugins: 已安装插件
     apperance: 外观
     community: 社区
-    advanced: 高级
+    advanced: 高级选项
     tags: 标签
     rules: 规则
     policies: 政策
     security: 安全
     files: 文件
-    apikeys: API Keys
-    intelligence: 人工智能
+    apikeys: API 密钥
+    intelligence: 智力
     ai_assistant: AI 助手
     ai_settings: AI 设置
     mcp: MCP
@@ -2171,22 +2171,25 @@ ui:
         text: 修改您主题使用的颜色
       layout:
         label: 布局
-        full_width: 全宽
-        fixed_width: 定宽
+        full_width: 全宽度
+        fixed_width: 固定宽度
     css_and_html:
       page_title: CSS 与 HTML
       custom_css:
         label: 自定义 CSS
-        text: 这将插入为 &lt;link>
+        text: >
+
       head:
         label: 头部
-        text: 这将插入到 &lt;/head> 之前。
+        text: >
+
       header:
         label: 页眉
-        text: 这将插入到 &lt;body> 之后。
+        text: >
+
       footer:
         label: 页脚
-        text: 这将插入到 &lt;/body> 之前。
+        text: 这将在 &lt;/body> 之前插入。
       sidebar:
         label: 侧边栏
         text: 这将插入侧边栏中。
@@ -2275,69 +2278,69 @@ ui:
       status: 状态
       title: 徽章
     apikeys:
-      title: API Keys
-      add_api_key: 添加 API Key
+      title: API 密钥
+      add_api_key: 添加 API 密钥
       desc: 描述
       scope: 范围
-      key: Key
-      created: 创建时间
-      last_used: 最后使用时间
+      key: 密钥
+      created: 创建于
+      last_used: 最后使用
       add_or_edit_modal:
-        add_title: 添加 API Key
-        edit_title: 编辑 API Key
+        add_title: 添加 API 密钥
+        edit_title: 编辑 API 密钥
         description: 描述
-        description_required: 描述必填.
+        description_required: 请输入描述。
         scope: 范围
         global: 全局
         read-only: 只读
       created_modal:
-        title: API key 创建成功
-        api_key: API key
-        description: 此密钥将不会再显示。请确保在继续之前复制一份。
+        title: 已创建API密钥
+        api_key: API 密钥
+        description: 此密钥将不会再次显示。请确保您在继续之前拿到一份副本。
       delete_modal:
-        title: 删除 API Key
-        content: 任何使用此密钥的应用程序或脚本将无法再访问 API。这是永久性的！
+        title: 删除API密钥
+        content: 任何使用此密钥的应用程序或脚本都将无法访问API。这是永久性的！
     ai_settings:
       enabled:
-        label: AI 启用
-        check: 启用 AI 功能
+        label: AI 已启用
+        check: 启用AI功能
         text: AI 模型必须正确配置才能使用。
       provider:
-        label: 提供者
+        label: 提供商
       api_host:
         label: API 主机
-        msg: API 主机必填
+        msg: API 主机是必需的
       api_key:
-        label: API Key
-        check: 校验
-        check_success: "连接成功."
-        msg: API key 必填
+        label: API 密钥
+        check: 检查
+        check_success: "连接成功。"
+        msg: API 密钥是必填项
       model:
         label: 模型
-        msg: 模型必填
-      add_success: AI 设置已成功更新.
+        msg: 模型是必需的
+      add_success: AI 设置更新成功。
     conversations:
-      topic: 话题
-      helpful: 有用的
-      unhelpful: 无用的
+      topic: 主题
+      helpful: 有帮助
+      unhelpful: 没有帮助
       created: 创建于
       action: 操作
-      empty: 没有会话记录。
+      empty: 没有找到会话
       delete_modal:
         title: 删除对话
-        content: 你确定要删除此对话吗？这是永久的！
-        delete_success: 对话删除成功.
+        content: 您确定要删除此对话吗？这是永久性的！
+        delete_success: 对话删除成功。
     mcp:
       mcp_server:
-        label: MCP 服务
-        switch: 启用
+        label: MCP服务器
+        switch: 已启用
       type:
         label: 类型
       url:
-        label: URL
+        label: 链接
       http_header:
-        label: HTTP header
-        text: 请将 {key} 替换为 API Key。
+        label: HTTP Header
+        text: 请将 {key} 替换为 API 密钥。
   form:
     optional: (选填)
     empty: 不能为空
@@ -2434,6 +2437,7 @@ ui:
     user_normal: 此用户已经是正常的。
     user_suspended: 此用户已被封禁。
     user_deleted: 此用户已被删除
+    user_added: 用户添加成功。
     badge_activated: 此徽章已被激活。
     badge_inactivated: 此徽章已被禁用。
     users_deleted: 这些用户已被删除。

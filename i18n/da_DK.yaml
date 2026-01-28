@@ -58,7 +58,7 @@ backend:
     undelete:
       other: Genopret
     merge:
-      other: Merge
+      other: Sammenflet
   role:
     name:
       user:
@@ -73,7 +73,7 @@ backend:
       admin:
         other: Hav den fulde magt til at få adgang til webstedet.
       moderator:
-        other: Har adgang til alle indlæg undtagen administratorindstillinger.
+        other: Har adgang til alle opslag undtagen administratorindstillinger.
   privilege:
     level_1:
       description:
@@ -98,7 +98,7 @@ backend:
     rank_comment_vote_up_label:
       other: Op-stem kommentar
     rank_link_url_limit_label:
-      other: Skriv mere end 2 links ad gangen
+      other: Oplæg mere end 2 links ad gangen
     rank_question_vote_up_label:
       other: Op-stem spørgsmål
     rank_answer_vote_up_label:
@@ -110,9 +110,9 @@ backend:
     rank_invite_someone_to_answer_label:
       other: Inviter nogen til at svare
     rank_tag_add_label:
-      other: Opret et nyt tag
+      other: Opret et nyt nøgleord
     rank_tag_edit_label:
-      other: Rediger tag beskrivelse (skal gennemgås)
+      other: Rediger nøgleord beskrivelse (skal gennemgås)
     rank_question_edit_label:
       other: Rediger andres spørgsmål (skal gennemgås)
     rank_answer_edit_label:
@@ -126,11 +126,11 @@ backend:
     rank_answer_audit_label:
       other: Gennemgå svar redigeringer
     rank_tag_audit_label:
-      other: Gennemse tag redigeringer
+      other: Gennemse nøgleord redigeringer
     rank_tag_edit_without_review_label:
-      other: Rediger tag beskrivelse uden gennemgang
+      other: Rediger nøgleord beskrivelse uden gennemgang
     rank_tag_synonym_label:
-      other: Administrer tag synonymer
+      other: Administrer nøgleord synonymer
   email:
     other: E-mail
   e_mail:
@@ -140,9 +140,9 @@ backend:
   pass:
     other: Adgangskode
   old_pass:
-    other: Current password
+    other: Nuværende adgangskode
   original_text:
-    other: Dette indlæg
+    other: Dette opslag
   email_or_password_wrong_error:
     other: E-mail og adgangskode stemmer ikke overens.
   error:
@@ -150,7 +150,7 @@ backend:
       invalid_url:
         other: Ugyldig URL.
       status_invalid:
-        other: Invalid status.
+        other: Ugyldig status.
     password:
       space_invalid:
         other: Adgangskoden må ikke indeholde mellemrum.
@@ -173,7 +173,7 @@ backend:
       question_closed_cannot_add:
         other: Spørgsmål er lukket og kan ikke tilføjes.
       content_cannot_empty:
-        other: Answer content cannot be empty.
+        other: Svar skal udfyldes.
     comment:
       edit_without_permission:
         other: Kommentar er ikke tilladt at redigere.
@@ -182,7 +182,7 @@ backend:
       cannot_edit_after_deadline:
         other: Kommentaren er for gammel til at blive redigeret.
       content_cannot_empty:
-        other: Comment content cannot be empty.
+        other: Kommentar indhold kan ikke være tomt.
     email:
       duplicate:
         other: Email eksisterer allerede.
@@ -233,9 +233,9 @@ backend:
       cannot_update:
         other: Ingen tilladelse til at opdatere.
       content_cannot_empty:
-        other: Content cannot be empty.
+        other: Indhold kan ikke være tomt.
       content_less_than_minimum:
-        other: Not enough content entered.
+        other: Ikke nok indhold indtastet.
     rank:
       fail_to_meet_the_condition:
         other: Omdømmelse rang opfylder ikke betingelsen.
@@ -250,23 +250,23 @@ backend:
         other: Rapport ikke fundet.
     tag:
       already_exist:
-        other: Tag findes allerede.
+        other: Nøgleord findes allerede.
       not_found:
-        other: Tag blev ikke fundet.
+        other: Nøgleord blev ikke fundet.
       recommend_tag_not_found:
-        other: Anbefal tag eksisterer ikke.
+        other: Anbefal nøgleord eksisterer ikke.
       recommend_tag_enter:
-        other: Indtast mindst et påkrævet tag.
+        other: Indtast mindst et påkrævet nøgleord.
       not_contain_synonym_tags:
-        other: Må ikke indeholde synonym tags.
+        other: Må ikke indeholde synonym nøgleord.
       cannot_update:
         other: Ingen tilladelse til at opdatere.
       is_used_cannot_delete:
-        other: Du kan ikke slette et tag, der er i brug.
+        other: Du kan ikke slette et nøgleord, der er i brug.
       cannot_set_synonym_as_itself:
-        other: Du kan ikke indstille synonymet for det nuværende tag som sig selv.
+        other: Du kan ikke indstille synonymet for det nuværende nøgleord som sig selv.
       minimum_count:
-        other: Not enough tags were entered.
+        other: Ikke nok nøgleord blev indtastet.
     smtp:
       config_from_name_cannot_be_email:
         other: Fra-navnet kan ikke være en e-mail-adresse.
@@ -311,13 +311,13 @@ backend:
       add_bulk_users_amount_error:
         other: "Antallet af brugere du tilføjer på én gang skal være i intervallet 1 -{{.MaxAmount}}."
       status_suspended_forever:
-        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+        other: "<strong>Denne bruger blev suspenderet for evigt.</strong> Denne bruger opfylder ikke en fællesskabsretningslinje."
       status_suspended_until:
-        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+        other: "<strong>Denne bruger blev suspenderet indtil {{.SuspendedUntil}}.</strong> Denne bruger opfylder ikke en fællesskabsretningslinje."
       status_deleted:
-        other: "This user was deleted."
+        other: "Denne bruger blev slettet."
       status_inactive:
-        other: "This user is inactive."
+        other: "Denne bruger er ikke aktiv."
     config:
       read_config_failed:
         other: Kunne ikke læse konfigurationen
@@ -337,7 +337,7 @@ backend:
         other: Site config ikke fundet.
     badge:
       object_not_found:
-        other: Badge object not found
+        other: Emblem objekt ikke fundet
   reason:
     spam:
       name:
@@ -348,7 +348,7 @@ backend:
       name:
         other: uhøflig eller misbrug
       desc:
-        other: "A reasonable person would find this content inappropriate for respectful discourse."
+        other: "En fornuftig person ville finde dette indhold upassende eller ikke respektfuldt."
     a_duplicate:
       name:
         other: en duplikering
@@ -360,7 +360,7 @@ backend:
       name:
         other: ikke et svar
       desc:
-        other: "This was posted as an answer, but it does not attempt to answer the question. It should possibly be an edit, a comment, another question,or deleted altogether."
+        other: "Dette blev sendt som svar, men det forsøger ikke at besvare spørgsmålet. Det bør muligvis være en redigering, en kommentar, et andet spørgsmål, eller slettet helt."
     no_longer_needed:
       name:
         other: ikke længere nødvendigt
@@ -419,7 +419,7 @@ backend:
         name:
           other: kræver detaljer eller klarhed
         desc:
-          other: This question currently includes multiple questions in one. It should focus on one problem only.
+          other: Dette spørgsmål indeholder i øjeblikket flere spørgsmål i én. Det bør kun fokusere på ét problem.
       other:
         name:
           other: noget andet
@@ -438,9 +438,9 @@ backend:
       other: Spørgsmål
   tag:
     tags_title:
-      other: Tags
+      other: Nøgleord
     no_description:
-      other: Tag har ingen beskrivelse.
+      other: Nøgleord har ingen beskrivelse.
   notification:
     action:
       update_question:
@@ -480,48 +480,48 @@ backend:
       invited_you_to_answer:
         other: inviterede dig til at svare
       earned_badge:
-        other: You've earned the "{{.BadgeName}}" badge
+        other: Du har optjent "{{.BadgeName}}" emblem
   email_tpl:
     change_email:
       title:
         other: "[{{.SiteName}}] Bekræft din nye e-mailadresse"
       body:
-        other: "Confirm your new email address for {{.SiteName}} by clicking on the following link:<br>\n<a href='{{.ChangeEmailUrl}}' target='_blank'>{{.ChangeEmailUrl}}</a><br><br>\n\nIf you did not request this change, please ignore this email.<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+        other: "Bekræft din nye e-mailadresse for {{.SiteName}} ved at klikke på følgende link:<br>\n<a href='{{.ChangeEmailUrl}}' target='_blank'>{{.ChangeEmailUrl}}</a><br><br>\n\nHvis du ikke anmodede om denne ændring, ignorér venligst denne e-mail.<br><br>\n\n--<br>\nBemærk: Dette er en automatisk systeme-mail, svar venligst ikke på denne besked, da dit svar ikke vil blive set."
     new_answer:
       title:
         other: "[{{.SiteName}}] {{.DisplayName}} besvarede dit spørgsmål"
       body:
-        other: "<a href='{{.AnswerUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.AnswerSummary}}</blockquote><br>\n<a href='{{.AnswerUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.AnswerUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.AnswerSummary}}</blockquote><br>\n<a href='{{.AnswerUrl}}'>Se den på {{.SiteName}}</a><br><br>\n\n--<br>\nBemærk: Dette er en automatisk system-mail, svar venligst ikke på denne besked, da dit svar ikke vil blive set.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Afmeld</a></small>"
     invited_you_to_answer:
       title:
         other: "[{{.SiteName}}] {{.DisplayName}} inviterede dig til at svare"
       body:
-        other: "<a href='{{.InviteUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>I think you may know the answer.</blockquote><br>\n<a href='{{.InviteUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.InviteUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>Jeg tror du måske kender svaret.</blockquote><br>\n<a href='{{.InviteUrl}}'>Se den på {{.SiteName}}</a><br><br>\n\n--<br>\nBemærk: Dette er en automatisk systeme-mail, svar venligst ikke på denne besked, da dit svar ikke vil blive set.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Afmeld</a></small>"
     new_comment:
       title:
         other: "[{{.SiteName}}] {{.DisplayName}} kommenterede dit indlæg"
       body:
-        other: "<a href='{{.CommentUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.CommentSummary}}</blockquote><br>\n<a href='{{.CommentUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.CommentUrl}}'>{{.QuestionTitle}}</a><br><br>\n\n{{.DisplayName}}:<br>\n<blockquote>{{.CommentSummary}}</blockquote><br>\n<a href='{{.CommentUrl}}'>Se den på {{.SiteName}}</a><br><br>\n\n--<br>\nBemærk: Dette er en automatisk system-mail, svar venligst ikke på denne besked, da dit svar ikke vil blive set.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Afmeld</a></small>"
     new_question:
       title:
         other: "[{{.SiteName}}] Nyt spørgsmål: {{.QuestionTitle}}"
       body:
-        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nBemærk: Dette er en automatisk system-mail, svar venligst ikke på denne besked, da dit svar ikke vil blive set.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Afmeld</a></small>"
     pass_reset:
       title:
         other: "[{{.SiteName }}] Nulstilling af adgangskode"
       body:
-        other: "Somebody asked to reset your password on {{.SiteName}}.<br><br>\n\nIf it was not you, you can safely ignore this email.<br><br>\n\nClick the following link to choose a new password:<br>\n<a href='{{.PassResetUrl}}' target='_blank'>{{.PassResetUrl}}</a>\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+        other: "Nogen bad om at nulstille din adgangskode på {{.SiteName}}.<br><br>\n\nHvis det ikke var dig, kan du trygt ignorere denne e-mail.<br><br>\n\nKlik på følgende link for at vælge en ny adgangskode:<br>\n<a href='{{.PassResetUrl}}' target='_blank'>{{.PassResetUrl}}</a>\n<br><br>\n\n--<br>\nBemærk: Dette er en automatisk system-mail, svar venligst ikke på denne besked, da dit svar ikke vil blive set."
     register:
       title:
         other: "[{{.SiteName}}] Bekræft din nye konto"
       body:
-        other: "Welcome to {{.SiteName}}!<br><br>\n\nClick the following link to confirm and activate your new account:<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\nIf the above link is not clickable, try copying and pasting it into the address bar of your web browser.\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+        other: "Velkommen til {{.SiteName}}!<br><br>\n\nKlik på følgende link for at bekræfte og aktivere din nye konto:<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\nHvis ovenstående link ikke kan klikkes på, prøv at kopiere og indsætte det i adresselinjen i din webbrowser.\n<br><br>\n\n--<br>\nBemærk: Dette er en automatisk system-mail svar venligst ikke på denne besked, da dit svar ikke vil blive set."
     test:
       title:
         other: "[{{.SiteName}}] Test E-Mail"
       body:
-        other: "This is a test email.\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+        other: "Dette er en test e-mail.\n<br><br>\n\n--<br>\nBemærk: Dette er en automatisk system-mail svar venligst ikke på denne besked, da dit svar ikke vil blive set."
   action_activity_type:
     upvote:
       other: stem op
@@ -551,281 +551,281 @@ backend:
     default_badges:
       autobiographer:
         name:
-          other: Autobiographer
+          other: Autobiografer
         desc:
-          other: Filled out <a href="{{ .ProfileURL }}" target="_blank">profile</a> information.
+          other: Udfyldte <a href="{{ .ProfileURL }}" target="_blank">profil</a> information.
       certified:
         name:
-          other: Certified
+          other: Certificeret
         desc:
-          other: Completed our new user tutorial.
+          other: Færdiggjorde vores nye brugervejledning.
       editor:
         name:
-          other: Editor
+          other: Redaktør
         desc:
-          other: First post edit.
+          other: Første indlæg redigeret.
       first_flag:
         name:
-          other: First Flag
+          other: Første Markering
         desc:
-          other: First flagged a post.
+          other: Først markerede et indlæg.
       first_upvote:
         name:
-          other: First Upvote
+          other: Første Opstemme
         desc:
-          other: First up voted a post.
+          other: Først stemte et indlæg op.
       first_link:
         name:
-          other: First Link
+          other: Første Link
         desc:
-          other: First added a link to another post.
+          other: Først tilføjede et link til et andet indlæg.
       first_reaction:
         name:
-          other: First Reaction
+          other: Første Reaktion
         desc:
-          other: First reacted to the post.
+          other: Først reagerede på indlægget.
       first_share:
         name:
-          other: First Share
+          other: Første Deling
         desc:
-          other: First shared a post.
+          other: Først delte et indlæg.
       scholar:
         name:
-          other: Scholar
+          other: Elev
         desc:
-          other: Asked a question and accepted an answer.
+          other: Stillede et spørgsmål og accepterede et svar.
       commentator:
         name:
-          other: Commentator
+          other: Kommentator
         desc:
-          other: Leave 5 comments.
+          other: Efterlad 5 kommentarer.
       new_user_of_the_month:
         name:
-          other: New User of the Month
+          other: Månedens nye bruger
         desc:
-          other: Outstanding contributions in their first month.
+          other: Fremragende bidrag i deres første måned.
       read_guidelines:
         name:
-          other: Read Guidelines
+          other: Læs Retningslinjer
         desc:
-          other: Read the [community guidelines].
+          other: Læs [fællesskabsretningslinjerne].
       reader:
         name:
-          other: Reader
+          other: Læser
         desc:
-          other: Read every answers in a topic with more than 10 answers.
+          other: Læs alle svar i et emne med mere end 10 svar.
       welcome:
         name:
-          other: Welcome
+          other: Velkommen
         desc:
-          other: Received a up vote.
+          other: Modtog en op-stemme.
       nice_share:
         name:
-          other: Nice Share
+          other: Dejlig Deling
         desc:
-          other: Shared a post with 25 unique visitors.
+          other: Delte et indlæg med 25 unikke besøgende.
       good_share:
         name:
-          other: Good Share
+          other: God Deling
         desc:
-          other: Shared a post with 300 unique visitors.
+          other: Delte et indlæg med 300 unikke besøgende.
       great_share:
         name:
-          other: Great Share
+          other: Fantastisk Deling
         desc:
-          other: Shared a post with 1000 unique visitors.
+          other: Delte et indlæg med 1000 unikke besøgende.
       out_of_love:
         name:
-          other: Out of Love
+          other: Af kærlighed
         desc:
-          other: Used 50 up votes in a day.
+          other: Brugte 50 op-stemmer på en dag.
       higher_love:
         name:
-          other: Higher Love
+          other: Højere Kærlighed
         desc:
-          other: Used 50 up votes in a day 5 times.
+          other: Brugte 50 stemmer på en dag 5 gange.
       crazy_in_love:
         name:
-          other: Crazy in Love
+          other: Vanvittig forelsket
         desc:
-          other: Used 50 up votes in a day 20 times.
+          other: Brugte 50 op-stemmer på en dag 20 gange.
       promoter:
         name:
-          other: Promoter
+          other: Promovør
         desc:
-          other: Invited a user.
+          other: Inviterede en bruger.
       campaigner:
         name:
-          other: Campaigner
+          other: Kampagnefører
         desc:
-          other: Invited 3 basic users.
+          other: Inviterede 3 basis-brugere.
       champion:
         name:
-          other: Champion
+          other: Mester
         desc:
-          other: Invited 5 members.
+          other: Inviterede 5 medlemmer.
       thank_you:
         name:
-          other: Thank You
+          other: Tak
         desc:
-          other: Has 20 up voted posts and gave 10 up votes.
+          other: Har 20 op-stemte opslag og afgav 10 op-stemmer.
       gives_back:
         name:
-          other: Gives Back
+          other: Giver Tilbage
         desc:
-          other: Has 100 up voted posts and gave 100 up votes.
+          other: Har 100 op-stemte opslag og afgav 100 op-stemmer.
       empathetic:
         name:
-          other: Empathetic
+          other: Empatisk
         desc:
-          other: Has 500 up voted posts and gave 1000 up votes.
+          other: Har 500 op-stemte opslag og afgav 1000 op-stemmer.
       enthusiast:
         name:
-          other: Enthusiast
+          other: Entusiast
         desc:
-          other: Visited 10 consecutive days.
+          other: Besøgte 10 på hinanden følgende dage.
       aficionado:
         name:
           other: Aficionado
         desc:
-          other: Visited 100 consecutive days.
+          other: Besøgte 100 på hinanden følgende dage.
       devotee:
         name:
-          other: Devotee
+          other: Hengiven
         desc:
-          other: Visited 365 consecutive days.
+          other: Besøgte 365 på hinanden følgende dage.
       anniversary:
         name:
-          other: Anniversary
+          other: Jubilæum
         desc:
-          other: Active member for a year, posted at least once.
+          other: Aktivt medlem i et år, oprettet indlæg mindst én gang.
       appreciated:
         name:
-          other: Appreciated
+          other: Værdsat
         desc:
-          other: Received 1 up vote on 20 posts.
+          other: Modtog 1 op-stemme på 20 opslag.
       respected:
         name:
-          other: Respected
+          other: Respekteret
         desc:
-          other: Received 2 up votes on 100 posts.
+          other: Modtog 2 op-stemmer på 100 opslag.
       admired:
         name:
-          other: Admired
+          other: Beundret
         desc:
-          other: Received 5 up votes on 300 posts.
+          other: Modtog 5 op-stemmer på 300 indlæg.
       solved:
         name:
-          other: Solved
+          other: Løst
         desc:
-          other: Have an answer be accepted.
+          other: Har fået et svar accepteret.
       guidance_counsellor:
         name:
-          other: Guidance Counsellor
+          other: Vejledningsrådgiver
         desc:
-          other: Have 10 answers be accepted.
+          other: Har fået 10 svar accepteret.
       know_it_all:
         name:
-          other: Know-it-All
+          other: Bedrevidende
         desc:
-          other: Have 50 answers be accepted.
+          other: Har fået 50 svar accepteret.
       solution_institution:
         name:
-          other: Solution Institution
+          other: Institution For Løsning
         desc:
-          other: Have 150 answers be accepted.
+          other: Har fået 150 svar accepteret.
       nice_answer:
         name:
-          other: Nice Answer
+          other: Dejligt Svar
         desc:
-          other: Answer score of 10 or more.
+          other: Besvar score på 10 eller mere.
       good_answer:
         name:
-          other: Good Answer
+          other: Godt Svar
         desc:
-          other: Answer score of 25 or more.
+          other: Besvar score på 25 eller mere.
       great_answer:
         name:
-          other: Great Answer
+          other: Fantastisk Svar
         desc:
-          other: Answer score of 50 or more.
+          other: Besvar score på 50 eller mere.
       nice_question:
         name:
-          other: Nice Question
+          other: Godt Spørgsmål
         desc:
-          other: Question score of 10 or more.
+          other: Spørgsmål score på 10 eller mere.
       good_question:
         name:
-          other: Good Question
+          other: Godt Spørgsmål
         desc:
-          other: Question score of 25 or more.
+          other: Spørgsmål score på 25 eller mere.
       great_question:
         name:
-          other: Great Question
+          other: Fantastisk Spørgsmål
         desc:
-          other: Question score of 50 or more.
+          other: Spørgsmål score på 50 eller mere.
       popular_question:
         name:
-          other: Popular Question
+          other: Populært Spørgsmål
         desc:
-          other: Question with 500 views.
+          other: Spørgsmål med 500 visninger.
       notable_question:
         name:
-          other: Notable Question
+          other: Bemærkelsesværdigt Spørgsmål
         desc:
-          other: Question with 1,000 views.
+          other: Spørgsmål med 1.000 visninger.
       famous_question:
         name:
-          other: Famous Question
+          other: Berømt Spørgsmål
         desc:
-          other: Question with 5,000 views.
+          other: Spørgsmål med 5.000 visninger.
       popular_link:
         name:
-          other: Popular Link
+          other: Populært Link
         desc:
-          other: Posted an external link with 50 clicks.
+          other: Sendt et eksternt link med 50 kliks.
       hot_link:
         name:
           other: Hot Link
         desc:
-          other: Posted an external link with 300 clicks.
+          other: Sendt et eksternt link med 300 kliks.
       famous_link:
         name:
-          other: Famous Link
+          other: Berømt Link
         desc:
-          other: Posted an external link with 100 clicks.
+          other: Sendt et eksternt link med 100 kliks.
     default_badge_groups:
       getting_started:
         name:
-          other: Getting Started
+          other: Sådan kommer du igang
       community:
         name:
-          other: Community
+          other: Fællesskab
       posting:
         name:
-          other: Posting
+          other: Oplæg
 # The following fields are used for interface presentation(Front-end)
 ui:
   how_to_format:
     title: Sådan formaterer du
     desc: >-
-      <ul class="mb-0"><li><p class="mb-2">mention a post: <code>#post_id</code></p></li> <li><p class="mb-2">to make links</p><pre class="mb-2"><code>&lt;https://url.com&gt;<br/><br/>[Title](https://url.com)</code></pre></li><li><p class="mb-2">put returns between paragraphs</p></li><li><p class="mb-2"><em>_italic_</em> or **<strong>bold</strong>**</p></li><li><p class="mb-2">indent code by 4 spaces</p></li><li><p class="mb-2">quote by placing <code>&gt;</code> at start of line</p></li><li><p class="mb-2">backtick escapes <code>`like _this_`</code></p></li><li><p class="mb-2">create code fences with backticks <code>`</code></p><pre class="mb-0"><code>```<br/>code here<br/>```</code></pre></li></ul>
+      <ul class="mb-0"><li><p class="mb-2">for at lave links</p><pre class="mb-2"><code>&lt;https://url.com&gt;<br/><br/>[Titel](https://url.com)</code></pre></li><li><p class="mb-2">indsæt linieskift mellem paragraffer</p></li><li><p class="mb-2"><em>_kursiv_</em> or **<strong>fed</strong>**</p></li><li><p class="mb-2">indskyd kode med 4 mellemrum</p></li><li><p class="mb-2">citér ved at placere <code>&gt;</code> på starten af linie</p></li><li><p class="mb-2">backtick escapes <code>`som _dette_`</code></p></li><li><p class="mb-2">create code fences with backticks <code>`</code></p><pre class="mb-0"><code>```<br/>code here<br/>```</code></pre></li></ul>
   pagination:
     prev: Forrige
     next: Næste
   page_title:
     question: Spørgsmål
     questions: Spørgsmål
-    tag: Tag
-    tags: Tags
-    tag_wiki: tag wiki
-    create_tag: Opret tag
-    edit_tag: Rediger tag
-    ask_a_question: Create Question
+    tag: Nøgleord
+    tags: Nøgleord
+    tag_wiki: nøgleord info
+    create_tag: Opret nøgleord
+    edit_tag: Rediger nøgleord
+    ask_a_question: Opret spørgsmål
     edit_question: Rediger spørgsmål
     edit_answer: Rediger Svar
     search: Søg
-    posts_containing: Indlæg som indeholder
+    posts_containing: Opslag som indeholder
     settings: Indstillinger
     notifications: Notifikationer
     login: Log Ind
@@ -845,7 +845,17 @@ ui:
     http_50X: Http Fejl 500
     http_403: HTTP Fejl 403
     logout: Log Ud
-    posts: Posts
+    posts: Opslag
+    ai_assistant: AI Assistant
+  ai_assistant:
+    description: Got a question? Ask it and get answers, perspectives, and recommendations.
+    recent_conversations: Recent Conversations
+    show_more: Show more
+    new: New chat
+    ai_generate: AI-generated from posts and may not be accurate.
+    copy: Copy
+    ask_a_follow_up: Ask a follow-up
+    ask_placeholder: Ask a question
   notifications:
     title: Notifikationer
     inbox: Indbakke
@@ -856,12 +866,12 @@ ui:
     someone: Nogen
     inbox_type:
       all: Alle
-      posts: Indlæg
+      posts: Opslag
       invites: Invitationer
       votes: Stemmer
-    answer: Answer
-    question: Question
-    badge_award: Badge
+    answer: Svar
+    question: Spørgsmål
+    badge_award: emblem
   suspended:
     title: Din konto er blevet suspenderet
     until_time: "Din konto blev suspenderet indtil {{ time }}."
@@ -927,7 +937,7 @@ ui:
             msg:
               empty: Filen skal udfyldes.
               only_image: Kun billedfiler er tilladt.
-              max_size: File size cannot exceed {{size}} MB.
+              max_size: Filstørrelse må ikke overstige {{size}} MB.
           desc:
             label: Beskriveslse
       tab_url: Billede-URL
@@ -970,9 +980,9 @@ ui:
       heading: Overskrift
       cell: Celle
     file:
-      text: Attach files
-      not_supported: "Don’t support that file type. Try again with {{file_type}}."
-      max_size: "Attach files size cannot exceed {{size}} MB."
+      text: Vedhæft filer
+      not_supported: "Understøtter ikke denne filtype. Prøv igen med {{file_type}}."
+      max_size: "Vedhæftet filers størrelse kan ikke overstige {{size}} MB."
   close_modal:
     title: Jeg lukker dette indlæg fordi...
     btn_cancel: Annuller
@@ -996,7 +1006,7 @@ ui:
       not_a_url: URL-format er forkert.
       url_not_match: URL oprindelsen matcher ikke det aktuelle websted.
   tag_modal:
-    title: Opret et nyt tag
+    title: Opret et nyt nøgleord
     form:
       fields:
         display_name:
@@ -1033,34 +1043,34 @@ ui:
       btn_add: Tilføj et synonym
       btn_edit: Rediger
       btn_save: Gem
-    synonyms_text: Følgende tags vil blive genmappet til
+    synonyms_text: Følgende nøgleord vil blive genmappet til
     delete:
-      title: Slet dette tag
+      title: Slet dette nøgleord
       tip_with_posts: >-
-        <p>Vi tillader ikke <strong>at slette tag med indlæg</strong>.</p> <p>Fjern venligst dette tag fra indlæggene først.</p>
+        <p>Vi tillader ikke <strong>at slette nøgleord med opslag</strong>.</p> <p>Fjern venligst dette nøgleord fra opslagene først.</p>
       tip_with_synonyms: >-
         <p>Vi tillader ikke <strong>at slette tag med indlæg</strong>.</p> <p>Fjern venligst dette tag fra indlæggene først.</p>
       tip: Er du sikker på, at du vil slette?
       close: Luk
     merge:
-      title: Merge tag
-      source_tag_title: Source tag
-      source_tag_description: The source tag and its associated data will be remapped to the target tag.
-      target_tag_title: Target tag
-      target_tag_description: A synonym between these two tags will be created after merging.
-      no_results: No tags matched
-      btn_submit: Submit
-      btn_close: Close
+      title: Sammenflet nøgleord
+      source_tag_title: Kilde nøgleord
+      source_tag_description: Kildenøgleordet og dets tilknyttede data vil blive omlagt til målmærket.
+      target_tag_title: Målnøgleord
+      target_tag_description: Et synonym mellem disse to nøgleord vil blive oprettet efter sammenlægning.
+      no_results: Ingen nøgleord matchede
+      btn_submit: Indsend
+      btn_close: Luk
   edit_tag:
-    title: Rediger tag
-    default_reason: Rediger tag
-    default_first_reason: Tilføj tag
+    title: Rediger nøgleord
+    default_reason: Rediger nøgleord
+    default_first_reason: Tilføj nøgleord
     btn_save_edits: Gem ændringer
     btn_cancel: Annuller
   dates:
     long_date: MMM D
     long_date_with_year: "D MMMM, YYYY"
-    long_date_with_time: "MMM D, ÅÅÅÅ [at] HH:mm"
+    long_date_with_time: "MMM D, YYYY [kl.] HH:mm"
     now: nu
     x_seconds_ago: "{{count}}s siden"
     x_minutes_ago: "{{count}}s siden"
@@ -1069,9 +1079,9 @@ ui:
     day: dag
     hours: timer
     days: dag
-    month: month
-    months: months
-    year: year
+    month: måned
+    months: måneder
+    year: År
   reaction:
     heart: hjerte
     smile: smil
@@ -1114,7 +1124,7 @@ ui:
     btn_save_edits: Gem ændringer
     btn_cancel: Annuller
   tags:
-    title: Tags
+    title: Nøgleord
     sort_buttons:
       popular: Populære
       name: Navn
@@ -1122,15 +1132,15 @@ ui:
     button_follow: Følg
     button_following: Følger
     tag_label: spørgsmål
-    search_placeholder: Filtrer efter tag-navn
-    no_desc: Tag har ingen beskrivelse.
+    search_placeholder: Filtrer efter nøgleord-navn
+    no_desc: Nøgleord har ingen beskrivelse.
     more: Mere
-    wiki: Wiki
+    wiki: Info
   ask:
-    title: Create Question
+    title: Opret spørgsmål
     edit_title: Rediger spørgsmål
     default_reason: Rediger spørgsmål
-    default_first_reason: Create question
+    default_first_reason: Opret spørgsmål
     similar_questions: Lignende spørgsmål
     form:
       fields:
@@ -1138,7 +1148,7 @@ ui:
           label: Revision
         title:
           label: Titel
-          placeholder: What's your topic? Be specific.
+          placeholder: Hvad er dit emne? Vær specifik.
           msg:
             empty: Titel må ikke være tom.
             range: Titel på op til 150 tegn
@@ -1147,12 +1157,12 @@ ui:
           msg:
             empty: Brødtekst skal udfyldes.
           hint:
-            optional_body: Describe what the question is about.
-            minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
+            optional_body: Beskriv hvad spørgsmålet handler om.
+            minimum_characters: "Beskriv hvad spørgsmålet handler om, mindst {{min_content_length}} tegn er påkrævet."
         tags:
-          label: Tags
+          label: Nøgleord
           msg:
-            empty: Tags må ikke være tom.
+            empty: Nøgleord må ikke være tom.
         answer:
           label: Svar
           msg:
@@ -1166,20 +1176,20 @@ ui:
     answer_question: Besvar dit eget spørgsmål
     post_question&answer: Send dit spørgsmål og svar
   tag_selector:
-    add_btn: Tilføj tag
-    create_btn: Opret et nyt tag
-    search_tag: Søg tag
-    hint: Describe what your content is about, at least one tag is required.
-    hint_zero_tags: Describe what your content is about.
-    hint_more_than_one_tag: "Describe what your content is about, at least {{min_tags_number}} tags are required."
-    no_result: Ingen tags matchede
-    tag_required_text: Påkrævet tag (mindst én)
+    add_btn: Tilføj nøgleord
+    create_btn: Opret et nyt nøgleord
+    search_tag: Søg nøgleord
+    hint: Beskriv hvad dit spørgsmål handler om, mindst et nøgleord er påkrævet.
+    hint_zero_tags: Beskriv hvad dit indhold handler om.
+    hint_more_than_one_tag: "Beskriv hvad dit indhold handler om, i det mindste {{min_tags_number}} nøgleord er påkrævet."
+    no_result: Ingen nøgleord matchede
+    tag_required_text: Påkrævet nøgleord (mindst én)
   header:
     nav:
       question: Spørgsmål
-      tag: Tags
+      tag: Nøgleord
       user: Brugere
-      badges: Badges
+      badges: Emblemer
       profile: Profil
       setting: Indstillinger
       logout: Log Ud
@@ -1190,7 +1200,7 @@ ui:
     search:
       placeholder: Søg
   footer:
-    build_on: Powered by <1> Apache Answer </1>
+    build_on: Drevet af <1>Apache Answer</1>
   upload_img:
     name: Skift
     loading: indlæser...
@@ -1217,13 +1227,13 @@ ui:
     info_sign: Har du ikke en konto? <1>Tilmeld dig </1>
     info_login: Har du allerede en konto? <1>Log ind </1>
     agreements: Ved at registrere dig accepterer du <1>privacy policy</1> og <3>terms of service </3>.
-    forgot_pass: Glemt adgangskode?
+    forgot_pass: Glemt adgangskoden?
     name:
       label: Navn
       msg:
         empty: Navn må ikke være tomt.
-        range: Name must be between 2 to 30 characters in length.
-        character: 'Must use the character set "a-z", "0-9", " - . _"'
+        range: Navn skal være mellem 2 og 30 tegn i længden.
+        character: 'Skal bruge tegnsættet "a-z", "0-9", " - . _"'
     email:
       label: E-mail
       msg:
@@ -1295,13 +1305,13 @@ ui:
       display_name:
         label: Visnings-navn
         msg: Visnings-navn skal udfyldes.
-        msg_range: Display name must be 2-30 characters in length.
+        msg_range: Visningsnavnet skal være 2-30 tegn i længden.
       username:
         label: Brugernavn
         caption: Man kan nævne dig som "@username".
         msg: Brugernavn skal udfyldes.
-        msg_range: Username must be 2-30 characters in length.
-        character: 'Must use the character set "a-z", "0-9", "- . _"'
+        msg_range: Brugernavn skal være 2-30 tegn i længden.
+        character: 'Skal bruge tegnsættet "a-z", "0-9", "- . _"'
       avatar:
         label: Profilbillede
         gravatar: Gravatar
@@ -1329,8 +1339,8 @@ ui:
         label: Alle nye spørgsmål
         description: Få besked om alle nye spørgsmål. Op til 50 spørgsmål om ugen.
       all_new_question_for_following_tags:
-        label: Alle nye spørgsmål til følgende tags
-        description: Få besked om nye spørgsmål til følgende tags.
+        label: Alle nye spørgsmål til følgende nøgleord
+        description: Få besked om nye spørgsmål til følgende nøgleord.
     account:
       heading: Konto
       change_email_btn: Ændre e-mail
@@ -1376,25 +1386,25 @@ ui:
     review: Din revision vil blive vist efter gennemgang.
     sent_success: Sendt
   related_question:
-    title: Related
+    title: Relateret
     answers: svar
   linked_question:
-    title: Linked
-    description: Posts linked to
-    no_linked_question: No contents linked from this content.
+    title: Knyttet
+    description: Opslag knyttet til
+    no_linked_question: Intet indhold linket fra dette indhold.
   invite_to_answer:
     title: Inviter personer
-    desc: Invitér personer, som du tror, kan svare.
+    desc: Inviter personer, som du tror, kan svare.
     invite: Inviter til at svare
     add: Tilføj personer
     search: Søg personer
   question_detail:
     action: Handling
-    created: Created
+    created: Oprettet
     Asked: Spurgt
     asked: spurgt
     update: Ændret
-    Edited: Edited
+    Edited: Redigeret
     edit: redigeret
     commented: kommenteret
     Views: Set
@@ -1474,7 +1484,7 @@ ui:
     signup: Opret konto
     logout: Log Ud
     verify: Verificér
-    create: Create
+    create: Opret
     approve: Godkend
     reject: Afvis
     skip: Spring Over
@@ -1498,7 +1508,7 @@ ui:
     system_setting: Systemindstilling
     default: Standard
     reset: Nulstil
-    tag: Tag
+    tag: Nøgleord
     post_lowercase: indlæg
     filter: Filtrer
     ignore: Ignorér
@@ -1506,16 +1516,16 @@ ui:
     normal: Normal
     closed: Lukket
     deleted: Slettet
-    deleted_permanently: Deleted permanently
+    deleted_permanently: Slettet permanent
     pending: Ventende
     more: Mere
-    view: View
-    card: Card
-    compact: Compact
-    display_below: Display below
-    always_display: Always display
-    or: or
-    back_sites: Back to sites
+    view: Vis
+    card: Kort
+    compact: Kompakt
+    display_below: Vis nedenfor
+    always_display: Vis altid
+    or: eller
+    back_sites: Tilbage til websteder
   search:
     title: Søgeresultater
     keywords: Nøgleord
@@ -1523,7 +1533,7 @@ ui:
     follow: Følg
     following: Følger
     counts: "{{count}} Resultater"
-    counts_loading: "... Results"
+    counts_loading: "... Resultater"
     more: Mere
     sort_btns:
       relevance: Relevans
@@ -1533,10 +1543,10 @@ ui:
       more: Mere
     tips:
       title: Avancerede Søgetips
-      tag: "<1>[tag]</1> søgning med et tag"
+      tag: "<1>[tag]</1> søgning med et nøgleord"
       user: "<1>user:username</1> søgning efter forfatter"
       answer: "<1>answers:0</1> ubesvarede spørgsmål"
-      score: "<1>score:3</1> indlæg med 3+ score"
+      score: "<1>score:3</1> opslag med 3+ score"
       question: "<1>is:question</1> søgespørgsmål"
       is_answer: "<1>is:answer</1> søgesvar"
     empty: Vi kunne ikke finde noget. <br /> Prøv forskellige eller mindre specifikke søgeord.
@@ -1546,13 +1556,13 @@ ui:
     via: Del indlæg via...
     copied: Kopieret
     facebook: Del på Facebook
-    twitter: Share to X
+    twitter: Del til X
   cannot_vote_for_self: Du kan ikke stemme på dit eget indlæg.
   modal_confirm:
     title: Fejl...
   delete_permanently:
-    title: Delete permanently
-    content: Are you sure you want to delete permanently?
+    title: Slet permanent
+    content: Er du sikker på du vil slette permanent?
   account_result:
     success: Din nye konto er bekræftet. Du vil blive omdirigeret til hjemmesiden.
     link: Fortsæt til startside
@@ -1567,29 +1577,29 @@ ui:
     success_desc: Du er blevet fjernet fra denne abonnentliste og vil ikke modtage yderligere e-mails fra os.
     link: Skift indstillinger
   question:
-    following_tags: Følger Tags
+    following_tags: Følger Nøgleord
     edit: Rediger
     save: Gem
-    follow_tag_tip: Følg tags for at udvælge dine spørgsmål.
+    follow_tag_tip: Følg nøgleord for at udvælge dine spørgsmål.
     hot_questions: Populære Spørgsmål
     all_questions: Alle Spørgsmål
     x_questions: "{{ count }} Spørgsmål"
     x_answers: "{{ count }} svar"
-    x_posts: "{{ count }} Posts"
+    x_posts: "{{ count }} Opslag"
     questions: Spørgsmål
     answers: Svar
     newest: Nyeste
     active: Aktiv
     hot: Populært
-    frequent: Frequent
-    recommend: Recommend
+    frequent: Ofte
+    recommend: Anbefal
     score: Bedømmelse
     unanswered: Ubesvaret
     modified: ændret
     answered: besvaret
     asked: spurgt
     closed: lukket
-    follow_a_tag: Følg et tag
+    follow_a_tag: "Følg et nøgleord\n"
     more: Mere
   personal:
     overview: Oversigt
@@ -1601,7 +1611,7 @@ ui:
     reputation: Omdømme
     comments: Kommentarer
     votes: Stemmer
-    badges: Badges
+    badges: Emblemer
     newest: Nyeste
     score: Bedømmelse
     edit_profile: Rediger profil
@@ -1615,8 +1625,8 @@ ui:
     top_answers: Populære Svar
     top_questions: Populære Spørgsmål
     stats: Statistik
-    list_empty: Ingen indlæg fundet.<br />Måske vil du vælge en anden fane?
-    content_empty: No posts found.
+    list_empty: Ingen opslag fundet.<br />Måske vil du vælge en anden fane?
+    content_empty: Ingen opslag fundet.
     accepted: Accepteret
     answered: besvaret
     asked: spurgt
@@ -1627,7 +1637,7 @@ ui:
     x_votes: stemmer modtaget
     x_answers: svar
     x_questions: spørgsmål
-    recent_badges: Recent Badges
+    recent_badges: Seneste emblemer
   install:
     title: Installation
     next: Næste
@@ -1658,22 +1668,22 @@ ui:
       placeholder: /data/answer.db
       msg: Databasefil skal udfyldes.
     ssl_enabled:
-      label: Enable SSL
+      label: Aktiver SSL
     ssl_enabled_on:
       label: On
     ssl_enabled_off:
       label: Off
     ssl_mode:
-      label: SSL Mode
+      label: SSL-tilstand
     ssl_root_cert:
-      placeholder: sslrootcert file path
-      msg: Path to sslrootcert file cannot be empty
+      placeholder: sslrootcert filsti
+      msg: Sti til sslrootcert fil kan ikke være tom
     ssl_cert:
-      placeholder: sslcert file path
-      msg: Path to sslcert file cannot be empty
+      placeholder: sslrootcert filsti
+      msg: Sti til sslrootcert fil kan ikke være tom
     ssl_key:
-      placeholder: sslkey file path
-      msg: Path to sslkey file cannot be empty
+      placeholder: sslrootcert filsti
+      msg: Sti til sslrootcert fil kan ikke være tom
     config_yaml:
       title: Opret config.yaml
       label: Filen config.yaml blev oprettet.
@@ -1706,8 +1716,8 @@ ui:
     admin_name:
       label: Navn
       msg: Navn skal udfyldes.
-      character: 'Must use the character set "a-z", "0-9", " - . _"'
-      msg_max_length: Name must be between 2 to 30 characters in length.
+      character: 'Skal bruge tegnsættet "a-z", "0-9", " - . _"'
+      msg_max_length: Navn skal være mellem 2 og 30 tegn i længden.
     admin_password:
       label: Adgangskode
       text: >-
@@ -1716,9 +1726,9 @@ ui:
       msg_min_length: Adgangskoden skal være mindst 8 tegn.
       msg_max_length: Adgangskoden skal højst udgøre 32 tegn.
     admin_confirm_password:
-      label: "Confirm Password"
-      text: "Please re-enter your password to confirm."
-      msg: "Confirm password does not match."
+      label: "Bekræft adgangskode"
+      text: "Indtast venligst din adgangskode igen for at bekræfte."
+      msg: "Bekræft adgangskoden stemmer ikke overens."
     admin_email:
       label: E-mail
       text: Du skal bruge denne e-mail for at logge ind.
@@ -1758,7 +1768,7 @@ ui:
     questions: Spørgsmål
     answers: Svar
     users: Brugere
-    badges: Badges
+    badges: Emblemer
     flags: Anmeldelser
     settings: Indstillinger
     general: Generelt
@@ -1766,8 +1776,8 @@ ui:
     smtp: SMTP
     branding: Branding
     legal: Jura
-    write: Skriv
-    terms: Terms
+    write: Skrivning
+    terms: Vilkår
     tos: Betingelser for brug
     privacy: Privatliv
     seo: SEO
@@ -1777,7 +1787,19 @@ ui:
     privileges: Rettigheder
     plugins: Plugins
     installed_plugins: Installerede Plugins
-    apperance: Appearance
+    apperance: Udseende
+    community: Community
+    advanced: Advanced
+    tags: Tags
+    rules: Rules
+    policies: Policies
+    security: Security
+    files: Files
+    apikeys: API Keys
+    intelligence: Intelligence
+    ai_assistant: AI Assistant
+    ai_settings: AI Settings
+    mcp: MCP
   website_welcome: Velkommen til {{site_name}}
   user_center:
     login: Log Ind
@@ -1785,16 +1807,16 @@ ui:
     login_failed_email_tip: Log ind mislykkedes, tillad denne app at få adgang til dine e-mail-oplysninger, før du prøver igen.
   badges:
     modal:
-      title: Congratulations
-      content: You've earned a new badge.
-      close: Close
-      confirm: View badges
-    title: Badges
-    awarded: Awarded
-    earned_×: Earned ×{{ number }}
-    ×_awarded: "{{ number }} awarded"
-    can_earn_multiple: You can earn this multiple times.
-    earned: Earned
+      title: Tillykke
+      content: Du har optjent et nyt badge.
+      close: Luk
+      confirm: Se emblemer
+    title: emblem
+    awarded: Tildelt
+    earned_×: Optjent ×{{ number }}
+    ×_awarded: "{{ number }} tildelt"
+    can_earn_multiple: Du kan tjene dette flere gange.
+    earned: Optjent
   admin:
     admin_header:
       title: Administrator
@@ -1803,8 +1825,8 @@ ui:
       welcome: Velkommen til Administration!
       site_statistics: Statistik for webstedet
       questions: "Spørgsmål:"
-      resolved: "Resolved:"
-      unanswered: "Unanswered:"
+      resolved: "Løst"
+      unanswered: "Ubesvaret:"
       answers: "Svar:"
       comments: "Kommentarer:"
       votes: "Stemmer:"
@@ -1877,10 +1899,10 @@ ui:
         fields:
           display_name:
             label: Visnings-navn
-            msg_range: Display name must be 2-30 characters in length.
+            msg_range: Visningsnavnet skal være 2-30 tegn i længden.
           username:
             label: Brugernavn
-            msg_range: Username must be 2-30 characters in length.
+            msg_range: Brugernavn skal være 2-30 tegn i længden.
           email:
             label: E-mail
             msg_invalid: Ugyldig E-Mail Adresse.
@@ -1892,13 +1914,13 @@ ui:
       form:
         fields:
           users:
-            label: Masse-tilføj bruger
+            label: Masse-tilføj brugere
             placeholder: "John Smith, john@example.com, BUSYopr2\nAlice, alice@example.com, fpDntV8q"
             text: Adskil “navn, e-mail, adgangskode” med kommaer. Én bruger pr. linje.
             msg: "Indtast venligst brugerens e-mail, en pr. linje."
           display_name:
             label: Visnings-navn
-            msg: Display name must be 2-30 characters in length.
+            msg: Visningsnavnet skal være 2-30 tegn i længden.
           email:
             label: E-mail
             msg: E-mail er ugyldig.
@@ -1912,10 +1934,10 @@ ui:
       name: Navn
       email: E-mail
       reputation: Omdømme
-      created_at: Created time
-      delete_at: Deleted time
-      suspend_at: Suspended time
-      suspend_until: Suspend until
+      created_at: Oprettet Tidspunkt
+      delete_at: Slettet Tidspunkt
+      suspend_at: Suspenderet Tidspunkt
+      suspend_until: Suspenderet indtil
       status: Status
       role: Rolle
       action: Handling
@@ -1950,8 +1972,8 @@ ui:
       suspend_user:
         title: Suspendér denne bruger
         content: En suspenderet bruger kan ikke logge ind.
-        label: How long will the user be suspended for?
-        forever: Forever
+        label: Hvor længe vil brugeren blive suspenderet til?
+        forever: For evigt
     questions:
       page_title: Spørgsmål
       unlisted: Fjernet fra liste
@@ -1980,7 +2002,7 @@ ui:
       name:
         label: Websted navn
         msg: Websted-navn skal udfyldes.
-        text: "Navnet på dette websted, som bruges i title-tagget."
+        text: "Navnet på dette websted, som bruges i title-nøgleord."
       site_url:
         label: Websted URL
         msg: Websted-URL skal udfyldes.
@@ -1989,11 +2011,11 @@ ui:
       short_desc:
         label: Kort beskrivelse af websted
         msg: Kort beskrivelse af websted skal udfyldes.
-        text: "Kort beskrivelse, som anvendt i title-tag på hjemmesiden."
+        text: "Kort beskrivelse, som anvendt i title-nøgleord på hjemmesiden."
       desc:
         label: Websted beskrivelse
         msg: Webstedsbeskrivelse skal udfyldes.
-        text: "Beskriv dette websted i en sætning, som bruges i meta description tagget."
+        text: "Beskriv dette websted i en sætning, som bruges i meta description nøgleord."
       contact_email:
         label: Kontakt e-mail
         msg: Kontakt-e-mail skal udfyldes.
@@ -2013,11 +2035,11 @@ ui:
         msg: Tidszone skal udfyldes.
         text: Vælg en by i samme tidszone som dig selv.
       avatar:
-        label: Default avatar
-        text: For users without a custom avatar of their own.
+        label: Standard avatar
+        text: For brugere uden en brugerdefineret avatar.
       gravatar_base_url:
-        label: Gravatar base URL
-        text: URL of the Gravatar provider's API base. Ignored when empty.
+        label: Gravatar base-URL
+        text: URL for Gravatar-udbyderens API-base. Ignoreres når tom.
     smtp:
       page_title: SMTP
       from_email:
@@ -2084,49 +2106,49 @@ ui:
         label: Privatlivspolitik
         text: "Du kan tilføje privatlivspolitik indhold her. Hvis du allerede har et dokument hostet et andet sted, så angiv den fulde URL her."
       external_content_display:
-        label: External content
-        text: "Content includes images, videos, and media embedded from external websites."
-        always_display: Always display external content
-        ask_before_display: Ask before displaying external content
+        label: Eksternt indhold
+        text: "Indholdet indeholder billeder, videoer og medier indlejret fra eksterne hjemmesider."
+        always_display: Vis altid eksternt indhold
+        ask_before_display: Spørg før visning af eksternt indhold
     write:
-      page_title: Skriv
+      page_title: Files
       min_content:
-        label: Minimum question body length
-        text: Minimum allowed question body length in characters.
+        label: Minimum længde for spørgsmål-tekst
+        text: Mindste tilladte spørgsmåls længde i tegn.
       restrict_answer:
         title: Skriv svar
         label: Hver bruger kan kun skrive et svar for det samme spørgsmål
         text: "Slå fra for at give brugerne mulighed for at skrive flere svar på det samme spørgsmål, hvilket kan forårsage svar at være ufokuseret."
       min_tags:
-        label: "Minimum tags per question"
-        text: "Minimum number of tags required in a question."
+        label: "Minimumsnøgleord pr. spørgsmål"
+        text: "Minimum antal nøgleord kræves i et spørgsmål."
       recommend_tags:
-        label: Anbefal tags
-        text: "Anbefal tags vil som standard blive vist i dropdown-listen."
+        label: Anbefal nøgleord
+        text: "Anbefal nøgleord vil som standard blive vist i dropdown-listen."
         msg:
-          contain_reserved: "anbefalede tags kan ikke indeholde reserverede tags"
+          contain_reserved: "anbefalede nøgleord kan ikke indeholde reserverede tags"
       required_tag:
-        title: Angiv påkrævede tags
-        label: Sæt “Anbefal tags” som påkrævede tags
-        text: "Hvert nyt spørgsmål skal have mindst et anbefalet tag."
+        title: Angiv påkrævede nøgleord
+        label: Sæt “Anbefal nøgleord” som påkrævede nøgleord
+        text: "Hvert nyt spørgsmål skal have mindst et anbefalet nøgleord"
       reserved_tags:
-        label: Reserverede tags
-        text: "Reserverede tags kan kun bruges af moderator."
+        label: Reserverede nøgleord
+        text: "Reserverede nøgleord kan kun bruges af moderator."
       image_size:
-        label: Max image size (MB)
-        text: "The maximum image upload size."
+        label: Maks billedstørrelse (MB)
+        text: "Den maksimale billedupload størrelse."
       attachment_size:
-        label: Max attachment size (MB)
-        text: "The maximum attachment files upload size."
+        label: Max vedhæftningsstørrelse (MB)
+        text: "Den maksimale vedhæftede filer upload størrelse."
       image_megapixels:
-        label: Max image megapixels
-        text: "Maximum number of megapixels allowed for an image."
+        label: Max billed megapixels
+        text: "Maksimalt antal megapixels tilladt for et billede."
       image_extensions:
-        label: Authorized image extensions
-        text: "A list of file extensions allowed for image display, separate with commas."
+        label: Godkendte billedudvidelser
+        text: "En liste over tilladte fil udvidelser til billedvisning, adskilt med kommaer."
       attachment_extensions:
-        label: Authorized attachment extensions
-        text: "A list of file extensions allowed for upload, separate with commas. WARNING: Allowing uploads may cause security issues."
+        label: Autoriserede vedhæftningsudvidelser
+        text: "En liste over fil udvidelser tilladt for upload, adskil med kommaer. ADVARSEL: At tillade uploads kan forårsage sikkerhedsproblemer."
     seo:
       page_title: SEO
       permalink:
@@ -2143,10 +2165,14 @@ ui:
       color_scheme:
         label: Farveskema
       navbar_style:
-        label: Navbar background style
+        label: Navigationsbjælke baggrundsstil
       primary_color:
         label: Primær farve
         text: Ændre farver, der bruges af dine temaer
+      layout:
+        label: Layout
+        full_width: Full-width
+        fixed_width: Fixed-width
     css_and_html:
       page_title: CSS og HTML
       custom_css:
@@ -2237,20 +2263,84 @@ ui:
         should_be_number: input skal være et tal
         number_larger_1: tal skal være lig med eller større end 1
     badges:
-      action: Action
-      active: Active
-      activate: Activate
-      all: All
-      awards: Awards
-      deactivate: Deactivate
+      action: Handling
+      active: Aktiv
+      activate: Aktiver
+      all: Alle
+      awards: Præmier
+      deactivate: Deaktiver
       filter:
-        placeholder: Filter by name, badge:id
-      group: Group
-      inactive: Inactive
-      name: Name
-      show_logs: Show logs
+        placeholder: Filtrer efter navn, user:id
+      group: Gruppe
+      inactive: Inaktiv
+      name: Navn
+      show_logs: Vis log
       status: Status
-      title: Badges
+      title: Emblemer
+    apikeys:
+      title: API Keys
+      add_api_key: Add API Key
+      desc: Description
+      scope: Scope
+      key: Key
+      created: Created
+      last_used: Last used
+      add_or_edit_modal:
+        add_title: Add API Key
+        edit_title: Edit API Key
+        description: Description
+        description_required: Description is required.
+        scope: Scope
+        global: Global
+        read-only: Read-only
+      created_modal:
+        title: API key created
+        api_key: API key
+        description: This key will not be displayed again. Make sure you take a copy before continuing.
+      delete_modal:
+        title: Delete API Key
+        content: Any applications or scripts using this key will no longer be able to access the API. This is permanent!
+    ai_settings:
+      enabled:
+        label: AI enabled
+        check: Enable AI features
+        text: The AI model must be configured correctly before it can be used.
+      provider:
+        label: Provider
+      api_host:
+        label: API host
+        msg: API host is required
+      api_key:
+        label: API key
+        check: Check
+        check_success: "Connection successful."
+        msg: API key is required
+      model:
+        label: Model
+        msg: Model is required
+      add_success: AI settings updated successfully.
+    conversations:
+      topic: Topic
+      helpful: Helpful
+      unhelpful: Unhelpful
+      created: Created
+      action: Action
+      empty: No conversations found.
+      delete_modal:
+        title: Delete conversation
+        content: Are you sure you want to delete this conversation? This is permanent!
+        delete_success: Conversation deleted successfully.
+    mcp:
+      mcp_server:
+        label: MCP server
+        switch: Enabled
+      type:
+        label: Type
+      url:
+        label: URL
+      http_header:
+        label: HTTP header
+        text: Please replace {key} with the API Key.
   form:
     optional: (valgfrit)
     empty: skal udfyldes
@@ -2263,11 +2353,11 @@ ui:
     proposed: foreslået
     question_edit: Rediger spørgsmål
     answer_edit: Svar redigér
-    tag_edit: Tag redigér
+    tag_edit: Nøgleord redigér
     edit_summary: Rediger resumé
     edit_question: Rediger spørgsmål
     edit_answer: Rediger svar
-    edit_tag: Rediger tag
+    edit_tag: Rediger nøgleord
     empty: Ingen gennemgangsopgaver tilbage.
     approve_revision_tip: Godkender du denne revision?
     approve_flag_tip: Godkender du denne anmeldelse?
@@ -2310,7 +2400,7 @@ ui:
     n_or_a: Ikke Relevant
     title_for_question: "Tidslinje for"
     title_for_answer: "Tidslinje for svar på {{ title }} af {{ author }}"
-    title_for_tag: "Tidslinje for tag"
+    title_for_tag: "Tidslinje for nøgleord"
     datetime: Datetime
     type: Type
     by: Af
@@ -2330,7 +2420,7 @@ ui:
     discard_confirm: Er du sikker på, at du vil kassere dit udkast?
   messages:
     post_deleted: Dette indlæg er blevet slettet.
-    post_cancel_deleted: This post has been undeleted.
+    post_cancel_deleted: Dette opslag er blevet genoprettet.
     post_pin: Dette indlæg er blevet fastgjort.
     post_unpin: Dette indlæg er blevet frigjort.
     post_hide_list: Dette indlæg er blevet skjult fra listen.
@@ -2339,21 +2429,22 @@ ui:
     post_list: Dette indlæg er blevet listet.
     post_unlist: Dette indlæg er blevet aflistet.
     post_pending: Dit indlæg afventer gennemgang. Dette er en forhåndsvisning, det vil være synligt, når det er blevet godkendt.
-    post_closed: This post has been closed.
-    answer_deleted: This answer has been deleted.
-    answer_cancel_deleted: This answer has been undeleted.
-    change_user_role: This user's role has been changed.
-    user_inactive: This user is already inactive.
-    user_normal: This user is already normal.
-    user_suspended: This user has been suspended.
-    user_deleted: This user has been deleted.
-    badge_activated: This badge has been activated.
-    badge_inactivated: This badge has been inactivated.
-    users_deleted: These users have been deleted.
-    posts_deleted: These questions have been deleted.
-    answers_deleted: These answers have been deleted.
-    copy: Copy to clipboard
-    copied: Copied
-    external_content_warning: External images/media are not displayed.
+    post_closed: Dette opslag er blebet lukket.
+    answer_deleted: Dette svar er blevet slettet.
+    answer_cancel_deleted: Dette svar er blevet genoprettet.
+    change_user_role: Denne brugers rolle er blevet ændret.
+    user_inactive: Denne bruger er allerede inaktiv.
+    user_normal: Denne bruger er allerede normal.
+    user_suspended: Denne bruger er blevet suspenderet.
+    user_deleted: Denne bruger er slettet.
+    user_added: User has been added successfully.
+    badge_activated: Dette emblem er blevet aktiveret.
+    badge_inactivated: Dette emblem er blevet inaktiveret.
+    users_deleted: Disse bruger er blevet slettet.
+    posts_deleted: Disse spørgsmål er blevet slettet.
+    answers_deleted: Disse svar er blevet slettet.
+    copy: Kopier til udklipsholder
+    copied: Kopieret
+    external_content_warning: Eksterne billeder/medier vises ikke.
 
 

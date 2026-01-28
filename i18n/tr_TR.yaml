@@ -266,7 +266,7 @@ backend:
       cannot_set_synonym_as_itself:
         other: Bir etiketin eş anlamlısını kendisi olarak ayarlayamazsınız.
       minimum_count:
-        other: Yeterli sayıda etiket girilmedi.
+        other: Yeterli etiket girilmedi.
     smtp:
       config_from_name_cannot_be_email:
         other: Gönderen adı bir e-posta adresi olamaz.
@@ -311,9 +311,9 @@ backend:
       add_bulk_users_amount_error:
         other: "Bir kerede eklediğiniz kullanıcı sayısı 1-{{.MaxAmount}} aralığında olmalıdır."
       status_suspended_forever:
-        other: "<strong>Bu kullanıcı süresiz olarak askıya alındı.</strong> Bu kullanıcı topluluk kurallarını karşılamıyor."
+        other: "<strong>Bu kullanıcı kalıcı olarak uzaklaştırıldı.</strong> Bu kullanıcı topluluk yönergelerine uymuyor."
       status_suspended_until:
-        other: "<strong>Bu kullanıcı {{.SuspendedUntil}} tarihine kadar askıya alındı.</strong> Bu kullanıcı topluluk kurallarını karşılamıyor."
+        other: "<strong>Bu kullanıcı {{.SuspendedUntil}} tarihine kadar askıya alındı.</strong> Bu kullanıcı topluluk yönergelerine uymuyor."
       status_deleted:
         other: "Bu kullanıcı silindi."
       status_inactive:
@@ -846,6 +846,16 @@ ui:
     http_403: HTTP Hatası 403
     logout: Çıkış Yap
     posts: Gönderiler
+    ai_assistant: AI Assistant
+  ai_assistant:
+    description: Got a question? Ask it and get answers, perspectives, and recommendations.
+    recent_conversations: Recent Conversations
+    show_more: Show more
+    new: New chat
+    ai_generate: AI-generated from posts and may not be accurate.
+    copy: Copy
+    ask_a_follow_up: Ask a follow-up
+    ask_placeholder: Ask a question
   notifications:
     title: Bildirimler
     inbox: Gelen Kutusu
@@ -1138,7 +1148,7 @@ ui:
           label: Revizyon
         title:
           label: Başlık
-          placeholder: Konunuz nedir? Ayrıntılı belirtin.
+          placeholder: Konu nedir? Ayrıntılı yaz.
           msg:
             empty: Başlık boş olamaz.
             range: Başlık en fazla 150 karakter olabilir
@@ -1147,8 +1157,8 @@ ui:
           msg:
             empty: İçerik boş olamaz.
           hint:
-            optional_body: Sorunun ne hakkında olduğunu açıklayın.
-            minimum_characters: "Sorunun ne hakkında olduğunu açıklayın, en az {{min_content_length}} karakter gereklidir."
+            optional_body: Sorunun neyle ilgili olduğunu açıklayın.
+            minimum_characters: "Sorunun neyle ilgili olduğunu açıklayın, en az {{min_content_length}} karakter gereklidir."
         tags:
           label: Etiketler
           msg:
@@ -1169,9 +1179,9 @@ ui:
     add_btn: Etiket ekle
     create_btn: Yeni etiket oluştur
     search_tag: Etiket ara
-    hint: İçeriğinizin ne hakkında olduğunu açıklayın, en az bir etiket gereklidir.
-    hint_zero_tags: İçeriğinizin ne hakkında olduğunu açıklayın.
-    hint_more_than_one_tag: "İçeriğinizin ne hakkında olduğunu açıklayın, en az {{min_tags_number}} etiket gereklidir."
+    hint: Sorunuzun ne hakkında olduğunu tanımlayın, en az bir etiket gereklidir.
+    hint_zero_tags: İçeriğinizin neyle ilgili olduğunu açıklayın.
+    hint_more_than_one_tag: "İçeriğinizin neyle ilgili olduğunu açıklayın, en az {{min_tags_number}} etiket gereklidir."
     no_result: Eşleşen etiket bulunamadı
     tag_required_text: Gerekli etiket (en az bir tane)
   header:
@@ -1376,12 +1386,12 @@ ui:
     review: Revizyonunuz incelendikten sonra görünecek.
     sent_success: Başarıyla gönderildi
   related_question:
-    title: İlgili
+    title: İle ilgili
     answers: cevap
   linked_question:
     title: Bağlantılı
-    description: Bağlantılı gönderiler
-    no_linked_question: Bu içerikten bağlantı verilen içerik yok.
+    description: Posts linked to
+    no_linked_question: No contents linked from this content.
   invite_to_answer:
     title: İnsanları Davet Et
     desc: Cevap verebileceğini düşündüğünüz kişileri davet edin.
@@ -1390,11 +1400,11 @@ ui:
     search: Kişi ara
   question_detail:
     action: Eylem
-    created: Oluşturuldu
+    created: Created
     Asked: Soruldu
     asked: sordu
     update: Değiştirildi
-    Edited: Düzenlendi
+    Edited: Edited
     edit: düzenledi
     commented: yorum yaptı
     Views: Görüntülendi
@@ -1402,7 +1412,7 @@ ui:
     Following: Takip Ediliyor
     follow_tip: Bildirim almak için bu soruyu takip edin
     answered: cevapladı
-    closed_in: Burada kapatıldı
+    closed_in: Şurada kapatıldı
     show_exist: Var olan soruyu göster.
     useful: Faydalı
     question_useful: Faydalı ve açık
@@ -1778,6 +1788,18 @@ ui:
     plugins: Eklentiler
     installed_plugins: Kurulu Eklentiler
     apperance: Görünüm
+    community: Community
+    advanced: Advanced
+    tags: Tags
+    rules: Rules
+    policies: Policies
+    security: Security
+    files: Files
+    apikeys: API Keys
+    intelligence: Intelligence
+    ai_assistant: AI Assistant
+    ai_settings: AI Settings
+    mcp: MCP
   website_welcome: '{{site_name}} sitesine hoş geldiniz'
   user_center:
     login: Giriş
@@ -2089,7 +2111,7 @@ ui:
         always_display: Her zaman harici içeriği göster
         ask_before_display: Harici içeriği göstermeden önce sor
     write:
-      page_title: Yazma
+      page_title: Files
       min_content:
         label: Minimum question body length
         text: Minimum allowed question body length in characters.
@@ -2098,8 +2120,8 @@ ui:
         label: Her kullanıcı aynı soru için sadece bir cevap yazabilir
         text: "Kullanıcıların aynı soruya birden fazla cevap yazmasına izin vermek için kapatın, bu cevapların odaktan uzaklaşmasına neden olabilir."
       min_tags:
-        label: "Soru başına minimum etiket"
-        text: "Bir soruda bulunması gereken minimum etiket sayısı."
+        label: "Minimum tags per question"
+        text: "Minimum number of tags required in a question."
       recommend_tags:
         label: Önerilen etiketler
         text: "Önerilen etiketler varsayılan olarak açılır listede gösterilecektir."
@@ -2147,6 +2169,10 @@ ui:
       primary_color:
         label: Ana renk
         text: Temalarınızda kullanılan renkleri değiştirin
+      layout:
+        label: Layout
+        full_width: Full-width
+        fixed_width: Fixed-width
     css_and_html:
       page_title: CSS ve HTML
       custom_css:
@@ -2251,6 +2277,70 @@ ui:
       show_logs: Kayıtları göster
       status: Durum
       title: Rozetler
+    apikeys:
+      title: API Keys
+      add_api_key: Add API Key
+      desc: Description
+      scope: Scope
+      key: Key
+      created: Created
+      last_used: Last used
+      add_or_edit_modal:
+        add_title: Add API Key
+        edit_title: Edit API Key
+        description: Description
+        description_required: Description is required.
+        scope: Scope
+        global: Global
+        read-only: Read-only
+      created_modal:
+        title: API key created
+        api_key: API key
+        description: This key will not be displayed again. Make sure you take a copy before continuing.
+      delete_modal:
+        title: Delete API Key
+        content: Any applications or scripts using this key will no longer be able to access the API. This is permanent!
+    ai_settings:
+      enabled:
+        label: AI enabled
+        check: Enable AI features
+        text: The AI model must be configured correctly before it can be used.
+      provider:
+        label: Provider
+      api_host:
+        label: API host
+        msg: API host is required
+      api_key:
+        label: API key
+        check: Check
+        check_success: "Connection successful."
+        msg: API key is required
+      model:
+        label: Model
+        msg: Model is required
+      add_success: AI settings updated successfully.
+    conversations:
+      topic: Topic
+      helpful: Helpful
+      unhelpful: Unhelpful
+      created: Created
+      action: Action
+      empty: No conversations found.
+      delete_modal:
+        title: Delete conversation
+        content: Are you sure you want to delete this conversation? This is permanent!
+        delete_success: Conversation deleted successfully.
+    mcp:
+      mcp_server:
+        label: MCP server
+        switch: Enabled
+      type:
+        label: Type
+      url:
+        label: URL
+      http_header:
+        label: HTTP header
+        text: Please replace {key} with the API Key.
   form:
     optional: (isteğe bağlı)
     empty: boş olamaz
@@ -2347,6 +2437,7 @@ ui:
     user_normal: Bu kullanıcı zaten normal durumda.
     user_suspended: Bu kullanıcı askıya alındı.
     user_deleted: Bu kullanıcı silindi.
+    user_added: User has been added successfully.
     badge_activated: Bu rozet etkinleştirildi.
     badge_inactivated: Bu rozet devre dışı bırakıldı.
     users_deleted: Bu kullanıcılar silindi.

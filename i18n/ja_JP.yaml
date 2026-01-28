@@ -58,7 +58,7 @@ backend:
     undelete:
       other: 復元する
     merge:
-      other: Merge
+      other: マージ
   role:
     name:
       user:
@@ -140,7 +140,7 @@ backend:
   pass:
     other: パスワード
   old_pass:
-    other: Current password
+    other: 現在のパスワード
   original_text:
     other: 投稿
   email_or_password_wrong_error:
@@ -173,7 +173,7 @@ backend:
       question_closed_cannot_add:
         other: 質問はクローズされて、追加できません。
       content_cannot_empty:
-        other: Answer content cannot be empty.
+        other: 回答を入力してください。
     comment:
       edit_without_permission:
         other: コメントを編集することはできません。
@@ -182,7 +182,7 @@ backend:
       cannot_edit_after_deadline:
         other: コメント時間が長すぎて変更できません。
       content_cannot_empty:
-        other: Comment content cannot be empty.
+        other: コメントを入力してください。
     email:
       duplicate:
         other: メールアドレスは既に存在しています。
@@ -233,9 +233,9 @@ backend:
       cannot_update:
         other: 更新する権限がありません。
       content_cannot_empty:
-        other: Content cannot be empty.
+        other: 内容を入力してください。
       content_less_than_minimum:
-        other: Not enough content entered.
+        other: 入力された内容の文字数が足りません。
     rank:
       fail_to_meet_the_condition:
         other: 評判ランクが条件を満たしていません
@@ -266,7 +266,7 @@ backend:
       cannot_set_synonym_as_itself:
         other: 現在のタグの同義語をそのものとして設定することはできません。
       minimum_count:
-        other: Not enough tags were entered.
+        other: タグが不足しています。
     smtp:
       config_from_name_cannot_be_email:
         other: Fromの名前はメールアドレスにできません。
@@ -311,13 +311,13 @@ backend:
       add_bulk_users_amount_error:
         other: "一度に追加するユーザーの数は、1 -{{.MaxAmount}} の範囲にする必要があります。"
       status_suspended_forever:
-        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+        other: "<strong>このユーザーは永久に停止されました。</strong> このユーザーはコミュニティガイドラインに準拠していません。"
       status_suspended_until:
-        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+        other: "<strong>このユーザーは {{.SuspendedUntil}} まで利用停止となりました。</strong> このユーザーはコミュニティ ガイドラインに準拠していません。"
       status_deleted:
-        other: "This user was deleted."
+        other: "このユーザーは削除されました。"
       status_inactive:
-        other: "This user is inactive."
+        other: "このユーザーは非アクティブです。"
     config:
       read_config_failed:
         other: configの読み込みに失敗しました
@@ -506,7 +506,7 @@ backend:
       title:
         other: "[{{.SiteName}}] 新しい質問： {{.QuestionTitle}}"
       body:
-        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\n注: これはシステムから送信される自動メールです。ご返信いただいても返信は表示されませんので、ご返信はご遠慮ください。<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>購読解除</a></small>"
     pass_reset:
       title:
         other: "[{{.SiteName }}] パスワードリセット"
@@ -578,7 +578,7 @@ backend:
         name:
           other: はじめてのリンク
         desc:
-          other: First added a link to another post.
+          other: 初めて別の投稿へのリンクを追加した。
       first_reaction:
         name:
           other: 初めてのリアクション
@@ -598,17 +598,17 @@ backend:
         name:
           other: コメントマン
         desc:
-          other: 5つコメントをした
+          other: 5つのコメントをした
       new_user_of_the_month:
         name:
           other: 今月の新しいユーザー
         desc:
-          other: 最初の月に優れた貢献
+          other: 最初の1ヶ月で優れた貢献をした
       read_guidelines:
         name:
           other: ガイドラインを読んだ
         desc:
-          other: '「コミュニティガイドライン」をご覧ください。'
+          other: '「コミュニティガイドライン」を読んだ'
       reader:
         name:
           other: リーダー
@@ -748,7 +748,7 @@ backend:
         name:
           other: 素晴らしい回答
         desc:
-          other: 回答スコアは50以上！！！！1
+          other: 回答スコアは50以上！！！！
       nice_question:
         name:
           other: ナイスな質問
@@ -820,7 +820,7 @@ ui:
     tag_wiki: タグ wiki
     create_tag: タグを作成
     edit_tag: タグを編集
-    ask_a_question: Create Question
+    ask_a_question: 質問を作成
     edit_question: 質問を編集
     edit_answer: 回答を編集
     search: 検索
@@ -844,7 +844,17 @@ ui:
     http_50X: HTTP エラー 500
     http_403: HTTP エラー 403
     logout: ログアウト
-    posts: Posts
+    posts: 投稿
+    ai_assistant: AI Assistant
+  ai_assistant:
+    description: Got a question? Ask it and get answers, perspectives, and recommendations.
+    recent_conversations: Recent Conversations
+    show_more: Show more
+    new: New chat
+    ai_generate: AI-generated from posts and may not be accurate.
+    copy: Copy
+    ask_a_follow_up: Ask a follow-up
+    ask_placeholder: Ask a question
   notifications:
     title: 通知
     inbox: 受信トレイ
@@ -1042,14 +1052,14 @@ ui:
       tip: 本当に削除してもよろしいですか？
       close: クローズ
     merge:
-      title: Merge tag
-      source_tag_title: Source tag
-      source_tag_description: The source tag and its associated data will be remapped to the target tag.
-      target_tag_title: Target tag
-      target_tag_description: A synonym between these two tags will be created after merging.
-      no_results: No tags matched
-      btn_submit: Submit
-      btn_close: Close
+      title: タグをマージ
+      source_tag_title: ソース タグ
+      source_tag_description: ソースタグとそれに関連付けられたデータは、ターゲットタグに再マップされます。
+      target_tag_title: ターゲットタグ
+      target_tag_description: マージ後、これら2つのタグの同義語が作成されます。
+      no_results: 一致するタグはありません
+      btn_submit: 送信
+      btn_close: 閉じる
   edit_tag:
     title: タグを編集
     default_reason: タグを編集
@@ -1068,9 +1078,9 @@ ui:
     day: 日
     hours: 時
     days: 日
-    month: month
-    months: months
-    year: year
+    month: 月
+    months: ヶ月
+    year: 年
   reaction:
     heart: ハート
     smile: 笑顔
@@ -1126,10 +1136,10 @@ ui:
     more: もっと見る
     wiki: Wiki
   ask:
-    title: Create Question
+    title: 質問を作成
     edit_title: 質問を編集
     default_reason: 質問を編集
-    default_first_reason: Create question
+    default_first_reason: 質問を作成
     similar_questions: 類似の質問
     form:
       fields:
@@ -1137,7 +1147,7 @@ ui:
           label: 修正
         title:
           label: タイトル
-          placeholder: What's your topic? Be specific.
+          placeholder: どのようなトピックですか？具体的に教えてください。
           msg:
             empty: タイトルを空にすることはできません。
             range: タイトルは最大150文字までです
@@ -1146,8 +1156,8 @@ ui:
           msg:
             empty: 本文を空にすることはできません。
           hint:
-            optional_body: Describe what the question is about.
-            minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
+            optional_body: 質問を記載してください。
+            minimum_characters: "質問を記載してください。{{min_content_length}} 文字以上の記載が必要です。"
         tags:
           label: タグ
           msg:
@@ -1168,9 +1178,9 @@ ui:
     add_btn: タグを追加
     create_btn: 新しタグを作成
     search_tag: タグを検索
-    hint: Describe what your content is about, at least one tag is required.
-    hint_zero_tags: Describe what your content is about.
-    hint_more_than_one_tag: "Describe what your content is about, at least {{min_tags_number}} tags are required."
+    hint: 内容を記載してください。1つ以上のタグが必要です。
+    hint_zero_tags: 内容を記載してください。
+    hint_more_than_one_tag: "内容を記載してください。{{min_content_length}} 文字以上の記載が必要です。"
     no_result: 一致するタグはありません
     tag_required_text: 必須タグ (少なくとも 1 つ)
   header:
@@ -1222,7 +1232,7 @@ ui:
       msg:
         empty: 名前を空にすることはできません。
         range: 2～30文字の名前を設定してください。
-        character: 'Must use the character set "a-z", "0-9", " - . _"'
+        character: '使用可能な文字は、英小字「a-z」、数字「0-9」、記号「- . _ 」のみです'
     email:
       label: メールアドレス
       msg:
@@ -1294,13 +1304,13 @@ ui:
       display_name:
         label: 表示名
         msg: 表示名は必須です。
-        msg_range: Display name must be 2-30 characters in length.
+        msg_range: 表示名は 2 ~ 30 文字で入力してください。
       username:
         label: ユーザー名
         caption: ユーザーは "@username" としてあなたをメンションできます。
         msg: ユーザー名は空にできません。
-        msg_range: Username must be 2-30 characters in length.
-        character: 'Must use the character set "a-z", "0-9", "- . _"'
+        msg_range: ユーザー名は2 ~ 30文字で入力してください。
+        character: '使用可能な文字は、英小字「a-z」、数字「0-9」、記号「- . _ 」のみです'
       avatar:
         label: プロフィール画像
         gravatar: Gravatar
@@ -1375,25 +1385,25 @@ ui:
     review: レビュー後にあなたのリビジョンが表示されます。
     sent_success: 正常に送信されました。
   related_question:
-    title: Related
+    title: 関連
     answers: 回答
   linked_question:
-    title: Linked
-    description: Posts linked to
-    no_linked_question: No contents linked from this content.
+    title: リンク済
+    description: リンクされた投稿
+    no_linked_question: このコンテンツからリンクされたコンテンツはありません。
   invite_to_answer:
-    title: People Asked
-    desc: Select people who you think might know the answer.
+    title: 回答をリクエスト
+    desc: 答えられそうな人を招待します。
     invite: 回答に招待する
     add: ユーザーを追加
     search: ユーザーを検索
   question_detail:
     action: 動作
-    created: Created
+    created: 作成済
     Asked: 質問済み
     asked: 質問済み
     update: 修正済み
-    Edited: Edited
+    Edited: 編集済
     edit: 編集済み
     commented: コメントしました
     Views: 閲覧回数
@@ -1475,7 +1485,7 @@ ui:
     signup: 新規登録
     logout: ログアウト
     verify: 認証
-    create: Create
+    create: 作成
     approve: 承認
     reject: 却下
     skip: スキップする
@@ -1507,16 +1517,16 @@ ui:
     normal: 通常
     closed: クローズ済み
     deleted: 削除済み
-    deleted_permanently: Deleted permanently
+    deleted_permanently: 完全に削除する
     pending: 処理待ち
     more: もっと見る
-    view: View
-    card: Card
-    compact: Compact
-    display_below: Display below
-    always_display: Always display
-    or: or
-    back_sites: Back to sites
+    view: 表示方法
+    card: カード
+    compact: コンパクト
+    display_below: 以下に表示
+    always_display: 常に表示
+    or: または
+    back_sites: サイトに戻る
   search:
     title: 検索結果
     keywords: キーワード
@@ -1524,7 +1534,7 @@ ui:
     follow: フォロー
     following: フォロー中
     counts: "結果：{{count}}"
-    counts_loading: "... Results"
+    counts_loading: "... 結果"
     more: もっと見る
     sort_btns:
       relevance: 関連性
@@ -1547,13 +1557,13 @@ ui:
     via: 投稿を共有...
     copied: コピーしました
     facebook: Facebookで共有
-    twitter: Share to X
+    twitter: Xでシェア
   cannot_vote_for_self: 自分の投稿には投票できません。
   modal_confirm:
     title: エラー...
   delete_permanently:
-    title: Delete permanently
-    content: Are you sure you want to delete permanently?
+    title: 完全に削除する
+    content: 完全に削除しても良いですか？
   account_result:
     success: 新しいアカウントが確認されました。ホームページにリダイレクトされます。
     link: ホームページへ
@@ -1576,13 +1586,13 @@ ui:
     all_questions: すべての質問
     x_questions: "{{ count }} の質問"
     x_answers: "{{ count }} の回答"
-    x_posts: "{{ count }} Posts"
+    x_posts: "{{ count }} の回答"
     questions: 質問
     answers: 回答
     newest: 最新
     active: 有効
     hot: 人気
-    frequent: Frequent
+    frequent: 関心順
     recommend: おすすめ
     score: スコア
     unanswered: 未回答
@@ -1659,22 +1669,22 @@ ui:
       placeholder: /data/answer.db
       msg: データベースファイルは空にできません。
     ssl_enabled:
-      label: Enable SSL
+      label: SSLを有効化
     ssl_enabled_on:
       label: On
     ssl_enabled_off:
       label: Off
     ssl_mode:
-      label: SSL Mode
+      label: SSL モード
     ssl_root_cert:
-      placeholder: sslrootcert file path
-      msg: Path to sslrootcert file cannot be empty
+      placeholder: sslrootcert ファイルパス
+      msg: sslrootcert ファイルパスは空にできません
     ssl_cert:
-      placeholder: sslcert file path
-      msg: Path to sslcert file cannot be empty
+      placeholder: sslcert ファイルパス
+      msg: sslcert ファイルパスは空にできません
     ssl_key:
-      placeholder: sslkey file path
-      msg: Path to sslkey file cannot be empty
+      placeholder: sslkey ファイルパス
+      msg: sslkey ファイルパスは空にできません
     config_yaml:
       title: config.yamlを作成
       label: config.yaml ファイルが作成されました。
@@ -1707,8 +1717,8 @@ ui:
     admin_name:
       label: 名前
       msg: 名前を空にすることはできません。
-      character: 'Must use the character set "a-z", "0-9", " - . _"'
-      msg_max_length: Name must be between 2 to 30 characters in length.
+      character: '使用可能な文字は、英小字「a-z」、数字「0-9」、記号「- . _ 」のみです'
+      msg_max_length: 名前は2 ~ 30文字で入力してください。
     admin_password:
       label: パスワード
       text: >-
@@ -1717,9 +1727,9 @@ ui:
       msg_min_length: パスワードは8文字以上でなければなりません。
       msg_max_length: パスワードは最大 32 文字でなければなりません。
     admin_confirm_password:
-      label: "Confirm Password"
-      text: "Please re-enter your password to confirm."
-      msg: "Confirm password does not match."
+      label: "パスワードの確認"
+      text: "確認のため、パスワードを再入力してください。"
+      msg: "確認用パスワードが一致しません"
     admin_email:
       label: メールアドレス
       text: ログインするにはこのメールアドレスが必要です。
@@ -1767,8 +1777,8 @@ ui:
     smtp: SMTP
     branding: ブランディング
     legal: 法的事項
-    write: 書き
-    terms: Terms
+    write: 編集
+    terms: 規約
     tos: 利用規約
     privacy: プライバシー
     seo: SEO
@@ -1778,7 +1788,19 @@ ui:
     privileges: 特典
     plugins: プラグイン
     installed_plugins: 使用中のプラグイン
-    apperance: Appearance
+    apperance: 外観
+    community: Community
+    advanced: Advanced
+    tags: Tags
+    rules: Rules
+    policies: Policies
+    security: Security
+    files: Files
+    apikeys: API Keys
+    intelligence: Intelligence
+    ai_assistant: AI Assistant
+    ai_settings: AI Settings
+    mcp: MCP
   website_welcome: '{{site_name}} へようこそ'
   user_center:
     login: ログイン
@@ -1878,10 +1900,10 @@ ui:
         fields:
           display_name:
             label: 表示名
-            msg_range: Display name must be 2-30 characters in length.
+            msg_range: 表示名は 2 ~ 30 文字で入力してください。
           username:
             label: ユーザー名
-            msg_range: Username must be 2-30 characters in length.
+            msg_range: ユーザー名は 2 ~ 30 文字で入力してください。
           email:
             label: メールアドレス
             msg_invalid: 無効なメールアドレス
@@ -1913,10 +1935,10 @@ ui:
       name: 名前
       email: メールアドレス
       reputation: 評価
-      created_at: Created time
-      delete_at: Deleted time
-      suspend_at: Suspended time
-      suspend_until: Suspend until
+      created_at: 作成日時
+      delete_at: 削除日時
+      suspend_at: 凍結時間
+      suspend_until: まで凍結
       status: ステータス
       role: ロール
       action: 操作
@@ -1951,8 +1973,8 @@ ui:
       suspend_user:
         title: ユーザーをサスペンドにする
         content: 一時停止中のユーザーはログインできません。
-        label: How long will the user be suspended for?
-        forever: Forever
+        label: いつまで凍結しますか？
+        forever: 無期限
     questions:
       page_title: 質問
       unlisted: 限定公開済み
@@ -2014,11 +2036,11 @@ ui:
         msg: タイムゾーンを空にすることはできません。
         text: あなたのタイムゾーンを選択してください。
       avatar:
-        label: Default avatar
-        text: For users without a custom avatar of their own.
+        label: デフォルトのアバター
+        text: 独自のカスタムアバターを持たないユーザー向け。
       gravatar_base_url:
-        label: Gravatar base URL
-        text: URL of the Gravatar provider's API base. Ignored when empty.
+        label: GravatarのベースURL
+        text: GravatarプロバイダーのAPIベースのURL。空の場合は無視されます。
     smtp:
       page_title: SMTP
       from_email:
@@ -2085,22 +2107,22 @@ ui:
         label: プライバシーポリシー
         text: "ここにプライバシーポリシーの内容を追加できます。すでに他の場所でホストされているドキュメントを持っている場合は、こちらにフルURLを入力してください。"
       external_content_display:
-        label: External content
-        text: "Content includes images, videos, and media embedded from external websites."
-        always_display: Always display external content
-        ask_before_display: Ask before displaying external content
+        label: 外部コンテンツ
+        text: "コンテンツには、外部ウェブサイトから埋め込まれた画像、ビデオ、およびメディアが含まれます"
+        always_display: 常に外部コンテンツを表示する
+        ask_before_display: 外部コンテンツを表示する前に確認する
     write:
-      page_title: 編集
+      page_title: Files
       min_content:
-        label: Minimum question body length
-        text: Minimum allowed question body length in characters.
+        label: 質問に必要な文字数
+        text: 質問の投稿に必要な本文の文字数です。
       restrict_answer:
         title: 回答を書く
         label: 各ユーザーは同じ質問に対して1つの回答しか書けません
         text: "ユーザが同じ質問に複数の回答を書き込めるようにするにはオフにします。これにより回答がフォーカスされていない可能性があります。"
       min_tags:
-        label: "Minimum tags per question"
-        text: "Minimum number of tags required in a question."
+        label: "質問に必要なタグ数"
+        text: "質問の投稿に必要なタグの数です。"
       recommend_tags:
         label: おすすめタグ
         text: "デフォルトでドロップダウンリストに推奨タグが表示されます。"
@@ -2144,10 +2166,14 @@ ui:
       color_scheme:
         label: 配色
       navbar_style:
-        label: Navbar background style
+        label: ナビゲーションバーの背景スタイル
       primary_color:
         label: メインカラー
         text: テーマで使用される色を変更する
+      layout:
+        label: Layout
+        full_width: Full-width
+        fixed_width: Fixed-width
     css_and_html:
       page_title: CSS と HTML
       custom_css:
@@ -2252,6 +2278,70 @@ ui:
       show_logs: ログを表示
       status: ステータス
       title: バッジ
+    apikeys:
+      title: API Keys
+      add_api_key: Add API Key
+      desc: Description
+      scope: Scope
+      key: Key
+      created: Created
+      last_used: Last used
+      add_or_edit_modal:
+        add_title: Add API Key
+        edit_title: Edit API Key
+        description: Description
+        description_required: Description is required.
+        scope: Scope
+        global: Global
+        read-only: Read-only
+      created_modal:
+        title: API key created
+        api_key: API key
+        description: This key will not be displayed again. Make sure you take a copy before continuing.
+      delete_modal:
+        title: Delete API Key
+        content: Any applications or scripts using this key will no longer be able to access the API. This is permanent!
+    ai_settings:
+      enabled:
+        label: AI enabled
+        check: Enable AI features
+        text: The AI model must be configured correctly before it can be used.
+      provider:
+        label: Provider
+      api_host:
+        label: API host
+        msg: API host is required
+      api_key:
+        label: API key
+        check: Check
+        check_success: "Connection successful."
+        msg: API key is required
+      model:
+        label: Model
+        msg: Model is required
+      add_success: AI settings updated successfully.
+    conversations:
+      topic: Topic
+      helpful: Helpful
+      unhelpful: Unhelpful
+      created: Created
+      action: Action
+      empty: No conversations found.
+      delete_modal:
+        title: Delete conversation
+        content: Are you sure you want to delete this conversation? This is permanent!
+        delete_success: Conversation deleted successfully.
+    mcp:
+      mcp_server:
+        label: MCP server
+        switch: Enabled
+      type:
+        label: Type
+      url:
+        label: URL
+      http_header:
+        label: HTTP header
+        text: Please replace {key} with the API Key.
   form:
     optional: (任意)
     empty: 空にすることはできません
@@ -2348,13 +2438,14 @@ ui:
     user_normal: このユーザーは既に有効です。
     user_suspended: このユーザーは凍結されています。
     user_deleted: このユーザーは削除されました。
+    user_added: User has been added successfully.
     badge_activated: このバッジは有効化されました。
     badge_inactivated: このバッジは無効化されています。
-    users_deleted: These users have been deleted.
-    posts_deleted: These questions have been deleted.
-    answers_deleted: These answers have been deleted.
-    copy: Copy to clipboard
-    copied: Copied
-    external_content_warning: External images/media are not displayed.
+    users_deleted: このユーザーは削除されました。
+    posts_deleted: この質問は削除されています。
+    answers_deleted: この回答は削除されています。
+    copy: クリップボードにコピー
+    copied: コピーしました
+    external_content_warning: 外部の画像/メディアは表示されません。
 
 

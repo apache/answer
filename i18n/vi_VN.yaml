@@ -846,6 +846,16 @@ ui:
     http_403: Lỗi HTTP 403
     logout: Đăng xuất
     posts: Posts
+    ai_assistant: AI Assistant
+  ai_assistant:
+    description: Got a question? Ask it and get answers, perspectives, and recommendations.
+    recent_conversations: Recent Conversations
+    show_more: Show more
+    new: New chat
+    ai_generate: AI-generated from posts and may not be accurate.
+    copy: Copy
+    ask_a_follow_up: Ask a follow-up
+    ask_placeholder: Ask a question
   notifications:
     title: Các thông báo
     inbox: Hộp thư đến
@@ -1778,6 +1788,18 @@ ui:
     plugins: Plugins
     installed_plugins: Plugin đã cài đặt
     apperance: Appearance
+    community: Community
+    advanced: Advanced
+    tags: Tags
+    rules: Rules
+    policies: Policies
+    security: Security
+    files: Files
+    apikeys: API Keys
+    intelligence: Intelligence
+    ai_assistant: AI Assistant
+    ai_settings: AI Settings
+    mcp: MCP
   website_welcome: Chào mừng bạn đến với {{site_name}}
   user_center:
     login: Đăng nhập
@@ -2089,7 +2111,7 @@ ui:
         always_display: Always display external content
         ask_before_display: Ask before displaying external content
     write:
-      page_title: Viết
+      page_title: Files
       min_content:
         label: Minimum question body length
         text: Minimum allowed question body length in characters.
@@ -2147,6 +2169,10 @@ ui:
       primary_color:
         label: Màu chính
         text: Thay đổi các màu sắc được sử dụng bởi chủ đề của bạn
+      layout:
+        label: Layout
+        full_width: Full-width
+        fixed_width: Fixed-width
     css_and_html:
       page_title: CSS và HTML
       custom_css:
@@ -2251,6 +2277,70 @@ ui:
       show_logs: Hiển thị nhật ký
       status: Trạng thái
       title: Danh hiệu
+    apikeys:
+      title: API Keys
+      add_api_key: Add API Key
+      desc: Description
+      scope: Scope
+      key: Key
+      created: Created
+      last_used: Last used
+      add_or_edit_modal:
+        add_title: Add API Key
+        edit_title: Edit API Key
+        description: Description
+        description_required: Description is required.
+        scope: Scope
+        global: Global
+        read-only: Read-only
+      created_modal:
+        title: API key created
+        api_key: API key
+        description: This key will not be displayed again. Make sure you take a copy before continuing.
+      delete_modal:
+        title: Delete API Key
+        content: Any applications or scripts using this key will no longer be able to access the API. This is permanent!
+    ai_settings:
+      enabled:
+        label: AI enabled
+        check: Enable AI features
+        text: The AI model must be configured correctly before it can be used.
+      provider:
+        label: Provider
+      api_host:
+        label: API host
+        msg: API host is required
+      api_key:
+        label: API key
+        check: Check
+        check_success: "Connection successful."
+        msg: API key is required
+      model:
+        label: Model
+        msg: Model is required
+      add_success: AI settings updated successfully.
+    conversations:
+      topic: Topic
+      helpful: Helpful
+      unhelpful: Unhelpful
+      created: Created
+      action: Action
+      empty: No conversations found.
+      delete_modal:
+        title: Delete conversation
+        content: Are you sure you want to delete this conversation? This is permanent!
+        delete_success: Conversation deleted successfully.
+    mcp:
+      mcp_server:
+        label: MCP server
+        switch: Enabled
+      type:
+        label: Type
+      url:
+        label: URL
+      http_header:
+        label: HTTP header
+        text: Please replace {key} with the API Key.
   form:
     optional: (tùy chọn)
     empty: không thể trống
@@ -2347,6 +2437,7 @@ ui:
     user_normal: Người dùng này đã bình thường.
     user_suspended: Người dùng này đã bị đình chỉ.
     user_deleted: Người dùng này đã bị xóa.
+    user_added: User has been added successfully.
     badge_activated: Huy hiệu này đã được kích hoạt.
     badge_inactivated: Huy hiệu này đã bị vô hiệu hóa.
     users_deleted: These users have been deleted.
