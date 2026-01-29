@@ -110,7 +110,7 @@ backend:
     rank_invite_someone_to_answer_label:
       other: Undang seseorang untuk menjawab
     rank_tag_add_label:
-      other:
+      other: Buat tag baru
     rank_tag_edit_label:
       other: Edit tag description (need to review)
     rank_question_edit_label:

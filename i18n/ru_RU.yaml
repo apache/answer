@@ -701,7 +701,7 @@ backend:
           other: Активный участник на год, опубликовал по крайней мере один раз.
       appreciated:
         name:
-          other:
+          other: Appreciated
         desc:
           other: Received 1 up vote on 20 posts.
       respected:
