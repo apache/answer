@@ -144,7 +144,7 @@ func (ps *PluginCommonService) initPluginData() {
 	})
 
 	// init plugin status
-	pluginStatus, err := ps.configService.GetStringValue(context.TODO(), constant.PluginStatus)
+	pluginStatus, err := ps.configService.GetStringValueFromDB(context.TODO(), constant.PluginStatus)
 	if err != nil {
 		log.Error(err)
 	} else {
