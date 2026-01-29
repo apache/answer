@@ -61,7 +61,7 @@ func addAPIKey(ctx context.Context, x *xorm.Engine) error {
 	}
 
 	defaultConfigTable := []*entity.Config{
-		{ID: 10000, Key: "ai_config.provider", Value: `[{"default_api_host":"https://api.openai.com","display_name":"OpenAI","name":"openai"},{"default_api_host":"https://generativelanguage.googleapis.com","display_name":"Gemini","name":"gemini"},{"default_api_host":"https://api.anthropic.com","display_name":"Anthropic","name":"anthropic"}]`},
+		{ID: 131, Key: "ai_config.provider", Value: `[{"default_api_host":"https://api.openai.com","display_name":"OpenAI","name":"openai"},{"default_api_host":"https://generativelanguage.googleapis.com","display_name":"Gemini","name":"gemini"},{"default_api_host":"https://api.anthropic.com","display_name":"Anthropic","name":"anthropic"}]`},
 	}
 	for _, c := range defaultConfigTable {
 		exist, err := x.Context(ctx).Get(&entity.Config{Key: c.Key})
