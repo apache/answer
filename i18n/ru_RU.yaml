@@ -1454,7 +1454,7 @@ ui:
       content: Are you sure you want to list?
     unlist:
       confirm_btn: Убрать из списка
-      title:
+      title: Unlist this post
       content: Are you sure you want to unlist?
     pin:
       title: Закрепить сообщение
