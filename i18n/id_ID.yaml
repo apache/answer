@@ -132,7 +132,7 @@ backend:
     rank_tag_synonym_label:
       other: Manage tag synonyms
   email:
-    other:
+    other: Email
   e_mail:
     other: Email
   password:

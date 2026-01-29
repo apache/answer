@@ -58,7 +58,7 @@ backend:
     undelete:
       other: Отменить удаление
     merge:
-      other:
+      other: Объединить
   role:
     name:
       user:
