@@ -61,6 +61,7 @@ type AnswerAPIRouter struct {
 	aiController                  *controller.AIController
 	aiConversationController      *controller.AIConversationController
 	aiConversationAdminController *controller_admin.AIConversationAdminController
+	mcpController                 *controller.MCPController
 }
 
 func NewAnswerAPIRouter(
@@ -98,6 +99,7 @@ func NewAnswerAPIRouter(
 	aiController *controller.AIController,
 	aiConversationController *controller.AIConversationController,
 	aiConversationAdminController *controller_admin.AIConversationAdminController,
+	mcpController *controller.MCPController,
 ) *AnswerAPIRouter {
 	return &AnswerAPIRouter{
 		langController:                langController,
@@ -134,6 +136,7 @@ func NewAnswerAPIRouter(
 		aiController:                  aiController,
 		aiConversationController:      aiConversationController,
 		aiConversationAdminController: aiConversationAdminController,
+		mcpController:                 mcpController,
 	}
 }
 

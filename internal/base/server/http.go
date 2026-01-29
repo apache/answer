@@ -113,5 +113,10 @@ func NewHTTPServer(debug bool,
 		agent.RegisterAuthAdminRouter(adminauthV1)
 		return nil
 	})
+
+	// mcp
+	mcpAPIGroup := r.Group(uiConf.APIBaseURL + "/answer/api/v1")
+	mcpAPIGroup.Use(authUserMiddleware.AuthMcpEnable(), authUserMiddleware.AuthAPIKey())
+	answerRouter.RegisterMCPRouter(mcpAPIGroup)
 	return r
 }

@@ -76,6 +76,9 @@ var (
 		&entity.BadgeAward{},
 		&entity.FileRecord{},
 		&entity.PluginKVStorage{},
+		&entity.APIKey{},
+		&entity.AIConversation{},
+		&entity.AIConversationRecord{},
 	}
 
 	roles = []*entity.Role{

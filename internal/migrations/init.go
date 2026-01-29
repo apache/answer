@@ -87,6 +87,8 @@ func (m *Mentor) InitDB() error {
 	m.do("init site info security", m.initSiteInfoSecurityConfig)
 	m.do("init default content", m.initDefaultContent)
 	m.do("init default badges", m.initDefaultBadges)
+	m.do("init default ai config", m.initSiteInfoAI)
+	m.do("init default MCP config", m.initSiteInfoMCP)
 	return m.err
 }
 
@@ -605,4 +607,30 @@ func (m *Mentor) initDefaultBadges() {
 			return
 		}
 	}
+}
+
+func (m *Mentor) initSiteInfoAI() {
+	content := &schema.SiteAIReq{
+		PromptConfig: &schema.AIPromptConfig{
+			ZhCN: constant.DefaultAIPromptConfigZhCN,
+			EnUS: constant.DefaultAIPromptConfigEnUS,
+		},
+	}
+	writeDataBytes, _ := json.Marshal(content)
+	_, m.err = m.engine.Context(m.ctx).Insert(&entity.SiteInfo{
+		Type:    constant.SiteTypeAI,
+		Content: string(writeDataBytes),
+		Status:  1,
+	})
+}
+func (m *Mentor) initSiteInfoMCP() {
+	content := &schema.SiteMCPReq{
+		Enabled: true,
+	}
+	writeDataBytes, _ := json.Marshal(content)
+	_, m.err = m.engine.Context(m.ctx).Insert(&entity.SiteInfo{
+		Type:    constant.SiteTypeMCP,
+		Content: string(writeDataBytes),
+		Status:  1,
+	})
 }

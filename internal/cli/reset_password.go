@@ -32,6 +32,7 @@ import (
 	"github.com/apache/answer/internal/base/conf"
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/base/path"
+	"github.com/apache/answer/internal/repo/api_key"
 	"github.com/apache/answer/internal/repo/auth"
 	"github.com/apache/answer/internal/repo/user"
 	authService "github.com/apache/answer/internal/service/auth"
@@ -95,7 +96,8 @@ func ResetPassword(ctx context.Context, dataDirPath string, opts *ResetPasswordO
 
 	userRepo := user.NewUserRepo(dataData)
 	authRepo := auth.NewAuthRepo(dataData)
-	authSvc := authService.NewAuthService(authRepo)
+	apiKeyRepo := api_key.NewAPIKeyRepo(dataData)
+	authSvc := authService.NewAuthService(authRepo, apiKeyRepo)
 
 	email := strings.TrimSpace(opts.Email)
 	if email == "" {
