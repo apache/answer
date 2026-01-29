@@ -58,7 +58,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
 
     if (site_name.value && site_name.value.length > 30) {
       bol = false;
-      data.site_url = {
+      data.site_name = {
         value: site_name.value,
         isInvalid: true,
         errorMsg: t('site_name.msg_max_length'),
@@ -70,7 +70,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
       data.site_url = {
         value: '',
         isInvalid: true,
-        errorMsg: t('site_name.msg.empty'),
+        errorMsg: t('site_url.msg.empty'),
       };
     }
 
