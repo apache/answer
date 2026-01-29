@@ -133,7 +133,7 @@ const UsersSettings = () => {
 
   return (
     <>
-      <h3 className="mb-4">{t('tags', { keyPrefix: 'nav_menus' })}</h3>
+      <h3 className="mb-4">{t('users', { keyPrefix: 'nav_menus' })}</h3>
       <TabNav menus={ADMIN_USERS_NAV_MENUS} />
       <div className="max-w-748">
         <SchemaForm
