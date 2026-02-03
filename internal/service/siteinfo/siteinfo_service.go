@@ -707,6 +707,20 @@ func (s *SiteInfoService) GetAIProvider(ctx context.Context) (resp []*schema.Get
 	}
 
 	_ = json.Unmarshal([]byte(aiProviderConfig), &resp)
+	hasDeepSeek := false
+	for _, provider := range resp {
+		if provider.Name == "deepseek" {
+			hasDeepSeek = true
+			break
+		}
+	}
+	if !hasDeepSeek {
+		resp = append(resp, &schema.GetAIProviderResp{
+			Name:           "deepseek",
+			DisplayName:    "DeepSeek",
+			DefaultAPIHost: "https://api.deepseek.com",
+		})
+	}
 	return resp, nil
 }
 
@@ -726,7 +740,12 @@ func (s *SiteInfoService) GetAIModels(ctx context.Context, req *schema.GetAIMode
 	r := resty.New()
 	r.SetHeader("Authorization", fmt.Sprintf("Bearer %s", req.APIKey))
 	r.SetHeader("Content-Type", "application/json")
-	respBody, err := r.R().Get(req.APIHost + "/v1/models")
+	apiHost := strings.TrimRight(req.APIHost, "/")
+	modelsPath := "/v1/models"
+	if strings.HasSuffix(apiHost, "/v1") {
+		modelsPath = "/models"
+	}
+	respBody, err := r.R().Get(apiHost + modelsPath)
 	if err != nil {
 		log.Error(err)
 		return resp, errors.BadRequest(fmt.Sprintf("failed to get AI models %s", err.Error()))
