@@ -66,3 +66,8 @@ See [CONTRIBUTING](https://answer.apache.org/community/contributing) for ways to
 ## License
 
 [Apache License 2.0](https://github.com/apache/answer/blob/main/LICENSE)
+
+## Contribution
+
+We welcome community contributions. Please follow Apache contribution guidelines and submit pull requests for review.
+
