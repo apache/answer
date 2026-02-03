@@ -63,13 +63,18 @@ $ helm install answer -f values.yaml .
 ```
 > **Tip**: You can use the default [values.yaml]
 
-## TODO
+### Installing from the OCI registry
 
-Publish the chart to Artifacthub and add proper installation instructions. E.G.
-> **NOTE**: This is not currently a valid installation option.
+The chart is published to the GitHub Container Registry and can be installed directly with Helm 3.8+.
 
 ```console
-$ helm repo add apache https://charts.answer.apache.org/
-$ helm repo update
-$ helm install apache/answer -n mynamespace
+$ helm install answer oci://ghcr.io/apache/charts/answer --version 0.1.0
+```
+
+If you want to inspect or tweak values first, pull the chart and install from the unpacked directory:
+
+```console
+$ helm pull oci://ghcr.io/apache/charts/answer --version 0.1.0
+$ tar -xzf answer-0.1.0.tgz
+$ helm install answer ./answer -f values.yaml
 ```
