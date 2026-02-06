@@ -21,10 +21,9 @@ import { FC, useEffect, useState, useRef } from 'react';
 import { Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
-import { marked } from 'marked';
 import copy from 'copy-to-clipboard';
 
-import { voteConversation } from '@/services';
+import { markdownToHtml, voteConversation } from '@/services';
 import { Icon, htmlRender } from '@/components';
 
 interface IProps {
@@ -39,6 +38,17 @@ interface IProps {
     unhelpful: number;
   };
 }
+
+const escapeHtml = (text: string) =>
+  text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
+const renderPlainTextAsHtml = (text: string) =>
+  escapeHtml(text).replace(/\r?\n/g, '<br />');
 
 const BubbleAi: FC<IProps> = ({
   canType = false,
@@ -55,6 +65,7 @@ const BubbleAi: FC<IProps> = ({
   const [isHelpful, setIsHelpful] = useState(false);
   const [isUnhelpful, setIsUnhelpful] = useState(false);
   const [canShowAction, setCanShowAction] = useState(false);
+  const [safeHtml, setSafeHtml] = useState('');
   const typewriterRef = useRef<{
     timer: NodeJS.Timeout | null;
     index: number;
@@ -64,6 +75,8 @@ const BubbleAi: FC<IProps> = ({
     index: 0,
     isTyping: false,
   });
+  const renderTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const renderTaskRef = useRef(0);
   const fmtContainer = useRef<HTMLDivElement>(null);
   // add ref for ScrollIntoView
   const containerRef = useRef<HTMLDivElement>(null);
@@ -195,12 +208,55 @@ const BubbleAi: FC<IProps> = ({
   }, [content, isCompleted]);
 
   useEffect(() => {
+    if (renderTimerRef.current) {
+      clearTimeout(renderTimerRef.current);
+      renderTimerRef.current = null;
+    }
+    renderTaskRef.current += 1;
+    const currentRenderTask = renderTaskRef.current;
+
+    if (!displayContent) {
+      setSafeHtml('');
+      return undefined;
+    }
+
+    // During streaming, render escaped plain text to avoid executing unsanitized HTML.
+    if (!isCompleted) {
+      setSafeHtml(renderPlainTextAsHtml(displayContent));
+      return undefined;
+    }
+
+    renderTimerRef.current = setTimeout(() => {
+      markdownToHtml(displayContent)
+        .then((resp) => {
+          if (renderTaskRef.current !== currentRenderTask) {
+            return;
+          }
+          setSafeHtml(resp || renderPlainTextAsHtml(displayContent));
+        })
+        .catch(() => {
+          if (renderTaskRef.current !== currentRenderTask) {
+            return;
+          }
+          setSafeHtml(renderPlainTextAsHtml(displayContent));
+        });
+    }, 0);
+
+    return () => {
+      if (renderTimerRef.current) {
+        clearTimeout(renderTimerRef.current);
+        renderTimerRef.current = null;
+      }
+    };
+  }, [displayContent, isCompleted]);
+
+  useEffect(() => {
     setIsHelpful(actionData.helpful > 0);
     setIsUnhelpful(actionData.unhelpful > 0);
   }, [actionData]);
 
   useEffect(() => {
-    if (fmtContainer.current && isCompleted) {
+    if (fmtContainer.current && isCompleted && safeHtml) {
       htmlRender(fmtContainer.current, {
         copySuccessText: t('copied', { keyPrefix: 'messages' }),
         copyText: t('copy', { keyPrefix: 'messages' }),
@@ -211,7 +267,7 @@ const BubbleAi: FC<IProps> = ({
       });
       setCanShowAction(true);
     }
-  }, [isCompleted, fmtContainer.current]);
+  }, [isCompleted, safeHtml, t]);
 
   return (
     <div
@@ -223,7 +279,7 @@ const BubbleAi: FC<IProps> = ({
           className="fmt text-break text-wrap"
           ref={fmtContainer}
           style={{ transition: 'all 0.2s ease' }}
-          dangerouslySetInnerHTML={{ __html: marked.parse(displayContent) }}
+          dangerouslySetInnerHTML={{ __html: safeHtml }}
         />
 
         {canShowAction && (

@@ -149,10 +149,10 @@ const Index = () => {
                 <BubbleUser content={item.content} />
               ) : (
                 <BubbleAi
-                  canType
+                  canType={isGenerate && isLastMessage}
                   chatId={item.chat_completion_id}
-                  isLast
-                  isCompleted={!isGenerate}
+                  isLast={isLastMessage}
+                  isCompleted={!isGenerate || !isLastMessage}
                   content={item.content}
                   actionData={{
                     helpful: item.helpful,
