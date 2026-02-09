@@ -107,6 +107,7 @@ var migrations = []Migration{
 	NewMigration("v1.7.2", "expand avatar column length", expandAvatarColumnLength, false),
 	NewMigration("v1.8.0", "change admin menu", updateAdminMenuSettings, true),
 	NewMigration("v1.8.1", "ai feat", aiFeat, true),
+	NewMigration("v2.0.1", "change avatar type to text", updateAvatarType, false),
 }
 
 func GetMigrations() []Migration {
