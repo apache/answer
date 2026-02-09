@@ -184,7 +184,22 @@ func (am *AuthUserMiddleware) AdminAuth() gin.HandlerFunc {
 			return
 		}
 		if userInfo != nil {
+			if userInfo.EmailStatus == entity.EmailStatusToBeVerified {
+				_ = am.authService.RemoveAdminUserCacheInfo(ctx, token)
+				handler.HandleResponse(ctx, errors.Forbidden(reason.EmailNeedToBeVerified),
+					&schema.ForbiddenResp{Type: schema.ForbiddenReasonTypeInactive})
+				ctx.Abort()
+				return
+			}
+			if userInfo.UserStatus == entity.UserStatusSuspended {
+				_ = am.authService.RemoveAdminUserCacheInfo(ctx, token)
+				handler.HandleResponse(ctx, errors.Forbidden(reason.UserSuspended),
+					&schema.ForbiddenResp{Type: schema.ForbiddenReasonTypeUserSuspended})
+				ctx.Abort()
+				return
+			}
 			if userInfo.UserStatus == entity.UserStatusDeleted {
+				_ = am.authService.RemoveAdminUserCacheInfo(ctx, token)
 				handler.HandleResponse(ctx, errors.Unauthorized(reason.UnauthorizedError), nil)
 				ctx.Abort()
 				return

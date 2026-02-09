@@ -30,6 +30,7 @@ import (
 
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/handler"
+	"github.com/apache/answer/internal/base/reason"
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/comment_common"
@@ -41,6 +42,7 @@ import (
 	"github.com/apache/answer/pkg/converter"
 	"github.com/apache/answer/pkg/obj"
 	"github.com/apache/answer/pkg/uid"
+	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
 )
 
@@ -90,6 +92,10 @@ func NewActivityService(
 // GetObjectTimeline get object timeline
 func (as *ActivityService) GetObjectTimeline(ctx context.Context, req *schema.GetObjectTimelineReq) (
 	resp *schema.GetObjectTimelineResp, err error) {
+	if err = as.ensureTimelineObjectVisible(ctx, req.ObjectID, req.UserID, req.IsAdminModerator); err != nil {
+		return nil, err
+	}
+
 	resp = &schema.GetObjectTimelineResp{
 		ObjectInfo: &schema.ActObjectInfo{},
 		Timeline:   make([]*schema.ActObjectTimeline, 0),
@@ -254,10 +260,112 @@ func (as *ActivityService) formatTimelineUserInfo(ctx context.Context, timeline 
 // GetObjectTimelineDetail get object timeline
 func (as *ActivityService) GetObjectTimelineDetail(ctx context.Context, req *schema.GetObjectTimelineDetailReq) (
 	resp *schema.GetObjectTimelineDetailResp, err error) {
+	if err = as.ensureTimelineRevisionVisible(ctx, req.NewRevisionID, req.UserID, req.IsAdminModerator); err != nil {
+		return nil, err
+	}
+	if err = as.ensureTimelineRevisionVisible(ctx, req.OldRevisionID, req.UserID, req.IsAdminModerator); err != nil {
+		return nil, err
+	}
+
 	resp = &schema.GetObjectTimelineDetailResp{}
 	resp.OldRevision, _ = as.getOneObjectDetail(ctx, req.OldRevisionID)
 	resp.NewRevision, _ = as.getOneObjectDetail(ctx, req.NewRevisionID)
 	return resp, nil
+}
+
+func (as *ActivityService) ensureTimelineRevisionVisible(ctx context.Context, revisionID, userID string,
+	isAdminModerator bool) error {
+	if revisionID == "0" {
+		return nil
+	}
+	revisionInfo, err := as.revisionService.GetRevision(ctx, revisionID)
+	if err != nil {
+		return err
+	}
+	return as.ensureTimelineObjectVisible(ctx, revisionInfo.ObjectID, userID, isAdminModerator)
+}
+
+func (as *ActivityService) ensureTimelineObjectVisible(ctx context.Context, objectID, userID string,
+	isAdminModerator bool) error {
+	objInfo, err := as.objectInfoService.GetInfo(ctx, objectID)
+	if err != nil {
+		return err
+	}
+
+	var parentQuestionInfo *schema.SimpleObjectInfo
+	if objInfo.ObjectType != constant.QuestionObjectType && len(objInfo.QuestionID) > 0 && objInfo.QuestionID != "0" {
+		parentQuestionInfo, err = as.objectInfoService.GetInfo(ctx, objInfo.QuestionID)
+		if err != nil {
+			return err
+		}
+	}
+
+	return validateTimelineObjectVisibility(objInfo, parentQuestionInfo, userID, isAdminModerator)
+}
+
+func validateTimelineObjectVisibility(objInfo, parentQuestionInfo *schema.SimpleObjectInfo,
+	userID string, isAdminModerator bool) error {
+	if objInfo == nil {
+		return errors.NotFound(reason.ObjectNotFound)
+	}
+	if isTimelineObjectRestricted(objInfo) &&
+		!canViewRestrictedTimelineObject(objInfo.ObjectType, objInfo.ObjectCreatorUserID, userID, isAdminModerator) {
+		return errors.NotFound(timelineNotFoundReasonByObjectType(objInfo.ObjectType))
+	}
+	if parentQuestionInfo != nil && isTimelineQuestionRestricted(parentQuestionInfo) &&
+		!canViewRestrictedTimelineObject(parentQuestionInfo.ObjectType, parentQuestionInfo.ObjectCreatorUserID,
+			userID, isAdminModerator) {
+		return errors.NotFound(reason.QuestionNotFound)
+	}
+	return nil
+}
+
+func canViewRestrictedTimelineObject(objectType, creatorUserID, userID string, isAdminModerator bool) bool {
+	if isAdminModerator {
+		return true
+	}
+	switch objectType {
+	case constant.QuestionObjectType, constant.AnswerObjectType, constant.CommentObjectType:
+		return creatorUserID == userID
+	default:
+		return false
+	}
+}
+
+func isTimelineObjectRestricted(objInfo *schema.SimpleObjectInfo) bool {
+	switch objInfo.ObjectType {
+	case constant.QuestionObjectType:
+		return isTimelineQuestionRestricted(objInfo)
+	case constant.AnswerObjectType:
+		return objInfo.AnswerStatus == entity.AnswerStatusDeleted || objInfo.AnswerStatus == entity.AnswerStatusPending
+	case constant.CommentObjectType:
+		return objInfo.CommentStatus == entity.CommentStatusDeleted || objInfo.CommentStatus == entity.CommentStatusPending
+	case constant.TagObjectType:
+		return objInfo.TagStatus == entity.TagStatusDeleted
+	default:
+		return false
+	}
+}
+
+func isTimelineQuestionRestricted(questionInfo *schema.SimpleObjectInfo) bool {
+	return questionInfo.QuestionStatus == entity.QuestionStatusDeleted ||
+		questionInfo.QuestionStatus == entity.QuestionStatusPending ||
+		questionInfo.QuestionShow == entity.QuestionHide
+}
+
+func timelineNotFoundReasonByObjectType(objectType string) string {
+	switch objectType {
+	case constant.QuestionObjectType:
+		return reason.QuestionNotFound
+	case constant.AnswerObjectType:
+		return reason.AnswerNotFound
+	case constant.CommentObjectType:
+		return reason.CommentNotFound
+	case constant.TagObjectType:
+		return reason.TagNotFound
+	default:
+		return reason.ObjectNotFound
+	}
 }
 
 // getOneObjectDetail get object detail
