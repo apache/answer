@@ -1796,7 +1796,7 @@ ui:
     security: 安全
     files: 文件
     apikeys: API 密钥
-    intelligence: 智力
+    intelligence: 智能
     ai_assistant: AI 助手
     ai_settings: AI 设置
     mcp: MCP
@@ -2318,6 +2318,9 @@ ui:
       model:
         label: 模型
         msg: 模型是必需的
+      prompt:
+        label: 提示词
+        text: 显示当前语言环境的提示词，可在此修改并保存。
       add_success: AI 设置更新成功。
     conversations:
       topic: 主题
