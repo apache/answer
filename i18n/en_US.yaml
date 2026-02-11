@@ -2359,6 +2359,9 @@ ui:
         text: Shows the prompt for the current language. Edit and save to apply.
       add_success: AI settings updated successfully.
     conversations:
+      tabs:
+        conversations: Conversations
+        settings: Settings
       topic: Topic
       helpful: Helpful
       unhelpful: Unhelpful
@@ -2485,4 +2488,3 @@ ui:
     copy: Copy to clipboard
     copied: Copied
     external_content_warning: External images/media are not displayed.
-

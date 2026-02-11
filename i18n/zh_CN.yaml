@@ -2323,6 +2323,9 @@ ui:
         text: 显示当前语言环境的提示词，可在此修改并保存。
       add_success: AI 设置更新成功。
     conversations:
+      tabs:
+        conversations: 对话
+        settings: 设置
       topic: 主题
       helpful: 有帮助
       unhelpful: 没有帮助
@@ -2449,5 +2452,3 @@ ui:
     copy: 复制到剪贴板
     copied: 已复制
     external_content_warning: 外部图像/媒体未显示。
-
-
