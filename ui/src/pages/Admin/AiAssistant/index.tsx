@@ -18,7 +18,7 @@
  */
 
 import { FormEvent, useEffect, useRef, useState } from 'react';
-import { Table, Button, Nav, Form, Collapse } from 'react-bootstrap';
+import { Table, Button, Nav, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 
@@ -57,7 +57,6 @@ const Index = () => {
   const [activeTab, setActiveTab] = useState<'conversations' | 'settings'>(
     'conversations',
   );
-  const [expandPrompt, setExpandPrompt] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [promptForm, setPromptForm] = useState({
     value: '',
@@ -251,49 +250,36 @@ const Index = () => {
 
       {activeTab === 'settings' && (
         <div className="max-w-748">
-          <div className="border rounded">
-            <button
-              type="button"
-              className={`btn btn-link w-100 text-start d-flex justify-content-between align-items-center px-3 py-3 text-decoration-none ${
-                expandPrompt ? 'expanding' : ''
-              }`}
-              onClick={() => setExpandPrompt((prev) => !prev)}>
-              <span className="fw-medium">
+          <Form noValidate onSubmit={handleSavePrompt}>
+            <div className="mb-3">
+              <label className="form-label" htmlFor="admin-prompt-textarea">
                 {t('prompt.label', { keyPrefix: 'admin.ai_settings' })}
-              </span>
-              <i className="br bi-chevron-right collapse-indicator" />
-            </button>
-            <Collapse in={expandPrompt}>
-              <div className="px-3 pb-3 border-top">
-                <Form onSubmit={handleSavePrompt}>
-                  <div className="text-muted mt-3 mb-2">
-                    {t('prompt.text', { keyPrefix: 'admin.ai_settings' })}
-                  </div>
-                  <Form.Group controlId="prompt">
-                    <Form.Control
-                      as="textarea"
-                      rows={8}
-                      isInvalid={promptForm.isInvalid}
-                      value={promptForm.value}
-                      onChange={(e) =>
-                        setPromptForm({
-                          value: e.target.value,
-                          isInvalid: false,
-                          errorMsg: '',
-                        })
-                      }
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {promptForm.errorMsg}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                  <Button type="submit" className="mt-3" disabled={isSaving}>
-                    {t('save', { keyPrefix: 'btns' })}
-                  </Button>
-                </Form>
+              </label>
+              <Form.Control
+                id="admin-prompt-textarea"
+                as="textarea"
+                rows={10}
+                isInvalid={promptForm.isInvalid}
+                value={promptForm.value}
+                onChange={(e) =>
+                  setPromptForm({
+                    value: e.target.value,
+                    isInvalid: false,
+                    errorMsg: '',
+                  })
+                }
+              />
+              <div className="form-text mt-1">
+                {t('prompt.text', { keyPrefix: 'admin.ai_settings' })}
               </div>
-            </Collapse>
-          </div>
+              <Form.Control.Feedback type="invalid">
+                {promptForm.errorMsg}
+              </Form.Control.Feedback>
+            </div>
+            <Button type="submit" className="btn-primary" disabled={isSaving}>
+              {t('save', { keyPrefix: 'btns' })}
+            </Button>
+          </Form>
         </div>
       )}
       <DetailModal
