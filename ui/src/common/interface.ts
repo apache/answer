@@ -834,6 +834,10 @@ export interface AiConfig {
     api_key: string;
     model: string;
   }>;
+  prompt_config?: {
+    zh_cn: string;
+    en_us: string;
+  };
 }
 
 export interface AiProviderItem {

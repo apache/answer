@@ -227,6 +227,10 @@ const Index = () => {
       enabled: formData.enabled.value,
       chosen_provider: formData.provider.value,
       ai_providers: newProviders,
+      prompt_config: {
+        zh_cn: historyConfigRef.current?.prompt_config?.zh_cn || '',
+        en_us: historyConfigRef.current?.prompt_config?.en_us || '',
+      },
     };
     saveAiConfig(params)
       .then(() => {
