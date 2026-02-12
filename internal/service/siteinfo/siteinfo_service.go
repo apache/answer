@@ -24,6 +24,7 @@ import (
 	"encoding/json"
 	errpkg "errors"
 	"fmt"
+	"net/url"
 	"strings"
 
 	"github.com/apache/answer/internal/base/constant"
@@ -728,11 +729,16 @@ func (s *SiteInfoService) GetAIModels(ctx context.Context, req *schema.GetAIMode
 
 	var respBody *resty.Response
 	apiHost := strings.TrimRight(req.APIHost, "/")
-	if req.Provider == "azure_openai" {
-		// Azure OpenAI uses api-key header and lists deployments
+	if req.Provider == "azure_ai" {
+		// Azure AI: parse resource name from apiHost and list deployments via *.openai.azure.com
 		r.SetHeader("api-key", req.APIKey)
-		url := fmt.Sprintf("%s/openai/deployments?api-version=2022-12-01", apiHost)
-		respBody, err = r.R().Get(url)
+		parsedURL, parseErr := url.Parse(apiHost)
+		if parseErr != nil || parsedURL.Host == "" {
+			return resp, errors.BadRequest("invalid api_host URL")
+		}
+		resourceName := strings.Split(parsedURL.Hostname(), ".")[0]
+		deploymentsURL := fmt.Sprintf("https://%s.openai.azure.com/openai/deployments?api-version=2022-12-01", resourceName)
+		respBody, err = r.R().Get(deploymentsURL)
 	} else {
 		// Standard OpenAI-compatible providers
 		r.SetHeader("Authorization", fmt.Sprintf("Bearer %s", req.APIKey))
@@ -747,7 +753,7 @@ func (s *SiteInfoService) GetAIModels(ctx context.Context, req *schema.GetAIMode
 		return resp, errors.BadRequest(fmt.Sprintf("failed to get AI models, response: %s", respBody.String()))
 	}
 
-	if req.Provider == "azure_openai" {
+	if req.Provider == "azure_ai" {
 		data := schema.GetAzureDeploymentsResp{}
 		_ = json.Unmarshal(respBody.Body(), &data)
 		for _, d := range data.Data {

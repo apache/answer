@@ -51,17 +51,15 @@ type GetAIModelResp struct {
 	OwnedBy string `json:"owned_by"`
 }
 
-// GetAzureDeploymentsResp get Azure OpenAI deployments response
+// GetAzureDeploymentsResp Azure OpenAI deployments response
 type GetAzureDeploymentsResp struct {
 	Data []struct {
-		Id         string `json:"id"`
-		Model      string `json:"model"`
-		Owner      string `json:"owner"`
-		Object     string `json:"object"`
-		Status     string `json:"status"`
-		CreatedAt  int    `json:"created_at"`
-		UpdatedAt  int    `json:"updated_at"`
+		Id        string `json:"id"`
+		Model     string `json:"model"`
+		Owner     string `json:"owner"`
+		Object    string `json:"object"`
+		Status    string `json:"status"`
+		CreatedAt int    `json:"created_at"`
+		UpdatedAt int    `json:"updated_at"`
 	} `json:"data"`
 }
-
-
