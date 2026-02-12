@@ -427,35 +427,12 @@ const Index = () => {
             </InputGroup>
           </Form.Group>
 
-          <div className="mb-3">
-            <label htmlFor="model" className="form-label">
-              {t('model.label')}
-            </label>
-            {/* <Form.Select
-            list="datalistOptions"
-            isInvalid={formData.model.isInvalid}
-            value={formData.model.value}
-            onChange={(e) =>
-              handleValueChange({
-                model: {
-                  value: e.target.value,
-                  errorMsg: '',
-                  isInvalid: false,
-                },
-              })
-            }>
-            {modelsData?.map((model) => {
-              return (
-                <option key={model.id} value={model.id}>
-                  {model.id}
-                </option>
-              );
-            })}
-          </Form.Select> */}
-            <input
-              className="form-control"
-              list="datalistOptions"
-              id="model"
+          <Form.Group className="mb-3" controlId="model">
+            <Form.Label>{t('model.label')}</Form.Label>
+            <Form.Control
+              list="modelOptions"
+              autoComplete="off"
+              isInvalid={formData.model.isInvalid}
               value={formData.model.value}
               onChange={(e) =>
                 handleValueChange({
@@ -467,18 +444,15 @@ const Index = () => {
                 })
               }
             />
-            <datalist id="datalistOptions">
-              {modelsData?.map((model) => {
-                return (
-                  <option key={model.id} value={model.id}>
-                    {model.id}
-                  </option>
-                );
-              })}
+            <datalist id="modelOptions">
+              {modelsData?.map((model) => (
+                <option key={model.id} value={model.id} />
+              ))}
             </datalist>
-
-            <div className="invalid-feedback">{formData.model.errorMsg}</div>
-          </div>
+            <Form.Control.Feedback type="invalid">
+              {formData.model.errorMsg}
+            </Form.Control.Feedback>
+          </Form.Group>
 
           <Button type="submit">{t('save', { keyPrefix: 'btns' })}</Button>
         </Form>
