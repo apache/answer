@@ -292,12 +292,46 @@ func (c *AIController) createOpenAIClient() *openai.Client {
 
 	aiProvider := aiConfig.GetProvider()
 
+	if aiProvider.Provider == "azure_ai" {
+		return c.createAzureAIClient(aiProvider)
+	}
+
 	config = openai.DefaultConfig(aiProvider.APIKey)
 	config.BaseURL = aiProvider.APIHost
 	if !strings.HasSuffix(config.BaseURL, "/v1") {
 		config.BaseURL += "/v1"
 	}
 	return openai.NewClientWithConfig(config)
+}
+
+// createAzureAIClient creates an OpenAI client configured for Azure AI.
+// Uses the Azure OpenAI compatibility endpoint: https://{resource}.openai.azure.com/openai/v1
+func (c *AIController) createAzureAIClient(aiProvider *schema.SiteAIProvider) *openai.Client {
+	azureBaseURL := strings.TrimRight(aiProvider.APIHost, "/") + "/openai/v1"
+
+	config := openai.DefaultConfig(aiProvider.APIKey)
+	config.BaseURL = azureBaseURL
+	config.HTTPClient = &http.Client{
+		Transport: &azureAPIKeyTransport{
+			apiKey:    aiProvider.APIKey,
+			transport: http.DefaultTransport,
+		},
+	}
+	return openai.NewClientWithConfig(config)
+}
+
+// azureAPIKeyTransport is an http.RoundTripper that replaces the Authorization
+// header with the Azure-style api-key header for Azure OpenAI requests.
+type azureAPIKeyTransport struct {
+	apiKey    string
+	transport http.RoundTripper
+}
+
+func (t *azureAPIKeyTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	req = req.Clone(req.Context())
+	req.Header.Del("Authorization")
+	req.Header.Set("Api-Key", t.apiKey)
+	return t.transport.RoundTrip(req)
 }
 
 // getPromptByLanguage
@@ -495,6 +529,10 @@ func (c *AIController) processAIStream(
 			}
 			log.Errorf("Stream error: %v", err)
 			break
+		}
+
+		if len(response.Choices) == 0 {
+			continue
 		}
 
 		choice := response.Choices[0]
