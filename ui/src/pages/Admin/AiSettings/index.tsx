@@ -84,6 +84,7 @@ const Index = () => {
 
   const checkAiConfigData = (data) => {
     const params = data || {
+      provider: formData.provider.value,
       api_host: formData.api_host.value || apiHostPlaceholder,
       api_key: formData.api_key.value,
     };
@@ -151,6 +152,7 @@ const Index = () => {
     const host = findHistoryProvider?.api_host || provider?.default_api_host;
     if (findHistoryProvider?.model) {
       checkAiConfigData({
+        provider: value,
         api_host: host,
         api_key: findHistoryProvider.api_key,
       });
@@ -263,6 +265,7 @@ const Index = () => {
       );
       const host = currentAiConfig.api_host || provider?.default_api_host;
       checkAiConfigData({
+        provider: currentAiConfig.provider,
         api_host: host,
         api_key: currentAiConfig.api_key,
       });

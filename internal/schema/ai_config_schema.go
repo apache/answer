@@ -38,8 +38,9 @@ type GetAIModelsResp struct {
 }
 
 type GetAIModelsReq struct {
-	APIHost string `json:"api_host"`
-	APIKey  string `json:"api_key"`
+	Provider string `json:"provider"`
+	APIHost  string `json:"api_host"`
+	APIKey   string `json:"api_key"`
 }
 
 // GetAIModelResp get AI model response
@@ -49,3 +50,18 @@ type GetAIModelResp struct {
 	Created int    `json:"created"`
 	OwnedBy string `json:"owned_by"`
 }
+
+// GetAzureDeploymentsResp get Azure OpenAI deployments response
+type GetAzureDeploymentsResp struct {
+	Data []struct {
+		Id         string `json:"id"`
+		Model      string `json:"model"`
+		Owner      string `json:"owner"`
+		Object     string `json:"object"`
+		Status     string `json:"status"`
+		CreatedAt  int    `json:"created_at"`
+		UpdatedAt  int    `json:"updated_at"`
+	} `json:"data"`
+}
+
+

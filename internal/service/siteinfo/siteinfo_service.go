@@ -724,9 +724,20 @@ func (s *SiteInfoService) GetAIModels(ctx context.Context, req *schema.GetAIMode
 	}
 
 	r := resty.New()
-	r.SetHeader("Authorization", fmt.Sprintf("Bearer %s", req.APIKey))
 	r.SetHeader("Content-Type", "application/json")
-	respBody, err := r.R().Get(req.APIHost + "/v1/models")
+
+	var respBody *resty.Response
+	apiHost := strings.TrimRight(req.APIHost, "/")
+	if req.Provider == "azure_openai" {
+		// Azure OpenAI uses api-key header and lists deployments
+		r.SetHeader("api-key", req.APIKey)
+		url := fmt.Sprintf("%s/openai/deployments?api-version=2022-12-01", apiHost)
+		respBody, err = r.R().Get(url)
+	} else {
+		// Standard OpenAI-compatible providers
+		r.SetHeader("Authorization", fmt.Sprintf("Bearer %s", req.APIKey))
+		respBody, err = r.R().Get(apiHost + "/v1/models")
+	}
 	if err != nil {
 		log.Error(err)
 		return resp, errors.BadRequest(fmt.Sprintf("failed to get AI models %s", err.Error()))
@@ -734,6 +745,20 @@ func (s *SiteInfoService) GetAIModels(ctx context.Context, req *schema.GetAIMode
 	if !respBody.IsSuccess() {
 		log.Error(fmt.Sprintf("failed to get AI models, status code: %d, body: %s", respBody.StatusCode(), respBody.String()))
 		return resp, errors.BadRequest(fmt.Sprintf("failed to get AI models, response: %s", respBody.String()))
+	}
+
+	if req.Provider == "azure_openai" {
+		data := schema.GetAzureDeploymentsResp{}
+		_ = json.Unmarshal(respBody.Body(), &data)
+		for _, d := range data.Data {
+			resp = append(resp, &schema.GetAIModelResp{
+				Id:      d.Id,
+				Object:  d.Object,
+				Created: d.CreatedAt,
+				OwnedBy: d.Model,
+			})
+		}
+		return resp, nil
 	}
 
 	data := schema.GetAIModelsResp{}
