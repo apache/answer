@@ -24,7 +24,6 @@ import (
 	"encoding/json"
 	errpkg "errors"
 	"fmt"
-	"net/url"
 	"strings"
 
 	"github.com/apache/answer/internal/base/constant"
@@ -730,14 +729,9 @@ func (s *SiteInfoService) GetAIModels(ctx context.Context, req *schema.GetAIMode
 	var respBody *resty.Response
 	apiHost := strings.TrimRight(req.APIHost, "/")
 	if req.Provider == "azure_ai" {
-		// Azure AI: parse resource name from apiHost and list deployments via *.openai.azure.com
+		// Azure AI: list deployments via the Azure OpenAI endpoint
 		r.SetHeader("api-key", req.APIKey)
-		parsedURL, parseErr := url.Parse(apiHost)
-		if parseErr != nil || parsedURL.Host == "" {
-			return resp, errors.BadRequest("invalid api_host URL")
-		}
-		resourceName := strings.Split(parsedURL.Hostname(), ".")[0]
-		deploymentsURL := fmt.Sprintf("https://%s.openai.azure.com/openai/deployments?api-version=2022-12-01", resourceName)
+		deploymentsURL := apiHost + "/openai/deployments?api-version=2022-12-01"
 		respBody, err = r.R().Get(deploymentsURL)
 	} else {
 		// Standard OpenAI-compatible providers
