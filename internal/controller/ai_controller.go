@@ -330,7 +330,7 @@ type azureAPIKeyTransport struct {
 func (t *azureAPIKeyTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	req = req.Clone(req.Context())
 	req.Header.Del("Authorization")
-	req.Header.Set("api-key", t.apiKey)
+	req.Header.Set("Api-Key", t.apiKey)
 	return t.transport.RoundTrip(req)
 }
 
