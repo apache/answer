@@ -21,5 +21,9 @@
   scroll-margin-top: 88px;
 }
 .bubble-user {
-  background-color: var(--bs-gray-800);
+  background-color: var(--bs-gray-200);
+
+  [data-bs-theme='dark'] & {
+    background-color: var(--bs-gray-800);
+  }
 }
