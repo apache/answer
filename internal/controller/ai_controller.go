@@ -446,6 +446,7 @@ func (c *AIController) handleAIConversation(ctx *gin.Context, w http.ResponseWri
 		toolCalls, newMessages, finished, aiResponse := c.processAIStream(ctx, w, id, conversationCtx.Model, client, aiReq, messages)
 		messages = newMessages
 
+		log.Debugf("Round %d: toolCalls=%v", round+1, toolCalls)
 		if aiResponse != "" {
 			conversationCtx.Messages = append(conversationCtx.Messages, &ai_conversation.ConversationMessage{
 				Role:    "assistant",
@@ -495,6 +496,10 @@ func (c *AIController) processAIStream(
 			}
 			log.Errorf("Stream error: %v", err)
 			break
+		}
+
+		if len(response.Choices) == 0 {
+			continue
 		}
 
 		choice := response.Choices[0]
@@ -735,6 +740,8 @@ func (c *AIController) callMCPTool(ctx context.Context, toolName string, argumen
 		result, err = c.mcpController.MCPTagDetailsHandler()(ctx, request)
 	case "get_user":
 		result, err = c.mcpController.MCPUserDetailsHandler()(ctx, request)
+	case "semantic_search":
+		result, err = c.mcpController.MCPSemanticSearchHandler()(ctx, request)
 	default:
 		return "", fmt.Errorf("unknown tool: %s", toolName)
 	}

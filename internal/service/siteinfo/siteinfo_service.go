@@ -33,6 +33,7 @@ import (
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/config"
+	embeddingService "github.com/apache/answer/internal/service/embedding"
 	"github.com/apache/answer/internal/service/export"
 	"github.com/apache/answer/internal/service/file_record"
 	questioncommon "github.com/apache/answer/internal/service/question_common"
@@ -53,6 +54,7 @@ type SiteInfoService struct {
 	configService         *config.ConfigService
 	questioncommon        *questioncommon.QuestionCommon
 	fileRecordService     *file_record.FileRecordService
+	embeddingService      *embeddingService.EmbeddingService
 }
 
 func NewSiteInfoService(
@@ -63,7 +65,7 @@ func NewSiteInfoService(
 	configService *config.ConfigService,
 	questioncommon *questioncommon.QuestionCommon,
 	fileRecordService *file_record.FileRecordService,
-
+	embeddingSvc *embeddingService.EmbeddingService,
 ) *SiteInfoService {
 	plugin.RegisterGetSiteURLFunc(func() string {
 		generalSiteInfo, err := siteInfoCommonService.GetSiteGeneral(context.Background())
@@ -82,6 +84,7 @@ func NewSiteInfoService(
 		configService:         configService,
 		questioncommon:        questioncommon,
 		fileRecordService:     fileRecordService,
+		embeddingService:      embeddingSvc,
 	}
 }
 
@@ -409,7 +412,13 @@ func (s *SiteInfoService) SaveSiteAI(ctx context.Context, req *schema.SiteAIReq)
 		Content: string(content),
 		Status:  1,
 	}
-	return s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeAI, siteInfo)
+	if err := s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeAI, siteInfo); err != nil {
+		return err
+	}
+
+	// Apply embedding scheduler config (start/stop cron based on settings)
+	go s.embeddingService.ApplyConfig(ctx)
+	return nil
 }
 
 func (s *SiteInfoService) maskAIKeys(resp *schema.SiteAIResp) {

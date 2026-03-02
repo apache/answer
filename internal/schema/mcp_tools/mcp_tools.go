@@ -32,6 +32,7 @@ var (
 		NewTagsTool(),
 		NewTagDetailTool(),
 		NewUserTool(),
+		NewSemanticSearchTool(),
 	}
 )
 
@@ -102,4 +103,18 @@ func NewUserTool() mcp.Tool {
 		),
 	)
 	return listFilesTool
+}
+
+func NewSemanticSearchTool() mcp.Tool {
+	tool := mcp.NewTool("semantic_search",
+		mcp.WithDescription("Search questions and answers by semantic meaning. Use this when the user's question relates conceptually to existing content but may not match exact keywords. Returns the most semantically similar content."),
+		mcp.WithString(schema.MCPSearchCondSemanticQuery,
+			mcp.Required(),
+			mcp.Description("The search query text to find semantically similar questions and answers"),
+		),
+		mcp.WithNumber(schema.MCPSearchCondTopK,
+			mcp.Description("Maximum number of results to return (default 5)"),
+		),
+	)
+	return tool
 }

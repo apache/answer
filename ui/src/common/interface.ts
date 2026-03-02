@@ -833,6 +833,11 @@ export interface AiConfig {
     api_host: string;
     api_key: string;
     model: string;
+    embedding_model: string;
+    embedding_dimensions: number;
+    embedding_level: string;
+    embedding_crontab: string;
+    similarity_threshold: number;
   }>;
 }
 

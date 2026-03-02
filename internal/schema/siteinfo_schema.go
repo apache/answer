@@ -281,10 +281,15 @@ func (s *SiteAIResp) GetProvider() *SiteAIProvider {
 }
 
 type SiteAIProvider struct {
-	Provider string `validate:"omitempty,lte=50" form:"provider" json:"provider"`
-	APIHost  string `validate:"omitempty,lte=512" form:"api_host" json:"api_host"`
-	APIKey   string `validate:"omitempty,lte=256" form:"api_key" json:"api_key"`
-	Model    string `validate:"omitempty,lte=100" form:"model" json:"model"`
+	Provider            string  `validate:"omitempty,lte=50" form:"provider" json:"provider"`
+	APIHost             string  `validate:"omitempty,lte=512" form:"api_host" json:"api_host"`
+	APIKey              string  `validate:"omitempty,lte=256" form:"api_key" json:"api_key"`
+	Model               string  `validate:"omitempty,lte=100" form:"model" json:"model"`
+	EmbeddingModel      string  `validate:"omitempty,lte=100" form:"embedding_model" json:"embedding_model"`
+	EmbeddingDimensions int     `validate:"omitempty" form:"embedding_dimensions" json:"embedding_dimensions"`
+	EmbeddingLevel      string  `validate:"omitempty,oneof=question answer" form:"embedding_level" json:"embedding_level"`
+	EmbeddingCrontab    string  `validate:"omitempty,lte=100" form:"embedding_crontab" json:"embedding_crontab"`
+	SimilarityThreshold float64 `validate:"omitempty,gte=0,lte=1" form:"similarity_threshold" json:"similarity_threshold"`
 }
 
 // SiteAIResp AI configuration response

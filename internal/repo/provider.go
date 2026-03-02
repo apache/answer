@@ -34,6 +34,7 @@ import (
 	"github.com/apache/answer/internal/repo/collection"
 	"github.com/apache/answer/internal/repo/comment"
 	"github.com/apache/answer/internal/repo/config"
+	"github.com/apache/answer/internal/repo/embedding"
 	"github.com/apache/answer/internal/repo/export"
 	"github.com/apache/answer/internal/repo/file_record"
 	"github.com/apache/answer/internal/repo/limit"
@@ -113,4 +114,5 @@ var ProviderSetRepo = wire.NewSet(
 	file_record.NewFileRecordRepo,
 	api_key.NewAPIKeyRepo,
 	ai_conversation.NewAIConversationRepo,
+	embedding.NewEmbeddingRepo,
 )

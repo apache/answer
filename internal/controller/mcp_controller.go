@@ -31,6 +31,7 @@ import (
 	answercommon "github.com/apache/answer/internal/service/answer_common"
 	"github.com/apache/answer/internal/service/comment"
 	"github.com/apache/answer/internal/service/content"
+	"github.com/apache/answer/internal/service/embedding"
 	"github.com/apache/answer/internal/service/feature_toggle"
 	questioncommon "github.com/apache/answer/internal/service/question_common"
 	"github.com/apache/answer/internal/service/siteinfo_common"
@@ -49,6 +50,7 @@ type MCPController struct {
 	userCommon       *usercommon.UserCommon
 	answerRepo       answercommon.AnswerRepo
 	featureToggleSvc *feature_toggle.FeatureToggleService
+	embeddingService *embedding.EmbeddingService
 }
 
 // NewMCPController new site info controller.
@@ -61,6 +63,7 @@ func NewMCPController(
 	userCommon *usercommon.UserCommon,
 	answerRepo answercommon.AnswerRepo,
 	featureToggleSvc *feature_toggle.FeatureToggleService,
+	embeddingService *embedding.EmbeddingService,
 ) *MCPController {
 	return &MCPController{
 		searchService:    searchService,
@@ -71,6 +74,7 @@ func NewMCPController(
 		userCommon:       userCommon,
 		answerRepo:       answerRepo,
 		featureToggleSvc: featureToggleSvc,
+		embeddingService: embeddingService,
 	}
 }
 
@@ -347,5 +351,133 @@ func (c *MCPController) MCPUserDetailsHandler() func(ctx context.Context, reques
 		}
 		res, _ := json.Marshal(resp)
 		return mcp.NewToolResultText(string(res)), nil
+	}
+}
+
+func (c *MCPController) MCPSemanticSearchHandler() func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+		if err := c.ensureMCPEnabled(ctx); err != nil {
+			return nil, err
+		}
+		cond := schema.NewMCPSemanticSearchCond(request)
+		if len(cond.Query) == 0 {
+			return mcp.NewToolResultText("Query is required for semantic search."), nil
+		}
+
+		siteGeneral, err := c.siteInfoService.GetSiteGeneral(ctx)
+		if err != nil {
+			log.Errorf("get site general info failed: %v", err)
+			return nil, err
+		}
+
+		results, err := c.embeddingService.SearchSimilar(ctx, cond.Query, cond.TopK)
+		if err != nil {
+			log.Errorf("semantic search failed: %v", err)
+			return mcp.NewToolResultText("Semantic search is not available. Embedding may not be configured."), nil
+		}
+		if len(results) == 0 {
+			return mcp.NewToolResultText("No semantically similar content found."), nil
+		}
+
+		resp := make([]*schema.MCPSemanticSearchResp, 0, len(results))
+		for _, r := range results {
+			var meta entity.EmbeddingMetadata
+			_ = json.Unmarshal([]byte(r.Metadata), &meta)
+
+			item := &schema.MCPSemanticSearchResp{
+				ObjectID:   r.ObjectID,
+				ObjectType: r.ObjectType,
+				Score:      r.Score,
+			}
+
+			// Compose link from metadata
+			if r.ObjectType == "answer" && meta.AnswerID != "" {
+				item.Link = fmt.Sprintf("%s/questions/%s/%s", siteGeneral.SiteUrl, meta.QuestionID, meta.AnswerID)
+			} else {
+				item.Link = fmt.Sprintf("%s/questions/%s", siteGeneral.SiteUrl, meta.QuestionID)
+			}
+
+			// Query content from DB using IDs stored in metadata
+			if r.ObjectType == "question" {
+				question, qErr := c.questioncommon.Info(ctx, meta.QuestionID, "")
+				if qErr != nil {
+					log.Warnf("get question %s for semantic search failed: %v", meta.QuestionID, qErr)
+				} else {
+					item.Title = question.Title
+					item.Content = question.Content
+				}
+
+				// Fetch answers by ID from metadata
+				for _, a := range meta.Answers {
+					answerEntity, exist, aErr := c.answerRepo.GetAnswer(ctx, a.AnswerID)
+					if aErr != nil || !exist {
+						continue
+					}
+					answerItem := &schema.MCPSemanticSearchAnswer{
+						AnswerID: a.AnswerID,
+						Content:  answerEntity.OriginalText,
+					}
+					// Fetch comments on this answer from DB
+					for _, ac := range a.Comments {
+						cmt, cExist, cErr := c.commentRepo.GetComment(ctx, ac.CommentID)
+						if cErr == nil && cExist {
+							answerItem.Comments = append(answerItem.Comments, &schema.MCPSemanticSearchComment{
+								CommentID: ac.CommentID,
+								Content:   cmt.OriginalText,
+							})
+						}
+					}
+					item.Answers = append(item.Answers, answerItem)
+				}
+
+				// Fetch question comments from DB
+				for _, qc := range meta.Comments {
+					cmt, cExist, cErr := c.commentRepo.GetComment(ctx, qc.CommentID)
+					if cErr == nil && cExist {
+						item.Comments = append(item.Comments, &schema.MCPSemanticSearchComment{
+							CommentID: qc.CommentID,
+							Content:   cmt.OriginalText,
+						})
+					}
+				}
+			} else if r.ObjectType == "answer" {
+				// Fetch question title for context
+				question, qErr := c.questioncommon.Info(ctx, meta.QuestionID, "")
+				if qErr == nil {
+					item.Title = question.Title
+				}
+
+				// Fetch answer content from DB
+				if meta.AnswerID != "" {
+					answerEntity, exist, aErr := c.answerRepo.GetAnswer(ctx, meta.AnswerID)
+					if aErr == nil && exist {
+						item.Content = answerEntity.OriginalText
+					}
+				} else if len(meta.Answers) > 0 {
+					answerEntity, exist, aErr := c.answerRepo.GetAnswer(ctx, meta.Answers[0].AnswerID)
+					if aErr == nil && exist {
+						item.Content = answerEntity.OriginalText
+					}
+				}
+
+				// Fetch answer comments from DB
+				if len(meta.Answers) > 0 {
+					for _, ac := range meta.Answers[0].Comments {
+						cmt, cExist, cErr := c.commentRepo.GetComment(ctx, ac.CommentID)
+						if cErr == nil && cExist {
+							item.Comments = append(item.Comments, &schema.MCPSemanticSearchComment{
+								CommentID: ac.CommentID,
+								Content:   cmt.OriginalText,
+							})
+						}
+					}
+				}
+			}
+
+			resp = append(resp, item)
+		}
+
+		data, _ := json.Marshal(resp)
+		return mcp.NewToolResultText(string(data)), nil
 	}
 }

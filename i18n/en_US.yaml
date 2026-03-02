@@ -2355,6 +2355,24 @@ ui:
         label: Model
         msg: Model is required
       add_success: AI settings updated successfully.
+      embedding_settings: Embedding Settings
+      embedding_model:
+        label: Embedding model
+        text: "The model used to generate vector embeddings for semantic search (e.g. text-embedding-3-small)."
+      embedding_dimensions:
+        label: Embedding dimensions
+        text: "The number of dimensions for the embedding vectors (e.g. 1536 for text-embedding-3-small)."
+      embedding_level:
+        label: Embedding level
+        text: "Choose whether to create embeddings at the question level (question + all answers + comments) or answer level (each answer separately)."
+        question: Question level
+        answer: Answer level
+      embedding_crontab:
+        label: Embedding schedule
+        text: "Cron expression for periodic embedding calculation (e.g. '0 */6 * * *' for every 6 hours). Leave empty to disable automatic indexing."
+      similarity_threshold:
+        label: Similarity threshold
+        text: "Minimum cosine similarity score (0-1) for semantic search results. Only results with a score above this threshold will be returned. Default is 0 (no filtering)."
     conversations:
       topic: Topic
       helpful: Helpful

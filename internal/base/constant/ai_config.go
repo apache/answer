@@ -33,6 +33,7 @@ const (
 - get_tags: 搜索标签信息
 - get_tag_detail: 获取特定标签的详细信息
 - get_user: 搜索用户信息
+- semantic_search: 通过语义相似度搜索问题和答案。当用户的问题与现有内容概念相关但可能不匹配确切关键词时使用此工具。当 get_questions 关键词搜索返回较差结果时，请使用 semantic_search。
 
 请根据用户的问题智能地使用这些工具来提供准确的答案。如果需要查询系统信息，请先使用相应的工具获取数据。`
 	DefaultAIPromptConfigEnUS = `You are an intelligent assistant that can help users query information in the system. User question: %s
@@ -44,6 +45,7 @@ You can use the following tools to query system information:
 - get_tags: Search for tag information
 - get_tag_detail: Get detailed information about a specific tag
 - get_user: Search for user information
+- semantic_search: Search questions and answers by semantic meaning. Use this when the user's question relates conceptually to existing content but may not match exact keywords. When get_questions keyword search returns poor results, use semantic_search instead.
 
 Please intelligently use these tools based on the user's question to provide accurate answers. If you need to query system information, please use the appropriate tools to get the data first.`
 )

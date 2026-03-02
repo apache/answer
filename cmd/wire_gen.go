@@ -34,7 +34,7 @@ import (
 	"github.com/apache/answer/internal/base/server"
 	"github.com/apache/answer/internal/base/translator"
 	"github.com/apache/answer/internal/controller"
-	"github.com/apache/answer/internal/controller/template_render"
+	templaterender "github.com/apache/answer/internal/controller/template_render"
 	"github.com/apache/answer/internal/controller_admin"
 	"github.com/apache/answer/internal/repo/activity"
 	"github.com/apache/answer/internal/repo/activity_common"
@@ -49,6 +49,7 @@ import (
 	"github.com/apache/answer/internal/repo/collection"
 	"github.com/apache/answer/internal/repo/comment"
 	"github.com/apache/answer/internal/repo/config"
+	"github.com/apache/answer/internal/repo/embedding"
 	"github.com/apache/answer/internal/repo/export"
 	"github.com/apache/answer/internal/repo/file_record"
 	"github.com/apache/answer/internal/repo/limit"
@@ -76,17 +77,18 @@ import (
 	activity_common2 "github.com/apache/answer/internal/service/activity_common"
 	"github.com/apache/answer/internal/service/activityqueue"
 	ai_conversation2 "github.com/apache/answer/internal/service/ai_conversation"
-	"github.com/apache/answer/internal/service/answer_common"
+	answercommon "github.com/apache/answer/internal/service/answer_common"
 	"github.com/apache/answer/internal/service/apikey"
 	auth2 "github.com/apache/answer/internal/service/auth"
 	badge2 "github.com/apache/answer/internal/service/badge"
 	collection2 "github.com/apache/answer/internal/service/collection"
-	"github.com/apache/answer/internal/service/collection_common"
+	collectioncommon "github.com/apache/answer/internal/service/collection_common"
 	comment2 "github.com/apache/answer/internal/service/comment"
 	"github.com/apache/answer/internal/service/comment_common"
 	config2 "github.com/apache/answer/internal/service/config"
 	"github.com/apache/answer/internal/service/content"
 	"github.com/apache/answer/internal/service/dashboard"
+	embedding2 "github.com/apache/answer/internal/service/embedding"
 	"github.com/apache/answer/internal/service/eventqueue"
 	export2 "github.com/apache/answer/internal/service/export"
 	"github.com/apache/answer/internal/service/feature_toggle"
@@ -94,13 +96,13 @@ import (
 	"github.com/apache/answer/internal/service/follow"
 	"github.com/apache/answer/internal/service/importer"
 	meta2 "github.com/apache/answer/internal/service/meta"
-	"github.com/apache/answer/internal/service/meta_common"
+	metacommon "github.com/apache/answer/internal/service/meta_common"
 	"github.com/apache/answer/internal/service/noticequeue"
 	"github.com/apache/answer/internal/service/notification"
-	"github.com/apache/answer/internal/service/notification_common"
+	notificationcommon "github.com/apache/answer/internal/service/notification_common"
 	"github.com/apache/answer/internal/service/object_info"
 	"github.com/apache/answer/internal/service/plugin_common"
-	"github.com/apache/answer/internal/service/question_common"
+	questioncommon "github.com/apache/answer/internal/service/question_common"
 	rank2 "github.com/apache/answer/internal/service/rank"
 	reason2 "github.com/apache/answer/internal/service/reason"
 	report2 "github.com/apache/answer/internal/service/report"
@@ -116,7 +118,7 @@ import (
 	tag_common2 "github.com/apache/answer/internal/service/tag_common"
 	"github.com/apache/answer/internal/service/uploader"
 	"github.com/apache/answer/internal/service/user_admin"
-	"github.com/apache/answer/internal/service/user_common"
+	usercommon "github.com/apache/answer/internal/service/user_common"
 	user_external_login2 "github.com/apache/answer/internal/service/user_external_login"
 	user_notification_config2 "github.com/apache/answer/internal/service/user_notification_config"
 	"github.com/segmentfault/pacman"
@@ -247,7 +249,9 @@ func initApplication(debug bool, serverConf *conf.Server, dbConf *data.Database,
 	reasonService := reason2.NewReasonService(reasonRepo)
 	reasonController := controller.NewReasonController(reasonService)
 	themeController := controller_admin.NewThemeController()
-	siteInfoService := siteinfo.NewSiteInfoService(siteInfoRepo, siteInfoCommonService, emailService, tagCommonService, configService, questionCommon, fileRecordService)
+	embeddingRepo := embedding.NewEmbeddingRepo(dataData)
+	embeddingService := embedding2.NewEmbeddingService(embeddingRepo, searchService, answerService, questionCommon, commentRepo, siteInfoCommonService)
+	siteInfoService := siteinfo.NewSiteInfoService(siteInfoRepo, siteInfoCommonService, emailService, tagCommonService, configService, questionCommon, fileRecordService, embeddingService)
 	siteInfoController := controller_admin.NewSiteInfoController(siteInfoService)
 	controllerSiteInfoController := controller.NewSiteInfoController(siteInfoCommonService)
 	notificationCommon := notificationcommon.NewNotificationCommon(dataData, notificationRepo, userCommon, activityRepo, followRepo, objService, noticequeueService, userExternalLoginRepo, siteInfoCommonService)
@@ -283,7 +287,7 @@ func initApplication(debug bool, serverConf *conf.Server, dbConf *data.Database,
 	apiKeyService := apikey.NewAPIKeyService(apiKeyRepo)
 	adminAPIKeyController := controller_admin.NewAdminAPIKeyController(apiKeyService)
 	featureToggleService := feature_toggle.NewFeatureToggleService(siteInfoRepo)
-	mcpController := controller.NewMCPController(searchService, siteInfoCommonService, tagCommonService, questionCommon, commentRepo, userCommon, answerRepo, featureToggleService)
+	mcpController := controller.NewMCPController(searchService, siteInfoCommonService, tagCommonService, questionCommon, commentRepo, userCommon, answerRepo, featureToggleService, embeddingService)
 	aiConversationRepo := ai_conversation.NewAIConversationRepo(dataData)
 	aiConversationService := ai_conversation2.NewAIConversationService(aiConversationRepo, userCommon)
 	aiController := controller.NewAIController(searchService, siteInfoCommonService, tagCommonService, questionCommon, commentRepo, userCommon, answerRepo, mcpController, aiConversationService, featureToggleService)

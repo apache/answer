@@ -27,15 +27,17 @@ import (
 )
 
 const (
-	MCPSearchCondKeyword    = "keyword"
-	MCPSearchCondUsername   = "username"
-	MCPSearchCondScore      = "score"
-	MCPSearchCondTag        = "tag"
-	MCPSearchCondPage       = "page"
-	MCPSearchCondPageSize   = "page_size"
-	MCPSearchCondTagName    = "tag_name"
-	MCPSearchCondQuestionID = "question_id"
-	MCPSearchCondObjectID   = "object_id"
+	MCPSearchCondKeyword       = "keyword"
+	MCPSearchCondUsername      = "username"
+	MCPSearchCondScore         = "score"
+	MCPSearchCondTag           = "tag"
+	MCPSearchCondPage          = "page"
+	MCPSearchCondPageSize      = "page_size"
+	MCPSearchCondTagName       = "tag_name"
+	MCPSearchCondQuestionID    = "question_id"
+	MCPSearchCondObjectID      = "object_id"
+	MCPSearchCondSemanticQuery = "query"
+	MCPSearchCondTopK          = "top_k"
 )
 
 type MCPSearchCond struct {
@@ -96,6 +98,48 @@ type MCPSearchCommentInfoResp struct {
 	Content   string `json:"content"`
 	ObjectID  string `json:"object_id"`
 	Link      string `json:"link"`
+}
+
+// MCPSemanticSearchCond is the condition for semantic search.
+type MCPSemanticSearchCond struct {
+	Query string `json:"query"`
+	TopK  int    `json:"top_k"`
+}
+
+// MCPSemanticSearchResp is a single semantic search result.
+type MCPSemanticSearchResp struct {
+	ObjectID   string                      `json:"object_id"`
+	ObjectType string                      `json:"object_type"`
+	Title      string                      `json:"title"`
+	Content    string                      `json:"content"`
+	Score      float64                     `json:"score"`
+	Link       string                      `json:"link"`
+	Answers    []*MCPSemanticSearchAnswer  `json:"answers,omitempty"`
+	Comments   []*MCPSemanticSearchComment `json:"comments,omitempty"`
+}
+
+// MCPSemanticSearchAnswer is an answer in a semantic search result.
+type MCPSemanticSearchAnswer struct {
+	AnswerID string                      `json:"answer_id"`
+	Content  string                      `json:"content"`
+	Comments []*MCPSemanticSearchComment `json:"comments,omitempty"`
+}
+
+// MCPSemanticSearchComment is a comment in a semantic search result.
+type MCPSemanticSearchComment struct {
+	CommentID string `json:"comment_id"`
+	Content   string `json:"content"`
+}
+
+func NewMCPSemanticSearchCond(request mcp.CallToolRequest) *MCPSemanticSearchCond {
+	cond := &MCPSemanticSearchCond{TopK: 5}
+	if query, ok := getRequestValue(request, MCPSearchCondSemanticQuery); ok {
+		cond.Query = query
+	}
+	if topK, ok := getRequestNumber(request, MCPSearchCondTopK); ok && topK > 0 {
+		cond.TopK = topK
+	}
+	return cond
 }
 
 func NewMCPSearchCond(request mcp.CallToolRequest) *MCPSearchCond {
