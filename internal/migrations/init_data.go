@@ -79,6 +79,7 @@ var (
 		&entity.APIKey{},
 		&entity.AIConversation{},
 		&entity.AIConversationRecord{},
+		&entity.Embedding{},
 	}
 
 	roles = []*entity.Role{
