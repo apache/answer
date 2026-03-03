@@ -426,6 +426,8 @@ func (qr *questionRepo) GetQuestionPage(ctx context.Context, page, pageSize int,
 	switch orderCond {
 	case "newest":
 		session.OrderBy("question.pin desc,question.created_at DESC")
+	case "mine":
+		session.OrderBy("question.pin desc,question.created_at DESC")
 	case "active":
 		if inDays == 0 {
 			session.And("question.created_at > ?", time.Now().AddDate(0, 0, -180))

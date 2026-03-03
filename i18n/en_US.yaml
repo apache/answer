@@ -1622,6 +1622,7 @@ ui:
     questions: Questions
     answers: Answers
     newest: Newest
+    mine: My
     active: Active
     hot: Hot
     frequent: Frequent

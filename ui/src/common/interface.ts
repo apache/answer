@@ -296,6 +296,7 @@ export interface LangsType {
  * @description interface for Question
  */
 export type QuestionOrderBy =
+  | 'mine'
   | 'recommend'
   | 'newest'
   | 'active'

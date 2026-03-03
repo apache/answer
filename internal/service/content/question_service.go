@@ -1457,6 +1457,12 @@ func (qs *QuestionService) SimilarQuestion(ctx context.Context, questionID strin
 func (qs *QuestionService) GetQuestionPage(ctx context.Context, req *schema.QuestionPageReq) (
 	questions []*schema.QuestionPageResp, total int64, err error) {
 	questions = make([]*schema.QuestionPageResp, 0)
+	if req.OrderCond == schema.QuestionOrderCondMine {
+		if req.LoginUserID == "" {
+			return nil, 0, errors.Unauthorized(reason.UnauthorizedError)
+		}
+		req.UserIDBeSearched = req.LoginUserID
+	}
 	// query by user role
 	showHidden := false
 	if req.LoginUserID != "" && req.UserIDBeSearched != "" {

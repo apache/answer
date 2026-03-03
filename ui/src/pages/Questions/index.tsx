@@ -45,8 +45,11 @@ const Questions: FC = () => {
   const { user: loggedUser } = loggedUserInfoStore((_) => _);
   const [urlSearchParams] = useSearchParams();
   const curPage = Number(urlSearchParams.get('page')) || 1;
-  const curOrder = (urlSearchParams.get('order') ||
+  let curOrder = (urlSearchParams.get('order') ||
     QUESTION_ORDER_KEYS[0]) as Type.QuestionOrderBy;
+  if (!loggedUser.username && curOrder === 'mine') {
+    curOrder = 'newest';
+  }
   const reqParams: Type.QueryQuestionsReq = {
     page_size: 20,
     page: curPage,
@@ -77,7 +80,9 @@ const Questions: FC = () => {
           orderList={
             loggedUser.username
               ? QUESTION_ORDER_KEYS
-              : QUESTION_ORDER_KEYS.filter((key) => key !== 'recommend')
+              : QUESTION_ORDER_KEYS.filter(
+                  (key) => key !== 'recommend' && key !== 'mine',
+                )
           }
           isLoading={listLoading}
         />

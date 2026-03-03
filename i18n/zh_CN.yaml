@@ -1589,6 +1589,7 @@ ui:
     questions: 问题
     answers: 回答
     newest: 最新
+    mine: 我的
     active: 活跃
     hot: 热门
     frequent: 频繁的

@@ -186,7 +186,9 @@ const Index: FC = () => {
           source="tag"
           data={listData}
           order={curOrder}
-          orderList={QUESTION_ORDER_KEYS.filter((k) => k !== 'recommend')}
+          orderList={QUESTION_ORDER_KEYS.filter(
+            (k) => k !== 'recommend' && k !== 'mine',
+          )}
           isLoading={listLoading}
         />
       </Col>

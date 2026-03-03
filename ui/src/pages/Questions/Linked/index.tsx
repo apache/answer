@@ -91,7 +91,7 @@ const LinkedQuestions: FC = () => {
           data={listData}
           order={curOrder}
           orderList={QUESTION_ORDER_KEYS.filter(
-            (v) => v !== 'unanswered',
+            (v) => v !== 'unanswered' && v !== 'mine',
           ).slice(0, 5)}
           isLoading={listLoading}
         />
