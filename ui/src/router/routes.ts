@@ -450,6 +450,10 @@ const routes: RouteNode[] = [
             page: 'pages/Admin/AiAssistant',
           },
           {
+            path: 'ai-assistant/settings',
+            page: 'pages/Admin/AiAssistant/Settings',
+          },
+          {
             path: 'ai-settings',
             page: 'pages/Admin/AiSettings',
           },

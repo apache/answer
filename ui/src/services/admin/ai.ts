@@ -49,6 +49,14 @@ export const saveAiConfig = (params) => {
   return request.put('/answer/admin/api/ai-config', params);
 };
 
+export const getAiPromptConfig = () => {
+  return request.get<Type.AIPromptConfig>('/answer/admin/api/ai-prompt-config');
+};
+
+export const saveAiPromptConfig = (params: Type.AIPromptConfig) => {
+  return request.put('/answer/admin/api/ai-prompt-config', params);
+};
+
 export const useQueryAdminConversationDetail = (id: string) => {
   const apiUrl = !id
     ? null

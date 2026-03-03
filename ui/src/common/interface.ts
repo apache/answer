@@ -825,6 +825,11 @@ export interface AddOrEditApiKeyParams {
   id?: number;
 }
 
+export interface AIPromptConfig {
+  zh_cn: string;
+  en_us: string;
+}
+
 export interface AiConfig {
   enabled: boolean;
   chosen_provider: string;
@@ -834,10 +839,7 @@ export interface AiConfig {
     api_key: string;
     model: string;
   }>;
-  prompt_config?: {
-    zh_cn: string;
-    en_us: string;
-  };
+  prompt_config?: AIPromptConfig;
 }
 
 export interface AiProviderItem {

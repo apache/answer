@@ -22,8 +22,11 @@ import { Nav } from 'react-bootstrap';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-const TabNav: FC<{ menus: { name: string; path: string }[] }> = ({ menus }) => {
-  const { t } = useTranslation('translation', { keyPrefix: 'nav_menus' });
+const TabNav: FC<{
+  menus: { name: string; path: string }[];
+  i18nKeyPrefix?: string;
+}> = ({ menus, i18nKeyPrefix = 'nav_menus' }) => {
+  const { t } = useTranslation('translation', { keyPrefix: i18nKeyPrefix });
   const { pathname } = useLocation();
   return (
     <Nav variant="underline" className="mb-4 border-bottom">
