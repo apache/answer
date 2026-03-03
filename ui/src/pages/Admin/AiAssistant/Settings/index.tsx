@@ -131,7 +131,9 @@ const Settings = () => {
         <Form noValidate onSubmit={handleSavePrompt}>
           <div className="mb-3">
             <label className="form-label" htmlFor="admin-prompt-textarea">
-              {t('prompt.label', { keyPrefix: 'admin.ai_settings' })}
+              <strong>
+                {t('prompt.label', { keyPrefix: 'admin.ai_settings' })}
+              </strong>
             </label>
             <Form.Control
               id="admin-prompt-textarea"
