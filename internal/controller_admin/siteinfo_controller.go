@@ -618,6 +618,38 @@ func (sc *SiteInfoController) UpdateAIConfig(ctx *gin.Context) {
 	handler.HandleResponse(ctx, err, nil)
 }
 
+// GetAIPromptConfig get AI prompt configuration
+// @Summary get AI prompt configuration
+// @Description get AI prompt configuration
+// @Security ApiKeyAuth
+// @Tags admin
+// @Produce json
+// @Success 200 {object} handler.RespBody{data=schema.AIPromptConfig}
+// @Router /answer/admin/api/ai-prompt-config [get]
+func (sc *SiteInfoController) GetAIPromptConfig(ctx *gin.Context) {
+	resp, err := sc.siteInfoService.GetAIPromptConfig(ctx)
+	handler.HandleResponse(ctx, err, resp)
+}
+
+// UpdateAIPromptConfig update AI prompt configuration
+// @Summary update AI prompt configuration
+// @Description update AI prompt configuration
+// @Security ApiKeyAuth
+// @Tags admin
+// @Param data body schema.AIPromptConfig true "AI prompt config"
+// @Produce json
+// @Success 200 {object} handler.RespBody{}
+// @Router /answer/admin/api/ai-prompt-config [put]
+func (sc *SiteInfoController) UpdateAIPromptConfig(ctx *gin.Context) {
+	req := &schema.AIPromptConfig{}
+	if handler.BindAndCheck(ctx, req) {
+		return
+	}
+
+	err := sc.siteInfoService.SaveAIPromptConfig(ctx, req)
+	handler.HandleResponse(ctx, err, nil)
+}
+
 // GetAIProvider get AI provider configuration
 // @Summary get AI provider configuration
 // @Description get AI provider configuration

@@ -425,6 +425,8 @@ func (a *AnswerAPIRouter) RegisterAnswerAdminAPIRouter(r *gin.RouterGroup) {
 	// ai config
 	r.GET("/ai-config", a.adminSiteInfoController.GetAIConfig)
 	r.PUT("/ai-config", a.adminSiteInfoController.UpdateAIConfig)
+	r.GET("/ai-prompt-config", a.adminSiteInfoController.GetAIPromptConfig)
+	r.PUT("/ai-prompt-config", a.adminSiteInfoController.UpdateAIPromptConfig)
 	r.GET("/ai-provider", a.adminSiteInfoController.GetAIProvider)
 	r.POST("/ai-models", a.adminSiteInfoController.RequestAIModels)
 
