@@ -40,12 +40,12 @@ type Service[T any] interface {
 // Queue is a generic message queue service that processes messages asynchronously.
 // It is thread-safe and supports graceful shutdown.
 type Queue[T any] struct {
-	name    string
-	queue   chan T
-	handler func(ctx context.Context, msg T) error
-	mu      sync.RWMutex
-	closed  bool
-	wg      sync.WaitGroup
+	name     string
+	queue    chan T
+	handlers []func(ctx context.Context, msg T) error
+	mu       sync.RWMutex
+	closed   bool
+	wg       sync.WaitGroup
 }
 
 // New creates a new queue with the given name and buffer size.
@@ -77,12 +77,13 @@ func (q *Queue[T]) Send(ctx context.Context, msg T) {
 	}
 }
 
-// RegisterHandler sets the handler function for processing messages.
+// RegisterHandler adds a handler function for processing messages.
+// Multiple handlers can be registered and all will be called for each message.
 // This is thread-safe and can be called at any time.
 func (q *Queue[T]) RegisterHandler(handler func(ctx context.Context, msg T) error) {
 	q.mu.Lock()
 	defer q.mu.Unlock()
-	q.handler = handler
+	q.handlers = append(q.handlers, handler)
 }
 
 // Close gracefully shuts down the queue, waiting for pending messages to be processed.
@@ -114,17 +115,20 @@ func (q *Queue[T]) startWorker() {
 // processMessage handles a single message with proper synchronization.
 func (q *Queue[T]) processMessage(msg T) {
 	q.mu.RLock()
-	handler := q.handler
+	handlers := make([]func(ctx context.Context, msg T) error, len(q.handlers))
+	copy(handlers, q.handlers)
 	q.mu.RUnlock()
 
-	if handler == nil {
+	if len(handlers) == 0 {
 		log.Warnf("[%s] no handler registered, dropping message: %+v", q.name, msg)
 		return
 	}
 
 	// Use background context for async processing
 	// TODO: Consider adding timeout or using a derived context
-	if err := handler(context.TODO(), msg); err != nil {
-		log.Errorf("[%s] handler error: %v", q.name, err)
+	for _, handler := range handlers {
+		if err := handler(context.TODO(), msg); err != nil {
+			log.Errorf("[%s] handler error: %v", q.name, err)
+		}
 	}
 }
