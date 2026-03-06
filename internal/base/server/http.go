@@ -93,7 +93,7 @@ func NewHTTPServer(debug bool,
 
 	// register api that must be authenticated
 	authV1 := r.Group(uiConf.APIBaseURL + "/answer/api/v1")
-	authV1.Use(authUserMiddleware.MustAuthAndAccountAvailable())
+	authV1.Use(authUserMiddleware.AuthSessionOrAPIKey())
 	answerRouter.RegisterAnswerAPIRouter(authV1)
 
 	adminauthV1 := r.Group(uiConf.APIBaseURL + "/answer/admin/api")
@@ -116,7 +116,7 @@ func NewHTTPServer(debug bool,
 
 	// mcp
 	mcpAPIGroup := r.Group(uiConf.APIBaseURL + "/answer/api/v1")
-	mcpAPIGroup.Use(authUserMiddleware.AuthMcpEnable(), authUserMiddleware.AuthAPIKey())
+	mcpAPIGroup.Use(authUserMiddleware.AuthMcpEnable(), authUserMiddleware.AuthSessionOrAPIKey())
 	answerRouter.RegisterMCPRouter(mcpAPIGroup)
 	return r
 }
