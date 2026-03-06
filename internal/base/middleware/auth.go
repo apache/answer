@@ -26,6 +26,7 @@ import (
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/role"
 	"github.com/apache/answer/internal/service/siteinfo_common"
+	usercommon "github.com/apache/answer/internal/service/user_common"
 	"github.com/apache/answer/ui"
 	"github.com/gin-gonic/gin"
 
@@ -44,15 +45,22 @@ var ctxUUIDKey = "ctxUuidKey"
 type AuthUserMiddleware struct {
 	authService           *auth.AuthService
 	siteInfoCommonService siteinfo_common.SiteInfoCommonService
+	userRepo              usercommon.UserRepo
+	userRoleService       *role.UserRoleRelService
 }
 
 // NewAuthUserMiddleware new auth user middleware
 func NewAuthUserMiddleware(
 	authService *auth.AuthService,
-	siteInfoCommonService siteinfo_common.SiteInfoCommonService) *AuthUserMiddleware {
+	siteInfoCommonService siteinfo_common.SiteInfoCommonService,
+	userRepo usercommon.UserRepo,
+	userRoleService *role.UserRoleRelService,
+) *AuthUserMiddleware {
 	return &AuthUserMiddleware{
 		authService:           authService,
 		siteInfoCommonService: siteInfoCommonService,
+		userRepo:              userRepo,
+		userRoleService:       userRoleService,
 	}
 }
 
@@ -132,6 +140,29 @@ func (am *AuthUserMiddleware) MustAuthWithoutAccountAvailable() gin.HandlerFunc 
 	}
 }
 
+// validateUserStatus checks email and user status, writes the error response and aborts if invalid.
+// Returns true if the user is valid, false if the request was aborted.
+func (am *AuthUserMiddleware) validateUserStatus(ctx *gin.Context, userInfo *entity.UserCacheInfo) bool {
+	if userInfo.EmailStatus != entity.EmailStatusAvailable {
+		handler.HandleResponse(ctx, errors.Forbidden(reason.EmailNeedToBeVerified),
+			&schema.ForbiddenResp{Type: schema.ForbiddenReasonTypeInactive})
+		ctx.Abort()
+		return false
+	}
+	if userInfo.UserStatus == entity.UserStatusSuspended {
+		handler.HandleResponse(ctx, errors.Forbidden(reason.UserSuspended),
+			&schema.ForbiddenResp{Type: schema.ForbiddenReasonTypeUserSuspended})
+		ctx.Abort()
+		return false
+	}
+	if userInfo.UserStatus == entity.UserStatusDeleted {
+		handler.HandleResponse(ctx, errors.Unauthorized(reason.UnauthorizedError), nil)
+		ctx.Abort()
+		return false
+	}
+	return true
+}
+
 // MustAuthAndAccountAvailable auth user info and check user status, only allow active user access.
 func (am *AuthUserMiddleware) MustAuthAndAccountAvailable() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
@@ -147,21 +178,7 @@ func (am *AuthUserMiddleware) MustAuthAndAccountAvailable() gin.HandlerFunc {
 			ctx.Abort()
 			return
 		}
-		if userInfo.EmailStatus != entity.EmailStatusAvailable {
-			handler.HandleResponse(ctx, errors.Forbidden(reason.EmailNeedToBeVerified),
-				&schema.ForbiddenResp{Type: schema.ForbiddenReasonTypeInactive})
-			ctx.Abort()
-			return
-		}
-		if userInfo.UserStatus == entity.UserStatusSuspended {
-			handler.HandleResponse(ctx, errors.Forbidden(reason.UserSuspended),
-				&schema.ForbiddenResp{Type: schema.ForbiddenReasonTypeUserSuspended})
-			ctx.Abort()
-			return
-		}
-		if userInfo.UserStatus == entity.UserStatusDeleted {
-			handler.HandleResponse(ctx, errors.Unauthorized(reason.UnauthorizedError), nil)
-			ctx.Abort()
+		if !am.validateUserStatus(ctx, userInfo) {
 			return
 		}
 		ctx.Set(ctxUUIDKey, userInfo)

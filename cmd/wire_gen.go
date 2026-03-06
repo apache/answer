@@ -292,7 +292,7 @@ func initApplication(debug bool, serverConf *conf.Server, dbConf *data.Database,
 	answerAPIRouter := router.NewAnswerAPIRouter(langController, userController, commentController, reportController, voteController, tagController, followController, collectionController, questionController, answerController, searchController, revisionController, rankController, userAdminController, reasonController, themeController, siteInfoController, controllerSiteInfoController, notificationController, dashboardController, uploadController, activityController, roleController, pluginController, permissionController, userPluginController, reviewController, metaController, badgeController, controller_adminBadgeController, adminAPIKeyController, aiController, aiConversationController, aiConversationAdminController, mcpController)
 	swaggerRouter := router.NewSwaggerRouter(swaggerConf)
 	uiRouter := router.NewUIRouter(controllerSiteInfoController, siteInfoCommonService)
-	authUserMiddleware := middleware.NewAuthUserMiddleware(authService, siteInfoCommonService)
+	authUserMiddleware := middleware.NewAuthUserMiddleware(authService, siteInfoCommonService, userRepo, userRoleRelService)
 	avatarMiddleware := middleware.NewAvatarMiddleware(serviceConf, uploaderService)
 	shortIDMiddleware := middleware.NewShortIDMiddleware(siteInfoCommonService)
 	templateRenderController := templaterender.NewTemplateRenderController(questionService, userService, tagService, answerService, commentService, siteInfoCommonService, questionRepo)
