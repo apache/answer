@@ -156,19 +156,20 @@ func (as *AuthService) SetAdminUserCacheInfo(ctx context.Context, accessToken st
 func (as *AuthService) RemoveAdminUserCacheInfo(ctx context.Context, accessToken string) (err error) {
 	return as.authRepo.RemoveAdminUserCacheInfo(ctx, accessToken)
 }
-func (as *AuthService) AuthAPIKey(ctx context.Context, read bool, apiKey string) (pass bool, err error) {
-	apiKeyInfo, exist, err := as.apiKeyRepo.GetAPIKey(ctx, apiKey)
+
+// GetAPIKeyInfo validates an API key and checks its scope.
+// Returns the APIKey entity so callers can use the UserID.
+func (as *AuthService) GetAPIKeyInfo(ctx context.Context, isRead bool, token string) (apiKeyInfo *entity.APIKey, err error) {
+	apiKeyInfo, exist, err := as.apiKeyRepo.GetAPIKey(ctx, token)
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 	if !exist {
-		return false, nil
+		return nil, nil
 	}
-	// If the request is not read-only, check if the API key has write permissions
-	if !read && apiKeyInfo.Scope == "read-only" {
+	if !isRead && apiKeyInfo.Scope == "read-only" {
 		log.Warnf("API key %s does not have write permissions", apiKeyInfo.AccessKey)
-		return false, nil
+		return nil, nil
 	}
-	log.Infof("API key %s is valid, scope: %s", apiKeyInfo.AccessKey, apiKeyInfo.Scope)
-	return true, nil
+	return apiKeyInfo, nil
 }
