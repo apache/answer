@@ -30,7 +30,10 @@ function pascalize(str) {
 
 function resetIndexTs() {
   const indexTsPath = path.join(pluginPath, 'index.ts');
-  fs.writeFileSync(indexTsPath, '');
+  const existing = fs.readFileSync(indexTsPath, 'utf-8');
+  const licenseEnd = existing.indexOf('*/');
+  const header = licenseEnd >= 0 ? existing.slice(0, licenseEnd + 2) : '';
+  fs.writeFileSync(indexTsPath, `${header}\n\nexport default null;`);
 }
 
 function addPluginToIndexTs(packageName, pluginFolder) {

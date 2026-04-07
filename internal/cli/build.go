@@ -200,10 +200,15 @@ func createMainGoFile(b *buildingMaterial) (err error) {
 
 // downloadGoModFile run go mod commands to download dependencies
 func downloadGoModFile(b *buildingMaterial) (err error) {
-	// If user specify a module replacement, use it. Otherwise, use the latest version.
+	// If user specify a module replacement, use it. Otherwise, pin the running version.
 	if len(b.answerModuleReplacement) > 0 {
 		replacement := fmt.Sprintf("%s=%s", "github.com/apache/answer", b.answerModuleReplacement)
 		err = b.newExecCmd("go", "mod", "edit", "-replace", replacement).Run()
+		if err != nil {
+			return err
+		}
+	} else if len(b.originalAnswerInfo.Version) > 0 {
+		err = b.newExecCmd("go", "get", fmt.Sprintf("github.com/apache/answer@v%s", b.originalAnswerInfo.Version)).Run()
 		if err != nil {
 			return err
 		}
