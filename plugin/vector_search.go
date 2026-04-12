@@ -65,16 +65,16 @@ type VectorSearchDesc struct {
 // VectorSearchMetadata holds IDs for URI composition and content retrieval at query time.
 // Shared between plugins and the core MCP controller.
 type VectorSearchMetadata struct {
-	QuestionID string                          `json:"question_id"`
-	AnswerID   string                          `json:"answer_id,omitempty"`
-	Answers    []VectorSearchMetadataAnswer    `json:"answers,omitempty"`
-	Comments   []VectorSearchMetadataComment   `json:"comments,omitempty"`
+	QuestionID string                        `json:"question_id"`
+	AnswerID   string                        `json:"answer_id,omitempty"`
+	Answers    []VectorSearchMetadataAnswer  `json:"answers,omitempty"`
+	Comments   []VectorSearchMetadataComment `json:"comments,omitempty"`
 }
 
 // VectorSearchMetadataAnswer stores answer ID and its comment IDs in metadata.
 type VectorSearchMetadataAnswer struct {
-	AnswerID string                          `json:"answer_id"`
-	Comments []VectorSearchMetadataComment   `json:"comments,omitempty"`
+	AnswerID string                        `json:"answer_id"`
+	Comments []VectorSearchMetadataComment `json:"comments,omitempty"`
 }
 
 // VectorSearchMetadataComment stores a comment ID in metadata.

@@ -11719,7 +11719,7 @@ const docTemplate = `{
                 "provider": {
                     "type": "string",
                     "maxLength": 50
-                },
+                }
             }
         },
         "schema.SiteAIReq": {
