@@ -11712,24 +11712,6 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 256
                 },
-                "embedding_crontab": {
-                    "type": "string",
-                    "maxLength": 100
-                },
-                "embedding_dimensions": {
-                    "type": "integer"
-                },
-                "embedding_level": {
-                    "type": "string",
-                    "enum": [
-                        "question",
-                        "answer"
-                    ]
-                },
-                "embedding_model": {
-                    "type": "string",
-                    "maxLength": 100
-                },
                 "model": {
                     "type": "string",
                     "maxLength": 100
@@ -11738,11 +11720,6 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 50
                 },
-                "similarity_threshold": {
-                    "type": "number",
-                    "maximum": 1,
-                    "minimum": 0
-                }
             }
         },
         "schema.SiteAIReq": {

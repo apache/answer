@@ -37,6 +37,7 @@ import (
 	"github.com/apache/answer/internal/service/siteinfo_common"
 	tagcommonser "github.com/apache/answer/internal/service/tag_common"
 	usercommon "github.com/apache/answer/internal/service/user_common"
+	"github.com/apache/answer/plugin"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/segmentfault/pacman/log"
 )
@@ -381,7 +382,7 @@ func (c *MCPController) MCPSemanticSearchHandler() func(ctx context.Context, req
 
 		resp := make([]*schema.MCPSemanticSearchResp, 0, len(results))
 		for _, r := range results {
-			var meta entity.EmbeddingMetadata
+			var meta plugin.VectorSearchMetadata
 			_ = json.Unmarshal([]byte(r.Metadata), &meta)
 
 			item := &schema.MCPSemanticSearchResp{

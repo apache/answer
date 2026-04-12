@@ -2250,29 +2250,12 @@ definitions:
       api_key:
         maxLength: 256
         type: string
-      embedding_crontab:
-        maxLength: 100
-        type: string
-      embedding_dimensions:
-        type: integer
-      embedding_level:
-        enum:
-        - question
-        - answer
-        type: string
-      embedding_model:
-        maxLength: 100
-        type: string
       model:
         maxLength: 100
         type: string
       provider:
         maxLength: 50
         type: string
-      similarity_threshold:
-        maximum: 1
-        minimum: 0
-        type: number
     type: object
   schema.SiteAIReq:
     properties:

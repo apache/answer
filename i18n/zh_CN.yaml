@@ -2319,24 +2319,6 @@ ui:
         label: 模型
         msg: 模型是必需的
       add_success: AI 设置更新成功。
-      embedding_settings: Embedding 设置
-      embedding_model:
-        label: Embedding 模型
-        text: "用于生成语义搜索向量 Embedding 的模型（例如 text-embedding-3-small）。"
-      embedding_dimensions:
-        label: Embedding 维度
-        text: "Embedding 向量的维度数（例如 text-embedding-3-small 为 1536）。"
-      embedding_level:
-        label: Embedding 级别
-        text: "选择在问题级别（问题 + 所有回答 + 评论）还是回答级别（每个回答单独）创建 Embedding。"
-        question: 问题级别
-        answer: 回答级别
-      embedding_crontab:
-        label: Embedding 计划
-        text: "定期计算 Embedding 的 Cron 表达式（例如 '0 */6 * * *' 表示每 6 小时）。留空则禁用自动索引。"
-      similarity_threshold:
-        label: 相似度阈值
-        text: "语义搜索结果的最低余弦相似度分数（0-1）。只有分数高于此阈值的结果才会被返回。默认值为 0（不过滤）。"
     conversations:
       topic: 主题
       helpful: 有帮助

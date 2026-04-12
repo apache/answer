@@ -25,6 +25,7 @@ import (
 
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/repo/search_sync"
+	"github.com/apache/answer/internal/repo/vector_search_sync"
 
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
@@ -103,6 +104,12 @@ func (ps *PluginCommonService) UpdatePluginConfig(ctx context.Context, req *sche
 		}
 		return nil
 	})
+	_ = plugin.CallVectorSearch(func(vs plugin.VectorSearch) error {
+		if vs.Info().SlugName == req.PluginSlugName {
+			vs.RegisterSyncer(ctx, vector_search_sync.NewPluginSyncer(ps.data))
+		}
+		return nil
+	})
 	_ = plugin.CallImporter(func(importer plugin.Importer) error {
 		importer.RegisterImporterFunc(ctx, ps.importerService.NewImporterFunc())
 		return nil
@@ -175,6 +182,16 @@ func (ps *PluginCommonService) initPluginData() {
 			return nil
 		})
 	}
+
+	// register syncers for search and vector search plugins on startup
+	_ = plugin.CallSearch(func(search plugin.Search) error {
+		search.RegisterSyncer(context.Background(), search_sync.NewPluginSyncer(ps.data))
+		return nil
+	})
+	_ = plugin.CallVectorSearch(func(vs plugin.VectorSearch) error {
+		vs.RegisterSyncer(context.Background(), vector_search_sync.NewPluginSyncer(ps.data))
+		return nil
+	})
 
 	// init plugin user config
 	plugin.RegisterGetPluginUserConfigFunc(func(userID, pluginSlugName string) []byte {

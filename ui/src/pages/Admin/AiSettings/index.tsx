@@ -68,31 +68,6 @@ const Index = () => {
       isInvalid: false,
       errorMsg: '',
     },
-    embedding_model: {
-      value: '',
-      isInvalid: false,
-      errorMsg: '',
-    },
-    embedding_dimensions: {
-      value: '',
-      isInvalid: false,
-      errorMsg: '',
-    },
-    embedding_level: {
-      value: 'question',
-      isInvalid: false,
-      errorMsg: '',
-    },
-    embedding_crontab: {
-      value: '',
-      isInvalid: false,
-      errorMsg: '',
-    },
-    similarity_threshold: {
-      value: '0',
-      isInvalid: false,
-      errorMsg: '',
-    },
   });
   const [apiHostPlaceholder, setApiHostPlaceholder] = useState('');
   const [modelsData, setModels] = useState<{ id: string }[]>([]);
@@ -171,31 +146,6 @@ const Index = () => {
         isInvalid: false,
         errorMsg: '',
       },
-      embedding_model: {
-        value: findHistoryProvider?.embedding_model || '',
-        isInvalid: false,
-        errorMsg: '',
-      },
-      embedding_dimensions: {
-        value: String(findHistoryProvider?.embedding_dimensions || ''),
-        isInvalid: false,
-        errorMsg: '',
-      },
-      embedding_level: {
-        value: findHistoryProvider?.embedding_level || 'question',
-        isInvalid: false,
-        errorMsg: '',
-      },
-      embedding_crontab: {
-        value: findHistoryProvider?.embedding_crontab || '',
-        isInvalid: false,
-        errorMsg: '',
-      },
-      similarity_threshold: {
-        value: String(findHistoryProvider?.similarity_threshold || '0'),
-        isInvalid: false,
-        errorMsg: '',
-      },
     });
     const provider = aiProviders?.find((item) => item.name === value);
     const host = findHistoryProvider?.api_host || provider?.default_api_host;
@@ -268,13 +218,6 @@ const Index = () => {
           api_host: formData.api_host.value,
           api_key: formData.api_key.value,
           model: formData.model.value,
-          embedding_model: formData.embedding_model.value,
-          embedding_dimensions:
-            Number(formData.embedding_dimensions.value) || 0,
-          embedding_level: formData.embedding_level.value,
-          embedding_crontab: formData.embedding_crontab.value,
-          similarity_threshold:
-            Number(formData.similarity_threshold.value) || 0,
         };
       }
       return v;
@@ -349,31 +292,6 @@ const Index = () => {
       },
       model: {
         value: currentAiConfig?.model || '',
-        isInvalid: false,
-        errorMsg: '',
-      },
-      embedding_model: {
-        value: currentAiConfig?.embedding_model || '',
-        isInvalid: false,
-        errorMsg: '',
-      },
-      embedding_dimensions: {
-        value: String(currentAiConfig?.embedding_dimensions || ''),
-        isInvalid: false,
-        errorMsg: '',
-      },
-      embedding_level: {
-        value: currentAiConfig?.embedding_level || 'question',
-        isInvalid: false,
-        errorMsg: '',
-      },
-      embedding_crontab: {
-        value: currentAiConfig?.embedding_crontab || '',
-        isInvalid: false,
-        errorMsg: '',
-      },
-      similarity_threshold: {
-        value: String(currentAiConfig?.similarity_threshold || '0'),
         isInvalid: false,
         errorMsg: '',
       },
@@ -558,99 +476,6 @@ const Index = () => {
 
             <div className="invalid-feedback">{formData.model.errorMsg}</div>
           </div>
-
-          <hr className="my-4" />
-          <h5 className="mb-3">{t('embedding_settings')}</h5>
-
-          <Form.Group className="mb-3" controlId="embedding_model">
-            <Form.Label>{t('embedding_model.label')}</Form.Label>
-            <Form.Control
-              type="text"
-              autoComplete="off"
-              placeholder="text-embedding-3-small"
-              value={formData.embedding_model.value}
-              onChange={(e) =>
-                handleValueChange({
-                  embedding_model: {
-                    value: e.target.value,
-                    errorMsg: '',
-                    isInvalid: false,
-                  },
-                })
-              }
-            />
-            <Form.Text className="text-muted">
-              {t('embedding_model.text')}
-            </Form.Text>
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="embedding_level">
-            <Form.Label>{t('embedding_level.label')}</Form.Label>
-            <Form.Select
-              value={formData.embedding_level.value}
-              onChange={(e) =>
-                handleValueChange({
-                  embedding_level: {
-                    value: e.target.value,
-                    errorMsg: '',
-                    isInvalid: false,
-                  },
-                })
-              }>
-              <option value="question">{t('embedding_level.question')}</option>
-              <option value="answer">{t('embedding_level.answer')}</option>
-            </Form.Select>
-            <Form.Text className="text-muted">
-              {t('embedding_level.text')}
-            </Form.Text>
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="embedding_crontab">
-            <Form.Label>{t('embedding_crontab.label')}</Form.Label>
-            <Form.Control
-              type="text"
-              autoComplete="off"
-              placeholder="0 */6 * * *"
-              value={formData.embedding_crontab.value}
-              onChange={(e) =>
-                handleValueChange({
-                  embedding_crontab: {
-                    value: e.target.value,
-                    errorMsg: '',
-                    isInvalid: false,
-                  },
-                })
-              }
-            />
-            <Form.Text className="text-muted">
-              {t('embedding_crontab.text')}
-            </Form.Text>
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="similarity_threshold">
-            <Form.Label>{t('similarity_threshold.label')}</Form.Label>
-            <Form.Control
-              type="number"
-              autoComplete="off"
-              placeholder="0"
-              min="0"
-              max="1"
-              step="0.01"
-              value={formData.similarity_threshold.value}
-              onChange={(e) =>
-                handleValueChange({
-                  similarity_threshold: {
-                    value: e.target.value,
-                    errorMsg: '',
-                    isInvalid: false,
-                  },
-                })
-              }
-            />
-            <Form.Text className="text-muted">
-              {t('similarity_threshold.text')}
-            </Form.Text>
-          </Form.Group>
 
           <Button type="submit">{t('save', { keyPrefix: 'btns' })}</Button>
         </Form>

@@ -130,6 +130,10 @@ func Register(p Base) {
 	if _, ok := p.(Sidebar); ok {
 		registerSidebar(p.(Sidebar))
 	}
+
+	if _, ok := p.(VectorSearch); ok {
+		registerVectorSearch(p.(VectorSearch))
+	}
 }
 
 type Stack[T Base] struct {

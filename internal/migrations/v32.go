@@ -24,7 +24,6 @@ import (
 	"fmt"
 
 	"github.com/apache/answer/internal/entity"
-	"github.com/segmentfault/pacman/log"
 	"xorm.io/xorm"
 )
 
@@ -34,13 +33,5 @@ func updateAvatarType(ctx context.Context, x *xorm.Engine) error {
 	if err := x.Context(ctx).Sync(new(entity.User)); err != nil {
 		return fmt.Errorf("sync user table failed: %w", err)
 	}
-	return nil
-}
-
-func addEmbeddingTable(ctx context.Context, x *xorm.Engine) error {
-	if err := x.Context(ctx).Sync(new(entity.Embedding)); err != nil {
-		return fmt.Errorf("sync embedding table failed: %w", err)
-	}
-	log.Info("Embedding table migration completed successfully")
 	return nil
 }
