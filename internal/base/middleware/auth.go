@@ -92,6 +92,15 @@ func (am *AuthUserMiddleware) EjectUserBySiteInfo() gin.HandlerFunc {
 		// If site in private mode, user must login.
 		userInfo := GetUserInfoFromContext(ctx)
 		if userInfo == nil {
+			// Also check for valid API key authentication.
+			token := ExtractToken(ctx)
+			if len(token) > 0 {
+				pass, _ := am.authService.AuthAPIKey(ctx, ctx.Request.Method == "GET", token)
+				if pass {
+					ctx.Next()
+					return
+				}
+			}
 			handler.HandleResponse(ctx, errors.Unauthorized(reason.UnauthorizedError), nil)
 			ctx.Abort()
 			return
