@@ -140,6 +140,12 @@ func formatPlugins(plugins []string) (formatted []*pluginInfo) {
 		info := &pluginInfo{}
 		plugin, info.Path, _ = strings.Cut(plugin, "=")
 		info.Name, info.Version, _ = strings.Cut(plugin, "@")
+		// Resolve local path to absolute since build runs in a temp directory
+		if len(info.Path) > 0 {
+			if absPath, err := filepath.Abs(info.Path); err == nil {
+				info.Path = absPath
+			}
+		}
 		formatted = append(formatted, info)
 	}
 	return formatted
@@ -185,7 +191,12 @@ func createMainGoFile(b *buildingMaterial) (err error) {
 	for _, p := range b.plugins {
 		// If user set a path, use it to replace the module with local path
 		if len(p.Path) > 0 {
-			replacement := fmt.Sprintf("%s@%s=%s", p.Name, p.Version, p.Path)
+			var replacement string
+			if len(p.Version) > 0 {
+				replacement = fmt.Sprintf("%s@%s=%s", p.Name, p.Version, p.Path)
+			} else {
+				replacement = fmt.Sprintf("%s=%s", p.Name, p.Path)
+			}
 			err = b.newExecCmd("go", "mod", "edit", "-replace", replacement).Run()
 		} else if len(p.Version) > 0 {
 			// If user specify a version, use it to get specific version of the module
@@ -413,6 +424,13 @@ func copyDirEntries(sourceFs fs.FS, sourceDir, targetDir string, ignoreDir ...st
 	ignoreThisDir := func(path string) bool {
 		for _, s := range ignoreDir {
 			if strings.HasPrefix(path, s) {
+				return true
+			}
+			// Also ignore nested occurrences, e.g. src/plugins/foo/node_modules
+			if strings.Contains(path, string(filepath.Separator)+s) {
+				return true
+			}
+			if strings.Contains(path, "/"+s) {
 				return true
 			}
 		}
