@@ -120,6 +120,7 @@ import (
 	"github.com/apache/answer/internal/service/user_common"
 	user_external_login2 "github.com/apache/answer/internal/service/user_external_login"
 	user_notification_config2 "github.com/apache/answer/internal/service/user_notification_config"
+	"github.com/apache/answer/internal/service/vector_sync"
 	"github.com/segmentfault/pacman"
 	"github.com/segmentfault/pacman/log"
 )
@@ -199,9 +200,10 @@ func initApplication(debug bool, serverConf *conf.Server, dbConf *data.Database,
 	objService := object_info.NewObjService(answerRepo, questionRepo, commentCommonRepo, tagCommonRepo, tagCommonService)
 	noticequeueService := noticequeue.NewService()
 	externalService := noticequeue.NewExternalService()
+	vectorSyncService := vector_sync.NewService(dataData)
 	reviewRepo := review.NewReviewRepo(dataData)
-	reviewService := review2.NewReviewService(reviewRepo, objService, userCommon, userRepo, questionRepo, answerRepo, userRoleRelService, externalService, tagCommonService, questionCommon, noticequeueService, siteInfoCommonService, commentCommonRepo)
-	commentService := comment2.NewCommentService(commentRepo, commentCommonRepo, userCommon, objService, voteRepo, emailService, userRepo, noticequeueService, externalService, service, eventqueueService, reviewService)
+	reviewService := review2.NewReviewService(reviewRepo, objService, userCommon, userRepo, questionRepo, answerRepo, userRoleRelService, externalService, tagCommonService, questionCommon, noticequeueService, siteInfoCommonService, commentCommonRepo, vectorSyncService)
+	commentService := comment2.NewCommentService(commentRepo, commentCommonRepo, userCommon, objService, voteRepo, emailService, userRepo, noticequeueService, externalService, service, eventqueueService, reviewService, vectorSyncService)
 	rolePowerRelRepo := role.NewRolePowerRelRepo(dataData)
 	rolePowerRelService := role2.NewRolePowerRelService(rolePowerRelRepo, userRoleRelService)
 	rankService := rank2.NewRankService(userCommon, userRankRepo, objService, userRoleRelService, rolePowerRelService, configService)
@@ -213,8 +215,8 @@ func initApplication(debug bool, serverConf *conf.Server, dbConf *data.Database,
 	answerActivityRepo := activity.NewAnswerActivityRepo(dataData, activityRepo, userRankRepo, noticequeueService)
 	answerActivityService := activity2.NewAnswerActivityService(answerActivityRepo, configService)
 	externalNotificationService := notification.NewExternalNotificationService(dataData, userNotificationConfigRepo, followRepo, emailService, userRepo, externalService, userExternalLoginRepo, siteInfoCommonService)
-	questionService := content.NewQuestionService(activityRepo, questionRepo, answerRepo, tagCommonService, tagService, questionCommon, userCommon, userRepo, userRoleRelService, revisionService, metaCommonService, collectionCommon, answerActivityService, emailService, noticequeueService, externalService, service, siteInfoCommonService, externalNotificationService, reviewService, configService, eventqueueService, reviewRepo)
-	answerService := content.NewAnswerService(answerRepo, questionRepo, questionCommon, userCommon, collectionCommon, userRepo, revisionService, answerActivityService, answerCommon, voteRepo, emailService, userRoleRelService, noticequeueService, externalService, service, reviewService, eventqueueService)
+	questionService := content.NewQuestionService(activityRepo, questionRepo, answerRepo, tagCommonService, tagService, questionCommon, userCommon, userRepo, userRoleRelService, revisionService, metaCommonService, collectionCommon, answerActivityService, emailService, noticequeueService, externalService, service, siteInfoCommonService, externalNotificationService, reviewService, configService, eventqueueService, reviewRepo, vectorSyncService)
+	answerService := content.NewAnswerService(answerRepo, questionRepo, questionCommon, userCommon, collectionCommon, userRepo, revisionService, answerActivityService, answerCommon, voteRepo, emailService, userRoleRelService, noticequeueService, externalService, service, reviewService, eventqueueService, vectorSyncService)
 	reportHandle := report_handle.NewReportHandle(questionService, answerService, commentService)
 	reportService := report2.NewReportService(reportRepo, objService, userCommon, answerRepo, questionRepo, commentCommonRepo, reportHandle, configService, eventqueueService)
 	reportController := controller.NewReportController(reportService, rankService, captchaService)

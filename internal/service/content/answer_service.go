@@ -43,6 +43,7 @@ import (
 	"github.com/apache/answer/internal/service/revision_common"
 	"github.com/apache/answer/internal/service/role"
 	usercommon "github.com/apache/answer/internal/service/user_common"
+	"github.com/apache/answer/internal/service/vector_sync"
 	"github.com/apache/answer/pkg/converter"
 	"github.com/apache/answer/pkg/htmltext"
 	"github.com/apache/answer/pkg/token"
@@ -70,6 +71,7 @@ type AnswerService struct {
 	activityQueueService             activityqueue.Service
 	reviewService                    *review.ReviewService
 	eventQueueService                eventqueue.Service
+	vectorSyncService                vector_sync.Service
 }
 
 func NewAnswerService(
@@ -90,6 +92,7 @@ func NewAnswerService(
 	activityQueueService activityqueue.Service,
 	reviewService *review.ReviewService,
 	eventQueueService eventqueue.Service,
+	vectorSyncService vector_sync.Service,
 ) *AnswerService {
 	return &AnswerService{
 		answerRepo:                       answerRepo,
@@ -109,6 +112,7 @@ func NewAnswerService(
 		activityQueueService:             activityQueueService,
 		reviewService:                    reviewService,
 		eventQueueService:                eventQueueService,
+		vectorSyncService:                vectorSyncService,
 	}
 }
 
@@ -192,6 +196,8 @@ func (as *AnswerService) RemoveAnswer(ctx context.Context, req *schema.RemoveAns
 	})
 	as.eventQueueService.Send(ctx, schema.NewEvent(constant.EventAnswerDelete, req.UserID).TID(answerInfo.ID).
 		AID(answerInfo.ID, answerInfo.UserID))
+	as.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionDelete, ObjectType: vector_sync.ObjectTypeAnswer, ObjectID: answerInfo.ID})
+	as.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: answerInfo.QuestionID})
 	return
 }
 
@@ -239,6 +245,8 @@ func (as *AnswerService) RecoverAnswer(ctx context.Context, req *schema.RecoverA
 		OriginalObjectID: answerInfo.ID,
 		ActivityTypeKey:  constant.ActAnswerUndeleted,
 	})
+	as.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeAnswer, ObjectID: answerInfo.ID})
+	as.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: answerInfo.QuestionID})
 	return nil
 }
 
@@ -332,6 +340,10 @@ func (as *AnswerService) Insert(ctx context.Context, req *schema.AnswerAddReq) (
 	})
 	as.eventQueueService.Send(ctx, schema.NewEvent(constant.EventAnswerCreate, req.UserID).TID(insertData.ID).
 		AID(insertData.ID, insertData.UserID))
+	if insertData.Status == entity.AnswerStatusAvailable {
+		as.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeAnswer, ObjectID: insertData.ID})
+		as.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: insertData.QuestionID})
+	}
 	return insertData.ID, nil
 }
 
@@ -425,6 +437,8 @@ func (as *AnswerService) Update(ctx context.Context, req *schema.AnswerUpdateReq
 		})
 		as.eventQueueService.Send(ctx, schema.NewEvent(constant.EventAnswerUpdate, req.UserID).TID(insertData.ID).
 			AID(insertData.ID, insertData.UserID))
+		as.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeAnswer, ObjectID: insertData.ID})
+		as.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: insertData.QuestionID})
 	}
 
 	return insertData.ID, nil
@@ -489,6 +503,13 @@ func (as *AnswerService) AcceptAnswer(ctx context.Context, req *schema.AcceptAns
 	}
 
 	as.updateAnswerRank(ctx, req.UserID, questionInfo, acceptedAnswerInfo, oldAnswerInfo)
+	if acceptedAnswerInfo != nil {
+		as.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeAnswer, ObjectID: acceptedAnswerInfo.ID})
+	}
+	if oldAnswerInfo != nil {
+		as.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeAnswer, ObjectID: oldAnswerInfo.ID})
+	}
+	as.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: questionInfo.ID})
 	return nil
 }
 
@@ -615,6 +636,13 @@ func (as *AnswerService) AdminSetAnswerStatus(ctx context.Context, req *schema.A
 		}); err != nil {
 			return err
 		}
+	}
+	if setStatus == entity.AnswerStatusDeleted {
+		as.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionDelete, ObjectType: vector_sync.ObjectTypeAnswer, ObjectID: answerInfo.ID})
+		as.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: answerInfo.QuestionID})
+	} else if setStatus == entity.AnswerStatusAvailable {
+		as.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeAnswer, ObjectID: answerInfo.ID})
+		as.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: answerInfo.QuestionID})
 	}
 	return nil
 }

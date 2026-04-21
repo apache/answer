@@ -48,6 +48,7 @@ type AnswerRepo interface {
 		resp []*entity.Answer, total int64, err error)
 	AdminSearchList(ctx context.Context, search *schema.AdminAnswerPageReq) ([]*entity.Answer, int64, error)
 	UpdateAnswerStatus(ctx context.Context, answerID string, status int) (err error)
+	UpdateSearch(ctx context.Context, answerID string) (err error)
 	GetAnswerCount(ctx context.Context) (count int64, err error)
 	RemoveAllUserAnswer(ctx context.Context, userID string) (err error)
 	SumVotesByQuestionID(ctx context.Context, questionID string) (float64, error)

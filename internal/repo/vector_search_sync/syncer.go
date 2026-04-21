@@ -194,3 +194,47 @@ func (p *PluginSyncer) buildAnswerContents(ctx context.Context, answers []*entit
 	}
 	return result, nil
 }
+
+// BuildQuestionContentByID builds vector content for one question using the same
+// aggregation semantics as bulk vector sync.
+func BuildQuestionContentByID(ctx context.Context, data *data.Data, questionID string) (*plugin.VectorSearchContent, error) {
+	question := &entity.Question{}
+	exist, err := data.DB.Context(ctx).Where("id = ?", uid.DeShortID(questionID)).Get(question)
+	if err != nil {
+		return nil, err
+	}
+	if !exist {
+		return nil, nil
+	}
+	syncer := &PluginSyncer{data: data}
+	contents, err := syncer.buildQuestionContents(ctx, []*entity.Question{question})
+	if err != nil {
+		return nil, err
+	}
+	if len(contents) == 0 {
+		return nil, nil
+	}
+	return contents[0], nil
+}
+
+// BuildAnswerContentByID builds vector content for one answer using the same
+// aggregation semantics as bulk vector sync.
+func BuildAnswerContentByID(ctx context.Context, data *data.Data, answerID string) (*plugin.VectorSearchContent, error) {
+	answer := &entity.Answer{}
+	exist, err := data.DB.Context(ctx).Where("id = ?", uid.DeShortID(answerID)).Get(answer)
+	if err != nil {
+		return nil, err
+	}
+	if !exist {
+		return nil, nil
+	}
+	syncer := &PluginSyncer{data: data}
+	contents, err := syncer.buildAnswerContents(ctx, []*entity.Answer{answer})
+	if err != nil {
+		return nil, err
+	}
+	if len(contents) == 0 {
+		return nil, nil
+	}
+	return contents[0], nil
+}

@@ -40,6 +40,7 @@ import (
 	"github.com/apache/answer/internal/service/object_info"
 	"github.com/apache/answer/internal/service/permission"
 	usercommon "github.com/apache/answer/internal/service/user_common"
+	"github.com/apache/answer/internal/service/vector_sync"
 	"github.com/apache/answer/pkg/htmltext"
 	"github.com/apache/answer/pkg/token"
 	"github.com/apache/answer/pkg/uid"
@@ -93,6 +94,7 @@ type CommentService struct {
 	activityQueueService             activityqueue.Service
 	eventQueueService                eventqueue.Service
 	reviewService                    *review.ReviewService
+	vectorSyncService                vector_sync.Service
 }
 
 // NewCommentService new comment service
@@ -109,6 +111,7 @@ func NewCommentService(
 	activityQueueService activityqueue.Service,
 	eventQueueService eventqueue.Service,
 	reviewService *review.ReviewService,
+	vectorSyncService vector_sync.Service,
 ) *CommentService {
 	return &CommentService{
 		commentRepo:                      commentRepo,
@@ -123,6 +126,7 @@ func NewCommentService(
 		activityQueueService:             activityQueueService,
 		eventQueueService:                eventQueueService,
 		reviewService:                    reviewService,
+		vectorSyncService:                vectorSyncService,
 	}
 }
 
@@ -214,6 +218,15 @@ func (cs *CommentService) AddComment(ctx context.Context, req *schema.AddComment
 	}
 	cs.activityQueueService.Send(ctx, activityMsg)
 	cs.eventQueueService.Send(ctx, event)
+	if comment.Status == entity.CommentStatusAvailable {
+		switch objInfo.ObjectType {
+		case constant.QuestionObjectType:
+			cs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: objInfo.QuestionID})
+		case constant.AnswerObjectType:
+			cs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeAnswer, ObjectID: objInfo.AnswerID})
+			cs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: objInfo.QuestionID})
+		}
+	}
 	return resp, nil
 }
 
@@ -264,12 +277,25 @@ func (cs *CommentService) addCommentNotification(
 
 // RemoveComment delete comment
 func (cs *CommentService) RemoveComment(ctx context.Context, req *schema.RemoveCommentReq) (err error) {
+	commentInfo, exist, err := cs.commentCommonRepo.GetComment(ctx, req.CommentID)
+	if err != nil {
+		return err
+	}
+	if !exist {
+		return nil
+	}
 	err = cs.commentRepo.RemoveComment(ctx, req.CommentID)
 	if err != nil {
 		return err
 	}
 	cs.eventQueueService.Send(ctx, schema.NewEvent(constant.EventCommentDelete, req.UserID).
 		TID(req.CommentID).CID(req.CommentID, req.UserID))
+	if commentInfo.ObjectID == commentInfo.QuestionID {
+		cs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: commentInfo.QuestionID})
+	} else {
+		cs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeAnswer, ObjectID: commentInfo.ObjectID})
+		cs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: commentInfo.QuestionID})
+	}
 	return nil
 }
 
@@ -304,6 +330,12 @@ func (cs *CommentService) UpdateComment(ctx context.Context, req *schema.UpdateC
 	}
 	cs.eventQueueService.Send(ctx, schema.NewEvent(constant.EventCommentUpdate, req.UserID).TID(old.ID).
 		CID(old.ID, old.UserID))
+	if old.ObjectID == old.QuestionID {
+		cs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: old.QuestionID})
+	} else {
+		cs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeAnswer, ObjectID: old.ObjectID})
+		cs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: old.QuestionID})
+	}
 	return resp, nil
 }
 

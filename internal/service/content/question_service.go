@@ -55,6 +55,7 @@ import (
 	"github.com/apache/answer/internal/service/tag"
 	tagcommon "github.com/apache/answer/internal/service/tag_common"
 	usercommon "github.com/apache/answer/internal/service/user_common"
+	"github.com/apache/answer/internal/service/vector_sync"
 	"github.com/apache/answer/pkg/checker"
 	"github.com/apache/answer/pkg/converter"
 	"github.com/apache/answer/pkg/htmltext"
@@ -93,6 +94,7 @@ type QuestionService struct {
 	configService                    *config.ConfigService
 	eventQueueService                eventqueue.Service
 	reviewRepo                       review.ReviewRepo
+	vectorSyncService                vector_sync.Service
 }
 
 func NewQuestionService(
@@ -119,6 +121,7 @@ func NewQuestionService(
 	configService *config.ConfigService,
 	eventQueueService eventqueue.Service,
 	reviewRepo review.ReviewRepo,
+	vectorSyncService vector_sync.Service,
 ) *QuestionService {
 	return &QuestionService{
 		activityRepo:                     activityRepo,
@@ -144,6 +147,7 @@ func NewQuestionService(
 		configService:                    configService,
 		eventQueueService:                eventQueueService,
 		reviewRepo:                       reviewRepo,
+		vectorSyncService:                vectorSyncService,
 	}
 }
 
@@ -456,6 +460,9 @@ func (qs *QuestionService) AddQuestion(ctx context.Context, req *schema.Question
 	}
 	qs.eventQueueService.Send(ctx, schema.NewEvent(constant.EventQuestionCreate, req.UserID).TID(question.ID).
 		QID(question.ID, question.UserID))
+	if question.Status == entity.QuestionStatusAvailable {
+		qs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: question.ID})
+	}
 
 	questionInfo, err = qs.GetQuestion(ctx, question.ID, question.UserID, req.QuestionPermission)
 	return
@@ -652,6 +659,7 @@ func (qs *QuestionService) RemoveQuestion(ctx context.Context, req *schema.Remov
 	})
 	qs.eventQueueService.Send(ctx, schema.NewEvent(constant.EventQuestionDelete, req.UserID).TID(questionInfo.ID).
 		QID(questionInfo.ID, questionInfo.UserID))
+	qs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionDelete, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: questionInfo.ID})
 	return nil
 }
 
@@ -783,6 +791,7 @@ func (qs *QuestionService) RecoverQuestion(ctx context.Context, req *schema.Ques
 		OriginalObjectID: questionInfo.ID,
 		ActivityTypeKey:  constant.ActQuestionUndeleted,
 	})
+	qs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: questionInfo.ID})
 	return nil
 }
 
@@ -1068,6 +1077,7 @@ func (qs *QuestionService) UpdateQuestion(ctx context.Context, req *schema.Quest
 		})
 		qs.eventQueueService.Send(ctx, schema.NewEvent(constant.EventQuestionUpdate, req.UserID).TID(question.ID).
 			QID(question.ID, question.UserID))
+		qs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: question.ID})
 	}
 
 	questionInfo, err = qs.GetQuestion(ctx, question.ID, question.UserID, req.QuestionPermission)
@@ -1628,6 +1638,11 @@ func (qs *QuestionService) AdminSetQuestionStatus(ctx context.Context, req *sche
 		msg.TriggerUserID = req.UserID
 		msg.ObjectType = constant.QuestionObjectType
 		qs.notificationQueueService.Send(ctx, msg)
+	}
+	if setStatus == entity.QuestionStatusDeleted {
+		qs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionDelete, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: questionInfo.ID})
+	} else if setStatus == entity.QuestionStatusAvailable {
+		qs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: questionInfo.ID})
 	}
 	return nil
 }
