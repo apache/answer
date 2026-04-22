@@ -1,4 +1,4 @@
-.PHONY: build clean ui build-local-vector-plugins
+.PHONY: build clean ui
 
 VERSION=2.0.0
 BIN=answer
@@ -68,16 +68,3 @@ lint-fix: generate $(GOLANGCI)
 	$(GOLANGCI) run --fix
 
 all: clean build
-
-build-local-vector-plugins:
-	@cd new_answer/answer_with_plugin && \
-	CGO_ENABLED=0 go build -o answer ./... && \
-	ANSWER_MODULE=$$(pwd)/../../ ./answer build \
-	  --with "github.com/apache/answer-plugins/vector-search-pgvector=$$(pwd)/../../../answer-plugins/vector-search-pgvector" \
-	  --with "github.com/apache/answer-plugins/vector-search-elasticsearch=$$(pwd)/../../../answer-plugins/vector-search-elasticsearch" \
-	  --with "github.com/apache/answer-plugins/vector-search-weaviate=$$(pwd)/../../../answer-plugins/vector-search-weaviate" \
-	  --with "github.com/apache/answer-plugins/vector-search-milvus=$$(pwd)/../../../answer-plugins/vector-search-milvus" \
-	  --with "github.com/apache/answer-plugins/vector-search-qdrant=$$(pwd)/../../../answer-plugins/vector-search-qdrant" \
-	  --with "github.com/apache/answer-plugins/vector-search-chromadb=$$(pwd)/../../../answer-plugins/vector-search-chromadb" \
-	  --with "github.com/apache/answer-plugins/vector-search-memory=$$(pwd)/../../../answer-plugins/vector-search-memory" \
-	  --output ./new_answer_with_plugins
