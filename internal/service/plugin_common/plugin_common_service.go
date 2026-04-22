@@ -183,11 +183,7 @@ func (ps *PluginCommonService) initPluginData() {
 		})
 	}
 
-	// register syncers for search and vector search plugins on startup
-	_ = plugin.CallSearch(func(search plugin.Search) error {
-		search.RegisterSyncer(context.Background(), search_sync.NewPluginSyncer(ps.data))
-		return nil
-	})
+	// register syncer for vector search plugins on startup
 	_ = plugin.CallVectorSearch(func(vs plugin.VectorSearch) error {
 		vs.RegisterSyncer(context.Background(), vector_search_sync.NewPluginSyncer(ps.data))
 		return nil
