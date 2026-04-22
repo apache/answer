@@ -63,6 +63,7 @@ func NewSiteInfoService(
 	configService *config.ConfigService,
 	questioncommon *questioncommon.QuestionCommon,
 	fileRecordService *file_record.FileRecordService,
+
 ) *SiteInfoService {
 	plugin.RegisterGetSiteURLFunc(func() string {
 		generalSiteInfo, err := siteInfoCommonService.GetSiteGeneral(context.Background())
@@ -408,11 +409,7 @@ func (s *SiteInfoService) SaveSiteAI(ctx context.Context, req *schema.SiteAIReq)
 		Content: string(content),
 		Status:  1,
 	}
-	if err := s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeAI, siteInfo); err != nil {
-		return err
-	}
-
-	return nil
+	return s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeAI, siteInfo)
 }
 
 func (s *SiteInfoService) maskAIKeys(resp *schema.SiteAIResp) {
