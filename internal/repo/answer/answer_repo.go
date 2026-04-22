@@ -80,7 +80,7 @@ func (ar *answerRepo) AddAnswer(ctx context.Context, answer *entity.Answer) (err
 		answer.ID = uid.EnShortID(answer.ID)
 		answer.QuestionID = uid.EnShortID(answer.QuestionID)
 	}
-	_ = ar.UpdateSearch(ctx, answer.ID)
+	_ = ar.updateSearch(ctx, answer.ID)
 	return nil
 }
 
@@ -93,7 +93,7 @@ func (ar *answerRepo) RemoveAnswer(ctx context.Context, answerID string) (err er
 	if err != nil {
 		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
-	_ = ar.UpdateSearch(ctx, answerID)
+	_ = ar.updateSearch(ctx, answerID)
 	return nil
 }
 
@@ -106,7 +106,7 @@ func (ar *answerRepo) RecoverAnswer(ctx context.Context, answerID string) (err e
 	if err != nil {
 		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
-	_ = ar.UpdateSearch(ctx, answerID)
+	_ = ar.updateSearch(ctx, answerID)
 	return nil
 }
 
@@ -139,7 +139,7 @@ func (ar *answerRepo) RemoveAllUserAnswer(ctx context.Context, userID string) (e
 
 	// update search content
 	for _, id := range answerIDs {
-		_ = ar.UpdateSearch(ctx, id)
+		_ = ar.updateSearch(ctx, id)
 	}
 	return nil
 }
@@ -152,7 +152,7 @@ func (ar *answerRepo) UpdateAnswer(ctx context.Context, answer *entity.Answer, c
 	if err != nil {
 		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
-	_ = ar.UpdateSearch(ctx, answer.ID)
+	_ = ar.updateSearch(ctx, answer.ID)
 	return err
 }
 
@@ -162,7 +162,7 @@ func (ar *answerRepo) UpdateAnswerStatus(ctx context.Context, answerID string, s
 	if err != nil {
 		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
-	_ = ar.UpdateSearch(ctx, answerID)
+	_ = ar.updateSearch(ctx, answerID)
 	return
 }
 
@@ -251,7 +251,7 @@ func (ar *answerRepo) UpdateAcceptedStatus(ctx context.Context, acceptedAnswerID
 			return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 		}
 	}
-	_ = ar.UpdateSearch(ctx, acceptedAnswerID)
+	_ = ar.updateSearch(ctx, acceptedAnswerID)
 	return nil
 }
 
@@ -459,8 +459,8 @@ func (ar *answerRepo) SumVotesByQuestionID(ctx context.Context, questionID strin
 	return count, nil
 }
 
-// UpdateSearch update search, if search plugin not enable, do nothing
-func (ar *answerRepo) UpdateSearch(ctx context.Context, answerID string) (err error) {
+// updateSearch update search, if search plugin not enable, do nothing
+func (ar *answerRepo) updateSearch(ctx context.Context, answerID string) (err error) {
 	answerID = uid.DeShortID(answerID)
 	// check search plugin
 	var (
