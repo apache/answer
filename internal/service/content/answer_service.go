@@ -637,10 +637,11 @@ func (as *AnswerService) AdminSetAnswerStatus(ctx context.Context, req *schema.A
 			return err
 		}
 	}
-	if setStatus == entity.AnswerStatusDeleted {
+	switch setStatus {
+	case entity.AnswerStatusDeleted:
 		as.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionDelete, ObjectType: vector_sync.ObjectTypeAnswer, ObjectID: answerInfo.ID})
 		as.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: answerInfo.QuestionID})
-	} else if setStatus == entity.AnswerStatusAvailable {
+	case entity.AnswerStatusAvailable:
 		as.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeAnswer, ObjectID: answerInfo.ID})
 		as.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: answerInfo.QuestionID})
 	}

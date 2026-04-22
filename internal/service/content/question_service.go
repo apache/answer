@@ -1639,9 +1639,10 @@ func (qs *QuestionService) AdminSetQuestionStatus(ctx context.Context, req *sche
 		msg.ObjectType = constant.QuestionObjectType
 		qs.notificationQueueService.Send(ctx, msg)
 	}
-	if setStatus == entity.QuestionStatusDeleted {
+	switch setStatus {
+	case entity.QuestionStatusDeleted:
 		qs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionDelete, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: questionInfo.ID})
-	} else if setStatus == entity.QuestionStatusAvailable {
+	case entity.QuestionStatusAvailable:
 		qs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: questionInfo.ID})
 	}
 	return nil
