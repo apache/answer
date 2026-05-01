@@ -64,8 +64,23 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- if .Values.env }}
+          {{- $envNames := list }}
+          {{- range .Values.env }}
+          {{- $envNames = append $envNames .name }}
+          {{- end }}
           env:
+            {{- if not (has "INSTALL_PORT" $envNames) }}
+            - name: INSTALL_PORT
+              value: {{ .Values.service.port | quote }}
+            {{- end }}
+            {{- if not (has "SITE_ADDR" $envNames) }}
+            - name: SITE_ADDR
+              value: {{ printf "0.0.0.0:%v" .Values.service.port | quote }}
+            {{- end }}
+            {{- if not (has "SWAGGER_ADDRESS_PORT" $envNames) }}
+            - name: SWAGGER_ADDRESS_PORT
+              value: {{ printf ":%v" .Values.service.port | quote }}
+            {{- end }}
             {{- range .Values.env }}
             - name: {{ .name }}
               {{- if .value | quote }}
@@ -76,7 +91,6 @@ spec:
                 {{- toYaml .valueFrom | nindent 16 }}
               {{- end }}
             {{- end }}
-          {{- end }}
           volumeMounts:
             - name: data
               mountPath: "/data"
