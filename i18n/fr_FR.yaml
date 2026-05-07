@@ -691,7 +691,7 @@ backend:
           other: Visite de 100 jours consécutifs.
       devotee:
         name:
-          other: Devotee
+          other: Adepte
         desc:
           other: Visite de 365 jours consécutifs.
       anniversary:
@@ -821,7 +821,7 @@ ui:
     tag_wiki: tag wiki
     create_tag: Créer un tag
     edit_tag: Modifier l'étiquette
-    ask_a_question: Create Question
+    ask_a_question: Poser une question
     edit_question: Modifier la question
     edit_answer: Modifier la réponse
     search: Rechercher
@@ -846,16 +846,16 @@ ui:
     http_403: Erreur HTTP 403
     logout: Se déconnecter
     posts: Posts
-    ai_assistant: AI Assistant
+    ai_assistant: Assistant IA
   ai_assistant:
-    description: Got a question? Ask it and get answers, perspectives, and recommendations.
-    recent_conversations: Recent Conversations
-    show_more: Show more
-    new: New chat
+    description: Une question ? Posez-la et obtenez des réponses, des avis et des recommandations.
+    recent_conversations: Conversations récentes
+    show_more: Voir plus
+    new: Nouvelle discussion
     ai_generate: AI-generated from posts and may not be accurate.
     copy: Copy
     ask_a_follow_up: Ask a follow-up
-    ask_placeholder: Ask a question
+    ask_placeholder: Posez une question
   notifications:
     title: Notifications
     inbox: Boîte de réception
@@ -1137,10 +1137,10 @@ ui:
     more: Plus
     wiki: Wiki
   ask:
-    title: Create Question
+    title: Poser une question
     edit_title: Modifier la question
     default_reason: Modifier la question
-    default_first_reason: Create question
+    default_first_reason: Créer une question
     similar_questions: Questions similaires
     form:
       fields:
@@ -1148,7 +1148,7 @@ ui:
           label: Modification
         title:
           label: Titre
-          placeholder: What's your topic? Be specific.
+          placeholder: Quel est votre sujet ? Soyez précis.
           msg:
             empty: Le titre ne peut pas être vide.
             range: Titre de 150 caractères maximum
@@ -1157,8 +1157,8 @@ ui:
           msg:
             empty: Le corps ne peut pas être vide.
           hint:
-            optional_body: Describe what the question is about.
-            minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
+            optional_body: Décrivez le contenu de votre question.
+            minimum_characters: "Décrivez votre question, au moins {{min_content_length}} caractères sont requis."
         tags:
           label: Étiquettes
           msg:
@@ -1794,11 +1794,11 @@ ui:
     rules: Rules
     policies: Policies
     security: Security
-    files: Files
-    apikeys: API Keys
+    files: Fichiers
+    apikeys: Clés API
     intelligence: Intelligence
-    ai_assistant: AI Assistant
-    ai_settings: AI Settings
+    ai_assistant: Assistant IA
+    ai_settings: Paramètres IA
     mcp: MCP
   website_welcome: Bienvenue sur {{site_name}}
   user_center:
@@ -2278,69 +2278,69 @@ ui:
       status: Statut
       title: Badges
     apikeys:
-      title: API Keys
-      add_api_key: Add API Key
+      title: Clés API
+      add_api_key: Ajouter une clé API
       desc: Description
-      scope: Scope
-      key: Key
-      created: Created
-      last_used: Last used
+      scope: Portée
+      key: Clé
+      created: Créée
+      last_used: Dernière utilisation
       add_or_edit_modal:
-        add_title: Add API Key
-        edit_title: Edit API Key
+        add_title: Ajouter une clé API
+        edit_title: Modifier la clé API
         description: Description
-        description_required: Description is required.
-        scope: Scope
-        global: Global
-        read-only: Read-only
+        description_required: La description est requise.
+        scope: Portée
+        global: Globale
+        read-only: Lecture seule
       created_modal:
-        title: API key created
-        api_key: API key
-        description: This key will not be displayed again. Make sure you take a copy before continuing.
+        title: Clé API créée
+        api_key: Clé API
+        description: Cette clé ne sera plus affichée. Assurez-vous d'en faire une copie avant de continuer.
       delete_modal:
-        title: Delete API Key
-        content: Any applications or scripts using this key will no longer be able to access the API. This is permanent!
+        title: Supprimer la clé API
+        content: Toutes les applications ou scripts utilisant cette clé ne pourront plus accéder à l'API. Cette action est permanente !
     ai_settings:
       enabled:
-        label: AI enabled
-        check: Enable AI features
-        text: The AI model must be configured correctly before it can be used.
+        label: IA activée
+        check: Activer les fonctionnalités IA
+        text: Le modèle IA doit être correctement configuré avant d'être utilisé.
       provider:
-        label: Provider
+        label: Fournisseur
       api_host:
-        label: API host
-        msg: API host is required
+        label: Hôte API
+        msg: L'hôte API est requis
       api_key:
-        label: API key
-        check: Check
-        check_success: "Connection successful."
-        msg: API key is required
+        label: Clé API
+        check: Vérifier
+        check_success: "Connexion réussie."
+        msg: La clé API est requise
       model:
-        label: Model
-        msg: Model is required
-      add_success: AI settings updated successfully.
+        label: Modèle
+        msg: Le modèle est requis
+      add_success: Paramètres IA mis à jour avec succès.
     conversations:
-      topic: Topic
-      helpful: Helpful
-      unhelpful: Unhelpful
-      created: Created
+      topic: Sujet
+      helpful: Utile
+      unhelpful: Inutile
+      created: Créée
       action: Action
-      empty: No conversations found.
+      empty: Aucune conversation trouvée.
       delete_modal:
-        title: Delete conversation
-        content: Are you sure you want to delete this conversation? This is permanent!
-        delete_success: Conversation deleted successfully.
+        title: Supprimer la conversation
+        content: Êtes-vous sûr de vouloir supprimer cette conversation ? Cette action est permanente !
+        delete_success: Conversation supprimée avec succès.
     mcp:
       mcp_server:
-        label: MCP server
-        switch: Enabled
+        label: Serveur MCP
+        switch: Activé
       type:
         label: Type
       url:
         label: URL
       http_header:
-        label: HTTP header
-        text: Please replace {key} with the API Key.
+        label: En-tête HTTP
+        text: Veuillez remplacer {key} par la clé API.
   form:
     optional: (optionnel)
     empty: ne peut pas être vide
