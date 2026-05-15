@@ -43,6 +43,7 @@ require (
 	github.com/mark3labs/mcp-go v0.43.2
 	github.com/microcosm-cc/bluemonday v1.0.27
 	github.com/mozillazg/go-pinyin v0.20.0
+	github.com/mozillazg/go-unidecode v0.2.0
 	github.com/ory/dockertest/v3 v3.11.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/sashabaranov/go-openai v1.41.2
