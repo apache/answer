@@ -98,8 +98,7 @@ const File = () => {
     uploadImage({ file: e.target.files[0], type: 'post_attachment' })
       .then((url) => {
         const text = `[${fileName}](${url})`;
-        editor.replaceRange('', startPos, endPos);
-        editor.replaceSelection(text);
+        editor.replaceRange(text, startPos, endPos);
       })
       .catch(() => {
         editor.replaceRange('', startPos, endPos);

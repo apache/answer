@@ -97,6 +97,14 @@ export function createBaseMethods(editor: Editor) {
       });
     },
 
+    replaceRange: (value: string, from: Position, to: Position) => {
+      const fromOffset = editor.state.doc.line(from.line).from + from.ch;
+      const toOffset = editor.state.doc.line(to.line).from + to.ch;
+      editor.dispatch({
+        changes: { from: fromOffset, to: toOffset, insert: value },
+      });
+    },
+
     getValue: () => {
       return editor.state.doc.toString();
     },
