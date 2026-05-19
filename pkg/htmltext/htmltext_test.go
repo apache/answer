@@ -116,14 +116,50 @@ func TestUrlTitleTable(t *testing.T) {
 			want:  "zhe-shi-yi-ge-biao-ti",
 		},
 		{
-			name:  "pure arabic transliterated",
+			// The fix: previously collapsed to "topic" for all of these scripts.
+			// Outputs are an ASCII approximation, not linguistically correct
+			// romanization — see PR description.
+			name:  "arabic transliterated",
 			title: "كيف حالك",
 			want:  "kyf-hlk",
 		},
 		{
 			name:  "mixed latin and arabic",
-			title: "hello كيف",
-			want:  "hello-kyf",
+			title: "مرحبا hello",
+			want:  "mrhb-hello",
+		},
+		{
+			name:  "thai transliterated",
+			title: "ไทย ไทย",
+			want:  "aithy-aithy",
+		},
+		{
+			name:  "japanese hiragana transliterated",
+			title: "こんにちは",
+			want:  "konnichiha",
+		},
+		{
+			// Japanese with Han-block kanji is caught by the pre-existing pinyin
+			// pre-step (Chinese reading, not Japanese), so this path is unchanged
+			// by this PR. Pinning to document the existing behavior.
+			name:  "japanese kanji goes through pinyin path unchanged",
+			title: "日本",
+			want:  "ri-ben",
+		},
+		{
+			name:  "korean transliterated",
+			title: "안녕하세요",
+			want:  "annyeonghaseyo",
+		},
+		{
+			name:  "hebrew transliterated",
+			title: "שלום עולם",
+			want:  "shlvm-vlm",
+		},
+		{
+			name:  "cyrillic transliterated",
+			title: "Привет мир",
+			want:  "privet-mir",
 		},
 		{
 			name:  "emoji only falls back to topic",
