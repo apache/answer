@@ -45,12 +45,13 @@ jobs:
       uses: actions/setup-go@v5
       with:
         go-version: 1.23
+
+    - name: Install GoReleaser
+      run: go install github.com/goreleaser/goreleaser/v2@latest
+
     - name: Run GoReleaser
-      uses: goreleaser/goreleaser-action@v6
-      with:
-        distribution: goreleaser
-        version: latest
-        args: release --clean --skip=validate
+      run: |
+        "$(go env GOPATH)/bin/goreleaser" release --clean --skip=validate
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - uses: actions/upload-artifact@v4
