@@ -20,6 +20,7 @@
 package day
 
 import (
+	"strings"
 	"time"
 )
 
@@ -50,16 +51,16 @@ func Format(unix int64, format, tz string) (formatted string) {
 	for i := l; i >= 0; i-- {
 		format = strings.ReplaceAll(format, placeholders[i].old, placeholders[i].new)
 	}*/
-	toFormat := ""
+	var toFormat strings.Builder
 	from := []rune(format)
 	for len(from) > 0 {
 		to, suffix := nextStdChunk(from)
-		toFormat += string(to)
+		toFormat.WriteString(string(to))
 		from = suffix
 	}
 
 	_, _ = time.LoadLocation(tz)
-	formatted = time.Unix(unix, 0).Format(toFormat)
+	formatted = time.Unix(unix, 0).Format(toFormat.String())
 	return
 }
 
@@ -173,10 +174,27 @@ func nextStdChunk(from []rune) (to, suffix []rune) {
 	case "a":
 		old = "a"
 	case "[":
-		if len(from) >= 4 && string(from[:4]) == "[at]" {
-			old = "[at]"
+		// treat anything inside [] as literal text, e.g. [at], [a las], [o]
+		end := -1
+		for i := 1; i < len(from); i++ {
+			if from[i] == ']' {
+				end = i
+				break
+			}
 		}
+		if end != -1 {
+			to = []rune(string(from[1:end]))
+			suffix = from[end+1:]
+			return
+		}
+		// no closing bracket, fall back to literal "["
+		old = "["
 	default:
+		old = s
+	}
+
+	if old == "" {
+		// safety: always consume at least one rune
 		old = s
 	}
 

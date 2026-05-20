@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { AdminSettingsTheme } from '@/common/interface';
 import { DEFAULT_THEME_COLOR } from '@/common/constants';
@@ -27,6 +27,7 @@ interface IType {
   theme_config: AdminSettingsTheme['theme_config'];
   theme_options: AdminSettingsTheme['theme_options'];
   color_scheme: AdminSettingsTheme['color_scheme'];
+  layout: AdminSettingsTheme['layout'];
   update: (params: AdminSettingsTheme) => void;
 }
 
@@ -36,12 +37,17 @@ const store = create<IType>((set) => ({
   theme_options: [{ label: 'Default', value: 'default' }],
   theme_config: {
     default: {
-      navbar_style: 'colored',
+      navbar_style: DEFAULT_THEME_COLOR,
       primary_color: DEFAULT_THEME_COLOR,
     },
   },
+  layout: 'full',
   update: (params) =>
     set((state) => {
+      // Compatibility default value is colored or light before v1.5.1
+      if (!params.theme_config.default.navbar_style.startsWith('#')) {
+        params.theme_config.default.navbar_style = DEFAULT_THEME_COLOR;
+      }
       return {
         ...state,
         ...params,

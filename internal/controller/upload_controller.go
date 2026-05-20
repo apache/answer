@@ -70,19 +70,20 @@ func (uc *UploadController) UploadFile(ctx *gin.Context) {
 	)
 
 	source := ctx.PostForm("source")
+	userID := middleware.GetLoginUserIDFromContext(ctx)
 	switch source {
 	case fileFromAvatar:
-		url, err = uc.uploaderService.UploadAvatarFile(ctx)
+		url, err = uc.uploaderService.UploadAvatarFile(ctx, userID)
 	case fileFromPost:
-		url, err = uc.uploaderService.UploadPostFile(ctx)
+		url, err = uc.uploaderService.UploadPostFile(ctx, userID)
 	case fileFromBranding:
 		if !middleware.GetIsAdminFromContext(ctx) {
 			handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 			return
 		}
-		url, err = uc.uploaderService.UploadBrandingFile(ctx)
+		url, err = uc.uploaderService.UploadBrandingFile(ctx, userID)
 	case fileFromPostAttachment:
-		url, err = uc.uploaderService.UploadPostAttachment(ctx)
+		url, err = uc.uploaderService.UploadPostAttachment(ctx, userID)
 	default:
 		handler.HandleResponse(ctx, errors.BadRequest(reason.UploadFileSourceUnsupported), nil)
 		return

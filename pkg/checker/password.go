@@ -20,6 +20,7 @@
 package checker
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 	"strings"
@@ -40,7 +41,7 @@ const (
 // CheckPassword checks the password strength
 func CheckPassword(password string) error {
 	if strings.Contains(password, " ") {
-		return fmt.Errorf(PasswordCannotContainSpaces)
+		return errors.New(PasswordCannotContainSpaces)
 	}
 
 	// TODO Currently there is no requirement for password strength

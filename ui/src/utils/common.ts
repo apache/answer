@@ -292,6 +292,17 @@ function isDarkTheme() {
   return htmlTag.getAttribute('data-bs-theme') === 'dark';
 }
 
+function pageTitleType() {
+  const { pathname } = window.location;
+  if (pathname.endsWith('/articles')) {
+    return 'articles';
+  }
+  if (pathname.endsWith('/questions')) {
+    return 'questions';
+  }
+  return 'posts';
+}
+
 export {
   thousandthDivision,
   formatCount,
@@ -310,4 +321,5 @@ export {
   getUaType,
   changeTheme,
   isDarkTheme,
+  pageTitleType,
 };

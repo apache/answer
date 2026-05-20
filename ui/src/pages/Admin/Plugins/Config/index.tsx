@@ -114,14 +114,16 @@ const Config = () => {
   return (
     <>
       <h3 className="mb-4">{data?.name}</h3>
-      <SchemaForm
-        schema={schema}
-        uiSchema={uiSchema}
-        refreshConfig={refreshConfig}
-        formData={formData}
-        onSubmit={onSubmit}
-        onChange={handleOnChange}
-      />
+      <div className="max-w-748">
+        <SchemaForm
+          schema={schema}
+          uiSchema={uiSchema}
+          refreshConfig={refreshConfig}
+          formData={formData}
+          onSubmit={onSubmit}
+          onChange={handleOnChange}
+        />
+      </div>
     </>
   );
 };

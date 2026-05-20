@@ -45,7 +45,7 @@ const HotQuestions: FC = () => {
               as={Link}
               to={pathFactory.questionLanding(li.id, li.url_title)}
               action>
-              <div className="link-dark">{li.title}</div>
+              <div className="link-dark text-truncate-3">{li.title}</div>
               {li.answer_count > 0 ? (
                 <div
                   className={`d-flex align-items-center small mt-1 ${

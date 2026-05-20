@@ -1,5 +1,9 @@
 {
-  "*.{js,jsx,ts,tsx}": ["eslint --cache --fix"],
-  "*.{js,jsx,scss,md,json}": ["prettier --write"],
-  "*.ts?(x)": ["prettier --parser=typescript --write"]
+  "src/**/*.{ts,tsx}": [
+    "eslint --fix",
+    "prettier --write"
+  ],
+  "src/**/*.{scss,md}": [
+    "prettier --write"
+  ]
 }

@@ -26,11 +26,10 @@ import {
   Tag,
   Actions,
   Operate,
-  UserCard,
+  BaseUserCard,
   Comment,
   FormatTime,
   htmlRender,
-  Icon,
   ImgViewer,
 } from '@/components';
 import { useRenderHtmlPlugin } from '@/utils/pluginKit';
@@ -41,8 +40,8 @@ import { pathFactory } from '@/router/pathFactory';
 interface Props {
   data: any;
   hasAnswer: boolean;
-  isLogged: boolean;
   initPage: (type: string) => void;
+  isLogged: boolean;
 }
 
 const Index: FC<Props> = ({ data, initPage, hasAnswer, isLogged }) => {
@@ -79,7 +78,10 @@ const Index: FC<Props> = ({ data, initPage, hasAnswer, isLogged }) => {
       return;
     }
 
-    htmlRender(ref.current);
+    htmlRender(ref.current, {
+      copySuccessText: t('copied', { keyPrefix: 'messages' }),
+      copyText: t('copy', { keyPrefix: 'messages' }),
+    });
   }, [ref.current]);
 
   if (!data?.id) {
@@ -88,14 +90,7 @@ const Index: FC<Props> = ({ data, initPage, hasAnswer, isLogged }) => {
 
   return (
     <div>
-      <h1 className="h3 mb-3 text-wrap text-break">
-        {data?.pin === 2 && (
-          <Icon
-            name="pin-fill"
-            className="me-1"
-            title={t('pinned', { keyPrefix: 'btns' })}
-          />
-        )}
+      <h1 className="h3 mb-2 text-wrap text-break pb-1">
         <Link
           className="link-dark"
           reloadDocument
@@ -107,18 +102,43 @@ const Index: FC<Props> = ({ data, initPage, hasAnswer, isLogged }) => {
         </Link>
       </h1>
 
-      <div className="d-flex flex-wrap align-items-center small mb-3 text-secondary">
-        <FormatTime
-          time={data.create_time}
-          preFix={t('Asked')}
-          className="me-3"
-        />
+      <div className="d-flex flex-wrap align-items-center small mb-4 text-secondary border-bottom pb-3">
+        <BaseUserCard data={data.user_info} className="me-3" />
 
-        <FormatTime
-          time={data.update_time}
-          preFix={t('update')}
-          className="me-3"
-        />
+        {isLogged ? (
+          <>
+            <Link to={`/posts/${data.id}/timeline`}>
+              <FormatTime
+                time={data.create_time}
+                preFix={t('created')}
+                className="me-3 link-secondary"
+              />
+            </Link>
+
+            <Link to={`/posts/${data.id}/timeline`}>
+              <FormatTime
+                time={data.edit_time}
+                preFix={t('Edited')}
+                className="me-3 link-secondary"
+              />
+            </Link>
+          </>
+        ) : (
+          <>
+            <FormatTime
+              time={data.create_time}
+              preFix={t('created')}
+              className="me-3 link-secondary"
+            />
+
+            <FormatTime
+              time={data.edit_time}
+              preFix={t('Edited')}
+              className="me-3 link-secondary"
+            />
+          </>
+        )}
+
         {data?.view_count > 0 && (
           <div className="me-3">
             {t('Views')} {formatCount(data.view_count)}
@@ -136,18 +156,20 @@ const Index: FC<Props> = ({ data, initPage, hasAnswer, isLogged }) => {
           </Button>
         </OverlayTrigger>
       </div>
+
+      <ImgViewer>
+        <article
+          ref={ref}
+          className="fmt text-break text-wrap last-p mb-4"
+          dangerouslySetInnerHTML={{ __html: data?.html }}
+        />
+      </ImgViewer>
+
       <div className="m-n1">
         {data?.tags?.map((item: any) => {
           return <Tag className="m-1" key={item.slug_name} data={item} />;
         })}
       </div>
-      <ImgViewer>
-        <article
-          ref={ref}
-          className="fmt text-break text-wrap mt-4"
-          dangerouslySetInnerHTML={{ __html: data?.html }}
-        />
-      </ImgViewer>
 
       <Actions
         className="mt-4"
@@ -163,8 +185,11 @@ const Index: FC<Props> = ({ data, initPage, hasAnswer, isLogged }) => {
         }}
       />
 
-      <div className="d-block d-md-flex flex-wrap mt-4 mb-3">
-        <div className="mb-3 mb-md-0 me-4 flex-grow-1">
+      <div className="mt-4">
+        <Comment
+          objectId={data?.id}
+          mode="question"
+          commentId={searchParams.get('commentId')}>
           <Operate
             qid={data?.id}
             type="question"
@@ -174,49 +199,8 @@ const Index: FC<Props> = ({ data, initPage, hasAnswer, isLogged }) => {
             isAccepted={Boolean(data?.accepted_answer_id)}
             callback={initPage}
           />
-        </div>
-        <div style={{ minWidth: '196px' }} className="mb-3 me-4 mb-md-0">
-          {data.update_user_info &&
-          data.update_user_info?.username !== data.user_info?.username ? (
-            <UserCard
-              data={data?.update_user_info}
-              time={data.edit_time}
-              preFix={t('edit')}
-              isLogged={isLogged}
-              timelinePath={`/posts/${data.id}/timeline`}
-            />
-          ) : isLogged ? (
-            <Link to={`/posts/${data.id}/timeline`}>
-              <FormatTime
-                time={data.edit_time}
-                preFix={t('edit')}
-                className="link-secondary small"
-              />
-            </Link>
-          ) : (
-            <FormatTime
-              time={data.edit_time}
-              preFix={t('edit')}
-              className="text-secondary small"
-            />
-          )}
-        </div>
-        <div style={{ minWidth: '196px' }}>
-          <UserCard
-            data={data?.user_info}
-            time={data.create_time}
-            preFix={t('asked')}
-            isLogged={isLogged}
-            timelinePath={`/posts/${data.id}/timeline`}
-          />
-        </div>
+        </Comment>
       </div>
-
-      <Comment
-        objectId={data?.id}
-        mode="question"
-        commentId={searchParams.get('commentId')}
-      />
     </div>
   );
 };

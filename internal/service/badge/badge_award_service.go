@@ -21,13 +21,14 @@ package badge
 
 import (
 	"context"
+
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/handler"
 	"github.com/apache/answer/internal/base/reason"
 	"github.com/apache/answer/internal/base/translator"
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
-	"github.com/apache/answer/internal/service/notice_queue"
+	"github.com/apache/answer/internal/service/noticequeue"
 	"github.com/apache/answer/internal/service/object_info"
 	usercommon "github.com/apache/answer/internal/service/user_common"
 	"github.com/apache/answer/pkg/uid"
@@ -52,6 +53,8 @@ type BadgeAwardRepo interface {
 
 	GetByUserIdAndBadgeId(ctx context.Context, userID string, badgeID string) (badgeAward *entity.BadgeAward, exists bool, err error)
 	GetByUserIdAndBadgeIdAndAwardKey(ctx context.Context, userID string, badgeID string, awardKey string) (badgeAward *entity.BadgeAward, exists bool, err error)
+
+	DeleteUserBadgeAward(ctx context.Context, userID string) (err error)
 }
 
 type BadgeAwardService struct {
@@ -59,7 +62,7 @@ type BadgeAwardService struct {
 	badgeRepo                BadgeRepo
 	userCommon               *usercommon.UserCommon
 	objectInfoService        *object_info.ObjService
-	notificationQueueService notice_queue.NotificationQueueService
+	notificationQueueService noticequeue.Service
 }
 
 func NewBadgeAwardService(
@@ -67,7 +70,7 @@ func NewBadgeAwardService(
 	badgeRepo BadgeRepo,
 	userCommon *usercommon.UserCommon,
 	objectInfoService *object_info.ObjService,
-	notificationQueueService notice_queue.NotificationQueueService,
+	notificationQueueService noticequeue.Service,
 ) *BadgeAwardService {
 	return &BadgeAwardService{
 		badgeAwardRepo:           badgeAwardRepo,

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { AdminSettingBranding } from '@/common/interface';
 

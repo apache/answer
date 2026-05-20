@@ -144,11 +144,10 @@
         <div id="protect-browser"></div>
       </div>
 
-      <nav id="header" class="sticky-top theme-colored navbar navbar-expand-lg navbar-dark">
-        <div class="d-flex align-items-center container">
+      <nav id="header" class="sticky-top theme-dark navbar navbar-expand-xl navbar-light">
+        <div class="w-100 d-flex align-items-center px-3">
           <button
             aria-controls="navBarContent"
-            id="navBarToggle"
             type="button"
             aria-label="Toggle navigation"
             class="answer-navBar me-2 navbar-toggler collapsed"
@@ -168,17 +167,16 @@
               </a>
             {{end}}
           </div>
-          <div class="me-auto navbar-collapse collapse" id="navBarContent">
-            <hr class="hr lg-none mb-2" style="margin-top: 12px" />
-            <div class="ps-0 col-lg-8">
+          <div class="d-none d-xl-block flex-grow-1 me-auto">
+            <div class="d-none d-xl-block ps-0 col-lg-8">
               <form action="/search" class="w-100 maxw-400">
                 <input placeholder="Search" name="q" type="search" class="placeholder-search form-control" value="">
               </form>
             </div>
-            <!-- <div class="lg-none mt-3 pb-1 nav-item">
-              <a class="text-capitalize text-nowrap btn btn-light" href="/questions/ask">{{translator $.language "ui.btns.add_question"}}</a>
+            <!-- <div class="xl-none mt-3 pb-1 nav-item">
+              <a class="text-capitalize text-nowrap btn btn-light" href="/questions/add">{{translator $.language "ui.btns.add_question"}}</a>
             </div> -->
-            <div class="d-none d-lg-flex justify-content-start justify-content-sm-end col-lg-4">
+            <div class="d-none d-xl-flex justify-content-start justify-content-sm-end col-lg-4">
               <!-- <a role="button" tabindex="0" href="/users/login" class="me-2 link-light btn btn-link">
                 {{translator $.language "ui.btns.login"}}
               </a>
@@ -190,9 +188,11 @@
         </div>
       </nav>
       <div class="position-relative page-wrap d-flex flex-column flex-fill">
-        <div class="d-flex flex-column flex-fill container">
-          <div class="flex-fill row">
+        <div class="d-flex">
+          <div class="position-sticky px-3 border-end pt-4 d-none d-xl-block" id="pcSideNav">
             {{template "sidenav" . }}
+          </div>
+          <div class="flex-fill w-100 overflow-x-hidden">
             {{end}}
           </div>
         </div>

@@ -26,6 +26,7 @@ import (
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/repo/site_info"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func Test_siteInfoRepo_SaveByType(t *testing.T) {
@@ -34,19 +35,19 @@ func Test_siteInfoRepo_SaveByType(t *testing.T) {
 	data := &entity.SiteInfo{Content: "site_info", Type: "test"}
 
 	err := siteInfoRepo.SaveByType(context.TODO(), data.Type, data)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	got, exist, err := siteInfoRepo.GetByType(context.TODO(), data.Type)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.True(t, exist)
 	assert.Equal(t, data.Content, got.Content)
 
 	data.Content = "new site_info"
 	err = siteInfoRepo.SaveByType(context.TODO(), data.Type, data)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	got, exist, err = siteInfoRepo.GetByType(context.TODO(), data.Type)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.True(t, exist)
 	assert.Equal(t, data.Content, got.Content)
 }

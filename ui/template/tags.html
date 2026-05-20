@@ -19,55 +19,57 @@
 
 -->
 {{template "header" . }}
-<div class="col-xl-10 col-lg-9 col-md-12">
-  <div class="py-4 mb-4 row">
-    <div class="col-xxl-12">
-      <h3 class="mb-4">
-        {{translator $.language "ui.page_title.tags"}}
-      </h3>
-      <div class="d-block d-sm-flex justify-content-between align-items-center flex-wrap">
-        <div class="mb-3 mb-sm-0 hstack gap-3">
-          <form class="">
-            <div>
-              <input placeholder="{{translator $.language "ui.tags.search_placeholder"}}" type="search" id="formBasicEmail" class="form-control form-control-sm" value="">
-            </div>
-          </form>
-        </div>
-        <div role="group" class="btn-group btn-group-sm">
-          <a role="button" tabindex="0" href="?sort=popular" class="text-capitalize fit-content btn active btn-outline-secondary">
-            {{translator $.language "ui.tags.sort_buttons.popular"}}
-          </a>
-          <a role="button" tabindex="0" href="?sort=name" class="text-capitalize fit-content btn btn-outline-secondary">
-            {{translator $.language "ui.tags.sort_buttons.name"}}
-          </a>
-          <a role="button" tabindex="0" href="?sort=newest" class="text-capitalize fit-content btn btn-outline-secondary">
-            {{translator $.language "ui.tags.sort_buttons.newest"}}
-          </a>
+<div class="d-flex justify-content-center px-0 px-md-4">
+  <div class="answer-container">
+    <div class="py-4 mb-4 row">
+      <div class="col-xxl-12">
+        <h3 class="mb-4">
+          {{translator $.language "ui.page_title.tags"}}
+        </h3>
+        <div class="d-block d-sm-flex justify-content-between align-items-center flex-wrap">
+          <div class="mb-3 mb-sm-0 hstack gap-3">
+            <form class="">
+              <div>
+                <input placeholder="{{translator $.language "ui.tags.search_placeholder"}}" type="search" id="formBasicEmail" class="form-control form-control-sm" value="">
+              </div>
+            </form>
+          </div>
+          <div role="group" class="btn-group btn-group-sm">
+            <a role="button" tabindex="0" href="?sort=popular" class="text-capitalize fit-content btn active btn-outline-secondary">
+              {{translator $.language "ui.tags.sort_buttons.popular"}}
+            </a>
+            <a role="button" tabindex="0" href="?sort=name" class="text-capitalize fit-content btn btn-outline-secondary">
+              {{translator $.language "ui.tags.sort_buttons.name"}}
+            </a>
+            <a role="button" tabindex="0" href="?sort=newest" class="text-capitalize fit-content btn btn-outline-secondary">
+              {{translator $.language "ui.tags.sort_buttons.newest"}}
+            </a>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="mt-4 col-sm-12">
-      <div class="row">
-        {{ range .data.List }}
-        <div class="mb-4 col-lg-3 col-md-4 col-sm-6 col-12">
-          <div class="h-100 card">
-            <div class="d-flex flex-column align-items-start card-body">
-              <a href="{{$.baseURL}}/tags/{{.SlugName}}" class="badge-tag rounded-1 mb-3"><span
-                  class="">{{.SlugName}}</span></a>
-              <div class="small flex-fill text-break text-wrap text-truncate-3 reset-p mb-3">  {{formatLinkNofollow .ParsedText}}
-              </div>
-              <div class="d-flex align-items-center">
-                <span class="text-secondary small text-nowrap">{{.QuestionCount}}
-                  {{translator $.language "ui.tags.tag_label"}}</span>
+      <div class="mt-4 col-sm-12">
+        <div class="row">
+          {{ range .data.List }}
+          <div class="mb-4 col-lg-3 col-md-4 col-sm-6 col-12">
+            <div class="h-100 card">
+              <div class="d-flex flex-column align-items-start card-body">
+                <a href="{{$.baseURL}}/tags/{{.SlugName}}" class="badge-tag rounded-1 mb-3"><span
+                    class="">{{.SlugName}}</span></a>
+                <div class="small flex-fill text-break text-wrap text-truncate-3 reset-p mb-3">  {{formatLinkNofollow .ParsedText}}
+                </div>
+                <div class="d-flex align-items-center">
+                  <span class="text-secondary small text-nowrap">{{.QuestionCount}}
+                    {{translator $.language "ui.tags.tag_label"}}</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        {{ end }}
+          {{ end }}
 
-      </div>
-      <div class="d-flex justify-content-center">
-        {{template "page" .}}
+        </div>
+        <div class="d-flex justify-content-center">
+          {{template "page" .}}
+        </div>
       </div>
     </div>
   </div>

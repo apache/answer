@@ -35,7 +35,11 @@ const Index: FC<Props> = ({ sort, count = 0 }) => {
 
   return (
     <div className="d-flex flex-wrap align-items-center justify-content-between pt-2 pb-3">
-      <h5 className="mb-0">{t('counts', { count, keyPrefix: 'search' })}</h5>
+      <h5 className="mb-0">
+        {count === -1
+          ? t('counts_loading', { keyPrefix: 'search' })
+          : t('counts', { count, keyPrefix: 'search' })}
+      </h5>
       <QueryGroup
         data={sortBtns}
         currentSort={sort}

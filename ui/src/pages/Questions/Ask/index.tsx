@@ -28,6 +28,7 @@ import isEqual from 'lodash/isEqual';
 import debounce from 'lodash/debounce';
 import fm from 'front-matter';
 
+import { writeSettingStore } from '@/stores';
 import { usePageTags, usePromptWithUnload } from '@/hooks';
 import { Editor, EditorRef, TagSelector } from '@/components';
 import type * as Type from '@/common/interface';
@@ -120,6 +121,7 @@ const Ask = () => {
       handleTagsChange(resp);
     });
   };
+  const writeInfo = writeSettingStore((state) => state.write);
 
   const isEdit = qid !== undefined;
 
@@ -265,10 +267,10 @@ const Ask = () => {
     }
   };
   const handleContentChange = (value: string) => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       content: { value, errorMsg: '', isInvalid: false },
-    });
+    }));
   };
   const handleTagsChange = (value) =>
     setFormData({
@@ -277,10 +279,10 @@ const Ask = () => {
     });
 
   const handleAnswerChange = (value: string) =>
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       answer_content: { value, errorMsg: '', isInvalid: false },
-    });
+    }));
 
   const handleSummaryChange = (evt: React.ChangeEvent<HTMLInputElement>) =>
     setFormData({
@@ -423,6 +425,21 @@ const Ask = () => {
   usePageTags({
     title: pageTitle,
   });
+
+  const handleContentHint = () => {
+    if (
+      !writeInfo ||
+      writeInfo.min_content === undefined ||
+      !writeInfo.min_content
+    ) {
+      return t(`form.fields.body.hint.optional_body`);
+    }
+
+    return t(`form.fields.body.hint.minimum_characters`, {
+      min_content_length: writeInfo.min_content,
+    });
+  };
+
   return (
     <div className="pt-4 mb-5">
       <h3 className="mb-4">{isEdit ? t('edit_title') : t('title')}</h3>
@@ -451,7 +468,6 @@ const Ask = () => {
                 </Form.Select>
               </Form.Group>
             )}
-
             <Form.Group controlId="title" className="mb-3">
               <Form.Label>{t('form.fields.title.label')}</Form.Label>
               <Form.Control
@@ -468,7 +484,6 @@ const Ask = () => {
               </Form.Control.Feedback>
               {bool && <SearchQuestion similarQuestions={similarQuestions} />}
             </Form.Group>
-
             <Form.Group controlId="content">
               <Form.Label>{t('form.fields.body.label')}</Form.Label>
               <Editor
@@ -487,11 +502,11 @@ const Ask = () => {
                 }}
                 ref={editorRef}
               />
+              <Form.Text>{handleContentHint()}</Form.Text>
               <Form.Control.Feedback type="invalid">
                 {formData.content.errorMsg}
               </Form.Control.Feedback>
             </Form.Group>
-
             <Form.Group controlId="tags" className="my-3">
               <Form.Label>{t('form.fields.tags.label')}</Form.Label>
               <TagSelector
@@ -503,7 +518,6 @@ const Ask = () => {
                 errMsg={formData.tags.errorMsg}
               />
             </Form.Group>
-
             {!isEdit && (
               <>
                 <Form.Switch
@@ -544,7 +558,6 @@ const Ask = () => {
                 )}
               </>
             )}
-
             {isEdit && (
               <Form.Group controlId="edit_summary" className="my-3">
                 <Form.Label>{t('form.fields.edit_summary.label')}</Form.Label>

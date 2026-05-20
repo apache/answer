@@ -20,11 +20,14 @@
 package router
 
 import (
-	"github.com/apache/answer/internal/base/constant"
-	"github.com/apache/answer/internal/service/service_config"
-	"github.com/gin-gonic/gin"
+	"net/http"
 	"path/filepath"
 	"strings"
+
+	"github.com/apache/answer/internal/base/constant"
+	"github.com/apache/answer/internal/service/service_config"
+	"github.com/apache/answer/pkg/dir"
+	"github.com/gin-gonic/gin"
 )
 
 // StaticRouter static api router
@@ -54,6 +57,11 @@ func (a *StaticRouter) RegisterStaticRouter(r *gin.RouterGroup) {
 		realFilename := strings.TrimSuffix(filePath, "/"+originalFilename) + filepath.Ext(originalFilename)
 		// The file local path is /uploads/files/post/hash.pdf
 		fileLocalPath := filepath.Join(a.serviceConfig.UploadPath, constant.FilesPostSubPath, realFilename)
+		// If the file is not exist, return 404
+		if !dir.CheckFileExist(fileLocalPath) {
+			c.Redirect(http.StatusFound, "/404")
+			return
+		}
 		c.FileAttachment(fileLocalPath, originalFilename)
 	})
 }

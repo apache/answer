@@ -20,7 +20,9 @@
 // Same as spin in `public/index.html`
 
 @keyframes _initial-loading-spin {
-  to { transform: rotate(360deg) }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .InitialLoadingPlaceholder {
@@ -44,10 +46,10 @@
     display: inline-block;
     width: 2rem;
     height: 2rem;
-    vertical-align: -.125em;
-    border: .25rem solid currentColor;
+    vertical-align: -0.125em;
+    border: 0.25rem solid currentColor;
     border-right-color: transparent;
-    color: rgba(108, 117, 125, .75);
+    color: rgba(108, 117, 125, 0.75);
     border-radius: 50%;
     animation: 0.75s linear infinite _initial-loading-spin;
   }

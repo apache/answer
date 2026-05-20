@@ -17,20 +17,33 @@
  * under the License.
  */
 
-.page-main {
-  max-width: 70%;
+.main-mx-with {
+  width: 100%;
+  max-width: 1072px;
 }
+
+.answer-container {
+  min-height: calc(100vh - 53px - 62px);
+}
+
 .page-right-side {
   flex: none;
-  width: 30%;
+  width: 300px;
+  box-sizing: content-box;
 }
 
 // lg
 @media screen and (max-width: 1199.9px) {
+  .main-mx-with {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
   .page-main {
     max-width: 100%;
   }
   .page-right-side {
     width: 100%;
+    box-sizing: border-box;
   }
 }

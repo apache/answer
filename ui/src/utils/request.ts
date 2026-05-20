@@ -172,6 +172,7 @@ class Request {
           }
 
           if (data?.type === 'suspended') {
+            loggedUserInfoStore.getState().clear();
             floppyNavigation.navigate(RouteAlias.suspended, {
               handler: 'replace',
             });

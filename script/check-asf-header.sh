@@ -26,6 +26,6 @@ else
     exit 1
 fi
 
-$CONTAINER_RUNTIME run -it --rm -v "$(pwd)":/github/workspace ghcr.io/korandoru/hawkeye-native format
+$CONTAINER_RUNTIME run --rm -v "$(pwd)":/github/workspace ghcr.io/korandoru/hawkeye-native format
 
 gofmt -w -l .

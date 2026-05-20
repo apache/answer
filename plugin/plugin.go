@@ -23,12 +23,20 @@ import (
 	"encoding/json"
 	"sync"
 
+	"github.com/segmentfault/pacman/cache"
 	"github.com/segmentfault/pacman/i18n"
+	"xorm.io/xorm"
 
 	"github.com/apache/answer/internal/base/handler"
 	"github.com/apache/answer/internal/base/translator"
 	"github.com/gin-gonic/gin"
 )
+
+// Data is defined here to avoid circular dependency with internal/base/data
+type Data struct {
+	DB    *xorm.Engine
+	Cache cache.Cache
+}
 
 // GinContext is a wrapper of gin.Context
 // We export it to make it easy to use in plugins
@@ -113,6 +121,18 @@ func Register(p Base) {
 
 	if _, ok := p.(Importer); ok {
 		registerImporter(p.(Importer))
+	}
+
+	if _, ok := p.(KVStorage); ok {
+		registerKVStorage(p.(KVStorage))
+	}
+
+	if _, ok := p.(Sidebar); ok {
+		registerSidebar(p.(Sidebar))
+	}
+
+	if _, ok := p.(VectorSearch); ok {
+		registerVectorSearch(p.(VectorSearch))
 	}
 }
 
@@ -200,7 +220,7 @@ func (m *statusManager) UnmarshalJSON(data []byte) error {
 
 // Translate translates the key to the current language of the context
 func Translate(ctx *GinContext, key string) string {
-	return translator.Tr(handler.GetLang(ctx), key)
+	return translator.Tr(handler.GetLangByCtx(ctx), key)
 }
 
 // TranslateWithData translates the key to the language with data

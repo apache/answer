@@ -198,7 +198,7 @@ func (ar *answerRepo) GetAnswerList(ctx context.Context, answer *entity.Answer) 
 	answerList = make([]*entity.Answer, 0)
 	answer.ID = uid.DeShortID(answer.ID)
 	answer.QuestionID = uid.DeShortID(answer.QuestionID)
-	err = ar.data.DB.Context(ctx).Find(answerList, answer)
+	err = ar.data.DB.Context(ctx).Find(&answerList, answer)
 	if err != nil {
 		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
@@ -216,7 +216,7 @@ func (ar *answerRepo) GetAnswerPage(ctx context.Context, page, pageSize int, ans
 	answer.ID = uid.DeShortID(answer.ID)
 	answer.QuestionID = uid.DeShortID(answer.QuestionID)
 	answerList = make([]*entity.Answer, 0)
-	total, err = pager.Help(page, pageSize, answerList, answer, ar.data.DB.Context(ctx))
+	total, err = pager.Help(page, pageSize, &answerList, answer, ar.data.DB.Context(ctx))
 	if err != nil {
 		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
@@ -335,7 +335,7 @@ func (ar *answerRepo) SearchList(ctx context.Context, search *entity.AnswerSearc
 	var err error
 	rows := make([]*entity.Answer, 0)
 	if search.Page > 0 {
-		search.Page = search.Page - 1
+		search.Page--
 	} else {
 		search.Page = 0
 	}
@@ -503,6 +503,7 @@ func (ar *answerRepo) updateSearch(ctx context.Context, answerID string) (err er
 	err = st.Find(&tagListList)
 	if err != nil {
 		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+		return
 	}
 	for _, tag := range tagListList {
 		tags = append(tags, tag.TagID)
@@ -526,4 +527,29 @@ func (ar *answerRepo) updateSearch(ctx context.Context, answerID string) (err er
 	}
 	err = s.UpdateContent(ctx, content)
 	return
+}
+
+func (ar *answerRepo) DeletePermanentlyAnswers(ctx context.Context) error {
+	// get all deleted answers ids
+	ids := make([]string, 0)
+	err := ar.data.DB.Context(ctx).Select("id").Table(new(entity.Answer).TableName()).
+		Where("status = ?", entity.AnswerStatusDeleted).Find(&ids)
+	if err != nil {
+		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+
+	// delete all revisions permanently
+	_, err = ar.data.DB.Context(ctx).In("object_id", ids).Delete(&entity.Revision{})
+	if err != nil {
+		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+
+	_, err = ar.data.DB.Context(ctx).Where("status = ?", entity.AnswerStatusDeleted).Delete(&entity.Answer{})
+	if err != nil {
+		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	return nil
 }

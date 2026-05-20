@@ -32,7 +32,7 @@ import { loggedUserInfoStore } from '@/stores';
 const sortBtns = ['popular', 'name', 'newest'];
 
 const Tags = () => {
-  const [urlSearch] = useSearchParams();
+  const [urlSearch, setUrlSearch] = useSearchParams();
   const { t } = useTranslation('translation', { keyPrefix: 'tags' });
   const [searchTag, setSearchTag] = useState('');
   const { role_id } = loggedUserInfoStore((_) => _.user);
@@ -56,6 +56,10 @@ const Tags = () => {
 
   const handleChange = (e) => {
     setSearchTag(e.target.value);
+    setUrlSearch((prev) => {
+      prev.set('page', '1');
+      return prev;
+    });
   };
 
   const handleFollow = (tag) => {

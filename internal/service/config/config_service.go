@@ -31,6 +31,7 @@ import (
 type ConfigRepo interface {
 	GetConfigByID(ctx context.Context, id int) (c *entity.Config, err error)
 	GetConfigByKey(ctx context.Context, key string) (c *entity.Config, err error)
+	GetConfigByKeyFromDB(ctx context.Context, key string) (c *entity.Config, err error)
 	UpdateConfig(ctx context.Context, key, value string) (err error)
 }
 
@@ -58,6 +59,15 @@ func (cs *ConfigService) GetIntValue(ctx context.Context, key string) (val int, 
 // GetStringValue get config string value
 func (cs *ConfigService) GetStringValue(ctx context.Context, key string) (val string, err error) {
 	cf, err := cs.configRepo.GetConfigByKey(ctx, key)
+	if err != nil {
+		return "", err
+	}
+	return cf.Value, nil
+}
+
+// GetStringValueFromDB gets config string value directly from DB, bypassing cache.
+func (cs *ConfigService) GetStringValueFromDB(ctx context.Context, key string) (val string, err error) {
+	cf, err := cs.configRepo.GetConfigByKeyFromDB(ctx, key)
 	if err != nil {
 		return "", err
 	}

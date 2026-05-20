@@ -64,7 +64,9 @@ const ActionBar = ({
           }`}
           onClick={onVote}>
           <Icon name="hand-thumbs-up-fill" />
-          {voteCount > 0 && <span className="ms-2">{voteCount}</span>}
+          {voteCount > 0 && (
+            <span className="ms-2 link-secondary">{voteCount}</span>
+          )}
         </Button>
         <Button
           variant="link"

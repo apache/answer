@@ -20,10 +20,13 @@
 package schema
 
 import (
+	"context"
 	"encoding/json"
 
+	"github.com/apache/answer/internal/base/handler"
 	"github.com/apache/answer/internal/base/reason"
 	"github.com/apache/answer/internal/base/translator"
+	"github.com/apache/answer/pkg/day"
 	"github.com/segmentfault/pacman/errors"
 
 	"github.com/apache/answer/internal/base/constant"
@@ -96,6 +99,8 @@ type UserLoginResp struct {
 	HavePassword bool `json:"have_password"`
 	// visit token
 	VisitToken string `json:"visit_token"`
+	// suspended until timestamp
+	SuspendedUntil int64 `json:"suspended_until"`
 }
 
 func (r *UserLoginResp) ConvertFromUserEntity(userInfo *entity.User) {
@@ -104,6 +109,9 @@ func (r *UserLoginResp) ConvertFromUserEntity(userInfo *entity.User) {
 	r.LastLoginDate = userInfo.LastLoginDate.Unix()
 	r.Status = constant.ConvertUserStatus(userInfo.Status, userInfo.MailStatus)
 	r.HavePassword = len(userInfo.Pass) > 0
+	if !userInfo.SuspendedUntil.IsZero() {
+		r.SuspendedUntil = userInfo.SuspendedUntil.Unix()
+	}
 }
 
 type GetCurrentLoginUserInfoResp struct {
@@ -118,6 +126,9 @@ func (r *GetCurrentLoginUserInfoResp) ConvertFromUserEntity(userInfo *entity.Use
 	r.Status = constant.ConvertUserStatus(userInfo.Status, userInfo.MailStatus)
 	if len(r.ColorScheme) == 0 {
 		r.ColorScheme = constant.ColorSchemeDefault
+	}
+	if !userInfo.SuspendedUntil.IsZero() {
+		r.SuspendedUntil = userInfo.SuspendedUntil.Unix()
 	}
 }
 
@@ -156,6 +167,8 @@ type GetOtherUserInfoByUsernameResp struct {
 	Location  string `json:"location"`
 	Status    string `json:"status"`
 	StatusMsg string `json:"status_msg,omitempty"`
+	// suspended until timestamp
+	SuspendedUntil int64 `json:"suspended_until"`
 }
 
 func (r *GetOtherUserInfoByUsernameResp) ConvertFromUserEntity(userInfo *entity.User) {
@@ -163,29 +176,37 @@ func (r *GetOtherUserInfoByUsernameResp) ConvertFromUserEntity(userInfo *entity.
 	r.CreatedAt = userInfo.CreatedAt.Unix()
 	r.LastLoginDate = userInfo.LastLoginDate.Unix()
 	r.Status = constant.ConvertUserStatus(userInfo.Status, userInfo.MailStatus)
-	if userInfo.MailStatus == entity.EmailStatusToBeVerified {
-		statusMsgShow, ok := UserStatusShowMsg[11]
-		if ok {
-			r.StatusMsg = statusMsgShow
-		}
-	} else {
-		statusMsgShow, ok := UserStatusShowMsg[userInfo.Status]
-		if ok {
-			r.StatusMsg = statusMsgShow
-		}
+	if !userInfo.SuspendedUntil.IsZero() {
+		r.SuspendedUntil = userInfo.SuspendedUntil.Unix()
 	}
+	r.StatusMsg = ""
 }
 
-const (
-	NoticeStatusOn  = 1
-	NoticeStatusOff = 2
-)
+func (r *GetOtherUserInfoByUsernameResp) ConvertFromUserEntityWithLang(ctx context.Context, userInfo *entity.User) {
+	_ = copier.Copy(r, userInfo)
+	r.CreatedAt = userInfo.CreatedAt.Unix()
+	r.LastLoginDate = userInfo.LastLoginDate.Unix()
+	r.Status = constant.ConvertUserStatus(userInfo.Status, userInfo.MailStatus)
 
-var UserStatusShowMsg = map[int]string{
-	1:  "",
-	9:  "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline.",
-	10: "This user was deleted.",
-	11: "This user is inactive.",
+	lang := handler.GetLangByCtx(ctx)
+	if userInfo.MailStatus == entity.EmailStatusToBeVerified {
+		r.StatusMsg = translator.Tr(lang, reason.UserStatusInactive)
+	}
+	switch userInfo.Status {
+	case entity.UserStatusSuspended:
+		if userInfo.SuspendedUntil.IsZero() || userInfo.SuspendedUntil.Year() >= 2099 {
+			r.StatusMsg = translator.Tr(lang, reason.UserStatusSuspendedForever)
+		} else {
+			r.SuspendedUntil = userInfo.SuspendedUntil.Unix()
+			trans := translator.GlobalTrans.Tr(lang, "ui.dates.long_date_with_time")
+			suspendedUntilFormatted := day.Format(userInfo.SuspendedUntil.Unix(), trans, "UTC")
+			r.StatusMsg = translator.TrWithData(lang, reason.UserStatusSuspendedUntil, map[string]any{
+				"SuspendedUntil": suspendedUntilFormatted,
+			})
+		}
+	case entity.UserStatusDeleted:
+		r.StatusMsg = translator.Tr(lang, reason.UserStatusDeleted)
+	}
 }
 
 // UserEmailLoginReq user email login request
@@ -238,8 +259,8 @@ func (u *UserModifyPasswordReq) Check() (errFields []*validator.FormErrorField, 
 }
 
 type UpdateInfoRequest struct {
-	DisplayName string     `validate:"omitempty,gt=0,lte=30" json:"display_name"`
-	Username    string     `validate:"omitempty,gt=3,lte=30" json:"username"`
+	DisplayName string     `validate:"omitempty,gte=2,lte=30" json:"display_name"`
+	Username    string     `validate:"omitempty,gte=2,lte=30" json:"username"`
 	Avatar      AvatarInfo `json:"avatar"`
 	Bio         string     `validate:"omitempty,gt=0,lte=4096" json:"bio"`
 	BioHTML     string     `json:"-"`
@@ -348,15 +369,16 @@ type ActionRecordResp struct {
 }
 
 type UserBasicInfo struct {
-	ID          string `json:"id"`
-	Username    string `json:"username"`
-	Rank        int    `json:"rank"`
-	DisplayName string `json:"display_name"`
-	Avatar      string `json:"avatar"`
-	Website     string `json:"website"`
-	Location    string `json:"location"`
-	Language    string `json:"language"`
-	Status      string `json:"status"`
+	ID             string `json:"id"`
+	Username       string `json:"username"`
+	Rank           int    `json:"rank"`
+	DisplayName    string `json:"display_name"`
+	Avatar         string `json:"avatar"`
+	Website        string `json:"website"`
+	Location       string `json:"location"`
+	Language       string `json:"language"`
+	Status         string `json:"status"`
+	SuspendedUntil int64  `json:"suspended_until"`
 }
 
 type GetOtherUserInfoByUsernameReq struct {

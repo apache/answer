@@ -60,6 +60,11 @@ func (sc *SiteInfoController) GetSiteInfo(ctx *gin.Context) {
 		log.Error(err)
 	}
 
+	resp.UsersSettings, err = sc.siteInfoService.GetSiteUsersSettings(ctx)
+	if err != nil {
+		log.Error(err)
+	}
+
 	resp.Branding, err = sc.siteInfoService.GetSiteBranding(ctx)
 	if err != nil {
 		log.Error(err)
@@ -87,9 +92,30 @@ func (sc *SiteInfoController) GetSiteInfo(ctx *gin.Context) {
 	if err != nil {
 		log.Error(err)
 	}
-	resp.Write, err = sc.siteInfoService.GetSiteWrite(ctx)
+	resp.Questions, err = sc.siteInfoService.GetSiteQuestion(ctx)
 	if err != nil {
 		log.Error(err)
+	}
+	resp.Tags, err = sc.siteInfoService.GetSiteTag(ctx)
+	if err != nil {
+		log.Error(err)
+	}
+	resp.Advanced, err = sc.siteInfoService.GetSiteAdvanced(ctx)
+	if err != nil {
+		log.Error(err)
+	}
+	if legal, err := sc.siteInfoService.GetSiteSecurity(ctx); err == nil {
+		resp.Legal = &schema.SiteLegalSimpleResp{ExternalContentDisplay: legal.ExternalContentDisplay}
+	}
+	if security, err := sc.siteInfoService.GetSiteSecurity(ctx); err == nil {
+		resp.Security = security
+	}
+	if aiConf, err := sc.siteInfoService.GetSiteAI(ctx); err == nil {
+		resp.AIEnabled = aiConf.Enabled
+	}
+
+	if mcpConf, err := sc.siteInfoService.GetSiteMCP(ctx); err == nil {
+		resp.MCPEnabled = mcpConf.Enabled
 	}
 
 	handler.HandleResponse(ctx, nil, resp)
@@ -108,7 +134,7 @@ func (sc *SiteInfoController) GetSiteLegalInfo(ctx *gin.Context) {
 	if handler.BindAndCheck(ctx, req) {
 		return
 	}
-	siteLegal, err := sc.siteInfoService.GetSiteLegal(ctx)
+	siteLegal, err := sc.siteInfoService.GetSitePolicies(ctx)
 	if err != nil {
 		handler.HandleResponse(ctx, err, nil)
 		return
@@ -133,12 +159,7 @@ func (sc *SiteInfoController) GetManifestJson(ctx *gin.Context) {
 		Revision:        constant.Revision,
 		ShortName:       "Answer",
 		Name:            "answer.apache.org",
-		Icons: map[string]string{
-			"16":  favicon,
-			"32":  favicon,
-			"48":  favicon,
-			"128": favicon,
-		},
+		Icons:           schema.CreateManifestJsonIcons(favicon),
 		StartUrl:        ".",
 		Display:         "standalone",
 		ThemeColor:      "#000000",
@@ -148,10 +169,7 @@ func (sc *SiteInfoController) GetManifestJson(ctx *gin.Context) {
 	if err != nil {
 		log.Error(err)
 	} else if len(branding.Favicon) > 0 {
-		resp.Icons["16"] = branding.Favicon
-		resp.Icons["32"] = branding.Favicon
-		resp.Icons["48"] = branding.Favicon
-		resp.Icons["128"] = branding.Favicon
+		resp.Icons = schema.CreateManifestJsonIcons(branding.Favicon)
 	}
 	siteGeneral, err := sc.siteInfoService.GetSiteGeneral(ctx)
 	if err != nil {

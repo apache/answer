@@ -19,187 +19,170 @@
 
 -->
 {{template "header" . }}
-<div class="col-xl-10 col-lg-9 col-md-12">
-  <div class="questionDetailPage pt-4 mb-5 row">
-    <div class="page-main flex-auto col">
-      <div>
-        <h1 class="h3 mb-3 text-wrap text-break">
-          {{if $.useTitle }}
-          <a class="link-dark" href="{{$.baseURL}}/questions/{{.detail.ID}}/{{urlTitle .detail.Title}}">{{.detail.Title}}</a>
-          {{else}}
-          <a class="link-dark" href="{{$.baseURL}}/questions/{{.detail.ID}}">{{.detail.Title}}</a>
-          {{end}}
-        </h1>
-        <div
-          class="d-flex flex-wrap align-items-center small mb-3 text-secondary">
-          <time class="me-3"
-                datetime="{{timeFormatISO $.timezone .detail.CreateTime}}"
-                title="{{translatorTimeFormatLongDate $.language $.timezone .detail.CreateTime}}">{{translator $.language "ui.question_detail.Asked"}} {{translatorTimeFormat $.language $.timezone .detail.CreateTime}}
-          </time>
-          <time class="me-3"
-                datetime="{{timeFormatISO $.timezone .detail.UpdateTime}}"
-                title="{{translatorTimeFormatLongDate $.language $.timezone .detail.UpdateTime}}">{{translator $.language "ui.question_detail.update"}} {{translatorTimeFormat $.language $.timezone .detail.UpdateTime}}
-          </time>
-          <div class="me-3">{{translator $.language "ui.question_detail.Views"}} {{.detail.ViewCount}}</div>
-
-        </div>
-        <div class="m-n1">
-          {{range .detail.Tags}}
-          <a href="{{$.baseURL}}/tags/{{.SlugName}}"
-              class="badge-tag rounded-1 {{if .Reserved}}badge-tag-reserved{{end}} {{if .Recommend}}badge-tag-required{{end}} m-1">
-            <span class="">{{.SlugName}}</span>
-          </a>
-          {{end}}
-        </div>
-        <div class="img-viewer">
-          <article class="fmt text-break text-wrap mt-4">
-            {{formatLinkNofollow .detail.HTML}}
-          </article>
-        </div>
-        <div class="mt-4">
-          <div role="group" class="btn-group">
-            <button type="button" class="btn btn-outline-secondary">
-              <i class="br bi-hand-thumbs-up-fill"></i></button>
-            <button type="button"
-                    disabled="" class="btn btn-outline-dark text-body">
-              {{.detail.VoteCount}}
-            </button>
-            <button type="button" class="btn btn-outline-secondary">
-              <i class="br bi-hand-thumbs-down-fill"></i>
-            </button>
-          </div>
-          <button type="button" class="btn btn-outline-secondary ms-3">
-            <i class="br bi-bookmark-fill"></i><span style="padding-left: 10px">{{.detail.CollectionCount}}</span>
-          </button>
-        </div>
-        <div class="d-block d-md-flex flex-wrap mt-4 mb-3">
-          <div class="mb-3 mb-md-0 me-4 flex-grow-1">
-
-          </div>
-          <div class="mb-3 me-4 mb-md-0" style="min-width: 196px;">
-            <a href="{{$.baseURL}}/posts/{{.detail.ID}}/timeline">
-              <time class="link-secondary small"
-                    datetime="{{timeFormatISO $.timezone .detail.UpdateTime}}"
-                    title="{{translatorTimeFormatLongDate $.language $.timezone .detail.UpdateTime}}">
-                {{translator $.language "ui.question_detail.edit"}} {{translatorTimeFormat $.language $.timezone .detail.UpdateTime}}
-              </time>
-            </a>
-          </div>
-          <div style="min-width: 196px;">
-            <div class="d-flex">
-              <a href="{{$.baseURL}}/users/{{.detail.UserInfo.Username}}"><img
-                src="{{.detail.UserInfo.Avatar}}"
-                width="40px" height="40px"
-                class="rounded me-2 d-none d-md-block"
-                alt=""/><img
+<div class="d-flex justify-content-center px-0 px-md-4">
+  <div class="answer-container">
+    <div class="questionDetailPage pt-4 mb-5 row">
+      <div class="page-main flex-auto col">
+        <div>
+          <h1 class="h3 mb-3 text-wrap text-break">
+            {{if $.useTitle }}
+            <a class="link-dark" href="{{$.baseURL}}/questions/{{.detail.ID}}/{{urlTitle .detail.Title}}">{{.detail.Title}}</a>
+            {{else}}
+            <a class="link-dark" href="{{$.baseURL}}/questions/{{.detail.ID}}">{{.detail.Title}}</a>
+            {{end}}
+          </h1>
+          <div
+            class="d-flex flex-wrap align-items-center small mb-4 text-secondary border-bottom pb-3">
+            <div class="d-flex align-items-center  text-secondary me-3">
+              <a class="d-flex align-items-center" href="{{$.baseURL}}/users/{{.detail.UserInfo.Username}}">
+                <img
                 src="{{.detail.UserInfo.Avatar}}"
                 width="24px" height="24px"
-                class="rounded me-2 d-block d-md-none"
-                alt=""/></a>
-              <div
-                class="small text-secondary d-flex flex-row flex-md-column align-items-center align-items-md-start">
-                <div class="me-1 me-md-0">
-                  <a class="me-1 text-break"
-                      href="{{$.baseURL}}/users/{{.detail.UserInfo.Username}}">{{.detail.UserInfo.DisplayName}}</a><span
-                  class="fw-bold" title="Reputation">{{.detail.UserInfo.Rank}}</span>
-                </div>
-                <a href="{{$.baseURL}}/posts/{{.detail.ID}}/timeline">
-                  <time class="link-secondary"
-                        datetime="{{timeFormatISO $.timezone .detail.CreateTime}}"
-                        title="{{translatorTimeFormatLongDate $.language $.timezone .detail.CreateTime}}">{{translator $.language "ui.question_detail.asked"}} {{translatorTimeFormat $.language $.timezone .detail.CreateTime}}
-                  </time>
-                </a>
-              </div>
+                class="rounded me-1"
+                alt=""/>
+                <span class="me-1 name-ellipsis" style="max-width: 300px;">{{.detail.UserInfo.DisplayName}}</span>
+              </a>
+              <span class="fw-bold" title="Reputation">{{.detail.UserInfo.Rank}}</span>
             </div>
+            <time class="me-3 link-secondary"
+                  datetime="{{timeFormatISO $.timezone .detail.CreateTime}}"
+                  title="{{translatorTimeFormatLongDate $.language $.timezone .detail.CreateTime}}">{{translator $.language "ui.question_detail.created"}} {{translatorTimeFormat $.language $.timezone .detail.CreateTime}}
+            </time>
+            {{if gt .detail.QuestionUpdateTime 0}}
+              <time class="me-3 link-secondary"
+                    datetime="{{timeFormatISO $.timezone .detail.QuestionUpdateTime}}"
+                    title="{{translatorTimeFormatLongDate $.language $.timezone .detail.QuestionUpdateTime}}">{{translator $.language "ui.question_detail.Edited"}} {{translatorTimeFormat $.language $.timezone .detail.QuestionUpdateTime}}
+              </time>
+            {{end}}
+            <div class="me-3">{{translator $.language "ui.question_detail.Views"}} {{.detail.ViewCount}}</div>
+            <button type="button" class="p-0 btn-no-border btn btn-link btn-sm">{{translator $.language "ui.question_detail.Follow"}}</button>
           </div>
-        </div>
-        <div class="comments-wrap">
-          {{template "comment" (wrapComments (index $.comments $.detail.ID) $.language $.timezone)}}
-        </div>
-      </div>
-      <div class="d-flex align-items-center justify-content-between mt-5 mb-3"
-            id="answerHeader">
-        <h5 class="mb-0">{{.detail.AnswerCount}} Answers</h5>
-      </div>
-      {{range .answers}}
-      <div class="answer-item py-4">
-        <article class="fmt">
-          {{formatLinkNofollow .HTML}}
-        </article>
-        <div class="d-flex align-items-center mt-4">
-          <div class="">
+
+          <div class="img-viewer">
+            <article class="fmt text-break text-wrap last-p mt-4">
+              {{formatLinkNofollow .detail.HTML}}
+            </article>
+          </div>
+
+          <div class="m-n1">
+            {{range .detail.Tags}}
+            <a href="{{$.baseURL}}/tags/{{.SlugName}}"
+                class="badge-tag rounded-1 {{if .Reserved}}badge-tag-reserved{{end}} {{if .Recommend}}badge-tag-required{{end}} m-1">
+              <span class="">{{.SlugName}}</span>
+            </a>
+            {{end}}
+          </div>
+
+          <div class="mt-4">
             <div role="group" class="btn-group">
               <button type="button" class="btn btn-outline-secondary">
                 <i class="br bi-hand-thumbs-up-fill"></i></button>
               <button type="button"
                       disabled="" class="btn btn-outline-dark text-body">
-                {{.VoteCount}}
+                {{.detail.VoteCount}}
               </button>
               <button type="button" class="btn btn-outline-secondary">
                 <i class="br bi-hand-thumbs-down-fill"></i>
               </button>
             </div>
+            <button type="button" class="btn btn-outline-secondary ms-3">
+              <i class="br bi-bookmark-fill"></i><span style="padding-left: 10px">{{.detail.CollectionCount}}</span>
+            </button>
           </div>
-          {{if eq 2 .Accepted}}
-          <button type="button" disabled=""
-                  class="ms-3 active opacity-100 bg-success text-white btn btn-outline-success">
-            <i class="br bi-check-circle-fill me-2"></i><span>{{translator $.language "ui.question_detail.answers.btn_accepted"}}</span>
-          </button>
-          {{end}}
-        </div>
-        <div class="mt-4 mb-3 row">
-          <div class="mb-3 mb-md-0 col">
-            <div class="d-flex align-items-center">
 
+          <div class="mt-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center"><div class="d-flex flex-wrap"><button type="button" class="rounded-pill me-2 link-secondary btn-reaction btn btn-light btn-sm"><i class="br bi-chat-text-fill"></i><span class="ms-1">Add comment</span></button><button type="button" aria-label="add or remove reactions" aria-haspopup="true" class="smile-btn rounded-pill link-secondary btn-reaction btn btn-light btn-sm"><i class="br bi-emoji-smile-fill"></i><span class="ms-1">+</span></button></div><div class="md-show align-items-center"><div class="dropdown"><a class="no-toggle pointer d-flex link-secondary small dropdown-toggle" id="dropdown-share" aria-expanded="false" style="line-height: 23px;">{{translator $.language "ui.share.name"}}</a></div></div><div class="md-hide"></div></div>
+
+            <div class="comments-wrap">
+              {{template "comment" (wrapComments (index $.comments $.detail.ID) $.language $.timezone)}}
             </div>
           </div>
-          <div class="mb-3 mb-md-0 col-lg-3">
-            <a href="{{$.baseURL}}/posts/{{$.detail.ID}}/{{.ID}}/timeline">
-              <time
-                class="link-secondary small"
-                datetime="{{timeFormatISO $.timezone .UpdateTime}}"
-                title="{{translatorTimeFormatLongDate $.language $.timezone .UpdateTime}}">
-                {{translator $.language "ui.question_detail.edit"}} {{translatorTimeFormat $.language $.timezone .UpdateTime}}
-              </time>
-            </a>
+
+        </div>
+        <div class="d-flex align-items-center justify-content-between mt-5 mb-3"
+              id="answerHeader">
+          <h5 class="mb-0">{{.detail.AnswerCount}} Answers</h5>
+        </div>
+        {{range .answers}}
+        <div class="answer-item py-4">
+          <article class="fmt">
+            {{formatLinkNofollow .HTML}}
+          </article>
+          <div class="d-flex align-items-center mt-4">
+            <div class="">
+              <div role="group" class="btn-group">
+                <button type="button" class="btn btn-outline-secondary">
+                  <i class="br bi-hand-thumbs-up-fill"></i></button>
+                <button type="button"
+                        disabled="" class="btn btn-outline-dark text-body">
+                  {{.VoteCount}}
+                </button>
+                <button type="button" class="btn btn-outline-secondary">
+                  <i class="br bi-hand-thumbs-down-fill"></i>
+                </button>
+              </div>
+            </div>
+            {{if eq 2 .Accepted}}
+            <button type="button" disabled=""
+                    class="ms-3 active opacity-100 bg-success text-white btn btn-outline-success">
+              <i class="br bi-check-circle-fill me-2"></i><span>{{translator $.language "ui.question_detail.answers.btn_accepted"}}</span>
+            </button>
+            {{end}}
           </div>
-          <div class="col-lg-4">
-            <div class="d-flex">
-              <a href="{{$.baseURL}}/users/{{.UserInfo.Username}}"><img
-                src="{{.UserInfo.Avatar}}"
-                width="40px" height="40px"
-                class="rounded me-2 d-none d-md-block"
-                alt=""/><img
-                src="{{.UserInfo.Avatar}}"
-                width="24px" height="24px"
-                class="rounded me-2 d-block d-md-none"
-                alt=""/></a>
-              <div
-                class="small text-secondary d-flex flex-row flex-md-column align-items-center align-items-md-start">
-                <div class="me-1 me-md-0">
-                  <a class="me-1 text-break"
-                      href="{{$.baseURL}}/users/{{.UserInfo.Username}}">{{.UserInfo.DisplayName}}</a><span
-                  class="fw-bold" title="Reputation">{{.UserInfo.Rank}}</span>
+          <div class="mt-4 mb-3 row">
+            <div class="mb-3 mb-md-0 col">
+              <div class="d-flex align-items-center">
+
+              </div>
+            </div>
+            <div class="mb-3 mb-md-0 col-lg-3">
+              <a href="{{$.baseURL}}/posts/{{$.detail.ID}}/{{.ID}}/timeline">
+                <time
+                  class="link-secondary small"
+                  datetime="{{timeFormatISO $.timezone .UpdateTime}}"
+                  title="{{translatorTimeFormatLongDate $.language $.timezone .UpdateTime}}">
+                  {{translator $.language "ui.question_detail.edit"}} {{translatorTimeFormat $.language $.timezone .UpdateTime}}
+                </time>
+              </a>
+            </div>
+            <div class="col-lg-4">
+              <div class="d-flex">
+                <a href="{{$.baseURL}}/users/{{.UserInfo.Username}}"><img
+                  src="{{.UserInfo.Avatar}}"
+                  width="40px" height="40px"
+                  class="rounded me-2 d-none d-md-block"
+                  alt=""/><img
+                  src="{{.UserInfo.Avatar}}"
+                  width="24px" height="24px"
+                  class="rounded me-2 d-block d-md-none"
+                  alt=""/></a>
+                <div
+                  class="small text-secondary d-flex flex-row flex-md-column align-items-center align-items-md-start">
+                  <div class="me-1 me-md-0">
+                    <a class="me-1 text-break"
+                        href="{{$.baseURL}}/users/{{.UserInfo.Username}}">{{.UserInfo.DisplayName}}</a><span
+                    class="fw-bold" title="Reputation">{{.UserInfo.Rank}}</span>
+                  </div>
+                  <a href="{{$.baseURL}}/posts/{{$.detail.ID}}/{{.ID}}/timeline">
+                    <time
+                      class="link-secondary"
+                      datetime="{{timeFormatISO $.timezone .CreateTime}}"
+                      title="{{translatorTimeFormatLongDate $.language $.timezone .CreateTime}}">{{translator $.language "ui.question_detail.answered"}} {{translatorTimeFormat $.language $.timezone .CreateTime}}
+                    </time>
+                  </a>
                 </div>
-                <a href="{{$.baseURL}}/posts/{{$.detail.ID}}/{{.ID}}/timeline">
-                  <time
-                    class="link-secondary"
-                    datetime="{{timeFormatISO $.timezone .CreateTime}}"
-                    title="{{translatorTimeFormatLongDate $.language $.timezone .CreateTime}}">{{translator $.language "ui.question_detail.answered"}} {{translatorTimeFormat $.language $.timezone .CreateTime}}
-                  </time>
-                </a>
               </div>
             </div>
           </div>
+          <div class="comments-wrap">
+            {{template "comment" (wrapComments (index $.comments .ID) $.language $.timezone)}}
+          </div>
         </div>
-        <div class="comments-wrap">
-          {{template "comment" (wrapComments (index $.comments .ID) $.language $.timezone)}}
-        </div>
+        {{end}}
       </div>
-      {{end}}
-    </div>
-    <div class="page-right-side mt-4 mt-xl-0 col">
-      {{template "related-question" .}}
+      <div class="page-right-side mt-4 mt-xl-0 col">
+        {{template "related-question" .}}
+      </div>
     </div>
   </div>
 </div>

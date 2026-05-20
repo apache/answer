@@ -23,7 +23,7 @@ import { useTranslation } from 'react-i18next';
 
 import Select from '../Select';
 import ToolItem from '../toolItem';
-import { IEditorContext } from '../types';
+import { Editor } from '../types';
 
 const codeLanguageType = [
   'bash',
@@ -150,7 +150,6 @@ const codeLanguageType = [
   'yml',
 ];
 
-let context: IEditorContext;
 const Code = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'editor' });
 
@@ -170,22 +169,20 @@ const Code = () => {
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const SINGLELINEMAXLENGTH = 40;
-  const addCode = (ctx) => {
-    context = ctx;
+  const [currentEditor, setCurrentEditor] = useState<Editor | null>(null);
 
-    const { wrapText, editor } = context;
-
-    const text = context.editor.getSelection();
+  const addCode = (editor: Editor) => {
+    setCurrentEditor(editor);
+    const text = editor.getSelection();
 
     if (!text) {
       setVisible(true);
-
       return;
     }
     if (text.length > SINGLELINEMAXLENGTH) {
-      context.wrapText('```\n', '\n```');
+      editor.insertCodeBlock('', text);
     } else {
-      wrapText('`', '`');
+      editor.insertCode(text);
     }
     editor.focus();
   };
@@ -197,6 +194,10 @@ const Code = () => {
   }, [visible]);
 
   const handleClick = () => {
+    if (!currentEditor) {
+      return;
+    }
+
     if (!code.value.trim()) {
       setCode({
         ...code,
@@ -206,17 +207,15 @@ const Code = () => {
       return;
     }
 
-    let value;
-
     if (
       code.value.split('\n').length > 1 ||
       code.value.length >= SINGLELINEMAXLENGTH
     ) {
-      value = `\n\`\`\`${lang}\n${code.value}\n\`\`\`\n`;
+      currentEditor.insertCodeBlock(lang || undefined, code.value);
     } else {
-      value = `\`${code.value}\``;
+      currentEditor.insertCode(code.value);
     }
-    context.editor.replaceSelection(value);
+
     setCode({
       value: '',
       isInvalid: false,
@@ -224,9 +223,10 @@ const Code = () => {
     });
     setLang('');
     setVisible(false);
+    currentEditor.focus();
   };
   const onHide = () => setVisible(false);
-  const onExited = () => context.editor?.focus();
+  const onExited = () => currentEditor?.focus();
 
   return (
     <ToolItem {...item} onClick={addCode}>

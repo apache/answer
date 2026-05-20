@@ -52,16 +52,20 @@ func NewUserAdminRepo(data *data.Data, authRepo auth.AuthRepo) user_admin.UserAd
 
 // UpdateUserStatus update user status
 func (ur *userAdminRepo) UpdateUserStatus(ctx context.Context, userID string, userStatus, mailStatus int,
-	email string,
+	email string, suspendedUntil time.Time,
 ) (err error) {
 	cond := &entity.User{Status: userStatus, MailStatus: mailStatus, EMail: email}
 	switch userStatus {
 	case entity.UserStatusSuspended:
 		cond.SuspendedAt = time.Now()
+		cond.SuspendedUntil = suspendedUntil
 	case entity.UserStatusDeleted:
 		cond.DeletedAt = time.Now()
+	case entity.UserStatusAvailable:
+		// When restoring user status, clear suspended until time to zero
+		cond.SuspendedUntil = time.Time{}
 	}
-	_, err = ur.data.DB.Context(ctx).ID(userID).Update(cond)
+	_, err = ur.data.DB.Context(ctx).ID(userID).MustCols("status", "mail_status", "e_mail", "suspended_at", "suspended_until", "deleted_at").Update(cond)
 	if err != nil {
 		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
@@ -174,4 +178,30 @@ func (ur *userAdminRepo) GetUserPage(ctx context.Context, page, pageSize int, us
 	}
 	tryToDecorateUserListFromUserCenter(ctx, ur.data, users)
 	return
+}
+
+// DeletePermanentlyUsers delete permanently users
+func (ur *userAdminRepo) DeletePermanentlyUsers(ctx context.Context) (err error) {
+	_, err = ur.data.DB.Context(ctx).Where("status = ?", entity.UserStatusDeleted).Delete(&entity.User{})
+	if err != nil {
+		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	return
+}
+
+// GetExpiredSuspendedUsers gets all suspended users whose suspension has expired
+func (ur *userAdminRepo) GetExpiredSuspendedUsers(ctx context.Context) (users []*entity.User, err error) {
+	users = make([]*entity.User, 0)
+	now := time.Now()
+
+	err = ur.data.DB.Context(ctx).
+		Where("status = ?", entity.UserStatusSuspended).
+		Where("suspended_until < ?", now).
+		Find(&users)
+
+	if err != nil {
+		return nil, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+
+	return users, nil
 }

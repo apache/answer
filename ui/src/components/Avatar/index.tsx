@@ -54,19 +54,16 @@ const Index: FC<IProps> = ({
   }
 
   const roundedCls =
-    className && className.indexOf('rounded') !== -1 ? '' : 'rounded';
+    className && className.indexOf('rounded') !== -1 ? '' : 'rounded-circle';
 
   return (
-    <>
-      {/* eslint-disable jsx-a11y/no-noninteractive-element-to-interactive-role,jsx-a11y/control-has-associated-label */}
-      <img
-        src={url || DefaultAvatar}
-        width={size}
-        height={size}
-        className={classNames(roundedCls, className)}
-        alt={alt}
-      />
-    </>
+    <img
+      src={url || DefaultAvatar}
+      width={size}
+      height={size}
+      className={classNames(roundedCls, className)}
+      alt={alt}
+    />
   );
 };
 

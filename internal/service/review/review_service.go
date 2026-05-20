@@ -28,13 +28,15 @@ import (
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
 	answercommon "github.com/apache/answer/internal/service/answer_common"
-	"github.com/apache/answer/internal/service/notice_queue"
+	commentcommon "github.com/apache/answer/internal/service/comment_common"
+	"github.com/apache/answer/internal/service/noticequeue"
 	"github.com/apache/answer/internal/service/object_info"
 	questioncommon "github.com/apache/answer/internal/service/question_common"
 	"github.com/apache/answer/internal/service/role"
 	"github.com/apache/answer/internal/service/siteinfo_common"
 	tagcommon "github.com/apache/answer/internal/service/tag_common"
 	usercommon "github.com/apache/answer/internal/service/user_common"
+	"github.com/apache/answer/internal/service/vector_sync"
 	"github.com/apache/answer/pkg/htmltext"
 	"github.com/apache/answer/pkg/token"
 	"github.com/apache/answer/pkg/uid"
@@ -65,9 +67,11 @@ type ReviewService struct {
 	userRoleService                  *role.UserRoleRelService
 	tagCommon                        *tagcommon.TagCommonService
 	questionCommon                   *questioncommon.QuestionCommon
-	externalNotificationQueueService notice_queue.ExternalNotificationQueueService
-	notificationQueueService         notice_queue.NotificationQueueService
+	externalNotificationQueueService noticequeue.ExternalService
+	notificationQueueService         noticequeue.Service
 	siteInfoService                  siteinfo_common.SiteInfoCommonService
+	commentCommonRepo                commentcommon.CommentCommonRepo
+	vectorSyncService                vector_sync.Service
 }
 
 // NewReviewService new review service
@@ -79,11 +83,13 @@ func NewReviewService(
 	questionRepo questioncommon.QuestionRepo,
 	answerRepo answercommon.AnswerRepo,
 	userRoleService *role.UserRoleRelService,
-	externalNotificationQueueService notice_queue.ExternalNotificationQueueService,
+	externalNotificationQueueService noticequeue.ExternalService,
 	tagCommon *tagcommon.TagCommonService,
 	questionCommon *questioncommon.QuestionCommon,
-	notificationQueueService notice_queue.NotificationQueueService,
+	notificationQueueService noticequeue.Service,
 	siteInfoService siteinfo_common.SiteInfoCommonService,
+	commentCommonRepo commentcommon.CommentCommonRepo,
+	vectorSyncService vector_sync.Service,
 ) *ReviewService {
 	return &ReviewService{
 		reviewRepo:                       reviewRepo,
@@ -98,6 +104,8 @@ func NewReviewService(
 		questionCommon:                   questionCommon,
 		notificationQueueService:         notificationQueueService,
 		siteInfoService:                  siteInfoService,
+		commentCommonRepo:                commentCommonRepo,
+		vectorSyncService:                vectorSyncService,
 	}
 }
 
@@ -151,6 +159,30 @@ func (cs *ReviewService) AddAnswerReview(ctx context.Context,
 		answerStatus = entity.AnswerStatusAvailable
 	}
 	return answerStatus
+}
+
+// AddCommentReview add review for comment if needed
+func (cs *ReviewService) AddCommentReview(ctx context.Context,
+	comment *entity.Comment, ip, ua string) (commentStatus int) {
+	reviewContent := &plugin.ReviewContent{
+		ObjectType: constant.CommentObjectType,
+		Content:    comment.ParsedText,
+		IP:         ip,
+		UserAgent:  ua,
+	}
+	reviewContent.Author = cs.getReviewContentAuthorInfo(ctx, comment.UserID)
+	reviewStatus := cs.callPluginToReview(ctx, comment.UserID, comment.ID, reviewContent)
+	switch reviewStatus {
+	case plugin.ReviewStatusApproved:
+		commentStatus = entity.CommentStatusAvailable
+	case plugin.ReviewStatusNeedReview:
+		commentStatus = entity.CommentStatusPending
+	case plugin.ReviewStatusDeleteDirectly:
+		commentStatus = entity.CommentStatusDeleted
+	default:
+		commentStatus = entity.CommentStatusAvailable
+	}
+	return commentStatus
 }
 
 // get review content author info
@@ -262,6 +294,9 @@ func (cs *ReviewService) updateObjectStatus(ctx context.Context, review *entity.
 			}
 			cs.externalNotificationQueueService.Send(ctx,
 				schema.CreateNewQuestionNotificationMsg(questionInfo.ID, questionInfo.Title, questionInfo.UserID, tags))
+			cs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: questionInfo.ID})
+		} else {
+			cs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionDelete, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: questionInfo.ID})
 		}
 		userQuestionCount, err := cs.questionRepo.GetUserQuestionCount(ctx, questionInfo.UserID, 0)
 		if err != nil {
@@ -298,7 +333,11 @@ func (cs *ReviewService) updateObjectStatus(ctx context.Context, review *entity.
 		if isApprove {
 			cs.notificationAnswerTheQuestion(ctx, questionInfo.UserID, questionInfo.ID, answerInfo.ID,
 				answerInfo.UserID, questionInfo.Title, answerInfo.OriginalText)
+			cs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeAnswer, ObjectID: answerInfo.ID})
+		} else {
+			cs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionDelete, ObjectType: vector_sync.ObjectTypeAnswer, ObjectID: answerInfo.ID})
 		}
+		cs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: answerInfo.QuestionID})
 		if err := cs.questionCommon.UpdateAnswerCount(ctx, answerInfo.QuestionID); err != nil {
 			log.Errorf("update question answer count failed, err: %v", err)
 		}
@@ -313,6 +352,38 @@ func (cs *ReviewService) updateObjectStatus(ctx context.Context, review *entity.
 			if err != nil {
 				log.Errorf("update user answer count failed, err: %v", err)
 			}
+		}
+	case constant.CommentObjectType:
+		commentInfo, exist, err := cs.commentCommonRepo.GetCommentWithoutStatus(ctx, review.ObjectID)
+		if err != nil {
+			return err
+		}
+		if !exist {
+			return errors.BadRequest(reason.ObjectNotFound)
+		}
+		if isApprove {
+			commentInfo.Status = entity.CommentStatusAvailable
+		} else {
+			commentInfo.Status = entity.CommentStatusDeleted
+		}
+		if err := cs.commentCommonRepo.UpdateCommentStatus(ctx, commentInfo.ID, commentInfo.Status); err != nil {
+			return err
+		}
+		_, exist, err = cs.questionRepo.GetQuestion(ctx, commentInfo.QuestionID)
+		if err != nil {
+			return err
+		}
+		if !exist {
+			return errors.BadRequest(reason.ObjectNotFound)
+		}
+		if isApprove {
+			cs.notificationCommentOnTheQuestion(ctx, commentInfo)
+		}
+		if commentInfo.ObjectID == commentInfo.QuestionID {
+			cs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: commentInfo.QuestionID})
+		} else {
+			cs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeAnswer, ObjectID: commentInfo.ObjectID})
+			cs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: commentInfo.QuestionID})
 		}
 	}
 	return
@@ -361,6 +432,221 @@ func (cs *ReviewService) notificationAnswerTheQuestion(ctx context.Context,
 		rawData.AnswerUserDisplayName = answerUser.DisplayName
 	}
 	externalNotificationMsg.NewAnswerTemplateRawData = rawData
+	cs.externalNotificationQueueService.Send(ctx, externalNotificationMsg)
+}
+
+func (cs *ReviewService) notificationCommentOnTheQuestion(ctx context.Context, comment *entity.Comment) {
+	objInfo, err := cs.objectInfoService.GetInfo(ctx, comment.ObjectID)
+	if err != nil {
+		log.Error(err)
+		return
+	}
+	if objInfo.IsDeleted() {
+		log.Error("object already deleted")
+		return
+	}
+	objInfo.ObjectID = uid.DeShortID(objInfo.ObjectID)
+	objInfo.QuestionID = uid.DeShortID(objInfo.QuestionID)
+	objInfo.AnswerID = uid.DeShortID(objInfo.AnswerID)
+
+	// The priority of the notification
+	// 1. reply to user
+	// 2. comment mention to user
+	// 3. answer or question was commented
+	alreadyNotifiedUserID := make(map[string]bool)
+
+	// get reply user info
+	replyUserID := comment.GetReplyUserID()
+	if len(replyUserID) > 0 && replyUserID != comment.UserID {
+		replyUser, _, err := cs.userCommon.GetUserBasicInfoByID(ctx, replyUserID)
+		if err != nil {
+			log.Error(err)
+			return
+		}
+		cs.notificationCommentReply(ctx, replyUser.ID, comment.ID, comment.UserID,
+			objInfo.QuestionID, objInfo.Title, htmltext.FetchExcerpt(comment.ParsedText, "...", 240))
+		alreadyNotifiedUserID[replyUser.ID] = true
+		return
+	}
+
+	mentionUsernameList := comment.GetMentionUsernameList()
+	if len(mentionUsernameList) > 0 {
+		alreadyNotifiedUserIDs := cs.notificationMention(
+			ctx, mentionUsernameList, comment.ID, comment.UserID, alreadyNotifiedUserID)
+		for _, userID := range alreadyNotifiedUserIDs {
+			alreadyNotifiedUserID[userID] = true
+		}
+		return
+	}
+
+	if objInfo.ObjectType == constant.QuestionObjectType && !alreadyNotifiedUserID[objInfo.ObjectCreatorUserID] {
+		cs.notificationQuestionComment(ctx, objInfo.ObjectCreatorUserID,
+			objInfo.QuestionID, objInfo.Title, comment.ID, comment.UserID, htmltext.FetchExcerpt(comment.ParsedText, "...", 240))
+	} else if objInfo.ObjectType == constant.AnswerObjectType && !alreadyNotifiedUserID[objInfo.ObjectCreatorUserID] {
+		cs.notificationAnswerComment(ctx, objInfo.QuestionID, objInfo.Title, objInfo.AnswerID,
+			objInfo.ObjectCreatorUserID, comment.ID, comment.UserID, htmltext.FetchExcerpt(comment.ParsedText, "...", 240))
+	}
+}
+
+func (cs *ReviewService) notificationCommentReply(ctx context.Context, replyUserID, commentID, commentUserID,
+	questionID, questionTitle, commentSummary string) {
+	msg := &schema.NotificationMsg{
+		ReceiverUserID: replyUserID,
+		TriggerUserID:  commentUserID,
+		Type:           schema.NotificationTypeInbox,
+		ObjectID:       commentID,
+	}
+	msg.ObjectType = constant.CommentObjectType
+	msg.NotificationAction = constant.NotificationReplyToYou
+	cs.notificationQueueService.Send(ctx, msg)
+
+	// Send external notification.
+	receiverUserInfo, exist, err := cs.userRepo.GetByUserID(ctx, replyUserID)
+	if err != nil {
+		log.Error(err)
+		return
+	}
+	if !exist {
+		log.Warnf("user %s not found", replyUserID)
+		return
+	}
+	externalNotificationMsg := &schema.ExternalNotificationMsg{
+		ReceiverUserID: receiverUserInfo.ID,
+		ReceiverEmail:  receiverUserInfo.EMail,
+		ReceiverLang:   receiverUserInfo.Language,
+	}
+	rawData := &schema.NewCommentTemplateRawData{
+		QuestionTitle:   questionTitle,
+		QuestionID:      questionID,
+		CommentID:       commentID,
+		CommentSummary:  commentSummary,
+		UnsubscribeCode: token.GenerateToken(),
+	}
+	commentUser, _, _ := cs.userCommon.GetUserBasicInfoByID(ctx, commentUserID)
+	if commentUser != nil {
+		rawData.CommentUserDisplayName = commentUser.DisplayName
+	}
+	externalNotificationMsg.NewCommentTemplateRawData = rawData
+	cs.externalNotificationQueueService.Send(ctx, externalNotificationMsg)
+}
+
+func (cs *ReviewService) notificationMention(
+	ctx context.Context, mentionUsernameList []string, commentID, commentUserID string,
+	alreadyNotifiedUserID map[string]bool) (alreadyNotifiedUserIDs []string) {
+	for _, username := range mentionUsernameList {
+		userInfo, exist, err := cs.userCommon.GetUserBasicInfoByUserName(ctx, username)
+		if err != nil {
+			log.Error(err)
+			continue
+		}
+		if exist && !alreadyNotifiedUserID[userInfo.ID] {
+			msg := &schema.NotificationMsg{
+				ReceiverUserID: userInfo.ID,
+				TriggerUserID:  commentUserID,
+				Type:           schema.NotificationTypeInbox,
+				ObjectID:       commentID,
+			}
+			msg.ObjectType = constant.CommentObjectType
+			msg.NotificationAction = constant.NotificationMentionYou
+			cs.notificationQueueService.Send(ctx, msg)
+			alreadyNotifiedUserIDs = append(alreadyNotifiedUserIDs, userInfo.ID)
+		}
+	}
+	return alreadyNotifiedUserIDs
+}
+
+func (cs *ReviewService) notificationQuestionComment(ctx context.Context, questionUserID,
+	questionID, questionTitle, commentID, commentUserID, commentSummary string) {
+	if questionUserID == commentUserID {
+		return
+	}
+	// send internal notification
+	msg := &schema.NotificationMsg{
+		ReceiverUserID: questionUserID,
+		TriggerUserID:  commentUserID,
+		Type:           schema.NotificationTypeInbox,
+		ObjectID:       commentID,
+	}
+	msg.ObjectType = constant.CommentObjectType
+	msg.NotificationAction = constant.NotificationCommentQuestion
+	cs.notificationQueueService.Send(ctx, msg)
+
+	// send external notification
+	receiverUserInfo, exist, err := cs.userRepo.GetByUserID(ctx, questionUserID)
+	if err != nil {
+		log.Error(err)
+		return
+	}
+	if !exist {
+		log.Warnf("user %s not found", questionUserID)
+		return
+	}
+
+	externalNotificationMsg := &schema.ExternalNotificationMsg{
+		ReceiverUserID: receiverUserInfo.ID,
+		ReceiverEmail:  receiverUserInfo.EMail,
+		ReceiverLang:   receiverUserInfo.Language,
+	}
+	rawData := &schema.NewCommentTemplateRawData{
+		QuestionTitle:   questionTitle,
+		QuestionID:      questionID,
+		CommentID:       commentID,
+		CommentSummary:  commentSummary,
+		UnsubscribeCode: token.GenerateToken(),
+	}
+	commentUser, _, _ := cs.userCommon.GetUserBasicInfoByID(ctx, commentUserID)
+	if commentUser != nil {
+		rawData.CommentUserDisplayName = commentUser.DisplayName
+	}
+	externalNotificationMsg.NewCommentTemplateRawData = rawData
+	cs.externalNotificationQueueService.Send(ctx, externalNotificationMsg)
+}
+
+func (cs *ReviewService) notificationAnswerComment(ctx context.Context,
+	questionID, questionTitle, answerID, answerUserID, commentID, commentUserID, commentSummary string) {
+	if answerUserID == commentUserID {
+		return
+	}
+
+	// Send internal notification.
+	msg := &schema.NotificationMsg{
+		ReceiverUserID: answerUserID,
+		TriggerUserID:  commentUserID,
+		Type:           schema.NotificationTypeInbox,
+		ObjectID:       commentID,
+	}
+	msg.ObjectType = constant.CommentObjectType
+	msg.NotificationAction = constant.NotificationCommentAnswer
+	cs.notificationQueueService.Send(ctx, msg)
+
+	// Send external notification.
+	receiverUserInfo, exist, err := cs.userRepo.GetByUserID(ctx, answerUserID)
+	if err != nil {
+		log.Error(err)
+		return
+	}
+	if !exist {
+		log.Warnf("user %s not found", answerUserID)
+		return
+	}
+	externalNotificationMsg := &schema.ExternalNotificationMsg{
+		ReceiverUserID: receiverUserInfo.ID,
+		ReceiverEmail:  receiverUserInfo.EMail,
+		ReceiverLang:   receiverUserInfo.Language,
+	}
+	rawData := &schema.NewCommentTemplateRawData{
+		QuestionTitle:   questionTitle,
+		QuestionID:      questionID,
+		AnswerID:        answerID,
+		CommentID:       commentID,
+		CommentSummary:  commentSummary,
+		UnsubscribeCode: token.GenerateToken(),
+	}
+	commentUser, _, _ := cs.userCommon.GetUserBasicInfoByID(ctx, commentUserID)
+	if commentUser != nil {
+		rawData.CommentUserDisplayName = commentUser.DisplayName
+	}
+	externalNotificationMsg.NewCommentTemplateRawData = rawData
 	cs.externalNotificationQueueService.Send(ctx, externalNotificationMsg)
 }
 

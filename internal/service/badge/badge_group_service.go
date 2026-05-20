@@ -21,6 +21,7 @@ package badge
 
 import (
 	"context"
+
 	"github.com/apache/answer/internal/entity"
 )
 

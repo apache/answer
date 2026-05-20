@@ -42,6 +42,7 @@ interface Props {
   currentUser;
   refreshUsers: () => void;
   showDeleteModal: (val) => void;
+  showSuspenseModal: (val) => void;
   userData;
 }
 
@@ -53,6 +54,7 @@ const UserOperation = ({
   refreshUsers,
   showDeleteModal,
   userData,
+  showSuspenseModal,
 }: Props) => {
   const { t } = useTranslation('translation', { keyPrefix: 'admin.users' });
   const Toast = useToast();
@@ -170,17 +172,9 @@ const UserOperation = ({
 
     if (type === 'suspend') {
       // cons
-      Modal.confirm({
-        title: t('suspend_user.title'),
-        content: t('suspend_user.content'),
-        cancelBtnVariant: 'link',
-        cancelText: t('cancel', { keyPrefix: 'btns' }),
-        confirmBtnVariant: 'danger',
-        confirmText: t('suspend', { keyPrefix: 'btns' }),
-        onConfirm: () => {
-          // active -> suspended
-          postUserStatus('suspended');
-        },
+      showSuspenseModal({
+        show: true,
+        userId: userData.user_id,
       });
     }
 

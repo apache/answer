@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { AdminSettingsInterface } from '@/common/interface';
 import { DEFAULT_LANG } from '@/common/constants';
@@ -32,11 +32,12 @@ const interfaceSetting = create<InterfaceType>((set) => ({
     language: DEFAULT_LANG,
     time_zone: '',
     default_avatar: 'system',
+    gravatar_base_url: '',
   },
   update: (params) =>
-    set(() => {
+    set((state) => {
       return {
-        interface: params,
+        interface: { ...state.interface, ...params },
       };
     }),
 }));

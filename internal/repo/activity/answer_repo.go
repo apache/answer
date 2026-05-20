@@ -22,8 +22,9 @@ package activity
 import (
 	"context"
 	"fmt"
-	"github.com/segmentfault/pacman/log"
 	"time"
+
+	"github.com/segmentfault/pacman/log"
 	"xorm.io/builder"
 
 	"github.com/apache/answer/internal/base/constant"
@@ -33,7 +34,7 @@ import (
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/activity"
 	"github.com/apache/answer/internal/service/activity_common"
-	"github.com/apache/answer/internal/service/notice_queue"
+	"github.com/apache/answer/internal/service/noticequeue"
 	"github.com/apache/answer/internal/service/rank"
 	"github.com/apache/answer/pkg/converter"
 	"github.com/segmentfault/pacman/errors"
@@ -45,7 +46,7 @@ type AnswerActivityRepo struct {
 	data                     *data.Data
 	activityRepo             activity_common.ActivityRepo
 	userRankRepo             rank.UserRankRepo
-	notificationQueueService notice_queue.NotificationQueueService
+	notificationQueueService noticequeue.Service
 }
 
 // NewAnswerActivityRepo new repository
@@ -53,7 +54,7 @@ func NewAnswerActivityRepo(
 	data *data.Data,
 	activityRepo activity_common.ActivityRepo,
 	userRankRepo rank.UserRankRepo,
-	notificationQueueService notice_queue.NotificationQueueService,
+	notificationQueueService noticequeue.Service,
 ) activity.AnswerActivityRepo {
 	return &AnswerActivityRepo{
 		data:                     data,

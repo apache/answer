@@ -18,18 +18,27 @@
  */
 
 import {
-  useEffect,
   useRef,
+  useState,
   ForwardRefRenderFunction,
   forwardRef,
   useImperativeHandle,
+  useCallback,
+  useEffect,
 } from 'react';
+import { Spinner } from 'react-bootstrap';
 
 import classNames from 'classnames';
 
-import { PluginType, useRenderPlugin } from '@/utils/pluginKit';
-import PluginRender from '../PluginRender';
+import {
+  PluginType,
+  useRenderPlugin,
+  getReplacementPlugin,
+} from '@/utils/pluginKit';
+import { writeSettingStore } from '@/stores';
+import PluginRender, { PluginSlot } from '../PluginRender';
 
+import { useImageUpload } from './hooks/useImageUpload';
 import {
   BlockQuote,
   Bold,
@@ -47,9 +56,11 @@ import {
   UL,
   File,
 } from './ToolBars';
-import { htmlRender, useEditor } from './utils';
+import { htmlRender } from './utils';
 import Viewer from './Viewer';
 import { EditorContext } from './EditorContext';
+import MarkdownEditor from './MarkdownEditor';
+import { Editor } from './types';
 
 import './index.scss';
 
@@ -82,46 +93,107 @@ const MDEditor: ForwardRefRenderFunction<EditorRef, Props> = (
   },
   ref,
 ) => {
-  const editorRef = useRef<HTMLDivElement>(null);
+  const [currentEditor, setCurrentEditor] = useState<Editor | null>(null);
   const previewRef = useRef<{ getHtml; element } | null>(null);
+  const [fullEditorPlugin, setFullEditorPlugin] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const { verifyImageSize, uploadSingleFile } = useImageUpload();
+  const {
+    max_image_size = 4,
+    authorized_image_extensions = [],
+    authorized_attachment_extensions = [],
+  } = writeSettingStore((state) => state.write);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadPlugin = async () => {
+      const plugin = await getReplacementPlugin(PluginType.EditorReplacement);
+      if (mounted) {
+        setFullEditorPlugin(plugin);
+        setIsLoading(false);
+      }
+    };
+
+    loadPlugin();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   useRenderPlugin(previewRef.current?.element);
 
-  const editor = useEditor({
-    editorRef,
-    onChange,
-    onFocus,
-    onBlur,
-    placeholder: editorPlaceholder,
-    autoFocus,
-  });
-
-  const getHtml = () => {
+  const getHtml = useCallback(() => {
     return previewRef.current?.getHtml();
-  };
+  }, []);
 
-  useImperativeHandle(ref, () => ({
-    getHtml,
-  }));
+  useImperativeHandle(
+    ref,
+    () => ({
+      getHtml,
+    }),
+    [getHtml],
+  );
 
-  useEffect(() => {
-    if (!editor) {
-      return;
-    }
-    if (editor.getValue() !== value) {
-      editor.setValue(value || '');
-    }
-  }, [editor, value]);
+  const EditorComponent = MarkdownEditor;
+
+  if (isLoading) {
+    return (
+      <div className={classNames('md-editor-wrap rounded', className)}>
+        <div
+          className="d-flex justify-content-center align-items-center"
+          style={{ minHeight: '200px' }}>
+          <Spinner animation="border" variant="secondary" />
+        </div>
+      </div>
+    );
+  }
+
+  if (fullEditorPlugin) {
+    const FullEditorComponent = fullEditorPlugin.component;
+
+    const handleImageUpload = async (file: File | string): Promise<string> => {
+      if (typeof file === 'string') {
+        return file;
+      }
+
+      if (!verifyImageSize([file])) {
+        throw new Error('File validation failed');
+      }
+
+      return uploadSingleFile(file);
+    };
+
+    return (
+      <FullEditorComponent
+        value={value}
+        onChange={onChange}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        placeholder={editorPlaceholder}
+        autoFocus={autoFocus}
+        imageUploadHandler={handleImageUpload}
+        uploadConfig={{
+          maxImageSizeMiB: max_image_size,
+          allowedExtensions: [
+            ...authorized_image_extensions,
+            ...authorized_attachment_extensions,
+          ],
+        }}
+      />
+    );
+  }
 
   return (
     <>
       <div className={classNames('md-editor-wrap rounded', className)}>
-        <EditorContext.Provider value={editor}>
-          {editor && (
+        <div className="toolbar-wrap px-3 d-flex align-items-center flex-wrap">
+          <EditorContext.Provider value={currentEditor}>
             <PluginRender
               type={PluginType.Editor}
-              className="toolbar-wrap px-3 d-flex align-items-center flex-wrap"
-              editor={editor}
+              className="d-flex align-items-center flex-wrap"
+              editor={currentEditor}
               previewElement={previewRef.current?.element}>
               <Heading />
               <Bold />
@@ -130,8 +202,8 @@ const MDEditor: ForwardRefRenderFunction<EditorRef, Props> = (
               <Code />
               <LinkItem />
               <BlockQuote />
-              <Image editorInstance={editor} />
-              <File editorInstance={editor} />
+              <Image />
+              <File />
               <Table />
               <div className="toolbar-divider" />
               <OL />
@@ -140,17 +212,26 @@ const MDEditor: ForwardRefRenderFunction<EditorRef, Props> = (
               <Outdent />
               <Hr />
               <div className="toolbar-divider" />
+              <PluginSlot />
               <Help />
             </PluginRender>
-          )}
-        </EditorContext.Provider>
-
-        <div className="content-wrap">
-          <div
-            className="md-editor position-relative w-100 h-100"
-            ref={editorRef}
-          />
+          </EditorContext.Provider>
         </div>
+
+        <EditorComponent
+          key="markdown-editor"
+          value={value}
+          onChange={(markdown) => {
+            onChange?.(markdown);
+          }}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          placeholder={editorPlaceholder}
+          autoFocus={autoFocus}
+          onEditorReady={(editor) => {
+            setCurrentEditor(editor);
+          }}
+        />
       </div>
       <Viewer ref={previewRef} value={value} />
     </>

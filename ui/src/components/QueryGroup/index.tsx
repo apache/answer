@@ -133,7 +133,7 @@ const Index: FC<Props> = ({
       <DropdownButton
         size="sm"
         variant="outline-secondary"
-        className="md-hide"
+        className={classNames('md-hide', wrapClassName)}
         title={t(currentSort)}>
         {data.map((btn) => {
           const key = typeof btn === 'string' ? btn : btn.sort;

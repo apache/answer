@@ -18,6 +18,7 @@
  */
 
 import { FC, memo, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { customizeStore } from '@/stores';
 
@@ -117,6 +118,8 @@ const Index: FC = () => {
   const { custom_head, custom_header, custom_footer } = customizeStore(
     (state) => state,
   );
+  const { pathname } = useLocation();
+
   useEffect(() => {
     const isSeo = document.querySelector('meta[name="go-template"]');
     if (!isSeo) {
@@ -125,8 +128,40 @@ const Index: FC = () => {
       }, 1000);
       handleCustomHeader(custom_header);
       handleCustomFooter(custom_footer);
+    } else {
+      isSeo.remove();
     }
   }, [custom_head, custom_header, custom_footer]);
+
+  useEffect(() => {
+    /**
+     * description:  Activate scripts with data-client attribute when route changes
+     */
+    const allScript = document.body.querySelectorAll('script[data-client]');
+    allScript.forEach((scriptNode) => {
+      const script = document.createElement('script');
+      script.setAttribute('data-client', 'true');
+      // If the script is already wrapped in an IIFE, use it directly; otherwise, wrap it in an IIFE
+      if (
+        /^\s*\(\s*function\s*\(\s*\)\s*{/.test(
+          (scriptNode as HTMLScriptElement).text,
+        ) ||
+        /^\s*\(\s*\(\s*\)\s*=>\s*{/.test((scriptNode as HTMLScriptElement).text)
+      ) {
+        script.text = (scriptNode as HTMLScriptElement).text;
+      } else {
+        script.text = `(() => {${(scriptNode as HTMLScriptElement).text}})();`;
+      }
+      for (let i = 0; i < scriptNode.attributes.length; i += 1) {
+        const attr = scriptNode.attributes[i];
+        if (attr.name !== 'data-client') {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      scriptNode.parentElement?.replaceChild(script, scriptNode);
+    });
+  }, [pathname]);
+
   return null;
 };
 

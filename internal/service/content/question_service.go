@@ -25,7 +25,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/apache/answer/internal/service/event_queue"
+	"github.com/apache/answer/internal/service/eventqueue"
+	"github.com/apache/answer/plugin"
 
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/handler"
@@ -37,13 +38,13 @@ import (
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/activity"
 	"github.com/apache/answer/internal/service/activity_common"
-	"github.com/apache/answer/internal/service/activity_queue"
+	"github.com/apache/answer/internal/service/activityqueue"
 	answercommon "github.com/apache/answer/internal/service/answer_common"
 	collectioncommon "github.com/apache/answer/internal/service/collection_common"
 	"github.com/apache/answer/internal/service/config"
 	"github.com/apache/answer/internal/service/export"
 	metacommon "github.com/apache/answer/internal/service/meta_common"
-	"github.com/apache/answer/internal/service/notice_queue"
+	"github.com/apache/answer/internal/service/noticequeue"
 	"github.com/apache/answer/internal/service/notification"
 	"github.com/apache/answer/internal/service/permission"
 	questioncommon "github.com/apache/answer/internal/service/question_common"
@@ -54,6 +55,7 @@ import (
 	"github.com/apache/answer/internal/service/tag"
 	tagcommon "github.com/apache/answer/internal/service/tag_common"
 	usercommon "github.com/apache/answer/internal/service/user_common"
+	"github.com/apache/answer/internal/service/vector_sync"
 	"github.com/apache/answer/pkg/checker"
 	"github.com/apache/answer/pkg/converter"
 	"github.com/apache/answer/pkg/htmltext"
@@ -83,15 +85,16 @@ type QuestionService struct {
 	collectionCommon                 *collectioncommon.CollectionCommon
 	answerActivityService            *activity.AnswerActivityService
 	emailService                     *export.EmailService
-	notificationQueueService         notice_queue.NotificationQueueService
-	externalNotificationQueueService notice_queue.ExternalNotificationQueueService
-	activityQueueService             activity_queue.ActivityQueueService
+	notificationQueueService         noticequeue.Service
+	externalNotificationQueueService noticequeue.ExternalService
+	activityQueueService             activityqueue.Service
 	siteInfoService                  siteinfo_common.SiteInfoCommonService
 	newQuestionNotificationService   *notification.ExternalNotificationService
 	reviewService                    *review.ReviewService
 	configService                    *config.ConfigService
-	eventQueueService                event_queue.EventQueueService
+	eventQueueService                eventqueue.Service
 	reviewRepo                       review.ReviewRepo
+	vectorSyncService                vector_sync.Service
 }
 
 func NewQuestionService(
@@ -109,15 +112,16 @@ func NewQuestionService(
 	collectionCommon *collectioncommon.CollectionCommon,
 	answerActivityService *activity.AnswerActivityService,
 	emailService *export.EmailService,
-	notificationQueueService notice_queue.NotificationQueueService,
-	externalNotificationQueueService notice_queue.ExternalNotificationQueueService,
-	activityQueueService activity_queue.ActivityQueueService,
+	notificationQueueService noticequeue.Service,
+	externalNotificationQueueService noticequeue.ExternalService,
+	activityQueueService activityqueue.Service,
 	siteInfoService siteinfo_common.SiteInfoCommonService,
 	newQuestionNotificationService *notification.ExternalNotificationService,
 	reviewService *review.ReviewService,
 	configService *config.ConfigService,
-	eventQueueService event_queue.EventQueueService,
+	eventQueueService eventqueue.Service,
 	reviewRepo review.ReviewRepo,
+	vectorSyncService vector_sync.Service,
 ) *QuestionService {
 	return &QuestionService{
 		activityRepo:                     activityRepo,
@@ -143,6 +147,7 @@ func NewQuestionService(
 		configService:                    configService,
 		eventQueueService:                eventQueueService,
 		reviewRepo:                       reviewRepo,
+		vectorSyncService:                vectorSyncService,
 	}
 }
 
@@ -215,9 +220,9 @@ func (qs *QuestionService) ReopenQuestion(ctx context.Context, req *schema.Reope
 	return nil
 }
 
-func (qs *QuestionService) AddQuestionCheckTags(ctx context.Context, Tags []*entity.Tag) ([]string, error) {
+func (qs *QuestionService) AddQuestionCheckTags(ctx context.Context, tags []*entity.Tag) ([]string, error) {
 	list := make([]string, 0)
-	for _, tag := range Tags {
+	for _, tag := range tags {
 		if tag.Reserved {
 			list = append(list, tag.DisplayName)
 		}
@@ -228,13 +233,30 @@ func (qs *QuestionService) AddQuestionCheckTags(ctx context.Context, Tags []*ent
 	return []string{}, nil
 }
 func (qs *QuestionService) CheckAddQuestion(ctx context.Context, req *schema.QuestionAdd) (errorlist any, err error) {
-	if len(req.Tags) == 0 {
+	minimumTags, err := qs.tagCommon.GetMinimumTags(ctx)
+	if err != nil {
+		return
+	}
+	if len(req.Tags) < minimumTags {
 		errorlist := make([]*validator.FormErrorField, 0)
 		errorlist = append(errorlist, &validator.FormErrorField{
 			ErrorField: "tags",
-			ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.TagNotFound),
+			ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.TagMinCount),
 		})
-		err = errors.BadRequest(reason.RecommendTagEnter)
+		err = errors.BadRequest(reason.TagMinCount)
+		return errorlist, err
+	}
+	minimumContentLength, err := qs.questioncommon.GetMinimumContentLength(ctx)
+	if err != nil {
+		return
+	}
+	if len(req.Content) < minimumContentLength {
+		errorlist := make([]*validator.FormErrorField, 0)
+		errorlist = append(errorlist, &validator.FormErrorField{
+			ErrorField: "content",
+			ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.QuestionContentLessThanMinimum),
+		})
+		err = errors.BadRequest(reason.QuestionContentLessThanMinimum)
 		return errorlist, err
 	}
 	recommendExist, err := qs.tagCommon.ExistRecommend(ctx, req.Tags)
@@ -259,7 +281,7 @@ func (qs *QuestionService) CheckAddQuestion(ctx context.Context, req *schema.Que
 	if tagerr != nil {
 		return errorlist, tagerr
 	}
-	if !req.QuestionPermission.CanUseReservedTag {
+	if !req.CanUseReservedTag {
 		taglist, err := qs.AddQuestionCheckTags(ctx, Tags)
 		errMsg := fmt.Sprintf(`"%s" can only be used by moderators.`,
 			strings.Join(taglist, ","))
@@ -283,13 +305,30 @@ func (qs *QuestionService) HasNewTag(ctx context.Context, tags []*schema.TagItem
 
 // AddQuestion add question
 func (qs *QuestionService) AddQuestion(ctx context.Context, req *schema.QuestionAdd) (questionInfo any, err error) {
-	if len(req.Tags) == 0 {
+	minimumTags, err := qs.tagCommon.GetMinimumTags(ctx)
+	if err != nil {
+		return
+	}
+	if len(req.Tags) < minimumTags {
 		errorlist := make([]*validator.FormErrorField, 0)
 		errorlist = append(errorlist, &validator.FormErrorField{
 			ErrorField: "tags",
-			ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.TagNotFound),
+			ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.TagMinCount),
 		})
-		err = errors.BadRequest(reason.RecommendTagEnter)
+		err = errors.BadRequest(reason.TagMinCount)
+		return errorlist, err
+	}
+	minimumContentLength, err := qs.questioncommon.GetMinimumContentLength(ctx)
+	if err != nil {
+		return
+	}
+	if len(req.Content) < minimumContentLength {
+		errorlist := make([]*validator.FormErrorField, 0)
+		errorlist = append(errorlist, &validator.FormErrorField{
+			ErrorField: "content",
+			ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.QuestionContentLessThanMinimum),
+		})
+		err = errors.BadRequest(reason.QuestionContentLessThanMinimum)
 		return errorlist, err
 	}
 	recommendExist, err := qs.tagCommon.ExistRecommend(ctx, req.Tags)
@@ -315,7 +354,7 @@ func (qs *QuestionService) AddQuestion(ctx context.Context, req *schema.Question
 	if tagerr != nil {
 		return questionInfo, tagerr
 	}
-	if !req.QuestionPermission.CanUseReservedTag {
+	if !req.CanUseReservedTag {
 		taglist, err := qs.AddQuestionCheckTags(ctx, tags)
 		errMsg := fmt.Sprintf(`"%s" can only be used by moderators.`,
 			strings.Join(taglist, ","))
@@ -339,14 +378,14 @@ func (qs *QuestionService) AddQuestion(ctx context.Context, req *schema.Question
 	question.AcceptedAnswerID = "0"
 	question.LastAnswerID = "0"
 	question.LastEditUserID = "0"
-	//question.PostUpdateTime = nil
+	// question.PostUpdateTime = nil
 	question.Status = entity.QuestionStatusPending
 	question.RevisionID = "0"
 	question.CreatedAt = now
 	question.PostUpdateTime = now
 	question.Pin = entity.QuestionUnPin
 	question.Show = entity.QuestionShow
-	//question.UpdatedAt = nil
+	// question.UpdatedAt = nil
 	err = qs.questionRepo.AddQuestion(ctx, question)
 	if err != nil {
 		return
@@ -369,9 +408,9 @@ func (qs *QuestionService) AddQuestion(ctx context.Context, req *schema.Question
 	objectTagData.ObjectID = question.ID
 	objectTagData.Tags = req.Tags
 	objectTagData.UserID = req.UserID
-	err = qs.ChangeTag(ctx, &objectTagData)
+	errorlist, err := qs.ChangeTag(ctx, &objectTagData)
 	if err != nil {
-		return
+		return errorlist, err
 	}
 	_ = qs.questionRepo.UpdateSearch(ctx, question.ID)
 
@@ -381,10 +420,7 @@ func (qs *QuestionService) AddQuestion(ctx context.Context, req *schema.Question
 		Title:    question.Title,
 	}
 
-	questionWithTagsRevision, err := qs.changeQuestionToRevision(ctx, question, tags)
-	if err != nil {
-		return nil, err
-	}
+	questionWithTagsRevision := qs.changeQuestionToRevision(ctx, question, tags)
 	infoJSON, _ := json.Marshal(questionWithTagsRevision)
 	revisionDTO.Content = string(infoJSON)
 	revisionID, err := qs.revisionService.AddRevision(ctx, revisionDTO, true)
@@ -412,11 +448,21 @@ func (qs *QuestionService) AddQuestion(ctx context.Context, req *schema.Question
 	})
 
 	if question.Status == entity.QuestionStatusAvailable {
-		qs.externalNotificationQueueService.Send(ctx,
-			schema.CreateNewQuestionNotificationMsg(question.ID, question.Title, question.UserID, tags))
+		newTags, newTagsErr := qs.tagCommon.GetTagListByNames(ctx, tagNameList)
+		if newTagsErr != nil {
+			log.Error("get question newTags error %v", newTagsErr)
+			qs.externalNotificationQueueService.Send(ctx,
+				schema.CreateNewQuestionNotificationMsg(question.ID, question.Title, question.UserID, tags))
+		} else {
+			qs.externalNotificationQueueService.Send(ctx,
+				schema.CreateNewQuestionNotificationMsg(question.ID, question.Title, question.UserID, newTags))
+		}
 	}
 	qs.eventQueueService.Send(ctx, schema.NewEvent(constant.EventQuestionCreate, req.UserID).TID(question.ID).
 		QID(question.ID, question.UserID))
+	if question.Status == entity.QuestionStatusAvailable {
+		qs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: question.ID})
+	}
 
 	questionInfo, err = qs.GetQuestion(ctx, question.ID, question.UserID, req.QuestionPermission)
 	return
@@ -512,7 +558,7 @@ func (qs *QuestionService) RemoveQuestion(ctx context.Context, req *schema.Remov
 	if err != nil {
 		return err
 	}
-	//if the status is deleted, return directly
+	// if the status is deleted, return directly
 	if questionInfo.Status == entity.QuestionStatusDeleted {
 		return nil
 	}
@@ -571,7 +617,7 @@ func (qs *QuestionService) RemoveQuestion(ctx context.Context, req *schema.Remov
 		}
 	}
 
-	//tag count
+	// tag count
 	tagIDs := make([]string, 0)
 	Tags, tagerr := qs.tagCommon.GetObjectEntityTag(ctx, req.ID)
 	if tagerr != nil {
@@ -613,6 +659,7 @@ func (qs *QuestionService) RemoveQuestion(ctx context.Context, req *schema.Remov
 	})
 	qs.eventQueueService.Send(ctx, schema.NewEvent(constant.EventQuestionDelete, req.UserID).TID(questionInfo.ID).
 		QID(questionInfo.ID, questionInfo.UserID))
+	qs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionDelete, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: questionInfo.ID})
 	return nil
 }
 
@@ -642,7 +689,7 @@ func (qs *QuestionService) UpdateQuestionCheckTags(ctx context.Context, req *sch
 
 	isChange := qs.tagCommon.CheckTagsIsChange(ctx, tagNameList, oldtagNameList)
 
-	//If the content is the same, ignore it
+	// If the content is the same, ignore it
 	if dbinfo.Title == req.Title && dbinfo.OriginalText == req.Content && !isChange {
 		return
 	}
@@ -744,6 +791,7 @@ func (qs *QuestionService) RecoverQuestion(ctx context.Context, req *schema.Ques
 		OriginalObjectID: questionInfo.ID,
 		ActivityTypeKey:  constant.ActQuestionUndeleted,
 	})
+	qs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: questionInfo.ID})
 	return nil
 }
 
@@ -756,7 +804,7 @@ func (qs *QuestionService) UpdateQuestionInviteUser(ctx context.Context, req *sc
 		return errors.BadRequest(reason.QuestionNotFound)
 	}
 
-	//verify invite user
+	// verify invite user
 	inviteUserInfoList, err := qs.userCommon.BatchGetUserBasicInfoByUserNames(ctx, req.InviteUser)
 	if err != nil {
 		log.Error("BatchGetUserBasicInfoByUserNames error", err.Error())
@@ -784,7 +832,7 @@ func (qs *QuestionService) UpdateQuestionInviteUser(ctx context.Context, req *sc
 	if saveerr != nil {
 		return saveerr
 	}
-	//send notification
+	// send notification
 	oldInviteUserIDsStr := originQuestion.InviteUserID
 	oldInviteUserIDs := make([]string, 0)
 	needSendNotificationUserIDs := make([]string, 0)
@@ -891,6 +939,20 @@ func (qs *QuestionService) UpdateQuestion(ctx context.Context, req *schema.Quest
 	question.UserID = dbinfo.UserID
 	question.LastEditUserID = req.UserID
 
+	minimumContentLength, err := qs.questioncommon.GetMinimumContentLength(ctx)
+	if err != nil {
+		return
+	}
+	if len(req.Content) < minimumContentLength {
+		errorlist := make([]*validator.FormErrorField, 0)
+		errorlist = append(errorlist, &validator.FormErrorField{
+			ErrorField: "content",
+			ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.QuestionContentLessThanMinimum),
+		})
+		err = errors.BadRequest(reason.QuestionContentLessThanMinimum)
+		return errorlist, err
+	}
+
 	oldTags, tagerr := qs.tagCommon.GetObjectEntityTag(ctx, question.ID)
 	if tagerr != nil {
 		return questionInfo, tagerr
@@ -908,7 +970,7 @@ func (qs *QuestionService) UpdateQuestion(ctx context.Context, req *schema.Quest
 
 	isChange := qs.tagCommon.CheckTagsIsChange(ctx, tagNameList, oldtagNameList)
 
-	//If the content is the same, ignore it
+	// If the content is the same, ignore it
 	if dbinfo.Title == req.Title && dbinfo.OriginalText == req.Content && !isChange {
 		return
 	}
@@ -959,7 +1021,7 @@ func (qs *QuestionService) UpdateQuestion(ctx context.Context, req *schema.Quest
 		return errorlist, err
 	}
 
-	//Administrators and themselves do not need to be audited
+	// Administrators and themselves do not need to be audited
 
 	revisionDTO := &schema.AddRevisionDTO{
 		UserID:   question.UserID,
@@ -975,11 +1037,11 @@ func (qs *QuestionService) UpdateQuestion(ctx context.Context, req *schema.Quest
 	// It's not you or the administrator that needs to be reviewed
 	if !canUpdate {
 		revisionDTO.Status = entity.RevisionUnreviewedStatus
-		revisionDTO.UserID = req.UserID //use revision userid
+		revisionDTO.UserID = req.UserID // use revision userid
 	} else {
-		//Direct modification
+		// Direct modification
 		revisionDTO.Status = entity.RevisionReviewPassStatus
-		//update question to db
+		// update question to db
 		question.ParsedText, err = qs.questioncommon.UpdateQuestionLink(ctx, question.ID, "", question.ParsedText, question.OriginalText)
 		if err != nil {
 			return questionInfo, err
@@ -992,16 +1054,13 @@ func (qs *QuestionService) UpdateQuestion(ctx context.Context, req *schema.Quest
 		objectTagData.ObjectID = question.ID
 		objectTagData.Tags = req.Tags
 		objectTagData.UserID = req.UserID
-		tagerr := qs.ChangeTag(ctx, &objectTagData)
+		errorlist, tagerr := qs.ChangeTag(ctx, &objectTagData)
 		if tagerr != nil {
-			return questionInfo, tagerr
+			return errorlist, tagerr
 		}
 	}
 
-	questionWithTagsRevision, err := qs.changeQuestionToRevision(ctx, question, Tags)
-	if err != nil {
-		return nil, err
-	}
+	questionWithTagsRevision := qs.changeQuestionToRevision(ctx, question, Tags)
 	infoJSON, _ := json.Marshal(questionWithTagsRevision)
 	revisionDTO.Content = string(infoJSON)
 	revisionID, err := qs.revisionService.AddRevision(ctx, revisionDTO, true)
@@ -1018,6 +1077,7 @@ func (qs *QuestionService) UpdateQuestion(ctx context.Context, req *schema.Quest
 		})
 		qs.eventQueueService.Send(ctx, schema.NewEvent(constant.EventQuestionUpdate, req.UserID).TID(question.ID).
 			QID(question.ID, question.UserID))
+		qs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: question.ID})
 	}
 
 	questionInfo, err = qs.GetQuestion(ctx, question.ID, question.UserID, req.QuestionPermission)
@@ -1034,6 +1094,9 @@ func (qs *QuestionService) GetQuestion(ctx context.Context, questionID, userID s
 	// If the question is deleted or pending, only the administrator and the author can view it
 	if (question.Status == entity.QuestionStatusDeleted ||
 		question.Status == entity.QuestionStatusPending) && !per.CanReopen && question.UserID != userID {
+		return nil, errors.NotFound(reason.QuestionNotFound)
+	}
+	if question.Show == entity.QuestionHide && !per.IsAdminModerator && question.UserID != userID {
 		return nil, errors.NotFound(reason.QuestionNotFound)
 	}
 	if question.Status != entity.QuestionStatusClosed {
@@ -1094,8 +1157,12 @@ func (qs *QuestionService) InviteUserInfo(ctx context.Context, questionID string
 	return qs.questioncommon.InviteUserInfo(ctx, questionID)
 }
 
-func (qs *QuestionService) ChangeTag(ctx context.Context, objectTagData *schema.TagChange) error {
-	return qs.tagCommon.ObjectChangeTag(ctx, objectTagData)
+func (qs *QuestionService) ChangeTag(ctx context.Context, objectTagData *schema.TagChange) (errorlist []*validator.FormErrorField, err error) {
+	minimumTags, err := qs.tagCommon.GetMinimumTags(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return qs.tagCommon.ObjectChangeTag(ctx, objectTagData, minimumTags)
 }
 
 func (qs *QuestionService) CheckChangeReservedTag(ctx context.Context, oldobjectTagData, objectTagData []*entity.Tag) (bool, bool, []string, []string) {
@@ -1105,7 +1172,6 @@ func (qs *QuestionService) CheckChangeReservedTag(ctx context.Context, oldobject
 // PersonalQuestionPage get question list by user
 func (qs *QuestionService) PersonalQuestionPage(ctx context.Context, req *schema.PersonalQuestionPageReq) (
 	pageModel *pager.PageModel, err error) {
-
 	userinfo, exist, err := qs.userCommon.GetUserBasicInfoByUserName(ctx, req.Username)
 	if err != nil {
 		return nil, err
@@ -1190,7 +1256,6 @@ func (qs *QuestionService) PersonalAnswerPage(ctx context.Context, req *schema.P
 		info.QuestionID = item.QuestionID
 		if item.QuestionInfo.Status == entity.QuestionStatusDeleted {
 			info.QuestionInfo.Title = "Deleted question"
-
 		}
 		userAnswerlist = append(userAnswerlist, info)
 	}
@@ -1313,9 +1378,41 @@ func (qs *QuestionService) GetQuestionsByTitle(ctx context.Context, title string
 	if len(title) == 0 {
 		return resp, nil
 	}
-	questions, err := qs.questionRepo.GetQuestionsByTitle(ctx, title, 10)
-	if err != nil {
-		return resp, err
+	// check search plugin
+	var finder plugin.Search
+	_ = plugin.CallSearch(func(search plugin.Search) error {
+		finder = search
+		return nil
+	})
+
+	var questions []*entity.Question
+	if finder != nil {
+		// call search plugin if available
+		words := []string{title}
+		res, _, err := finder.SearchQuestions(ctx, &plugin.SearchBasicCond{
+			Words:    words,
+			Page:     1,
+			PageSize: 10,
+		})
+		if err != nil {
+			return resp, err
+		}
+		// get question ids from res
+		questionIDs := make([]string, 0)
+		for _, question := range res {
+			questionIDs = append(questionIDs, question.ID)
+		}
+		var questionErr error
+		questions, questionErr = qs.questionRepo.FindByID(ctx, questionIDs)
+		if questionErr != nil {
+			return resp, questionErr
+		}
+	} else {
+		var questionErr error
+		questions, questionErr = qs.questionRepo.GetQuestionsByTitle(ctx, title, 10)
+		if questionErr != nil {
+			return resp, questionErr
+		}
 	}
 	for _, question := range questions {
 		item := &schema.QuestionBaseInfo{}
@@ -1397,7 +1494,10 @@ func (qs *QuestionService) GetQuestionPage(ctx context.Context, req *schema.Ques
 			if err != nil {
 				return nil, 0, err
 			}
-			tagIDs = append(synTagIds, tagInfo.ID)
+			tagIDs = append(tagIDs, synTagIds...)
+			tagIDs = append(tagIDs, tagInfo.ID)
+		} else {
+			return questions, 0, nil
 		}
 	}
 
@@ -1445,7 +1545,7 @@ func (qs *QuestionService) GetRecommendQuestionPage(ctx context.Context, req *sc
 	if err != nil {
 		return nil, 0, err
 	}
-	activities, err := qs.activityRepo.GetUserActivitysByActivityType(ctx, req.LoginUserID, activityType)
+	activities, err := qs.activityRepo.GetUserActivitiesByActivityType(ctx, req.LoginUserID, activityType)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -1462,7 +1562,7 @@ func (qs *QuestionService) GetRecommendQuestionPage(ctx context.Context, req *sc
 		return nil, 0, err
 	}
 
-	questions, err = qs.questioncommon.FormatQuestionsPage(ctx, questionList, req.LoginUserID, "frequent")
+	questions, err = qs.questioncommon.FormatQuestionsPage(ctx, questionList, req.LoginUserID, schema.QuestionOrderCondFrequent)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -1491,10 +1591,10 @@ func (qs *QuestionService) AdminSetQuestionStatus(ctx context.Context, req *sche
 	if setStatus == entity.QuestionStatusDeleted {
 		// #2372 In order to simplify the process and complexity, as well as to consider if it is in-house,
 		// facing the problem of recovery.
-		//err = qs.answerActivityService.DeleteQuestion(ctx, questionInfo.ID, questionInfo.CreatedAt, questionInfo.VoteCount)
-		//if err != nil {
-		//	log.Errorf("admin delete question then rank rollback error %s", err.Error())
-		//}
+		// err = qs.answerActivityService.DeleteQuestion(ctx, questionInfo.ID, questionInfo.CreatedAt, questionInfo.VoteCount)
+		// if err != nil {
+		// 	log.Errorf("admin delete question then rank rollback error %s", err.Error())
+		// }
 		qs.activityQueueService.Send(ctx, &schema.ActivityMsg{
 			UserID:           questionInfo.UserID,
 			TriggerUserID:    converter.StringToInt64(req.UserID),
@@ -1542,13 +1642,18 @@ func (qs *QuestionService) AdminSetQuestionStatus(ctx context.Context, req *sche
 		msg.ObjectType = constant.QuestionObjectType
 		qs.notificationQueueService.Send(ctx, msg)
 	}
+	switch setStatus {
+	case entity.QuestionStatusDeleted:
+		qs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionDelete, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: questionInfo.ID})
+	case entity.QuestionStatusAvailable:
+		qs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: questionInfo.ID})
+	}
 	return nil
 }
 
 func (qs *QuestionService) AdminQuestionPage(
 	ctx context.Context, req *schema.AdminQuestionPageReq) (
 	resp *pager.PageModel, err error) {
-
 	list := make([]*schema.AdminQuestionInfo, 0)
 	questionList, count, err := qs.questionRepo.AdminQuestionPage(ctx, req)
 	if err != nil {
@@ -1614,8 +1719,8 @@ func (qs *QuestionService) AdminAnswerPage(ctx context.Context, req *schema.Admi
 	return pager.NewPageModel(count, answerResp), nil
 }
 
-func (qs *QuestionService) changeQuestionToRevision(ctx context.Context, questionInfo *entity.Question, tags []*entity.Tag) (
-	questionRevision *entity.QuestionWithTagsRevision, err error) {
+func (qs *QuestionService) changeQuestionToRevision(_ context.Context, questionInfo *entity.Question, tags []*entity.Tag) (
+	questionRevision *entity.QuestionWithTagsRevision) {
 	questionRevision = &entity.QuestionWithTagsRevision{}
 	questionRevision.Question = *questionInfo
 
@@ -1624,7 +1729,7 @@ func (qs *QuestionService) changeQuestionToRevision(ctx context.Context, questio
 		_ = copier.Copy(item, tag)
 		questionRevision.Tags = append(questionRevision.Tags, item)
 	}
-	return questionRevision, nil
+	return questionRevision
 }
 
 func (qs *QuestionService) SitemapCron(ctx context.Context) {
@@ -1633,7 +1738,7 @@ func (qs *QuestionService) SitemapCron(ctx context.Context) {
 		log.Error(err)
 		return
 	}
-	ctx = context.WithValue(ctx, constant.ShortIDFlag, siteSeo.IsShortLink())
+	ctx = context.WithValue(ctx, constant.ShortIDContextKey, siteSeo.IsShortLink())
 	qs.questioncommon.SitemapCron(ctx)
 }
 

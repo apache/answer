@@ -30,21 +30,35 @@ const Index: FC<Props> = ({ count = 10 }) => {
     <>
       {list.map((v) => (
         <ListGroupItem
-          className="bg-transparent py-3 px-0 border-start-0 border-end-0 placeholder-glow"
+          className="bg-transparent py-3 px-2 border-start-0 border-end-0 placeholder-glow"
           key={v}>
           <div
-            className="placeholder w-100 h5 align-top"
+            className="placeholder h5 align-top d-block"
+            style={{ height: '21px', width: '35%' }}
+          />
+
+          <div
+            className="placeholder w-75 h5 align-top"
             style={{ height: '24px' }}
           />
 
           <div
-            className="placeholder w-75 d-block align-top mb-2"
+            className="placeholder w-100 d-block align-top mb-2"
+            style={{ height: '21px' }}
+          />
+          <div
+            className="placeholder w-100 d-block align-top mb-2"
             style={{ height: '21px' }}
           />
 
           <div
-            className="placeholder w-50 align-top"
+            className="placeholder w-50 align-top mb-12"
             style={{ height: '24px' }}
+          />
+
+          <div
+            className="placeholder w-25 align-top d-block"
+            style={{ height: '21px' }}
           />
         </ListGroupItem>
       ))}

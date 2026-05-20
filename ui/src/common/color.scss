@@ -17,58 +17,55 @@
  * under the License.
  */
 
-
-
 :root {
   --an-side-nav-link: rgba(0, 0, 0, 0.65);
   --an-toolbar-divider: rgba(0, 0, 0, 0.1);
   --an-ced4da: #ced4da;
   --an-e9ecef: #e9ecef;
-  --an-pre: #161b22;
+  --an-pre: #f8f9fa;
   --an-6c757d: #6c757d;
   --an-212529: #212529;
   --an-gray-300: var(--bs-gray-300);
   --an-white: #fff;
-  --an-inbox-warning:#fff3cd80;
+  --an-inbox-warning: #fff3cd80;
   --an-f5: #f5f5f5;
-  --an-answer-item-border-top: rgba(0, 0, 0, .125);
+  --an-answer-item-border-top: rgba(0, 0, 0, 0.125);
   --an-answer-inbox-nav-border-top: var(--bs-border-color);
-  --an-comment-item-border-bottom: var(--bs-colors-gray-200, #E9ECEF);
+  --an-comment-item-border-bottom: var(--bs-colors-gray-200, #e9ecef);
   --an-editor-toolbar-hover: #f8f9fa;
   --ans-editor-toolbar-focus: #dae0e5;
   --an-editor-placeholder-color: #6c757d;
-  --an-side-nav-link-hover-color: black;
+  --an-side-nav-link-hover-color: rgba(0, 0, 0, 0.85);
   --an-invite-answer-item-active: #e9ecef;
   --an-alert-exist-color: #055160;
 }
 
+[data-bs-theme='dark'] {
+  --an-side-nav-link: rgba(255, 255, 255, 0.65);
+  --an-toolbar-divider: rgba(255, 255, 255, 0.3);
+  --an-ced4da: var(--bs-border-color);
+  --an-e9ecef: #161b22;
+  --an-pre: #161b22;
+  --an-6c757d: var(--bs-body-color);
+  --an-212529: var(--bs-body-color);
+  --an-gray-300: #161b22;
+  --an-white: #000;
+  --an-inbox-warning: #38363180;
+  --an-f5: var(--bs-body-bg);
+  --an-answer-item-border-top: var(--bs-border-color);
+  --an-answer-inbox-nav-border-top: var(--bs-border-color);
+  --an-comment-item-border-bottom: var(--bs-border-color);
+  --an-editor-toolbar-hover: var(--bs-tertiary-bg);
+  --ans-editor-toolbar-focus: var(--bs-tertiary-bg);
+  --an-editor-placeholder-color: var(--bs-body-color);
+  --an-side-nav-link-hover-color: var(--bs-body-color);
+  --an-invite-answer-item-active: var(--bs-tertiary-bg);
+  --an-alert-exist-color: #60cee4;
+}
 
-[data-bs-theme="dark"] {
-    --an-side-nav-link: rgba(255, 255, 255, 0.65);
-    --an-toolbar-divider: rgba(255, 255, 255, 0.3);
-    --an-ced4da: var(--bs-border-color);
-    --an-e9ecef: #161b22;
-    --an-pre: #161b22;
-    --an-6c757d: var(--bs-body-color);
-    --an-212529: var(--bs-body-color);
-    --an-gray-300: #161b22;
-    --an-white: #000;
-    --an-inbox-warning:#38363180;
-    --an-f5: var(--bs-body-bg);
-    --an-answer-item-border-top: var(--bs-border-color);
-    --an-answer-inbox-nav-border-top: var(--bs-border-color);
-    --an-comment-item-border-bottom: var(--bs-border-color);
-    --an-editor-toolbar-hover: var(--bs-tertiary-bg);
-    --ans-editor-toolbar-focus: var(--bs-tertiary-bg);
-    --an-editor-placeholder-color: var(--bs-body-color);
-    --an-side-nav-link-hover-color: var(--bs-body-color);
-    --an-invite-answer-item-active: var(--bs-tertiary-bg);
-    --an-alert-exist-color: #60cee4;
- }
-
-[data-bs-theme="dark"] {
+[data-bs-theme='dark'] {
   .link-dark {
-    color: rgba(var(--bs-emphasis-color-rgb),0.8)!important;
+    color: rgba(var(--bs-emphasis-color-rgb), 0.8) !important;
   }
   /** CodeMirror **/
 
@@ -81,9 +78,9 @@
     border-left-color: var(--bs-body-color);
   }
   .ͼ2.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground {
-    background-color: #3E4451;
+    background-color: #3e4451;
   }
-   /** link color **/
+  /** link color **/
   .ͼc {
     color: rgb(60, 138, 233);
   }
@@ -91,8 +88,10 @@
     color: var(--bs-body-color);
   }
 
-  .ͼ2 .cm-selectionBackground {background: #3E4451;}
- /** CodeMirror end **/
+  .ͼ2 .cm-selectionBackground {
+    background: #3e4451;
+  }
+  /** CodeMirror end **/
 
   .bg-light {
     background-color: rgba(0, 0, 0, 0.5) !important;
@@ -102,8 +101,10 @@
     background-color: RGBA(255, 255, 255, var(--bs-bg-opacity, 1)) !important;
   }
   /** side nav **/
-  #sideNav {
-    .nav-link:hover, .nav-link.active {
+  #sideNav,
+  #answerAccordion {
+    .nav-link:hover,
+    .nav-link.active {
       background-color: #2b3035 !important;
     }
   }
@@ -125,4 +126,15 @@
     }
   }
 
+  .view-level1 {
+    color: $orange-300;
+  }
+
+  .view-level2 {
+    color: $orange-200;
+  }
+
+  .view-level3 {
+    color: $orange-100;
+  }
 }

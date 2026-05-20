@@ -21,18 +21,18 @@ package handler
 
 import (
 	"errors"
-	"github.com/apache/answer/internal/base/constant"
+	"net/http"
+
 	"github.com/apache/answer/internal/base/reason"
 	"github.com/apache/answer/internal/base/validator"
 	"github.com/gin-gonic/gin"
 	myErrors "github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
-	"net/http"
 )
 
 // HandleResponse Handle response body
-func HandleResponse(ctx *gin.Context, err error, data interface{}) {
-	lang := GetLang(ctx)
+func HandleResponse(ctx *gin.Context, err error, data any) {
+	lang := GetLangByCtx(ctx)
 	// no error
 	if err == nil {
 		ctx.JSON(http.StatusOK, NewRespBodyData(http.StatusOK, reason.Success, data).TrMsg(lang))
@@ -61,9 +61,8 @@ func HandleResponse(ctx *gin.Context, err error, data interface{}) {
 }
 
 // BindAndCheck bind request and check
-func BindAndCheck(ctx *gin.Context, data interface{}) bool {
-	lang := GetLang(ctx)
-	ctx.Set(constant.AcceptLanguageFlag, lang)
+func BindAndCheck(ctx *gin.Context, data any) bool {
+	lang := GetLangByCtx(ctx)
 	if err := ctx.ShouldBind(data); err != nil {
 		log.Errorf("http_handle BindAndCheck fail, %s", err.Error())
 		HandleResponse(ctx, myErrors.New(http.StatusBadRequest, reason.RequestFormatError), nil)
@@ -79,8 +78,8 @@ func BindAndCheck(ctx *gin.Context, data interface{}) bool {
 }
 
 // BindAndCheckReturnErr bind request and check
-func BindAndCheckReturnErr(ctx *gin.Context, data interface{}) (errFields []*validator.FormErrorField) {
-	lang := GetLang(ctx)
+func BindAndCheckReturnErr(ctx *gin.Context, data any) (errFields []*validator.FormErrorField) {
+	lang := GetLangByCtx(ctx)
 	if err := ctx.ShouldBind(data); err != nil {
 		log.Errorf("http_handle BindAndCheck fail, %s", err.Error())
 		HandleResponse(ctx, myErrors.New(http.StatusBadRequest, reason.RequestFormatError), nil)

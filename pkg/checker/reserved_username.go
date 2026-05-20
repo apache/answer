@@ -26,7 +26,7 @@ import (
 	"sync"
 
 	"github.com/apache/answer/configs"
-	"github.com/apache/answer/internal/cli"
+	"github.com/apache/answer/internal/base/path"
 	"github.com/apache/answer/pkg/dir"
 )
 
@@ -36,7 +36,7 @@ var (
 )
 
 func initReservedUsername() {
-	reservedUsernamesJsonFilePath := filepath.Join(cli.ConfigFileDir, cli.DefaultReservedUsernamesConfigFileName)
+	reservedUsernamesJsonFilePath := filepath.Join(path.ConfigFileDir, path.DefaultReservedUsernamesConfigFileName)
 	if dir.CheckFileExist(reservedUsernamesJsonFilePath) {
 		// if reserved username file exists, read it and replace configuration
 		reservedUsernamesJsonFile, err := os.ReadFile(reservedUsernamesJsonFilePath)

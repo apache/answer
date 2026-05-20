@@ -34,9 +34,9 @@ type SnowFlakeID struct {
 var snowFlakeIDGenerator *SnowFlakeID
 
 func init() {
-	// todo
-	rand.Seed(time.Now().UnixNano())
-	node, err := snowflake.NewNode(int64(rand.Intn(1000)) + 1)
+	source := rand.NewSource(time.Now().UnixNano())
+	r := rand.New(source)
+	node, err := snowflake.NewNode(int64(r.Intn(1000)) + 1)
 	if err != nil {
 		panic(err.Error())
 	}

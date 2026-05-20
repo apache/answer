@@ -19,6 +19,8 @@
 
 package schema
 
+import "slices"
+
 type UpdateReactionReq struct {
 	ObjectID string `validate:"required" json:"object_id"`
 	Emoji    string `validate:"required,oneof=heart smile frown" json:"emoji"`
@@ -48,13 +50,7 @@ func (r *ReactionsSummaryMeta) AddReactionSummary(emoji, userID string) {
 		if reaction.Emoji != emoji {
 			continue
 		}
-		exist := false
-		for _, id := range reaction.UserIDs {
-			if id == userID {
-				exist = true
-				break
-			}
-		}
+		exist := slices.Contains(reaction.UserIDs, userID)
 		if !exist {
 			reaction.UserIDs = append(reaction.UserIDs, userID)
 		}
@@ -94,10 +90,8 @@ func (r *ReactionsSummaryMeta) CheckUserInReactionSummary(emoji, userID string) 
 		if reaction.Emoji != emoji {
 			continue
 		}
-		for _, id := range reaction.UserIDs {
-			if id == userID {
-				return true
-			}
+		if slices.Contains(reaction.UserIDs, userID) {
+			return true
 		}
 	}
 	return false

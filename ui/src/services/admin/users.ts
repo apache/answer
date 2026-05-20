@@ -94,3 +94,22 @@ export const postUserActivation = (userId: string) => {
     user_id: userId,
   });
 };
+
+export const useAdminUsersSettings = () => {
+  const apiUrl = `/answer/admin/api/siteinfo/users-settings`;
+  const { data, error } = useSWR<
+    {
+      default_avatar: string;
+      gravatar_base_url: string;
+    },
+    Error
+  >(apiUrl, request.instance.get);
+  return { data, isLoading: !data && !error, error };
+};
+
+export const updateAdminUsersSettings = (params: {
+  default_avatar: string;
+  gravatar_base_url: string;
+}) => {
+  return request.put('/answer/admin/api/siteinfo/users-settings', params);
+};

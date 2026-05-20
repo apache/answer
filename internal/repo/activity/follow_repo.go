@@ -168,7 +168,7 @@ func (ar *FollowRepo) FollowCancel(ctx context.Context, objectID, userID string)
 	return err
 }
 
-func (ar *FollowRepo) updateFollows(ctx context.Context, session *xorm.Session, objectID string, follows int) error {
+func (ar *FollowRepo) updateFollows(_ context.Context, session *xorm.Session, objectID string, follows int) error {
 	objectType, err := obj.GetObjectTypeStrByObjectID(objectID)
 	if err != nil {
 		return err

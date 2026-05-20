@@ -27,6 +27,7 @@ import Textarea from './Textarea';
 import Input from './Input';
 import Button from './Button';
 import InputGroup from './InputGroup';
+import TagSelector from './TagSelector';
 
 export {
   Legend,
@@ -39,4 +40,5 @@ export {
   Input,
   Button,
   InputGroup,
+  TagSelector,
 };

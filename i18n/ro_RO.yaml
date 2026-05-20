@@ -57,6 +57,8 @@ backend:
       other: Editează
     undelete:
       other: Restabilește
+    merge:
+      other: Îmbinare
   role:
     name:
       user:
@@ -137,16 +139,18 @@ backend:
     other: Parolă
   pass:
     other: Parolă
+  old_pass:
+    other: Parolă actuală
   original_text:
-    other: This post
+    other: Acest articol
   email_or_password_wrong_error:
     other: E-mailul și parola nu se potrivesc.
   error:
     common:
       invalid_url:
-        other: Invalid URL.
+        other: URL invalid.
       status_invalid:
-        other: Invalid status.
+        other: Stare nevalidă.
     password:
       space_invalid:
         other: Parola nu poate conține spații.
@@ -154,7 +158,7 @@ backend:
       cannot_update_their_password:
         other: Nu vă puteți modifica parola.
       cannot_edit_their_profile:
-        other: You cannot modify your profile.
+        other: Nu vă puteți modifica profilul.
       cannot_modify_self_status:
         other: Nu vă puteți modifica starea.
       email_or_password_wrong:
@@ -168,6 +172,8 @@ backend:
         other: Nu există permisiunea de ștergere.
       question_closed_cannot_add:
         other: Întrebările sunt închise şi nu pot fi adăugate.
+      content_cannot_empty:
+        other: Conținutul răspunsului nu poate fi gol.
     comment:
       edit_without_permission:
         other: Comentariul nu poate fi editat.
@@ -175,6 +181,8 @@ backend:
         other: Comentariul nu a fost găsit.
       cannot_edit_after_deadline:
         other: Comentariul a durat prea mult pentru a fi modificat.
+      content_cannot_empty:
+        other: Conținutul comentariului nu poate fi gol.
     email:
       duplicate:
         other: Email-ul există deja.
@@ -207,15 +215,15 @@ backend:
       new_password_same_as_previous_setting:
         other: Noua parolă este identică cu cea anterioară.
       already_deleted:
-        other: This post has been deleted.
+        other: Acest articol a fost șters.
     meta:
       object_not_found:
-        other: Meta object not found
+        other: Nu s-a găsit obiectul Meta
     question:
       already_deleted:
         other: Această postare a fost ștearsă.
       under_review:
-        other: Your post is awaiting review. It will be visible after it has been approved.
+        other: Articolul tău este în așteptare. Acesta va fi vizibil după ce a fost aprobat.
       not_found:
         other: Întrebarea nu a fost găsită.
       cannot_deleted:
@@ -224,6 +232,10 @@ backend:
         other: Nu există permisiunea de a închide.
       cannot_update:
         other: Nu aveți permisiunea de a actualiza.
+      content_cannot_empty:
+        other: Conținutul nu poate fi gol.
+      content_less_than_minimum:
+        other: Not enough content entered.
     rank:
       fail_to_meet_the_condition:
         other: Rangul de reputaţie nu îndeplineşte condiţia.
@@ -253,6 +265,8 @@ backend:
         other: Nu puteți șterge o etichetă care este în uz.
       cannot_set_synonym_as_itself:
         other: Nu se poate seta sinonimul etichetei curente ca atare.
+      minimum_count:
+        other: Not enough tags were entered.
     smtp:
       config_from_name_cannot_be_email:
         other: Numele nu poate fi o adresă de e-mail.
@@ -296,6 +310,14 @@ backend:
         other: "{{.Field}} format lângă '{{.Content}}' la linia {{.Line}}. {{.ExtraMessage}}"
       add_bulk_users_amount_error:
         other: "Numărul de utilizatori pe care îi adăugați odată trebuie să fie în intervalul 1-{{.MaxAmount}}."
+      status_suspended_forever:
+        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+      status_suspended_until:
+        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+      status_deleted:
+        other: "This user was deleted."
+      status_inactive:
+        other: "This user is inactive."
     config:
       read_config_failed:
         other: Citirea configurației a eșuat
@@ -315,7 +337,7 @@ backend:
         other: Configurarea site-ului nu a fost găsită.
     badge:
       object_not_found:
-        other: Badge object not found
+        other: Nu s-a găsit obiectul Insignă
   reason:
     spam:
       name:
@@ -326,7 +348,7 @@ backend:
       name:
         other: nepoliticos sau abuziv
       desc:
-        other: "A reasonable person would find this content inappropriate for respectful discourse."
+        other: "O persoană rezonabilă ar considera acest conținut nepotrivit pentru un discurs respectuos."
     a_duplicate:
       name:
         other: un duplicat
@@ -484,7 +506,7 @@ backend:
       title:
         other: "[{{.SiteName}}] Întrebare nouă: {{.QuestionTitle}}"
       body:
-        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
     pass_reset:
       title:
         other: "[{{.SiteName }}] Resetare parolă"
@@ -556,7 +578,7 @@ backend:
         name:
           other: First Link
         desc:
-          other: First dirst added a link to another post.
+          other: First added a link to another post.
       first_reaction:
         name:
           other: First Reaction
@@ -799,7 +821,7 @@ ui:
     tag_wiki: etichetă wiki
     create_tag: Creați etichetă
     edit_tag: Modificați eticheta
-    ask_a_question: Adăugați întrebarea
+    ask_a_question: Create Question
     edit_question: Editați întrebarea
     edit_answer: Editaţi răspunsul
     search: Caută
@@ -823,6 +845,17 @@ ui:
     http_50X: Eroare HTTP 500
     http_403: Eroare HTTP 403
     logout: Deconectare
+    posts: Posts
+    ai_assistant: AI Assistant
+  ai_assistant:
+    description: Got a question? Ask it and get answers, perspectives, and recommendations.
+    recent_conversations: Recent Conversations
+    show_more: Show more
+    new: New chat
+    ai_generate: AI-generated from posts and may not be accurate.
+    copy: Copy
+    ask_a_follow_up: Ask a follow-up
+    ask_placeholder: Ask a question
   notifications:
     title: Notificări
     inbox: Mesaje primite
@@ -1019,6 +1052,15 @@ ui:
         <p>We do not allow <strong>deleting tag with synonyms</strong>.</p> <p>Please remove the synonyms from this tag first.</p>
       tip: Sunteţi sigur că doriţi să ştergeţi?
       close: Închide
+    merge:
+      title: Merge tag
+      source_tag_title: Source tag
+      source_tag_description: The source tag and its associated data will be remapped to the target tag.
+      target_tag_title: Target tag
+      target_tag_description: A synonym between these two tags will be created after merging.
+      no_results: No tags matched
+      btn_submit: Submit
+      btn_close: Close
   edit_tag:
     title: Editează eticheta
     default_reason: Editare etichetă
@@ -1037,6 +1079,9 @@ ui:
     day: zi
     hours: ore
     days: zile
+    month: month
+    months: months
+    year: year
   reaction:
     heart: heart
     smile: smile
@@ -1092,10 +1137,10 @@ ui:
     more: Mai multe
     wiki: Wiki
   ask:
-    title: Adăugați întrebarea
+    title: Create Question
     edit_title: Editați întrebarea
     default_reason: Editați întrebarea
-    default_first_reason: Adaugă o întrebare
+    default_first_reason: Create question
     similar_questions: Întrebări similare
     form:
       fields:
@@ -1103,7 +1148,7 @@ ui:
           label: Revizuire
         title:
           label: Titlu
-          placeholder: Fii specific și imaginează-ți că pui o întrebare unei alte persoane
+          placeholder: What's your topic? Be specific.
           msg:
             empty: Titlul nu poate fi gol.
             range: Titlu de până la 150 de caractere
@@ -1111,6 +1156,9 @@ ui:
           label: Corp
           msg:
             empty: Corpul mesajului trebuie să conțină text.
+          hint:
+            optional_body: Describe what the question is about.
+            minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
         tags:
           label: Etichete
           msg:
@@ -1131,7 +1179,9 @@ ui:
     add_btn: Adaugă etichetă
     create_btn: Creează o etichetă nouă
     search_tag: Căutare etichetă
-    hint: "Descrie despre ce este intrebarea ta, este necesar cel putin o eticheta."
+    hint: Describe what your content is about, at least one tag is required.
+    hint_zero_tags: Describe what your content is about.
+    hint_more_than_one_tag: "Describe what your content is about, at least {{min_tags_number}} tags are required."
     no_result: Nicio etichetă potrivită
     tag_required_text: Etichetă necesară (cel puțin una)
   header:
@@ -1150,8 +1200,7 @@ ui:
     search:
       placeholder: Caută
   footer:
-    build_on: >-
-      Susținut de <1> Apache Răspuns </1>- software-ul open-source care asigură Q&A comunități.<br />Făcut cu dragoste ©️ {{cc}}.
+    build_on: Powered by <1> Apache Answer </1>
   upload_img:
     name: Schimbare
     loading: încarcare...
@@ -1184,7 +1233,7 @@ ui:
       msg:
         empty: Câmpul Nume trebuie completat.
         range: Name must be between 2 to 30 characters in length.
-        character: 'Must use the character set "a-z", "A-Z", "0-9", " - . _"'
+        character: 'Must use the character set "a-z", "0-9", " - . _"'
     email:
       label: E-mail
       msg:
@@ -1256,13 +1305,13 @@ ui:
       display_name:
         label: Nume afișat
         msg: Numele afișat nu poate fi gol.
-        msg_range: Nume afișat până la 30 de caractere.
+        msg_range: Display name must be 2-30 characters in length.
       username:
         label: Nume de utilizator
         caption: Oamenii te pot menționa ca "@utilizator".
         msg: Numele de utilizator nu poate fi gol.
-        msg_range: Nume utilizator de până la 30 de caractere.
-        character: 'Trebuie să utilizați setul de caractere "a-z", "0-9", " - . _"'
+        msg_range: Username must be 2-30 characters in length.
+        character: 'Must use the character set "a-z", "0-9", "- . _"'
       avatar:
         label: Imaginea de profil
         gravatar: Gravatar
@@ -1337,12 +1386,12 @@ ui:
     review: Revizuirea ta va arăta după recenzie.
     sent_success: Trimis cu succes
   related_question:
-    title: Întrebări conexe
+    title: Related
     answers: răspunsuri
   linked_question:
-    title: Linked Questions
-    description: Questions linked to
-    no_linked_question: No questions linked from this question.
+    title: Linked
+    description: Posts linked to
+    no_linked_question: No contents linked from this content.
   invite_to_answer:
     title: Persoane întrebate
     desc: Invită persoane care crezi că știu răspunsul.
@@ -1351,9 +1400,11 @@ ui:
     search: Caută persoane
   question_detail:
     action: Acţiune
+    created: Created
     Asked: Întrebat
     asked: întrebat
     update: Modificat
+    Edited: Edited
     edit: editat
     commented: commented
     Views: Văzute
@@ -1433,7 +1484,7 @@ ui:
     signup: Înscrieți-vă
     logout: Deconectaţi-vă
     verify: Verificare
-    add_question: Adaugă o întrebare
+    create: Create
     approve: Aprobă
     reject: Respins
     skip: Treci peste
@@ -1465,8 +1516,16 @@ ui:
     normal: Normal
     closed: Closed
     deleted: Deleted
+    deleted_permanently: Deleted permanently
     pending: Pending
     more: More
+    view: View
+    card: Card
+    compact: Compact
+    display_below: Display below
+    always_display: Always display
+    or: or
+    back_sites: Back to sites
   search:
     title: Rezultatele căutării
     keywords: Cuvinte cheie
@@ -1474,6 +1533,7 @@ ui:
     follow: Urmărește
     following: Urmăriți
     counts: "{{count}} rezultatele"
+    counts_loading: "... Results"
     more: Mai mult
     sort_btns:
       relevance: Relevanță
@@ -1496,10 +1556,13 @@ ui:
     via: Distribuie postarea prin...
     copied: Copiat
     facebook: Partajează pe Facebook
-    twitter: Partajați pe Twitter
+    twitter: Share to X
   cannot_vote_for_self: Nu poți vota pentru propria ta postare.
   modal_confirm:
     title: Eroare...
+  delete_permanently:
+    title: Delete permanently
+    content: Are you sure you want to delete permanently?
   account_result:
     success: Noul tău cont este confirmat; vei fi redirecționat către pagina de pornire.
     link: Continuă la pagina principală
@@ -1522,6 +1585,7 @@ ui:
     all_questions: Toate întrebările
     x_questions: "{{ count }} Întrebări"
     x_answers: "{{ count }} răspunsuri"
+    x_posts: "{{ count }} Posts"
     questions: Întrebări
     answers: Răspunsuri
     newest: Cele mai noi
@@ -1603,6 +1667,23 @@ ui:
       label: Fișierul bazei de date
       placeholder: /data/answer.db
       msg: Fişierul bazei de date nu poate fi gol.
+    ssl_enabled:
+      label: Enable SSL
+    ssl_enabled_on:
+      label: On
+    ssl_enabled_off:
+      label: Off
+    ssl_mode:
+      label: SSL Mode
+    ssl_root_cert:
+      placeholder: sslrootcert file path
+      msg: Path to sslrootcert file cannot be empty
+    ssl_cert:
+      placeholder: sslcert file path
+      msg: Path to sslcert file cannot be empty
+    ssl_key:
+      placeholder: sslkey file path
+      msg: Path to sslkey file cannot be empty
     config_yaml:
       title: Crează config.yaml
       label: Fișierul config.yaml a fost creat.
@@ -1635,8 +1716,8 @@ ui:
     admin_name:
       label: Nume
       msg: Câmpul Nume trebuie completat.
-      character: 'Trebuie să utilizați setul de caractere "a-z", "0-9", " - . _"'
-      msg_max_length: Numele trebuie să aibă maximum 30 de caractere.
+      character: 'Must use the character set "a-z", "0-9", " - . _"'
+      msg_max_length: Name must be between 2 to 30 characters in length.
     admin_password:
       label: Parolă
       text: >-
@@ -1644,6 +1725,10 @@ ui:
       msg: Parola nu poate fi goală.
       msg_min_length: Parola trebuie să aibă cel puțin 8 caractere.
       msg_max_length: Parola trebuie să aibă cel puțin 32 caractere.
+    admin_confirm_password:
+      label: "Confirm Password"
+      text: "Please re-enter your password to confirm."
+      msg: "Confirm password does not match."
     admin_email:
       label: E-mail
       text: Veţi avea nevoie de acest e-mail pentru a vă autentifica.
@@ -1692,16 +1777,29 @@ ui:
     branding: Marcă
     legal: Juridic
     write: Scrie
+    terms: Terms
     tos: Condiții de utilizare
     privacy: Confidențialitate
     seo: SEO
     customize: Personalizează
     themes: Teme
-    css_html: CSS/HTML
     login: Autentifică-te
     privileges: Privilegii
     plugins: Extensii
     installed_plugins: Extensii instalate
+    apperance: Appearance
+    community: Community
+    advanced: Advanced
+    tags: Tags
+    rules: Rules
+    policies: Policies
+    security: Security
+    files: Files
+    apikeys: API Keys
+    intelligence: Intelligence
+    ai_assistant: AI Assistant
+    ai_settings: AI Settings
+    mcp: MCP
   website_welcome: Bun venit la {{site_name}}
   user_center:
     login: Autentifică-te
@@ -1801,10 +1899,10 @@ ui:
         fields:
           display_name:
             label: Display name
-            msg_range: Display name up to 30 characters.
+            msg_range: Display name must be 2-30 characters in length.
           username:
             label: Username
-            msg_range: Username up to 30 characters.
+            msg_range: Username must be 2-30 characters in length.
           email:
             label: Email
             msg_invalid: Invalid Email Address.
@@ -1836,9 +1934,10 @@ ui:
       name: Nume
       email: E-mail
       reputation: Reputație
-      created_at: Ora crearii
-      delete_at: Oră ștergerii
-      suspend_at: Ora suspendării
+      created_at: Created time
+      delete_at: Deleted time
+      suspend_at: Suspended time
+      suspend_until: Suspend until
       status: Stare
       role: Rol
       action: Acţiune
@@ -1873,6 +1972,8 @@ ui:
       suspend_user:
         title: Suspendă acest utilizator
         content: Un utilizator suspendat nu se poate autentifica.
+        label: How long will the user be suspended for?
+        forever: Forever
     questions:
       page_title: Întrebări
       unlisted: Unlisted
@@ -1933,6 +2034,12 @@ ui:
         label: Fusul orar
         msg: Fusul orar nu poate fi gol.
         text: Alege un oraș în același fus orar cu tine.
+      avatar:
+        label: Default avatar
+        text: For users without a custom avatar of their own.
+      gravatar_base_url:
+        label: Gravatar base URL
+        text: URL of the Gravatar provider's API base. Ignored when empty.
     smtp:
       page_title: SMTP
       from_email:
@@ -1998,12 +2105,23 @@ ui:
       privacy_policy:
         label: Politică de confidențialitate
         text: "Puteți adăuga aici termeni politicii de confidențialitate. Dacă aveți deja un document găzduit în altă parte, furnizați URL-ul complet aici."
+      external_content_display:
+        label: External content
+        text: "Content includes images, videos, and media embedded from external websites."
+        always_display: Always display external content
+        ask_before_display: Ask before displaying external content
     write:
-      page_title: Scrie
+      page_title: Files
+      min_content:
+        label: Minimum question body length
+        text: Minimum allowed question body length in characters.
       restrict_answer:
         title: Answer write
         label: Fiecare utilizator poate scrie doar câte un răspuns pentru fiecare întrebare
         text: "Turn off to allow users to write multiple answers to the same question, which may cause answers to be unfocused."
+      min_tags:
+        label: "Minimum tags per question"
+        text: "Minimum number of tags required in a question."
       recommend_tags:
         label: Etichete recomandate
         text: "Recommend tags will show in the dropdown list by default."
@@ -2047,10 +2165,14 @@ ui:
       color_scheme:
         label: Paletă de culori
       navbar_style:
-        label: Navbar style
+        label: Navbar background style
       primary_color:
         label: Culoare primară
         text: Modifică culorile folosite de temele tale
+      layout:
+        label: Layout
+        full_width: Full-width
+        fixed_width: Fixed-width
     css_and_html:
       page_title: CSS și HTML
       custom_css:
@@ -2155,6 +2277,70 @@ ui:
       show_logs: Show logs
       status: Status
       title: Badges
+    apikeys:
+      title: API Keys
+      add_api_key: Add API Key
+      desc: Description
+      scope: Scope
+      key: Key
+      created: Created
+      last_used: Last used
+      add_or_edit_modal:
+        add_title: Add API Key
+        edit_title: Edit API Key
+        description: Description
+        description_required: Description is required.
+        scope: Scope
+        global: Global
+        read-only: Read-only
+      created_modal:
+        title: API key created
+        api_key: API key
+        description: This key will not be displayed again. Make sure you take a copy before continuing.
+      delete_modal:
+        title: Delete API Key
+        content: Any applications or scripts using this key will no longer be able to access the API. This is permanent!
+    ai_settings:
+      enabled:
+        label: AI enabled
+        check: Enable AI features
+        text: The AI model must be configured correctly before it can be used.
+      provider:
+        label: Provider
+      api_host:
+        label: API host
+        msg: API host is required
+      api_key:
+        label: API key
+        check: Check
+        check_success: "Connection successful."
+        msg: API key is required
+      model:
+        label: Model
+        msg: Model is required
+      add_success: AI settings updated successfully.
+    conversations:
+      topic: Topic
+      helpful: Helpful
+      unhelpful: Unhelpful
+      created: Created
+      action: Action
+      empty: No conversations found.
+      delete_modal:
+        title: Delete conversation
+        content: Are you sure you want to delete this conversation? This is permanent!
+        delete_success: Conversation deleted successfully.
+    mcp:
+      mcp_server:
+        label: MCP server
+        switch: Enabled
+      type:
+        label: Type
+      url:
+        label: URL
+      http_header:
+        label: HTTP header
+        text: Please replace {key} with the API Key.
   form:
     optional: (opțional)
     empty: nu poate fi lăsat necompletat
@@ -2251,7 +2437,14 @@ ui:
     user_normal: This user is already normal.
     user_suspended: This user has been suspended.
     user_deleted: This user has been deleted.
+    user_added: User has been added successfully.
     badge_activated: This badge has been activated.
     badge_inactivated: This badge has been inactivated.
+    users_deleted: These users have been deleted.
+    posts_deleted: These questions have been deleted.
+    answers_deleted: These answers have been deleted.
+    copy: Copy to clipboard
+    copied: Copied
+    external_content_warning: External images/media are not displayed.
 
 

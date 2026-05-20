@@ -177,7 +177,7 @@ func (uc *UserAdminController) EditUserProfile(ctx *gin.Context) {
 
 	errFields, err := uc.userService.EditUserProfile(ctx, req)
 	for _, field := range errFields {
-		field.ErrorMsg = translator.Tr(handler.GetLang(ctx), field.ErrorMsg)
+		field.ErrorMsg = translator.Tr(handler.GetLangByCtx(ctx), field.ErrorMsg)
 	}
 	handler.HandleResponse(ctx, err, errFields)
 }
@@ -240,5 +240,25 @@ func (uc *UserAdminController) SendUserActivation(ctx *gin.Context) {
 	}
 
 	err := uc.userService.SendUserActivation(ctx, req)
+	handler.HandleResponse(ctx, err, nil)
+}
+
+// DeletePermanently delete permanently
+// @Summary delete permanently
+// @Description delete permanently
+// @Security ApiKeyAuth
+// @Tags admin
+// @Accept json
+// @Produce json
+// @Param data body schema.DeletePermanentlyReq true "DeletePermanentlyReq"
+// @Success 200 {object} handler.RespBody
+// @Router /answer/admin/api/delete/permanently [delete]
+func (uc *UserAdminController) DeletePermanently(ctx *gin.Context) {
+	req := &schema.DeletePermanentlyReq{}
+	if handler.BindAndCheck(ctx, req) {
+		return
+	}
+
+	err := uc.userService.DeletePermanently(ctx, req)
 	handler.HandleResponse(ctx, err, nil)
 }

@@ -35,7 +35,7 @@ const Index: FC<IProps> = ({ msg, variant = 'warning', onClose }) => {
       className="d-flex justify-content-center"
       style={{
         position: 'fixed',
-        top: '90px',
+        top: '78px',
         left: 0,
         right: 0,
         margin: 'auto',

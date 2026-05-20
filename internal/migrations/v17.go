@@ -22,6 +22,7 @@ package migrations
 import (
 	"context"
 	"fmt"
+
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/service/permission"
 	"github.com/segmentfault/pacman/log"

@@ -28,12 +28,13 @@ import (
 
 	"github.com/apache/answer/internal/repo/reason"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func Test_reasonRepo_ListReasons(t *testing.T) {
 	configRepo := config.NewConfigRepo(testDataSource)
 	reasonRepo := reason.NewReasonRepo(serviceconfig.NewConfigService(configRepo))
 	reasonItems, err := reasonRepo.ListReasons(context.TODO(), "question", "close")
-	assert.NoError(t, err)
-	assert.Equal(t, 4, len(reasonItems))
+	require.NoError(t, err)
+	assert.Len(t, reasonItems, 4)
 }

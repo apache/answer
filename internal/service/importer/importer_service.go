@@ -62,8 +62,7 @@ type ImporterFunc struct {
 }
 
 func (ipfunc *ImporterFunc) AddQuestion(ctx context.Context, questionInfo plugin.QuestionImporterInfo) (err error) {
-	ipfunc.importerService.ImportQuestion(ctx, questionInfo)
-	return nil
+	return ipfunc.importerService.ImportQuestion(ctx, questionInfo)
 }
 
 func (ip *ImporterService) NewImporterFunc() plugin.ImporterFunc {
@@ -84,7 +83,7 @@ func (ip *ImporterService) ImportQuestion(ctx context.Context, questionInfo plug
 		return err
 	}
 	if !exist {
-		return fmt.Errorf("User not found")
+		return fmt.Errorf("user not found")
 	}
 
 	// To limit rate, remove the following code from comment: Part 2/2
@@ -136,7 +135,7 @@ func (ip *ImporterService) ImportQuestion(ctx context.Context, questionInfo plug
 		return err
 	}
 	if !req.CanAddTag && hasNewTag {
-		lang := handler.GetLang(ctx.(*gin.Context))
+		lang := handler.GetLangByCtx(ctx.(*gin.Context))
 		msg := translator.TrWithData(lang, reason.NoEnoughRankToOperate, &schema.PermissionTrTplData{Rank: requireRanks[6]})
 		log.Errorf("error: %v", msg)
 		return errors.BadRequest(msg)

@@ -30,6 +30,8 @@ import {
   loginToContinueStore,
   pageTagStore,
   writeSettingStore,
+  siteSecurityStore,
+  aiControlStore,
 } from '@/stores';
 import { RouteAlias } from '@/router/alias';
 import {
@@ -46,7 +48,6 @@ type TLoginState = {
   isLogged: boolean;
   isNotActivated: boolean;
   isActivated: boolean;
-  isForbidden: boolean;
   isNormal: boolean;
   isAdmin: boolean;
   isModerator: boolean;
@@ -71,7 +72,6 @@ export const deriveLoginState = (): TLoginState => {
     isLogged: false,
     isNotActivated: false,
     isActivated: false,
-    isForbidden: false,
     isNormal: false,
     isAdmin: false,
     isModerator: false,
@@ -86,10 +86,8 @@ export const deriveLoginState = (): TLoginState => {
   if (ls.isLogged && user.mail_status === 2) {
     ls.isNotActivated = true;
   }
-  if (ls.isLogged && user.status === 'suspended') {
-    ls.isForbidden = true;
-  }
-  if (ls.isActivated && !ls.isForbidden) {
+
+  if (ls.isActivated) {
     ls.isNormal = true;
   }
   if (ls.isNormal && user.role_id === 2) {
@@ -203,26 +201,6 @@ export const activated = () => {
   return gr;
 };
 
-export const forbidden = () => {
-  const gr: TGuardResult = { ok: true };
-  const us = deriveLoginState();
-  if (gr.ok && !us.isForbidden) {
-    gr.ok = false;
-    gr.redirect = RouteAlias.home;
-  }
-  return gr;
-};
-
-export const notForbidden = () => {
-  const gr: TGuardResult = { ok: true };
-  const us = deriveLoginState();
-  if (us.isForbidden) {
-    gr.ok = false;
-    gr.redirect = RouteAlias.suspended;
-  }
-  return gr;
-};
-
 export const admin = () => {
   const gr = logged();
   const us = deriveLoginState();
@@ -286,8 +264,8 @@ export const singUpAgent = () => {
 
 export const shouldLoginRequired = () => {
   const gr: TGuardResult = { ok: true };
-  const loginSetting = loginSettingStore.getState().login;
-  if (!loginSetting.login_required) {
+  const { login_required } = siteSecurityStore.getState();
+  if (!login_required) {
     return gr;
   }
   const us = deriveLoginState();
@@ -321,10 +299,6 @@ export const tryNormalLogged = (canNavigate: boolean = false) => {
   }
   if (us.isNotActivated) {
     floppyNavigation.navigate(RouteAlias.inactive);
-  } else if (us.isForbidden) {
-    floppyNavigation.navigate(RouteAlias.suspended, {
-      handler: 'replace',
-    });
   }
 
   return false;
@@ -409,28 +383,34 @@ export const initAppSettingsStore = async () => {
     themeSettingStore.getState().update(appSettings.theme);
     seoSettingStore.getState().update(appSettings.site_seo);
     writeSettingStore.getState().update({
-      restrict_answer: appSettings.site_write.restrict_answer,
-      ...appSettings.site_write,
+      ...appSettings.site_advanced,
+      ...appSettings.site_questions,
+      ...appSettings.site_tags,
     });
+    aiControlStore.getState().update({
+      ai_enabled: appSettings.ai_enabled,
+    });
+    siteSecurityStore.getState().update(appSettings.site_security);
   }
 };
 
-export const googleSnapshotRedirect = () => {
-  const gr: TGuardResult = { ok: true };
-  const searchStr = new URLSearchParams(window.location.search)?.get('q') || '';
-  if (window.location.host !== 'webcache.googleusercontent.com') {
-    return gr;
-  }
-  if (searchStr.indexOf('cache:') === 0 && searchStr.includes(':http')) {
-    const redirectUrl = `http${searchStr.split(':http')[1]}`;
-    const pathname = redirectUrl.replace(new URL(redirectUrl).origin, '');
+export const askRedirect = () => {
+  const queryString = window.location.search;
 
-    gr.ok = false;
-    gr.redirect = pathname || '/';
-    return gr;
-  }
+  return {
+    ok: false,
+    redirect: `/questions/add${queryString}`,
+  };
+};
 
-  return gr;
+export const linkedRedirect = () => {
+  const queryString = window.location.search;
+  const pathname = window.location.pathname.replace('/questions', '');
+
+  return {
+    ok: false,
+    redirect: `${pathname}${queryString}`,
+  };
 };
 
 let appInitialized = false;

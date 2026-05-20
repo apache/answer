@@ -342,3 +342,7 @@ export const questionOperation = (params: Type.QuestionOperationReq) => {
 export const getPluginsStatus = () => {
   return request.get<Type.ActivatedPlugin[]>('/answer/api/v1/plugin/status');
 };
+
+export const deletePermanently = (type: string) => {
+  return request.delete('/answer/admin/api/delete/permanently', { type });
+};

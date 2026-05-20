@@ -26,6 +26,7 @@ import (
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/repo/meta"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func buildMetaEntity() *entity.Meta {
@@ -41,15 +42,15 @@ func Test_metaRepo_GetMetaByObjectIdAndKey(t *testing.T) {
 	metaEnt := buildMetaEntity()
 
 	err := metaRepo.AddMeta(context.TODO(), metaEnt)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	gotMeta, exist, err := metaRepo.GetMetaByObjectIdAndKey(context.TODO(), metaEnt.ObjectID, metaEnt.Key)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.True(t, exist)
 	assert.Equal(t, metaEnt.ID, gotMeta.ID)
 
 	err = metaRepo.RemoveMeta(context.TODO(), metaEnt.ID)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 }
 
 func Test_metaRepo_GetMetaList(t *testing.T) {
@@ -57,15 +58,15 @@ func Test_metaRepo_GetMetaList(t *testing.T) {
 	metaEnt := buildMetaEntity()
 
 	err := metaRepo.AddMeta(context.TODO(), metaEnt)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	gotMetaList, err := metaRepo.GetMetaList(context.TODO(), metaEnt)
-	assert.NoError(t, err)
-	assert.Equal(t, len(gotMetaList), 1)
+	require.NoError(t, err)
+	assert.Len(t, gotMetaList, 1)
 	assert.Equal(t, gotMetaList[0].ID, metaEnt.ID)
 
 	err = metaRepo.RemoveMeta(context.TODO(), metaEnt.ID)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 }
 
 func Test_metaRepo_GetMetaPage(t *testing.T) {
@@ -73,15 +74,15 @@ func Test_metaRepo_GetMetaPage(t *testing.T) {
 	metaEnt := buildMetaEntity()
 
 	err := metaRepo.AddMeta(context.TODO(), metaEnt)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	gotMetaList, err := metaRepo.GetMetaList(context.TODO(), metaEnt)
-	assert.NoError(t, err)
-	assert.Equal(t, len(gotMetaList), 1)
+	require.NoError(t, err)
+	assert.Len(t, gotMetaList, 1)
 	assert.Equal(t, gotMetaList[0].ID, metaEnt.ID)
 
 	err = metaRepo.RemoveMeta(context.TODO(), metaEnt.ID)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 }
 
 func Test_metaRepo_UpdateMeta(t *testing.T) {
@@ -89,17 +90,17 @@ func Test_metaRepo_UpdateMeta(t *testing.T) {
 	metaEnt := buildMetaEntity()
 
 	err := metaRepo.AddMeta(context.TODO(), metaEnt)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	metaEnt.Value = "testing"
 	err = metaRepo.UpdateMeta(context.TODO(), metaEnt)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	gotMeta, exist, err := metaRepo.GetMetaByObjectIdAndKey(context.TODO(), metaEnt.ObjectID, metaEnt.Key)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.True(t, exist)
 	assert.Equal(t, gotMeta.Value, metaEnt.Value)
 
 	err = metaRepo.RemoveMeta(context.TODO(), metaEnt.ID)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 }

@@ -9,7 +9,13 @@ A React component capable of building HTML forms out of a [JSON schema](https://
 ```tsx
 import React, { useState } from 'react';
 
-import { SchemaForm, initFormData, JSONSchema, UISchema, FormKit } from '@/components';
+import {
+  SchemaForm,
+  initFormData,
+  JSONSchema,
+  UISchema,
+  FormKit,
+} from '@/components';
 
 const schema: JSONSchema = {
   title: 'General',
@@ -48,11 +54,11 @@ const uiSchema: UISchema = {
 
 const Form = () => {
   const [formData, setFormData] = useState(initFormData(schema));
-  
+
   const formRef = useRef<{
     validator: () => Promise<boolean>;
   }>(null);
-  
+
   const refreshConfig: FormKit['refreshConfig'] = async () => {
     // refreshFormConfig();
   };
@@ -103,9 +109,9 @@ interface FormProps {
 ## Form Ref
 
 ```ts
-  export interface FormRef {
-    validator: () => Promise<boolean>;
-  }
+export interface FormRef {
+  validator: () => Promise<boolean>;
+}
 ```
 
 When you need to validate a form and get the result outside the form, you can create a `FormRef` with `useRef` and pass it to the form using the `ref` property.
@@ -115,6 +121,7 @@ This allows you to validate the form and get the result outside the form using `
 ---
 
 ## Types Definition
+
 ### JSONSchema
 
 ```ts
@@ -137,6 +144,7 @@ export interface JSONSchema {
 ```
 
 ### UISchema
+
 ```ts
 export interface UISchema {
   [key: string]: {
@@ -147,6 +155,7 @@ export interface UISchema {
 ```
 
 ### UIWidget
+
 ```ts
 export type UIWidget =
   | 'textarea'
@@ -164,6 +173,7 @@ export type UIWidget =
 ---
 
 ### UIOptions
+
 ```ts
 export type UIOptions =
   | InputOptions
@@ -178,6 +188,7 @@ export type UIOptions =
 ```
 
 #### BaseUIOptions
+
 ```ts
 export interface BaseUIOptions {
   empty?: string;
@@ -197,6 +208,7 @@ export interface BaseUIOptions {
 ```
 
 #### InputOptions
+
 ```ts
 export interface InputOptions extends BaseUIOptions {
   placeholder?: string;
@@ -219,11 +231,13 @@ export interface InputOptions extends BaseUIOptions {
 ```
 
 #### SelectOptions
+
 ```ts
 export interface SelectOptions extends UIOptions {}
 ```
 
 #### UploadOptions
+
 ```ts
 export interface UploadOptions extends BaseUIOptions {
   acceptType?: string;
@@ -232,6 +246,7 @@ export interface UploadOptions extends BaseUIOptions {
 ```
 
 #### SwitchOptions
+
 ```ts
 export interface SwitchOptions extends BaseUIOptions {
   label?: string;
@@ -239,6 +254,7 @@ export interface SwitchOptions extends BaseUIOptions {
 ```
 
 #### TimezoneOptions
+
 ```ts
 export interface TimezoneOptions extends UIOptions {
   placeholder?: string;
@@ -246,16 +262,19 @@ export interface TimezoneOptions extends UIOptions {
 ```
 
 #### CheckboxOptions
+
 ```ts
 export interface CheckboxOptions extends UIOptions {}
 ```
 
 #### RadioOptions
+
 ```ts
 export interface RadioOptions extends UIOptions {}
 ```
 
 #### TextareaOptions
+
 ```ts
 export interface TextareaOptions extends UIOptions {
   placeholder?: string;
@@ -264,6 +283,7 @@ export interface TextareaOptions extends UIOptions {
 ```
 
 #### ButtonOptions
+
 ```ts
 export interface ButtonOptions extends BaseUIOptions {
   text: string;
@@ -275,6 +295,7 @@ export interface ButtonOptions extends BaseUIOptions {
 ```
 
 #### UIAction
+
 ```ts
 export interface UIAction {
   url: string;
@@ -291,6 +312,7 @@ export interface UIAction {
 ```
 
 #### FormKit
+
 ```ts
 export interface FormKit {
   refreshConfig(): void;
@@ -300,6 +322,7 @@ export interface FormKit {
 ---
 
 ### FormData
+
 ```ts
 export interface FormValue<T = any> {
   value: T;
@@ -349,7 +372,6 @@ For backend generating modal form you can return json like this.
   ]
 }
 ```
-
 
 ## reference
 

@@ -27,7 +27,7 @@ import (
 )
 
 // Help xorm page helper
-func Help(page, pageSize int, rowsSlicePtr interface{}, rowElement interface{}, session *xorm.Session) (total int64, err error) {
+func Help(page, pageSize int, rowsSlicePtr any, rowElement any, session *xorm.Session) (total int64, err error) {
 	page, pageSize = ValPageAndPageSize(page, pageSize)
 
 	sliceValue := reflect.Indirect(reflect.ValueOf(rowsSlicePtr))

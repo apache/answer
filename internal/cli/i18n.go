@@ -21,13 +21,14 @@ package cli
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
+
 	"github.com/apache/answer/i18n"
 	"github.com/apache/answer/pkg/dir"
 	"github.com/apache/answer/pkg/writer"
 	"gopkg.in/yaml.v3"
-	"os"
-	"path/filepath"
-	"strings"
 )
 
 type YamlPluginContent struct {

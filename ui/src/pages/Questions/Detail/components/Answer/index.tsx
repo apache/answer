@@ -20,7 +20,7 @@
 import { memo, FC, useEffect, useRef } from 'react';
 import { Button, Alert, Badge } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 import {
   Actions,
@@ -28,7 +28,6 @@ import {
   UserCard,
   Icon,
   Comment,
-  FormatTime,
   htmlRender,
   ImgViewer,
 } from '@/components';
@@ -76,8 +75,13 @@ const Index: FC<Props> = ({
       return;
     }
 
-    htmlRender(answerRef.current.querySelector('.fmt'));
+    htmlRender(answerRef.current.querySelector('.fmt'), {
+      copySuccessText: t('copied', { keyPrefix: 'messages' }),
+      copyText: t('copy', { keyPrefix: 'messages' }),
+    });
+  }, [answerRef.current]);
 
+  useEffect(() => {
     if (aid === data.id) {
       setTimeout(() => {
         const element = answerRef.current;
@@ -87,7 +91,7 @@ const Index: FC<Props> = ({
         }
       }, 100);
     }
-  }, [data.id, answerRef.current]);
+  }, [data.id]);
 
   if (!data?.id) {
     return null;
@@ -105,22 +109,34 @@ const Index: FC<Props> = ({
           {t('post_pending', { keyPrefix: 'messages' })}
         </Alert>
       )}
-
-      {data?.accepted === 2 && (
-        <div className="mb-3 lh-1">
-          <Badge bg="success" pill>
-            <Icon name="check-circle-fill me-1" />
-            Best answer
-          </Badge>
+      <div className="d-flex justify-content-between mb-3">
+        <div style={{ minWidth: '196px' }}>
+          <UserCard
+            data={data?.user_info}
+            time={Number(data.create_time)}
+            updateTime={Number(data.update_time)}
+            updateTimePrefix={t('edit')}
+            isLogged={isLogged}
+            timelinePath={`/posts/${data.question_id}/${data.id}/timeline`}
+          />
         </div>
-      )}
+
+        {data?.accepted === 2 && (
+          <div className="lh-1">
+            <Badge bg="success" pill>
+              <Icon name="check-circle-fill me-1" />
+              Best answer
+            </Badge>
+          </div>
+        )}
+      </div>
       <ImgViewer>
         <article
           className="fmt text-break text-wrap"
           dangerouslySetInnerHTML={{ __html: data?.html }}
         />
       </ImgViewer>
-      <div className="d-flex align-items-center mt-4">
+      <div className="d-flex align-items-center my-4">
         <Actions
           source="answer"
           data={{
@@ -150,60 +166,20 @@ const Index: FC<Props> = ({
         )}
       </div>
 
-      <div className="d-block d-md-flex flex-wrap mt-4 mb-3">
-        <div className="mb-3 mb-md-0 me-4 flex-grow-1">
-          <Operate
-            qid={data.question_id}
-            aid={data.id}
-            memberActions={data?.member_actions}
-            type="answer"
-            isAccepted={data.accepted === 2}
-            title={questionTitle}
-            callback={callback}
-          />
-        </div>
-        <div className="mb-3 mb-md-0 me-4" style={{ minWidth: '196px' }}>
-          {data.update_user_info &&
-          data.update_user_info?.username !== data.user_info?.username ? (
-            <UserCard
-              data={data?.update_user_info}
-              time={Number(data.update_time)}
-              preFix={t('edit')}
-              isLogged={isLogged}
-              timelinePath={`/posts/${data.question_id}/${data.id}/timeline`}
-            />
-          ) : isLogged ? (
-            <Link to={`/posts/${data.question_id}/${data.id}/timeline`}>
-              <FormatTime
-                time={Number(data.update_time)}
-                preFix={t('edit')}
-                className="link-secondary small"
-              />
-            </Link>
-          ) : (
-            <FormatTime
-              time={Number(data.update_time)}
-              preFix={t('edit')}
-              className="text-secondary small"
-            />
-          )}
-        </div>
-        <div style={{ minWidth: '196px' }}>
-          <UserCard
-            data={data?.user_info}
-            time={Number(data.create_time)}
-            preFix={t('answered')}
-            isLogged={isLogged}
-            timelinePath={`/posts/${data.question_id}/${data.id}/timeline`}
-          />
-        </div>
-      </div>
-
       <Comment
         objectId={data.id}
         mode="answer"
-        commentId={searchParams.get('commentId')}
-      />
+        commentId={searchParams.get('commentId')}>
+        <Operate
+          qid={data.question_id}
+          aid={data.id}
+          memberActions={data?.member_actions}
+          type="answer"
+          isAccepted={data.accepted === 2}
+          title={questionTitle}
+          callback={callback}
+        />
+      </Comment>
     </div>
   );
 };

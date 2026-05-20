@@ -112,6 +112,9 @@ func (rh *ReportHandle) updateReportedAnswerReport(ctx context.Context, report *
 			NoNeedReview: true,
 		})
 	}
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -127,6 +130,9 @@ func (rh *ReportHandle) updateReportedCommentReport(ctx context.Context, report 
 			ParsedText:   converter.Markdown2HTML(req.Content),
 			UserID:       req.UserID,
 		})
+	}
+	if err != nil {
+		return err
 	}
 	return nil
 }

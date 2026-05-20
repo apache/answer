@@ -29,6 +29,18 @@ interface Props {
   onChange?: (fd: Type.FormDataType) => void;
   formData: Type.FormDataType;
   readOnly: boolean;
+  min?: number;
+  max?: number;
+  inputMode?:
+    | 'text'
+    | 'search'
+    | 'none'
+    | 'tel'
+    | 'url'
+    | 'email'
+    | 'numeric'
+    | 'decimal'
+    | undefined;
 }
 const Index: FC<Props> = ({
   type = 'text',
@@ -37,15 +49,22 @@ const Index: FC<Props> = ({
   onChange,
   formData,
   readOnly = false,
+  min = 0,
+  max,
+  inputMode = 'text',
 }) => {
   const fieldObject = formData[fieldName];
+  const numberInputProps =
+    type === 'number'
+      ? { min, ...(max != null && max > 0 ? { max } : {}) }
+      : {};
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = evt.currentTarget;
     const state = {
       ...formData,
       [name]: {
         ...formData[name],
-        value,
+        value: type === 'number' ? Number(value) : value,
         isInvalid: false,
       },
     };
@@ -54,12 +73,18 @@ const Index: FC<Props> = ({
     }
   };
 
+  // For number type, use ?? to preserve 0 value; for other types, use || for backward compatibility
+  const inputValue =
+    type === 'number' ? (fieldObject?.value ?? '') : fieldObject?.value || '';
+
   return (
     <Form.Control
       name={fieldName}
       placeholder={placeholder}
       type={type}
-      value={fieldObject?.value || ''}
+      value={inputValue}
+      {...numberInputProps}
+      inputMode={inputMode}
       onChange={handleChange}
       disabled={readOnly}
       isInvalid={fieldObject?.isInvalid}

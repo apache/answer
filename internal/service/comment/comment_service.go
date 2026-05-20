@@ -21,7 +21,10 @@ package comment
 
 import (
 	"context"
-	"github.com/apache/answer/internal/service/event_queue"
+
+	"github.com/apache/answer/internal/service/eventqueue"
+	"github.com/apache/answer/internal/service/review"
+
 	"time"
 
 	"github.com/apache/answer/internal/base/constant"
@@ -30,13 +33,14 @@ import (
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/activity_common"
-	"github.com/apache/answer/internal/service/activity_queue"
+	"github.com/apache/answer/internal/service/activityqueue"
 	"github.com/apache/answer/internal/service/comment_common"
 	"github.com/apache/answer/internal/service/export"
-	"github.com/apache/answer/internal/service/notice_queue"
+	"github.com/apache/answer/internal/service/noticequeue"
 	"github.com/apache/answer/internal/service/object_info"
 	"github.com/apache/answer/internal/service/permission"
 	usercommon "github.com/apache/answer/internal/service/user_common"
+	"github.com/apache/answer/internal/service/vector_sync"
 	"github.com/apache/answer/pkg/htmltext"
 	"github.com/apache/answer/pkg/token"
 	"github.com/apache/answer/pkg/uid"
@@ -50,6 +54,7 @@ type CommentRepo interface {
 	AddComment(ctx context.Context, comment *entity.Comment) (err error)
 	RemoveComment(ctx context.Context, commentID string) (err error)
 	UpdateCommentContent(ctx context.Context, commentID string, original string, parsedText string) (err error)
+	UpdateCommentStatus(ctx context.Context, commentID string, status int) (err error)
 	GetComment(ctx context.Context, commentID string) (comment *entity.Comment, exist bool, err error)
 	GetCommentPage(ctx context.Context, commentQuery *CommentQuery) (
 		comments []*entity.Comment, total int64, err error)
@@ -84,10 +89,12 @@ type CommentService struct {
 	objectInfoService                *object_info.ObjService
 	emailService                     *export.EmailService
 	userRepo                         usercommon.UserRepo
-	notificationQueueService         notice_queue.NotificationQueueService
-	externalNotificationQueueService notice_queue.ExternalNotificationQueueService
-	activityQueueService             activity_queue.ActivityQueueService
-	eventQueueService                event_queue.EventQueueService
+	notificationQueueService         noticequeue.Service
+	externalNotificationQueueService noticequeue.ExternalService
+	activityQueueService             activityqueue.Service
+	eventQueueService                eventqueue.Service
+	reviewService                    *review.ReviewService
+	vectorSyncService                vector_sync.Service
 }
 
 // NewCommentService new comment service
@@ -99,10 +106,12 @@ func NewCommentService(
 	voteCommon activity_common.VoteRepo,
 	emailService *export.EmailService,
 	userRepo usercommon.UserRepo,
-	notificationQueueService notice_queue.NotificationQueueService,
-	externalNotificationQueueService notice_queue.ExternalNotificationQueueService,
-	activityQueueService activity_queue.ActivityQueueService,
-	eventQueueService event_queue.EventQueueService,
+	notificationQueueService noticequeue.Service,
+	externalNotificationQueueService noticequeue.ExternalService,
+	activityQueueService activityqueue.Service,
+	eventQueueService eventqueue.Service,
+	reviewService *review.ReviewService,
+	vectorSyncService vector_sync.Service,
 ) *CommentService {
 	return &CommentService{
 		commentRepo:                      commentRepo,
@@ -116,6 +125,8 @@ func NewCommentService(
 		externalNotificationQueueService: externalNotificationQueueService,
 		activityQueueService:             activityQueueService,
 		eventQueueService:                eventQueueService,
+		reviewService:                    reviewService,
+		vectorSyncService:                vectorSyncService,
 	}
 }
 
@@ -160,14 +171,20 @@ func (cs *CommentService) AddComment(ctx context.Context, req *schema.AddComment
 		return nil, err
 	}
 
+	comment.Status = cs.reviewService.AddCommentReview(ctx, comment, req.IP, req.UserAgent)
+	if err := cs.commentRepo.UpdateCommentStatus(ctx, comment.ID, comment.Status); err != nil {
+		return nil, err
+	}
+
 	resp = &schema.GetCommentResp{}
 	resp.SetFromComment(comment)
 	resp.MemberActions = permission.GetCommentPermission(ctx, req.UserID, resp.UserID,
 		time.Now(), req.CanEdit, req.CanDelete)
 
-	commentResp, err := cs.addCommentNotification(ctx, req, resp, comment, objInfo)
-	if err != nil {
-		return commentResp, err
+	if comment.Status == entity.CommentStatusAvailable {
+		if err := cs.addCommentNotification(ctx, req, resp, comment, objInfo); err != nil {
+			return nil, err
+		}
 	}
 
 	// get user info
@@ -201,12 +218,21 @@ func (cs *CommentService) AddComment(ctx context.Context, req *schema.AddComment
 	}
 	cs.activityQueueService.Send(ctx, activityMsg)
 	cs.eventQueueService.Send(ctx, event)
+	if comment.Status == entity.CommentStatusAvailable {
+		switch objInfo.ObjectType {
+		case constant.QuestionObjectType:
+			cs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: objInfo.QuestionID})
+		case constant.AnswerObjectType:
+			cs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeAnswer, ObjectID: objInfo.AnswerID})
+			cs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: objInfo.QuestionID})
+		}
+	}
 	return resp, nil
 }
 
 func (cs *CommentService) addCommentNotification(
 	ctx context.Context, req *schema.AddCommentReq, resp *schema.GetCommentResp,
-	comment *entity.Comment, objInfo *schema.SimpleObjectInfo) (*schema.GetCommentResp, error) {
+	comment *entity.Comment, objInfo *schema.SimpleObjectInfo) error {
 	// The priority of the notification
 	// 1. reply to user
 	// 2. comment mention to user
@@ -217,7 +243,7 @@ func (cs *CommentService) addCommentNotification(
 	if len(resp.ReplyUserID) > 0 && resp.ReplyUserID != req.UserID {
 		replyUser, exist, err := cs.userCommon.GetUserBasicInfoByID(ctx, resp.ReplyUserID)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		if exist {
 			resp.ReplyUsername = replyUser.Username
@@ -227,7 +253,7 @@ func (cs *CommentService) addCommentNotification(
 		cs.notificationCommentReply(ctx, replyUser.ID, comment.ID, req.UserID,
 			objInfo.QuestionID, objInfo.Title, htmltext.FetchExcerpt(comment.ParsedText, "...", 240))
 		alreadyNotifiedUserID[replyUser.ID] = true
-		return nil, nil
+		return nil
 	}
 
 	if len(req.MentionUsernameList) > 0 {
@@ -236,7 +262,7 @@ func (cs *CommentService) addCommentNotification(
 		for _, userID := range alreadyNotifiedUserIDs {
 			alreadyNotifiedUserID[userID] = true
 		}
-		return nil, nil
+		return nil
 	}
 
 	if objInfo.ObjectType == constant.QuestionObjectType && !alreadyNotifiedUserID[objInfo.ObjectCreatorUserID] {
@@ -246,17 +272,30 @@ func (cs *CommentService) addCommentNotification(
 		cs.notificationAnswerComment(ctx, objInfo.QuestionID, objInfo.Title, objInfo.AnswerID,
 			objInfo.ObjectCreatorUserID, comment.ID, req.UserID, htmltext.FetchExcerpt(comment.ParsedText, "...", 240))
 	}
-	return nil, nil
+	return nil
 }
 
 // RemoveComment delete comment
 func (cs *CommentService) RemoveComment(ctx context.Context, req *schema.RemoveCommentReq) (err error) {
+	commentInfo, exist, err := cs.commentCommonRepo.GetComment(ctx, req.CommentID)
+	if err != nil {
+		return err
+	}
+	if !exist {
+		return nil
+	}
 	err = cs.commentRepo.RemoveComment(ctx, req.CommentID)
 	if err != nil {
 		return err
 	}
 	cs.eventQueueService.Send(ctx, schema.NewEvent(constant.EventCommentDelete, req.UserID).
 		TID(req.CommentID).CID(req.CommentID, req.UserID))
+	if commentInfo.ObjectID == commentInfo.QuestionID {
+		cs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: commentInfo.QuestionID})
+	} else {
+		cs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeAnswer, ObjectID: commentInfo.ObjectID})
+		cs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: commentInfo.QuestionID})
+	}
 	return nil
 }
 
@@ -291,6 +330,12 @@ func (cs *CommentService) UpdateComment(ctx context.Context, req *schema.UpdateC
 	}
 	cs.eventQueueService.Send(ctx, schema.NewEvent(constant.EventCommentUpdate, req.UserID).TID(old.ID).
 		CID(old.ID, old.UserID))
+	if old.ObjectID == old.QuestionID {
+		cs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: old.QuestionID})
+	} else {
+		cs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeAnswer, ObjectID: old.ObjectID})
+		cs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: old.QuestionID})
+	}
 	return resp, nil
 }
 
@@ -302,6 +347,13 @@ func (cs *CommentService) GetComment(ctx context.Context, req *schema.GetComment
 	}
 	if !exist {
 		return nil, errors.BadRequest(reason.CommentNotFound)
+	}
+	objInfo, err := cs.objectInfoService.GetInfo(ctx, comment.ObjectID)
+	if err != nil {
+		return nil, err
+	}
+	if err := objInfo.CheckVisibility(req.UserID, req.IsAdminModerator); err != nil {
+		return nil, err
 	}
 
 	resp = &schema.GetCommentResp{
@@ -354,6 +406,13 @@ func (cs *CommentService) GetComment(ctx context.Context, req *schema.GetComment
 // GetCommentWithPage get comment list page
 func (cs *CommentService) GetCommentWithPage(ctx context.Context, req *schema.GetCommentWithPageReq) (
 	pageModel *pager.PageModel, err error) {
+	objInfo, err := cs.objectInfoService.GetInfo(ctx, req.ObjectID)
+	if err != nil {
+		return nil, err
+	}
+	if err := objInfo.CheckVisibility(req.UserID, req.IsAdminModerator); err != nil {
+		return nil, err
+	}
 	dto := &CommentQuery{
 		PageCond:  pager.PageCond{Page: req.Page, PageSize: req.PageSize},
 		ObjectID:  req.ObjectID,

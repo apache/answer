@@ -20,19 +20,34 @@
 @import 'bootstrap/scss/functions';
 @import 'bootstrap/scss/variables';
 #header {
-  transform: translate3d(0,0,0);
+  z-index: 1041;
   --bs-navbar-padding-y: 0.75rem;
   background: var(--bs-primary);
-  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15), 0 0.125rem 0.25rem rgb(0 0 0 / 8%);
+  box-shadow:
+    inset 0 -1px 0 rgba(0, 0, 0, 0.15),
+    0 0.125rem 0.25rem rgb(0 0 0 / 8%);
   .logo {
     max-height: 2rem;
   }
 
+  .fixed-width {
+    padding-left: 28px;
+    padding-right: 36px;
+  }
+
+  .create-icon {
+    color: var(--bs-nav-link-color);
+  }
+
   .nav-link {
     &.icon-link {
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
     }
+  }
+
+  .search-mobile {
+    color: var(--bs-nav-link-color);
   }
 
   .answer-navBar {
@@ -44,8 +59,8 @@
     box-shadow: none;
   }
 
-  .lg-none {
-    display: none!important;
+  .xl-none {
+    display: none !important;
   }
 
   .hr {
@@ -53,13 +68,13 @@
   }
 
   // style for colored navbar
-  &.theme-colored {
+  &.theme-dark {
     .placeholder-search {
       padding-left: 42px;
       box-shadow: none;
       color: #fff;
-      background-color: rgba(255, 255, 255, .2);
-      border: $border-width $border-style rgba(255, 255, 255, .2);
+      background-color: rgba(255, 255, 255, 0.2);
+      border: $border-width $border-style rgba(255, 255, 255, 0.2);
       &:focus {
         border: $border-width $border-style $border-color;
       }
@@ -74,7 +89,6 @@
 
   // style for colored navbar
   &.theme-light {
-    background: rgb(255, 255, 255);
     .nav-link {
       color: rgba(0, 0, 0, 0.65);
     }
@@ -82,8 +96,8 @@
       padding-left: 42px;
       box-shadow: none;
       color: var(--bs-body-color);
-      background-color: rgba(255, 255, 255, .2);
-      border: $border-width $border-style #dee2e6;
+      background-color: rgba(255, 255, 255, 0.2);
+      border: $border-width $border-style rgba(0, 0, 0, 0.05);
       &:focus {
         border: $border-width $border-style $border-color;
       }
@@ -96,34 +110,59 @@
     }
   }
 
-  .maxw-400 {
-    max-width: 400px;;
+  .maxw-560 {
+    max-width: 560px;
   }
 
   .search-wrap {
     position: absolute;
     top: 0;
     left: 0;
-    padding: 11px 13px;
+    padding: 10px 13px;
     line-height: 1;
   }
 }
 
-
-@media (max-width: 991.9px) {
+@media (max-width: 1199.9px) {
   #header {
+    .fixed-width {
+      padding-right: 48px;
+    }
     .nav-grow {
-      flex-grow: 1!important;
+      flex-grow: 1 !important;
     }
 
-    .lg-none {
-      display: flex!important;
+    .xl-none {
+      display: flex !important;
     }
 
     .maxw-400 {
       max-width: 100%;
     }
   }
-
 }
 
+@media screen and (max-width: 991px) {
+  #header {
+    .fixed-width {
+      padding-left: 40px;
+      padding-right: 48px;
+    }
+  }
+}
+
+@media screen and (max-width: 767px) {
+  #header {
+    .fixed-width {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+    .nav-text {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+    }
+  }
+}

@@ -26,5 +26,6 @@ type HTTP struct {
 
 // UI ui config
 type UI struct {
-	BaseURL string `json:"base_url" mapstructure:"base_url" yaml:"base_url"`
+	BaseURL    string `json:"base_url" mapstructure:"base_url" yaml:"base_url"`
+	APIBaseURL string `json:"api_base_url" mapstructure:"api_base_url" yaml:"api_base_url"`
 }

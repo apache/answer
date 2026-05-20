@@ -21,19 +21,23 @@ package schema
 
 import (
 	"context"
+	"strings"
+	"time"
+
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/handler"
 	"github.com/apache/answer/internal/base/reason"
 	"github.com/apache/answer/internal/base/translator"
 	"github.com/apache/answer/internal/base/validator"
+	"github.com/apache/answer/internal/entity"
 	"github.com/segmentfault/pacman/errors"
-	"strings"
 )
 
 // UpdateUserStatusReq update user request
 type UpdateUserStatusReq struct {
 	UserID           string `validate:"required" json:"user_id"`
 	Status           string `validate:"required,oneof=normal suspended deleted inactive" json:"status" enums:"normal,suspended,deleted,inactive"`
+	SuspendDuration  string `validate:"omitempty,oneof=24h 48h 72h 7d 14d 1m 2m 3m 6m 1y forever" json:"suspend_duration"`
 	RemoveAllContent bool   `validate:"omitempty" json:"remove_all_content"`
 	LoginUserID      string `json:"-"`
 }
@@ -42,6 +46,39 @@ func (r *UpdateUserStatusReq) IsNormal() bool    { return r.Status == constant.U
 func (r *UpdateUserStatusReq) IsSuspended() bool { return r.Status == constant.UserSuspended }
 func (r *UpdateUserStatusReq) IsDeleted() bool   { return r.Status == constant.UserDeleted }
 func (r *UpdateUserStatusReq) IsInactive() bool  { return r.Status == constant.UserInactive }
+
+// GetSuspendedUntil calculates the suspended until time based on duration
+func (r *UpdateUserStatusReq) GetSuspendedUntil() time.Time {
+	if !r.IsSuspended() || r.SuspendDuration == "" || r.SuspendDuration == "forever" {
+		return entity.PermanentSuspensionTime // permanent suspension
+	}
+
+	now := time.Now()
+	switch r.SuspendDuration {
+	case "24h":
+		return now.Add(24 * time.Hour)
+	case "48h":
+		return now.Add(48 * time.Hour)
+	case "72h":
+		return now.Add(72 * time.Hour)
+	case "7d":
+		return now.Add(7 * 24 * time.Hour)
+	case "14d":
+		return now.Add(14 * 24 * time.Hour)
+	case "1m":
+		return now.AddDate(0, 1, 0)
+	case "2m":
+		return now.AddDate(0, 2, 0)
+	case "3m":
+		return now.AddDate(0, 3, 0)
+	case "6m":
+		return now.AddDate(0, 6, 0)
+	case "1y":
+		return now.AddDate(1, 0, 0)
+	default:
+		return entity.PermanentSuspensionTime // fallback to permanent
+	}
+}
 
 // GetUserPageReq get user list page request
 type GetUserPageReq struct {
@@ -71,6 +108,8 @@ type GetUserPageResp struct {
 	DeletedAt int64 `json:"deleted_at"`
 	// suspended time
 	SuspendedAt int64 `json:"suspended_at"`
+	// suspended until time
+	SuspendedUntil int64 `json:"suspended_until"`
 	// username
 	Username string `json:"username"`
 	// email
@@ -96,6 +135,8 @@ type GetUserInfoReq struct {
 
 // GetUserInfoResp get user response
 type GetUserInfoResp struct {
+	// suspended until
+	SuspendedUntil time.Time `json:"suspended_until"`
 }
 
 // UpdateUserRoleReq update user role request
@@ -111,8 +152,8 @@ type UpdateUserRoleReq struct {
 // EditUserProfileReq edit user profile request
 type EditUserProfileReq struct {
 	UserID      string `validate:"required" json:"user_id"`
-	DisplayName string `validate:"required,gte=4,lte=30" json:"display_name"`
-	Username    string `validate:"omitempty,gt=3,lte=30" json:"username"`
+	DisplayName string `validate:"required,gte=2,lte=30" json:"display_name"`
+	Username    string `validate:"omitempty,gte=2,lte=30" json:"username"`
 	Email       string `validate:"required,email,gt=0,lte=500" json:"email"`
 	LoginUserID string `json:"-"`
 	IsAdmin     bool   `json:"-"`
@@ -131,6 +172,11 @@ type AddUsersReq struct {
 	// users info line by line
 	UsersStr string        `json:"users"`
 	Users    []*AddUserReq `json:"-"`
+}
+
+// DeletePermanentlyReq delete permanently request
+type DeletePermanentlyReq struct {
+	Type string `validate:"required,oneof=users questions answers" json:"type"`
 }
 
 type AddUsersErrorData struct {
@@ -176,7 +222,7 @@ func (req *AddUsersReq) ParseUsers(ctx context.Context) (errFields []*validator.
 	}
 
 	// check users amount
-	if len(req.Users) <= 0 || len(req.Users) > constant.DefaultBulkUser {
+	if len(req.Users) == 0 || len(req.Users) > constant.DefaultBulkUser {
 		errFields = append([]*validator.FormErrorField{}, &validator.FormErrorField{
 			ErrorField: "users",
 			ErrorMsg: translator.TrWithData(handler.GetLangByCtx(ctx), reason.AddBulkUsersAmountError,

@@ -100,6 +100,14 @@ var migrations = []Migration{
 	NewMigration("v1.4.0", "add badge/badge_group/badge_award table", addBadges, true),
 	NewMigration("v1.4.1", "add question link", addQuestionLink, true),
 	NewMigration("v1.4.2", "add the number of question links", addQuestionLinkedCount, true),
+	NewMigration("v1.4.5", "add file record", addFileRecord, true),
+	NewMigration("v1.5.1", "add plugin kv storage", addPluginKVStorage, true),
+	NewMigration("v1.6.0", "move user config to interface", moveUserConfigToInterface, true),
+	NewMigration("v1.7.0", "add optional tags", addOptionalTags, true),
+	NewMigration("v1.7.2", "expand avatar column length", expandAvatarColumnLength, false),
+	NewMigration("v1.8.0", "change admin menu", updateAdminMenuSettings, true),
+	NewMigration("v1.8.1", "ai feat", aiFeat, true),
+	NewMigration("v2.0.1", "change avatar type to text", updateAvatarType, false),
 }
 
 func GetMigrations() []Migration {
@@ -143,7 +151,9 @@ func Migrate(debug bool, dbConf *data.Database, cacheConf *data.CacheConf, upgra
 		fmt.Println("new database failed: ", err.Error())
 		return err
 	}
-	defer engine.Close()
+	defer func() {
+		_ = engine.Close()
+	}()
 
 	currentDBVersion, err := GetCurrentDBVersion(engine)
 	if err != nil {

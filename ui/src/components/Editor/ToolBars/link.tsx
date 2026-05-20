@@ -22,9 +22,8 @@ import { Button, Form, Modal } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
 import ToolItem from '../toolItem';
-import { IEditorContext } from '../types';
+import { Editor } from '../types';
 
-let context: IEditorContext;
 const Link = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'editor' });
   const item = {
@@ -33,6 +32,7 @@ const Link = () => {
     tip: `${t('link.text')} (Ctrl+l)`,
   };
   const [visible, setVisible] = useState(false);
+  const [currentEditor, setCurrentEditor] = useState<Editor | null>(null);
   const [link, setLink] = useState({
     value: 'https://',
     isInvalid: false,
@@ -52,39 +52,32 @@ const Link = () => {
     }
   }, [visible]);
 
-  const addLink = (ctx) => {
-    context = ctx;
-    const { editor } = context;
-
+  const addLink = (editor: Editor) => {
+    setCurrentEditor(editor);
     const text = editor.getSelection();
-
     setName({ ...name, value: text });
-
     setVisible(true);
   };
   const handleClick = () => {
-    const { editor } = context;
+    if (!currentEditor) {
+      return;
+    }
 
     if (!link.value) {
       setLink({ ...link, isInvalid: true });
       return;
     }
-    const newStr = name.value
-      ? `[${name.value}](${link.value})`
-      : `<${link.value}>`;
 
-    editor.replaceSelection(newStr);
+    currentEditor.insertLink(link.value, name.value || undefined);
 
     setVisible(false);
-
-    editor.focus();
+    currentEditor.focus();
     setLink({ ...link, value: '' });
     setName({ ...name, value: '' });
   };
   const onHide = () => setVisible(false);
   const onExited = () => {
-    const { editor } = context;
-    editor.focus();
+    currentEditor?.focus();
   };
 
   return (

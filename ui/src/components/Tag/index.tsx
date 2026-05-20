@@ -43,6 +43,9 @@ const Index: FC<IProps> = ({
   return (
     <Link
       to={href}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
       className={classNames(
         'badge-tag rounded-1',
         data.reserved && 'badge-tag-reserved',

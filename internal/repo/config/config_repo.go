@@ -99,6 +99,18 @@ func (cr configRepo) GetConfigByKey(ctx context.Context, key string) (c *entity.
 	return c, nil
 }
 
+func (cr configRepo) GetConfigByKeyFromDB(ctx context.Context, key string) (c *entity.Config, err error) {
+	c = &entity.Config{Key: key}
+	exist, err := cr.data.DB.Context(ctx).Get(c)
+	if err != nil {
+		return nil, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	if !exist {
+		return nil, fmt.Errorf("config not found by key: %s", key)
+	}
+	return c, nil
+}
+
 func (cr configRepo) UpdateConfig(ctx context.Context, key string, value string) (err error) {
 	// check if key exists
 	oldConfig := &entity.Config{Key: key}

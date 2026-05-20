@@ -21,6 +21,7 @@ package badge_group
 
 import (
 	"context"
+
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/service/badge"

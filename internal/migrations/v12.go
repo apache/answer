@@ -75,7 +75,6 @@ func updateQuestionPostTime(ctx context.Context, x *xorm.Engine) error {
 				return fmt.Errorf("update question failed: %w", err)
 			}
 		}
-
 	}
 
 	return nil

@@ -35,7 +35,7 @@ const Index: FC<Props> = ({ visible, siteUrl = '' }) => {
     <div>
       <h5>{t('ready_title')}</h5>
       <p>
-        <Trans i18nKey="install.ready_description">
+        <Trans i18nKey="install.ready_desc">
           If you ever feel like changing more settings, visit
           <a href={`${siteUrl}/users/login`}> admin section</a>; find it in the
           site menu.

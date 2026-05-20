@@ -96,7 +96,10 @@ const Index = () => {
     if (!questionContentRef?.current) {
       return;
     }
-    htmlRender(questionContentRef.current);
+    htmlRender(questionContentRef.current, {
+      copySuccessText: t('copied', { keyPrefix: 'messages' }),
+      copyText: t('copy', { keyPrefix: 'messages' }),
+    });
   }, [questionContentRef]);
 
   usePromptWithUnload({
@@ -113,10 +116,10 @@ const Index = () => {
   }, [formData.content.value, formData.description.value]);
 
   const handleAnswerChange = (value: string) =>
-    setFormData({
-      ...formData,
-      content: { ...formData.content, value },
-    });
+    setFormData((prev) => ({
+      ...prev,
+      content: { ...prev.content, value },
+    }));
   const handleSummaryChange = (evt) => {
     const v = evt.currentTarget.value;
     setFormData({

@@ -101,6 +101,12 @@ type DashboardService interface {
 
 func (ds *dashboardService) Statistical(ctx context.Context) (*schema.DashboardInfo, error) {
 	dashboardInfo := ds.getFromCache(ctx)
+	security, err := ds.siteInfoService.GetSiteSecurity(ctx)
+	if err != nil {
+		log.Errorf("get general site info failed: %s", err)
+		return dashboardInfo, nil
+	}
+
 	if dashboardInfo == nil {
 		dashboardInfo = &schema.DashboardInfo{}
 		dashboardInfo.AnswerCount = ds.answerCount(ctx)
@@ -108,12 +114,7 @@ func (ds *dashboardService) Statistical(ctx context.Context) (*schema.DashboardI
 		dashboardInfo.UserCount = ds.userCount(ctx)
 		dashboardInfo.VoteCount = ds.voteCount(ctx)
 		dashboardInfo.OccupyingStorageSpace = ds.calculateStorage()
-		general, err := ds.siteInfoService.GetSiteGeneral(ctx)
-		if err != nil {
-			log.Errorf("get general site info failed: %s", err)
-			return dashboardInfo, nil
-		}
-		if general.CheckUpdate {
+		if security.CheckUpdate {
 			dashboardInfo.VersionInfo.RemoteVersion = ds.remoteVersion(ctx)
 		}
 		dashboardInfo.DatabaseVersion = ds.getDatabaseInfo()
@@ -141,9 +142,7 @@ func (ds *dashboardService) Statistical(ctx context.Context) (*schema.DashboardI
 	dashboardInfo.VersionInfo.Version = constant.Version
 	dashboardInfo.VersionInfo.Revision = constant.Revision
 	dashboardInfo.GoVersion = constant.GoVersion
-	if siteLogin, err := ds.siteInfoService.GetSiteLogin(ctx); err == nil {
-		dashboardInfo.LoginRequired = siteLogin.LoginRequired
-	}
+	dashboardInfo.LoginRequired = security.LoginRequired
 
 	ds.setCache(ctx, dashboardInfo)
 	return dashboardInfo, nil
@@ -264,8 +263,8 @@ func (ds *dashboardService) voteCount(ctx context.Context) int64 {
 	return voteCount
 }
 
-func (ds *dashboardService) remoteVersion(ctx context.Context) string {
-	req, _ := http.NewRequest("GET", "https://getlatest.answer.dev/", nil)
+func (ds *dashboardService) remoteVersion(_ context.Context) string {
+	req, _ := http.NewRequest("GET", "https://answer.apache.org/data/latest.json?from_version="+constant.Version, nil)
 	req.Header.Set("User-Agent", "Answer/"+constant.Version)
 	httpClient := &http.Client{}
 	httpClient.Timeout = 15 * time.Second
@@ -274,7 +273,9 @@ func (ds *dashboardService) remoteVersion(ctx context.Context) string {
 		log.Errorf("request remote version failed: %s", err)
 		return ""
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 
 	respByte, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -357,11 +358,9 @@ func (ds *dashboardService) GetDatabaseSize() (dbSize string) {
 		res, err := ds.data.DB.QueryInterface(sql)
 		if err != nil {
 			log.Warnf("get db size failed: %s", err)
-		} else {
-			if res != nil && len(res) > 0 && res[0]["db_size"] != nil {
-				dbSizeStr, _ := res[0]["db_size"].(string)
-				dbSize = dir.FormatFileSize(converter.StringToInt64(dbSizeStr))
-			}
+		} else if len(res) > 0 && res[0]["db_size"] != nil {
+			dbSizeStr, _ := res[0]["db_size"].(string)
+			dbSize = dir.FormatFileSize(converter.StringToInt64(dbSizeStr))
 		}
 	case schemas.POSTGRES:
 		sql := fmt.Sprintf("SELECT pg_database_size('%s') AS db_size",
@@ -369,11 +368,9 @@ func (ds *dashboardService) GetDatabaseSize() (dbSize string) {
 		res, err := ds.data.DB.QueryInterface(sql)
 		if err != nil {
 			log.Warnf("get db size failed: %s", err)
-		} else {
-			if res != nil && len(res) > 0 && res[0]["db_size"] != nil {
-				dbSizeStr, _ := res[0]["db_size"].(int32)
-				dbSize = dir.FormatFileSize(int64(dbSizeStr))
-			}
+		} else if len(res) > 0 && res[0]["db_size"] != nil {
+			dbSizeStr, _ := res[0]["db_size"].(int32)
+			dbSize = dir.FormatFileSize(int64(dbSizeStr))
 		}
 	case schemas.SQLITE:
 		dirSize, err := dir.DirSize(ds.data.DB.DataSourceName())

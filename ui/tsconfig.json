@@ -19,7 +19,6 @@
     "isolatedModules": true,
     "noImplicitAny": false,
     "ignoreDeprecations": "5.0",
-    "suppressImplicitAnyIndexErrors": true,
     "noEmit": true,
     "jsx": "react-jsx",
     "baseUrl": "./",

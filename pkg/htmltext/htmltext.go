@@ -34,38 +34,34 @@ import (
 	"github.com/mozillazg/go-pinyin"
 )
 
-// ClearText clear HTML, get the clear text
-func ClearText(html string) (text string) {
-	if len(html) == 0 {
-		text = html
-		return
-	}
+var (
+	reCode         = regexp.MustCompile(`(?ism)<(pre)>.*<\/pre>`)
+	reCodeReplace  = "{code...}"
+	reLink         = regexp.MustCompile(`(?ism)<a.*?[^<]>(.*)?<\/a>`)
+	reLinkReplace  = " [$1] "
+	reSpace        = regexp.MustCompile(` +`)
+	reSpaceReplace = " "
 
-	var (
-		re        *regexp.Regexp
-		codeReg   = `(?ism)<(pre)>.*<\/pre>`
-		codeRepl  = "{code...}"
-		linkReg   = `(?ism)<a.*?[^<]>(.*)?<\/a>`
-		linkRepl  = " [$1] "
-		spaceReg  = ` +`
-		spaceRepl = " "
-	)
-	re = regexp.MustCompile(codeReg)
-	html = re.ReplaceAllString(html, codeRepl)
-
-	re = regexp.MustCompile(linkReg)
-	html = re.ReplaceAllString(html, linkRepl)
-
-	text = strings.NewReplacer(
+	spaceReplacer = strings.NewReplacer(
 		"\n", " ",
 		"\r", " ",
 		"\t", " ",
-	).Replace(strip.StripTags(html))
+	)
+)
+
+// ClearText clear HTML, get the clear text
+func ClearText(html string) string {
+	if html == "" {
+		return html
+	}
+
+	html = reCode.ReplaceAllString(html, reCodeReplace)
+	html = reLink.ReplaceAllString(html, reLinkReplace)
+
+	text := spaceReplacer.Replace(strip.StripTags(html))
 
 	// replace multiple spaces to one space
-	re = regexp.MustCompile(spaceReg)
-	text = strings.TrimSpace(re.ReplaceAllString(text, spaceRepl))
-	return
+	return strings.TrimSpace(reSpace.ReplaceAllString(text, reSpaceReplace))
 }
 
 func UrlTitle(title string) (text string) {
@@ -81,14 +77,14 @@ func UrlTitle(title string) (text string) {
 }
 
 func clearEmoji(s string) string {
-	ret := ""
+	var ret strings.Builder
 	rs := []rune(s)
-	for i := 0; i < len(rs); i++ {
+	for i := range rs {
 		if len(string(rs[i])) != 4 {
-			ret += string(rs[i])
+			ret.WriteString(string(rs[i]))
 		}
 	}
-	return ret
+	return ret.String()
 }
 
 func convertChinese(content string) string {
@@ -100,10 +96,16 @@ func convertChinese(content string) string {
 }
 
 func cutLongTitle(title string) string {
-	if len(title) > 150 {
-		return title[0:150]
+	maxBytes := 150
+	if len(title) <= maxBytes {
+		return title
 	}
-	return title
+
+	truncated := title[:maxBytes]
+	for len(truncated) > 0 && !utf8.ValidString(truncated) {
+		truncated = truncated[:len(truncated)-1]
+	}
+	return truncated
 }
 
 // FetchExcerpt return the excerpt from the HTML string
@@ -162,7 +164,7 @@ func FetchRangedExcerpt(html, trimMarker string, offset int, limit int) (text st
 		text = trimMarker + text
 	}
 	if end < len(runeText) {
-		text = text + trimMarker
+		text += trimMarker
 	}
 
 	return
@@ -187,12 +189,14 @@ func FetchMatchedExcerpt(html string, words []string, trimMarker string, trimLen
 	return FetchRangedExcerpt(html, trimMarker, runeOffset, runeLimit)
 }
 
-func GetPicByUrl(Url string) string {
-	res, err := http.Get(Url)
+func GetPicByUrl(url string) string {
+	res, err := http.Get(url)
 	if err != nil {
 		return ""
 	}
-	defer res.Body.Close()
+	defer func() {
+		_ = res.Body.Close()
+	}()
 	pix, err := io.ReadAll(res.Body)
 	if err != nil {
 		return ""

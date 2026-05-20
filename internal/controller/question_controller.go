@@ -94,7 +94,7 @@ func (qc *QuestionController) RemoveQuestion(ctx *gin.Context) {
 		if !captchaPass {
 			errFields := append([]*validator.FormErrorField{}, &validator.FormErrorField{
 				ErrorField: "captcha_code",
-				ErrorMsg:   translator.Tr(handler.GetLang(ctx), reason.CaptchaVerificationFailed),
+				ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.CaptchaVerificationFailed),
 			})
 			handler.HandleResponse(ctx, errors.BadRequest(reason.CaptchaVerificationFailed), errFields)
 			return
@@ -224,7 +224,6 @@ func (qc *QuestionController) ReopenQuestion(ctx *gin.Context) {
 // @Summary get question details
 // @Description get question details
 // @Tags Question
-// @Security ApiKeyAuth
 // @Accept  json
 // @Produce  json
 // @Param id query string true "Question TagID"  default(1)
@@ -235,6 +234,7 @@ func (qc *QuestionController) GetQuestion(ctx *gin.Context) {
 	id = uid.DeShortID(id)
 	userID := middleware.GetLoginUserIDFromContext(ctx)
 	req := schema.QuestionPermission{}
+	req.IsAdminModerator = middleware.GetUserIsAdminModerator(ctx)
 	canList, err := qc.rankService.CheckOperationPermissions(ctx, userID, []string{
 		permission.QuestionEdit,
 		permission.QuestionDelete,
@@ -279,7 +279,6 @@ func (qc *QuestionController) GetQuestion(ctx *gin.Context) {
 // @Summary get question invite user info
 // @Description get question invite user info
 // @Tags Question
-// @Security ApiKeyAuth
 // @Accept  json
 // @Produce  json
 // @Param id query string true "Question ID"  default(1)
@@ -289,7 +288,6 @@ func (qc *QuestionController) GetQuestionInviteUserInfo(ctx *gin.Context) {
 	questionID := uid.DeShortID(ctx.Query("id"))
 	resp, err := qc.questionService.InviteUserInfo(ctx, questionID)
 	handler.HandleResponse(ctx, err, resp)
-
 }
 
 // SimilarQuestion godoc
@@ -422,7 +420,7 @@ func (qc *QuestionController) AddQuestion(ctx *gin.Context) {
 		if !captchaPass {
 			errFields := append([]*validator.FormErrorField{}, &validator.FormErrorField{
 				ErrorField: "captcha_code",
-				ErrorMsg:   translator.Tr(handler.GetLang(ctx), reason.CaptchaVerificationFailed),
+				ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.CaptchaVerificationFailed),
 			})
 			handler.HandleResponse(ctx, errors.BadRequest(reason.CaptchaVerificationFailed), errFields)
 			return
@@ -448,7 +446,7 @@ func (qc *QuestionController) AddQuestion(ctx *gin.Context) {
 		return
 	}
 	if !req.CanAddTag && hasNewTag {
-		lang := handler.GetLang(ctx)
+		lang := handler.GetLangByCtx(ctx)
 		msg := translator.TrWithData(lang, reason.NoEnoughRankToOperate, &schema.PermissionTrTplData{Rank: requireRanks[6]})
 		handler.HandleResponse(ctx, errors.Forbidden(reason.NoEnoughRankToOperate).WithMsg(msg), nil)
 		return
@@ -527,7 +525,7 @@ func (qc *QuestionController) AddQuestionByAnswer(ctx *gin.Context) {
 		if !captchaPass {
 			errFields := append([]*validator.FormErrorField{}, &validator.FormErrorField{
 				ErrorField: "captcha_code",
-				ErrorMsg:   translator.Tr(handler.GetLang(ctx), reason.CaptchaVerificationFailed),
+				ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.CaptchaVerificationFailed),
 			})
 			handler.HandleResponse(ctx, errors.BadRequest(reason.CaptchaVerificationFailed), errFields)
 			return
@@ -580,7 +578,7 @@ func (qc *QuestionController) AddQuestionByAnswer(ctx *gin.Context) {
 		handler.HandleResponse(ctx, errors.BadRequest(reason.RequestFormatError), errFields)
 		return
 	}
-	//add the question id to the answer
+	// add the question id to the answer
 	questionInfo, ok := resp.(*schema.QuestionInfoResp)
 	if ok {
 		answerReq := &schema.AnswerAddReq{}
@@ -593,7 +591,7 @@ func (qc *QuestionController) AddQuestionByAnswer(ctx *gin.Context) {
 			handler.HandleResponse(ctx, err, nil)
 			return
 		}
-		info, questionInfo, has, err := qc.answerService.Get(ctx, answerID, req.UserID)
+		info, questionInfo, has, err := qc.answerService.Get(ctx, answerID, req.UserID, isAdmin)
 		if err != nil {
 			handler.HandleResponse(ctx, err, nil)
 			return
@@ -649,7 +647,7 @@ func (qc *QuestionController) UpdateQuestion(ctx *gin.Context) {
 		if !captchaPass {
 			errFields := append([]*validator.FormErrorField{}, &validator.FormErrorField{
 				ErrorField: "captcha_code",
-				ErrorMsg:   translator.Tr(handler.GetLang(ctx), reason.CaptchaVerificationFailed),
+				ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.CaptchaVerificationFailed),
 			})
 			handler.HandleResponse(ctx, errors.BadRequest(reason.CaptchaVerificationFailed), errFields)
 			return
@@ -684,7 +682,7 @@ func (qc *QuestionController) UpdateQuestion(ctx *gin.Context) {
 		return
 	}
 	if !req.CanAddTag && hasNewTag {
-		lang := handler.GetLang(ctx)
+		lang := handler.GetLangByCtx(ctx)
 		msg := translator.TrWithData(lang, reason.NoEnoughRankToOperate, &schema.PermissionTrTplData{Rank: requireRanks[4]})
 		handler.HandleResponse(ctx, errors.Forbidden(reason.NoEnoughRankToOperate).WithMsg(msg), nil)
 		return
@@ -768,7 +766,7 @@ func (qc *QuestionController) UpdateQuestionInviteUser(ctx *gin.Context) {
 		if !captchaPass {
 			errFields := append([]*validator.FormErrorField{}, &validator.FormErrorField{
 				ErrorField: "captcha_code",
-				ErrorMsg:   translator.Tr(handler.GetLang(ctx), reason.CaptchaVerificationFailed),
+				ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.CaptchaVerificationFailed),
 			})
 			handler.HandleResponse(ctx, errors.BadRequest(reason.CaptchaVerificationFailed), errFields)
 			return
@@ -821,7 +819,6 @@ func (qc *QuestionController) GetSimilarQuestions(ctx *gin.Context) {
 // @Tags Question
 // @Accept json
 // @Produce json
-// @Security ApiKeyAuth
 // @Param username query string true "username"  default(string)
 // @Success 200 {object} handler.RespBody
 // @Router /answer/api/v1/personal/qa/top [get]

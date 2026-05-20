@@ -46,6 +46,13 @@ const Index: FC = () => {
         enumNames: themeSetting?.theme_options?.map((_) => _.label),
         default: themeSetting?.theme_options?.[0]?.value,
       },
+      layout: {
+        type: 'string',
+        title: t('layout.label'),
+        enum: ['Full-width', 'Fixed-width'],
+        enumNames: [t('layout.full_width'), t('layout.fixed_width')],
+        default: themeSetting?.layout,
+      },
       color_scheme: {
         type: 'string',
         title: t('color_scheme.label'),
@@ -60,9 +67,7 @@ const Index: FC = () => {
       navbar_style: {
         type: 'string',
         title: t('navbar_style.label'),
-        enum: ['colored', 'light'],
-        enumNames: ['Colored', 'Light'],
-        default: 'colored',
+        default: DEFAULT_THEME_COLOR,
       },
       primary_color: {
         type: 'string',
@@ -79,8 +84,23 @@ const Index: FC = () => {
     color_scheme: {
       'ui:widget': 'select',
     },
-    navbar_style: {
+    layout: {
       'ui:widget': 'select',
+    },
+    navbar_style: {
+      'ui:widget': 'input_group',
+      'ui:options': {
+        inputType: 'color',
+        suffixBtnOptions: {
+          text: '',
+          variant: 'outline-secondary',
+          iconName: 'arrow-counterclockwise',
+          actionType: 'click',
+          title: t('reset', { keyPrefix: 'btns' }),
+          // eslint-disable-next-line @typescript-eslint/no-use-before-define
+          clickCallback: () => resetNavbarStyle(),
+        },
+      },
     },
     primary_color: {
       'ui:widget': 'input_group',
@@ -102,6 +122,12 @@ const Index: FC = () => {
   const [formData, setFormData] = useState(initFormData(schema));
   const { update: updateThemeSetting } = themeSettingStore((_) => _);
 
+  const resetNavbarStyle = () => {
+    const formMeta = { ...formData };
+    formMeta.navbar_style.value = DEFAULT_THEME_COLOR;
+    setFormData({ ...formMeta });
+  };
+
   const resetPrimaryScheme = () => {
     const formMeta = { ...formData };
     formMeta.primary_color.value = DEFAULT_THEME_COLOR;
@@ -115,6 +141,7 @@ const Index: FC = () => {
     const reqParams: Type.AdminSettingsTheme = {
       theme: themeName,
       color_scheme: formData.color_scheme.value,
+      layout: formData.layout.value,
       theme_config: {
         [themeName]: {
           navbar_style: formData.navbar_style.value,
@@ -150,9 +177,12 @@ const Index: FC = () => {
         const themeConfig = setting.theme_config[themeName];
         const formMeta = { ...formData };
         formMeta.themes.value = themeName;
-        formMeta.navbar_style.value = themeConfig?.navbar_style;
+        formMeta.navbar_style.value = themeConfig?.navbar_style.startsWith('#')
+          ? themeConfig?.navbar_style
+          : DEFAULT_THEME_COLOR;
         formMeta.primary_color.value = themeConfig?.primary_color;
         formData.color_scheme.value = setting?.color_scheme || 'system';
+        formData.layout.value = setting?.layout || 'Full-width';
         setFormData({ ...formMeta });
       }
     });
@@ -175,13 +205,15 @@ const Index: FC = () => {
   return (
     <>
       <h3 className="mb-4">{t('page_title')}</h3>
-      <SchemaForm
-        schema={schema}
-        formData={formData}
-        onSubmit={onSubmit}
-        uiSchema={uiSchema}
-        onChange={handleOnChange}
-      />
+      <div className="max-w-748">
+        <SchemaForm
+          schema={schema}
+          formData={formData}
+          onSubmit={onSubmit}
+          uiSchema={uiSchema}
+          onChange={handleOnChange}
+        />
+      </div>
     </>
   );
 };

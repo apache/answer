@@ -63,10 +63,12 @@ func (sr *siteInfoRepo) SaveByType(ctx context.Context, siteType string, data *e
 }
 
 // GetByType get site info by type
-func (sr *siteInfoRepo) GetByType(ctx context.Context, siteType string) (siteInfo *entity.SiteInfo, exist bool, err error) {
-	siteInfo = sr.getCache(ctx, siteType)
-	if siteInfo != nil {
-		return siteInfo, true, nil
+func (sr *siteInfoRepo) GetByType(ctx context.Context, siteType string, withoutCache ...bool) (siteInfo *entity.SiteInfo, exist bool, err error) {
+	if len(withoutCache) == 0 {
+		siteInfo = sr.getCache(ctx, siteType)
+		if siteInfo != nil {
+			return siteInfo, true, nil
+		}
 	}
 	siteInfo = &entity.SiteInfo{}
 	exist, err = sr.data.DB.Context(ctx).Where(builder.Eq{"type": siteType}).Get(siteInfo)
@@ -100,4 +102,19 @@ func (sr *siteInfoRepo) setCache(ctx context.Context, siteType string, siteInfo 
 	if err != nil {
 		log.Error(err)
 	}
+}
+
+func (sr *siteInfoRepo) IsBrandingFileUsed(ctx context.Context, filePath string) (bool, error) {
+	siteInfo := &entity.SiteInfo{}
+	count, err := sr.data.DB.Context(ctx).
+		Table("site_info").
+		Where(builder.Eq{"type": "branding"}).
+		And(builder.Like{"content", "%" + filePath + "%"}).
+		Count(&siteInfo)
+
+	if err != nil {
+		return false, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+
+	return count > 0, nil
 }

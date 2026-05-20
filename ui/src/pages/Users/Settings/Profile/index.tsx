@@ -42,7 +42,7 @@ const Index: React.FC = () => {
   const toast = useToast();
   const { user, update } = loggedUserInfoStore();
   const { agent: ucAgent } = userCenterStore();
-  const { users: usersSetting } = siteInfoStore();
+  const { users: usersSettings } = siteInfoStore();
   const [mailHash, setMailHash] = useState('');
   const [count] = useState(0);
   const [profileAgent, setProfileAgent] = useState<UcSettingAgent>();
@@ -309,7 +309,6 @@ const Index: React.FC = () => {
             <Form.Control
               required
               type="text"
-              disabled={!usersSetting.allow_update_display_name}
               value={formData.display_name.value}
               isInvalid={formData.display_name.isInvalid}
               onChange={(e) =>
@@ -332,7 +331,6 @@ const Index: React.FC = () => {
             <Form.Control
               required
               type="text"
-              disabled={!usersSetting.allow_update_username}
               value={formData.username.value}
               isInvalid={formData.username.isInvalid}
               onChange={(e) =>
@@ -356,7 +354,6 @@ const Index: React.FC = () => {
             <div className="mb-3">
               <Form.Select
                 name="avatar.type"
-                disabled={!usersSetting.allow_update_avatar}
                 value={formData.avatar.type}
                 onChange={handleAvatarChange}>
                 <option value="gravatar" key="gravatar">
@@ -387,14 +384,16 @@ const Index: React.FC = () => {
                       <span>{t('avatar.gravatar_text')}</span>
                       <a
                         href={
-                          usersSetting.gravatar_base_url.includes('gravatar.cn')
+                          usersSettings.gravatar_base_url.includes(
+                            'gravatar.cn',
+                          )
                             ? 'https://gravatar.cn'
                             : 'https://gravatar.com'
                         }
                         className="ms-1"
                         target="_blank"
                         rel="noreferrer">
-                        {usersSetting.gravatar_base_url.includes('gravatar.cn')
+                        {usersSettings.gravatar_base_url.includes('gravatar.cn')
                           ? 'gravatar.cn'
                           : 'gravatar.com'}
                       </a>
@@ -413,15 +412,11 @@ const Index: React.FC = () => {
                         alt={formData.display_name.value}
                       />
                       <ButtonGroup vertical className="fit-content">
-                        <UploadImg
-                          type="avatar"
-                          disabled={!usersSetting.allow_update_avatar}
-                          uploadCallback={avatarUpload}>
+                        <UploadImg type="avatar" uploadCallback={avatarUpload}>
                           <Icon name="cloud-upload" />
                         </UploadImg>
                         <Button
                           variant="outline-secondary"
-                          disabled={!usersSetting.allow_update_avatar}
                           onClick={removeCustomAvatar}>
                           <Icon name="trash" />
                         </Button>
@@ -463,7 +458,6 @@ const Index: React.FC = () => {
               required
               as="textarea"
               rows={5}
-              disabled={!usersSetting.allow_update_bio}
               value={formData.bio.value}
               isInvalid={formData.bio.isInvalid}
               onChange={(e) =>
@@ -489,7 +483,6 @@ const Index: React.FC = () => {
               required
               type="url"
               placeholder={t('website.placeholder')}
-              disabled={!usersSetting.allow_update_website}
               value={formData.website.value}
               isInvalid={formData.website.isInvalid}
               onChange={(e) =>
@@ -515,7 +508,6 @@ const Index: React.FC = () => {
               required
               type="text"
               placeholder={t('location.placeholder')}
-              disabled={!usersSetting.allow_update_location}
               value={formData.location.value}
               isInvalid={formData.location.isInvalid}
               onChange={(e) =>

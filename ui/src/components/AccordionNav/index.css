@@ -18,9 +18,27 @@
  */
 
 .collapse-indicator {
-  transition: all .2s ease;
+  transition: all 0.2s ease;
 }
 
 .expanding .collapse-indicator {
   transform: rotate(90deg);
+}
+
+#answerAccordion {
+  max-width: 208px;
+  .nav-link {
+    color: var(--an-side-nav-link);
+  }
+  .nav-link:focus-visible {
+    box-shadow: none;
+  }
+  .nav-link:hover {
+    color: var(--an-side-nav-link-hover-color);
+    background-color: var(--bs-gray-100);
+  }
+  .nav-link.active {
+    color: var(--an-side-nav-link-hover-color);
+    background-color: var(--bs-gray-200);
+  }
 }

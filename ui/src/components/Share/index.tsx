@@ -23,6 +23,7 @@ import { useTranslation } from 'react-i18next';
 
 import { FacebookShareButton, TwitterShareButton } from 'next-share';
 import copy from 'copy-to-clipboard';
+import classNames from 'classnames';
 
 import { BASE_ORIGIN } from '@/router/alias';
 import { loggedUserInfoStore } from '@/stores';
@@ -32,10 +33,12 @@ interface IProps {
   qid: any;
   aid?: any;
   title: string;
+  className?: string;
+  mode?: 'normal' | 'mobile';
   // slugTitle: string;
 }
 
-const Index: FC<IProps> = ({ type, qid, aid, title }) => {
+const Index: FC<IProps> = ({ type, qid, aid, title, className, mode }) => {
   const user = loggedUserInfoStore((state) => state.user);
   const [show, setShow] = useState(false);
   const [showTip, setShowTip] = useState(false);
@@ -78,17 +81,26 @@ const Index: FC<IProps> = ({ type, qid, aid, title }) => {
       setSystemShareState(true);
     }
   }, []);
+
+  if (mode === 'mobile') {
+    if (canSystemShare) {
+      return (
+        <Dropdown.Item onClick={systemShare}>{t('share.name')}</Dropdown.Item>
+      );
+    }
+    return null;
+  }
   return (
     <Dropdown show={show} onToggle={closeShare}>
       <Dropdown.Toggle
         id="dropdown-share"
         as="a"
-        className="no-toggle small link-secondary pointer d-flex"
+        className={classNames('no-toggle pointer d-flex', className)}
         onClick={() => setShow(true)}
         style={{ lineHeight: '23px' }}>
         {t('share.name')}
       </Dropdown.Toggle>
-      <Dropdown.Menu style={{ width: '195px' }}>
+      <Dropdown.Menu style={{ minWidth: '195px' }}>
         <OverlayTrigger
           trigger="click"
           placement="left"

@@ -22,19 +22,23 @@ package user_admin
 import (
 	"context"
 	"fmt"
+	"net/mail"
+	"strings"
+	"time"
+	"unicode"
+
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/handler"
 	"github.com/apache/answer/internal/base/translator"
 	"github.com/apache/answer/internal/base/validator"
 	answercommon "github.com/apache/answer/internal/service/answer_common"
+	"github.com/apache/answer/internal/service/badge"
 	"github.com/apache/answer/internal/service/comment_common"
 	"github.com/apache/answer/internal/service/export"
+	notificationcommon "github.com/apache/answer/internal/service/notification_common"
+	"github.com/apache/answer/internal/service/plugin_common"
 	questioncommon "github.com/apache/answer/internal/service/question_common"
 	"github.com/apache/answer/pkg/token"
-	"net/mail"
-	"strings"
-	"time"
-	"unicode"
 
 	"github.com/apache/answer/internal/base/pager"
 	"github.com/apache/answer/internal/base/reason"
@@ -55,7 +59,7 @@ import (
 
 // UserAdminRepo user repository
 type UserAdminRepo interface {
-	UpdateUserStatus(ctx context.Context, userID string, userStatus, mailStatus int, email string) (err error)
+	UpdateUserStatus(ctx context.Context, userID string, userStatus, mailStatus int, email string, suspendedUntil time.Time) (err error)
 	GetUserInfo(ctx context.Context, userID string) (user *entity.User, exist bool, err error)
 	GetUserInfoByEmail(ctx context.Context, email string) (user *entity.User, exist bool, err error)
 	GetUserPage(ctx context.Context, page, pageSize int, user *entity.User,
@@ -63,6 +67,8 @@ type UserAdminRepo interface {
 	AddUser(ctx context.Context, user *entity.User) (err error)
 	AddUsers(ctx context.Context, users []*entity.User) (err error)
 	UpdateUserPassword(ctx context.Context, userID string, password string) (err error)
+	DeletePermanentlyUsers(ctx context.Context) (err error)
+	GetExpiredSuspendedUsers(ctx context.Context) (users []*entity.User, err error)
 }
 
 // UserAdminService user service
@@ -78,6 +84,9 @@ type UserAdminService struct {
 	answerCommonRepo      answercommon.AnswerRepo
 	commentCommonRepo     comment_common.CommentCommonRepo
 	userExternalLoginRepo user_external_login.UserExternalLoginRepo
+	notificationRepo      notificationcommon.NotificationRepo
+	pluginUserConfigRepo  plugin_common.PluginUserConfigRepo
+	badgeAwardRepo        badge.BadgeAwardRepo
 }
 
 // NewUserAdminService new user admin service
@@ -93,6 +102,9 @@ func NewUserAdminService(
 	answerCommonRepo answercommon.AnswerRepo,
 	commentCommonRepo comment_common.CommentCommonRepo,
 	userExternalLoginRepo user_external_login.UserExternalLoginRepo,
+	notificationRepo notificationcommon.NotificationRepo,
+	pluginUserConfigRepo plugin_common.PluginUserConfigRepo,
+	badgeAwardRepo badge.BadgeAwardRepo,
 ) *UserAdminService {
 	return &UserAdminService{
 		userRepo:              userRepo,
@@ -106,6 +118,9 @@ func NewUserAdminService(
 		answerCommonRepo:      answerCommonRepo,
 		commentCommonRepo:     commentCommonRepo,
 		userExternalLoginRepo: userExternalLoginRepo,
+		notificationRepo:      notificationRepo,
+		pluginUserConfigRepo:  pluginUserConfigRepo,
+		badgeAwardRepo:        badgeAwardRepo,
 	}
 }
 
@@ -142,7 +157,8 @@ func (us *UserAdminService) UpdateUserStatus(ctx context.Context, req *schema.Up
 		userInfo.MailStatus = entity.EmailStatusAvailable
 	}
 
-	err = us.userRepo.UpdateUserStatus(ctx, userInfo.ID, userInfo.Status, userInfo.MailStatus, userInfo.EMail)
+	suspendedUntil := req.GetSuspendedUntil()
+	err = us.userRepo.UpdateUserStatus(ctx, userInfo.ID, userInfo.Status, userInfo.MailStatus, userInfo.EMail, suspendedUntil)
 	if err != nil {
 		return err
 	}
@@ -153,10 +169,7 @@ func (us *UserAdminService) UpdateUserStatus(ctx context.Context, req *schema.Up
 	}
 
 	if req.IsDeleted() {
-		err := us.userExternalLoginRepo.DeleteUserExternalLoginByUserID(ctx, userInfo.ID)
-		if err != nil {
-			log.Errorf("remove all user external login error: %v", err)
-		}
+		us.removeAllUserConfiguration(ctx, userInfo.ID)
 	}
 
 	// if user reputation is zero means this user is inactive, so try to activate this user.
@@ -164,6 +177,30 @@ func (us *UserAdminService) UpdateUserStatus(ctx context.Context, req *schema.Up
 		return us.userActivity.UserActive(ctx, userInfo.ID)
 	}
 	return nil
+}
+
+// removeAllUserConfiguration remove all user configuration
+func (us *UserAdminService) removeAllUserConfiguration(ctx context.Context, userID string) {
+	err := us.userExternalLoginRepo.DeleteUserExternalLoginByUserID(ctx, userID)
+	if err != nil {
+		log.Errorf("remove all user external login error: %v", err)
+	}
+	err = us.notificationRepo.DeleteNotification(ctx, userID)
+	if err != nil {
+		log.Errorf("remove all user notification error: %v", err)
+	}
+	err = us.notificationRepo.DeleteUserNotificationConfig(ctx, userID)
+	if err != nil {
+		log.Errorf("remove all user notification config error: %v", err)
+	}
+	err = us.pluginUserConfigRepo.DeleteUserPluginConfig(ctx, userID)
+	if err != nil {
+		log.Errorf("remove all user plugin config error: %v", err)
+	}
+	err = us.badgeAwardRepo.DeleteUserBadgeAward(ctx, userID)
+	if err != nil {
+		log.Errorf("remove all user badge award error: %v", err)
+	}
 }
 
 // removeAllUserCreatedContent remove all user created content
@@ -363,7 +400,7 @@ func (us *UserAdminService) EditUserProfile(ctx context.Context, req *schema.Edi
 	if req.UserID == req.LoginUserID {
 		return nil, errors.BadRequest(reason.AdminCannotEditTheirProfile)
 	}
-	userInfo, exist, err := us.userRepo.GetUserInfo(ctx, req.UserID)
+	_, exist, err := us.userRepo.GetUserInfo(ctx, req.UserID)
 	if err != nil {
 		return nil, err
 	}
@@ -378,7 +415,7 @@ func (us *UserAdminService) EditUserProfile(ctx context.Context, req *schema.Edi
 		}), errors.BadRequest(reason.UsernameInvalid)
 	}
 
-	userInfo, exist, err = us.userCommonService.GetByUsername(ctx, req.Username)
+	userInfo, exist, err := us.userCommonService.GetByUsername(ctx, req.Username)
 	if err != nil {
 		return nil, err
 	}
@@ -433,14 +470,15 @@ func (us *UserAdminService) GetUserPage(ctx context.Context, req *schema.GetUser
 	user := &entity.User{}
 	_ = copier.Copy(user, req)
 
-	if req.IsInactive() {
+	switch {
+	case req.IsInactive():
 		user.MailStatus = entity.EmailStatusToBeVerified
 		user.Status = entity.UserStatusAvailable
-	} else if req.IsSuspended() {
+	case req.IsSuspended():
 		user.Status = entity.UserStatusSuspended
-	} else if req.IsDeleted() {
+	case req.IsDeleted():
 		user.Status = entity.UserStatusDeleted
-	} else {
+	default:
 		user.MailStatus = entity.EmailStatusAvailable
 		user.Status = entity.UserStatusAvailable
 	}
@@ -449,8 +487,8 @@ func (us *UserAdminService) GetUserPage(ctx context.Context, req *schema.GetUser
 		if email, e := mail.ParseAddress(req.Query); e == nil {
 			user.EMail = email.Address
 			req.Query = ""
-		} else if strings.HasPrefix(req.Query, "user:") {
-			id := strings.TrimSpace(strings.TrimPrefix(req.Query, "user:"))
+		} else if after, ok := strings.CutPrefix(req.Query, "user:"); ok {
+			id := strings.TrimSpace(after)
 			idSearch := true
 			for _, r := range id {
 				if !unicode.IsDigit(r) {
@@ -484,15 +522,19 @@ func (us *UserAdminService) GetUserPage(ctx context.Context, req *schema.GetUser
 			DisplayName: u.DisplayName,
 			Avatar:      avatarMapping[u.ID].GetURL(),
 		}
-		if u.Status == entity.UserStatusDeleted {
+		switch {
+		case u.Status == entity.UserStatusDeleted:
 			t.Status = constant.UserDeleted
 			t.DeletedAt = u.DeletedAt.Unix()
-		} else if u.Status == entity.UserStatusSuspended {
+		case u.Status == entity.UserStatusSuspended:
 			t.Status = constant.UserSuspended
 			t.SuspendedAt = u.SuspendedAt.Unix()
-		} else if u.MailStatus == entity.EmailStatusToBeVerified {
+			if !u.SuspendedUntil.IsZero() {
+				t.SuspendedUntil = u.SuspendedUntil.Unix()
+			}
+		case u.MailStatus == entity.EmailStatusToBeVerified:
 			t.Status = constant.UserInactive
-		} else {
+		default:
 			t.Status = constant.UserNormal
 		}
 		resp = append(resp, t)
@@ -576,5 +618,49 @@ func (us *UserAdminService) SendUserActivation(ctx context.Context, req *schema.
 		return err
 	}
 	go us.emailService.SendAndSaveCode(ctx, userInfo.ID, userInfo.EMail, title, body, code, data.ToJSONString())
+	return nil
+}
+
+func (us *UserAdminService) DeletePermanently(ctx context.Context, req *schema.DeletePermanentlyReq) (err error) {
+	switch req.Type {
+	case constant.DeletePermanentlyUsers:
+		return us.userRepo.DeletePermanentlyUsers(ctx)
+	case constant.DeletePermanentlyQuestions:
+		return us.questionCommonRepo.DeletePermanentlyQuestions(ctx)
+	case constant.DeletePermanentlyAnswers:
+		return us.answerCommonRepo.DeletePermanentlyAnswers(ctx)
+	}
+
+	return errors.BadRequest(reason.RequestFormatError)
+}
+
+// CheckAndUnsuspendExpiredUsers checks for users whose suspension has expired and restores them to normal status
+func (us *UserAdminService) CheckAndUnsuspendExpiredUsers(ctx context.Context) error {
+	// Find all suspended users whose suspension time has expired
+	expiredUsers, err := us.userRepo.GetExpiredSuspendedUsers(ctx)
+	if err != nil {
+		return err
+	}
+
+	now := time.Now()
+	for _, user := range expiredUsers {
+		// Check if suspension has expired (not permanent and time has passed)
+		if user.Status == entity.UserStatusSuspended &&
+			!user.SuspendedUntil.IsZero() &&
+			user.SuspendedUntil.Before(now) {
+			log.Infof("Unsuspending user %s (ID: %s) - suspension expired at %v",
+				user.Username, user.ID, user.SuspendedUntil)
+
+			// Update user status to normal
+			err = us.userRepo.UpdateUserStatus(ctx, user.ID, entity.UserStatusAvailable,
+				entity.EmailStatusAvailable, user.EMail, time.Time{})
+			if err != nil {
+				log.Errorf("Failed to unsuspend user %s (ID: %s): %v",
+					user.Username, user.ID, err)
+				continue
+			}
+		}
+	}
+
 	return nil
 }

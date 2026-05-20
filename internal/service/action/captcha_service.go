@@ -106,11 +106,11 @@ func (cs *CaptchaService) ActionRecordVerifyCaptcha(
 	return pass
 }
 
-func (cs *CaptchaService) ActionRecordAdd(ctx context.Context, actionType string, unit string) (int, error) {
+func (cs *CaptchaService) ActionRecordAdd(ctx context.Context, actionType string, unit string) {
 	info, err := cs.captchaRepo.GetActionType(ctx, unit, actionType)
 	if err != nil {
 		log.Error(err)
-		return 0, err
+		return
 	}
 	amount := 1
 	if info != nil {
@@ -118,9 +118,8 @@ func (cs *CaptchaService) ActionRecordAdd(ctx context.Context, actionType string
 	}
 	err = cs.captchaRepo.SetActionType(ctx, unit, actionType, "", amount)
 	if err != nil {
-		return 0, err
+		log.Error(err)
 	}
-	return amount, nil
 }
 
 func (cs *CaptchaService) ActionRecordDel(ctx context.Context, actionType string, unit string) {

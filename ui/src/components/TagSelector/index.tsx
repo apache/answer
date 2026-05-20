@@ -29,6 +29,8 @@ import classNames from 'classnames';
 import { useTagModal, useToast } from '@/hooks';
 import type * as Type from '@/common/interface';
 import { queryTags, useUserPermission } from '@/services';
+import { writeSettingStore } from '@/stores';
+
 // import { OutsideClickListener } from '@/components';
 
 import './index.scss';
@@ -72,6 +74,7 @@ const TagSelector: FC<IProps> = ({
   const [searchValue, setSearchValue] = useState<string>('');
   const [tags, setTags] = useState<Type.Tag[] | null>([]);
   const [requiredTags, setRequiredTags] = useState<Type.Tag[] | null>(null);
+  const writeInfo = writeSettingStore((state) => state.write);
   const { t } = useTranslation('translation', { keyPrefix: 'tag_selector' });
   const { data: userPermission } = useUserPermission('tag.add');
   const canAddTag =
@@ -233,7 +236,7 @@ const TagSelector: FC<IProps> = ({
     e.stopPropagation();
     const { keyCode } = e;
     if (keyCode === 9) {
-      handleTagSelectorBlur();
+      // handleTagSelectorBlur();
       return;
     }
     if (value.length > 0 && keyCode === 8 && !searchValue) {
@@ -290,6 +293,20 @@ const TagSelector: FC<IProps> = ({
     } else {
       handleMenuShow(false);
     }
+  };
+
+  const handleTagHint = () => {
+    if (!writeInfo || writeInfo.min_tags === undefined || !writeInfo.min_tags) {
+      return t('hint_zero_tags');
+    }
+
+    if (writeInfo.min_tags === 1) {
+      return t('hint');
+    }
+
+    return t(`hint_more_than_one_tag`, {
+      min_tags_number: writeInfo.min_tags,
+    });
   };
 
   useEffect(() => {
@@ -369,13 +386,12 @@ const TagSelector: FC<IProps> = ({
   return (
     <div ref={containerRef} className="position-relative">
       <div
-        tabIndex={0}
         className={classNames(
           'tag-selector-wrap form-control position-relative p-0',
           focusState ? 'tag-selector-wrap--focus' : '',
           isInvalid ? 'is-invalid' : '',
         )}
-        onFocus={handleTagSelectorFocus}
+        onClick={handleTagSelectorFocus}
         onKeyDown={handleKeyDown}>
         <div onClick={handleClickToggle}>
           <div
@@ -414,6 +430,7 @@ const TagSelector: FC<IProps> = ({
                 placeholder={t('add_btn')}
                 value={searchValue}
                 onChange={handleSearch}
+                onFocus={handleTagSelectorFocus}
               />
             ) : (
               <Form.Control
@@ -461,7 +478,9 @@ const TagSelector: FC<IProps> = ({
           )}
         </Dropdown.Menu>
       </div>
-      {!hiddenDescription && <Form.Text>{formText || t('hint')}</Form.Text>}
+      {!hiddenDescription && (
+        <Form.Text>{formText || handleTagHint()}</Form.Text>
+      )}
       <Form.Control.Feedback type="invalid">{errMsg}</Form.Control.Feedback>
     </div>
   );

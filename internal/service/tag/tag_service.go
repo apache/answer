@@ -25,7 +25,7 @@ import (
 	"strings"
 
 	"github.com/apache/answer/internal/base/constant"
-	"github.com/apache/answer/internal/service/activity_queue"
+	"github.com/apache/answer/internal/service/activityqueue"
 	"github.com/apache/answer/internal/service/revision_common"
 	"github.com/apache/answer/internal/service/siteinfo_common"
 	tagcommonser "github.com/apache/answer/internal/service/tag_common"
@@ -50,7 +50,7 @@ type TagService struct {
 	revisionService      *revision_common.RevisionService
 	followCommon         activity_common.FollowRepo
 	siteInfoService      siteinfo_common.SiteInfoCommonService
-	activityQueueService activity_queue.ActivityQueueService
+	activityQueueService activityqueue.Service
 }
 
 // NewTagService new tag service
@@ -60,7 +60,7 @@ func NewTagService(
 	revisionService *revision_common.RevisionService,
 	followCommon activity_common.FollowRepo,
 	siteInfoService siteinfo_common.SiteInfoCommonService,
-	activityQueueService activity_queue.ActivityQueueService,
+	activityQueueService activityqueue.Service,
 ) *TagService {
 	return &TagService{
 		tagRepo:              tagRepo,
@@ -74,7 +74,7 @@ func NewTagService(
 
 // RemoveTag delete tag
 func (ts *TagService) RemoveTag(ctx context.Context, req *schema.RemoveTagReq) (err error) {
-	//If the tag has associated problems, it cannot be deleted
+	// If the tag has associated problems, it cannot be deleted
 	tagCount, err := ts.tagCommonService.CountTagRelByTagID(ctx, req.TagID)
 	if err != nil {
 		return err
@@ -83,7 +83,7 @@ func (ts *TagService) RemoveTag(ctx context.Context, req *schema.RemoveTagReq) (
 		return errors.BadRequest(reason.TagIsUsedCannotDelete)
 	}
 
-	//If the tag has associated problems, it cannot be deleted
+	// If the tag has associated problems, it cannot be deleted
 	tagSynonymCount, err := ts.tagRepo.GetTagSynonymCount(ctx, req.TagID)
 	if err != nil {
 		return err
@@ -186,7 +186,7 @@ func (ts *TagService) GetTagInfo(ctx context.Context, req *schema.GetTagInfoReq)
 	resp.Reserved = tagInfo.Reserved
 	resp.IsFollower = ts.checkTagIsFollow(ctx, req.UserID, tagInfo.ID)
 	resp.Status = entity.TagStatusDisplayMapping[tagInfo.Status]
-	resp.MemberActions = permission.GetTagPermission(ctx, tagInfo.Status, req.CanEdit, req.CanDelete, req.CanRecover)
+	resp.MemberActions = permission.GetTagPermission(ctx, tagInfo.Status, req.CanEdit, req.CanDelete, req.CanMerge, req.CanRecover)
 	resp.GetExcerpt()
 	return resp, nil
 }
@@ -434,6 +434,64 @@ func (ts *TagService) GetTagWithPage(ctx context.Context, req *schema.GetTagWith
 		resp = append(resp, item)
 	}
 	return pager.NewPageModel(total, resp), nil
+}
+
+// MergeTag merge tag
+func (ts *TagService) MergeTag(ctx context.Context, req *schema.MergeTagReq) (err error) {
+	// 1. get source tag and its synonyms
+	sourceTag, exist, err := ts.tagCommonService.GetTagByID(ctx, req.SourceTagID)
+	if err != nil {
+		return err
+	}
+	if !exist {
+		return errors.BadRequest(reason.TagNotFound)
+	}
+
+	sourceTagSynonyms, err := ts.tagRepo.GetTagList(ctx, &entity.Tag{MainTagID: converter.StringToInt64(sourceTag.ID)})
+	if err != nil {
+		return err
+	}
+
+	addSynonymTagList := make([]string, 0)
+	addSynonymTagList = append(addSynonymTagList, sourceTag.SlugName)
+	for _, tag := range sourceTagSynonyms {
+		addSynonymTagList = append(addSynonymTagList, tag.SlugName)
+	}
+
+	// 2. get target tag
+	targetTagInfo, exist, err := ts.tagCommonService.GetTagByID(ctx, req.TargetTagID)
+	if err != nil {
+		return err
+	}
+	if !exist {
+		return errors.BadRequest(reason.TagNotFound)
+	}
+
+	// 3. update source tag and its synonyms as synonyms of target tag
+	if len(addSynonymTagList) > 0 {
+		err = ts.tagRepo.UpdateTagSynonym(ctx, addSynonymTagList, converter.StringToInt64(targetTagInfo.ID), targetTagInfo.SlugName)
+		if err != nil {
+			return err
+		}
+	}
+
+	// 4. update tag followers
+	err = ts.followCommon.MigrateFollowers(ctx, sourceTag.ID, targetTagInfo.ID, "follow")
+	if err != nil {
+		return err
+	}
+
+	// 5. update question tags
+	err = ts.tagCommonService.MigrateTagQuestions(ctx, sourceTag.ID, targetTagInfo.ID)
+	if err != nil {
+		return err
+	}
+	err = ts.tagCommonService.RefreshTagQuestionCount(ctx, []string{targetTagInfo.ID, sourceTag.ID})
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // checkTagIsFollow get tag list page

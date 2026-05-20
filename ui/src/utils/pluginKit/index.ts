@@ -49,22 +49,47 @@ class Plugins {
 
   initialization: Promise<void>;
 
+  private isInitialized = false;
+
+  private initializationError: Error | null = null;
+
+  private replacementPlugins: Map<PluginType, Plugin> = new Map();
+
   constructor() {
     this.initialization = this.init();
   }
 
   async init() {
-    this.registerBuiltin();
+    if (this.isInitialized) {
+      return;
+    }
 
-    // Note: The /install stage does not allow access to the getPluginsStatus api, so an initial value needs to be given
-    const plugins = (await getPluginsStatus().catch(() => [])) || [];
-    this.registeredPlugins = plugins.filter((p) => p.enabled);
-    await this.registerPlugins();
+    try {
+      this.registerBuiltin();
+
+      // Note: The /install stage does not allow access to the getPluginsStatus api, so an initial value needs to be given
+      const plugins =
+        (await getPluginsStatus().catch((error) => {
+          console.warn('Failed to get plugins status:', error);
+          return [];
+        })) || [];
+      this.registeredPlugins = plugins.filter((p) => p.enabled);
+      await this.registerPlugins();
+      this.isInitialized = true;
+      this.initializationError = null;
+    } catch (error) {
+      this.initializationError = error as Error;
+      console.error('Plugin initialization failed:', error);
+      throw error;
+    }
   }
 
-  refresh() {
+  async refresh() {
     this.plugins = [];
-    this.init();
+    this.isInitialized = false;
+    this.initializationError = null;
+    this.initialization = this.init();
+    await this.initialization;
   }
 
   validate(plugin: Plugin) {
@@ -95,17 +120,46 @@ class Plugins {
     });
   }
 
-  registerPlugins() {
-    const plugins = this.registeredPlugins
+  async registerPlugins() {
+    console.log(
+      '[PluginKit] Registered plugins from API:',
+      this.registeredPlugins.map((p) => p.slug_name),
+    );
+
+    const pluginLoaders = this.registeredPlugins
       .map((p) => {
         const func = allPlugins[p.slug_name];
-
-        return func;
+        if (!func) {
+          console.warn(
+            `[PluginKit] Plugin loader not found for: ${p.slug_name}`,
+          );
+        }
+        return { slug_name: p.slug_name, loader: func };
       })
-      .filter((p) => p);
-    return Promise.all(plugins.map((p) => p())).then((resolvedPlugins) => {
-      resolvedPlugins.forEach((plugin) => this.register(plugin));
-      return true;
+      .filter((p) => p.loader);
+
+    console.log(
+      '[PluginKit] Found plugin loaders:',
+      pluginLoaders.map((p) => p.slug_name),
+    );
+
+    // Use Promise.allSettled to prevent one plugin failure from breaking all plugins
+    const results = await Promise.allSettled(
+      pluginLoaders.map((p) => p.loader()),
+    );
+
+    results.forEach((result, index) => {
+      if (result.status === 'fulfilled') {
+        console.log(
+          `[PluginKit] Successfully loaded plugin: ${pluginLoaders[index].slug_name}`,
+        );
+        this.register(result.value);
+      } else {
+        console.error(
+          `[PluginKit] Failed to load plugin ${pluginLoaders[index].slug_name}:`,
+          result.reason,
+        );
+      }
     });
   }
 
@@ -114,6 +168,33 @@ class Plugins {
     if (!bool) {
       return;
     }
+
+    // Prevent duplicate registration
+    const exists = this.plugins.some(
+      (p) => p.info.slug_name === plugin.info.slug_name,
+    );
+    if (exists) {
+      console.warn(`Plugin ${plugin.info.slug_name} is already registered`);
+      return;
+    }
+
+    // Handle singleton plugins (only one per type allowed)
+    const mode = plugin.info.registrationMode || 'multiple';
+    if (mode === 'singleton') {
+      const existingPlugin = this.replacementPlugins.get(plugin.info.type);
+      if (existingPlugin) {
+        const error = new Error(
+          `[PluginKit] Plugin conflict: ` +
+            `Cannot register '${plugin.info.slug_name}' because '${existingPlugin.info.slug_name}' ` +
+            `is already registered as a singleton plugin of type '${plugin.info.type}'. ` +
+            `Only one singleton plugin per type is allowed.`,
+        );
+        console.error(error.message);
+        throw error;
+      }
+      this.replacementPlugins.set(plugin.info.type, plugin);
+    }
+
     if (plugin.i18nConfig) {
       initI18nResource(plugin.i18nConfig);
     }
@@ -132,6 +213,22 @@ class Plugins {
 
   getPlugins() {
     return this.plugins;
+  }
+
+  async getPluginsAsync() {
+    await this.initialization;
+    return this.plugins;
+  }
+
+  getInitializationStatus() {
+    return {
+      isInitialized: this.isInitialized,
+      error: this.initializationError,
+    };
+  }
+
+  getReplacementPlugin(type: PluginType): Plugin | null {
+    return this.replacementPlugins.get(type) || null;
   }
 }
 
@@ -166,6 +263,21 @@ const validateRoutePlugin = async (slugName) => {
   }
 
   return Boolean(registeredPlugin?.enabled);
+};
+
+const getReplacementPlugin = async (
+  type: PluginType,
+): Promise<Plugin | null> => {
+  try {
+    await plugins.initialization;
+    return plugins.getReplacementPlugin(type);
+  } catch (error) {
+    console.error(
+      `[PluginKit] Failed to get replacement plugin of type ${type}:`,
+      error,
+    );
+    return null;
+  }
 };
 
 const mergeRoutePlugins = async (routes) => {
@@ -274,6 +386,7 @@ export {
   mergeRoutePlugins,
   useCaptchaPlugin,
   useRenderPlugin,
+  getReplacementPlugin,
   PluginType,
 };
 export default plugins;

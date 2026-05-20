@@ -22,7 +22,7 @@ import { Button, Dropdown } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { Modal } from '@/components';
+import { Icon, Modal } from '@/components';
 import { useReportModal, useToast } from '@/hooks';
 import { useCaptchaPlugin } from '@/utils/pluginKit';
 import { QuestionOperationReq } from '@/common/interface';
@@ -39,6 +39,8 @@ import {
 import { tryNormalLogged } from '@/utils/guard';
 import { floppyNavigation } from '@/utils';
 import { toastStore } from '@/stores';
+
+import '@/components/QueryGroup/index.scss';
 
 interface IProps {
   type: 'answer' | 'question';
@@ -334,54 +336,95 @@ const Index: FC<IProps> = ({
     ) || [];
 
   return (
-    <div className="d-flex align-items-center">
-      <Share type={type} qid={qid} aid={aid} title={title} />
-      {firstAction?.map((item) => {
-        if (item.action === 'edit') {
+    <>
+      <div className="md-show align-items-center">
+        <Share
+          type={type}
+          qid={qid}
+          aid={aid}
+          title={title}
+          className="link-secondary small"
+        />
+        {firstAction?.map((item) => {
+          if (item.action === 'edit') {
+            return (
+              <Link
+                key={item.action}
+                to={editUrl}
+                className="link-secondary p-0 small ms-3"
+                onClick={(evt) => handleEdit(evt, editUrl)}
+                style={{ lineHeight: '23px' }}>
+                {item.name}
+              </Link>
+            );
+          }
           return (
-            <Link
+            <Button
               key={item.action}
-              to={editUrl}
-              className="link-secondary p-0 small ms-3"
-              onClick={(evt) => handleEdit(evt, editUrl)}
-              style={{ lineHeight: '23px' }}>
+              variant="link"
+              size="sm"
+              className="link-secondary p-0 ms-3"
+              onClick={() => handleAction(item.action)}>
               {item.name}
-            </Link>
+            </Button>
           );
-        }
-        return (
-          <Button
-            key={item.action}
-            variant="link"
-            size="sm"
-            className="link-secondary p-0 ms-3"
-            onClick={() => handleAction(item.action)}>
-            {item.name}
-          </Button>
-        );
-      })}
-      {secondAction.length > 0 && (
-        <Dropdown className="ms-3 d-flex">
-          <Dropdown.Toggle
-            variant="link"
-            size="sm"
-            className="link-secondary p-0 no-toggle">
-            {t('action', { keyPrefix: 'question_detail' })}
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            {secondAction.map((item) => {
-              return (
-                <Dropdown.Item
-                  key={item.action}
-                  onClick={() => handleAction(item.action)}>
-                  {item.name}
-                </Dropdown.Item>
-              );
-            })}
-          </Dropdown.Menu>
-        </Dropdown>
-      )}
-    </div>
+        })}
+        {secondAction.length > 0 && (
+          <Dropdown className="ms-3 d-flex">
+            <Dropdown.Toggle
+              variant="link"
+              size="sm"
+              title={t('action', { keyPrefix: 'question_detail' })}
+              className="link-secondary p-0 no-toggle">
+              <Icon name="three-dots" />
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              {secondAction.map((item) => {
+                return (
+                  <Dropdown.Item
+                    key={item.action}
+                    onClick={() => handleAction(item.action)}>
+                    {item.name}
+                  </Dropdown.Item>
+                );
+              })}
+            </Dropdown.Menu>
+          </Dropdown>
+        )}
+      </div>
+      <div className="md-hide">
+        {memberActions.length > 0 && (
+          <Dropdown className="d-flex">
+            <Dropdown.Toggle
+              variant="link"
+              size="sm"
+              title={t('action', { keyPrefix: 'question_detail' })}
+              className="link-secondary no-toggle">
+              <Icon name="three-dots" />
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Share
+                type={type}
+                qid={qid}
+                aid={aid}
+                title={title}
+                className="inherit"
+                mode="mobile"
+              />
+              {[...firstAction, ...secondAction].map((item) => {
+                return (
+                  <Dropdown.Item
+                    key={item.action}
+                    onClick={() => handleAction(item.action)}>
+                    {item.name}
+                  </Dropdown.Item>
+                );
+              })}
+            </Dropdown.Menu>
+          </Dropdown>
+        )}
+      </div>
+    </>
   );
 };
 

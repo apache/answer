@@ -52,7 +52,7 @@ const Badges: FC = () => {
   const { data, isLoading, mutate } = useQueryBadges({
     page: curPage,
     page_size: PAGE_SIZE,
-    q: curQuery,
+    ...(curQuery ? { q: curQuery } : {}),
     ...(curFilter === 'all' ? {} : { status: curFilter }),
   });
 
@@ -78,8 +78,8 @@ const Badges: FC = () => {
   return (
     <>
       <h3 className="mb-4">{t('title')}</h3>
-      <div className="d-flex flex-wrap justify-content-between align-items-center mb-3">
-        <Stack direction="horizontal" gap={3}>
+      <div className="d-flex flex-wrap justify-content-between align-items-center">
+        <Stack direction="horizontal" gap={3} className="mb-3">
           <QueryGroup
             data={BadgeFilterKeys}
             currentSort={curFilter}
@@ -95,19 +95,19 @@ const Badges: FC = () => {
           onChange={handleFilter}
           placeholder={t('filter.placeholder')}
           style={{ width: '12.25rem' }}
-          className="mt-3 mt-sm-0"
+          className="mb-3"
         />
       </div>
       <Table responsive="md">
         <thead>
           <tr>
-            <th>{t('name')}</th>
-            <th>{t('group')}</th>
-            <th>{t('awards')}</th>
-
-            <th>{t('status')}</th>
-
-            <th className="text-end">{t('action')}</th>
+            <th className="min-w-15">{t('name')}</th>
+            <th style={{ width: '19%' }}>{t('group')}</th>
+            <th style={{ width: '14%' }}>{t('awards')}</th>
+            <th style={{ width: '12%' }}>{t('status')}</th>
+            <th className="text-end" style={{ width: '9%' }}>
+              {t('action')}
+            </th>
           </tr>
         </thead>
         <tbody className="align-middle">

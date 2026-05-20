@@ -64,7 +64,7 @@ func (rr *revisionRepo) AddRevision(ctx context.Context, revision *entity.Revisi
 	if !rr.allowRecord(revision.ObjectType) {
 		return nil
 	}
-	_, err = rr.data.DB.Transaction(func(session *xorm.Session) (interface{}, error) {
+	_, err = rr.data.DB.Transaction(func(session *xorm.Session) (any, error) {
 		session = session.Context(ctx)
 		_, err = session.Insert(revision)
 		if err != nil {
@@ -155,7 +155,17 @@ func (rr *revisionRepo) GetLastRevisionByObjectID(ctx context.Context, objectID 
 	revision *entity.Revision, exist bool, err error,
 ) {
 	revision = &entity.Revision{}
-	exist, err = rr.data.DB.Context(ctx).Where("object_id = ?", objectID).OrderBy("created_at DESC").Get(revision)
+	exist, err = rr.data.DB.Context(ctx).Where("object_id = ?", objectID).Desc("created_at").Get(revision)
+	if err != nil {
+		return nil, false, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	return
+}
+
+// GetLastRevisionByFileURL get object's last revision by file url
+func (rr *revisionRepo) GetLastRevisionByFileURL(ctx context.Context, fileURL string) (revision *entity.Revision, exist bool, err error) {
+	revision = &entity.Revision{}
+	exist, err = rr.data.DB.Context(ctx).Where("content LIKE ?", "%"+fileURL+"%").Desc("created_at").Get(revision)
 	if err != nil {
 		return nil, false, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}

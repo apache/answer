@@ -24,10 +24,11 @@ import (
 
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/base/translator"
+	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/activity_common"
 	"github.com/apache/answer/internal/service/export"
-	"github.com/apache/answer/internal/service/notice_queue"
+	"github.com/apache/answer/internal/service/noticequeue"
 	"github.com/apache/answer/internal/service/siteinfo_common"
 	usercommon "github.com/apache/answer/internal/service/user_common"
 	"github.com/apache/answer/internal/service/user_external_login"
@@ -41,7 +42,7 @@ type ExternalNotificationService struct {
 	followRepo                 activity_common.FollowRepo
 	emailService               *export.EmailService
 	userRepo                   usercommon.UserRepo
-	notificationQueueService   notice_queue.ExternalNotificationQueueService
+	notificationQueueService   noticequeue.ExternalService
 	userExternalLoginRepo      user_external_login.UserExternalLoginRepo
 	siteInfoService            siteinfo_common.SiteInfoCommonService
 }
@@ -52,7 +53,7 @@ func NewExternalNotificationService(
 	followRepo activity_common.FollowRepo,
 	emailService *export.EmailService,
 	userRepo usercommon.UserRepo,
-	notificationQueueService notice_queue.ExternalNotificationQueueService,
+	notificationQueueService noticequeue.ExternalService,
 	userExternalLoginRepo user_external_login.UserExternalLoginRepo,
 	siteInfoService siteinfo_common.SiteInfoCommonService,
 ) *ExternalNotificationService {
@@ -93,4 +94,17 @@ func (ns *ExternalNotificationService) Handler(ctx context.Context, msg *schema.
 	}
 	log.Errorf("unknown notification message: %+v", msg)
 	return nil
+}
+
+func (ns *ExternalNotificationService) checkUserStatusBeforeNotification(ctx context.Context, userID string) (
+	unavailable bool) {
+	userInfo, exist, err := ns.userRepo.GetByUserID(ctx, userID)
+	if err != nil {
+		log.Errorf("get user %s info error: %v", userID, err)
+		return true
+	}
+	if !exist || userInfo.Status != entity.UserStatusAvailable {
+		return true
+	}
+	return false
 }

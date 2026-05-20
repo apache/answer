@@ -86,7 +86,6 @@ func (rc *ReviewController) GetUnreviewedPostPage(ctx *gin.Context) {
 // UpdateReview update review
 // @Summary update review
 // @Description update review
-// @Security ApiKeyAuth
 // @Tags Review
 // @Accept json
 // @Produce json

@@ -23,6 +23,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/base/handler"
@@ -81,8 +82,8 @@ func (ns *NotificationService) GetRedDot(ctx context.Context, req *schema.GetRed
 	achievementKey := fmt.Sprintf(constant.RedDotCacheKey, constant.NotificationTypeAchievement, req.UserID)
 
 	redBot := &schema.RedDot{}
-	redBot.Inbox, _, err = ns.data.Cache.GetInt64(ctx, inboxKey)
-	redBot.Achievement, _, err = ns.data.Cache.GetInt64(ctx, achievementKey)
+	redBot.Inbox, _, _ = ns.data.Cache.GetInt64(ctx, inboxKey)
+	redBot.Achievement, _, _ = ns.data.Cache.GetInt64(ctx, achievementKey)
 
 	// get review amount
 	if req.CanReviewAnswer || req.CanReviewQuestion || req.CanReviewTag {
@@ -225,15 +226,12 @@ func (ns *NotificationService) GetNotificationPage(ctx context.Context, searchCo
 	if err != nil {
 		return nil, err
 	}
-	resp, err = ns.formatNotificationPage(ctx, notifications)
-	if err != nil {
-		return nil, err
-	}
+	resp = ns.formatNotificationPage(ctx, notifications)
 	return pager.NewPageModel(total, resp), nil
 }
 
 func (ns *NotificationService) formatNotificationPage(ctx context.Context, notifications []*entity.Notification) (
-	resp []*schema.NotificationContent, err error) {
+	resp []*schema.NotificationContent) {
 	lang := handler.GetLangByCtx(ctx)
 	enableShortID := handler.GetEnableShortID(ctx)
 	userIDs := make([]string, 0)
@@ -286,13 +284,13 @@ func (ns *NotificationService) formatNotificationPage(ctx context.Context, notif
 	}
 
 	if len(userIDs) == 0 {
-		return resp, nil
+		return resp
 	}
 
 	users, err := ns.userRepo.BatchGetByID(ctx, userIDs)
 	if err != nil {
 		log.Error(err)
-		return resp, nil
+		return resp
 	}
 	userIDMapping := make(map[string]*entity.User, len(users))
 	for _, user := range users {
@@ -313,5 +311,5 @@ func (ns *NotificationService) formatNotificationPage(ctx context.Context, notif
 			}
 		}
 	}
-	return resp, nil
+	return resp
 }

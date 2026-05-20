@@ -38,7 +38,10 @@ const Index: FC = () => {
     if (!fmt) {
       return;
     }
-    htmlRender(fmt);
+    htmlRender(fmt, {
+      copySuccessText: t('copied', { keyPrefix: 'messages' }),
+      copyText: t('copy', { keyPrefix: 'messages' }),
+    });
   }, [tos?.terms_of_service_parsed_text]);
 
   try {

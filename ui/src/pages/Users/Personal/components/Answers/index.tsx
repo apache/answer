@@ -19,7 +19,6 @@
 
 import { FC, memo } from 'react';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
-import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { FormatTime, Tag, Counts } from '@/components';
@@ -30,7 +29,6 @@ interface Props {
   data: any[];
 }
 const Index: FC<Props> = ({ visible, data }) => {
-  const { t } = useTranslation('translation', { keyPrefix: 'personal' });
   if (!visible || !data?.length) {
     return null;
   }
@@ -53,11 +51,7 @@ const Index: FC<Props> = ({ visible, data }) => {
               </Link>
             </h6>
             <div className="d-flex align-items-center small text-secondary mb-2">
-              <FormatTime
-                time={item.create_time}
-                className="me-3"
-                preFix={t('answered')}
-              />
+              <FormatTime time={item.create_time} className="me-3" />
 
               <Counts
                 data={{ votes: item?.vote_count, views: 0, answers: 0 }}

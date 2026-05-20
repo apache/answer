@@ -55,8 +55,7 @@ func (ns *ExternalNotificationService) handleNewQuestionNotification(ctx context
 			if !channel.Enable {
 				continue
 			}
-			switch channel.Key {
-			case constant.EmailChannel:
+			if channel.Key == constant.EmailChannel {
 				ns.sendNewQuestionNotificationEmail(ctx, subscriber.UserID, &schema.NewQuestionTemplateRawData{
 					QuestionTitle:   msg.NewQuestionTemplateRawData.QuestionTitle,
 					QuestionID:      msg.NewQuestionTemplateRawData.QuestionID,
@@ -162,6 +161,9 @@ func (ns *ExternalNotificationService) checkSendNewQuestionNotificationEmailLimi
 
 func (ns *ExternalNotificationService) sendNewQuestionNotificationEmail(ctx context.Context,
 	userID string, rawData *schema.NewQuestionTemplateRawData) {
+	if unavailable := ns.checkUserStatusBeforeNotification(ctx, userID); unavailable {
+		return
+	}
 	userInfo, exist, err := ns.userRepo.GetByUserID(ctx, userID)
 	if err != nil {
 		log.Error(err)
@@ -173,7 +175,7 @@ func (ns *ExternalNotificationService) sendNewQuestionNotificationEmail(ctx cont
 	}
 	// If receiver has set language, use it to send email.
 	if len(userInfo.Language) > 0 {
-		ctx = context.WithValue(ctx, constant.AcceptLanguageFlag, i18n.Language(userInfo.Language))
+		ctx = context.WithValue(ctx, constant.AcceptLanguageContextKey, i18n.Language(userInfo.Language))
 	}
 	title, body, err := ns.emailService.NewQuestionTemplate(ctx, rawData)
 	if err != nil {
@@ -236,6 +238,19 @@ func (ns *ExternalNotificationService) syncNewQuestionNotificationToPlugin(ctx c
 				}
 			}
 
+			// Get all external logins as fallback
+			externalLogins, err := ns.userExternalLoginRepo.GetUserExternalLoginList(ctx, subscriberUserID)
+			if err != nil {
+				log.Errorf("get user external login list failed for user %s: %v", subscriberUserID, err)
+			} else if len(externalLogins) > 0 {
+				newMsg.ReceiverExternalID = externalLogins[0].ExternalID
+				if len(externalLogins) > 1 {
+					log.Debugf("user %s has %d SSO logins, using most recent: provider=%s",
+						subscriberUserID, len(externalLogins), externalLogins[0].Provider)
+				}
+			}
+
+			// Try to get external login specific to this plugin (takes precedence over fallback)
 			userInfo, exist, err := ns.userExternalLoginRepo.GetByUserID(ctx, fn.Info().SlugName, subscriberUserID)
 			if err != nil {
 				log.Errorf("get user external login info failed: %v", err)
@@ -276,5 +291,17 @@ func (ns *ExternalNotificationService) newPluginQuestionNotification(
 	raw.QuestionUrl = display.QuestionURL(
 		seoInfo.Permalink, siteInfo.SiteUrl,
 		msg.NewQuestionTemplateRawData.QuestionID, msg.NewQuestionTemplateRawData.QuestionTitle)
+	if len(msg.NewQuestionTemplateRawData.QuestionAuthorUserID) > 0 {
+		triggerUser, exist, err := ns.userRepo.GetByUserID(ctx, msg.NewQuestionTemplateRawData.QuestionAuthorUserID)
+		if err != nil {
+			log.Errorf("get trigger user basic info failed: %v", err)
+			return
+		}
+		if exist {
+			raw.TriggerUserID = triggerUser.ID
+			raw.TriggerUserDisplayName = triggerUser.DisplayName
+			raw.TriggerUserUrl = display.UserURL(siteInfo.SiteUrl, triggerUser.Username)
+		}
+	}
 	return raw
 }

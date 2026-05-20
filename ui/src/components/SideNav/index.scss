@@ -17,19 +17,17 @@
  * under the License.
  */
 
+#pcSideNav {
+  width: 240px;
+  top: 64px;
+  box-sizing: border-box;
+  height: calc(100vh - 64px);
+  overflow-y: auto;
+  flex: none;
+}
+
 #sideNav {
-  .nav-wrap {
-    position: sticky;
-    width: auto;
-    top: 62px;
-    box-sizing: border-box;
-    max-height: calc(100vh - 62px);
-    overflow-y: auto;
-    margin-bottom: 8px;
-  }
-  .nav {
-    max-width: calc(100% - 24px);
-  }
+  max-width: 208px;
   .nav-link {
     color: var(--an-side-nav-link);
   }
@@ -44,26 +42,12 @@
     color: var(--an-side-nav-link-hover-color);
     background-color: var(--bs-gray-200);
   }
-  .side-nav-right-line {
-    position: absolute;
-    top: 0;
-    right: 12px;
-    width: 1px;
-    height: 100%;
-    background-color: var(--bs-border-color);
-  }
 }
 
 @media screen and (max-width: 991.9px) {
-  #sideNav {
-    .nav-wrap {
-      max-height: fit-content;
-    }
+  .side-left-nav-wrap {
     .nav {
       max-width: 100%;
-    }
-    .side-nav-right-line {
-      display: none;
     }
   }
 }

@@ -43,7 +43,6 @@ func NewPluginController(pluginCommonService *plugin_common.PluginCommonService)
 // @Summary get all plugins status
 // @Description get all plugins status
 // @Tags Plugin
-// @Security ApiKeyAuth
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} handler.RespBody{data=[]schema.GetPluginListResp}

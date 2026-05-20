@@ -32,6 +32,7 @@ import (
 	"github.com/apache/answer/internal/repo/unique"
 	"github.com/apache/answer/pkg/converter"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var (
@@ -75,7 +76,7 @@ func Test_tagRepo_GetTagByID(t *testing.T) {
 	tagCommonRepo := tag_common.NewTagCommonRepo(testDataSource, unique.NewUniqueIDRepo(testDataSource))
 
 	gotTag, exist, err := tagCommonRepo.GetTagByID(context.TODO(), testTagList[0].ID, true)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.True(t, exist)
 	assert.Equal(t, testTagList[0].SlugName, gotTag.SlugName)
 }
@@ -85,7 +86,7 @@ func Test_tagRepo_GetTagBySlugName(t *testing.T) {
 	tagCommonRepo := tag_common.NewTagCommonRepo(testDataSource, unique.NewUniqueIDRepo(testDataSource))
 
 	gotTag, exist, err := tagCommonRepo.GetTagBySlugName(context.TODO(), testTagList[0].SlugName)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.True(t, exist)
 	assert.Equal(t, testTagList[0].SlugName, gotTag.SlugName)
 }
@@ -95,7 +96,7 @@ func Test_tagRepo_GetTagList(t *testing.T) {
 	tagRepo := tag.NewTagRepo(testDataSource, unique.NewUniqueIDRepo(testDataSource))
 
 	gotTags, err := tagRepo.GetTagList(context.TODO(), &entity.Tag{ID: testTagList[0].ID})
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, testTagList[0].SlugName, gotTags[0].SlugName)
 }
 
@@ -104,7 +105,7 @@ func Test_tagRepo_GetTagListByIDs(t *testing.T) {
 	tagCommonRepo := tag_common.NewTagCommonRepo(testDataSource, unique.NewUniqueIDRepo(testDataSource))
 
 	gotTags, err := tagCommonRepo.GetTagListByIDs(context.TODO(), []string{testTagList[0].ID})
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, testTagList[0].SlugName, gotTags[0].SlugName)
 }
 
@@ -113,7 +114,7 @@ func Test_tagRepo_GetTagListByName(t *testing.T) {
 	tagCommonRepo := tag_common.NewTagCommonRepo(testDataSource, unique.NewUniqueIDRepo(testDataSource))
 
 	gotTags, err := tagCommonRepo.GetTagListByName(context.TODO(), testTagList[0].SlugName, false, false)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, testTagList[0].SlugName, gotTags[0].SlugName)
 }
 
@@ -122,7 +123,7 @@ func Test_tagRepo_GetTagListByNames(t *testing.T) {
 	tagCommonRepo := tag_common.NewTagCommonRepo(testDataSource, unique.NewUniqueIDRepo(testDataSource))
 
 	gotTags, err := tagCommonRepo.GetTagListByNames(context.TODO(), []string{testTagList[0].SlugName})
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, testTagList[0].SlugName, gotTags[0].SlugName)
 }
 
@@ -131,7 +132,7 @@ func Test_tagRepo_GetTagPage(t *testing.T) {
 	tagCommonRepo := tag_common.NewTagCommonRepo(testDataSource, unique.NewUniqueIDRepo(testDataSource))
 
 	gotTags, _, err := tagCommonRepo.GetTagPage(context.TODO(), 1, 1, &entity.Tag{SlugName: testTagList[0].SlugName}, "")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, testTagList[0].SlugName, gotTags[0].SlugName)
 }
 
@@ -140,12 +141,12 @@ func Test_tagRepo_RemoveTag(t *testing.T) {
 	uniqueIDRepo := unique.NewUniqueIDRepo(testDataSource)
 	tagRepo := tag.NewTagRepo(testDataSource, uniqueIDRepo)
 	err := tagRepo.RemoveTag(context.TODO(), testTagList[1].ID)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	tagCommonRepo := tag_common.NewTagCommonRepo(testDataSource, unique.NewUniqueIDRepo(testDataSource))
 
 	_, exist, err := tagCommonRepo.GetTagBySlugName(context.TODO(), testTagList[1].SlugName)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.False(t, exist)
 }
 
@@ -155,12 +156,12 @@ func Test_tagRepo_UpdateTag(t *testing.T) {
 
 	testTagList[0].DisplayName = "golang"
 	err := tagRepo.UpdateTag(context.TODO(), testTagList[0])
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	tagCommonRepo := tag_common.NewTagCommonRepo(testDataSource, unique.NewUniqueIDRepo(testDataSource))
 
 	gotTag, exist, err := tagCommonRepo.GetTagByID(context.TODO(), testTagList[0].ID, true)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.True(t, exist)
 	assert.Equal(t, testTagList[0].DisplayName, gotTag.DisplayName)
 }
@@ -170,10 +171,10 @@ func Test_tagRepo_UpdateTagQuestionCount(t *testing.T) {
 
 	testTagList[0].DisplayName = "golang"
 	err := tagCommonRepo.UpdateTagQuestionCount(context.TODO(), testTagList[0].ID, 100)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	gotTag, exist, err := tagCommonRepo.GetTagByID(context.TODO(), testTagList[0].ID, true)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.True(t, exist)
 	assert.Equal(t, 100, gotTag.QuestionCount)
 }
@@ -184,16 +185,16 @@ func Test_tagRepo_UpdateTagSynonym(t *testing.T) {
 
 	testTagList[0].DisplayName = "golang"
 	err := tagRepo.UpdateTag(context.TODO(), testTagList[0])
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	err = tagRepo.UpdateTagSynonym(context.TODO(), []string{testTagList[2].SlugName},
 		converter.StringToInt64(testTagList[0].ID), testTagList[0].SlugName)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	tagCommonRepo := tag_common.NewTagCommonRepo(testDataSource, unique.NewUniqueIDRepo(testDataSource))
 
 	gotTag, exist, err := tagCommonRepo.GetTagByID(context.TODO(), testTagList[2].ID, true)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.True(t, exist)
 	assert.Equal(t, testTagList[0].ID, fmt.Sprintf("%d", gotTag.MainTagID))
 }

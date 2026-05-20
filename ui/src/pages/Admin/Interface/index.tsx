@@ -59,7 +59,8 @@ const Interface: FC = () => {
         description: t('language.text'),
         enum: langs?.map((lang) => lang.value),
         enumNames: langs?.map((lang) => lang.label),
-        default: setting?.language || storeInterface.language,
+        default:
+          setting?.language || storeInterface.language || langs?.[0]?.value,
       },
       time_zone: {
         type: 'string',
@@ -72,7 +73,7 @@ const Interface: FC = () => {
 
   const [formData, setFormData] = useState<FormDataType>({
     language: {
-      value: setting?.language || storeInterface.language,
+      value: setting?.language || storeInterface.language || langs?.[0]?.value,
       isInvalid: false,
       errorMsg: '',
     },
@@ -149,13 +150,18 @@ const Interface: FC = () => {
 
   useEffect(() => {
     if (setting) {
-      const formMeta = {};
-      Object.keys(setting).forEach((k) => {
-        formMeta[k] = { ...formData[k], value: setting[k] };
-      });
+      const formMeta = { ...formData };
+      if (setting.language) {
+        formMeta.language.value = setting.language;
+      } else {
+        formMeta.language.value = storeInterface.language || langs?.[0]?.value;
+      }
+      if (setting.time_zone) {
+        formMeta.time_zone.value = setting.time_zone;
+      }
       setFormData({ ...formData, ...formMeta });
     }
-  }, [setting]);
+  }, [setting, langs]);
   useEffect(() => {
     getLangs();
   }, []);
@@ -166,13 +172,15 @@ const Interface: FC = () => {
   return (
     <>
       <h3 className="mb-4">{t('page_title')}</h3>
-      <SchemaForm
-        schema={schema}
-        uiSchema={uiSchema}
-        formData={formData}
-        onSubmit={onSubmit}
-        onChange={handleOnChange}
-      />
+      <div className="max-w-748">
+        <SchemaForm
+          schema={schema}
+          uiSchema={uiSchema}
+          formData={formData}
+          onSubmit={onSubmit}
+          onChange={handleOnChange}
+        />
+      </div>
     </>
   );
 };

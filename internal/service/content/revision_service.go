@@ -32,16 +32,15 @@ import (
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/activity"
-	"github.com/apache/answer/internal/service/activity_queue"
+	"github.com/apache/answer/internal/service/activityqueue"
 	answercommon "github.com/apache/answer/internal/service/answer_common"
-	"github.com/apache/answer/internal/service/notice_queue"
+	"github.com/apache/answer/internal/service/noticequeue"
 	"github.com/apache/answer/internal/service/object_info"
 	questioncommon "github.com/apache/answer/internal/service/question_common"
 	"github.com/apache/answer/internal/service/report_common"
 	"github.com/apache/answer/internal/service/review"
 	"github.com/apache/answer/internal/service/revision"
 	"github.com/apache/answer/internal/service/tag_common"
-	tagcommon "github.com/apache/answer/internal/service/tag_common"
 	usercommon "github.com/apache/answer/internal/service/user_common"
 	"github.com/apache/answer/pkg/converter"
 	"github.com/apache/answer/pkg/htmltext"
@@ -62,9 +61,9 @@ type RevisionService struct {
 	questionRepo             questioncommon.QuestionRepo
 	answerRepo               answercommon.AnswerRepo
 	tagRepo                  tag_common.TagRepo
-	tagCommon                *tagcommon.TagCommonService
-	notificationQueueService notice_queue.NotificationQueueService
-	activityQueueService     activity_queue.ActivityQueueService
+	tagCommon                *tag_common.TagCommonService
+	notificationQueueService noticequeue.Service
+	activityQueueService     activityqueue.Service
 	reportRepo               report_common.ReportRepo
 	reviewService            *review.ReviewService
 	reviewActivity           activity.ReviewActivityRepo
@@ -79,9 +78,9 @@ func NewRevisionService(
 	questionRepo questioncommon.QuestionRepo,
 	answerRepo answercommon.AnswerRepo,
 	tagRepo tag_common.TagRepo,
-	tagCommon *tagcommon.TagCommonService,
-	notificationQueueService notice_queue.NotificationQueueService,
-	activityQueueService activity_queue.ActivityQueueService,
+	tagCommon *tag_common.TagCommonService,
+	notificationQueueService noticequeue.Service,
+	activityQueueService activityqueue.Service,
 	reportRepo report_common.ReportRepo,
 	reviewService *review.ReviewService,
 	reviewActivity activity.ReviewActivityRepo,
@@ -214,7 +213,11 @@ func (rs *RevisionService) revisionAuditQuestion(ctx context.Context, revisionit
 		objectTagData := schema.TagChange{}
 		objectTagData.ObjectID = question.ID
 		objectTagData.Tags = objectTagTags
-		saveerr = rs.tagCommon.ObjectChangeTag(ctx, &objectTagData)
+		minimumTags, err := rs.tagCommon.GetMinimumTags(ctx)
+		if err != nil {
+			return err
+		}
+		_, saveerr = rs.tagCommon.ObjectChangeTag(ctx, &objectTagData, minimumTags)
 		if saveerr != nil {
 			return saveerr
 		}
@@ -232,7 +235,6 @@ func (rs *RevisionService) revisionAuditQuestion(ctx context.Context, revisionit
 func (rs *RevisionService) revisionAuditAnswer(ctx context.Context, revisionitem *schema.GetRevisionResp) (err error) {
 	answerinfo, ok := revisionitem.ContentParsed.(*schema.AnswerInfo)
 	if ok {
-
 		var PostUpdateTime time.Time
 		dbquestion, exist, dberr := rs.questionRepo.GetQuestion(ctx, answerinfo.QuestionID)
 		if dberr != nil || !exist {
@@ -386,6 +388,14 @@ func (rs *RevisionService) GetRevisionList(ctx context.Context, req *schema.GetR
 	)
 
 	resp = []schema.GetRevisionResp{}
+	objInfo, infoErr := rs.objectInfoService.GetInfo(ctx, req.ObjectID)
+	if infoErr != nil {
+		return nil, infoErr
+	}
+	if err := objInfo.CheckVisibility(req.UserID, req.IsAdmin); err != nil {
+		return nil, err
+	}
+
 	_ = copier.Copy(&rev, req)
 
 	revs, err = rs.revisionRepo.GetRevisionList(ctx, &rev)

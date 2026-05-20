@@ -20,8 +20,9 @@
 package entity
 
 import (
-	"github.com/tidwall/gjson"
 	"time"
+
+	"github.com/tidwall/gjson"
 )
 
 type BadgeLevel int

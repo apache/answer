@@ -23,9 +23,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/apache/answer/internal/service/event_queue"
-	"github.com/apache/answer/pkg/token"
 	"time"
+
+	"github.com/apache/answer/internal/service/eventqueue"
+	"github.com/apache/answer/pkg/token"
 
 	"github.com/apache/answer/internal/base/constant"
 	questioncommon "github.com/apache/answer/internal/service/question_common"
@@ -41,6 +42,7 @@ import (
 	"github.com/apache/answer/internal/service/activity_common"
 	"github.com/apache/answer/internal/service/auth"
 	"github.com/apache/answer/internal/service/export"
+	"github.com/apache/answer/internal/service/file_record"
 	"github.com/apache/answer/internal/service/role"
 	"github.com/apache/answer/internal/service/siteinfo_common"
 	usercommon "github.com/apache/answer/internal/service/user_common"
@@ -66,7 +68,8 @@ type UserService struct {
 	userNotificationConfigRepo    user_notification_config.UserNotificationConfigRepo
 	userNotificationConfigService *user_notification_config.UserNotificationConfigService
 	questionService               *questioncommon.QuestionCommon
-	eventQueueService             event_queue.EventQueueService
+	eventQueueService             eventqueue.Service
+	fileRecordService             *file_record.FileRecordService
 }
 
 func NewUserService(userRepo usercommon.UserRepo,
@@ -81,7 +84,8 @@ func NewUserService(userRepo usercommon.UserRepo,
 	userNotificationConfigRepo user_notification_config.UserNotificationConfigRepo,
 	userNotificationConfigService *user_notification_config.UserNotificationConfigService,
 	questionService *questioncommon.QuestionCommon,
-	eventQueueService event_queue.EventQueueService,
+	eventQueueService eventqueue.Service,
+	fileRecordService *file_record.FileRecordService,
 ) *UserService {
 	return &UserService{
 		userCommonService:             userCommonService,
@@ -97,6 +101,7 @@ func NewUserService(userRepo usercommon.UserRepo,
 		userNotificationConfigService: userNotificationConfigService,
 		questionService:               questionService,
 		eventQueueService:             eventQueueService,
+		fileRecordService:             fileRecordService,
 	}
 }
 
@@ -136,7 +141,7 @@ func (us *UserService) GetOtherUserInfoByUsername(ctx context.Context, req *sche
 		return nil, errors.NotFound(reason.UserNotFound)
 	}
 	resp = &schema.GetOtherUserInfoByUsernameResp{}
-	resp.ConvertFromUserEntity(userInfo)
+	resp.ConvertFromUserEntityWithLang(ctx, userInfo)
 	resp.Avatar = us.siteInfoService.FormatAvatar(ctx, userInfo.Avatar, userInfo.EMail, userInfo.Status).GetURL()
 
 	// Only the user himself and the administrator can see the hidden questions
@@ -309,12 +314,7 @@ func (us *UserService) UserModifyPassword(ctx context.Context, req *schema.UserM
 // UpdateInfo update user info
 func (us *UserService) UpdateInfo(ctx context.Context, req *schema.UpdateInfoRequest) (
 	errFields []*validator.FormErrorField, err error) {
-	siteUsers, err := us.siteInfoService.GetSiteUsers(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	if siteUsers.AllowUpdateUsername && len(req.Username) > 0 {
+	if len(req.Username) > 0 {
 		if checker.IsInvalidUsername(req.Username) {
 			return append(errFields, &validator.FormErrorField{
 				ErrorField: "username",
@@ -353,8 +353,15 @@ func (us *UserService) UpdateInfo(ctx context.Context, req *schema.UpdateInfoReq
 	if !exist {
 		return nil, errors.BadRequest(reason.UserNotFound)
 	}
+	errFields, err = us.validateAvatarInfo(ctx, req.UserID, oldUserInfo.Avatar, req.Avatar)
+	if err != nil {
+		return errFields, err
+	}
 
-	cond := us.formatUserInfoForUpdateInfo(oldUserInfo, req, siteUsers)
+	cond := us.formatUserInfoForUpdateInfo(oldUserInfo, req)
+
+	us.cleanUpRemovedAvatar(ctx, oldUserInfo.Avatar, cond.Avatar)
+
 	err = us.userRepo.UpdateInfo(ctx, cond)
 	if err != nil {
 		return nil, err
@@ -363,8 +370,78 @@ func (us *UserService) UpdateInfo(ctx context.Context, req *schema.UpdateInfoReq
 	return nil, err
 }
 
+func (us *UserService) validateAvatarInfo(
+	ctx context.Context,
+	userID string,
+	oldAvatarJSON string,
+	newAvatar schema.AvatarInfo,
+) (errFields []*validator.FormErrorField, err error) {
+	if newAvatar.Type != constant.AvatarTypeCustom {
+		return nil, nil
+	}
+	if len(newAvatar.Custom) == 0 {
+		return append(errFields, &validator.FormErrorField{
+			ErrorField: "avatar",
+			ErrorMsg:   reason.UserSetAvatar,
+		}), errors.BadRequest(reason.UserSetAvatar)
+	}
+
+	var oldAvatar schema.AvatarInfo
+	_ = json.Unmarshal([]byte(oldAvatarJSON), &oldAvatar)
+	if oldAvatar.Type == constant.AvatarTypeCustom && oldAvatar.Custom == newAvatar.Custom {
+		return nil, nil
+	}
+
+	fileRecord, err := us.fileRecordService.GetFileRecordByURL(ctx, newAvatar.Custom)
+	if err != nil {
+		return nil, err
+	}
+	if fileRecord == nil || fileRecord.UserID != userID || fileRecord.Source != string(plugin.UserAvatar) {
+		return append(errFields, &validator.FormErrorField{
+			ErrorField: "avatar",
+			ErrorMsg:   reason.UserSetAvatar,
+		}), errors.BadRequest(reason.UserSetAvatar)
+	}
+	return nil, nil
+}
+
+func (us *UserService) cleanUpRemovedAvatar(
+	ctx context.Context,
+	oldAvatarJSON string,
+	newAvatarJSON string,
+) {
+	if oldAvatarJSON == newAvatarJSON {
+		return
+	}
+
+	var oldAvatar, newAvatar schema.AvatarInfo
+
+	_ = json.Unmarshal([]byte(oldAvatarJSON), &oldAvatar)
+	_ = json.Unmarshal([]byte(newAvatarJSON), &newAvatar)
+
+	if len(oldAvatar.Custom) == 0 {
+		return
+	}
+
+	// clean up if old is custom and it's either removed or replaced
+	if oldAvatar.Custom != newAvatar.Custom {
+		fileRecord, err := us.fileRecordService.GetFileRecordByURL(ctx, oldAvatar.Custom)
+		if err != nil {
+			log.Error(err)
+			return
+		}
+		if fileRecord == nil {
+			log.Warn("no file record found for old avatar url:", oldAvatar.Custom)
+			return
+		}
+		if err := us.fileRecordService.DeleteAndMoveFileRecord(ctx, fileRecord); err != nil {
+			log.Error(err)
+		}
+	}
+}
+
 func (us *UserService) formatUserInfoForUpdateInfo(
-	oldUserInfo *entity.User, req *schema.UpdateInfoRequest, siteUsersConf *schema.SiteUsersResp) *entity.User {
+	oldUserInfo *entity.User, req *schema.UpdateInfoRequest) *entity.User {
 	avatar, _ := json.Marshal(req.Avatar)
 
 	userInfo := &entity.User{}
@@ -377,25 +454,19 @@ func (us *UserService) formatUserInfoForUpdateInfo(
 	userInfo.Location = oldUserInfo.Location
 	userInfo.ID = req.UserID
 
-	if len(req.DisplayName) > 0 && siteUsersConf.AllowUpdateDisplayName {
+	if len(req.DisplayName) > 0 {
 		userInfo.DisplayName = req.DisplayName
 	}
-	if len(req.Username) > 0 && siteUsersConf.AllowUpdateUsername {
+	if len(req.Username) > 0 {
 		userInfo.Username = req.Username
 	}
-	if len(avatar) > 0 && siteUsersConf.AllowUpdateAvatar {
+	if len(avatar) > 0 {
 		userInfo.Avatar = string(avatar)
 	}
-	if siteUsersConf.AllowUpdateBio {
-		userInfo.Bio = req.Bio
-		userInfo.BioHTML = req.BioHTML
-	}
-	if siteUsersConf.AllowUpdateWebsite {
-		userInfo.Website = req.Website
-	}
-	if siteUsersConf.AllowUpdateLocation {
-		userInfo.Location = req.Location
-	}
+	userInfo.Bio = req.Bio
+	userInfo.BioHTML = req.BioHTML
+	userInfo.Website = req.Website
+	userInfo.Location = req.Location
 	return userInfo
 }
 
@@ -565,7 +636,7 @@ func (us *UserService) UserVerifyEmail(ctx context.Context, req *schema.UserVeri
 
 // verifyPassword
 // Compare whether the password is correct
-func (us *UserService) verifyPassword(ctx context.Context, loginPass, userPass string) bool {
+func (us *UserService) verifyPassword(_ context.Context, loginPass, userPass string) bool {
 	if len(loginPass) == 0 && len(userPass) == 0 {
 		return true
 	}
@@ -575,8 +646,8 @@ func (us *UserService) verifyPassword(ctx context.Context, loginPass, userPass s
 
 // encryptPassword
 // The password does irreversible encryption.
-func (us *UserService) encryptPassword(ctx context.Context, Pass string) (string, error) {
-	hashPwd, err := bcrypt.GenerateFromPassword([]byte(Pass), bcrypt.DefaultCost)
+func (us *UserService) encryptPassword(_ context.Context, pass string) (string, error) {
+	hashPwd, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
 	// This encrypted string can be saved to the database and can be used as password matching verification
 	return string(hashPwd), err
 }

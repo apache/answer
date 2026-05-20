@@ -30,6 +30,7 @@ import (
 	"github.com/apache/answer/internal/service/unique"
 	"github.com/apache/answer/pkg/uid"
 	"github.com/segmentfault/pacman/errors"
+	"xorm.io/xorm"
 )
 
 // tagRelRepo tag rel repository
@@ -197,9 +198,64 @@ func (tr *tagRelRepo) GetTagRelDefaultStatusByObjectID(ctx context.Context, obje
 	exist, err := tr.data.DB.Context(ctx).ID(objectID).Cols("show", "status").Get(&question)
 	if err != nil {
 		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+		return
 	}
 	if exist && (question.Show == entity.QuestionHide || question.Status == entity.QuestionStatusDeleted) {
 		return entity.TagRelStatusHide, nil
 	}
 	return entity.TagRelStatusAvailable, nil
+}
+
+// MigrateTagObjects migrate tag objects
+func (tr *tagRelRepo) MigrateTagObjects(ctx context.Context, sourceTagId, targetTagId string) error {
+	_, err := tr.data.DB.Transaction(func(session *xorm.Session) (result any, err error) {
+		// 1. Get all objects related to source tag
+		var sourceObjects []entity.TagRel
+		err = session.Where("tag_id = ?", sourceTagId).Find(&sourceObjects)
+		if err != nil {
+			return nil, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+		}
+
+		// 2. Get existing target tag relations
+		var existingTargets []entity.TagRel
+		err = session.Where("tag_id = ?", targetTagId).Find(&existingTargets)
+		if err != nil {
+			return nil, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+		}
+
+		// Create map of existing target objects for quick lookup
+		existingMap := make(map[string]bool)
+		for _, target := range existingTargets {
+			existingMap[target.ObjectID] = true
+		}
+
+		// 3. Create new relations for objects not already tagged with target
+		newRelations := make([]*entity.TagRel, 0)
+		for _, source := range sourceObjects {
+			if !existingMap[source.ObjectID] {
+				newRelations = append(newRelations, &entity.TagRel{
+					TagID:    targetTagId,
+					ObjectID: source.ObjectID,
+					Status:   source.Status,
+				})
+			}
+		}
+
+		if len(newRelations) > 0 {
+			_, err = session.Insert(newRelations)
+			if err != nil {
+				return nil, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+			}
+		}
+
+		// 4. Remove old relations
+		_, err = session.Where("tag_id = ?", sourceTagId).Delete(&entity.TagRel{})
+		if err != nil {
+			return nil, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+		}
+
+		return nil, nil
+	})
+
+	return err
 }

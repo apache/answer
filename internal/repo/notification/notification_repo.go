@@ -137,3 +137,19 @@ func (nr *notificationRepo) CountNotificationByUser(ctx context.Context, cond *e
 	}
 	return count, err
 }
+
+func (nr *notificationRepo) DeleteNotification(ctx context.Context, userID string) (err error) {
+	_, err = nr.data.DB.Context(ctx).Where("user_id = ?", userID).Delete(&entity.Notification{})
+	if err != nil {
+		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	return
+}
+
+func (nr *notificationRepo) DeleteUserNotificationConfig(ctx context.Context, userID string) (err error) {
+	_, err = nr.data.DB.Context(ctx).Where("user_id = ?", userID).Delete(&entity.UserNotificationConfig{})
+	if err != nil {
+		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	return
+}

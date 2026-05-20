@@ -51,6 +51,7 @@ import {
   Input,
   Button as SfButton,
   InputGroup,
+  TagSelector,
 } from './components';
 
 export * from './types';
@@ -258,6 +259,9 @@ const SchemaForm: ForwardRefRenderFunction<FormRef, FormProps> = (
           description,
           enum: enumValues = [],
           enumNames = [],
+          max_length = 0,
+          max,
+          min = 0,
         } = properties[key];
         const { 'ui:widget': widget = 'input', 'ui:options': uiOpt } =
           uiSchema?.[key] || {};
@@ -286,7 +290,7 @@ const SchemaForm: ForwardRefRenderFunction<FormRef, FormProps> = (
             controlId={key}
             className={classnames(
               groupClassName,
-              formData[key].hidden ? 'd-none' : null,
+              formData[key]?.hidden ? 'd-none' : null,
             )}>
             {/* Uniform processing `label` */}
             {title && !uiSimplify ? <Form.Label>{title}</Form.Label> : null}
@@ -366,9 +370,14 @@ const SchemaForm: ForwardRefRenderFunction<FormRef, FormProps> = (
             {widget === 'input' ? (
               <Input
                 type={uiOpt && 'inputType' in uiOpt ? uiOpt.inputType : 'text'}
+                inputMode={
+                  uiOpt && 'inputMode' in uiOpt ? uiOpt.inputMode : 'text'
+                }
                 placeholder={
                   uiOpt && 'placeholder' in uiOpt ? uiOpt.placeholder : ''
                 }
+                min={min}
+                max={max}
                 fieldName={key}
                 onChange={onChange}
                 formData={formData}
@@ -403,9 +412,14 @@ const SchemaForm: ForwardRefRenderFunction<FormRef, FormProps> = (
                   type={
                     uiOpt && 'inputType' in uiOpt ? uiOpt.inputType : 'text'
                   }
+                  inputMode={
+                    uiOpt && 'inputMode' in uiOpt ? uiOpt.inputMode : 'text'
+                  }
                   placeholder={
                     uiOpt && 'placeholder' in uiOpt ? uiOpt.placeholder : ''
                   }
+                  min={min}
+                  max={max}
                   fieldName={key}
                   onChange={onChange}
                   formData={formData}
@@ -413,13 +427,22 @@ const SchemaForm: ForwardRefRenderFunction<FormRef, FormProps> = (
                 />
               </InputGroup>
             ) : null}
+            {widget === 'tag_selector' ? (
+              <TagSelector
+                maxTagLength={max_length}
+                fieldName={key}
+                onChange={onChange}
+                formData={formData}
+                description={description}
+              />
+            ) : null}
             {/* Unified handling of `Feedback` and `Text` */}
+            {description && widget !== 'tag_selector' ? (
+              <Form.Text dangerouslySetInnerHTML={{ __html: description }} />
+            ) : null}
             <Form.Control.Feedback type="invalid">
               {fieldState?.errorMsg}
             </Form.Control.Feedback>
-            {description ? (
-              <Form.Text dangerouslySetInnerHTML={{ __html: description }} />
-            ) : null}
           </Form.Group>
         );
       })}

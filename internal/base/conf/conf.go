@@ -25,9 +25,9 @@ import (
 	"path/filepath"
 
 	"github.com/apache/answer/internal/base/data"
+	"github.com/apache/answer/internal/base/path"
 	"github.com/apache/answer/internal/base/server"
 	"github.com/apache/answer/internal/base/translator"
-	"github.com/apache/answer/internal/cli"
 	"github.com/apache/answer/internal/router"
 	"github.com/apache/answer/internal/service/service_config"
 	"github.com/apache/answer/pkg/writer"
@@ -98,7 +98,7 @@ func (c *AllConfig) SetEnvironmentOverrides() {
 // ReadConfig read config
 func ReadConfig(configFilePath string) (c *AllConfig, err error) {
 	if len(configFilePath) == 0 {
-		configFilePath = filepath.Join(cli.ConfigFileDir, cli.DefaultConfigFileName)
+		configFilePath = filepath.Join(path.ConfigFileDir, path.DefaultConfigFileName)
 	}
 	c = &AllConfig{}
 	config, err := viper.NewWithPath(configFilePath)
@@ -117,7 +117,9 @@ func ReadConfig(configFilePath string) (c *AllConfig, err error) {
 func RewriteConfig(configFilePath string, allConfig *AllConfig) error {
 	buf := bytes.Buffer{}
 	enc := yaml.NewEncoder(&buf)
-	defer enc.Close()
+	defer func() {
+		_ = enc.Close()
+	}()
 	enc.SetIndent(2)
 	if err := enc.Encode(allConfig); err != nil {
 		return err

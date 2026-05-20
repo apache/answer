@@ -27,11 +27,13 @@ import (
 	"strings"
 
 	"github.com/apache/answer/internal/base/constant"
+	"github.com/apache/answer/internal/base/handler"
 	"github.com/apache/answer/internal/base/reason"
+	"github.com/apache/answer/internal/base/translator"
 	"github.com/apache/answer/internal/base/validator"
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
-	"github.com/apache/answer/internal/service/activity_queue"
+	"github.com/apache/answer/internal/service/activityqueue"
 	"github.com/apache/answer/internal/service/revision_common"
 	"github.com/apache/answer/internal/service/siteinfo_common"
 	"github.com/apache/answer/pkg/converter"
@@ -77,6 +79,7 @@ type TagRelRepo interface {
 	BatchGetObjectTagRelList(ctx context.Context, objectIds []string) (tagListList []*entity.TagRel, err error)
 	CountTagRelByTagID(ctx context.Context, tagID string) (count int64, err error)
 	GetTagRelDefaultStatusByObjectID(ctx context.Context, objectID string) (status int, err error)
+	MigrateTagObjects(ctx context.Context, sourceTagId, targetTagId string) error
 }
 
 // TagCommonService user service
@@ -86,7 +89,7 @@ type TagCommonService struct {
 	tagRelRepo           TagRelRepo
 	tagRepo              TagRepo
 	siteInfoService      siteinfo_common.SiteInfoCommonService
-	activityQueueService activity_queue.ActivityQueueService
+	activityQueueService activityqueue.Service
 }
 
 // NewTagCommonService new tag service
@@ -96,7 +99,7 @@ func NewTagCommonService(
 	tagRepo TagRepo,
 	revisionService *revision_common.RevisionService,
 	siteInfoService siteinfo_common.SiteInfoCommonService,
-	activityQueueService activity_queue.ActivityQueueService,
+	activityQueueService activityqueue.Service,
 ) *TagCommonService {
 	return &TagCommonService{
 		tagCommonRepo:        tagCommonRepo,
@@ -137,6 +140,7 @@ func (ts *TagCommonService) SearchTagLike(ctx context.Context, req *schema.Searc
 		}
 		mainTagID := converter.IntToString(tag.MainTagID)
 		if _, ok := mainTagMap[mainTagID]; ok {
+			tag.ID = mainTagMap[mainTagID].ID
 			tag.SlugName = mainTagMap[mainTagID].SlugName
 			tag.DisplayName = mainTagMap[mainTagID].DisplayName
 			tag.Reserved = mainTagMap[mainTagID].Reserved
@@ -148,6 +152,7 @@ func (ts *TagCommonService) SearchTagLike(ctx context.Context, req *schema.Searc
 	for _, tag := range tags {
 		if _, ok := repetitiveTag[tag.SlugName]; !ok {
 			item := schema.GetTagBasicResp{}
+			item.TagID = tag.ID
 			item.SlugName = tag.SlugName
 			item.DisplayName = tag.DisplayName
 			item.Recommend = tag.Recommend
@@ -265,7 +270,7 @@ func (ts *TagCommonService) GetTagListByNames(ctx context.Context, tagNames []st
 }
 
 func (ts *TagCommonService) ExistRecommend(ctx context.Context, tags []*schema.TagItem) (bool, error) {
-	taginfo, err := ts.siteInfoService.GetSiteWrite(ctx)
+	taginfo, err := ts.siteInfoService.GetSiteTag(ctx)
 	if err != nil {
 		return false, err
 	}
@@ -289,20 +294,35 @@ func (ts *TagCommonService) ExistRecommend(ctx context.Context, tags []*schema.T
 	return false, nil
 }
 
+func (ts *TagCommonService) GetMinimumTags(ctx context.Context) (int, error) {
+	siteInfo, err := ts.siteInfoService.GetSiteQuestion(ctx)
+	if err != nil {
+		return 1, err
+	}
+	minimumTags := siteInfo.MinimumTags
+	return minimumTags, nil
+}
+
 func (ts *TagCommonService) HasNewTag(ctx context.Context, tags []*schema.TagItem) (bool, error) {
 	tagNames := make([]string, 0)
-	tagMap := make(map[string]struct{})
+	tagMap := make(map[string]bool)
 	for _, item := range tags {
 		item.SlugName = strings.ReplaceAll(item.SlugName, " ", "-")
 		tagNames = append(tagNames, item.SlugName)
-		tagMap[item.SlugName] = struct{}{}
+		tagMap[item.SlugName] = false
 	}
 	list, err := ts.GetTagListByNames(ctx, tagNames)
 	if err != nil {
 		return true, err
 	}
 	for _, item := range list {
-		if _, ok := tagMap[item.SlugName]; !ok {
+		_, ok := tagMap[item.SlugName]
+		if ok {
+			tagMap[item.SlugName] = true
+		}
+	}
+	for _, has := range tagMap {
+		if !has {
 			return true, nil
 		}
 	}
@@ -349,10 +369,17 @@ func (ts *TagCommonService) AddTag(ctx context.Context, req *schema.AddTagReq) (
 	}
 	tagInfoJson, _ := json.Marshal(tagInfo)
 	revisionDTO.Content = string(tagInfoJson)
-	_, err = ts.revisionService.AddRevision(ctx, revisionDTO, true)
+	revisionID, err := ts.revisionService.AddRevision(ctx, revisionDTO, true)
 	if err != nil {
 		return nil, err
 	}
+	ts.activityQueueService.Send(ctx, &schema.ActivityMsg{
+		UserID:           req.UserID,
+		ObjectID:         tagInfo.ID,
+		OriginalObjectID: tagInfo.ID,
+		ActivityTypeKey:  constant.ActTagCreated,
+		RevisionID:       revisionID,
+	})
 	return &schema.AddTagResp{SlugName: tagInfo.SlugName}, nil
 }
 
@@ -442,7 +469,7 @@ func (ts *TagCommonService) TagsFormatRecommendAndReserved(ctx context.Context, 
 	if len(tagList) == 0 {
 		return
 	}
-	tagConfig, err := ts.siteInfoService.GetSiteWrite(ctx)
+	tagConfig, err := ts.siteInfoService.GetSiteTag(ctx)
 	if err != nil {
 		log.Error(err)
 		return
@@ -458,7 +485,7 @@ func (ts *TagCommonService) tagFormatRecommendAndReserved(ctx context.Context, t
 	if tag == nil {
 		return
 	}
-	tagConfig, err := ts.siteInfoService.GetSiteWrite(ctx)
+	tagConfig, err := ts.siteInfoService.GetSiteTag(ctx)
 	if err != nil {
 		log.Error(err)
 		return
@@ -564,7 +591,6 @@ func (ts *TagCommonService) CheckTag(ctx context.Context, tags []string, userID 
 		err = errors.BadRequest(reason.TagNotFound).WithMsg(fmt.Sprintf("tag [%s] does not exist",
 			strings.Join(addTagMsgList, ",")))
 		return err
-
 	}
 
 	return nil
@@ -632,9 +658,17 @@ func (ts *TagCommonService) CheckChangeReservedTag(ctx context.Context, oldobjec
 }
 
 // ObjectChangeTag change object tag list
-func (ts *TagCommonService) ObjectChangeTag(ctx context.Context, objectTagData *schema.TagChange) (err error) {
-	if len(objectTagData.Tags) == 0 {
-		return nil
+func (ts *TagCommonService) ObjectChangeTag(ctx context.Context, objectTagData *schema.TagChange, minimumTags int) (errorlist []*validator.FormErrorField, err error) {
+	// checks if the tags sent in the put req are less than the minimum, if so, tag changes are not applied
+	if len(objectTagData.Tags) < minimumTags {
+		errorlist := make([]*validator.FormErrorField, 0)
+		errorlist = append(errorlist, &validator.FormErrorField{
+			ErrorField: "tags",
+			ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.TagMinCount),
+		})
+
+		err = errors.BadRequest(reason.TagMinCount)
+		return errorlist, err
 	}
 
 	thisObjTagNameList := make([]string, 0)
@@ -647,7 +681,7 @@ func (ts *TagCommonService) ObjectChangeTag(ctx context.Context, objectTagData *
 	// find tags name
 	tagListInDb, err := ts.tagCommonRepo.GetTagListByNames(ctx, thisObjTagNameList)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	tagInDbMapping := make(map[string]*entity.Tag)
@@ -675,7 +709,7 @@ func (ts *TagCommonService) ObjectChangeTag(ctx context.Context, objectTagData *
 	if len(addTagList) > 0 {
 		err = ts.tagCommonRepo.AddTagList(ctx, addTagList)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		for _, tag := range addTagList {
 			thisObjTagIDList = append(thisObjTagIDList, tag.ID)
@@ -688,7 +722,7 @@ func (ts *TagCommonService) ObjectChangeTag(ctx context.Context, objectTagData *
 			revisionDTO.Content = string(tagInfoJson)
 			revisionID, err := ts.revisionService.AddRevision(ctx, revisionDTO, true)
 			if err != nil {
-				return err
+				return nil, err
 			}
 			ts.activityQueueService.Send(ctx, &schema.ActivityMsg{
 				UserID:           objectTagData.UserID,
@@ -702,9 +736,9 @@ func (ts *TagCommonService) ObjectChangeTag(ctx context.Context, objectTagData *
 
 	err = ts.CreateOrUpdateTagRelList(ctx, objectTagData.ObjectID, thisObjTagIDList)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return nil, nil
 }
 
 func (ts *TagCommonService) CountTagRelByTagID(ctx context.Context, tagID string) (count int64, err error) {
@@ -848,11 +882,11 @@ func (ts *TagCommonService) UpdateTag(ctx context.Context, req *schema.UpdateTag
 		return errors.BadRequest(reason.TagNotFound)
 	}
 
-	//Adding equivalent slug formatting for tag update
+	// Adding equivalent slug formatting for tag update
 	slugName := strings.ReplaceAll(req.SlugName, " ", "-")
 	slugName = strings.ToLower(slugName)
 
-	//If the content is the same, ignore it
+	// If the content is the same, ignore it
 	if tagInfo.OriginalText == req.OriginalText &&
 		tagInfo.DisplayName == req.DisplayName &&
 		tagInfo.SlugName == slugName {
@@ -914,4 +948,9 @@ func (ts *TagCommonService) UpdateTag(ctx context.Context, req *schema.UpdateTag
 	}
 
 	return
+}
+
+// MigrateTagQuestions migrate tag question
+func (ts *TagCommonService) MigrateTagQuestions(ctx context.Context, sourceTagID, targetTagID string) (err error) {
+	return ts.tagRelRepo.MigrateTagObjects(ctx, sourceTagID, targetTagID)
 }

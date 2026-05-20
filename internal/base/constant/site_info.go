@@ -43,6 +43,9 @@ const (
 	ColorSchemeLight   = "light"
 	ColorSchemeDark    = "dark"
 	ColorSchemeSystem  = "system"
+
+	ThemeLayoutFullWidth  = "Full-width"
+	ThemeLayoutFixedWidth = "Fixed-width"
 )
 
 const (

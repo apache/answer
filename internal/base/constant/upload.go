@@ -25,4 +25,5 @@ const (
 	PostSubPath        = "post"
 	BrandingSubPath    = "branding"
 	FilesPostSubPath   = "files/post"
+	DeletedSubPath     = "deleted"
 )

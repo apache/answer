@@ -31,6 +31,7 @@ import usePromptWithUnload from './usePrompt';
 import useActivationEmailModal from './useActivationEmailModal';
 import useCaptchaModal from './useCaptchaModal';
 import useSkeletonControl from './useSkeletonControl';
+import useExternalToast from './useExternalToast';
 
 export {
   useTagModal,
@@ -47,4 +48,5 @@ export {
   useActivationEmailModal,
   useCaptchaModal,
   useSkeletonControl,
+  useExternalToast,
 };

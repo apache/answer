@@ -60,6 +60,7 @@ type UserRepo interface {
 	GetByEmail(ctx context.Context, email string) (userInfo *entity.User, exist bool, err error)
 	GetUserCount(ctx context.Context) (count int64, err error)
 	SearchUserListByName(ctx context.Context, name string, limit int, onlyStaff bool) (userList []*entity.User, err error)
+	IsAvatarFileUsed(ctx context.Context, filePath string) (bool, error)
 }
 
 // UserCommon user service
@@ -84,9 +85,9 @@ func NewUserCommon(
 	}
 }
 
-func (us *UserCommon) GetUserBasicInfoByID(ctx context.Context, ID string) (
+func (us *UserCommon) GetUserBasicInfoByID(ctx context.Context, id string) (
 	userBasicInfo *schema.UserBasicInfo, exist bool, err error) {
-	userInfo, exist, err := us.userRepo.GetByUserID(ctx, ID)
+	userInfo, exist, err := us.userRepo.GetByUserID(ctx, id)
 	if err != nil {
 		return nil, exist, err
 	}
@@ -141,6 +142,7 @@ func (us *UserCommon) UpdateQuestionCount(ctx context.Context, userID string, nu
 }
 
 func (us *UserCommon) BatchUserBasicInfoByID(ctx context.Context, userIDs []string) (map[string]*schema.UserBasicInfo, error) {
+	userIDs = checker.FilterEmptyString(userIDs)
 	userMap := make(map[string]*schema.UserBasicInfo)
 	if len(userIDs) == 0 {
 		return userMap, nil
@@ -154,6 +156,15 @@ func (us *UserCommon) BatchUserBasicInfoByID(ctx context.Context, userIDs []stri
 		info := us.FormatUserBasicInfo(ctx, user)
 		info.Avatar = avatarMapping[user.ID].GetURL()
 		userMap[user.ID] = info
+	}
+	for _, id := range userIDs {
+		if _, ok := userMap[id]; !ok {
+			userMap[id] = &schema.UserBasicInfo{
+				ID:          id,
+				DisplayName: "user" + converter.DeleteUserDisplay(id),
+				Status:      constant.UserDeleted,
+			}
+		}
 	}
 	return userMap, nil
 }
@@ -169,6 +180,9 @@ func (us *UserCommon) FormatUserBasicInfo(ctx context.Context, userInfo *entity.
 	userBasicInfo.Location = userInfo.Location
 	userBasicInfo.Language = userInfo.Language
 	userBasicInfo.Status = constant.ConvertUserStatus(userInfo.Status, userInfo.MailStatus)
+	if !userInfo.SuspendedUntil.IsZero() {
+		userBasicInfo.SuspendedUntil = userInfo.SuspendedUntil.Unix()
+	}
 	if userBasicInfo.Status == constant.UserDeleted {
 		userBasicInfo.Avatar = ""
 		userBasicInfo.DisplayName = "user" + converter.DeleteUserDisplay(userInfo.ID)
@@ -234,4 +248,14 @@ func (us *UserCommon) CacheLoginUserInfo(ctx context.Context, userID string, use
 		}
 	}
 	return accessToken, userCacheInfo, nil
+}
+
+func (us *UserCommon) IsAvatarFileUsed(ctx context.Context, filePath string) bool {
+	used, err := us.userRepo.IsAvatarFileUsed(ctx, filePath)
+	if err != nil {
+		log.Errorf("error checking if branding file is used: %v", err)
+		// will try again with the next clean up
+		return true
+	}
+	return used
 }

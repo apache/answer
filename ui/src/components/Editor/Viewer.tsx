@@ -25,6 +25,7 @@ import {
   memo,
   useImperativeHandle,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { markdownToHtml } from '@/services';
 import ImgViewer from '@/components/ImgViewer';
@@ -37,6 +38,7 @@ let renderTimer;
 const Index = ({ value }, ref) => {
   const [html, setHtml] = useState('');
   const previewRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation('translation', { keyPrefix: 'messages' });
 
   const renderMarkdown = (markdown) => {
     clearTimeout(renderTimer);
@@ -59,7 +61,10 @@ const Index = ({ value }, ref) => {
 
     previewRef.current?.scrollTo(0, scrollTop);
 
-    htmlRender(previewRef.current);
+    htmlRender(previewRef.current, {
+      copySuccessText: t('copied', { keyPrefix: 'messages' }),
+      copyText: t('copy', { keyPrefix: 'messages' }),
+    });
   }, [html]);
 
   useImperativeHandle(ref, () => {
@@ -73,7 +78,7 @@ const Index = ({ value }, ref) => {
     <ImgViewer>
       <div
         ref={previewRef}
-        className="preview-wrap position-relative p-3 bg-light rounded text-break text-wrap mt-2 fmt"
+        className="preview-wrap position-relative p-3 rounded text-break text-wrap mt-2 fmt"
         dangerouslySetInnerHTML={{ __html: html }}
       />
     </ImgViewer>

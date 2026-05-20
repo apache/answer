@@ -22,9 +22,10 @@ package search_parser
 import (
 	"context"
 	"fmt"
-	"github.com/apache/answer/internal/base/constant"
 	"regexp"
 	"strings"
+
+	"github.com/apache/answer/internal/base/constant"
 
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/tag_common"

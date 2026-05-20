@@ -27,6 +27,7 @@ import (
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/service/mock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
 )
 
@@ -46,6 +47,6 @@ func TestSiteInfoCommonService_GetSiteGeneral(t *testing.T) {
 	mockInit(ctl)
 	siteInfoCommonService := NewSiteInfoCommonService(mockSiteInfoRepo)
 	resp, err := siteInfoCommonService.GetSiteGeneral(context.TODO())
-	assert.NoError(t, err)
-	assert.Equal(t, resp.Name, "name")
+	require.NoError(t, err)
+	assert.Equal(t, "name", resp.Name)
 }

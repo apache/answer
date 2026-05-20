@@ -19,83 +19,97 @@
 
 -->
 {{template "header" . }}
-<div class="col-xl-10 col-lg-9 col-md-12">
-  <div class="pt-4 mb-5 row">
-    <div class="page-main flex-auto col">
-      <div>
-        <div class="mb-3 d-flex flex-wrap justify-content-between">
-          <h5 class="fs-5 text-nowrap mb-3 mb-md-0">
-            {{translator $.language "ui.question.all_questions"}}
-          </h5>
-          {{template "sort-btns" .}}
-        </div>
-        <div class="rounded-0 list-group">
-          {{range .data}}
-          <div class="bg-transparent py-3 px-0 border-start-0 border-end-0 list-group-item">
-            <h5 class="text-wrap text-break">
-              {{if $.useTitle }}
-              <a class="link-dark" href="{{$.baseURL}}/questions/{{.ID}}/{{urlTitle .Title}}"
-                >{{.Title}}</a
-              >
-              {{else}}
-              <a class="link-dark" href="{{$.baseURL}}/questions/{{.ID}}">{{.Title}}</a>
-              {{end}}
+<div class="d-flex justify-content-center px-0 px-md-4">
+  <div class="answer-container">
+    <div class="pt-4 mb-5 row">
+      <div class="page-main flex-auto overflow-x-hidden col">
+        <div>
+          <div class="mb-3 d-flex flex-wrap justify-content-between">
+            <h5 class="fs-5 text-nowrap mb-3 mb-md-0">
+              {{translator $.language "ui.question.all_questions"}}
             </h5>
-            <div
-              class="d-flex flex-wrap flex-column flex-md-row align-items-md-center small mb-2 text-secondary">
-              <div class="d-flex flex-wrap me-0 me-md-3">
+            {{template "sort-btns" .}}
+          </div>
+          <div class="rounded-0 list-group">
+            {{range .data}}
+            <li class="py-3 px-2 border-start-0 border-end-0 position-relative pointer list-group-item list-group-item-action">
+              <div class="d-flex flex-wrap text-secondary small mb-12">
                 <div class="d-flex align-items-center  text-secondary me-1">
-                  <a href="{{$.baseURL}}/users/{{.Operator.Username}}"
-                    ><span class="me-1 text-break"
-                      >{{.Operator.DisplayName}}</span
-                    ></a
-                  ><span class="fw-bold" title="Reputation"
-                    >{{.Operator.Rank}}</span
-                  >
+                  <a href="{{$.baseURL}}/users/{{.Operator.Username}}">
+                    <img src="{{$.baseURL}}/users/{{.Operator.Avatar}}" width="24px" height="24px" class="rounded-circle me-1" alt="shuai" data-processed="true">
+                    <span class="me-1 name-ellipsis" style="max-width: 300px;">{{.Operator.DisplayName}}</span>
+                  </a>
+                  <span class="fw-bold" title="Reputation">{{.Operator.Rank}}</span>
                 </div>
+                •
                 <time
                   class="text-secondary ms-1"
                   datetime="{{timeFormatISO $.timezone .OperatedAt}}"
-                  title="{{translatorTimeFormatLongDate $.language $.timezone .OperatedAt}}"
-                  >{{translator $.language "ui.question.asked"}}
+                  title="{{translatorTimeFormatLongDate $.language $.timezone .OperatedAt}}">
+                  {{translator $.language "ui.question.asked"}}
                   {{translatorTimeFormat $.language $.timezone .OperatedAt}}
                 </time>
               </div>
-              <div class="d-flex align-items-center mt-2 mt-md-0">
-                <div class="d-flex align-items-center flex-shrink-0">
-                  <i class="br bi-hand-thumbs-up-fill"></i>
-                  <em class="fst-normal ms-1">{{.VoteCount}}</em>
-                </div>
-                <div class="d-flex flex-shrink-0 align-items-center ms-3">
-                  <i class="br bi-chat-square-text-fill"></i>
-                  <em class="fst-normal ms-1">{{.AnswerCount}}</em>
-                </div>
-                <span class="summary-stat ms-3">
-                  <i class="br bi-eye-fill"></i>
-                  <em class="fst-normal ms-1">{{.ViewCount}}</em>
-                </span>
+
+              <h5 class="text-wrap text-break">
+                {{if $.useTitle }}
+                <a class="link-dark d-block" href="{{$.baseURL}}/questions/{{.ID}}/{{urlTitle .Title}}">
+                  {{.Title}}
+                </a>
+                {{else}}
+                <a class="link-dark d-block" href="{{$.baseURL}}/questions/{{.ID}}">{{.Title}}</a>
+                {{end}}
+              </h5>
+
+              <div class="text-truncate-2 mb-2">
+                {{if $.useTitle }}
+                <a class="d-block small text-body" href="{{$.baseURL}}/questions/{{.ID}}/{{urlTitle .Title}}">{{.Description}}
+                </a>
+                {{else}}
+                <a class="d-block small text-body" href="{{$.baseURL}}/questions/{{.ID}}">{{.Description}}</a>
+                {{end}}
               </div>
-            </div>
-            <div class="question-tags mx-n1">
-              {{range .Tags }}
-              <a
-                href="{{$.baseURL}}/tags/{{.SlugName}}"
-                class="badge-tag rounded-1 {{if .Reserved}}badge-tag-reserved{{end}} {{if .Recommend}}badge-tag-required{{end}} m-1"
-              >
-                <span class="">{{.SlugName}}</span>
-              </a>
-              {{end}}
-            </div>
+
+              <div class="question-tags mb-12">
+                {{range .Tags }}
+                <a
+                  href="{{$.baseURL}}/tags/{{.SlugName}}"
+                  class="badge-tag rounded-1 {{if .Reserved}}badge-tag-reserved{{end}} {{if .Recommend}}badge-tag-required{{end}} me-1">
+                  <span class="">{{.SlugName}}</span>
+                </a>
+                {{end}}
+              </div>
+
+              <div class="small text-secondary">
+                <div class="d-flex align-items-center mt-2 mt-md-0">
+                  <div class="d-flex align-items-center flex-shrink-0">
+                    <i class="br bi-hand-thumbs-up-fill me-1"></i>
+                    <span class="fw-medium">{{.VoteCount}}</span>
+                    <span class="ms-1">{{translator $.language "ui.counts.votes"}}</span>
+                  </div>
+                  <div class="d-flex flex-shrink-0 align-items-center ms-3">
+                    <i class="br bi-chat-square-text-fill me-1"></i>
+                    <span class="fw-medium">{{.AnswerCount}}</span>
+                    <span class="ms-1">{{translator $.language "ui.counts.answers"}}</span>
+                  </div>
+                  <span class="summary-stat ms-3 flex-shrink-0">
+                    <i class="br bi-bar-chart-fill"></i>
+                    <span class="fw-medium ms-1">{{.ViewCount}}</span>
+                    <span class="ms-1">{{translator $.language "ui.counts.views"}}</span>
+                  </span>
+                </div>
+              </div>
+            </li>
+            {{end}}
           </div>
-          {{end}}
-        </div>
-        <div class="mt-4 mb-2 d-flex justify-content-center">
-          {{template "page" .}}
+          <div class="mt-4 mb-2 d-flex justify-content-center">
+            {{template "page" .}}
+          </div>
         </div>
       </div>
-    </div>
-    <div class="page-right-side mt-4 mt-xl-0 col">
-      {{template "hot-question" .}}
+      <div class="page-right-side mt-4 mt-xl-0 col">
+        {{template "hot-question" .}}
+      </div>
     </div>
   </div>
 </div>

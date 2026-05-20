@@ -23,6 +23,7 @@ import (
 	"fmt"
 
 	"github.com/apache/answer/internal/base/data"
+	"github.com/apache/answer/internal/base/path"
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/pkg/dir"
 )
@@ -32,7 +33,7 @@ func CheckConfigFile(configPath string) bool {
 }
 
 func CheckUploadDir() bool {
-	return dir.CheckDirExist(UploadFilePath)
+	return dir.CheckDirExist(path.UploadFilePath)
 }
 
 // CheckDBConnection check database whether the connection is normal
@@ -42,7 +43,9 @@ func CheckDBConnection(dataConf *data.Database) bool {
 		fmt.Printf("connection database failed: %s\n", err)
 		return false
 	}
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 	if err = db.Ping(); err != nil {
 		fmt.Printf("connection ping database failed: %s\n", err)
 		return false
@@ -58,7 +61,9 @@ func CheckDBTableExist(dataConf *data.Database) bool {
 		fmt.Printf("connection database failed: %s\n", err)
 		return false
 	}
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 	if err = db.Ping(); err != nil {
 		fmt.Printf("connection ping database failed: %s\n", err)
 		return false

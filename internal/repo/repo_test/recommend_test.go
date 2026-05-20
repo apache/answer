@@ -34,6 +34,7 @@ import (
 	"github.com/apache/answer/internal/repo/user"
 	config2 "github.com/apache/answer/internal/service/config"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func Test_questionRepo_GetRecommend(t *testing.T) {
@@ -61,8 +62,8 @@ func Test_questionRepo_GetRecommend(t *testing.T) {
 		IsAdmin:     false,
 	}
 	err := userRepo.AddUser(context.TODO(), user)
-	assert.NoError(t, err)
-	assert.NotEqual(t, "", user.ID)
+	require.NoError(t, err)
+	assert.NotEmpty(t, user.ID)
 
 	questions := make([]*entity.Question, 0)
 	// tag, unjoin, unfollow
@@ -140,8 +141,8 @@ func Test_questionRepo_GetRecommend(t *testing.T) {
 
 	for _, question := range questions {
 		err = questionRepo.AddQuestion(context.TODO(), question)
-		assert.NoError(t, err)
-		assert.NotEqual(t, "", question.ID)
+		require.NoError(t, err)
+		assert.NotEmpty(t, question.ID)
 	}
 
 	tags := []*entity.Tag{
@@ -161,7 +162,7 @@ func Test_questionRepo_GetRecommend(t *testing.T) {
 		},
 	}
 	err = tagCommenRepo.AddTagList(context.TODO(), tags)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	tagRels := make([]*entity.TagRel, 0)
 	for i, question := range questions {
@@ -173,7 +174,7 @@ func Test_questionRepo_GetRecommend(t *testing.T) {
 		tagRels = append(tagRels, tagRel)
 	}
 	err = tagRelRepo.AddTagRelList(context.TODO(), tagRels)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	followQuestionIDs := make([]string, 0)
 	for i := range questions {
@@ -181,15 +182,15 @@ func Test_questionRepo_GetRecommend(t *testing.T) {
 			continue
 		}
 		err = followRepo.Follow(context.TODO(), questions[i].ID, user.ID)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		followQuestionIDs = append(followQuestionIDs, questions[i].ID)
 	}
 
 	// get recommend
 	questionList, total, err := questionRepo.GetRecommendQuestionPageByTags(context.TODO(), user.ID, []string{tags[0].ID}, followQuestionIDs, 1, 20)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, int64(5), total)
-	assert.Equal(t, 5, len(questionList))
+	assert.Len(t, questionList, 5)
 
 	// recovery
 	t.Cleanup(func() {
@@ -197,19 +198,19 @@ func Test_questionRepo_GetRecommend(t *testing.T) {
 		for i, tagRel := range tagRels {
 			if i%2 == 1 {
 				err = followRepo.FollowCancel(context.TODO(), questions[i].ID, user.ID)
-				assert.NoError(t, err)
+				require.NoError(t, err)
 			}
 			tagRelIDs = append(tagRelIDs, tagRel.ID)
 		}
 		err = tagRelRepo.RemoveTagRelListByIDs(context.TODO(), tagRelIDs)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		for _, tag := range tags {
 			err = tagRepo.RemoveTag(context.TODO(), tag.ID)
-			assert.NoError(t, err)
+			require.NoError(t, err)
 		}
 		for _, q := range questions {
 			err = questionRepo.RemoveQuestion(context.TODO(), q.ID)
-			assert.NoError(t, err)
+			require.NoError(t, err)
 		}
 	})
 }

@@ -70,7 +70,6 @@ const Index: FC<Props> = ({ visible, tabName, data }) => {
                   tabName === 'bookmarks' ? item.create_time : item.created_at
                 }
                 className="me-3"
-                preFix={t('asked')}
               />
 
               <Counts

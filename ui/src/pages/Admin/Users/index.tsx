@@ -23,6 +23,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import classNames from 'classnames';
+import dayjs from 'dayjs';
 
 import {
   Pagination,
@@ -30,6 +31,8 @@ import {
   BaseUserCard,
   Empty,
   QueryGroup,
+  Modal,
+  TabNav,
 } from '@/components';
 import * as Type from '@/common/interface';
 import { useUserModal } from '@/hooks';
@@ -40,11 +43,14 @@ import {
   getAdminUcAgent,
   AdminUcAgent,
   changeUserStatus,
+  deletePermanently,
 } from '@/services';
 import { formatCount } from '@/utils';
+import { ADMIN_USERS_NAV_MENUS } from '@/common/constants';
 
 import DeleteUserModal from './components/DeleteUserModal';
 import Action from './components/Action';
+import SuspenseUserModal from './components/SuspenseUserModal';
 
 const UserFilterKeys: Type.UserFilterBy[] = [
   'normal',
@@ -65,6 +71,10 @@ const PAGE_SIZE = 10;
 const Users: FC = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'admin.users' });
   const [deleteUserModalState, setDeleteUserModalState] = useState({
+    show: false,
+    userId: '',
+  });
+  const [suspenseUserModalState, setSuspenseUserModalState] = useState({
     show: false,
     userId: '',
   });
@@ -101,9 +111,14 @@ const Users: FC = () => {
       return new Promise((resolve, reject) => {
         addUsers(userModel)
           .then(() => {
-            if (/all|staff/.test(curFilter) && curPage === 1) {
-              refreshUsers();
-            }
+            toastStore.getState().show({
+              msg: t('user_added', { keyPrefix: 'messages' }),
+              variant: 'success',
+            });
+            urlSearchParams.set('filter', 'normal');
+            urlSearchParams.delete('page');
+            setUrlSearchParams(urlSearchParams);
+            refreshUsers();
             resolve(true);
           })
           .catch((e) => {
@@ -151,6 +166,32 @@ const Users: FC = () => {
     });
   };
 
+  const handleDeletePermanently = () => {
+    Modal.confirm({
+      title: t('title', { keyPrefix: 'delete_permanently' }),
+      content: t('content', { keyPrefix: 'delete_permanently' }),
+      cancelBtnVariant: 'link',
+      confirmText: t('delete', { keyPrefix: 'btns' }),
+      confirmBtnVariant: 'danger',
+      onConfirm: () => {
+        deletePermanently('users').then(() => {
+          toastStore.getState().show({
+            msg: t('users_deleted', { keyPrefix: 'messages' }),
+            variant: 'success',
+          });
+          refreshUsers();
+        });
+      },
+    });
+  };
+
+  const handleSuspenseUserModalState = (modalData: {
+    show: boolean;
+    userId: string;
+  }) => {
+    setSuspenseUserModalState(modalData);
+  };
+
   const showAddUser =
     !ucAgent?.enabled || (ucAgent?.enabled && adminUcAgent?.allow_create_user);
   const showActionPassword =
@@ -169,14 +210,23 @@ const Users: FC = () => {
   return (
     <>
       <h3 className="mb-4">{t('title')}</h3>
-      <div className="d-flex flex-wrap justify-content-between align-items-center mb-3">
-        <Stack direction="horizontal" gap={3}>
+      <TabNav menus={ADMIN_USERS_NAV_MENUS} />
+      <div className="d-flex flex-wrap justify-content-between align-items-center">
+        <Stack direction="horizontal" gap={3} className="mb-3">
           <QueryGroup
             data={UserFilterKeys}
             currentSort={curFilter}
             sortKey="filter"
             i18nKeyPrefix="admin.users"
           />
+          {curFilter === 'deleted' && Number(data?.count) > 0 ? (
+            <Button
+              variant="outline-danger"
+              size="sm"
+              onClick={() => handleDeletePermanently()}>
+              {t('deleted_permanently', { keyPrefix: 'btns' })}
+            </Button>
+          ) : null}
           {showAddUser ? (
             <Button
               variant="outline-primary"
@@ -194,7 +244,7 @@ const Users: FC = () => {
           onChange={handleFilter}
           placeholder={t('filter.placeholder')}
           style={{ width: '12.25rem' }}
-          className="mt-3 mt-sm-0"
+          className="mb-3"
         />
       </div>
       <Table responsive="md">
@@ -202,15 +252,20 @@ const Users: FC = () => {
           <tr>
             <th>{t('name')}</th>
             <th style={{ width: '12%' }}>{t('reputation')}</th>
-            <th style={{ width: '20%' }} className="min-w-15">
+            <th style={{ width: '15%' }} className="min-w-15">
               {t('email')}
             </th>
-            <th className="text-nowrap" style={{ width: '15%' }}>
+            <th className="text-nowrap" style={{ width: '12%' }}>
               {t('created_at')}
             </th>
             {(curFilter === 'deleted' || curFilter === 'suspended') && (
-              <th className="text-nowrap" style={{ width: '15%' }}>
+              <th className="text-nowrap" style={{ width: '12%' }}>
                 {curFilter === 'deleted' ? t('delete_at') : t('suspend_at')}
+              </th>
+            )}
+            {curFilter === 'suspended' && (
+              <th className="text-nowrap" style={{ width: '12%' }}>
+                {t('suspend_until')}
               </th>
             )}
 
@@ -246,9 +301,21 @@ const Users: FC = () => {
                   <FormatTime time={user.created_at} />
                 </td>
                 {curFilter === 'suspended' && (
-                  <td className="text-nowrap">
-                    <FormatTime time={user.suspended_at} />
-                  </td>
+                  <>
+                    <td className="text-nowrap">
+                      <FormatTime time={user.suspended_at} />
+                    </td>
+                    <td className="text-nowrap">
+                      {user.suspended_until <= 0 ||
+                      Number(
+                        dayjs(user.suspended_until * 1000).format('YYYY'),
+                      ) > 2099
+                        ? t('suspend_user.forever')
+                        : dayjs(user.suspended_until * 1000).format(
+                            t('long_date_with_time', { keyPrefix: 'dates' }),
+                          )}
+                    </td>
+                  </>
                 )}
                 {curFilter === 'deleted' && (
                   <td className="text-nowrap">
@@ -277,6 +344,7 @@ const Users: FC = () => {
                     currentUser={currentUser}
                     refreshUsers={refreshUsers}
                     showDeleteModal={changeDeleteUserModalState}
+                    showSuspenseModal={handleSuspenseUserModalState}
                   />
                 ) : null}
               </tr>
@@ -302,6 +370,17 @@ const Users: FC = () => {
           });
         }}
         onDelete={(val) => handleDelete(val)}
+      />
+      <SuspenseUserModal
+        show={suspenseUserModalState.show}
+        userId={suspenseUserModalState.userId}
+        onClose={() => {
+          handleSuspenseUserModalState({
+            show: false,
+            userId: '',
+          });
+        }}
+        refreshUsers={refreshUsers}
       />
     </>
   );

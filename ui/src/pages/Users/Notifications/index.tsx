@@ -33,8 +33,7 @@ import {
 } from '@/services';
 import { floppyNavigation } from '@/utils';
 
-import Inbox from './components/Inbox';
-import Achievements from './components/Achievements';
+import { Inbox, Achievements } from './components';
 import './index.scss';
 
 const PAGE_SIZE = 10;

@@ -18,7 +18,7 @@
  */
 
 import { FC } from 'react';
-import { Form, Table, Stack } from 'react-bootstrap';
+import { Form, Table, Stack, Button } from 'react-bootstrap';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -31,12 +31,15 @@ import {
   BaseUserCard,
   Empty,
   QueryGroup,
+  Modal,
+  TabNav,
 } from '@/components';
-import { ADMIN_LIST_STATUS } from '@/common/constants';
+import { ADMIN_LIST_STATUS, ADMIN_QA_NAV_MENUS } from '@/common/constants';
 import * as Type from '@/common/interface';
-import { useAnswerSearch } from '@/services';
+import { deletePermanently, useAnswerSearch } from '@/services';
 import { escapeRemove } from '@/utils';
 import { pathFactory } from '@/router/pathFactory';
+import { toastStore } from '@/stores';
 
 import AnswerAction from './components/Action';
 
@@ -68,6 +71,25 @@ const Answers: FC = () => {
   });
   const count = listData?.count || 0;
 
+  const handleDeletePermanently = () => {
+    Modal.confirm({
+      title: t('title', { keyPrefix: 'delete_permanently' }),
+      content: t('content', { keyPrefix: 'delete_permanently' }),
+      cancelBtnVariant: 'link',
+      confirmText: t('delete', { keyPrefix: 'btns' }),
+      confirmBtnVariant: 'danger',
+      onConfirm: () => {
+        deletePermanently('answers').then(() => {
+          toastStore.getState().show({
+            msg: t('answers_deleted', { keyPrefix: 'messages' }),
+            variant: 'success',
+          });
+          refreshList();
+        });
+      },
+    });
+  };
+
   const handleFilter = (e) => {
     urlSearchParams.set('query', e.target.value);
     urlSearchParams.delete('page');
@@ -75,14 +97,27 @@ const Answers: FC = () => {
   };
   return (
     <>
-      <h3 className="mb-4">{t('page_title')}</h3>
-      <div className="d-flex flex-wrap justify-content-between align-items-center mb-3">
-        <QueryGroup
-          data={answerFilterItems}
-          currentSort={curFilter}
-          sortKey="status"
-          i18nKeyPrefix="btns"
-        />
+      <h3 className="mb-4">
+        {t('page_title', { keyPrefix: 'admin.questions' })}
+      </h3>
+      <TabNav menus={ADMIN_QA_NAV_MENUS} />
+      <div className="d-flex flex-wrap justify-content-between align-items-center">
+        <Stack direction="horizontal" gap={3} className="mb-3">
+          <QueryGroup
+            data={answerFilterItems}
+            currentSort={curFilter}
+            sortKey="status"
+            i18nKeyPrefix="btns"
+          />
+          {curFilter === 'deleted' && count > 0 ? (
+            <Button
+              variant="outline-danger"
+              size="sm"
+              onClick={() => handleDeletePermanently()}>
+              {t('deleted_permanently', { keyPrefix: 'btns' })}
+            </Button>
+          ) : null}
+        </Stack>
 
         <Form.Control
           value={curQuery}
@@ -91,7 +126,7 @@ const Answers: FC = () => {
           type="search"
           placeholder={t('filter.placeholder')}
           style={{ width: '12.25rem' }}
-          className="mt-3 mt-sm-0"
+          className="mb-3"
         />
       </div>
       <Table responsive="md">
@@ -135,7 +170,11 @@ const Answers: FC = () => {
                 <td>{li.vote_count}</td>
                 <td>
                   <Stack>
-                    <BaseUserCard data={li.user_info} nameMaxWidth="200px" />
+                    <BaseUserCard
+                      avatarSize="20"
+                      data={li.user_info}
+                      nameMaxWidth="200px"
+                    />
 
                     <FormatTime
                       className="small text-secondary"

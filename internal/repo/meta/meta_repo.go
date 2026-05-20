@@ -25,7 +25,7 @@ import (
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/base/reason"
 	"github.com/apache/answer/internal/entity"
-	"github.com/apache/answer/internal/service/meta_common"
+	metacommon "github.com/apache/answer/internal/service/meta_common"
 	"github.com/segmentfault/pacman/errors"
 	"xorm.io/builder"
 	"xorm.io/xorm"
@@ -72,7 +72,7 @@ func (mr *metaRepo) UpdateMeta(ctx context.Context, meta *entity.Meta) (err erro
 
 // AddOrUpdateMetaByObjectIdAndKey if exist record with same objectID and key, update it. Or create a new one
 func (mr *metaRepo) AddOrUpdateMetaByObjectIdAndKey(ctx context.Context, objectId, key string, f func(*entity.Meta, bool) (*entity.Meta, error)) error {
-	_, err := mr.data.DB.Transaction(func(session *xorm.Session) (interface{}, error) {
+	_, err := mr.data.DB.Transaction(func(session *xorm.Session) (any, error) {
 		session = session.Context(ctx)
 
 		// 1. acquire meta entity with target object id and key

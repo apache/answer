@@ -59,7 +59,6 @@ func NewReportController(
 // AddReport add report
 // @Summary add report
 // @Description add report <br> source (question, answer, comment, user)
-// @Security ApiKeyAuth
 // @Tags Report
 // @Accept json
 // @Produce json
@@ -80,7 +79,7 @@ func (rc *ReportController) AddReport(ctx *gin.Context) {
 		if !captchaPass {
 			errFields := append([]*validator.FormErrorField{}, &validator.FormErrorField{
 				ErrorField: "captcha_code",
-				ErrorMsg:   translator.Tr(handler.GetLang(ctx), reason.CaptchaVerificationFailed),
+				ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.CaptchaVerificationFailed),
 			})
 			handler.HandleResponse(ctx, errors.BadRequest(reason.CaptchaVerificationFailed), errFields)
 			return
@@ -130,7 +129,6 @@ func (rc *ReportController) GetUnreviewedReportPostPage(ctx *gin.Context) {
 // ReviewReport review report
 // @Summary review report
 // @Description review report
-// @Security ApiKeyAuth
 // @Tags Report
 // @Accept json
 // @Produce json

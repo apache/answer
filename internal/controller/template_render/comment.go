@@ -21,6 +21,7 @@ package templaterender
 
 import (
 	"context"
+
 	"github.com/apache/answer/internal/base/pager"
 	"github.com/apache/answer/internal/schema"
 )
@@ -32,7 +33,6 @@ func (t *TemplateRenderController) CommentList(
 	comments map[string][]*schema.GetCommentResp,
 	err error,
 ) {
-
 	comments = make(map[string][]*schema.GetCommentResp, len(objectIDs))
 
 	for _, objectID := range objectIDs {

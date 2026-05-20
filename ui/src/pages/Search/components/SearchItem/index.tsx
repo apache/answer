@@ -68,7 +68,7 @@ const Index: FC<Props> = ({ data }) => {
         <span
           className="float-start me-2 badge text-bg-dark"
           style={{ marginTop: '2px' }}>
-          {data.object_type === 'question' ? 'Q' : 'A'}
+          {t(data.object_type, { keyPrefix: 'btns' })}
         </span>
         <Link className="h5 mb-0 link-dark text-break" to={itemUrl}>
           <HighlightText text={data.object.title} keywords={keywords} />
@@ -81,11 +81,7 @@ const Index: FC<Props> = ({ data }) => {
         <BaseUserCard data={data.object?.user_info} showAvatar={false} />
 
         <span className="split-dot" />
-        <FormatTime
-          time={data.object?.created_at}
-          className="me-3"
-          preFix={data.object_type === 'question' ? 'asked' : 'answered'}
-        />
+        <FormatTime time={data.object?.created_at} className="me-3" />
 
         <Counts
           className="my-2 my-sm-0"

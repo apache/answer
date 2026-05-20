@@ -23,16 +23,17 @@ type ConfigType string
 type InputType string
 
 const (
-	ConfigTypeInput    ConfigType = "input"
-	ConfigTypeTextarea ConfigType = "textarea"
-	ConfigTypeCheckbox ConfigType = "checkbox"
-	ConfigTypeRadio    ConfigType = "radio"
-	ConfigTypeSelect   ConfigType = "select"
-	ConfigTypeUpload   ConfigType = "upload"
-	ConfigTypeTimezone ConfigType = "timezone"
-	ConfigTypeSwitch   ConfigType = "switch"
-	ConfigTypeButton   ConfigType = "button"
-	ConfigTypeLegend   ConfigType = "legend"
+	ConfigTypeInput       ConfigType = "input"
+	ConfigTypeTextarea    ConfigType = "textarea"
+	ConfigTypeCheckbox    ConfigType = "checkbox"
+	ConfigTypeRadio       ConfigType = "radio"
+	ConfigTypeSelect      ConfigType = "select"
+	ConfigTypeUpload      ConfigType = "upload"
+	ConfigTypeTimezone    ConfigType = "timezone"
+	ConfigTypeSwitch      ConfigType = "switch"
+	ConfigTypeButton      ConfigType = "button"
+	ConfigTypeLegend      ConfigType = "legend"
+	ConfigTypeTagSelector ConfigType = "tag_selector"
 )
 
 const (
@@ -64,13 +65,13 @@ type ConfigField struct {
 }
 
 type ConfigFieldUIOptions struct {
-	Placeholder    Translator      `json:"placeholder,omitempty"`
+	Placeholder    Translator      `json:"placeholder"`
 	Rows           string          `json:"rows,omitempty"`
 	InputType      InputType       `json:"input_type,omitempty"`
-	Label          Translator      `json:"label,omitempty"`
+	Label          Translator      `json:"label"`
 	Action         *UIOptionAction `json:"action,omitempty"`
 	Variant        string          `json:"variant,omitempty"`
-	Text           Translator      `json:"text,omitempty"`
+	Text           Translator      `json:"text"`
 	ClassName      string          `json:"class_name,omitempty"`
 	FieldClassName string          `json:"field_class_name,omitempty"`
 }
@@ -103,6 +104,15 @@ type LoadingAction struct {
 type OnCompleteAction struct {
 	ToastReturnMessage bool `json:"toast_return_message"`
 	RefreshFormConfig  bool `json:"refresh_form_config"`
+}
+
+// TagSelectorOption represents a tag option in the tag selector config value field
+type TagSelectorOption struct {
+	TagID       string `json:"tag_id"`
+	SlugName    string `json:"slug_name"`
+	DisplayName string `json:"display_name"`
+	Recommend   bool   `json:"recommend"`
+	Reserved    bool   `json:"reserved"`
 }
 
 type Config interface {

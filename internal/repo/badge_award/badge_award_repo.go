@@ -22,6 +22,7 @@ package badge_award
 import (
 	"context"
 	"fmt"
+
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/base/pager"
 	"github.com/apache/answer/internal/base/reason"
@@ -179,6 +180,15 @@ func (r *badgeAwardRepo) GetByUserIdAndBadgeIdAndAwardKey(ctx context.Context, u
 	badgeAward = &entity.BadgeAward{}
 	exists, err = r.data.DB.Context(ctx).
 		Where("user_id = ? AND badge_id = ? AND award_key = ? AND is_badge_deleted = 0", userID, badgeID, awardKey).Get(badgeAward)
+	if err != nil {
+		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	return
+}
+
+// DeleteUserBadgeAward delete user badge award
+func (r *badgeAwardRepo) DeleteUserBadgeAward(ctx context.Context, userID string) (err error) {
+	_, err = r.data.DB.Context(ctx).Where("user_id = ?", userID).Delete(&entity.BadgeAward{})
 	if err != nil {
 		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}

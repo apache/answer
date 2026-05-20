@@ -19,23 +19,22 @@
 
 -->
 {{define "sidenav"}}
-<div id="sideNav" class="position-relative d-none d-lg-block col-xl-2 col-lg-3 col-md-12">
-  <div class="nav-wrap pt-4">
-    <div class="flex-column nav nav-pills">
-      <a class="nav-link active" href="{{$.baseURL}}/questions">
-        <i class="br bi-question-circle-fill me-2"></i>
-        <span>{{translator $.language "ui.header.nav.question"}}</span>
-      </a>
-      <a href="/tags" data-rr-ui-event-key="/tags" class="nav-link">
-        <i class="br bi-tags-fill me-2"></i>
-        <span>{{translator $.language "ui.header.nav.tag"}}</span>
-      </a>
-      <a class="nav-link" href="{{$.baseURL}}/users">
-        <i class="br bi-people-fill me-2"></i>
-        <span>{{translator $.language "ui.header.nav.user"}}</span>
-      </a>
-    </div>
-  </div>
-  <div class="side-nav-right-line"></div>
+<div class="flex-column nav nav-pills">
+  <a class="nav-link active" href="{{$.baseURL}}/questions">
+    <i class="br bi-question-circle-fill me-2"></i>
+    <span>{{translator $.language "ui.header.nav.question"}}</span>
+  </a>
+  <a href="{{$.baseURL}}/tags" data-rr-ui-event-key="/tags" class="nav-link">
+    <i class="br bi-tags-fill me-2"></i>
+    <span>{{translator $.language "ui.header.nav.tag"}}</span>
+  </a>
+  <a class="nav-link" href="{{$.baseURL}}/users">
+    <i class="br bi-people-fill me-2"></i>
+    <span>{{translator $.language "ui.header.nav.user"}}</span>
+  </a>
+  <a class="nav-link" href="{{$.baseURL}}/badges">
+    <i class="br bi-people-fill me-2"></i>
+    <span>{{translator $.language "ui.header.nav.badges"}}</span>
+  </a>
 </div>
 {{end}}

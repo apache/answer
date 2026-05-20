@@ -17,22 +17,32 @@
  * under the License.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import { minimalSetup } from 'codemirror';
 import { EditorState, Compartment } from '@codemirror/state';
 import { EditorView, placeholder } from '@codemirror/view';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
+import copy from 'copy-to-clipboard';
+import Tooltip from 'bootstrap/js/dist/tooltip';
 
 import { Editor } from '../types';
 import { isDarkTheme } from '@/utils/common';
 
-import createEditorUtils from './extension';
+import { createCodeMirrorAdapter } from './codemirror/adapter';
 
 const editableCompartment = new Compartment();
-export function htmlRender(el: HTMLElement | null) {
+interface htmlRenderConfig {
+  copyText: string;
+  copySuccessText: string;
+}
+export function htmlRender(el: HTMLElement | null, config?: htmlRenderConfig) {
   if (!el) return;
+  const { copyText = '', copySuccessText = '' } = config || {
+    copyText: 'Copy to clipboard',
+    copySuccessText: 'Copied!',
+  };
   // Replace all br tags with newlines
   // Fixed an issue where the BR tag in the editor block formula HTML caused rendering errors.
   el.querySelectorAll('p').forEach((p) => {
@@ -69,18 +79,62 @@ export function htmlRender(el: HTMLElement | null) {
       a.rel = 'nofollow';
     }
   });
+
+  // Add copy button to all pre tags
+  el.querySelectorAll('pre').forEach((pre) => {
+    // Create copy button
+    const codeWrap = document.createElement('div');
+    codeWrap.className = 'position-relative a-code-wrap';
+    const codeTool = document.createElement('div');
+    codeTool.className = 'a-code-tool';
+    const uniqueId = `a-copy-code-${Date.now().toString().substring(5)}-${Math.floor(Math.random() * 10)}${Math.floor(Math.random() * 10)}${Math.floor(Math.random() * 10)}`;
+    const str = `
+      <a role="button" class="link-secondary a-copy-code" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="${copyText}" id="${uniqueId}">
+        <i class="br bi-copy"></i>
+      </a>
+    `;
+    codeTool.innerHTML = str;
+
+    pre.style.position = 'relative';
+
+    codeWrap.appendChild(codeTool);
+    pre.parentNode?.replaceChild(codeWrap, pre);
+    codeWrap.appendChild(pre);
+
+    const tooltipTriggerList = el.querySelectorAll('.a-copy-code');
+
+    Array.from(tooltipTriggerList)?.map(
+      (tooltipTriggerEl) => new Tooltip(tooltipTriggerEl),
+    );
+
+    // Copy pre content on button click
+    const copyBtn = codeTool.querySelector('.a-copy-code');
+    copyBtn?.addEventListener('click', () => {
+      const textToCopy = pre.textContent || '';
+      copy(textToCopy);
+      // Change tooltip text on copy success
+      const tooltipInstance = Tooltip.getOrCreateInstance(`#${uniqueId}`);
+      tooltipInstance?.setContent({ '.tooltip-inner': copySuccessText });
+      const myTooltipEl = document.querySelector(`#${uniqueId}`);
+      myTooltipEl?.addEventListener('hidden.bs.tooltip', () => {
+        tooltipInstance.setContent({ '.tooltip-inner': copyText });
+      });
+    });
+  });
 }
 
 export const useEditor = ({
   editorRef,
   placeholder: placeholderText,
   autoFocus,
+  initialValue,
   onChange,
   onFocus,
   onBlur,
 }) => {
   const [editor, setEditor] = useState<Editor | null>(null);
-  const [value, setValue] = useState<string>('');
+  const isInternalUpdateRef = useRef<boolean>(false);
+
   const init = async () => {
     const isDark = isDarkTheme();
 
@@ -108,6 +162,7 @@ export const useEditor = ({
     });
 
     const startState = EditorState.create({
+      doc: initialValue || '',
       extensions: [
         minimalSetup,
         markdown({
@@ -118,6 +173,16 @@ export const useEditor = ({
         placeholder(placeholderText),
         EditorView.lineWrapping,
         editableCompartment.of(EditorView.editable.of(true)),
+        EditorView.domEventHandlers({
+          paste(event) {
+            const clipboard = event.clipboardData as DataTransfer;
+            const htmlStr = clipboard.getData('text/html');
+            const imgRegex =
+              /<img([\s\S]*?) src\s*=\s*(['"])([\s\S]*?)\2([^>]*)>/;
+
+            return Boolean(htmlStr.match(imgRegex));
+          },
+        }),
       ],
     });
 
@@ -126,7 +191,7 @@ export const useEditor = ({
       state: startState,
     });
 
-    const cm = createEditorUtils(view as Editor);
+    const cm = createCodeMirrorAdapter(view as Editor);
 
     cm.setReadOnly = (readOnly: boolean) => {
       cm.dispatch({
@@ -142,9 +207,20 @@ export const useEditor = ({
       }, 10);
     }
 
+    const originalSetValue = cm.setValue;
+    cm.setValue = (newValue: string) => {
+      isInternalUpdateRef.current = true;
+      originalSetValue.call(cm, newValue);
+      setTimeout(() => {
+        isInternalUpdateRef.current = false;
+      }, 0);
+    };
+
     cm.on('change', () => {
-      const newValue = cm.getValue();
-      setValue(newValue);
+      if (!isInternalUpdateRef.current && onChange) {
+        const newValue = cm.getValue();
+        onChange(newValue);
+      }
     });
 
     cm.on('focus', () => {
@@ -159,10 +235,6 @@ export const useEditor = ({
 
     return cm;
   };
-
-  useEffect(() => {
-    onChange?.(value);
-  }, [value]);
 
   useEffect(() => {
     if (!editorRef.current) {

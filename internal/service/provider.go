@@ -23,8 +23,10 @@ import (
 	"github.com/apache/answer/internal/service/action"
 	"github.com/apache/answer/internal/service/activity"
 	"github.com/apache/answer/internal/service/activity_common"
-	"github.com/apache/answer/internal/service/activity_queue"
+	"github.com/apache/answer/internal/service/activityqueue"
+	"github.com/apache/answer/internal/service/ai_conversation"
 	answercommon "github.com/apache/answer/internal/service/answer_common"
+	"github.com/apache/answer/internal/service/apikey"
 	"github.com/apache/answer/internal/service/auth"
 	"github.com/apache/answer/internal/service/badge"
 	"github.com/apache/answer/internal/service/collection"
@@ -34,13 +36,16 @@ import (
 	"github.com/apache/answer/internal/service/config"
 	"github.com/apache/answer/internal/service/content"
 	"github.com/apache/answer/internal/service/dashboard"
-	"github.com/apache/answer/internal/service/event_queue"
+	"github.com/apache/answer/internal/service/embedding"
+	"github.com/apache/answer/internal/service/eventqueue"
 	"github.com/apache/answer/internal/service/export"
+	"github.com/apache/answer/internal/service/feature_toggle"
+	"github.com/apache/answer/internal/service/file_record"
 	"github.com/apache/answer/internal/service/follow"
 	"github.com/apache/answer/internal/service/importer"
 	"github.com/apache/answer/internal/service/meta"
-	"github.com/apache/answer/internal/service/meta_common"
-	"github.com/apache/answer/internal/service/notice_queue"
+	metacommon "github.com/apache/answer/internal/service/meta_common"
+	"github.com/apache/answer/internal/service/noticequeue"
 	"github.com/apache/answer/internal/service/notification"
 	notficationcommon "github.com/apache/answer/internal/service/notification_common"
 	"github.com/apache/answer/internal/service/object_info"
@@ -63,6 +68,7 @@ import (
 	usercommon "github.com/apache/answer/internal/service/user_common"
 	"github.com/apache/answer/internal/service/user_external_login"
 	"github.com/apache/answer/internal/service/user_notification_config"
+	"github.com/apache/answer/internal/service/vector_sync"
 	"github.com/google/wire"
 )
 
@@ -113,17 +119,23 @@ var ProviderSetService = wire.NewSet(
 	user_external_login.NewUserCenterLoginService,
 	plugin_common.NewPluginCommonService,
 	config.NewConfigService,
-	notice_queue.NewNotificationQueueService,
-	activity_queue.NewActivityQueueService,
+	noticequeue.NewService,
+	activityqueue.NewService,
 	user_notification_config.NewUserNotificationConfigService,
 	notification.NewExternalNotificationService,
-	notice_queue.NewNewQuestionNotificationQueueService,
+	noticequeue.NewExternalService,
 	review.NewReviewService,
 	meta.NewMetaService,
-	event_queue.NewEventQueueService,
+	eventqueue.NewService,
 	badge.NewBadgeService,
 	badge.NewBadgeEventService,
 	badge.NewBadgeAwardService,
 	badge.NewBadgeGroupService,
 	importer.NewImporterService,
+	file_record.NewFileRecordService,
+	apikey.NewAPIKeyService,
+	ai_conversation.NewAIConversationService,
+	feature_toggle.NewFeatureToggleService,
+	embedding.NewEmbeddingService,
+	vector_sync.NewService,
 )

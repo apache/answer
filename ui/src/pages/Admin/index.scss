@@ -17,17 +17,16 @@
  * under the License.
  */
 
-.admin-container {
-  padding-top: 1.5rem;
-  padding-bottom: 1.5rem;
-}
-
 .min-w-15 {
   min-width: 15rem;
 }
 
 .max-w-30 {
   max-width: 30rem;
+}
+
+.max-w-748 {
+  max-width: 748px;
 }
 
 @media screen and (max-width: 768px) {

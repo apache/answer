@@ -31,6 +31,12 @@ export const deleteTag = (id) => {
 export const modifyTag = (params) => {
   return request.put('/answer/api/v1/tag', params);
 };
+export const mergeTag = (params: {
+  source_tag_id: string;
+  target_tag_id: string;
+}) => {
+  return request.post('/answer/api/v1/tag/merge', params);
+};
 
 export const useQuerySynonymsTags = (tagId, status) => {
   const apiUrl =

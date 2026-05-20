@@ -22,6 +22,7 @@ package siteinfo
 import (
 	"context"
 	"encoding/json"
+	errpkg "errors"
 	"fmt"
 	"strings"
 
@@ -33,10 +34,12 @@ import (
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/config"
 	"github.com/apache/answer/internal/service/export"
+	"github.com/apache/answer/internal/service/file_record"
 	questioncommon "github.com/apache/answer/internal/service/question_common"
 	"github.com/apache/answer/internal/service/siteinfo_common"
 	tagcommon "github.com/apache/answer/internal/service/tag_common"
 	"github.com/apache/answer/plugin"
+	"github.com/go-resty/resty/v2"
 	"github.com/jinzhu/copier"
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
@@ -49,6 +52,7 @@ type SiteInfoService struct {
 	tagCommonService      *tagcommon.TagCommonService
 	configService         *config.ConfigService
 	questioncommon        *questioncommon.QuestionCommon
+	fileRecordService     *file_record.FileRecordService
 }
 
 func NewSiteInfoService(
@@ -58,6 +62,7 @@ func NewSiteInfoService(
 	tagCommonService *tagcommon.TagCommonService,
 	configService *config.ConfigService,
 	questioncommon *questioncommon.QuestionCommon,
+	fileRecordService *file_record.FileRecordService,
 
 ) *SiteInfoService {
 	plugin.RegisterGetSiteURLFunc(func() string {
@@ -76,6 +81,7 @@ func NewSiteInfoService(
 		tagCommonService:      tagCommonService,
 		configService:         configService,
 		questioncommon:        questioncommon,
+		fileRecordService:     fileRecordService,
 	}
 }
 
@@ -85,8 +91,13 @@ func (s *SiteInfoService) GetSiteGeneral(ctx context.Context) (resp *schema.Site
 }
 
 // GetSiteInterface get site info interface
-func (s *SiteInfoService) GetSiteInterface(ctx context.Context) (resp *schema.SiteInterfaceResp, err error) {
+func (s *SiteInfoService) GetSiteInterface(ctx context.Context) (resp *schema.SiteInterfaceSettingsResp, err error) {
 	return s.siteInfoCommonService.GetSiteInterface(ctx)
+}
+
+// GetSiteUsersSettings get site info users settings
+func (s *SiteInfoService) GetSiteUsersSettings(ctx context.Context) (resp *schema.SiteUsersSettingsResp, err error) {
+	return s.siteInfoCommonService.GetSiteUsersSettings(ctx)
 }
 
 // GetSiteBranding get site info branding
@@ -99,16 +110,12 @@ func (s *SiteInfoService) GetSiteUsers(ctx context.Context) (resp *schema.SiteUs
 	return s.siteInfoCommonService.GetSiteUsers(ctx)
 }
 
-// GetSiteWrite get site info write
-func (s *SiteInfoService) GetSiteWrite(ctx context.Context) (resp *schema.SiteWriteResp, err error) {
-	resp = &schema.SiteWriteResp{}
-	siteInfo, exist, err := s.siteInfoRepo.GetByType(ctx, constant.SiteTypeWrite)
+// GetSiteTag get site info write
+func (s *SiteInfoService) GetSiteTag(ctx context.Context) (resp *schema.SiteTagsResp, err error) {
+	resp, err = s.siteInfoCommonService.GetSiteTag(ctx)
 	if err != nil {
 		log.Error(err)
 		return resp, nil
-	}
-	if exist {
-		_ = json.Unmarshal([]byte(siteInfo.Content), resp)
 	}
 
 	resp.RecommendTags, err = s.tagCommonService.GetSiteWriteRecommendTag(ctx)
@@ -122,9 +129,24 @@ func (s *SiteInfoService) GetSiteWrite(ctx context.Context) (resp *schema.SiteWr
 	return resp, nil
 }
 
-// GetSiteLegal get site legal info
-func (s *SiteInfoService) GetSiteLegal(ctx context.Context) (resp *schema.SiteLegalResp, err error) {
-	return s.siteInfoCommonService.GetSiteLegal(ctx)
+// GetSiteQuestion get site questions settings
+func (s *SiteInfoService) GetSiteQuestion(ctx context.Context) (resp *schema.SiteQuestionsResp, err error) {
+	return s.siteInfoCommonService.GetSiteQuestion(ctx)
+}
+
+// GetSiteAdvanced get site advanced settings
+func (s *SiteInfoService) GetSiteAdvanced(ctx context.Context) (resp *schema.SiteAdvancedResp, err error) {
+	return s.siteInfoCommonService.GetSiteAdvanced(ctx)
+}
+
+// GetSitePolicies get site legal info
+func (s *SiteInfoService) GetSitePolicies(ctx context.Context) (resp *schema.SitePoliciesResp, err error) {
+	return s.siteInfoCommonService.GetSitePolicies(ctx)
+}
+
+// GetSiteSecurity get site security info
+func (s *SiteInfoService) GetSiteSecurity(ctx context.Context) (resp *schema.SiteSecurityResp, err error) {
+	return s.siteInfoCommonService.GetSiteSecurity(ctx)
 }
 
 // GetSiteLogin get site login info
@@ -154,18 +176,27 @@ func (s *SiteInfoService) SaveSiteGeneral(ctx context.Context, req schema.SiteGe
 }
 
 func (s *SiteInfoService) SaveSiteInterface(ctx context.Context, req schema.SiteInterfaceReq) (err error) {
-	// check language
+	// If the language is invalid, set it to the default language "en_US"
 	if !translator.CheckLanguageIsValid(req.Language) {
-		err = errors.BadRequest(reason.LangNotFound)
-		return
+		req.Language = "en_US"
 	}
 
 	content, _ := json.Marshal(req)
 	data := entity.SiteInfo{
-		Type:    constant.SiteTypeInterface,
+		Type:    constant.SiteTypeInterfaceSettings,
 		Content: string(content),
 	}
-	return s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeInterface, &data)
+	return s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeInterfaceSettings, &data)
+}
+
+// SaveSiteUsersSettings save site users settings
+func (s *SiteInfoService) SaveSiteUsersSettings(ctx context.Context, req schema.SiteUsersSettingsReq) (err error) {
+	content, _ := json.Marshal(req)
+	data := entity.SiteInfo{
+		Type:    constant.SiteTypeInterfaceSettings,
+		Content: string(content),
+	}
+	return s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeUsersSettings, &data)
 }
 
 // SaveSiteBranding save site branding information
@@ -179,8 +210,30 @@ func (s *SiteInfoService) SaveSiteBranding(ctx context.Context, req *schema.Site
 	return s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeBranding, data)
 }
 
-// SaveSiteWrite save site configuration about write
-func (s *SiteInfoService) SaveSiteWrite(ctx context.Context, req *schema.SiteWriteReq) (resp interface{}, err error) {
+// SaveSiteAdvanced save site advanced configuration
+func (s *SiteInfoService) SaveSiteAdvanced(ctx context.Context, req *schema.SiteAdvancedReq) (resp any, err error) {
+	content, _ := json.Marshal(req)
+	data := &entity.SiteInfo{
+		Type:    constant.SiteTypeAdvanced,
+		Content: string(content),
+		Status:  1,
+	}
+	return nil, s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeAdvanced, data)
+}
+
+// SaveSiteQuestions save site questions configuration
+func (s *SiteInfoService) SaveSiteQuestions(ctx context.Context, req *schema.SiteQuestionsReq) (resp any, err error) {
+	content, _ := json.Marshal(req)
+	data := &entity.SiteInfo{
+		Type:    constant.SiteTypeQuestions,
+		Content: string(content),
+		Status:  1,
+	}
+	return nil, s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeQuestions, data)
+}
+
+// SaveSiteTags save site tags configuration
+func (s *SiteInfoService) SaveSiteTags(ctx context.Context, req *schema.SiteTagsReq) (resp any, err error) {
 	recommendTags, reservedTags := make([]string, 0), make([]string, 0)
 	recommendTagMapping, reservedTagMapping := make(map[string]bool), make(map[string]bool)
 	for _, tag := range req.ReservedTags {
@@ -207,22 +260,33 @@ func (s *SiteInfoService) SaveSiteWrite(ctx context.Context, req *schema.SiteWri
 
 	content, _ := json.Marshal(req)
 	data := &entity.SiteInfo{
-		Type:    constant.SiteTypeWrite,
+		Type:    constant.SiteTypeTags,
 		Content: string(content),
 		Status:  1,
 	}
-	return nil, s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeWrite, data)
+	return nil, s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeTags, data)
 }
 
-// SaveSiteLegal save site legal configuration
-func (s *SiteInfoService) SaveSiteLegal(ctx context.Context, req *schema.SiteLegalReq) (err error) {
+// SaveSitePolicies save site policies configuration
+func (s *SiteInfoService) SaveSitePolicies(ctx context.Context, req *schema.SitePoliciesReq) (err error) {
 	content, _ := json.Marshal(req)
 	data := &entity.SiteInfo{
-		Type:    constant.SiteTypeLegal,
+		Type:    constant.SiteTypePolicies,
 		Content: string(content),
 		Status:  1,
 	}
-	return s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeLegal, data)
+	return s.siteInfoRepo.SaveByType(ctx, constant.SiteTypePolicies, data)
+}
+
+// SaveSiteSecurity save site security configuration
+func (s *SiteInfoService) SaveSiteSecurity(ctx context.Context, req *schema.SiteSecurityReq) (err error) {
+	content, _ := json.Marshal(req)
+	data := &entity.SiteInfo{
+		Type:    constant.SiteTypeSecurity,
+		Content: string(content),
+		Status:  1,
+	}
+	return s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeSecurity, data)
 }
 
 // SaveSiteLogin save site legal configuration
@@ -249,6 +313,9 @@ func (s *SiteInfoService) SaveSiteCustomCssHTML(ctx context.Context, req *schema
 
 // SaveSiteTheme save site custom html configuration
 func (s *SiteInfoService) SaveSiteTheme(ctx context.Context, req *schema.SiteThemeReq) (err error) {
+	if len(req.Layout) == 0 {
+		req.Layout = constant.ThemeLayoutFullWidth
+	}
 	content, _ := json.Marshal(req)
 	data := &entity.SiteInfo{
 		Type:    constant.SiteTypeTheme,
@@ -267,6 +334,154 @@ func (s *SiteInfoService) SaveSiteUsers(ctx context.Context, req *schema.SiteUse
 		Status:  1,
 	}
 	return s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeUsers, data)
+}
+
+// GetSiteAI get site AI configuration
+func (s *SiteInfoService) GetSiteAI(ctx context.Context) (resp *schema.SiteAIResp, err error) {
+	resp, err = s.siteInfoCommonService.GetSiteAI(ctx)
+	if err != nil {
+		return nil, err
+	}
+	aiProvider, err := s.GetAIProvider(ctx)
+	if err != nil {
+		return nil, err
+	}
+	providerMapping := make(map[string]*schema.SiteAIProvider)
+	for _, provider := range resp.SiteAIProviders {
+		providerMapping[provider.Provider] = provider
+	}
+	providers := make([]*schema.SiteAIProvider, 0)
+	for _, p := range aiProvider {
+		if provider, ok := providerMapping[p.Name]; ok {
+			providers = append(providers, provider)
+		} else {
+			providers = append(providers, &schema.SiteAIProvider{
+				Provider: p.Name,
+			})
+		}
+	}
+	resp.SiteAIProviders = providers
+	s.maskAIKeys(resp)
+	return resp, nil
+}
+
+// SaveSiteAI save site AI configuration
+func (s *SiteInfoService) SaveSiteAI(ctx context.Context, req *schema.SiteAIReq) (err error) {
+	if err := s.restoreMaskedAIKeys(ctx, req); err != nil {
+		return err
+	}
+	if req.PromptConfig == nil {
+		req.PromptConfig = &schema.AIPromptConfig{
+			ZhCN: constant.DefaultAIPromptConfigZhCN,
+			EnUS: constant.DefaultAIPromptConfigEnUS,
+		}
+	}
+
+	aiProvider, err := s.GetAIProvider(ctx)
+	if err != nil {
+		return err
+	}
+
+	providerMapping := make(map[string]*schema.SiteAIProvider)
+	for _, provider := range req.SiteAIProviders {
+		providerMapping[provider.Provider] = provider
+	}
+
+	providers := make([]*schema.SiteAIProvider, 0)
+	for _, p := range aiProvider {
+		if provider, ok := providerMapping[p.Name]; ok {
+			if len(provider.APIHost) == 0 && provider.Provider == req.ChosenProvider {
+				provider.APIHost = p.DefaultAPIHost
+			}
+			providers = append(providers, provider)
+		} else {
+			providers = append(providers, &schema.SiteAIProvider{
+				Provider: p.Name,
+				APIHost:  p.DefaultAPIHost,
+			})
+		}
+	}
+	req.SiteAIProviders = providers
+
+	content, _ := json.Marshal(req)
+	siteInfo := &entity.SiteInfo{
+		Type:    constant.SiteTypeAI,
+		Content: string(content),
+		Status:  1,
+	}
+	return s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeAI, siteInfo)
+}
+
+func (s *SiteInfoService) maskAIKeys(resp *schema.SiteAIResp) {
+	for _, provider := range resp.SiteAIProviders {
+		if provider.APIKey == "" {
+			continue
+		}
+		provider.APIKey = strings.Repeat("*", len(provider.APIKey))
+	}
+}
+
+func (s *SiteInfoService) restoreMaskedAIKeys(ctx context.Context, req *schema.SiteAIReq) error {
+	hasMasked := false
+	for _, provider := range req.SiteAIProviders {
+		if provider.APIKey != "" && isAllMask(provider.APIKey) {
+			hasMasked = true
+			break
+		}
+	}
+	if !hasMasked {
+		return nil
+	}
+
+	current, err := s.siteInfoCommonService.GetSiteAI(ctx)
+	if err != nil {
+		return err
+	}
+	currentMapping := make(map[string]*schema.SiteAIProvider)
+	for _, provider := range current.SiteAIProviders {
+		currentMapping[provider.Provider] = provider
+	}
+	for _, provider := range req.SiteAIProviders {
+		if provider.APIKey == "" || !isAllMask(provider.APIKey) {
+			continue
+		}
+		if stored, ok := currentMapping[provider.Provider]; ok {
+			provider.APIKey = stored.APIKey
+		}
+	}
+	return nil
+}
+
+func isAllMask(value string) bool {
+	return strings.Trim(value, "*") == ""
+}
+
+// GetSiteMCP get site MCP configuration
+func (s *SiteInfoService) GetSiteMCP(ctx context.Context) (resp *schema.SiteMCPResp, err error) {
+	resp, err = s.siteInfoCommonService.GetSiteMCP(ctx)
+	if err != nil {
+		return nil, err
+	}
+	siteInfo, err := s.GetSiteGeneral(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	resp.Type = "Server-Sent Event (SSE)"
+	resp.URL = fmt.Sprintf("%s/answer/api/v1/mcp/sse", siteInfo.SiteUrl)
+	resp.HTTPHeader = "Authorization={key}"
+	return
+}
+
+// SaveSiteMCP save site MCP configuration
+func (s *SiteInfoService) SaveSiteMCP(ctx context.Context, req *schema.SiteMCPReq) (err error) {
+	content, _ := json.Marshal(req)
+	siteInfo := &entity.SiteInfo{
+		Type:    constant.SiteTypeMCP,
+		Content: string(content),
+		Status:  1,
+	}
+	return s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeMCP, siteInfo)
 }
 
 // GetSMTPConfig get smtp config
@@ -314,13 +529,13 @@ func (s *SiteInfoService) GetSeo(ctx context.Context) (resp *schema.SiteSeoReq, 
 	if err = s.siteInfoCommonService.GetSiteInfoByType(ctx, constant.SiteTypeSeo, resp); err != nil {
 		return resp, err
 	}
-	loginConfig, err := s.GetSiteLogin(ctx)
+	siteSecurity, err := s.GetSiteSecurity(ctx)
 	if err != nil {
 		log.Error(err)
 		return resp, nil
 	}
 	// If the site is set to privacy mode, prohibit crawling any page.
-	if loginConfig.LoginRequired {
+	if siteSecurity.LoginRequired {
 		resp.Robots = "User-agent: *\nDisallow: /"
 		return resp, nil
 	}
@@ -342,7 +557,7 @@ func (s *SiteInfoService) GetPrivilegesConfig(ctx context.Context) (resp *schema
 		return nil, err
 	}
 	privilegeOptions := schema.DefaultPrivilegeOptions
-	if privilege.CustomPrivileges != nil && len(privilege.CustomPrivileges) > 0 {
+	if len(privilege.CustomPrivileges) > 0 {
 		privilegeOptions = append(privilegeOptions, &schema.PrivilegeOption{
 			Level:      schema.PrivilegeLevelCustom,
 			LevelDesc:  reason.PrivilegeLevelCustomDesc,
@@ -355,7 +570,7 @@ func (s *SiteInfoService) GetPrivilegesConfig(ctx context.Context) (resp *schema
 		Options:       s.translatePrivilegeOptions(ctx, privilegeOptions),
 		SelectedLevel: schema.PrivilegeLevel3,
 	}
-	if privilege != nil && privilege.Level > 0 {
+	if privilege.Level > 0 {
 		resp.SelectedLevel = privilege.Level
 	}
 	return resp, nil
@@ -437,4 +652,121 @@ func (s *SiteInfoService) UpdatePrivilegesConfig(ctx context.Context, req *schem
 		}
 	}
 	return
+}
+
+func (s *SiteInfoService) CleanUpRemovedBrandingFiles(
+	ctx context.Context,
+	newBranding *schema.SiteBrandingReq,
+	currentBranding *schema.SiteBrandingResp,
+) error {
+	var allErrors []error
+	currentFiles := map[string]string{
+		"logo":        currentBranding.Logo,
+		"mobile_logo": currentBranding.MobileLogo,
+		"square_icon": currentBranding.SquareIcon,
+		"favicon":     currentBranding.Favicon,
+	}
+
+	newFiles := map[string]string{
+		"logo":        newBranding.Logo,
+		"mobile_logo": newBranding.MobileLogo,
+		"square_icon": newBranding.SquareIcon,
+		"favicon":     newBranding.Favicon,
+	}
+
+	for key, currentFile := range currentFiles {
+		newFile := newFiles[key]
+		if currentFile != "" && currentFile != newFile {
+			fileRecord, err := s.fileRecordService.GetFileRecordByURL(ctx, currentFile)
+			if err != nil {
+				allErrors = append(allErrors, err)
+				continue
+			}
+			if fileRecord == nil {
+				err := errpkg.New("file record is nil for key " + key)
+				allErrors = append(allErrors, err)
+				continue
+			}
+			if err := s.fileRecordService.DeleteAndMoveFileRecord(ctx, fileRecord); err != nil {
+				allErrors = append(allErrors, err)
+			}
+		}
+	}
+	if len(allErrors) > 0 {
+		return errpkg.Join(allErrors...)
+	}
+	return nil
+}
+
+func (s *SiteInfoService) GetAIProvider(ctx context.Context) (resp []*schema.GetAIProviderResp, err error) {
+	resp = make([]*schema.GetAIProviderResp, 0)
+	aiProviderConfig, err := s.configService.GetStringValue(context.TODO(), constant.AIConfigProvider)
+	if err != nil {
+		log.Error(err)
+		return resp, nil
+	}
+
+	_ = json.Unmarshal([]byte(aiProviderConfig), &resp)
+	return resp, nil
+}
+
+func (s *SiteInfoService) GetAIModels(ctx context.Context, req *schema.GetAIModelsReq) (resp []*schema.GetAIModelResp, err error) {
+	resp = make([]*schema.GetAIModelResp, 0)
+	if req.APIKey != "" && isAllMask(req.APIKey) {
+		storedKey, err := s.getStoredAIKey(ctx, req.APIHost)
+		if err != nil {
+			return resp, err
+		}
+		if storedKey == "" {
+			return resp, errors.BadRequest("api_key is required")
+		}
+		req.APIKey = storedKey
+	}
+
+	r := resty.New()
+	r.SetHeader("Authorization", fmt.Sprintf("Bearer %s", req.APIKey))
+	r.SetHeader("Content-Type", "application/json")
+	respBody, err := r.R().Get(req.APIHost + "/v1/models")
+	if err != nil {
+		log.Error(err)
+		return resp, errors.BadRequest(fmt.Sprintf("failed to get AI models %s", err.Error()))
+	}
+	if !respBody.IsSuccess() {
+		log.Error(fmt.Sprintf("failed to get AI models, status code: %d, body: %s", respBody.StatusCode(), respBody.String()))
+		return resp, errors.BadRequest(fmt.Sprintf("failed to get AI models, response: %s", respBody.String()))
+	}
+
+	data := schema.GetAIModelsResp{}
+	_ = json.Unmarshal(respBody.Body(), &data)
+
+	for _, model := range data.Data {
+		resp = append(resp, &schema.GetAIModelResp{
+			Id:      model.Id,
+			Object:  model.Object,
+			Created: model.Created,
+			OwnedBy: model.OwnedBy,
+		})
+	}
+	return resp, nil
+}
+
+func (s *SiteInfoService) getStoredAIKey(ctx context.Context, apiHost string) (string, error) {
+	current, err := s.siteInfoCommonService.GetSiteAI(ctx)
+	if err != nil {
+		return "", err
+	}
+	apiHost = strings.TrimRight(apiHost, "/")
+	for _, provider := range current.SiteAIProviders {
+		if strings.TrimRight(provider.APIHost, "/") == apiHost && provider.APIKey != "" {
+			return provider.APIKey, nil
+		}
+	}
+	if current.ChosenProvider != "" {
+		for _, provider := range current.SiteAIProviders {
+			if provider.Provider == current.ChosenProvider {
+				return provider.APIKey, nil
+			}
+		}
+	}
+	return "", nil
 }

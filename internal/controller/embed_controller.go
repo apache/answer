@@ -32,14 +32,14 @@ func NewEmbedController() *EmbedController {
 	return &EmbedController{}
 }
 
-// GetEmbedConfig godoc
-// @Summary GetEmbedConfig
-// @Description GetEmbedConfig
-// @Tags PluginEmbed
+// GetEmbedConfig get embed plugin config
+// @Summary get embed plugin config
+// @Description get embed plugin config
+// @Tags Plugin
 // @Accept json
 // @Produce json
-// @Router /answer/api/v1/embed/config [get]
 // @Success 200 {object} handler.RespBody{data=[]plugin.EmbedConfig}
+// @Router /answer/api/v1/embed/config [get]
 func (c *EmbedController) GetEmbedConfig(ctx *gin.Context) {
 	resp := make([]*plugin.EmbedConfig, 0)
 

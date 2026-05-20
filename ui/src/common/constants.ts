@@ -30,6 +30,8 @@ export const DRAFT_TIMESIGH_STORAGE_KEY = '|_a_t_s_|';
 export const DEFAULT_THEME = 'system';
 export const ADMIN_PRIVILEGE_CUSTOM_LEVEL = 99;
 export const SKELETON_SHOW_TIME = 1000;
+export const LIST_VIEW_STORAGE_KEY = '_a_list_view_';
+export const EXTERNAL_CONTENT_DISPLAY_MODE = '_a_ecd_';
 
 export const USER_AGENT_NAMES = {
   SegmentFault: 'SegmentFault',
@@ -81,50 +83,73 @@ export const ADMIN_LIST_STATUS = {
   },
 };
 
+/**
+ * ADMIN_NAV_MENUS is the navigation menu for the admin panel.
+ * pathPrefix is used to activate the menu item when the activeKey starts with the pathPrefix.
+ */
+
 export const ADMIN_NAV_MENUS = [
   {
     name: 'dashboard',
+    icon: 'speedometer',
     children: [],
   },
   {
     name: 'contents',
-    children: [{ name: 'questions' }, { name: 'answers' }],
+    icon: 'file-earmark-text-fill',
+    children: [
+      { name: 'questions', path: 'qa/questions', pathPrefix: 'qa/' },
+      { name: 'tags', path: 'tags/settings', pathPrefix: 'tags/' },
+    ],
   },
   {
-    name: 'users',
+    name: 'intelligence',
+    icon: 'robot',
+    children: [
+      { name: 'ai_settings', path: 'ai-settings' },
+      { name: 'ai_assistant', path: 'ai-assistant' },
+      { name: 'mcp' },
+    ],
   },
   {
-    name: 'badges',
+    name: 'community',
+    icon: 'people-fill',
+    children: [
+      { name: 'users', pathPrefix: 'users/' },
+      { name: 'badges' },
+      { name: 'rules', path: 'rules/privileges', pathPrefix: 'rules/' },
+    ],
   },
   {
-    name: 'customize',
+    name: 'apperance',
+    icon: 'palette-fill',
     children: [
       {
         name: 'themes',
       },
       {
-        name: 'css_html',
-        path: 'css-html',
+        name: 'customize',
       },
+      { name: 'branding' },
+      { name: 'interface' },
     ],
   },
   {
-    name: 'settings',
+    name: 'advanced',
+    icon: 'gear-fill',
     children: [
       { name: 'general' },
-      { name: 'interface' },
-      { name: 'branding' },
-      { name: 'smtp' },
-      { name: 'legal' },
-      { name: 'write' },
-      { name: 'seo' },
+      { name: 'security' },
+      { name: 'files' },
       { name: 'login' },
-      { name: 'users', path: 'settings-users' },
-      { name: 'privileges' },
+      { name: 'seo' },
+      { name: 'smtp' },
+      { name: 'apikeys' },
     ],
   },
   {
     name: 'plugins',
+    icon: 'plugin',
     children: [
       {
         name: 'installed_plugins',
@@ -132,6 +157,30 @@ export const ADMIN_NAV_MENUS = [
       },
     ],
   },
+];
+
+export const ADMIN_QA_NAV_MENUS = [
+  { name: 'questions', path: '/admin/qa/questions' },
+  { name: 'answers', path: '/admin/qa/answers' },
+  { name: 'settings', path: '/admin/qa/settings' },
+];
+
+export const ADMIN_TAGS_NAV_MENUS = [
+  // { name: 'tags', path: '/admin/tags' },
+  {
+    name: 'settings',
+    path: '/admin/tags/settings',
+  },
+];
+
+export const ADMIN_USERS_NAV_MENUS = [
+  { name: 'users', path: '/admin/users' },
+  { name: 'settings', path: '/admin/users/settings' },
+];
+
+export const ADMIN_RULES_NAV_MENUS = [
+  { name: 'privileges', path: '/admin/rules/privileges' },
+  { name: 'policies', path: '/admin/rules/policies' },
 ];
 
 export const TIMEZONES = [
@@ -652,3 +701,56 @@ export const SYSTEM_AVATAR_OPTIONS = [
 export const TAG_SLUG_NAME_MAX_LENGTH = 35;
 
 export const DEFAULT_THEME_COLOR = '#0033ff';
+
+export const SUSPENSE_USER_TIME = [
+  {
+    label: 'hours',
+    time: '24',
+    value: '24h',
+  },
+  {
+    label: 'hours',
+    time: '48',
+    value: '48h',
+  },
+  {
+    label: 'hours',
+    time: '72',
+    value: '72h',
+  },
+  {
+    label: 'days',
+    time: '7',
+    value: '7d',
+  },
+  {
+    label: 'days',
+    time: '14',
+    value: '14d',
+  },
+  {
+    label: 'months',
+    time: '1',
+    value: '1m',
+  },
+  {
+    label: 'months',
+    time: '2',
+    value: '2m',
+  },
+  {
+    label: 'months',
+    time: '3',
+    value: '3m',
+  },
+  {
+    label: 'months',
+    time: '6',
+    value: '6m',
+  },
+  {
+    label: 'year',
+    time: '1',
+    value: '1y',
+  },
+];

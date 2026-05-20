@@ -1,4 +1,5 @@
 github.com/apache/answer-plugins/connector-basic@latest
 github.com/apache/answer-plugins/reviewer-basic@latest
 github.com/apache/answer-plugins/captcha-basic@latest
+github.com/apache/answer-plugins/quick-links@latest
 github.com/apache/answer-plugins/connector-apache@latest

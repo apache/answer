@@ -89,9 +89,9 @@ func (qr *questionRepo) RemoveQuestion(ctx context.Context, id string) (err erro
 }
 
 // UpdateQuestion update question
-func (qr *questionRepo) UpdateQuestion(ctx context.Context, question *entity.Question, Cols []string) (err error) {
+func (qr *questionRepo) UpdateQuestion(ctx context.Context, question *entity.Question, cols []string) (err error) {
 	question.ID = uid.DeShortID(question.ID)
-	_, err = qr.data.DB.Context(ctx).Where("id =?", question.ID).Cols(Cols...).Update(question)
+	_, err = qr.data.DB.Context(ctx).Where("id =?", question.ID).Cols(cols...).Update(question)
 	if err != nil {
 		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
@@ -164,6 +164,31 @@ func (qr *questionRepo) UpdateQuestionStatusWithOutUpdateTime(ctx context.Contex
 		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
 	_ = qr.UpdateSearch(ctx, question.ID)
+	return nil
+}
+
+func (qr *questionRepo) DeletePermanentlyQuestions(ctx context.Context) (err error) {
+	// get all deleted question ids
+	ids := make([]string, 0)
+	err = qr.data.DB.Context(ctx).Select("id").Table(new(entity.Question).TableName()).
+		Where("status = ?", entity.QuestionStatusDeleted).Find(&ids)
+	if err != nil {
+		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+
+	// delete all revisions permanently
+	_, err = qr.data.DB.Context(ctx).In("object_id", ids).Delete(&entity.Revision{})
+	if err != nil {
+		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+
+	_, err = qr.data.DB.Context(ctx).Where("status = ?", entity.QuestionStatusDeleted).Delete(&entity.Question{})
+	if err != nil {
+		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
 	return nil
 }
 
@@ -264,7 +289,7 @@ func (qr *questionRepo) FindByID(ctx context.Context, id []string) (questionList
 func (qr *questionRepo) GetQuestionList(ctx context.Context, question *entity.Question) (questionList []*entity.Question, err error) {
 	question.ID = uid.DeShortID(question.ID)
 	questionList = make([]*entity.Question, 0)
-	err = qr.data.DB.Context(ctx).Find(questionList, question)
+	err = qr.data.DB.Context(ctx).Find(&questionList, question)
 	if err != nil {
 		return questionList, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
@@ -319,7 +344,7 @@ func (qr *questionRepo) GetUserQuestionCount(ctx context.Context, userID string,
 
 func (qr *questionRepo) SitemapQuestions(ctx context.Context, page, pageSize int) (
 	questionIDList []*schema.SiteMapQuestionInfo, err error) {
-	page = page - 1
+	page--
 	questionIDList = make([]*schema.SiteMapQuestionInfo, 0)
 
 	// try to get sitemap data from cache
@@ -372,10 +397,14 @@ func (qr *questionRepo) GetQuestionPage(ctx context.Context, page, pageSize int,
 	questionList []*entity.Question, total int64, err error) {
 	questionList = make([]*entity.Question, 0)
 	session := qr.data.DB.Context(ctx)
-	status := []int{entity.QuestionStatusAvailable, entity.QuestionStatusClosed}
+	status := []int{entity.QuestionStatusAvailable}
+	if orderCond != "unanswered" {
+		status = append(status, entity.QuestionStatusClosed)
+	}
 	if showPending {
 		status = append(status, entity.QuestionStatusPending)
 	}
+	session.Select("question.*")
 	session.In("question.status", status)
 	if len(tagIDs) > 0 {
 		session.Join("LEFT", "tag_rel", "question.id = tag_rel.object_id")
@@ -414,6 +443,7 @@ func (qr *questionRepo) GetQuestionPage(ctx context.Context, page, pageSize int,
 		session.OrderBy("question.pin DESC, question.linked_count DESC, question.updated_at DESC")
 	}
 
+	session.GroupBy("question.id")
 	total, err = pager.Help(page, pageSize, &questionList, &entity.Question{}, session)
 	if err != nil {
 		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
@@ -494,7 +524,7 @@ func (qr *questionRepo) AdminQuestionPage(ctx context.Context, search *schema.Ad
 
 	rows := make([]*entity.Question, 0)
 	if search.Page > 0 {
-		search.Page = search.Page - 1
+		search.Page--
 	} else {
 		search.Page = 0
 	}

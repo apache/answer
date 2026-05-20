@@ -44,12 +44,15 @@ export interface JSONSchema {
   required?: string[];
   properties: {
     [key: string]: {
-      type: 'string' | 'boolean' | 'number';
+      type?: 'string' | 'boolean' | 'number' | Type.Tag[];
       title: string;
       description?: string;
       enum?: Array<string | boolean | number>;
       enumNames?: string[];
+      min?: number;
+      max?: number;
       default?: string | boolean | number | any[];
+      max_length?: number;
     };
   };
 }
@@ -87,6 +90,16 @@ export interface InputOptions extends BaseUIOptions {
     | 'time'
     | 'url'
     | 'week';
+  inputMode?:
+    | 'text'
+    | 'search'
+    | 'none'
+    | 'tel'
+    | 'url'
+    | 'email'
+    | 'numeric'
+    | 'decimal'
+    | undefined;
 }
 export interface SelectOptions extends BaseUIOptions {}
 export interface UploadOptions extends BaseUIOptions {
@@ -152,7 +165,8 @@ export type UIWidget =
   | 'switch'
   | 'legend'
   | 'button'
-  | 'input_group';
+  | 'input_group'
+  | 'tag_selector';
 export interface UISchema {
   [key: string]: {
     'ui:widget'?: UIWidget;

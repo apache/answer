@@ -150,14 +150,16 @@ const Index: FC = () => {
 
   return (
     <>
-      <h3 className="mb-4">{t('page_title')}</h3>
-      <SchemaForm
-        schema={schema}
-        formData={formData}
-        onSubmit={onSubmit}
-        uiSchema={uiSchema}
-        onChange={handleOnChange}
-      />
+      <h3 className="mb-4">{t('customize', { keyPrefix: 'nav_menus' })}</h3>
+      <div className="max-w-748">
+        <SchemaForm
+          schema={schema}
+          formData={formData}
+          onSubmit={onSubmit}
+          uiSchema={uiSchema}
+          onChange={handleOnChange}
+        />
+      </div>
     </>
   );
 };

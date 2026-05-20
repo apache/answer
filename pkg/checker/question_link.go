@@ -44,15 +44,16 @@ func GetQuestionLink(content string) []QuestionLink {
 	left, right := 0, 0
 	for right < len(content) {
 		// find "/questions/" or "#"
-		if right+11 < len(content) && content[right:right+11] == "/questions/" {
+		switch {
+		case right+11 < len(content) && content[right:right+11] == "/questions/":
 			left = right
 			right += 11
 			processURL(content, &left, &right, uniqueIDs, &questionLinks)
-		} else if content[right] == '#' {
+		case content[right] == '#':
 			left = right + 1
 			right = left
 			processID(content, &left, &right, uniqueIDs, &questionLinks)
-		} else {
+		default:
 			right++
 		}
 	}
@@ -101,9 +102,7 @@ func addUniqueID(questionID, answerID string, linkType int, uniqueIDs map[string
 		objectType, err := obj.GetObjectTypeStrByObjectID(uid.DeShortID(answerID))
 		if err != nil {
 			answerID = ""
-		}
-
-		if objectType == constant.AnswerObjectType {
+		} else if objectType == constant.AnswerObjectType {
 			if _, ok := uniqueIDs[answerID]; !ok {
 				uniqueIDs[answerID] = struct{}{}
 				isAdd = true

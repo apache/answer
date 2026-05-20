@@ -48,3 +48,8 @@ func WriteFile(filePath, content string) error {
 	}
 	return nil
 }
+
+// MoveFile move file to new path
+func MoveFile(oldPath, newPath string) error {
+	return os.Rename(oldPath, newPath)
+}

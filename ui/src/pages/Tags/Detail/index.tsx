@@ -38,7 +38,7 @@ import {
 } from '@/services';
 import QuestionList, { QUESTION_ORDER_KEYS } from '@/components/QuestionList';
 import HotQuestions from '@/components/HotQuestions';
-import { guard } from '@/utils';
+import { guard, pageTitleType } from '@/utils';
 import { pathFactory } from '@/router/pathFactory';
 
 const Index: FC = () => {
@@ -100,7 +100,7 @@ const Index: FC = () => {
   }, [tagResp, followResp]);
   let pageTitle = '';
   if (tagInfo?.display_name) {
-    pageTitle = `'${tagInfo.display_name}' ${t('questions', {
+    pageTitle = `'${tagInfo.display_name}' ${t(pageTitleType(), {
       keyPrefix: 'page_title',
     })}`;
   }

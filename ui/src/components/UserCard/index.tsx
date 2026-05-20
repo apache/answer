@@ -28,10 +28,12 @@ import { formatCount } from '@/utils';
 interface Props {
   data: any;
   time: number;
-  preFix: string;
+  preFix?: string;
   isLogged: boolean;
   timelinePath: string;
   className?: string;
+  updateTime?: number;
+  updateTimePrefix?: string;
 }
 
 const Index: FC<Props> = ({
@@ -41,6 +43,8 @@ const Index: FC<Props> = ({
   isLogged,
   timelinePath,
   className = '',
+  updateTime = 0,
+  updateTimePrefix = '',
 }) => {
   return (
     <div className={classnames('d-flex', className)}>
@@ -81,7 +85,7 @@ const Index: FC<Props> = ({
           />
         </>
       )}
-      <div className="small text-secondary d-flex flex-row flex-md-column align-items-center align-items-md-start">
+      <div className="small text-secondary d-flex flex-column">
         <div className="me-1 me-md-0 d-flex align-items-center">
           {data?.status !== 'deleted' ? (
             <Link
@@ -105,9 +109,31 @@ const Index: FC<Props> = ({
                 preFix={preFix}
                 className="link-secondary"
               />
+              {updateTime > 0 && (
+                <>
+                  <span className="mx-1 link-secondary">•</span>
+                  <FormatTime
+                    time={updateTime}
+                    preFix={updateTimePrefix}
+                    className="link-secondary"
+                  />
+                </>
+              )}
             </Link>
           ) : (
-            <FormatTime time={time} preFix={preFix} />
+            <>
+              <FormatTime time={time} preFix={preFix} />
+              {updateTime > 0 && (
+                <>
+                  <span className="mx-1 link-secondary">•</span>
+                  <FormatTime
+                    time={updateTime}
+                    preFix={updateTimePrefix}
+                    className="link-secondary"
+                  />
+                </>
+              )}
+            </>
           ))}
       </div>
     </div>

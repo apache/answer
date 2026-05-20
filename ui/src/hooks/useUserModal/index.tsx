@@ -58,7 +58,7 @@ const useAddUserModal = (props: IProps = {}) => {
       'ui:options': {
         rows: 7,
         placeholder: t('form.fields.users.placeholder'),
-        className: 'small',
+        className: 'small font-monospace',
       },
     },
   };

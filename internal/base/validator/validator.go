@@ -142,7 +142,7 @@ func Sanitizer(fl validator.FieldLevel) (res bool) {
 	switch field.Kind() {
 	case reflect.String:
 		filter := bluemonday.UGCPolicy()
-		content := strings.Replace(filter.Sanitize(field.String()), "&amp;", "&", -1)
+		content := strings.ReplaceAll(filter.Sanitize(field.String()), "&amp;", "&")
 		field.SetString(content)
 		return true
 	case reflect.Chan, reflect.Map, reflect.Slice, reflect.Array:
@@ -187,7 +187,7 @@ func GetValidatorByLang(lang i18n.Language) *MyValidator {
 }
 
 // Check /
-func (m *MyValidator) Check(value interface{}) (errFields []*FormErrorField, err error) {
+func (m *MyValidator) Check(value any) (errFields []*FormErrorField, err error) {
 	defer func() {
 		if len(errFields) == 0 {
 			return
@@ -261,7 +261,7 @@ type Checker interface {
 	Check() (errField []*FormErrorField, err error)
 }
 
-func getObjectTagByFieldName(obj interface{}, fieldName string) (tag string) {
+func getObjectTagByFieldName(obj any, fieldName string) (tag string) {
 	defer func() {
 		if err := recover(); err != nil {
 			log.Error(err)

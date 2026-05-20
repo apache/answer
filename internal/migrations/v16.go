@@ -21,6 +21,7 @@ package migrations
 
 import (
 	"context"
+
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/entity"
 	"github.com/segmentfault/pacman/log"

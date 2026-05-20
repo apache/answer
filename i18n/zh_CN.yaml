@@ -57,6 +57,8 @@ backend:
       other: 编辑
     undelete:
       other: 撤消删除
+    merge:
+      other: 合并
   role:
     name:
       user:
@@ -137,6 +139,8 @@ backend:
     other: 密码
   pass:
     other: 密码
+  old_pass:
+    other: 当前密码
   original_text:
     other: 本帖
   email_or_password_wrong_error:
@@ -168,6 +172,8 @@ backend:
         other: 没有更新权限。
       question_closed_cannot_add:
         other: 问题已关闭，无法添加。
+      content_cannot_empty:
+        other: 回答内容不能为空。
     comment:
       edit_without_permission:
         other: 不允许编辑评论。
@@ -175,6 +181,8 @@ backend:
         other: 评论未找到。
       cannot_edit_after_deadline:
         other: 评论时间太久，无法修改。
+      content_cannot_empty:
+        other: 评论内容不能为空。
     email:
       duplicate:
         other: 邮箱已存在。
@@ -224,6 +232,10 @@ backend:
         other: 没有关闭权限。
       cannot_update:
         other: 没有更新权限。
+      content_cannot_empty:
+        other: 内容不能为空。
+      content_less_than_minimum:
+        other: 输入的内容不足。
     rank:
       fail_to_meet_the_condition:
         other: 声望值未达到要求。
@@ -253,6 +265,8 @@ backend:
         other: 你不能删除这个正在使用的标签。
       cannot_set_synonym_as_itself:
         other: 你不能将当前标签设为自己的同义词。
+      minimum_count:
+        other: 没有输入足够的标签。
     smtp:
       config_from_name_cannot_be_email:
         other: 发件人名称不能是邮箱地址。
@@ -296,6 +310,14 @@ backend:
         other: "发生错误，{{.Field}} 格式错误，在 '{{.Content}}' 行数 {{.Line}}. {{.ExtraMessage}}"
       add_bulk_users_amount_error:
         other: "一次性添加的用户数量应在 1-{{.MaxAmount}} 之间。"
+      status_suspended_forever:
+        other: "<strong>该用户已被永久封禁。</strong>该用户不符合社区准则。"
+      status_suspended_until:
+        other: "<strong>该用户已被封禁至 {{.SuspendedUntil}}。</strong>该用户不符合社区准则。"
+      status_deleted:
+        other: "该用户已被删除。"
+      status_inactive:
+        other: "该用户未激活。"
     config:
       read_config_failed:
         other: 读取配置失败
@@ -556,7 +578,7 @@ backend:
         name:
           other: 第一个链接
         desc:
-          other: 第一个脏添加了一个链接到另一个帖子。
+          other: 第一次添加了一个链接到另一个帖子。
       first_reaction:
         name:
           other: 第一个响应
@@ -616,17 +638,17 @@ backend:
         name:
           other: 失去爱好
         desc:
-          other: 一天内使用了50张选票。
+          other: 一天内使用了 50 个赞。
       higher_love:
         name:
           other: 更高的爱好
         desc:
-          other: 一天内使用了50张选票。
+          other: 一天内使用了 50 个赞 5 次。
       crazy_in_love:
         name:
           other: 爱情疯狂的
         desc:
-          other: 在 20 天内使用了50张选票。
+          other: 一天内使用了 50 个赞 20 次。
       promoter:
         name:
           other: 推荐人
@@ -646,7 +668,7 @@ backend:
         name:
           other: 谢谢
         desc:
-          other: 拥有20个投票赞成的职位并放弃了10个投票。
+          other: 有 20 个赞成票的帖子，并投了 10 个赞成票。
       gives_back:
         name:
           other: 返回
@@ -711,7 +733,7 @@ backend:
         name:
           other: 解决方案机构
         desc:
-          other: 接受150份答复。
+          other: 有150个答案被接受。
       nice_answer:
         name:
           other: 好答案
@@ -746,17 +768,17 @@ backend:
         name:
           other: 热门问题
         desc:
-          other: 问题有500个意见。
+          other: 问题有 500 个浏览量。
       notable_question:
         name:
           other: 值得关注问题
         desc:
-          other: 1 000个问题。
+          other: 问题有 1,000 个浏览量。
       famous_question:
         name:
           other: 著名的问题
         desc:
-          other: 问题有5,000个意见。
+          other: 问题有 5,000 个浏览量。
       popular_link:
         name:
           other: 热门链接
@@ -787,7 +809,7 @@ ui:
   how_to_format:
     title: 如何排版
     desc: >-
-      <ul class="mb-0"><li><p class="mb-2">引用问题或答案: <code>#post_id</code></p></li><li><p class="mb-2">添加链接</p><pre class="mb-2"><code>&lt;https://url.com&gt;<br/><br/>[标题](https://url.com)</code></pre></li><li><p class="mb-2">段落之间使用空行分隔</p></li><li><p class="mb-2"><em>_斜体_</em> 或者 **<strong>粗体</strong>**</p></li><li><p class="mb-2">使用  个空格缩进代码</p></li><li><p class="mb-2">在行首添加 <code>&gt;</code> 表示引用</p></li><li><p class="mb-2">反引号进行转义 <code>`像 _这样_`</code></p></li><li><p class="mb-2">使用 <code>```</code> 创建代码块</p><pre class="mb-0"><code>```<br/>这是代码块<br/>```</code></pre></li></ul>
+      <ul class="mb-0"><li><p class="mb-2">引用问题或答案: <code>#4</code></p></li><li><p class="mb-2">添加链接</p><pre class="mb-2"><code>&lt;https://url.com&gt;<br/><br/>[标题](https://url.com)</code></pre></li><li><p class="mb-2">段落之间使用空行分隔</p></li><li><p class="mb-2"><em>_斜体_</em> 或者 **<strong>粗体</strong>**</p></li><li><p class="mb-2">使用  个空格缩进代码</p></li><li><p class="mb-2">在行首添加 <code>&gt;</code> 表示引用</p></li><li><p class="mb-2">反引号进行转义 <code>`像 _这样_`</code></p></li><li><p class="mb-2">使用 <code>```</code> 创建代码块</p><pre class="mb-0"><code>```<br/>这是代码块<br/>```</code></pre></li></ul>
   pagination:
     prev: 上一页
     next: 下一页
@@ -799,7 +821,7 @@ ui:
     tag_wiki: 标签维基
     create_tag: 创建标签
     edit_tag: 编辑标签
-    ask_a_question: 提问题
+    ask_a_question: 创建问题
     edit_question: 编辑问题
     edit_answer: 编辑回答
     search: 搜索
@@ -823,6 +845,17 @@ ui:
     http_50X: HTTP 错误 500
     http_403: HTTP 错误 403
     logout: 退出
+    posts: 帖子
+    ai_assistant: AI 助手
+  ai_assistant:
+    description: 有问题？问它并获得答案、观点和建议。
+    recent_conversations: 新对话
+    show_more: 显示更多
+    new: 新聊天
+    ai_generate: 来自帖子的 AI，可能不准确。
+    copy: 复制
+    ask_a_follow_up: 提出后续问题
+    ask_placeholder: 提问
   notifications:
     title: 通知
     inbox: 收件箱
@@ -1019,6 +1052,15 @@ ui:
         <p>我们不允许 <strong>删除带有同义词的标签</strong>。</p> <p>请先从此标签中删除同义词。</p>
       tip: 确定要删除吗？
       close: 关闭
+    merge:
+      title: 合并标签
+      source_tag_title: 源标签
+      source_tag_description: 源标签及其相关数据将重新映射到目标标签。
+      target_tag_title: 目标标签
+      target_tag_description: 合并后将在这两个标签之间将创建一个同义词。
+      no_results: 没有匹配的标签
+      btn_submit: 提交
+      btn_close: 关闭
   edit_tag:
     title: 编辑标签
     default_reason: 编辑标签
@@ -1037,6 +1079,9 @@ ui:
     day: 天
     hours: 小时
     days: 日
+    month: 月
+    months: 月
+    year: 年
   reaction:
     heart: 爱心
     smile: 微笑
@@ -1092,10 +1137,10 @@ ui:
     more: 更多
     wiki: 维基
   ask:
-    title: 新增问题
+    title: 创建问题
     edit_title: 编辑问题
     default_reason: 编辑问题
-    default_first_reason: 新增问题
+    default_first_reason: 创建问题
     similar_questions: 相似问题
     form:
       fields:
@@ -1103,7 +1148,7 @@ ui:
           label: 修订版本
         title:
           label: 标题
-          placeholder: 请详细描述你的问题，想象你在问一个人
+          placeholder: 你的主题是什么？请具体说明。
           msg:
             empty: 标题不能为空。
             range: 标题最多 150 个字符
@@ -1111,6 +1156,9 @@ ui:
           label: 内容
           msg:
             empty: 内容不能为空。
+          hint:
+            optional_body: 描述这个问题是什么。
+            minimum_characters: "详细描述这个问题，至少需要 {{min_content_length}} 字符。"
         tags:
           label: 标签
           msg:
@@ -1131,7 +1179,9 @@ ui:
     add_btn: 添加标签
     create_btn: 创建新标签
     search_tag: 搜索标签
-    hint: "描述您的问题是关于什么，至少需要一个标签。"
+    hint: 描述您的内容是关于什么，至少需要一个标签。
+    hint_zero_tags: 描述您的内容与什么有关。
+    hint_more_than_one_tag: "描述您的内容是关于什么，至少需要{{min_tags_number}}个标签。"
     no_result: 没有匹配的标签
     tag_required_text: 必选标签（至少一个）
   header:
@@ -1150,8 +1200,7 @@ ui:
     search:
       placeholder: 搜索
   footer:
-    build_on: >-
-      由 <1>Apache Answer</1> 提供动力 - 驱动问答社区的开源软件。<br />用爱制造 © {{cc}}.
+    build_on: Powered by <1> Apache Answer </1>
   upload_img:
     name: 更改
     loading: 加载中...
@@ -1184,7 +1233,7 @@ ui:
       msg:
         empty: 名字不能为空
         range: 名称长度必须在 2 至 30 个字符之间。
-        character: '只能由 "a-z"、"A-Z"、"0-9"、" - . _" 组成'
+        character: '只能由 "a-z", "0-9", " - . _" 组成'
     email:
       label: 邮箱
       msg:
@@ -1256,13 +1305,13 @@ ui:
       display_name:
         label: 显示名称
         msg: 昵称不能为空。
-        msg_range: 显示名称不能超过 30 个字符。
+        msg_range: 显示名称长度必须为 2-30 个字符。
       username:
         label: 用户名
         caption: 用户可以通过 "@用户名" 来提及你。
         msg: 用户名不能为空
-        msg_range: 用户名不能超过 30 个字符。
-        character: '只能由 "a-z"、"A-Z"、"0-9"、" - . _" 组成'
+        msg_range: 显示名称长度必须为 2-30 个字符。
+        character: '只能由 "a-z", "0-9", " - . _" 组成'
       avatar:
         label: 头像
         gravatar: Gravatar
@@ -1337,12 +1386,12 @@ ui:
     review: 您的修订将在审阅通过后显示。
     sent_success: 发送成功
   related_question:
-    title: 相关问题
+    title: 相似
     answers: 个回答
   linked_question:
-    title: 关联的问题
-    description: 问题关联到
-    no_linked_question: 这个问题没有相关联的问题。
+    title: 关联
+    description: 帖子关联到
+    no_linked_question: 没有与之关联的贴子。
   invite_to_answer:
     title: 受邀人
     desc: 邀请你认为可能知道答案的人。
@@ -1351,9 +1400,11 @@ ui:
     search: 搜索人员
   question_detail:
     action: 操作
+    created: 创建于
     Asked: 提问于
     asked: 提问于
     update: 修改于
+    Edited: 编辑于
     edit: 编辑于
     commented: 评论
     Views: 阅读次数
@@ -1433,7 +1484,7 @@ ui:
     signup: 注册
     logout: 退出
     verify: 验证
-    add_question: 我要提问
+    create: 创建
     approve: 批准
     reject: 拒绝
     skip: 跳过
@@ -1465,8 +1516,16 @@ ui:
     normal: 正常
     closed: 已关闭
     deleted: 已删除
+    deleted_permanently: 永久删除
     pending: 等待处理
     more: 更多
+    view: 浏览量
+    card: 卡片
+    compact: 紧凑
+    display_below: 在下方显示
+    always_display: 总是显示
+    or: 或者
+    back_sites: 返回网站
   search:
     title: 搜索结果
     keywords: 关键词
@@ -1474,6 +1533,7 @@ ui:
     follow: 关注
     following: 已关注
     counts: "{{count}} 个结果"
+    counts_loading: "... 个结果"
     more: 更多
     sort_btns:
       relevance: 相关性
@@ -1496,10 +1556,13 @@ ui:
     via: 分享到...
     copied: 已复制
     facebook: 分享到 Facebook
-    twitter: 分享到 Twitter
+    twitter: 分享到 X
   cannot_vote_for_self: 你不能给自己的帖子投票。
   modal_confirm:
     title: 发生错误...
+  delete_permanently:
+    title: 永久删除
+    content: 您确定要永久删除吗？
   account_result:
     success: 你的账号已通过验证，即将返回首页。
     link: 返回首页
@@ -1522,6 +1585,7 @@ ui:
     all_questions: 全部问题
     x_questions: "{{ count }} 个问题"
     x_answers: "{{ count }} 个回答"
+    x_posts: "{{ count }} 个帖子"
     questions: 问题
     answers: 回答
     newest: 最新
@@ -1603,6 +1667,23 @@ ui:
       label: 数据库文件
       placeholder: /data/answer.db
       msg: 数据库文件不能为空。
+    ssl_enabled:
+      label: 启用 SSL
+    ssl_enabled_on:
+      label: On
+    ssl_enabled_off:
+      label: Off
+    ssl_mode:
+      label: SSL 模式
+    ssl_root_cert:
+      placeholder: sslrootcert文件路径
+      msg: sslrootcert 文件的路径不能为空
+    ssl_cert:
+      placeholder: sslcert文件路径
+      msg: sslcert 文件的路径不能为空
+    ssl_key:
+      placeholder: sslkey 文件路径
+      msg: sslcert 文件的路径不能为空
     config_yaml:
       title: 创建 config.yaml
       label: 已创建 config.yaml 文件。
@@ -1636,7 +1717,7 @@ ui:
       label: 名字
       msg: 名字不能为空。
       character: '只能由 "a-z", "0-9", " - . _" 组成'
-      msg_max_length: 名字长度不能超过 30 个字符。
+      msg_max_length: 名称长度必须在 2 至 30 个字符之间。
     admin_password:
       label: 密码
       text: >-
@@ -1644,6 +1725,10 @@ ui:
       msg: 密码不能为空。
       msg_min_length: 密码必须至少 8 个字符长。
       msg_max_length: 密码长度不能超过 32 个字符。
+    admin_confirm_password:
+      label: "确认密码"
+      text: "请重新输入您的密码以确认。"
+      msg: "确认密码不一致。"
     admin_email:
       label: 邮箱
       text: 您需要此电子邮件才能登录。
@@ -1692,16 +1777,29 @@ ui:
     branding: 品牌
     legal: 法律条款
     write: 撰写
+    terms: 服务条款
     tos: 服务条款
     privacy: 隐私政策
     seo: SEO
     customize: 自定义
     themes: 主题
-    css_html: CSS/HTML
     login: 登录
     privileges: 特权
     plugins: 插件
     installed_plugins: 已安装插件
+    apperance: 外观
+    community: 社区
+    advanced: 高级选项
+    tags: 标签
+    rules: 规则
+    policies: 政策
+    security: 安全
+    files: 文件
+    apikeys: API 密钥
+    intelligence: 智力
+    ai_assistant: AI 助手
+    ai_settings: AI 设置
+    mcp: MCP
   website_welcome: 欢迎来到 {{site_name}}
   user_center:
     login: 登录
@@ -1714,7 +1812,7 @@ ui:
       close: 关闭
       confirm: 查看徽章
     title: 徽章
-    awarded: 授予的
+    awarded: 授予
     earned_×: 以获得 ×{{ number }}
     ×_awarded: "{{ number }} 得到"
     can_earn_multiple: 你可以多次获得
@@ -1801,10 +1899,10 @@ ui:
         fields:
           display_name:
             label: 显示名称
-            msg_range: 显示名称不能超过 30 个字符。
+            msg_range: 显示名称长度必须为 2-30 个字符。
           username:
             label: 用户名
-            msg_range: 用户名不能超过 30 个字符。
+            msg_range: 用户名长度必须为 2-30 个字符。
           email:
             label: 电子邮件地址
             msg_invalid: 无效的邮箱地址
@@ -1839,6 +1937,7 @@ ui:
       created_at: 创建时间
       delete_at: 删除时间
       suspend_at: 封禁时间
+      suspend_until: 封禁到期
       status: 状态
       role: 角色
       action: 操作
@@ -1873,6 +1972,8 @@ ui:
       suspend_user:
         title: 挂起此用户
         content: 被封禁的用户将无法登录。
+        label: 用户将被封禁多长时间？
+        forever: 永久
     questions:
       page_title: 问题
       unlisted: 已隐藏
@@ -1933,6 +2034,12 @@ ui:
         label: 时区
         msg: 时区不能为空。
         text: 选择一个与您相同时区的城市。
+      avatar:
+        label: 默认头像
+        text: 没有自定义头像的用户。
+      gravatar_base_url:
+        label: Gravatar 根路径 URL
+        text: Gravatar 提供商的 API 基础的 URL。当为空时忽略。
     smtp:
       page_title: SMTP
       from_email:
@@ -1998,12 +2105,23 @@ ui:
       privacy_policy:
         label: 隐私政策
         text: "您可以在此添加隐私政策内容。如果您已经在别处托管了文档，请在这里提供完整的URL。"
+      external_content_display:
+        label: 外部内容
+        text: "内容包括从外部网站嵌入的图像、视频和媒体。"
+        always_display: 总是显示外部内容
+        ask_before_display: 在显示外部内容之前询问
     write:
-      page_title: 编辑
+      page_title: 文件
+      min_content:
+        label: 最小问题长度
+        text: 最小允许的问题内容长度（字符）。
       restrict_answer:
         title: 回答编辑
         label: 每个用户对于每个问题只能有一个回答
         text: "用户可以使用编辑按钮优化已有的回答"
+      min_tags:
+        label: "问题的最少标签数"
+        text: "一个问题所需标签的最小数量。"
       recommend_tags:
         label: 推荐标签
         text: "推荐标签将默认显示在下拉列表中。"
@@ -2047,10 +2165,14 @@ ui:
       color_scheme:
         label: 配色方案
       navbar_style:
-        label: 导航栏样式
+        label: 导航栏背景样式
       primary_color:
         label: 主色调
         text: 修改您主题使用的颜色
+      layout:
+        label: 布局
+        full_width: 全宽度
+        fixed_width: 固定宽度
     css_and_html:
       page_title: CSS 与 HTML
       custom_css:
@@ -2067,7 +2189,7 @@ ui:
 
       footer:
         label: 页脚
-        text: 这将在 </body> 之前插入.
+        text: 这将在 &lt;/body> 之前插入。
       sidebar:
         label: 侧边栏
         text: 这将插入侧边栏中。
@@ -2155,6 +2277,70 @@ ui:
       show_logs: 显示日志
       status: 状态
       title: 徽章
+    apikeys:
+      title: API 密钥
+      add_api_key: 添加 API 密钥
+      desc: 描述
+      scope: 范围
+      key: 密钥
+      created: 创建于
+      last_used: 最后使用
+      add_or_edit_modal:
+        add_title: 添加 API 密钥
+        edit_title: 编辑 API 密钥
+        description: 描述
+        description_required: 请输入描述。
+        scope: 范围
+        global: 全局
+        read-only: 只读
+      created_modal:
+        title: 已创建API密钥
+        api_key: API 密钥
+        description: 此密钥将不会再次显示。请确保您在继续之前拿到一份副本。
+      delete_modal:
+        title: 删除API密钥
+        content: 任何使用此密钥的应用程序或脚本都将无法访问API。这是永久性的！
+    ai_settings:
+      enabled:
+        label: AI 已启用
+        check: 启用AI功能
+        text: AI 模型必须正确配置才能使用。
+      provider:
+        label: 提供商
+      api_host:
+        label: API 主机
+        msg: API 主机是必需的
+      api_key:
+        label: API 密钥
+        check: 检查
+        check_success: "连接成功。"
+        msg: API 密钥是必填项
+      model:
+        label: 模型
+        msg: 模型是必需的
+      add_success: AI 设置更新成功。
+    conversations:
+      topic: 主题
+      helpful: 有帮助
+      unhelpful: 没有帮助
+      created: 创建于
+      action: 操作
+      empty: 没有找到会话
+      delete_modal:
+        title: 删除对话
+        content: 您确定要删除此对话吗？这是永久性的！
+        delete_success: 对话删除成功。
+    mcp:
+      mcp_server:
+        label: MCP服务器
+        switch: 已启用
+      type:
+        label: 类型
+      url:
+        label: 链接
+      http_header:
+        label: HTTP Header
+        text: 请将 {key} 替换为 API 密钥。
   form:
     optional: (选填)
     empty: 不能为空
@@ -2251,7 +2437,14 @@ ui:
     user_normal: 此用户已经是正常的。
     user_suspended: 此用户已被封禁。
     user_deleted: 此用户已被删除
+    user_added: 用户添加成功。
     badge_activated: 此徽章已被激活。
     badge_inactivated: 此徽章已被禁用。
+    users_deleted: 这些用户已被删除。
+    posts_deleted: 这些问题已被删除。
+    answers_deleted: 这些答案已被删除。
+    copy: 复制到剪贴板
+    copied: 已复制
+    external_content_warning: 外部图像/媒体未显示。
 
 

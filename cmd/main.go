@@ -28,14 +28,20 @@ import (
 	"github.com/apache/answer/internal/base/conf"
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/cron"
-	"github.com/apache/answer/internal/cli"
+	"github.com/apache/answer/internal/base/path"
 	"github.com/apache/answer/internal/schema"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"github.com/segmentfault/pacman"
 	"github.com/segmentfault/pacman/contrib/log/zap"
 	"github.com/segmentfault/pacman/contrib/server/http"
 	"github.com/segmentfault/pacman/log"
 )
+
+func init() {
+	// Load .env if present, ignore error to keep backward compatibility
+	_ = godotenv.Load()
+}
 
 // go build -ldflags "-X github.com/apache/answer/cmd.Version=x.y.z"
 var (
@@ -49,7 +55,7 @@ var (
 	// Time is the build time of the project
 	Time = ""
 	// GoVersion is the go version of the project
-	GoVersion = "1.22"
+	GoVersion = "1.23"
 	// log level
 	logLevel = os.Getenv("LOG_LEVEL")
 	// log path
@@ -67,7 +73,7 @@ func Main() {
 }
 
 func runApp() {
-	c, err := conf.ReadConfig(cli.GetConfigFilePath())
+	c, err := conf.ReadConfig(path.GetConfigFilePath())
 	if err != nil {
 		panic(err)
 	}

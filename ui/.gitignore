@@ -1,7 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+node_modules
 /.pnp
 .pnp.js
 
@@ -36,6 +36,4 @@ package-lock.json
 /src/plugins/*
 !/src/plugins/builtin
 !/src/plugins/Demo
-!/src/plugins/answer-chart
-!/src/plugins/answer-formula
 /src/plugins/*/*.go

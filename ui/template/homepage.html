@@ -19,90 +19,92 @@
 
 -->
 {{template "header" . }}
-<div class="col-xl-10 col-lg-9 col-md-12">
-  <div class="pt-4 mb-5">
-    <div class="row">
-      <div class="col">
-        <div class="d-md-flex d-block flex-wrap justify-content-between">
-          <div class="d-flex flex-column flex-md-row mb-4">
-            <a href="{{$.baseURL}}/users/{{.userinfo.Username}}">
-              <img
-                  src="{{.userinfo.Avatar}}"
-                  width="160px" height="160px" class="rounded" alt="{{.userinfo.Username}}" />
-              </a>
-            <div class="ms-0 ms-md-4 mt-4 mt-md-0">
-              <div class="d-flex align-items-center mb-2">
-                  <a class="link-dark h3 mb-0" href="{{$.baseURL}}/users/{{.userinfo.Username}}">{{.userinfo.DisplayName}}</a>
+<div class="d-flex justify-content-center px-0 px-md-4">
+  <div class="answer-container">
+    <div class="pt-4 mb-5">
+      <div class="row">
+        <div class="col">
+          <div class="d-md-flex d-block flex-wrap justify-content-between">
+            <div class="d-flex flex-column flex-md-row mb-4">
+              <a href="{{$.baseURL}}/users/{{.userinfo.Username}}">
+                <img
+                    src="{{.userinfo.Avatar}}"
+                    width="160px" height="160px" class="rounded" alt="{{.userinfo.Username}}" />
+                </a>
+              <div class="ms-0 ms-md-4 mt-4 mt-md-0">
+                <div class="d-flex align-items-center mb-2">
+                    <a class="link-dark h3 mb-0" href="{{$.baseURL}}/users/{{.userinfo.Username}}">{{.userinfo.DisplayName}}</a>
 
+                </div>
+                <div class="text-secondary mb-4">@{{.userinfo.Username}}</div>
+                <div class="d-flex flex-wrap mb-3">
+                    <div class="me-3">
+                        <strong class="fs-5">{{.userinfo.Rank}}</strong><span class="text-secondary"> {{translator $.language "ui.personal.x_reputation"}}</span>
+                    </div>
+                    <div class="me-3">
+                        <strong class="fs-5">{{.userinfo.AnswerCount}}</strong><span class="text-secondary"> {{translator $.language "ui.personal.x_answers"}}</span>
+                    </div>
+                    <div>
+                        <strong class="fs-5">{{.userinfo.QuestionCount}}</strong><span class="text-secondary"> {{translator $.language "ui.personal.x_questions"}}</span>
+                    </div>
+                </div>
+                {{if .userinfo.Website }}
+                <div class="d-flex align-items-center"><i class="br bi-house-door-fill me-2"></i><a class="link-secondary" href="{{.userinfo.Website}}">{{.userinfo.Website}}</a></div>
+                {{else}}
+                {{end}}
+                <div class="d-flex text-secondary"></div>
               </div>
-              <div class="text-secondary mb-4">@{{.userinfo.Username}}</div>
-              <div class="d-flex flex-wrap mb-3">
-                  <div class="me-3">
-                      <strong class="fs-5">{{.userinfo.Rank}}</strong><span class="text-secondary"> {{translator $.language "ui.personal.x_reputation"}}</span>
-                  </div>
-                  <div class="me-3">
-                      <strong class="fs-5">{{.userinfo.AnswerCount}}</strong><span class="text-secondary"> {{translator $.language "ui.personal.x_answers"}}</span>
-                  </div>
-                  <div>
-                      <strong class="fs-5">{{.userinfo.QuestionCount}}</strong><span class="text-secondary"> {{translator $.language "ui.personal.x_questions"}}</span>
-                  </div>
-              </div>
-              {{if .userinfo.Website }}
-              <div class="d-flex align-items-center"><i class="br bi-house-door-fill me-2"></i><a class="link-secondary" href="{{.userinfo.Website}}">{{.userinfo.Website}}</a></div>
-              {{else}}
-              {{end}}
-              <div class="d-flex text-secondary"></div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="justify-content-center row">
+      <div class="justify-content-center row">
 
-        <div class="col-xxl-7 col-lg-8 col-sm-12">
-            <div>
-                <h5 class="mb-3">{{translator $.language "ui.personal.about_me"}}</h5>
-                {{if .bio }}
-                <div class="mb-5 text-break fmt">{{.bio}}</div>
-                {{else}}
-                <div class="text-center py-5 mb-4">{{translator $.language "ui.personal.about_me_empty"}}</div>
-                {{end}}
-                <div class="mb-4 row">
-                    <div class="mb-4 col-md-6 col-sm-12">
-                        <h5 class="mb-3">Top Answers</h5>
-                        <ol class="list-unstyled">
-                            {{ range .topAnswers }}
-                            <li class="mb-2">
-                                <a class="text-truncate-1" href="{{$.baseURL}}/questions/{{.QuestionID}}/{{.AnswerID}}">{{.QuestionInfo.Title}}</a>
-                                <div class="text-secondary small">
-                                    <i class="br bi-hand-thumbs-up-fill me-1"></i><span>{{.VoteCount}} votes</span>
-                                </div>
-                            </li>
-                            {{ end }}
-                        </ol>
-                    </div>
-                    <div class="col-md-6 col-sm-12">
-                        <h5 class="mb-3">Top Questions</h5>
-                        <ol class="list-unstyled">
-                            {{ range .topQuestions }}
-                            <li class="mb-2">
-                                <a class="text-truncate-1" href="{{$.baseURL}}/questions/{{.ID}}">{{.Title}}</a>
-                                <div class="text-secondary small">
-                                    <i class="br bi-hand-thumbs-up-fill me-1"></i><span> {{.VoteCount}} votes</span>
-                                    <div class="d-inline-block text-secondary ms-3 small text-success">
-                                        <i class="br bi-check-circle-fill"></i><span> {{.AnswerCount}} answers</span>
-                                    </div>
-                                </div>
-                            </li>
-                            {{ end }}
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="mt-5 mt-lg-0 col-xxl-3 col-lg-4 col-sm-12">
+          <div class="col-xxl-7 col-lg-8 col-sm-12">
+              <div>
+                  <h5 class="mb-3">{{translator $.language "ui.personal.about_me"}}</h5>
+                  {{if .bio }}
+                  <div class="mb-5 text-break fmt">{{.bio}}</div>
+                  {{else}}
+                  <div class="text-center py-5 mb-4">{{translator $.language "ui.personal.about_me_empty"}}</div>
+                  {{end}}
+                  <div class="mb-4 row">
+                      <div class="mb-4 col-md-6 col-sm-12">
+                          <h5 class="mb-3">Top Answers</h5>
+                          <ol class="list-unstyled">
+                              {{ range .topAnswers }}
+                              <li class="mb-2">
+                                  <a class="text-truncate-1" href="{{$.baseURL}}/questions/{{.QuestionID}}/{{.AnswerID}}">{{.QuestionInfo.Title}}</a>
+                                  <div class="text-secondary small">
+                                      <i class="br bi-hand-thumbs-up-fill me-1"></i><span>{{.VoteCount}} votes</span>
+                                  </div>
+                              </li>
+                              {{ end }}
+                          </ol>
+                      </div>
+                      <div class="col-md-6 col-sm-12">
+                          <h5 class="mb-3">Top Questions</h5>
+                          <ol class="list-unstyled">
+                              {{ range .topQuestions }}
+                              <li class="mb-2">
+                                  <a class="text-truncate-1" href="{{$.baseURL}}/questions/{{.ID}}">{{.Title}}</a>
+                                  <div class="text-secondary small">
+                                      <i class="br bi-hand-thumbs-up-fill me-1"></i><span> {{.VoteCount}} votes</span>
+                                      <div class="d-inline-block text-secondary ms-3 small text-success">
+                                          <i class="br bi-check-circle-fill"></i><span> {{.AnswerCount}} answers</span>
+                                      </div>
+                                  </div>
+                              </li>
+                              {{ end }}
+                          </ol>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="mt-5 mt-lg-0 col-xxl-3 col-lg-4 col-sm-12">
 
-        </div>
+          </div>
+      </div>
     </div>
   </div>
 </div>

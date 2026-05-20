@@ -29,6 +29,7 @@ import (
 	"github.com/apache/answer/internal/repo/unique"
 	commentService "github.com/apache/answer/internal/service/comment"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func buildCommentEntity() *entity.Comment {
@@ -48,10 +49,10 @@ func Test_commentRepo_AddComment(t *testing.T) {
 	commentRepo := comment.NewCommentRepo(testDataSource, uniqueIDRepo)
 	testCommentEntity := buildCommentEntity()
 	err := commentRepo.AddComment(context.TODO(), testCommentEntity)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	err = commentRepo.RemoveComment(context.TODO(), testCommentEntity.ID)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 }
 
 func Test_commentRepo_GetCommentPage(t *testing.T) {
@@ -59,7 +60,7 @@ func Test_commentRepo_GetCommentPage(t *testing.T) {
 	commentRepo := comment.NewCommentRepo(testDataSource, uniqueIDRepo)
 	testCommentEntity := buildCommentEntity()
 	err := commentRepo.AddComment(context.TODO(), testCommentEntity)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	resp, total, err := commentRepo.GetCommentPage(context.TODO(), &commentService.CommentQuery{
 		PageCond: pager.PageCond{
@@ -67,12 +68,12 @@ func Test_commentRepo_GetCommentPage(t *testing.T) {
 			PageSize: 10,
 		},
 	})
-	assert.NoError(t, err)
-	assert.Equal(t, total, int64(1))
+	require.NoError(t, err)
+	assert.Equal(t, int64(1), total)
 	assert.Equal(t, resp[0].ID, testCommentEntity.ID)
 
 	err = commentRepo.RemoveComment(context.TODO(), testCommentEntity.ID)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 }
 
 func Test_commentRepo_UpdateComment(t *testing.T) {
@@ -81,19 +82,19 @@ func Test_commentRepo_UpdateComment(t *testing.T) {
 	commonCommentRepo := comment.NewCommentCommonRepo(testDataSource, uniqueIDRepo)
 	testCommentEntity := buildCommentEntity()
 	err := commentRepo.AddComment(context.TODO(), testCommentEntity)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	testCommentEntity.ParsedText = "test"
 	err = commentRepo.UpdateCommentContent(context.TODO(), testCommentEntity.ID, "test", "test")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	newComment, exist, err := commonCommentRepo.GetComment(context.TODO(), testCommentEntity.ID)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.True(t, exist)
 	assert.Equal(t, testCommentEntity.ParsedText, newComment.ParsedText)
 
 	err = commentRepo.RemoveComment(context.TODO(), testCommentEntity.ID)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 }
 
 func Test_commentRepo_CannotGetDeletedComment(t *testing.T) {
@@ -102,12 +103,12 @@ func Test_commentRepo_CannotGetDeletedComment(t *testing.T) {
 	testCommentEntity := buildCommentEntity()
 
 	err := commentRepo.AddComment(context.TODO(), testCommentEntity)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	err = commentRepo.RemoveComment(context.TODO(), testCommentEntity.ID)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	_, exist, err := commentRepo.GetComment(context.TODO(), testCommentEntity.ID)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.False(t, exist)
 }

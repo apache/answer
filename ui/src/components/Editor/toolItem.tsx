@@ -21,16 +21,11 @@ import { FC, useContext, useEffect } from 'react';
 import { Dropdown, Button } from 'react-bootstrap';
 
 import { EditorContext } from './EditorContext';
-import { IEditorContext } from './types';
+import { Editor } from './types';
 
 interface IProps {
   keyMap?: string[];
-  onClick?: ({
-    editor,
-    wrapText,
-    replaceLines,
-    appendBlock,
-  }: IEditorContext) => void;
+  onClick?: (editor: Editor) => void;
   tip?: string;
   className?: string;
   as?: any;
@@ -38,12 +33,7 @@ interface IProps {
   label?: string;
   disable?: boolean;
   isShow?: boolean;
-  onBlur?: ({
-    editor,
-    wrapText,
-    replaceLines,
-    appendBlock,
-  }: IEditorContext) => void;
+  onBlur?: (editor: Editor) => void;
 }
 const ToolItem: FC<IProps> = (props) => {
   const editor = useContext(EditorContext);
@@ -72,12 +62,8 @@ const ToolItem: FC<IProps> = (props) => {
     keyMap.forEach((key) => {
       editor?.addKeyMap({
         [key]: () => {
-          onClick?.({
-            editor,
-            wrapText: editor?.wrapText,
-            replaceLines: editor?.replaceLines,
-            appendBlock: editor?.appendBlock,
-          });
+          onClick?.(editor);
+          return true;
         },
       });
     });
@@ -93,23 +79,16 @@ const ToolItem: FC<IProps> = (props) => {
       disabled={disable}
       tabIndex={-1}
       onClick={(e) => {
-        console.log('onClick', e);
         e.preventDefault();
-        onClick?.({
-          editor,
-          wrapText: editor?.wrapText,
-          replaceLines: editor?.replaceLines,
-          appendBlock: editor?.appendBlock,
-        });
+        if (editor) {
+          onClick?.(editor);
+        }
       }}
       onBlur={(e) => {
         e.preventDefault();
-        onBlur?.({
-          editor,
-          wrapText: editor?.wrapText,
-          replaceLines: editor?.replaceLines,
-          appendBlock: editor?.appendBlock,
-        });
+        if (editor) {
+          onBlur?.(editor);
+        }
       }}>
       <i className={`bi bi-${label}`} />
     </Button>

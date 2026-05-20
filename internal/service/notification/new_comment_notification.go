@@ -21,11 +21,12 @@ package notification
 
 import (
 	"context"
+	"time"
+
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/schema"
 	"github.com/segmentfault/pacman/i18n"
 	"github.com/segmentfault/pacman/log"
-	"time"
 )
 
 func (ns *ExternalNotificationService) handleNewCommentNotification(ctx context.Context,
@@ -44,8 +45,7 @@ func (ns *ExternalNotificationService) handleNewCommentNotification(ctx context.
 		if !channel.Enable {
 			continue
 		}
-		switch channel.Key {
-		case constant.EmailChannel:
+		if channel.Key == constant.EmailChannel {
 			ns.sendNewCommentNotificationEmail(ctx, msg.ReceiverUserID, msg.ReceiverEmail, msg.ReceiverLang, msg.NewCommentTemplateRawData)
 		}
 	}
@@ -54,6 +54,9 @@ func (ns *ExternalNotificationService) handleNewCommentNotification(ctx context.
 
 func (ns *ExternalNotificationService) sendNewCommentNotificationEmail(ctx context.Context,
 	userID, email, lang string, rawData *schema.NewCommentTemplateRawData) {
+	if unavailable := ns.checkUserStatusBeforeNotification(ctx, userID); unavailable {
+		return
+	}
 	codeContent := &schema.EmailCodeContent{
 		SourceType: schema.UnsubscribeSourceType,
 		NotificationSources: []constant.NotificationSource{
@@ -65,7 +68,7 @@ func (ns *ExternalNotificationService) sendNewCommentNotificationEmail(ctx conte
 	}
 	// If receiver has set language, use it to send email.
 	if len(lang) > 0 {
-		ctx = context.WithValue(ctx, constant.AcceptLanguageFlag, i18n.Language(lang))
+		ctx = context.WithValue(ctx, constant.AcceptLanguageContextKey, i18n.Language(lang))
 	}
 	title, body, err := ns.emailService.NewCommentTemplate(ctx, rawData)
 	if err != nil {

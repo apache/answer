@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { AdminSettingsGeneral, AdminSettingsUsers } from '@/common/interface';
 import { DEFAULT_SITE_NAME } from '@/common/constants';
@@ -40,7 +40,7 @@ const defaultUsersConf: AdminSettingsUsers = {
   allow_update_username: false,
   allow_update_website: false,
   default_avatar: 'system',
-  gravatar_base_url: 'https://www.gravatar.com/avatar/',
+  gravatar_base_url: '',
 };
 
 const siteInfo = create<SiteInfoType>((set) => ({
@@ -50,7 +50,6 @@ const siteInfo = create<SiteInfoType>((set) => ({
     short_description: '',
     site_url: '',
     contact_email: '',
-    check_update: true,
     permalink: 1,
   },
   users: defaultUsersConf,

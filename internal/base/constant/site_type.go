@@ -20,15 +20,30 @@
 package constant
 
 const (
+	// SiteTypeLegal\SiteTypeLegal\SiteTypeWrite The following items will no longer be used.
+	SiteTypeLegal     = "legal"
+	SiteTypeInterface = "interface"
+	SiteTypeWrite     = "write"
+
 	SiteTypeGeneral       = "general"
-	SiteTypeInterface     = "interface"
 	SiteTypeBranding      = "branding"
-	SiteTypeWrite         = "write"
-	SiteTypeLegal         = "legal"
 	SiteTypeSeo           = "seo"
 	SiteTypeLogin         = "login"
 	SiteTypeCustomCssHTML = "css-html"
 	SiteTypeTheme         = "theme"
 	SiteTypePrivileges    = "privileges"
 	SiteTypeUsers         = "users"
+
+	SiteTypeAdvanced  = "advanced"
+	SiteTypeQuestions = "questions"
+	SiteTypeTags      = "tags"
+
+	SiteTypeUsersSettings     = "users_settings"
+	SiteTypeInterfaceSettings = "interface_settings"
+
+	SiteTypePolicies      = "policies"
+	SiteTypeSecurity      = "security"
+	SiteTypeAI            = "ai"
+	SiteTypeFeatureToggle = "feature-toggle"
+	SiteTypeMCP           = "mcp"
 )

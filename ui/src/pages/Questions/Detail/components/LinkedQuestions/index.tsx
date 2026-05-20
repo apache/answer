@@ -53,7 +53,7 @@ const Index: FC<Props> = ({ id }) => {
     <Card className="mb-4">
       <Card.Header className="text-nowrap d-flex justify-content-between text-capitalize">
         {t('title')}
-        <Link to={`/questions/linked/${id}`} className="btn btn-link p-0">
+        <Link to={`/linked/${id}`} className="btn btn-link p-0">
           {t('more', { keyPrefix: 'btns' })}
         </Link>
       </Card.Header>
@@ -64,7 +64,7 @@ const Index: FC<Props> = ({ id }) => {
             key={item.id}
             as={Link}
             to={pathFactory.questionLanding(item.id, item.url_title)}>
-            <div className="link-dark">{item.title}</div>
+            <div className="link-dark text-truncate-3">{item.title}</div>
             {item.answer_count > 0 && (
               <div
                 className={`mt-1 small me-2 ${

@@ -21,6 +21,7 @@ package activity_common
 
 import (
 	"context"
+	"time"
 
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/base/reason"
@@ -30,6 +31,8 @@ import (
 	"github.com/apache/answer/pkg/obj"
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
+	"xorm.io/builder"
+	"xorm.io/xorm"
 )
 
 // FollowRepo follow repository
@@ -63,19 +66,19 @@ func (ar *FollowRepo) GetFollowAmount(ctx context.Context, objectID string) (fol
 		model := &entity.Question{}
 		_, err = ar.data.DB.Context(ctx).Where("id = ?", objectID).Cols("`follow_count`").Get(model)
 		if err == nil {
-			follows = int(model.FollowCount)
+			follows = model.FollowCount
 		}
 	case "user":
 		model := &entity.User{}
 		_, err = ar.data.DB.Context(ctx).Where("id = ?", objectID).Cols("`follow_count`").Get(model)
 		if err == nil {
-			follows = int(model.FollowCount)
+			follows = model.FollowCount
 		}
 	case "tag":
 		model := &entity.Tag{}
 		_, err = ar.data.DB.Context(ctx).Where("id = ?", objectID).Cols("`follow_count`").Get(model)
 		if err == nil {
-			follows = int(model.FollowCount)
+			follows = model.FollowCount
 		}
 	default:
 		err = errors.InternalServer(reason.DisallowFollow).WithMsg("this object can't be followed")
@@ -155,4 +158,108 @@ func (ar *FollowRepo) IsFollowed(ctx context.Context, userID, objectID string) (
 	} else {
 		return true, nil
 	}
+}
+
+// MigrateFollowers migrate followers from source object to target object
+func (ar *FollowRepo) MigrateFollowers(ctx context.Context, sourceObjectID, targetObjectID, action string) error {
+	// if source object id and target object id are same type
+	sourceObjectTypeStr, err := obj.GetObjectTypeStrByObjectID(sourceObjectID)
+	if err != nil {
+		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	targetObjectTypeStr, err := obj.GetObjectTypeStrByObjectID(targetObjectID)
+	if err != nil {
+		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	if sourceObjectTypeStr != targetObjectTypeStr {
+		return errors.InternalServer(reason.DisallowFollow).WithMsg("not same object type")
+	}
+	activityType, err := ar.activityRepo.GetActivityTypeByObjectType(ctx, sourceObjectTypeStr, action)
+	if err != nil {
+		return err
+	}
+
+	// 1. get all user ids who follow the source object
+	userIDs, err := ar.GetFollowUserIDs(ctx, sourceObjectID)
+	if err != nil {
+		log.Errorf("MigrateFollowers: failed to get user ids who follow %s: %v", sourceObjectID, err)
+		return err
+	}
+
+	_, err = ar.data.DB.Transaction(func(session *xorm.Session) (result any, err error) {
+		session = session.Context(ctx)
+		// 1. delete all follows of the source object
+		_, err = session.Table(entity.Activity{}.TableName()).
+			Where(builder.Eq{
+				"object_id":     sourceObjectID,
+				"activity_type": activityType,
+			}).
+			Delete(&entity.Activity{})
+		if err != nil {
+			return nil, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+		}
+
+		// 2. update cancel status to active for target tag if source tag followers is active
+		_, err = session.Table(entity.Activity{}.TableName()).
+			Where(builder.Eq{
+				"object_id":     targetObjectID,
+				"activity_type": activityType,
+			}).
+			And(builder.In("user_id", userIDs)).
+			Cols("cancelled").
+			Update(&entity.Activity{
+				Cancelled: entity.ActivityAvailable,
+			})
+		if err != nil {
+			return nil, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+		}
+
+		// 3. get existing follows of the target object
+		targetFollowers := make([]string, 0)
+		err = session.Table(entity.Activity{}.TableName()).
+			Where(builder.Eq{
+				"object_id":     targetObjectID,
+				"activity_type": activityType,
+				"cancelled":     entity.ActivityAvailable,
+			}).
+			Cols("user_id").
+			Find(&targetFollowers)
+		if err != nil {
+			return nil, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+		}
+
+		// 4. filter out user ids that already follow the target object and create new activity
+		// Create a map for faster lookup of existing followers
+		existingFollowers := make(map[string]bool)
+		for _, uid := range targetFollowers {
+			existingFollowers[uid] = true
+		}
+
+		// Filter out users who already follow the target
+		newFollowers := make([]string, 0)
+		for _, uid := range userIDs {
+			if !existingFollowers[uid] {
+				newFollowers = append(newFollowers, uid)
+			}
+		}
+
+		// Create new activities for the filtered users
+		for _, uid := range newFollowers {
+			activity := &entity.Activity{
+				UserID:           uid,
+				ObjectID:         targetObjectID,
+				OriginalObjectID: targetObjectID,
+				ActivityType:     activityType,
+				CreatedAt:        time.Now(),
+				UpdatedAt:        time.Now(),
+				Cancelled:        entity.ActivityAvailable,
+			}
+			if _, err = session.Insert(activity); err != nil {
+				return nil, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+			}
+		}
+		return nil, nil
+	})
+
+	return err
 }

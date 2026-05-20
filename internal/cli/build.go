@@ -34,7 +34,6 @@ import (
 	"github.com/Masterminds/semver/v3"
 	"github.com/apache/answer/pkg/dir"
 	"github.com/apache/answer/pkg/writer"
-	"github.com/apache/answer/ui"
 	"github.com/segmentfault/pacman/log"
 	"gopkg.in/yaml.v3"
 )
@@ -62,7 +61,7 @@ func main() {
 `
 	goModTpl = `module answer
 
-go 1.22
+go 1.23
 `
 )
 
@@ -105,7 +104,7 @@ func newAnswerBuilder(buildDir, outputPath string, plugins []string, originalAns
 	if len(outputPath) == 0 {
 		outputPath = filepath.Join(parentDir, "new_answer")
 	}
-	material.outputPath = outputPath
+	material.outputPath, _ = filepath.Abs(outputPath)
 	material.plugins = formatPlugins(plugins)
 	material.answerModuleReplacement = os.Getenv("ANSWER_MODULE")
 	return &answerBuilder{
@@ -125,6 +124,7 @@ func BuildNewAnswer(buildDir, outputPath string, plugins []string, originalAnswe
 	builder := newAnswerBuilder(buildDir, outputPath, plugins, originalAnswerInfo)
 	builder.DoTask(createMainGoFile)
 	builder.DoTask(downloadGoModFile)
+	builder.DoTask(movePluginToVendor)
 	builder.DoTask(copyUIFiles)
 	builder.DoTask(buildUI)
 	builder.DoTask(mergeI18nFiles)
@@ -140,6 +140,12 @@ func formatPlugins(plugins []string) (formatted []*pluginInfo) {
 		info := &pluginInfo{}
 		plugin, info.Path, _ = strings.Cut(plugin, "=")
 		info.Name, info.Version, _ = strings.Cut(plugin, "@")
+		// Resolve local path to absolute since build runs in a temp directory
+		if len(info.Path) > 0 {
+			if absPath, err := filepath.Abs(info.Path); err == nil {
+				info.Path = absPath
+			}
+		}
 		formatted = append(formatted, info)
 	}
 	return formatted
@@ -185,7 +191,12 @@ func createMainGoFile(b *buildingMaterial) (err error) {
 	for _, p := range b.plugins {
 		// If user set a path, use it to replace the module with local path
 		if len(p.Path) > 0 {
-			replacement := fmt.Sprintf("%s@%s=%s", p.Name, p.Version, p.Path)
+			var replacement string
+			if len(p.Version) > 0 {
+				replacement = fmt.Sprintf("%s@%s=%s", p.Name, p.Version, p.Path)
+			} else {
+				replacement = fmt.Sprintf("%s=%s", p.Name, p.Path)
+			}
 			err = b.newExecCmd("go", "mod", "edit", "-replace", replacement).Run()
 		} else if len(p.Version) > 0 {
 			// If user specify a version, use it to get specific version of the module
@@ -200,9 +211,27 @@ func createMainGoFile(b *buildingMaterial) (err error) {
 
 // downloadGoModFile run go mod commands to download dependencies
 func downloadGoModFile(b *buildingMaterial) (err error) {
-	// If user specify a module replacement, use it. Otherwise, use the latest version.
-	if len(b.answerModuleReplacement) > 0 {
-		replacement := fmt.Sprintf("%s=%s", "github.com/apache/answer", b.answerModuleReplacement)
+	answerReplacement := b.answerModuleReplacement
+
+	// If no replacement specified and current binary is v2+, auto-determine replacement.
+	// This is needed because go mod tidy would otherwise resolve github.com/apache/answer
+	// to the latest v1.x version, causing v2+ features (e.g. AI/MCP) to disappear.
+	if len(answerReplacement) == 0 && b.originalAnswerInfo.Version != "" {
+		ver, verErr := semver.NewVersion(strings.TrimPrefix(b.originalAnswerInfo.Version, "v"))
+		if verErr == nil && ver.Major() >= 2 {
+			answerReplacement = fmt.Sprintf("github.com/apache/answer@%s", b.originalAnswerInfo.Version)
+		}
+	}
+
+	if len(answerReplacement) > 0 {
+		// For v2+ versioned module paths (e.g. github.com/apache/answer@v2.0.0),
+		// go mod tidy rejects the version because the module path lacks a /v2 suffix.
+		// Work around this by cloning the repo locally and using a local path replacement.
+		localPath, resolveErr := resolveAnswerModuleReplacement(answerReplacement, b.tmpDir)
+		if resolveErr != nil {
+			return resolveErr
+		}
+		replacement := fmt.Sprintf("%s=%s", "github.com/apache/answer", localPath)
 		err = b.newExecCmd("go", "mod", "edit", "-replace", replacement).Run()
 		if err != nil {
 			return err
@@ -219,6 +248,74 @@ func downloadGoModFile(b *buildingMaterial) (err error) {
 		return err
 	}
 	return
+}
+
+// resolveAnswerModuleReplacement resolves the ANSWER_MODULE value to a usable local path or
+// remote replacement string. For v2+ versioned module paths (e.g. github.com/apache/answer@v2.0.0),
+// Go module system rejects the version because the module path has no /v2 suffix. In that case
+// the repository is cloned locally and the local path is returned instead.
+func resolveAnswerModuleReplacement(replacement, tmpDir string) (string, error) {
+	// Local paths can be used as-is.
+	if strings.HasPrefix(replacement, "/") || strings.HasPrefix(replacement, "./") || strings.HasPrefix(replacement, "../") {
+		return replacement, nil
+	}
+
+	// Parse module@version format.
+	moduleName, version, hasVersion := strings.Cut(replacement, "@")
+	if !hasVersion {
+		return replacement, nil
+	}
+
+	// Only handle v2+ versions on module paths without the /vN suffix.
+	ver, err := semver.StrictNewVersion(strings.TrimPrefix(version, "v"))
+	if err != nil || ver.Major() < 2 {
+		return replacement, nil
+	}
+	if strings.HasSuffix(moduleName, fmt.Sprintf("/v%d", ver.Major())) {
+		return replacement, nil
+	}
+
+	// Clone the repo to a local directory and return its path.
+	gitURL := "https://" + moduleName
+	tag := "v" + strings.TrimPrefix(version, "v")
+	localPath := filepath.Join(filepath.Dir(tmpDir), fmt.Sprintf("answer_src_%s", strings.ReplaceAll(version, ".", "_")))
+
+	if _, statErr := os.Stat(localPath); statErr == nil {
+		fmt.Printf("[build] using cached local clone at %s\n", localPath)
+		return localPath, nil
+	}
+
+	fmt.Printf("[build] v2+ module detected, cloning %s@%s to local path %s...\n", moduleName, version, localPath)
+	cloneCmd := exec.Command("git", "clone", "--depth=1", "--branch="+tag, gitURL, localPath)
+	cloneCmd.Stdout = os.Stdout
+	cloneCmd.Stderr = os.Stderr
+	if err = cloneCmd.Run(); err != nil {
+		return "", fmt.Errorf(
+			"failed to clone %s@%s: %w\nTip: set ANSWER_MODULE to a local checkout path instead, e.g. ANSWER_MODULE=/path/to/answer",
+			moduleName, version, err,
+		)
+	}
+
+	fmt.Printf("[build] successfully cloned to %s\n", localPath)
+	return localPath, nil
+}
+
+// movePluginToVendor move plugin to vendor dir
+// Traverse the plugins, and if the plugin path is not github.com/apache/answer-plugins, move the contents of the current plugin to the vendor/github.com/apache/answer-plugins/ directory.
+func movePluginToVendor(b *buildingMaterial) (err error) {
+	pluginsDir := filepath.Join(b.tmpDir, "vendor/github.com/apache/answer-plugins/")
+	for _, p := range b.plugins {
+		pluginDir := filepath.Join(b.tmpDir, "vendor/", p.Name)
+		pluginName := filepath.Base(p.Name)
+		if !strings.HasPrefix(p.Name, "github.com/apache/answer-plugins/") {
+			fmt.Printf("try to copy dir from %s to %s\n", pluginDir, filepath.Join(pluginsDir, pluginName))
+			err = copyDirEntries(os.DirFS(pluginDir), ".", filepath.Join(pluginsDir, pluginName), "node_modules")
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 // copyUIFiles copy ui files from answer module to tmp dir
@@ -281,50 +378,6 @@ func copyUIFiles(b *buildingMaterial) (err error) {
 	return nil
 }
 
-// overwriteIndexTs overwrites index.ts file in ui/src/plugins/ dir
-func overwriteIndexTs(b *buildingMaterial) (err error) {
-	localUIPluginDir := filepath.Join(b.tmpDir, "vendor/github.com/apache/answer/ui/src/plugins/")
-
-	folders, err := getFolders(localUIPluginDir)
-	if err != nil {
-		return fmt.Errorf("failed to get folders: %w", err)
-	}
-
-	content := generateIndexTsContent(folders)
-	err = os.WriteFile(filepath.Join(localUIPluginDir, "index.ts"), []byte(content), 0644)
-	if err != nil {
-		return fmt.Errorf("failed to write index.ts: %w", err)
-	}
-	return nil
-}
-
-func getFolders(dir string) ([]string, error) {
-	var folders []string
-	files, err := os.ReadDir(dir)
-	if err != nil {
-		return nil, err
-	}
-	for _, file := range files {
-		if file.IsDir() && file.Name() != "builtin" {
-			folders = append(folders, file.Name())
-		}
-	}
-	return folders, nil
-}
-
-func generateIndexTsContent(folders []string) string {
-	builder := &strings.Builder{}
-	builder.WriteString("export default null;\n")
-	// Line 2:1:  Delete `⏎`  prettier/prettier
-	if len(folders) > 0 {
-		builder.WriteString("\n")
-	}
-	for _, folder := range folders {
-		builder.WriteString(fmt.Sprintf("export { default as %s } from '%s';\n", folder, folder))
-	}
-	return builder.String()
-}
-
 // buildUI run pnpm install and pnpm build commands to build ui
 func buildUI(b *buildingMaterial) (err error) {
 	localUIBuildDir := filepath.Join(b.tmpDir, "vendor/github.com/apache/answer/ui")
@@ -341,13 +394,6 @@ func buildUI(b *buildingMaterial) (err error) {
 		return err
 	}
 	return nil
-}
-
-func replaceNecessaryFile(b *buildingMaterial) (err error) {
-	fmt.Printf("try to replace ui build directory\n")
-	uiBuildDir := filepath.Join(b.tmpDir, "vendor/github.com/apache/answer/ui")
-	err = copyDirEntries(ui.Build, ".", uiBuildDir)
-	return err
 }
 
 // mergeI18nFiles merge i18n files
@@ -448,6 +494,13 @@ func copyDirEntries(sourceFs fs.FS, sourceDir, targetDir string, ignoreDir ...st
 			if strings.HasPrefix(path, s) {
 				return true
 			}
+			// Also ignore nested occurrences, e.g. src/plugins/foo/node_modules
+			if strings.Contains(path, string(filepath.Separator)+s) {
+				return true
+			}
+			if strings.Contains(path, "/"+s) {
+				return true
+			}
 		}
 		return false
 	}
@@ -465,6 +518,7 @@ func copyDirEntries(sourceFs fs.FS, sourceDir, targetDir string, ignoreDir ...st
 
 		// Construct the absolute path for the source file/directory
 		srcPath := filepath.Join(sourceDir, path)
+		srcPath = filepath.ToSlash(srcPath)
 
 		// Construct the absolute path for the destination file/directory
 		dstPath := filepath.Join(targetDir, path)

@@ -19,6 +19,6 @@
 
 import React from 'react';
 
-import { IEditorContext } from './types';
+import { Editor } from './types';
 
-export const EditorContext = React.createContext<IEditorContext | any>({});
+export const EditorContext = React.createContext<Editor | null>(null);

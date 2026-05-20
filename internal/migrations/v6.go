@@ -45,7 +45,7 @@ func addNewAnswerNotification(ctx context.Context, x *xorm.Engine) error {
 		}
 	}
 
-	m := make(map[string]interface{})
+	m := make(map[string]any)
 	_ = json.Unmarshal([]byte(cond.Value), &m)
 	m["new_answer_title"] = "[{{.SiteName}}] {{.DisplayName}} answered your question"
 	m["new_answer_body"] = "<strong><a href='{{.AnswerUrl}}'>{{.QuestionTitle}}</a></strong><br><br>\n\n<small>{{.DisplayName}}:</small><br>\n<blockquote>{{.AnswerSummary}}</blockquote><br>\n<a href='{{.AnswerUrl}}'>View it on {{.SiteName}}</a><br><br>\n\n<small>You are receiving this because you authored the thread. <a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"

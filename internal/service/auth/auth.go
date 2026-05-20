@@ -23,8 +23,10 @@ import (
 	"context"
 
 	"github.com/apache/answer/internal/entity"
+	"github.com/apache/answer/internal/service/apikey"
 	"github.com/apache/answer/pkg/token"
 	"github.com/apache/answer/plugin"
+	"github.com/segmentfault/pacman/log"
 )
 
 // AuthRepo auth repository
@@ -46,13 +48,15 @@ type AuthRepo interface {
 
 // AuthService kit service
 type AuthService struct {
-	authRepo AuthRepo
+	authRepo   AuthRepo
+	apiKeyRepo apikey.APIKeyRepo
 }
 
 // NewAuthService email service
-func NewAuthService(authRepo AuthRepo) *AuthService {
+func NewAuthService(authRepo AuthRepo, apiKeyRepo apikey.APIKeyRepo) *AuthService {
 	return &AuthService{
-		authRepo: authRepo,
+		authRepo:   authRepo,
+		apiKeyRepo: apiKeyRepo,
 	}
 }
 
@@ -138,10 +142,42 @@ func (as *AuthService) RemoveTokensExceptCurrentUser(ctx context.Context, userID
 	as.authRepo.RemoveUserTokens(ctx, userID, accessToken)
 }
 
-//Admin
+// Admin
 
 func (as *AuthService) GetAdminUserCacheInfo(ctx context.Context, accessToken string) (userInfo *entity.UserCacheInfo, err error) {
-	return as.authRepo.GetAdminUserCacheInfo(ctx, accessToken)
+	adminCacheInfo, err := as.authRepo.GetAdminUserCacheInfo(ctx, accessToken)
+	if err != nil {
+		return nil, err
+	}
+	if adminCacheInfo == nil {
+		return nil, nil
+	}
+
+	// Keep admin authorization aligned with user-token lifecycle and status refresh.
+	refreshedUserCacheInfo, err := as.GetUserCacheInfo(ctx, accessToken)
+	if err != nil {
+		return nil, err
+	}
+	if refreshedUserCacheInfo == nil {
+		if err = as.authRepo.RemoveAdminUserCacheInfo(ctx, accessToken); err != nil {
+			return nil, err
+		}
+		return nil, nil
+	}
+
+	adminCacheInfo.UserStatus = refreshedUserCacheInfo.UserStatus
+	adminCacheInfo.EmailStatus = refreshedUserCacheInfo.EmailStatus
+	if refreshedUserCacheInfo.RoleID > 0 {
+		adminCacheInfo.RoleID = refreshedUserCacheInfo.RoleID
+	}
+	if len(refreshedUserCacheInfo.ExternalID) > 0 {
+		adminCacheInfo.ExternalID = refreshedUserCacheInfo.ExternalID
+	}
+
+	if err = as.authRepo.SetAdminUserCacheInfo(ctx, accessToken, adminCacheInfo); err != nil {
+		return nil, err
+	}
+	return adminCacheInfo, nil
 }
 
 func (as *AuthService) SetAdminUserCacheInfo(ctx context.Context, accessToken string, userInfo *entity.UserCacheInfo) (err error) {
@@ -151,4 +187,20 @@ func (as *AuthService) SetAdminUserCacheInfo(ctx context.Context, accessToken st
 
 func (as *AuthService) RemoveAdminUserCacheInfo(ctx context.Context, accessToken string) (err error) {
 	return as.authRepo.RemoveAdminUserCacheInfo(ctx, accessToken)
+}
+func (as *AuthService) AuthAPIKey(ctx context.Context, read bool, apiKey string) (pass bool, err error) {
+	apiKeyInfo, exist, err := as.apiKeyRepo.GetAPIKey(ctx, apiKey)
+	if err != nil {
+		return false, err
+	}
+	if !exist {
+		return false, nil
+	}
+	// If the request is not read-only, check if the API key has write permissions
+	if !read && apiKeyInfo.Scope == "read-only" {
+		log.Warnf("API key %s does not have write permissions", apiKeyInfo.AccessKey)
+		return false, nil
+	}
+	log.Infof("API key %s is valid, scope: %s", apiKeyInfo.AccessKey, apiKeyInfo.Scope)
+	return true, nil
 }

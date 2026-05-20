@@ -22,17 +22,18 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/apache/answer/internal/base/middleware"
-	"github.com/apache/answer/internal/base/pager"
-	"github.com/apache/answer/internal/service/content"
-	"github.com/apache/answer/internal/service/event_queue"
-	"github.com/apache/answer/plugin"
 	"html/template"
 	"net/http"
 	"net/url"
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/apache/answer/internal/base/middleware"
+	"github.com/apache/answer/internal/base/pager"
+	"github.com/apache/answer/internal/service/content"
+	"github.com/apache/answer/internal/service/eventqueue"
+	"github.com/apache/answer/plugin"
 
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/handler"
@@ -58,7 +59,7 @@ type TemplateController struct {
 	cssPath                  string
 	templateRenderController *templaterender.TemplateRenderController
 	siteInfoService          siteinfo_common.SiteInfoCommonService
-	eventQueueService        event_queue.EventQueueService
+	eventQueueService        eventqueue.Service
 	userService              *content.UserService
 	questionService          *content.QuestionService
 }
@@ -67,7 +68,7 @@ type TemplateController struct {
 func NewTemplateController(
 	templateRenderController *templaterender.TemplateRenderController,
 	siteInfoService siteinfo_common.SiteInfoCommonService,
-	eventQueueService event_queue.EventQueueService,
+	eventQueueService eventqueue.Service,
 	userService *content.UserService,
 	questionService *content.QuestionService,
 ) *TemplateController {
@@ -161,11 +162,9 @@ func (tc *TemplateController) Index(ctx *gin.Context) {
 	siteInfo := tc.SiteInfo(ctx)
 	siteInfo.Canonical = siteInfo.General.SiteUrl
 
-	UrlUseTitle := false
-	if siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitle ||
-		siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitleByShortID {
-		UrlUseTitle = true
-	}
+	UrlUseTitle := siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitle ||
+		siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitleByShortID
+
 	siteInfo.Title = ""
 	tc.html(ctx, http.StatusOK, "question.html", siteInfo, gin.H{
 		"data":        data,
@@ -204,12 +203,10 @@ func (tc *TemplateController) QuestionList(ctx *gin.Context) {
 		siteInfo.Canonical = fmt.Sprintf("%s/questions?page=%d", siteInfo.General.SiteUrl, page)
 	}
 
-	UrlUseTitle := false
-	if siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitle ||
-		siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitleByShortID {
-		UrlUseTitle = true
-	}
-	siteInfo.Title = fmt.Sprintf("%s - %s", translator.Tr(handler.GetLang(ctx), constant.QuestionsTitleTrKey), siteInfo.General.Name)
+	UrlUseTitle := siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitle ||
+		siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitleByShortID
+
+	siteInfo.Title = fmt.Sprintf("%s - %s", translator.Tr(handler.GetLangByCtx(ctx), constant.QuestionsTitleTrKey), siteInfo.General.Name)
 	tc.html(ctx, http.StatusOK, "question.html", siteInfo, gin.H{
 		"data":        data,
 		"useTitle":    UrlUseTitle,
@@ -266,14 +263,13 @@ func (tc *TemplateController) QuestionInfoRedirect(ctx *gin.Context, siteInfo *s
 		if needChangeShortID {
 			return true, url
 		}
-		//not have title
+		// not have title
 		if titleIsAnswerID || len(title) == 0 {
 			return false, ""
 		}
 
 		return true, url
 	} else {
-
 		detail, err := tc.templateRenderController.QuestionDetail(ctx, questionID)
 		if err != nil {
 			tc.Page404(ctx)
@@ -287,7 +283,7 @@ func (tc *TemplateController) QuestionInfoRedirect(ctx *gin.Context, siteInfo *s
 		if len(ctx.Request.URL.Query()) > 0 {
 			url = fmt.Sprintf("%s?%s", url, ctx.Request.URL.RawQuery)
 		}
-		//have title
+		// have title
 		if len(title) > 0 && !titleIsAnswerID && correctTitle {
 			if needChangeShortID {
 				return true, url
@@ -370,13 +366,10 @@ func (tc *TemplateController) QuestionInfo(ctx *gin.Context) {
 		return
 	}
 
-	UrlUseTitle := false
-	if siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitle ||
-		siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitleByShortID {
-		UrlUseTitle = true
-	}
+	UrlUseTitle := siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitle ||
+		siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitleByShortID
 
-	//related question
+	// related question
 	userID := middleware.GetLoginUserIDFromContext(ctx)
 	relatedQuestion, _, _ := tc.questionService.SimilarQuestion(ctx, id, userID)
 
@@ -433,7 +426,7 @@ func (tc *TemplateController) QuestionInfo(ctx *gin.Context) {
 	for _, tag := range detail.Tags {
 		tags = append(tags, tag.DisplayName)
 	}
-	siteInfo.Keywords = strings.Replace(strings.Trim(fmt.Sprint(tags), "[]"), " ", ",", -1)
+	siteInfo.Keywords = strings.ReplaceAll(strings.Trim(fmt.Sprint(tags), "[]"), " ", ",")
 	siteInfo.Title = fmt.Sprintf("%s - %s", detail.Title, siteInfo.General.Name)
 	tc.html(ctx, http.StatusOK, "question-detail.html", siteInfo, gin.H{
 		"id":              id,
@@ -468,7 +461,7 @@ func (tc *TemplateController) TagList(ctx *gin.Context) {
 	if req.Page > 1 {
 		siteInfo.Canonical = fmt.Sprintf("%s/tags?page=%d", siteInfo.General.SiteUrl, req.Page)
 	}
-	siteInfo.Title = fmt.Sprintf("%s - %s", translator.Tr(handler.GetLang(ctx), constant.TagsListTitleTrKey), siteInfo.General.Name)
+	siteInfo.Title = fmt.Sprintf("%s - %s", translator.Tr(handler.GetLangByCtx(ctx), constant.TagsListTitleTrKey), siteInfo.General.Name)
 	tc.html(ctx, http.StatusOK, "tags.html", siteInfo, gin.H{
 		"page": page,
 		"data": data,
@@ -499,16 +492,14 @@ func (tc *TemplateController) TagInfo(ctx *gin.Context) {
 	}
 	siteInfo.Description = htmltext.FetchExcerpt(tagInfo.ParsedText, "...", 240)
 	if len(tagInfo.ParsedText) == 0 {
-		siteInfo.Description = translator.Tr(handler.GetLang(ctx), constant.TagHasNoDescription)
+		siteInfo.Description = translator.Tr(handler.GetLangByCtx(ctx), constant.TagHasNoDescription)
 	}
 	siteInfo.Keywords = tagInfo.DisplayName
 
-	UrlUseTitle := false
-	if siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitle ||
-		siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitleByShortID {
-		UrlUseTitle = true
-	}
-	siteInfo.Title = fmt.Sprintf("'%s' %s - %s", tagInfo.DisplayName, translator.Tr(handler.GetLang(ctx), constant.QuestionsTitleTrKey), siteInfo.General.Name)
+	UrlUseTitle := siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitle ||
+		siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitleByShortID
+
+	siteInfo.Title = fmt.Sprintf("'%s' %s - %s", tagInfo.DisplayName, translator.Tr(handler.GetLangByCtx(ctx), constant.QuestionsTitleTrKey), siteInfo.General.Name)
 	tc.html(ctx, http.StatusOK, "tag-detail.html", siteInfo, gin.H{
 		"tag":           tagInfo,
 		"questionList":  questionList,
@@ -561,7 +552,6 @@ func (tc *TemplateController) UserInfo(ctx *gin.Context) {
 		"topQuestions": questionList,
 		"topAnswers":   answerList,
 	})
-
 }
 
 func (tc *TemplateController) Page404(ctx *gin.Context) {
@@ -569,11 +559,9 @@ func (tc *TemplateController) Page404(ctx *gin.Context) {
 }
 
 func (tc *TemplateController) html(ctx *gin.Context, code int, tpl string, siteInfo *schema.TemplateSiteInfoResp, data gin.H) {
-	var (
-		prefix     = ""
-		cssPath    = ""
-		scriptPath = make([]string, len(tc.scriptPath))
-	)
+	prefix := ""
+	cssPath := ""
+	scriptPath := make([]string, len(tc.scriptPath))
 
 	_ = plugin.CallCDN(func(fn plugin.CDN) error {
 		prefix = fn.GetStaticPrefix()
@@ -609,9 +597,9 @@ func (tc *TemplateController) html(ctx *gin.Context, code int, tpl string, siteI
 		data["title"] = siteInfo.General.Name
 	}
 	data["description"] = siteInfo.Description
-	data["language"] = handler.GetLang(ctx)
+	data["language"] = handler.GetLangByCtx(ctx)
 	data["timezone"] = siteInfo.Interface.TimeZone
-	language := strings.Replace(siteInfo.Interface.Language, "_", "-", -1)
+	language := strings.ReplaceAll(siteInfo.Interface.Language, "_", "-")
 	data["lang"] = language
 	data["HeadCode"] = siteInfo.CustomCssHtml.CustomHead
 	data["HeaderCode"] = siteInfo.CustomCssHtml.CustomHeader
@@ -668,7 +656,7 @@ func (tc *TemplateController) SitemapPage(ctx *gin.Context) {
 }
 
 func (tc *TemplateController) checkPrivateMode(ctx *gin.Context) bool {
-	resp, err := tc.siteInfoService.GetSiteLogin(ctx)
+	resp, err := tc.siteInfoService.GetSiteSecurity(ctx)
 	if err != nil {
 		log.Error(err)
 		return false

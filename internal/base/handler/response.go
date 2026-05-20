@@ -34,7 +34,7 @@ type RespBody struct {
 	// response message
 	Message string `json:"msg"`
 	// response data
-	Data interface{} `json:"data"`
+	Data any `json:"data"`
 }
 
 // TrMsg translate the reason cause as a message
@@ -63,7 +63,7 @@ func NewRespBodyFromError(e *errors.Error) *RespBody {
 }
 
 // NewRespBodyData new response body with data
-func NewRespBodyData(code int, reason string, data interface{}) *RespBody {
+func NewRespBodyData(code int, reason string, data any) *RespBody {
 	return &RespBody{
 		Code:   code,
 		Reason: reason,

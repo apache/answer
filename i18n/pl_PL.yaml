@@ -57,6 +57,8 @@ backend:
       other: Edytuj
     undelete:
       other: Przywróć
+    merge:
+      other: Merge
   role:
     name:
       user:
@@ -137,6 +139,8 @@ backend:
     other: Hasło
   pass:
     other: Hasło
+  old_pass:
+    other: Current password
   original_text:
     other: Ten wpis
   email_or_password_wrong_error:
@@ -168,6 +172,8 @@ backend:
         other: Brak uprawnień do aktualizacji.
       question_closed_cannot_add:
         other: Pytania są zamknięte i nie można ich dodawać.
+      content_cannot_empty:
+        other: Answer content cannot be empty.
     comment:
       edit_without_permission:
         other: Komentarz nie może edytować.
@@ -175,6 +181,8 @@ backend:
         other: Komentarz nie został odnaleziony.
       cannot_edit_after_deadline:
         other: Czas komentowania był zbyt długi, aby go zmodyfikować.
+      content_cannot_empty:
+        other: Comment content cannot be empty.
     email:
       duplicate:
         other: E-mail już istnieje.
@@ -224,6 +232,10 @@ backend:
         other: Brak uprawnień do zamknięcia.
       cannot_update:
         other: Brak uprawnień do edycji.
+      content_cannot_empty:
+        other: Content cannot be empty.
+      content_less_than_minimum:
+        other: Not enough content entered.
     rank:
       fail_to_meet_the_condition:
         other: Ranga nie spełnia warunku.
@@ -253,6 +265,8 @@ backend:
         other: Nie możesz usunąć tagu, który jest w użyciu.
       cannot_set_synonym_as_itself:
         other: Nie można ustawić synonimu aktualnego tagu jako takiego.
+      minimum_count:
+        other: Not enough tags were entered.
     smtp:
       config_from_name_cannot_be_email:
         other: Nazwą nadawcy nie może być adresem e-mail.
@@ -296,6 +310,14 @@ backend:
         other: "Błąd {{.Field}} w pobliżu '{{.Content}}' w linii {{.Line}}. {{.ExtraMessage}}"
       add_bulk_users_amount_error:
         other: "Liczba użytkowników, których dodasz na raz, powinna mieścić się w przedziale 1-{{.MaxAmount}}."
+      status_suspended_forever:
+        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+      status_suspended_until:
+        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+      status_deleted:
+        other: "This user was deleted."
+      status_inactive:
+        other: "This user is inactive."
     config:
       read_config_failed:
         other: Nie udało się odczytać pliku konfiguracyjnego.
@@ -484,7 +506,7 @@ backend:
       title:
         other: "[{{.SiteName}}] Nowe pytanie: {{.QuestionTitle}}"
       body:
-        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
     pass_reset:
       title:
         other: "[{{.SiteName }}] Reset hasła"
@@ -556,7 +578,7 @@ backend:
         name:
           other: Pierwszy odnośnik
         desc:
-          other: First dirst added a link to another post.
+          other: First added a link to another post.
       first_reaction:
         name:
           other: Pierwsza Reakcja
@@ -799,7 +821,7 @@ ui:
     tag_wiki: wiki tagu
     create_tag: Utwórz tag
     edit_tag: Edytuj tag
-    ask_a_question: Zadaj pytanie
+    ask_a_question: Create Question
     edit_question: Edytuj pytanie
     edit_answer: Edytuj odpowiedź
     search: Szukaj
@@ -823,6 +845,17 @@ ui:
     http_50X: Błąd HTTP 500
     http_403: Błąd HTTP 403
     logout: Wyloguj się
+    posts: Posts
+    ai_assistant: AI Assistant
+  ai_assistant:
+    description: Got a question? Ask it and get answers, perspectives, and recommendations.
+    recent_conversations: Recent Conversations
+    show_more: Show more
+    new: New chat
+    ai_generate: AI-generated from posts and may not be accurate.
+    copy: Copy
+    ask_a_follow_up: Ask a follow-up
+    ask_placeholder: Ask a question
   notifications:
     title: Powiadomienia
     inbox: Skrzynka odbiorcza
@@ -1019,6 +1052,15 @@ ui:
         <p>We do not allow <strong>deleting tag with synonyms</strong>.</p> <p>Please remove the synonyms from this tag first.</p>
       tip: Czy na pewno chcesz usunąć?
       close: Zamknij
+    merge:
+      title: Merge tag
+      source_tag_title: Source tag
+      source_tag_description: The source tag and its associated data will be remapped to the target tag.
+      target_tag_title: Target tag
+      target_tag_description: A synonym between these two tags will be created after merging.
+      no_results: No tags matched
+      btn_submit: Submit
+      btn_close: Close
   edit_tag:
     title: Edytuj tag
     default_reason: Edytuj tag
@@ -1037,6 +1079,9 @@ ui:
     day: dzień
     hours: godziny
     days: dni
+    month: month
+    months: months
+    year: year
   reaction:
     heart: serce
     smile: uśmiech
@@ -1092,10 +1137,10 @@ ui:
     more: Więcej
     wiki: Wiki
   ask:
-    title: Dodaj pytanie
+    title: Create Question
     edit_title: Edytuj pytanie
     default_reason: Edytuj pytanie
-    default_first_reason: Dodaj pytanie
+    default_first_reason: Create question
     similar_questions: Podobne pytania
     form:
       fields:
@@ -1103,7 +1148,7 @@ ui:
           label: Rewizja
         title:
           label: Tytuł
-          placeholder: Bądź konkretny i wyobraź sobie, że zadajesz pytanie innej osobie
+          placeholder: What's your topic? Be specific.
           msg:
             empty: Tytuł nie może być pusty.
             range: Tytuł do 150 znaków
@@ -1111,6 +1156,9 @@ ui:
           label: Treść
           msg:
             empty: Treść nie może być pusta.
+          hint:
+            optional_body: Describe what the question is about.
+            minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
         tags:
           label: Tagi
           msg:
@@ -1131,7 +1179,9 @@ ui:
     add_btn: Dodaj tag
     create_btn: Utwórz nowy tag
     search_tag: Wyszukaj tag
-    hint: "Opisz, o czym jest Twoje pytanie, wymagany jest co najmniej jeden tag."
+    hint: Describe what your content is about, at least one tag is required.
+    hint_zero_tags: Describe what your content is about.
+    hint_more_than_one_tag: "Describe what your content is about, at least {{min_tags_number}} tags are required."
     no_result: Nie znaleziono pasujących tagów
     tag_required_text: Wymagany tag (co najmniej jeden)
   header:
@@ -1150,8 +1200,7 @@ ui:
     search:
       placeholder: Szukaj
   footer:
-    build_on: >-
-      Zbudowane na platformie <1> Apache Answer </1> - oprogramowanie open-source, które napędza społeczności pytań i odpowiedzi.<br />Stworzone z miłością © {{cc}}.
+    build_on: Powered by <1> Apache Answer </1>
   upload_img:
     name: Zmień
     loading: Wczytywanie...
@@ -1184,7 +1233,7 @@ ui:
       msg:
         empty: Imię nie może być puste.
         range: Name must be between 2 to 30 characters in length.
-        character: 'Możesz użyć dozwolone znaki "a-z", "A-Z", "0-9", " - . _"'
+        character: 'Must use the character set "a-z", "0-9", " - . _"'
     email:
       label: Adres e-mail
       msg:
@@ -1256,13 +1305,13 @@ ui:
       display_name:
         label: Nazwa wyświetlana
         msg: Wyświetlana nazwa nie może być pusta.
-        msg_range: Wyświetlana nazwa do 30 znaków.
+        msg_range: Display name must be 2-30 characters in length.
       username:
         label: Nazwa użytkownika
         caption: Ludzie mogą oznaczać Cię jako "@nazwa_użytkownika".
         msg: Nazwa użytkownika nie może być pusta.
-        msg_range: Nazwa użytkownika do 30 znaków.
-        character: 'Należy używać zestawu znaków "a-z", "0-9", " - . _"'
+        msg_range: Username must be 2-30 characters in length.
+        character: 'Must use the character set "a-z", "0-9", "- . _"'
       avatar:
         label: Zdjęcie profilowe
         gravatar: Gravatar
@@ -1337,12 +1386,12 @@ ui:
     review: Twoja poprawka zostanie wyświetlona po zatwierdzeniu.
     sent_success: Wysyłanie zakończone powodzeniem
   related_question:
-    title: Powiązane pytania
+    title: Related
     answers: odpowiedzi
   linked_question:
-    title: Linked Questions
-    description: Questions linked to
-    no_linked_question: No questions linked from this question.
+    title: Linked
+    description: Posts linked to
+    no_linked_question: No contents linked from this content.
   invite_to_answer:
     title: Ludzie pytali
     desc: Wybierz osoby, które mogą znać odpowiedź.
@@ -1351,9 +1400,11 @@ ui:
     search: Wyszukaj osoby
   question_detail:
     action: Akcja
+    created: Created
     Asked: Zadane
     asked: zadał(a)
     update: Zmodyfikowane
+    Edited: Edited
     edit: edytowany
     commented: skomentowano
     Views: Wyświetlone
@@ -1433,7 +1484,7 @@ ui:
     signup: Zarejestruj się
     logout: Wyloguj się
     verify: Zweryfikuj
-    add_question: Dodaj pytanie
+    create: Create
     approve: Zatwierdź
     reject: Odrzuć
     skip: Pominięcie
@@ -1465,8 +1516,16 @@ ui:
     normal: Normalny
     closed: Zamknięty
     deleted: Usunięty
+    deleted_permanently: Deleted permanently
     pending: Oczekujący
     more: Więcej
+    view: View
+    card: Card
+    compact: Compact
+    display_below: Display below
+    always_display: Always display
+    or: or
+    back_sites: Back to sites
   search:
     title: Wyniki wyszukiwania
     keywords: Słowa kluczowe
@@ -1474,6 +1533,7 @@ ui:
     follow: Obserwuj
     following: Obserwuje
     counts: "Liczba wyników: {{count}}"
+    counts_loading: "... Results"
     more: Więcej
     sort_btns:
       relevance: Relewantność
@@ -1496,10 +1556,13 @@ ui:
     via: Udostępnij post za pośrednictwem...
     copied: Skopiowano
     facebook: Udostępnij na Facebooku
-    twitter: Udostępnij na Twitterze
+    twitter: Share to X
   cannot_vote_for_self: Nie możesz głosować na własne posty.
   modal_confirm:
     title: Błąd...
+  delete_permanently:
+    title: Delete permanently
+    content: Are you sure you want to delete permanently?
   account_result:
     success: Twoje nowe konto zostało potwierdzone; zostaniesz przekierowany na stronę główną.
     link: Kontynuuj do strony głównej
@@ -1522,6 +1585,7 @@ ui:
     all_questions: Wszystkie pytania
     x_questions: "{{ count }} pytań"
     x_answers: "{{ count }} odpowiedzi"
+    x_posts: "{{ count }} Posts"
     questions: Pytania
     answers: Odpowiedzi
     newest: Najnowsze
@@ -1603,6 +1667,23 @@ ui:
       label: Plik bazy danych
       placeholder: /data/answer.db
       msg: Plik bazy danych nie może być pusty.
+    ssl_enabled:
+      label: Enable SSL
+    ssl_enabled_on:
+      label: On
+    ssl_enabled_off:
+      label: Off
+    ssl_mode:
+      label: SSL Mode
+    ssl_root_cert:
+      placeholder: sslrootcert file path
+      msg: Path to sslrootcert file cannot be empty
+    ssl_cert:
+      placeholder: sslcert file path
+      msg: Path to sslcert file cannot be empty
+    ssl_key:
+      placeholder: sslkey file path
+      msg: Path to sslkey file cannot be empty
     config_yaml:
       title: Utwórz plik config.yaml
       label: Plik config.yaml utworzony.
@@ -1635,8 +1716,8 @@ ui:
     admin_name:
       label: Imię
       msg: Imię nie może być puste.
-      character: 'Należy używać zestawu znaków "a-z", "0-9", " - . _"'
-      msg_max_length: Nazwa musi mieć maksymalnie 30 znaków.
+      character: 'Must use the character set "a-z", "0-9", " - . _"'
+      msg_max_length: Name must be between 2 to 30 characters in length.
     admin_password:
       label: Hasło
       text: >-
@@ -1644,6 +1725,10 @@ ui:
       msg: Hasło nie może być puste.
       msg_min_length: Hasło musi mieć co najmniej 8 znaków.
       msg_max_length: Hasło musi mieć maksymalnie 32 znaki.
+    admin_confirm_password:
+      label: "Confirm Password"
+      text: "Please re-enter your password to confirm."
+      msg: "Confirm password does not match."
     admin_email:
       label: Email
       text: Będziesz potrzebować tego adresu e-mail do logowania.
@@ -1692,16 +1777,29 @@ ui:
     branding: Marka
     legal: Prawne
     write: Pisanie
+    terms: Terms
     tos: Warunki korzystania z usługi
     privacy: Prywatność
     seo: SEO
     customize: Dostosowywanie
     themes: Motywy
-    css_html: CSS/HTML
     login: Logowanie
     privileges: Uprawnienia
     plugins: Wtyczki
     installed_plugins: Zainstalowane wtyczki
+    apperance: Appearance
+    community: Community
+    advanced: Advanced
+    tags: Tags
+    rules: Rules
+    policies: Policies
+    security: Security
+    files: Files
+    apikeys: API Keys
+    intelligence: Intelligence
+    ai_assistant: AI Assistant
+    ai_settings: AI Settings
+    mcp: MCP
   website_welcome: Witamy w serwisie {{site_name}}
   user_center:
     login: Zaloguj się
@@ -1801,10 +1899,10 @@ ui:
         fields:
           display_name:
             label: Display name
-            msg_range: Wyświetlana nazwa użytkownika maksymalnie 30 znaków.
+            msg_range: Display name must be 2-30 characters in length.
           username:
             label: Nazwa
-            msg_range: Nazwa użytkownika maksymalnie 30 znaków.
+            msg_range: Username must be 2-30 characters in length.
           email:
             label: Email
             msg_invalid: Błędny adresy email.
@@ -1822,7 +1920,7 @@ ui:
             msg: "Podaj adresy e-mail użytkowników, jeden w każdej linii."
           display_name:
             label: Nazwa wyświetlana
-            msg: Wyświetlana nazwa musi mieć od 2 do 30 znaków.
+            msg: Display name must be 2-30 characters in length.
           email:
             label: E-mail
             msg: Email nie jest prawidłowy.
@@ -1836,9 +1934,10 @@ ui:
       name: Imię
       email: E-mail
       reputation: Reputacja
-      created_at: Czas utworzenia
-      delete_at: Czas usunięcia
-      suspend_at: Czas zawieszenia
+      created_at: Created time
+      delete_at: Deleted time
+      suspend_at: Suspended time
+      suspend_until: Suspend until
       status: Status
       role: Rola
       action: Akcja
@@ -1873,6 +1972,8 @@ ui:
       suspend_user:
         title: Zawieś tego użytkownika
         content: Zawieszony użytkownik nie może się logować.
+        label: How long will the user be suspended for?
+        forever: Forever
     questions:
       page_title: Pytania
       unlisted: Unlisted
@@ -1933,6 +2034,12 @@ ui:
         label: Strefa czasowa
         msg: Strefa czasowa nie może być pusta.
         text: Wybierz miasto w tej samej strefie czasowej, co Ty.
+      avatar:
+        label: Default avatar
+        text: For users without a custom avatar of their own.
+      gravatar_base_url:
+        label: Gravatar base URL
+        text: URL of the Gravatar provider's API base. Ignored when empty.
     smtp:
       page_title: SMTP
       from_email:
@@ -1998,12 +2105,23 @@ ui:
       privacy_policy:
         label: Polityka prywatności
         text: "Możesz tutaj dodać treść polityki prywatności. Jeśli masz dokument hostowany gdzie indziej, podaj tutaj pełny URL."
+      external_content_display:
+        label: External content
+        text: "Content includes images, videos, and media embedded from external websites."
+        always_display: Always display external content
+        ask_before_display: Ask before displaying external content
     write:
-      page_title: Pisanie
+      page_title: Files
+      min_content:
+        label: Minimum question body length
+        text: Minimum allowed question body length in characters.
       restrict_answer:
         title: Answer write
         label: Każdy użytkownik może napisać tylko jedną odpowiedź na każde pytanie
         text: "Turn off to allow users to write multiple answers to the same question, which may cause answers to be unfocused."
+      min_tags:
+        label: "Minimum tags per question"
+        text: "Minimum number of tags required in a question."
       recommend_tags:
         label: Rekomendowane tagi
         text: "Recommend tags will show in the dropdown list by default."
@@ -2047,10 +2165,14 @@ ui:
       color_scheme:
         label: Schemat kolorów
       navbar_style:
-        label: Styl paska nawigacyjnego
+        label: Navbar background style
       primary_color:
         label: Kolor podstawowy
         text: Zmodyfikuj kolory używane przez Twoje motywy.
+      layout:
+        label: Layout
+        full_width: Full-width
+        fixed_width: Fixed-width
     css_and_html:
       page_title: CSS i HTML
       custom_css:
@@ -2155,6 +2277,70 @@ ui:
       show_logs: Wyświetl dzienniki
       status: Status
       title: Badges
+    apikeys:
+      title: API Keys
+      add_api_key: Add API Key
+      desc: Description
+      scope: Scope
+      key: Key
+      created: Created
+      last_used: Last used
+      add_or_edit_modal:
+        add_title: Add API Key
+        edit_title: Edit API Key
+        description: Description
+        description_required: Description is required.
+        scope: Scope
+        global: Global
+        read-only: Read-only
+      created_modal:
+        title: API key created
+        api_key: API key
+        description: This key will not be displayed again. Make sure you take a copy before continuing.
+      delete_modal:
+        title: Delete API Key
+        content: Any applications or scripts using this key will no longer be able to access the API. This is permanent!
+    ai_settings:
+      enabled:
+        label: AI enabled
+        check: Enable AI features
+        text: The AI model must be configured correctly before it can be used.
+      provider:
+        label: Provider
+      api_host:
+        label: API host
+        msg: API host is required
+      api_key:
+        label: API key
+        check: Check
+        check_success: "Connection successful."
+        msg: API key is required
+      model:
+        label: Model
+        msg: Model is required
+      add_success: AI settings updated successfully.
+    conversations:
+      topic: Topic
+      helpful: Helpful
+      unhelpful: Unhelpful
+      created: Created
+      action: Action
+      empty: No conversations found.
+      delete_modal:
+        title: Delete conversation
+        content: Are you sure you want to delete this conversation? This is permanent!
+        delete_success: Conversation deleted successfully.
+    mcp:
+      mcp_server:
+        label: MCP server
+        switch: Enabled
+      type:
+        label: Type
+      url:
+        label: URL
+      http_header:
+        label: HTTP header
+        text: Please replace {key} with the API Key.
   form:
     optional: (opcjonalne)
     empty: nie może być puste
@@ -2251,7 +2437,14 @@ ui:
     user_normal: This user is already normal.
     user_suspended: This user has been suspended.
     user_deleted: This user has been deleted.
+    user_added: User has been added successfully.
     badge_activated: This badge has been activated.
     badge_inactivated: This badge has been inactivated.
+    users_deleted: These users have been deleted.
+    posts_deleted: These questions have been deleted.
+    answers_deleted: These answers have been deleted.
+    copy: Copy to clipboard
+    copied: Copied
+    external_content_warning: External images/media are not displayed.
 
 

@@ -38,7 +38,9 @@ import (
 	"github.com/apache/answer/internal/controller_admin"
 	"github.com/apache/answer/internal/repo/activity"
 	"github.com/apache/answer/internal/repo/activity_common"
+	"github.com/apache/answer/internal/repo/ai_conversation"
 	"github.com/apache/answer/internal/repo/answer"
+	"github.com/apache/answer/internal/repo/api_key"
 	"github.com/apache/answer/internal/repo/auth"
 	"github.com/apache/answer/internal/repo/badge"
 	"github.com/apache/answer/internal/repo/badge_award"
@@ -48,6 +50,7 @@ import (
 	"github.com/apache/answer/internal/repo/comment"
 	"github.com/apache/answer/internal/repo/config"
 	"github.com/apache/answer/internal/repo/export"
+	"github.com/apache/answer/internal/repo/file_record"
 	"github.com/apache/answer/internal/repo/limit"
 	"github.com/apache/answer/internal/repo/meta"
 	notification2 "github.com/apache/answer/internal/repo/notification"
@@ -71,8 +74,10 @@ import (
 	"github.com/apache/answer/internal/service/action"
 	activity2 "github.com/apache/answer/internal/service/activity"
 	activity_common2 "github.com/apache/answer/internal/service/activity_common"
-	"github.com/apache/answer/internal/service/activity_queue"
+	"github.com/apache/answer/internal/service/activityqueue"
+	ai_conversation2 "github.com/apache/answer/internal/service/ai_conversation"
 	"github.com/apache/answer/internal/service/answer_common"
+	"github.com/apache/answer/internal/service/apikey"
 	auth2 "github.com/apache/answer/internal/service/auth"
 	badge2 "github.com/apache/answer/internal/service/badge"
 	collection2 "github.com/apache/answer/internal/service/collection"
@@ -82,13 +87,16 @@ import (
 	config2 "github.com/apache/answer/internal/service/config"
 	"github.com/apache/answer/internal/service/content"
 	"github.com/apache/answer/internal/service/dashboard"
-	"github.com/apache/answer/internal/service/event_queue"
+	"github.com/apache/answer/internal/service/embedding"
+	"github.com/apache/answer/internal/service/eventqueue"
 	export2 "github.com/apache/answer/internal/service/export"
+	"github.com/apache/answer/internal/service/feature_toggle"
+	file_record2 "github.com/apache/answer/internal/service/file_record"
 	"github.com/apache/answer/internal/service/follow"
 	"github.com/apache/answer/internal/service/importer"
 	meta2 "github.com/apache/answer/internal/service/meta"
 	"github.com/apache/answer/internal/service/meta_common"
-	"github.com/apache/answer/internal/service/notice_queue"
+	"github.com/apache/answer/internal/service/noticequeue"
 	"github.com/apache/answer/internal/service/notification"
 	"github.com/apache/answer/internal/service/notification_common"
 	"github.com/apache/answer/internal/service/object_info"
@@ -112,6 +120,7 @@ import (
 	"github.com/apache/answer/internal/service/user_common"
 	user_external_login2 "github.com/apache/answer/internal/service/user_external_login"
 	user_notification_config2 "github.com/apache/answer/internal/service/user_notification_config"
+	"github.com/apache/answer/internal/service/vector_sync"
 	"github.com/segmentfault/pacman"
 	"github.com/segmentfault/pacman/log"
 )
@@ -142,7 +151,8 @@ func initApplication(debug bool, serverConf *conf.Server, dbConf *data.Database,
 	siteInfoCommonService := siteinfo_common.NewSiteInfoCommonService(siteInfoRepo)
 	langController := controller.NewLangController(i18nTranslator, siteInfoCommonService)
 	authRepo := auth.NewAuthRepo(dataData)
-	authService := auth2.NewAuthService(authRepo)
+	apiKeyRepo := api_key.NewAPIKeyRepo(dataData)
+	authService := auth2.NewAuthService(authRepo, apiKeyRepo)
 	userRepo := user.NewUserRepo(dataData)
 	uniqueIDRepo := unique.NewUniqueIDRepo(dataData)
 	configRepo := config.NewConfigRepo(dataData)
@@ -170,25 +180,30 @@ func initApplication(debug bool, serverConf *conf.Server, dbConf *data.Database,
 	tagRepo := tag.NewTagRepo(dataData, uniqueIDRepo)
 	revisionRepo := revision.NewRevisionRepo(dataData, uniqueIDRepo)
 	revisionService := revision_common.NewRevisionService(revisionRepo, userRepo)
-	activityQueueService := activity_queue.NewActivityQueueService()
-	tagCommonService := tag_common2.NewTagCommonService(tagCommonRepo, tagRelRepo, tagRepo, revisionService, siteInfoCommonService, activityQueueService)
+	service := activityqueue.NewService()
+	tagCommonService := tag_common2.NewTagCommonService(tagCommonRepo, tagRelRepo, tagRepo, revisionService, siteInfoCommonService, service)
 	collectionRepo := collection.NewCollectionRepo(dataData, uniqueIDRepo)
 	collectionCommon := collectioncommon.NewCollectionCommon(collectionRepo)
 	answerCommon := answercommon.NewAnswerCommon(answerRepo)
 	metaRepo := meta.NewMetaRepo(dataData)
 	metaCommonService := metacommon.NewMetaCommonService(metaRepo)
-	questionCommon := questioncommon.NewQuestionCommon(questionRepo, answerRepo, voteRepo, followRepo, tagCommonService, userCommon, collectionCommon, answerCommon, metaCommonService, configService, activityQueueService, revisionRepo, siteInfoCommonService, dataData)
-	eventQueueService := event_queue.NewEventQueueService()
-	userService := content.NewUserService(userRepo, userActiveActivityRepo, activityRepo, emailService, authService, siteInfoCommonService, userRoleRelService, userCommon, userExternalLoginService, userNotificationConfigRepo, userNotificationConfigService, questionCommon, eventQueueService)
+	questionCommon := questioncommon.NewQuestionCommon(questionRepo, answerRepo, voteRepo, followRepo, tagCommonService, userCommon, collectionCommon, answerCommon, metaCommonService, configService, service, revisionRepo, siteInfoCommonService, dataData)
+	eventqueueService := eventqueue.NewService()
+	fileRecordRepo := file_record.NewFileRecordRepo(dataData)
+	fileRecordService := file_record2.NewFileRecordService(fileRecordRepo, revisionRepo, serviceConf, siteInfoCommonService, userCommon)
+	userService := content.NewUserService(userRepo, userActiveActivityRepo, activityRepo, emailService, authService, siteInfoCommonService, userRoleRelService, userCommon, userExternalLoginService, userNotificationConfigRepo, userNotificationConfigService, questionCommon, eventqueueService, fileRecordService)
 	captchaRepo := captcha.NewCaptchaRepo(dataData)
 	captchaService := action.NewCaptchaService(captchaRepo)
 	userController := controller.NewUserController(authService, userService, captchaService, emailService, siteInfoCommonService, userNotificationConfigService)
 	commentRepo := comment.NewCommentRepo(dataData, uniqueIDRepo)
 	commentCommonRepo := comment.NewCommentCommonRepo(dataData, uniqueIDRepo)
 	objService := object_info.NewObjService(answerRepo, questionRepo, commentCommonRepo, tagCommonRepo, tagCommonService)
-	notificationQueueService := notice_queue.NewNotificationQueueService()
-	externalNotificationQueueService := notice_queue.NewNewQuestionNotificationQueueService()
-	commentService := comment2.NewCommentService(commentRepo, commentCommonRepo, userCommon, objService, voteRepo, emailService, userRepo, notificationQueueService, externalNotificationQueueService, activityQueueService, eventQueueService)
+	noticequeueService := noticequeue.NewService()
+	externalService := noticequeue.NewExternalService()
+	reviewRepo := review.NewReviewRepo(dataData)
+	vector_syncService := vector_sync.NewService(dataData)
+	reviewService := review2.NewReviewService(reviewRepo, objService, userCommon, userRepo, questionRepo, answerRepo, userRoleRelService, externalService, tagCommonService, questionCommon, noticequeueService, siteInfoCommonService, commentCommonRepo, vector_syncService)
+	commentService := comment2.NewCommentService(commentRepo, commentCommonRepo, userCommon, objService, voteRepo, emailService, userRepo, noticequeueService, externalService, service, eventqueueService, reviewService, vector_syncService)
 	rolePowerRelRepo := role.NewRolePowerRelRepo(dataData)
 	rolePowerRelService := role2.NewRolePowerRelService(rolePowerRelRepo, userRoleRelService)
 	rankService := rank2.NewRankService(userCommon, userRankRepo, objService, userRoleRelService, rolePowerRelService, configService)
@@ -196,19 +211,17 @@ func initApplication(debug bool, serverConf *conf.Server, dbConf *data.Database,
 	rateLimitMiddleware := middleware.NewRateLimitMiddleware(limitRepo)
 	commentController := controller.NewCommentController(commentService, rankService, captchaService, rateLimitMiddleware)
 	reportRepo := report.NewReportRepo(dataData, uniqueIDRepo)
-	tagService := tag2.NewTagService(tagRepo, tagCommonService, revisionService, followRepo, siteInfoCommonService, activityQueueService)
-	answerActivityRepo := activity.NewAnswerActivityRepo(dataData, activityRepo, userRankRepo, notificationQueueService)
+	tagService := tag2.NewTagService(tagRepo, tagCommonService, revisionService, followRepo, siteInfoCommonService, service)
+	answerActivityRepo := activity.NewAnswerActivityRepo(dataData, activityRepo, userRankRepo, noticequeueService)
 	answerActivityService := activity2.NewAnswerActivityService(answerActivityRepo, configService)
-	externalNotificationService := notification.NewExternalNotificationService(dataData, userNotificationConfigRepo, followRepo, emailService, userRepo, externalNotificationQueueService, userExternalLoginRepo, siteInfoCommonService)
-	reviewRepo := review.NewReviewRepo(dataData)
-	reviewService := review2.NewReviewService(reviewRepo, objService, userCommon, userRepo, questionRepo, answerRepo, userRoleRelService, externalNotificationQueueService, tagCommonService, questionCommon, notificationQueueService, siteInfoCommonService)
-	questionService := content.NewQuestionService(activityRepo, questionRepo, answerRepo, tagCommonService, tagService, questionCommon, userCommon, userRepo, userRoleRelService, revisionService, metaCommonService, collectionCommon, answerActivityService, emailService, notificationQueueService, externalNotificationQueueService, activityQueueService, siteInfoCommonService, externalNotificationService, reviewService, configService, eventQueueService, reviewRepo)
-	answerService := content.NewAnswerService(answerRepo, questionRepo, questionCommon, userCommon, collectionCommon, userRepo, revisionService, answerActivityService, answerCommon, voteRepo, emailService, userRoleRelService, notificationQueueService, externalNotificationQueueService, activityQueueService, reviewService, eventQueueService)
+	externalNotificationService := notification.NewExternalNotificationService(dataData, userNotificationConfigRepo, followRepo, emailService, userRepo, externalService, userExternalLoginRepo, siteInfoCommonService)
+	questionService := content.NewQuestionService(activityRepo, questionRepo, answerRepo, tagCommonService, tagService, questionCommon, userCommon, userRepo, userRoleRelService, revisionService, metaCommonService, collectionCommon, answerActivityService, emailService, noticequeueService, externalService, service, siteInfoCommonService, externalNotificationService, reviewService, configService, eventqueueService, reviewRepo, vector_syncService)
+	answerService := content.NewAnswerService(answerRepo, questionRepo, questionCommon, userCommon, collectionCommon, userRepo, revisionService, answerActivityService, answerCommon, voteRepo, emailService, userRoleRelService, noticequeueService, externalService, service, reviewService, eventqueueService, vector_syncService)
 	reportHandle := report_handle.NewReportHandle(questionService, answerService, commentService)
-	reportService := report2.NewReportService(reportRepo, objService, userCommon, answerRepo, questionRepo, commentCommonRepo, reportHandle, configService, eventQueueService)
+	reportService := report2.NewReportService(reportRepo, objService, userCommon, answerRepo, questionRepo, commentCommonRepo, reportHandle, configService, eventqueueService)
 	reportController := controller.NewReportController(reportService, rankService, captchaService)
-	contentVoteRepo := activity.NewVoteRepo(dataData, activityRepo, userRankRepo, notificationQueueService)
-	voteService := content.NewVoteService(contentVoteRepo, configService, questionRepo, answerRepo, commentCommonRepo, objService, eventQueueService)
+	contentVoteRepo := activity.NewVoteRepo(dataData, activityRepo, userRankRepo, noticequeueService)
+	voteService := content.NewVoteService(contentVoteRepo, configService, questionRepo, answerRepo, commentCommonRepo, objService, eventqueueService)
 	voteController := controller.NewVoteController(voteService, rankService, captchaService)
 	tagController := controller.NewTagController(tagService, tagCommonService, rankService)
 	followFollowRepo := activity.NewFollowRepo(dataData, uniqueIDRepo, activityRepo)
@@ -224,60 +237,70 @@ func initApplication(debug bool, serverConf *conf.Server, dbConf *data.Database,
 	searchService := content.NewSearchService(searchParser, searchRepo)
 	searchController := controller.NewSearchController(searchService, captchaService)
 	reviewActivityRepo := activity.NewReviewActivityRepo(dataData, activityRepo, userRankRepo, configService)
-	contentRevisionService := content.NewRevisionService(revisionRepo, userCommon, questionCommon, answerService, objService, questionRepo, answerRepo, tagRepo, tagCommonService, notificationQueueService, activityQueueService, reportRepo, reviewService, reviewActivityRepo)
+	contentRevisionService := content.NewRevisionService(revisionRepo, userCommon, questionCommon, answerService, objService, questionRepo, answerRepo, tagRepo, tagCommonService, noticequeueService, service, reportRepo, reviewService, reviewActivityRepo)
 	revisionController := controller.NewRevisionController(contentRevisionService, rankService)
 	rankController := controller.NewRankController(rankService)
 	userAdminRepo := user.NewUserAdminRepo(dataData, authRepo)
-	userAdminService := user_admin.NewUserAdminService(userAdminRepo, userRoleRelService, authService, userCommon, userActiveActivityRepo, siteInfoCommonService, emailService, questionRepo, answerRepo, commentCommonRepo, userExternalLoginRepo)
+	notificationRepo := notification2.NewNotificationRepo(dataData)
+	pluginUserConfigRepo := plugin_config.NewPluginUserConfigRepo(dataData)
+	badgeAwardRepo := badge_award.NewBadgeAwardRepo(dataData, uniqueIDRepo)
+	userAdminService := user_admin.NewUserAdminService(userAdminRepo, userRoleRelService, authService, userCommon, userActiveActivityRepo, siteInfoCommonService, emailService, questionRepo, answerRepo, commentCommonRepo, userExternalLoginRepo, notificationRepo, pluginUserConfigRepo, badgeAwardRepo)
 	userAdminController := controller_admin.NewUserAdminController(userAdminService)
 	reasonRepo := reason.NewReasonRepo(configService)
 	reasonService := reason2.NewReasonService(reasonRepo)
 	reasonController := controller.NewReasonController(reasonService)
 	themeController := controller_admin.NewThemeController()
-	siteInfoService := siteinfo.NewSiteInfoService(siteInfoRepo, siteInfoCommonService, emailService, tagCommonService, configService, questionCommon)
+	siteInfoService := siteinfo.NewSiteInfoService(siteInfoRepo, siteInfoCommonService, emailService, tagCommonService, configService, questionCommon, fileRecordService)
 	siteInfoController := controller_admin.NewSiteInfoController(siteInfoService)
 	controllerSiteInfoController := controller.NewSiteInfoController(siteInfoCommonService)
-	notificationRepo := notification2.NewNotificationRepo(dataData)
-	notificationCommon := notificationcommon.NewNotificationCommon(dataData, notificationRepo, userCommon, activityRepo, followRepo, objService, notificationQueueService, userExternalLoginRepo, siteInfoCommonService)
+	notificationCommon := notificationcommon.NewNotificationCommon(dataData, notificationRepo, userCommon, activityRepo, followRepo, objService, noticequeueService, userExternalLoginRepo, siteInfoCommonService)
 	badgeRepo := badge.NewBadgeRepo(dataData, uniqueIDRepo)
 	notificationService := notification.NewNotificationService(dataData, notificationRepo, notificationCommon, revisionService, userRepo, reportRepo, reviewService, badgeRepo)
 	notificationController := controller.NewNotificationController(notificationService, rankService)
 	dashboardService := dashboard.NewDashboardService(questionRepo, answerRepo, commentCommonRepo, voteRepo, userRepo, reportRepo, configService, siteInfoCommonService, serviceConf, reviewService, revisionRepo, dataData)
 	dashboardController := controller.NewDashboardController(dashboardService)
-	uploaderService := uploader.NewUploaderService(serviceConf, siteInfoCommonService)
+	uploaderService := uploader.NewUploaderService(serviceConf, siteInfoCommonService, fileRecordService)
 	uploadController := controller.NewUploadController(uploaderService)
 	activityActivityRepo := activity.NewActivityRepo(dataData, configService)
-	activityCommon := activity_common2.NewActivityCommon(activityRepo, activityQueueService)
+	activityCommon := activity_common2.NewActivityCommon(activityRepo, service)
 	commentCommonService := comment_common.NewCommentCommonService(commentCommonRepo)
 	activityService := activity2.NewActivityService(activityActivityRepo, userCommon, activityCommon, tagCommonService, objService, commentCommonService, revisionService, metaCommonService, configService)
 	activityController := controller.NewActivityController(activityService)
 	roleController := controller_admin.NewRoleController(roleService)
 	pluginConfigRepo := plugin_config.NewPluginConfigRepo(dataData)
-	pluginUserConfigRepo := plugin_config.NewPluginUserConfigRepo(dataData)
 	importerService := importer.NewImporterService(questionService, rankService, userCommon)
 	pluginCommonService := plugin_common.NewPluginCommonService(pluginConfigRepo, pluginUserConfigRepo, configService, dataData, importerService)
 	pluginController := controller_admin.NewPluginController(pluginCommonService)
 	permissionController := controller.NewPermissionController(rankService)
 	userPluginController := controller.NewUserPluginController(pluginCommonService)
 	reviewController := controller.NewReviewController(reviewService, rankService, captchaService)
-	metaService := meta2.NewMetaService(metaCommonService, userCommon, answerRepo, questionRepo, eventQueueService)
+	metaService := meta2.NewMetaService(metaCommonService, userCommon, answerRepo, questionRepo, eventqueueService)
 	metaController := controller.NewMetaController(metaService)
 	badgeGroupRepo := badge_group.NewBadgeGroupRepo(dataData, uniqueIDRepo)
-	badgeAwardRepo := badge_award.NewBadgeAwardRepo(dataData, uniqueIDRepo)
 	eventRuleRepo := badge.NewEventRuleRepo(dataData)
-	badgeAwardService := badge2.NewBadgeAwardService(badgeAwardRepo, badgeRepo, userCommon, objService, notificationQueueService)
-	badgeEventService := badge2.NewBadgeEventService(dataData, eventQueueService, badgeRepo, eventRuleRepo, badgeAwardService)
+	badgeAwardService := badge2.NewBadgeAwardService(badgeAwardRepo, badgeRepo, userCommon, objService, noticequeueService)
+	badgeEventService := badge2.NewBadgeEventService(dataData, eventqueueService, badgeRepo, eventRuleRepo, badgeAwardService)
 	badgeService := badge2.NewBadgeService(badgeRepo, badgeGroupRepo, badgeAwardRepo, badgeEventService, siteInfoCommonService)
 	badgeController := controller.NewBadgeController(badgeService, badgeAwardService)
 	controller_adminBadgeController := controller_admin.NewBadgeController(badgeService)
-	answerAPIRouter := router.NewAnswerAPIRouter(langController, userController, commentController, reportController, voteController, tagController, followController, collectionController, questionController, answerController, searchController, revisionController, rankController, userAdminController, reasonController, themeController, siteInfoController, controllerSiteInfoController, notificationController, dashboardController, uploadController, activityController, roleController, pluginController, permissionController, userPluginController, reviewController, metaController, badgeController, controller_adminBadgeController)
+	apiKeyService := apikey.NewAPIKeyService(apiKeyRepo)
+	adminAPIKeyController := controller_admin.NewAdminAPIKeyController(apiKeyService)
+	featureToggleService := feature_toggle.NewFeatureToggleService(siteInfoRepo)
+	embeddingService := embedding.NewEmbeddingService()
+	mcpController := controller.NewMCPController(searchService, siteInfoCommonService, tagCommonService, questionCommon, commentRepo, userCommon, answerRepo, featureToggleService, embeddingService)
+	aiConversationRepo := ai_conversation.NewAIConversationRepo(dataData)
+	aiConversationService := ai_conversation2.NewAIConversationService(aiConversationRepo, userCommon)
+	aiController := controller.NewAIController(searchService, siteInfoCommonService, tagCommonService, questionCommon, commentRepo, userCommon, answerRepo, mcpController, aiConversationService, featureToggleService)
+	aiConversationController := controller.NewAIConversationController(aiConversationService, featureToggleService)
+	aiConversationAdminController := controller_admin.NewAIConversationAdminController(aiConversationService, featureToggleService)
+	answerAPIRouter := router.NewAnswerAPIRouter(langController, userController, commentController, reportController, voteController, tagController, followController, collectionController, questionController, answerController, searchController, revisionController, rankController, userAdminController, reasonController, themeController, siteInfoController, controllerSiteInfoController, notificationController, dashboardController, uploadController, activityController, roleController, pluginController, permissionController, userPluginController, reviewController, metaController, badgeController, controller_adminBadgeController, adminAPIKeyController, aiController, aiConversationController, aiConversationAdminController, mcpController)
 	swaggerRouter := router.NewSwaggerRouter(swaggerConf)
 	uiRouter := router.NewUIRouter(controllerSiteInfoController, siteInfoCommonService)
 	authUserMiddleware := middleware.NewAuthUserMiddleware(authService, siteInfoCommonService)
 	avatarMiddleware := middleware.NewAvatarMiddleware(serviceConf, uploaderService)
 	shortIDMiddleware := middleware.NewShortIDMiddleware(siteInfoCommonService)
 	templateRenderController := templaterender.NewTemplateRenderController(questionService, userService, tagService, answerService, commentService, siteInfoCommonService, questionRepo)
-	templateController := controller.NewTemplateController(templateRenderController, siteInfoCommonService, eventQueueService, userService, questionService)
+	templateController := controller.NewTemplateController(templateRenderController, siteInfoCommonService, eventqueueService, userService, questionService)
 	templateRouter := router.NewTemplateRouter(templateController, templateRenderController, siteInfoController, authUserMiddleware)
 	connectorController := controller.NewConnectorController(siteInfoCommonService, emailService, userExternalLoginService)
 	userCenterLoginService := user_external_login2.NewUserCenterLoginService(userRepo, userCommon, userExternalLoginRepo, userActiveActivityRepo, siteInfoCommonService)
@@ -285,9 +308,10 @@ func initApplication(debug bool, serverConf *conf.Server, dbConf *data.Database,
 	captchaController := controller.NewCaptchaController()
 	embedController := controller.NewEmbedController()
 	renderController := controller.NewRenderController()
-	pluginAPIRouter := router.NewPluginAPIRouter(connectorController, userCenterController, captchaController, embedController, renderController)
+	sidebarController := controller.NewSidebarController()
+	pluginAPIRouter := router.NewPluginAPIRouter(connectorController, userCenterController, captchaController, embedController, renderController, sidebarController)
 	ginEngine := server.NewHTTPServer(debug, staticRouter, answerAPIRouter, swaggerRouter, uiRouter, authUserMiddleware, avatarMiddleware, shortIDMiddleware, templateRouter, pluginAPIRouter, uiConf)
-	scheduledTaskManager := cron.NewScheduledTaskManager(siteInfoCommonService, questionService)
+	scheduledTaskManager := cron.NewScheduledTaskManager(siteInfoCommonService, questionService, fileRecordService, userAdminService, serviceConf)
 	application := newApplication(serverConf, ginEngine, scheduledTaskManager)
 	return application, func() {
 		cleanup2()

@@ -35,7 +35,7 @@ import (
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/activity_common"
-	"github.com/apache/answer/internal/service/notice_queue"
+	"github.com/apache/answer/internal/service/noticequeue"
 	"github.com/apache/answer/internal/service/object_info"
 	usercommon "github.com/apache/answer/internal/service/user_common"
 	"github.com/apache/answer/pkg/uid"
@@ -55,6 +55,8 @@ type NotificationRepo interface {
 	UpdateNotificationContent(ctx context.Context, notification *entity.Notification) (err error)
 	GetById(ctx context.Context, id string) (*entity.Notification, bool, error)
 	CountNotificationByUser(ctx context.Context, cond *entity.Notification) (int64, error)
+	DeleteNotification(ctx context.Context, userID string) (err error)
+	DeleteUserNotificationConfig(ctx context.Context, userID string) (err error)
 }
 
 type NotificationCommon struct {
@@ -64,7 +66,7 @@ type NotificationCommon struct {
 	followRepo               activity_common.FollowRepo
 	userCommon               *usercommon.UserCommon
 	objectInfoService        *object_info.ObjService
-	notificationQueueService notice_queue.NotificationQueueService
+	notificationQueueService noticequeue.Service
 	userExternalLoginRepo    user_external_login.UserExternalLoginRepo
 	siteInfoService          siteinfo_common.SiteInfoCommonService
 }
@@ -76,7 +78,7 @@ func NewNotificationCommon(
 	activityRepo activity_common.ActivityRepo,
 	followRepo activity_common.FollowRepo,
 	objectInfoService *object_info.ObjService,
-	notificationQueueService notice_queue.NotificationQueueService,
+	notificationQueueService noticequeue.Service,
 	userExternalLoginRepo user_external_login.UserExternalLoginRepo,
 	siteInfoService siteinfo_common.SiteInfoCommonService,
 ) *NotificationCommon {
@@ -130,6 +132,7 @@ func (ns *NotificationCommon) AddNotification(ctx context.Context, msg *schema.N
 		objInfo, err = ns.objectInfoService.GetInfo(ctx, req.ObjectInfo.ObjectID)
 		if err != nil {
 			log.Error(err)
+			return err
 		} else {
 			req.ObjectInfo.Title = objInfo.Title
 			questionID = objInfo.QuestionID
@@ -152,7 +155,7 @@ func (ns *NotificationCommon) AddNotification(ctx context.Context, msg *schema.N
 		}
 		req.Rank = rank
 		if exist {
-			//modify notification
+			// modify notification
 			updateContent := &schema.NotificationContent{}
 			err := json.Unmarshal([]byte(notificationInfo.Content), updateContent)
 			if err != nil {
@@ -203,6 +206,9 @@ func (ns *NotificationCommon) AddNotification(ctx context.Context, msg *schema.N
 	}
 	if req.ObjectInfo.ObjectType == constant.BadgeAwardObjectType {
 		err = ns.AddBadgeAwardAlertCache(ctx, info.UserID, info.ID, req.ObjectInfo.ObjectMap["badge_id"])
+		if err != nil {
+			log.Error("AddBadgeAwardAlertCache Error", err.Error())
+		}
 	}
 
 	go ns.SendNotificationToAllFollower(ctx, msg, questionID)
@@ -352,6 +358,9 @@ func (ns *NotificationCommon) SendNotificationToAllFollower(ctx context.Context,
 
 func (ns *NotificationCommon) syncNotificationToPlugin(ctx context.Context, objInfo *schema.SimpleObjectInfo,
 	msg *schema.NotificationMsg) {
+	if objInfo == nil {
+		return
+	}
 	siteInfo, err := ns.siteInfoService.GetSiteGeneral(ctx)
 	if err != nil {
 		log.Errorf("get site general info failed: %v", err)
@@ -412,6 +421,13 @@ func (ns *NotificationCommon) syncNotificationToPlugin(ctx context.Context, objI
 		if len(pluginNotificationMsg.ReceiverLang) == 0 || pluginNotificationMsg.ReceiverLang == translator.DefaultLangOption {
 			pluginNotificationMsg.ReceiverLang = interfaceInfo.Language
 		}
+	}
+
+	externalLogins, err := ns.userExternalLoginRepo.GetUserExternalLoginList(ctx, msg.ReceiverUserID)
+	if err != nil {
+		log.Errorf("get user external login list failed for user %s: %v", msg.ReceiverUserID, err)
+	} else if len(externalLogins) > 0 {
+		pluginNotificationMsg.ReceiverExternalID = externalLogins[0].ExternalID
 	}
 
 	_ = plugin.CallNotification(func(fn plugin.Notification) error {

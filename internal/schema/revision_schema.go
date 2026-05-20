@@ -45,6 +45,8 @@ type AddRevisionDTO struct {
 type GetRevisionListReq struct {
 	// object id
 	ObjectID string `validate:"required" comment:"object_id" form:"object_id"`
+	IsAdmin  bool   `json:"-"`
+	UserID   string `json:"-"`
 }
 
 const RevisionAuditApprove = "approve"
@@ -53,7 +55,7 @@ const RevisionAuditReject = "reject"
 type RevisionAuditReq struct {
 	// object id
 	ID                string `validate:"required" comment:"id" form:"id"`
-	Operation         string `validate:"required" comment:"operation" form:"operation"` //approve or reject
+	Operation         string `validate:"required" comment:"operation" form:"operation"` // approve or reject
 	UserID            string `json:"-"`
 	CanReviewQuestion bool   `json:"-"`
 	CanReviewAnswer   bool   `json:"-"`
@@ -97,7 +99,7 @@ type GetRevisionResp struct {
 	Title           string        `json:"title"`
 	UrlTitle        string        `json:"url_title"`
 	Content         string        `json:"-"`
-	ContentParsed   interface{}   `json:"content"`
+	ContentParsed   any           `json:"content"`
 	Status          int           `json:"status"`
 	CreatedAt       time.Time     `json:"-"`
 	CreatedAtParsed int64         `json:"create_at"`

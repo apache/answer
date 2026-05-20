@@ -25,6 +25,7 @@ import (
 
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/repo/search_sync"
+	"github.com/apache/answer/internal/repo/vector_search_sync"
 
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
@@ -49,6 +50,7 @@ type PluginUserConfigRepo interface {
 		pluginUserConfig *entity.PluginUserConfig, exist bool, err error)
 	GetPluginUserConfigPage(ctx context.Context, page, pageSize int) (
 		pluginUserConfigs []*entity.PluginUserConfig, total int64, err error)
+	DeleteUserPluginConfig(ctx context.Context, userID string) (err error)
 }
 
 // PluginCommonService user service
@@ -68,7 +70,6 @@ func NewPluginCommonService(
 	data *data.Data,
 	importerService *importer.ImporterService,
 ) *PluginCommonService {
-
 	p := &PluginCommonService{
 		configService:        configService,
 		pluginConfigRepo:     pluginConfigRepo,
@@ -103,6 +104,12 @@ func (ps *PluginCommonService) UpdatePluginConfig(ctx context.Context, req *sche
 		}
 		return nil
 	})
+	_ = plugin.CallVectorSearch(func(vs plugin.VectorSearch) error {
+		if vs.Info().SlugName == req.PluginSlugName {
+			vs.RegisterSyncer(ctx, vector_search_sync.NewPluginSyncer(ps.data))
+		}
+		return nil
+	})
 	_ = plugin.CallImporter(func(importer plugin.Importer) error {
 		importer.RegisterImporterFunc(ctx, ps.importerService.NewImporterFunc())
 		return nil
@@ -134,8 +141,17 @@ func (ps *PluginCommonService) GetUserPluginConfig(ctx context.Context, req *sch
 }
 
 func (ps *PluginCommonService) initPluginData() {
+	_ = plugin.CallKVStorage(func(k plugin.KVStorage) error {
+		k.SetOperator(plugin.NewKVOperator(
+			ps.data.DB,
+			ps.data.Cache,
+			k.Info().SlugName,
+		))
+		return nil
+	})
+
 	// init plugin status
-	pluginStatus, err := ps.configService.GetStringValue(context.TODO(), constant.PluginStatus)
+	pluginStatus, err := ps.configService.GetStringValueFromDB(context.TODO(), constant.PluginStatus)
 	if err != nil {
 		log.Error(err)
 	} else {
@@ -166,6 +182,12 @@ func (ps *PluginCommonService) initPluginData() {
 			return nil
 		})
 	}
+
+	// register syncer for vector search plugins on startup
+	_ = plugin.CallVectorSearch(func(vs plugin.VectorSearch) error {
+		vs.RegisterSyncer(context.Background(), vector_search_sync.NewPluginSyncer(ps.data))
+		return nil
+	})
 
 	// init plugin user config
 	plugin.RegisterGetPluginUserConfigFunc(func(userID, pluginSlugName string) []byte {

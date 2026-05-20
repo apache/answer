@@ -31,6 +31,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/apache/answer/internal/service/file_record"
+
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/reason"
 	"github.com/apache/answer/internal/service/service_config"
@@ -53,6 +55,7 @@ var (
 		constant.PostSubPath,
 		constant.BrandingSubPath,
 		constant.FilesPostSubPath,
+		constant.DeletedSubPath,
 	}
 	supportedThumbFileExtMapping = map[string]imaging.Format{
 		".jpg":  imaging.JPEG,
@@ -63,22 +66,26 @@ var (
 )
 
 type UploaderService interface {
-	UploadAvatarFile(ctx *gin.Context) (url string, err error)
-	UploadPostFile(ctx *gin.Context) (url string, err error)
-	UploadPostAttachment(ctx *gin.Context) (url string, err error)
-	UploadBrandingFile(ctx *gin.Context) (url string, err error)
+	UploadAvatarFile(ctx *gin.Context, userID string) (url string, err error)
+	UploadPostFile(ctx *gin.Context, userID string) (url string, err error)
+	UploadPostAttachment(ctx *gin.Context, userID string) (url string, err error)
+	UploadBrandingFile(ctx *gin.Context, userID string) (url string, err error)
 	AvatarThumbFile(ctx *gin.Context, fileName string, size int) (url string, err error)
 }
 
 // uploaderService uploader service
 type uploaderService struct {
-	serviceConfig   *service_config.ServiceConfig
-	siteInfoService siteinfo_common.SiteInfoCommonService
+	serviceConfig     *service_config.ServiceConfig
+	siteInfoService   siteinfo_common.SiteInfoCommonService
+	fileRecordService *file_record.FileRecordService
 }
 
 // NewUploaderService new upload service
-func NewUploaderService(serviceConfig *service_config.ServiceConfig,
-	siteInfoService siteinfo_common.SiteInfoCommonService) UploaderService {
+func NewUploaderService(
+	serviceConfig *service_config.ServiceConfig,
+	siteInfoService siteinfo_common.SiteInfoCommonService,
+	fileRecordService *file_record.FileRecordService,
+) UploaderService {
 	for _, subPath := range subPathList {
 		err := dir.CreateDirIfNotExist(filepath.Join(serviceConfig.UploadPath, subPath))
 		if err != nil {
@@ -86,13 +93,14 @@ func NewUploaderService(serviceConfig *service_config.ServiceConfig,
 		}
 	}
 	return &uploaderService{
-		serviceConfig:   serviceConfig,
-		siteInfoService: siteInfoService,
+		serviceConfig:     serviceConfig,
+		siteInfoService:   siteInfoService,
+		fileRecordService: fileRecordService,
 	}
 }
 
 // UploadAvatarFile upload avatar file
-func (us *uploaderService) UploadAvatarFile(ctx *gin.Context) (url string, err error) {
+func (us *uploaderService) UploadAvatarFile(ctx *gin.Context, userID string) (url string, err error) {
 	url, err = us.tryToUploadByPlugin(ctx, plugin.UserAvatar)
 	if err != nil {
 		return "", err
@@ -101,17 +109,19 @@ func (us *uploaderService) UploadAvatarFile(ctx *gin.Context) (url string, err e
 		return url, nil
 	}
 
-	siteWrite, err := us.siteInfoService.GetSiteWrite(ctx)
+	siteAdvanced, err := us.siteInfoService.GetSiteAdvanced(ctx)
 	if err != nil {
 		return "", err
 	}
 
-	ctx.Request.Body = http.MaxBytesReader(ctx.Writer, ctx.Request.Body, siteWrite.GetMaxImageSize())
+	ctx.Request.Body = http.MaxBytesReader(ctx.Writer, ctx.Request.Body, siteAdvanced.GetMaxImageSize())
 	file, fileHeader, err := ctx.Request.FormFile("file")
 	if err != nil {
 		return "", errors.BadRequest(reason.RequestFormatError).WithError(err)
 	}
-	file.Close()
+	defer func() {
+		_ = file.Close()
+	}()
 	fileExt := strings.ToLower(path.Ext(fileHeader.Filename))
 	if _, ok := plugin.DefaultFileTypeCheckMapping[plugin.UserAvatar][fileExt]; !ok {
 		return "", errors.BadRequest(reason.RequestFormatError).WithError(err)
@@ -119,7 +129,12 @@ func (us *uploaderService) UploadAvatarFile(ctx *gin.Context) (url string, err e
 
 	newFilename := fmt.Sprintf("%s%s", uid.IDStr12(), fileExt)
 	avatarFilePath := path.Join(constant.AvatarSubPath, newFilename)
-	return us.uploadImageFile(ctx, fileHeader, avatarFilePath)
+	url, err = us.uploadImageFile(ctx, fileHeader, avatarFilePath)
+	if err != nil {
+		return "", err
+	}
+	us.fileRecordService.AddFileRecord(ctx, userID, avatarFilePath, url, string(plugin.UserAvatar))
+	return url, nil
 }
 
 func (us *uploaderService) AvatarThumbFile(ctx *gin.Context, fileName string, size int) (url string, err error) {
@@ -134,14 +149,14 @@ func (us *uploaderService) AvatarThumbFile(ctx *gin.Context, fileName string, si
 
 	thumbFileName := fmt.Sprintf("%d_%d@%s", size, size, fileName)
 	thumbFilePath := fmt.Sprintf("%s/%s/%s", us.serviceConfig.UploadPath, constant.AvatarThumbSubPath, thumbFileName)
-	avatarFile, err := os.ReadFile(thumbFilePath)
+	_, err = os.ReadFile(thumbFilePath)
 	if err == nil {
 		return thumbFilePath, nil
 	}
 	filePath := fmt.Sprintf("%s/%s/%s", us.serviceConfig.UploadPath, constant.AvatarSubPath, fileName)
-	avatarFile, err = os.ReadFile(filePath)
+	avatarFile, err := os.ReadFile(filePath)
 	if err != nil {
-		return "", errors.InternalServer(reason.UnknownError).WithError(err).WithStack()
+		return "", errors.NotFound(reason.UnknownError).WithError(err)
 	}
 	reader := bytes.NewReader(avatarFile)
 	img, err := imaging.Decode(reader)
@@ -165,7 +180,9 @@ func (us *uploaderService) AvatarThumbFile(ctx *gin.Context, fileName string, si
 	if err != nil {
 		return "", errors.InternalServer(reason.UnknownError).WithError(err).WithStack()
 	}
-	defer out.Close()
+	defer func() {
+		_ = out.Close()
+	}()
 
 	thumbReader := bytes.NewReader(buf.Bytes())
 	if _, err = io.Copy(out, thumbReader); err != nil {
@@ -174,7 +191,7 @@ func (us *uploaderService) AvatarThumbFile(ctx *gin.Context, fileName string, si
 	return saveFilePath, nil
 }
 
-func (us *uploaderService) UploadPostFile(ctx *gin.Context) (
+func (us *uploaderService) UploadPostFile(ctx *gin.Context, userID string) (
 	url string, err error) {
 	url, err = us.tryToUploadByPlugin(ctx, plugin.UserPost)
 	if err != nil {
@@ -184,28 +201,35 @@ func (us *uploaderService) UploadPostFile(ctx *gin.Context) (
 		return url, nil
 	}
 
-	siteWrite, err := us.siteInfoService.GetSiteWrite(ctx)
+	siteAdvanced, err := us.siteInfoService.GetSiteAdvanced(ctx)
 	if err != nil {
 		return "", err
 	}
 
-	ctx.Request.Body = http.MaxBytesReader(ctx.Writer, ctx.Request.Body, siteWrite.GetMaxImageSize())
+	ctx.Request.Body = http.MaxBytesReader(ctx.Writer, ctx.Request.Body, siteAdvanced.GetMaxImageSize())
 	file, fileHeader, err := ctx.Request.FormFile("file")
 	if err != nil {
 		return "", errors.BadRequest(reason.RequestFormatError).WithError(err)
 	}
-	defer file.Close()
-	if checker.IsUnAuthorizedExtension(fileHeader.Filename, siteWrite.AuthorizedImageExtensions) {
+	defer func() {
+		_ = file.Close()
+	}()
+	if checker.IsUnAuthorizedExtension(fileHeader.Filename, siteAdvanced.AuthorizedImageExtensions) {
 		return "", errors.BadRequest(reason.RequestFormatError).WithError(err)
 	}
 
 	fileExt := strings.ToLower(path.Ext(fileHeader.Filename))
 	newFilename := fmt.Sprintf("%s%s", uid.IDStr12(), fileExt)
 	avatarFilePath := path.Join(constant.PostSubPath, newFilename)
-	return us.uploadImageFile(ctx, fileHeader, avatarFilePath)
+	url, err = us.uploadImageFile(ctx, fileHeader, avatarFilePath)
+	if err != nil {
+		return "", err
+	}
+	us.fileRecordService.AddFileRecord(ctx, userID, avatarFilePath, url, string(plugin.UserPost))
+	return url, nil
 }
 
-func (us *uploaderService) UploadPostAttachment(ctx *gin.Context) (
+func (us *uploaderService) UploadPostAttachment(ctx *gin.Context, userID string) (
 	url string, err error) {
 	url, err = us.tryToUploadByPlugin(ctx, plugin.UserPostAttachment)
 	if err != nil {
@@ -215,7 +239,7 @@ func (us *uploaderService) UploadPostAttachment(ctx *gin.Context) (
 		return url, nil
 	}
 
-	resp, err := us.siteInfoService.GetSiteWrite(ctx)
+	resp, err := us.siteInfoService.GetSiteAdvanced(ctx)
 	if err != nil {
 		return "", err
 	}
@@ -225,18 +249,25 @@ func (us *uploaderService) UploadPostAttachment(ctx *gin.Context) (
 	if err != nil {
 		return "", errors.BadRequest(reason.RequestFormatError).WithError(err)
 	}
-	defer file.Close()
+	defer func() {
+		_ = file.Close()
+	}()
 	if checker.IsUnAuthorizedExtension(fileHeader.Filename, resp.AuthorizedAttachmentExtensions) {
 		return "", errors.BadRequest(reason.RequestFormatError).WithError(err)
 	}
 
 	fileExt := strings.ToLower(path.Ext(fileHeader.Filename))
 	newFilename := fmt.Sprintf("%s%s", uid.IDStr12(), fileExt)
-	avatarFilePath := path.Join(constant.FilesPostSubPath, newFilename)
-	return us.uploadAttachmentFile(ctx, fileHeader, fileHeader.Filename, avatarFilePath)
+	attachmentFilePath := path.Join(constant.FilesPostSubPath, newFilename)
+	url, err = us.uploadAttachmentFile(ctx, fileHeader, fileHeader.Filename, attachmentFilePath)
+	if err != nil {
+		return "", err
+	}
+	us.fileRecordService.AddFileRecord(ctx, userID, attachmentFilePath, url, string(plugin.UserPostAttachment))
+	return url, nil
 }
 
-func (us *uploaderService) UploadBrandingFile(ctx *gin.Context) (
+func (us *uploaderService) UploadBrandingFile(ctx *gin.Context, userID string) (
 	url string, err error) {
 	url, err = us.tryToUploadByPlugin(ctx, plugin.AdminBranding)
 	if err != nil {
@@ -246,17 +277,19 @@ func (us *uploaderService) UploadBrandingFile(ctx *gin.Context) (
 		return url, nil
 	}
 
-	siteWrite, err := us.siteInfoService.GetSiteWrite(ctx)
+	siteAdvanced, err := us.siteInfoService.GetSiteAdvanced(ctx)
 	if err != nil {
 		return "", err
 	}
 
-	ctx.Request.Body = http.MaxBytesReader(ctx.Writer, ctx.Request.Body, siteWrite.GetMaxImageSize())
+	ctx.Request.Body = http.MaxBytesReader(ctx.Writer, ctx.Request.Body, siteAdvanced.GetMaxImageSize())
 	file, fileHeader, err := ctx.Request.FormFile("file")
 	if err != nil {
 		return "", errors.BadRequest(reason.RequestFormatError).WithError(err)
 	}
-	file.Close()
+	defer func() {
+		_ = file.Close()
+	}()
 	fileExt := strings.ToLower(path.Ext(fileHeader.Filename))
 	if _, ok := plugin.DefaultFileTypeCheckMapping[plugin.AdminBranding][fileExt]; !ok {
 		return "", errors.BadRequest(reason.RequestFormatError).WithError(err)
@@ -264,7 +297,12 @@ func (us *uploaderService) UploadBrandingFile(ctx *gin.Context) (
 
 	newFilename := fmt.Sprintf("%s%s", uid.IDStr12(), fileExt)
 	avatarFilePath := path.Join(constant.BrandingSubPath, newFilename)
-	return us.uploadImageFile(ctx, fileHeader, avatarFilePath)
+	url, err = us.uploadImageFile(ctx, fileHeader, avatarFilePath)
+	if err != nil {
+		return "", err
+	}
+	us.fileRecordService.AddFileRecord(ctx, userID, avatarFilePath, url, string(plugin.AdminBranding))
+	return url, nil
 }
 
 func (us *uploaderService) uploadImageFile(ctx *gin.Context, file *multipart.FileHeader, fileSubPath string) (
@@ -273,7 +311,7 @@ func (us *uploaderService) uploadImageFile(ctx *gin.Context, file *multipart.Fil
 	if err != nil {
 		return "", err
 	}
-	siteWrite, err := us.siteInfoService.GetSiteWrite(ctx)
+	siteAdvanced, err := us.siteInfoService.GetSiteAdvanced(ctx)
 	if err != nil {
 		return "", err
 	}
@@ -286,9 +324,11 @@ func (us *uploaderService) uploadImageFile(ctx *gin.Context, file *multipart.Fil
 	if err != nil {
 		return "", errors.InternalServer(reason.UnknownError).WithError(err).WithStack()
 	}
-	defer src.Close()
+	defer func() {
+		_ = src.Close()
+	}()
 
-	if !checker.DecodeAndCheckImageFile(filePath, siteWrite.GetMaxImageMegapixel()) {
+	if !checker.DecodeAndCheckImageFile(filePath, siteAdvanced.GetMaxImageMegapixel()) {
 		return "", errors.BadRequest(reason.UploadFileUnsupportedFileFormat)
 	}
 
@@ -324,17 +364,17 @@ func (us *uploaderService) uploadAttachmentFile(ctx *gin.Context, file *multipar
 
 func (us *uploaderService) tryToUploadByPlugin(ctx *gin.Context, source plugin.UploadSource) (
 	url string, err error) {
-	siteWrite, err := us.siteInfoService.GetSiteWrite(ctx)
+	siteAdvanced, err := us.siteInfoService.GetSiteAdvanced(ctx)
 	if err != nil {
 		return "", err
 	}
 	cond := plugin.UploadFileCondition{
 		Source:                         source,
-		MaxImageSize:                   siteWrite.MaxImageSize,
-		MaxAttachmentSize:              siteWrite.MaxAttachmentSize,
-		MaxImageMegapixel:              siteWrite.MaxImageMegapixel,
-		AuthorizedImageExtensions:      siteWrite.AuthorizedImageExtensions,
-		AuthorizedAttachmentExtensions: siteWrite.AuthorizedAttachmentExtensions,
+		MaxImageSize:                   siteAdvanced.MaxImageSize,
+		MaxAttachmentSize:              siteAdvanced.MaxAttachmentSize,
+		MaxImageMegapixel:              siteAdvanced.MaxImageMegapixel,
+		AuthorizedImageExtensions:      siteAdvanced.AuthorizedImageExtensions,
+		AuthorizedAttachmentExtensions: siteAdvanced.AuthorizedAttachmentExtensions,
 	}
 	_ = plugin.CallStorage(func(fn plugin.Storage) error {
 		resp := fn.UploadFile(ctx, cond)

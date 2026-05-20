@@ -21,6 +21,8 @@ package badge
 
 import (
 	"context"
+	"strings"
+
 	"github.com/apache/answer/internal/base/handler"
 	"github.com/apache/answer/internal/base/reason"
 	"github.com/apache/answer/internal/base/translator"
@@ -32,7 +34,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
-	"strings"
 )
 
 type BadgeRepo interface {
@@ -205,10 +206,8 @@ func (b *BadgeService) ListPaged(ctx context.Context, req *schema.GetBadgeListPa
 	resp = make([]*schema.GetBadgeListPagedResp, len(badges))
 
 	general, siteErr := b.siteInfoCommonService.GetSiteGeneral(ctx)
-	var baseURL = ""
-	if siteErr != nil {
-		baseURL = ""
-	} else {
+	baseURL := ""
+	if siteErr == nil {
 		baseURL = general.SiteUrl
 	}
 
@@ -245,31 +244,23 @@ func (b *BadgeService) searchByName(ctx context.Context, name string) (result []
 
 // GetBadgeInfo get badge info
 func (b *BadgeService) GetBadgeInfo(ctx *gin.Context, id string, userID string) (info *schema.GetBadgeInfoResp, err error) {
-	var (
-		badge       *entity.Badge
-		earnedTotal int64 = 0
-		exists            = false
-	)
-
-	badge, exists, err = b.badgeRepo.GetByID(ctx, id)
+	badge, exists, err := b.badgeRepo.GetByID(ctx, id)
 	if err != nil {
-		return
+		return nil, err
 	}
 
 	if !exists || badge.Status == entity.BadgeStatusInactive {
-		err = errors.BadRequest(reason.BadgeObjectNotFound)
-		return
+		return nil, errors.BadRequest(reason.BadgeObjectNotFound)
 	}
 
+	var earnedTotal int64
 	if len(userID) > 0 {
 		earnedTotal = b.badgeAwardRepo.CountByUserIdAndBadgeId(ctx, userID, badge.ID)
 	}
 
+	baseURL := ""
 	general, siteErr := b.siteInfoCommonService.GetSiteGeneral(ctx)
-	var baseURL = ""
-	if siteErr != nil {
-		baseURL = ""
-	} else {
+	if siteErr == nil {
 		baseURL = general.SiteUrl
 	}
 

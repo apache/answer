@@ -21,6 +21,7 @@ package uid
 
 import (
 	"strconv"
+	"strings"
 
 	"github.com/segmentfault/pacman/utils"
 )
@@ -89,4 +90,42 @@ func IsShortID(id string) bool {
 		return true
 	}
 	return false
+}
+
+// IsValidNumericID checks whether id can be parsed as a positive int64.
+func IsValidNumericID(id string) bool {
+	id = strings.TrimSpace(id)
+	if len(id) == 0 {
+		return false
+	}
+	num, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		return false
+	}
+	return num > 0
+}
+
+// NormalizeOptionalID normalizes a raw id parameter.
+// It accepts short id and long id, treats empty/null/undefined as "not provided".
+// Returns normalized id, whether caller provided a value, and whether value is valid.
+func NormalizeOptionalID(raw string) (normalizedID string, provided bool, valid bool) {
+	raw = strings.TrimSpace(raw)
+	if len(raw) == 0 || strings.EqualFold(raw, "null") || strings.EqualFold(raw, "undefined") {
+		return "", false, true
+	}
+	normalizedID = DeShortID(raw)
+	if !IsValidNumericID(normalizedID) {
+		return "", true, false
+	}
+	return normalizedID, true, true
+}
+
+// NormalizeRequiredID normalizes a required id parameter.
+// Returns normalized id and whether the value is valid.
+func NormalizeRequiredID(raw string) (normalizedID string, valid bool) {
+	normalizedID, provided, valid := NormalizeOptionalID(raw)
+	if !provided {
+		return "", false
+	}
+	return normalizedID, valid
 }

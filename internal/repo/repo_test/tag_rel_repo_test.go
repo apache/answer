@@ -30,6 +30,7 @@ import (
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/repo/tag"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var (
@@ -61,15 +62,15 @@ func Test_tagListRepo_BatchGetObjectTagRelList(t *testing.T) {
 	tagRelRepo := tag.NewTagRelRepo(testDataSource, unique.NewUniqueIDRepo(testDataSource))
 	relList, err :=
 		tagRelRepo.BatchGetObjectTagRelList(context.TODO(), []string{testTagRelList[0].ObjectID, testTagRelList[1].ObjectID})
-	assert.NoError(t, err)
-	assert.Equal(t, 2, len(relList))
+	require.NoError(t, err)
+	assert.Len(t, relList, 2)
 }
 
 func Test_tagListRepo_CountTagRelByTagID(t *testing.T) {
 	tagRelOnce.Do(addTagRelList)
 	tagRelRepo := tag.NewTagRelRepo(testDataSource, unique.NewUniqueIDRepo(testDataSource))
 	count, err := tagRelRepo.CountTagRelByTagID(context.TODO(), "10030000000000101")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, int64(1), count)
 }
 
@@ -79,8 +80,8 @@ func Test_tagListRepo_GetObjectTagRelList(t *testing.T) {
 
 	relList, err :=
 		tagRelRepo.GetObjectTagRelList(context.TODO(), testTagRelList[0].ObjectID)
-	assert.NoError(t, err)
-	assert.Equal(t, 1, len(relList))
+	require.NoError(t, err)
+	assert.Len(t, relList, 1)
 }
 
 func Test_tagListRepo_GetObjectTagRelWithoutStatus(t *testing.T) {
@@ -89,25 +90,25 @@ func Test_tagListRepo_GetObjectTagRelWithoutStatus(t *testing.T) {
 
 	relList, err :=
 		tagRelRepo.BatchGetObjectTagRelList(context.TODO(), []string{testTagRelList[0].ObjectID, testTagRelList[1].ObjectID})
-	assert.NoError(t, err)
-	assert.Equal(t, 2, len(relList))
+	require.NoError(t, err)
+	assert.Len(t, relList, 2)
 
 	ids := []int64{relList[0].ID, relList[1].ID}
 	err = tagRelRepo.RemoveTagRelListByIDs(context.TODO(), ids)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	count, err := tagRelRepo.CountTagRelByTagID(context.TODO(), "10030000000000101")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, int64(0), count)
 
 	_, exist, err := tagRelRepo.GetObjectTagRelWithoutStatus(context.TODO(), relList[0].ObjectID, relList[0].TagID)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.True(t, exist)
 
 	err = tagRelRepo.EnableTagRelByIDs(context.TODO(), ids, false)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	count, err = tagRelRepo.CountTagRelByTagID(context.TODO(), "10030000000000101")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, int64(1), count)
 }

@@ -20,8 +20,10 @@
 package schema
 
 import (
+	"github.com/apache/answer/internal/base/reason"
 	"github.com/apache/answer/internal/base/validator"
 	"github.com/apache/answer/pkg/converter"
+	"github.com/segmentfault/pacman/errors"
 )
 
 // RemoveAnswerReq delete answer request
@@ -60,12 +62,22 @@ type AnswerAddReq struct {
 
 func (req *AnswerAddReq) Check() (errFields []*validator.FormErrorField, err error) {
 	req.HTML = converter.Markdown2HTML(req.Content)
+	if req.HTML == "" {
+		return append(errFields, &validator.FormErrorField{
+			ErrorField: "content",
+			ErrorMsg:   reason.AnswerContentCannotEmpty,
+		}), errors.BadRequest(reason.AnswerContentCannotEmpty)
+	}
 	return nil, nil
+}
+
+type GetAnswerInfoResp struct {
+	Info     *AnswerInfo       `json:"info"`
+	Question *QuestionInfoResp `json:"question"`
 }
 
 type AnswerUpdateReq struct {
 	ID           string `json:"id"`
-	QuestionID   string `json:"question_id"`
 	Title        string `json:"title"`
 	Content      string `validate:"required,notblank,gte=6,lte=65535" json:"content"`
 	EditSummary  string `validate:"omitempty" json:"edit_summary"`
@@ -79,6 +91,12 @@ type AnswerUpdateReq struct {
 
 func (req *AnswerUpdateReq) Check() (errFields []*validator.FormErrorField, err error) {
 	req.HTML = converter.Markdown2HTML(req.Content)
+	if req.HTML == "" {
+		return append(errFields, &validator.FormErrorField{
+			ErrorField: "content",
+			ErrorMsg:   reason.AnswerContentCannotEmpty,
+		}), errors.BadRequest(reason.AnswerContentCannotEmpty)
+	}
 	return nil, nil
 }
 
@@ -88,15 +106,16 @@ type AnswerUpdateResp struct {
 }
 
 type AnswerListReq struct {
-	QuestionID string `json:"question_id" form:"question_id"`
-	Order      string `json:"order" form:"order"`
-	Page       int    `json:"page" form:"page"`
-	PageSize   int    `json:"page_size" form:"page_size"`
-	UserID     string `json:"-"`
-	IsAdmin    bool   `json:"-"`
-	CanEdit    bool   `json:"-"`
-	CanDelete  bool   `json:"-"`
-	CanRecover bool   `json:"-"`
+	QuestionID       string `json:"question_id" form:"question_id"`
+	Order            string `json:"order" form:"order"`
+	Page             int    `json:"page" form:"page"`
+	PageSize         int    `json:"page_size" form:"page_size"`
+	UserID           string `json:"-"`
+	IsAdmin          bool   `json:"-"`
+	IsAdminModerator bool   `json:"-"`
+	CanEdit          bool   `json:"-"`
+	CanDelete        bool   `json:"-"`
+	CanRecover       bool   `json:"-"`
 }
 
 type AnswerInfo struct {

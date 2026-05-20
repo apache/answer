@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-FROM golang:1.22-alpine AS golang-builder
+FROM golang:1.24-alpine AS golang-builder
 LABEL maintainer="linkinstar@apache.org"
 
 ARG GOPROXY
@@ -34,7 +34,7 @@ ARG CGO_EXTRA_CFLAGS
 
 COPY . ${BUILD_DIR}
 WORKDIR ${BUILD_DIR}
-RUN apk --no-cache add build-base git bash nodejs npm && npm install -g pnpm@8.9.2 \
+RUN apk --no-cache add build-base git bash nodejs npm && npm install -g pnpm@9.7.0 \
     && make clean build
 
 RUN chmod 755 answer

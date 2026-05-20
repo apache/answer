@@ -47,7 +47,7 @@ type Data struct {
 func NewData(db *xorm.Engine, cache cache.Cache) (*Data, func(), error) {
 	cleanup := func() {
 		log.Info("closing the data resources")
-		db.Close()
+		_ = db.Close()
 	}
 	return &Data{DB: db, Cache: cache}, cleanup, nil
 }

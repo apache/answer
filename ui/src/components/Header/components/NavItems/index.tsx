@@ -24,7 +24,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 
 import type * as Type from '@/common/interface';
 import { Avatar, Icon } from '@/components';
-import { floppyNavigation } from '@/utils';
+import { floppyNavigation, isDarkTheme } from '@/utils';
 import { userCenterStore } from '@/stores';
 import { REACT_BASE_PATH } from '@/router/alias';
 
@@ -54,7 +54,7 @@ const Index: FC<Props> = ({ redDot, userInfo, logOut }) => {
         <NavLink
           to="/users/notifications/inbox"
           title={t('inbox', { keyPrefix: 'notifications' })}
-          className="icon-link nav-link d-flex align-items-center justify-content-center p-0 me-3 position-relative">
+          className="icon-link nav-link d-flex align-items-center justify-content-center p-0 me-2 position-relative">
           <Icon name="bell-fill" className="fs-4" />
           {(redDot?.inbox || 0) > 0 && (
             <div className="unread-dot bg-danger">
@@ -68,7 +68,7 @@ const Index: FC<Props> = ({ redDot, userInfo, logOut }) => {
         <NavLink
           to="/users/notifications/achievement"
           title={t('achievement', { keyPrefix: 'notifications' })}
-          className="icon-link nav-link d-flex align-items-center justify-content-center p-0 me-3 position-relative">
+          className="icon-link nav-link d-flex align-items-center justify-content-center p-0 me-2 position-relative">
           <Icon name="trophy-fill" className="fs-4" />
           {(redDot?.achievement || 0) > 0 && (
             <div className="unread-dot bg-danger">
@@ -80,7 +80,7 @@ const Index: FC<Props> = ({ redDot, userInfo, logOut }) => {
         </NavLink>
       </Nav>
 
-      <Dropdown align="end">
+      <Dropdown align="end" data-bs-theme={isDarkTheme() ? 'dark' : 'light'}>
         <Dropdown.Toggle
           variant="success"
           id="dropdown-basic"
@@ -95,7 +95,7 @@ const Index: FC<Props> = ({ redDot, userInfo, logOut }) => {
           />
         </Dropdown.Toggle>
 
-        <Dropdown.Menu>
+        <Dropdown.Menu className="position-absolute">
           <Dropdown.Item
             href={`${REACT_BASE_PATH}/users/${userInfo.username}`}
             onClick={handleLinkClick}>
@@ -123,7 +123,7 @@ const Index: FC<Props> = ({ redDot, userInfo, logOut }) => {
       {ucAgent?.enabled &&
       (ucAgent?.agent_info?.url ||
         ucAgent?.agent_info?.control_center?.length) ? (
-        <Dropdown align="end">
+        <Dropdown align="end" data-bs-theme={isDarkTheme() ? 'dark' : 'light'}>
           <Dropdown.Toggle
             variant="success"
             id="dropdown-uca"
@@ -137,7 +137,7 @@ const Index: FC<Props> = ({ redDot, userInfo, logOut }) => {
             </Nav>
           </Dropdown.Toggle>
 
-          <Dropdown.Menu>
+          <Dropdown.Menu className="position-absolute">
             {ucAgent.agent_info.url ? (
               <Dropdown.Item href={ucAgent.agent_info.url}>
                 {ucAgent.agent_info.name}

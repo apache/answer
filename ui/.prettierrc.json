@@ -4,5 +4,6 @@
   "singleQuote": true,
   "jsxBracketSameLine": true,
   "printWidth": 80,
-  "endOfLine": "auto"
+  "endOfLine": "auto",
+  "bracketSameLine": true
 }

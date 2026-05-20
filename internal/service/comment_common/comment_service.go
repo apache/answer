@@ -34,6 +34,7 @@ type CommentCommonRepo interface {
 	GetCommentWithoutStatus(ctx context.Context, commentID string) (comment *entity.Comment, exist bool, err error)
 	GetCommentCount(ctx context.Context) (count int64, err error)
 	RemoveAllUserComment(ctx context.Context, userID string) (err error)
+	UpdateCommentStatus(ctx context.Context, commentID string, status int) (err error)
 }
 
 // CommentCommonService user service

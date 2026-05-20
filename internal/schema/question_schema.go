@@ -23,6 +23,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/apache/answer/internal/base/reason"
+	"github.com/segmentfault/pacman/errors"
+
 	"github.com/apache/answer/internal/base/validator"
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/pkg/converter"
@@ -76,11 +79,11 @@ type QuestionAdd struct {
 	// question title
 	Title string `validate:"required,notblank,gte=6,lte=150" json:"title"`
 	// content
-	Content string `validate:"required,notblank,gte=6,lte=65535" json:"content"`
+	Content string `validate:"gte=0,lte=65535" json:"content"`
 	// html
 	HTML string `json:"-"`
 	// tags
-	Tags []*TagItem `validate:"required,dive" json:"tags"`
+	Tags []*TagItem `validate:"dive" json:"tags"`
 	// user id
 	UserID string `json:"-"`
 	QuestionPermission
@@ -104,13 +107,13 @@ type QuestionAddByAnswer struct {
 	// question title
 	Title string `validate:"required,notblank,gte=6,lte=150" json:"title"`
 	// content
-	Content string `validate:"required,notblank,gte=6,lte=65535" json:"content"`
+	Content string `validate:"gte=0,lte=65535" json:"content"`
 	// html
 	HTML          string `json:"-"`
 	AnswerContent string `validate:"required,notblank,gte=6,lte=65535" json:"answer_content"`
 	AnswerHTML    string `json:"-"`
 	// tags
-	Tags []*TagItem `validate:"required,dive" json:"tags"`
+	Tags []*TagItem `validate:"dive" json:"tags"`
 	// user id
 	UserID              string   `json:"-"`
 	MentionUsernameList []string `validate:"omitempty" json:"mention_username_list"`
@@ -129,10 +132,18 @@ func (req *QuestionAddByAnswer) Check() (errFields []*validator.FormErrorField, 
 			tag.ParsedText = converter.Markdown2HTML(tag.OriginalText)
 		}
 	}
+	if req.AnswerHTML == "" {
+		errFields = append(errFields, &validator.FormErrorField{
+			ErrorField: "answer_content",
+			ErrorMsg:   reason.AnswerContentCannotEmpty,
+		})
+		return errFields, errors.BadRequest(reason.QuestionContentCannotEmpty)
+	}
 	return nil, nil
 }
 
 type QuestionPermission struct {
+	IsAdminModerator bool `json:"-"`
 	// whether user can add it
 	CanAdd bool `json:"-"`
 	// whether user can edit it
@@ -171,12 +182,12 @@ type QuestionUpdate struct {
 	// question title
 	Title string `validate:"required,notblank,gte=6,lte=150" json:"title"`
 	// content
-	Content string `validate:"required,notblank,gte=6,lte=65535" json:"content"`
+	Content string `validate:"gte=0,lte=65535" json:"content"`
 	// html
 	HTML       string   `json:"-"`
 	InviteUser []string `validate:"omitempty"  json:"invite_user"`
 	// tags
-	Tags []*TagItem `validate:"required,dive" json:"tags"`
+	Tags []*TagItem `validate:"dive" json:"tags"`
 	// edit summary
 	EditSummary string `validate:"omitempty" json:"edit_summary"`
 	// user id
@@ -320,24 +331,24 @@ type UserAnswerInfo struct {
 	CreateTime   int    `json:"create_time"`
 	UpdateTime   int    `json:"update_time"`
 	QuestionInfo struct {
-		Title    string        `json:"title"`
-		UrlTitle string        `json:"url_title"`
-		Tags     []interface{} `json:"tags"`
+		Title    string `json:"title"`
+		UrlTitle string `json:"url_title"`
+		Tags     []any  `json:"tags"`
 	} `json:"question_info"`
 }
 
 type UserQuestionInfo struct {
-	ID               string        `json:"question_id"`
-	Title            string        `json:"title"`
-	UrlTitle         string        `json:"url_title"`
-	VoteCount        int           `json:"vote_count"`
-	Tags             []interface{} `json:"tags"`
-	ViewCount        int           `json:"view_count"`
-	AnswerCount      int           `json:"answer_count"`
-	CollectionCount  int           `json:"collection_count"`
-	CreatedAt        int64         `json:"created_at"`
-	AcceptedAnswerID string        `json:"accepted_answer_id"`
-	Status           string        `json:"status"`
+	ID               string `json:"question_id"`
+	Title            string `json:"title"`
+	UrlTitle         string `json:"url_title"`
+	VoteCount        int    `json:"vote_count"`
+	Tags             []any  `json:"tags"`
+	ViewCount        int    `json:"view_count"`
+	AnswerCount      int    `json:"answer_count"`
+	CollectionCount  int    `json:"collection_count"`
+	CreatedAt        int64  `json:"created_at"`
+	AcceptedAnswerID string `json:"accepted_answer_id"`
+	Status           string `json:"status"`
 }
 
 const (
@@ -347,6 +358,7 @@ const (
 	QuestionOrderCondScore      = "score"
 	QuestionOrderCondUnanswered = "unanswered"
 	QuestionOrderCondRecommend  = "recommend"
+	QuestionOrderCondFrequent   = "frequent"
 
 	// HotInDays limit max days of the hottest question
 	HotInDays = 90
@@ -410,6 +422,7 @@ type QuestionPageRespOperator struct {
 	Rank        int    `json:"rank"`
 	DisplayName string `json:"display_name"`
 	Status      string `json:"status"`
+	Avatar      string `json:"avatar"`
 }
 
 type AdminQuestionPageReq struct {

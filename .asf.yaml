@@ -43,6 +43,6 @@ github:
 
 notifications:
   commits:      commits@answer.apache.org
-  issues:       commits@answer.apache.org
-  pullrequests: commits@answer.apache.org
-  discussions:  commits@answer.apache.org
+  issues:       issues@answer.apache.org
+  pullrequests: issues@answer.apache.org
+  discussions:  issues@answer.apache.org

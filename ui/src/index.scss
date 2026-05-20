@@ -48,8 +48,14 @@ a {
 }
 // If the image does not have a `src` attribute, it must break and may not trigger the `onerror` event.
 // With or without the `alt` attribute, it is visually hidden directly.
-img[src=""] {
+img[src=''] {
   visibility: hidden !important;
+}
+
+.page-main {
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .btn-link {
@@ -119,7 +125,7 @@ img[src=""] {
   display: flex;
   flex-direction: column;
 }
-#root > footer {
+#root footer {
   margin-top: auto !important;
   padding-bottom: constant(safe-area-inset-bottom);
   padding-bottom: env(safe-area-inset-bottom);
@@ -208,6 +214,40 @@ img[src=""] {
 
 .fmt {
   width: 100%;
+  hr {
+    height: 3px;
+    border: none;
+    position: relative;
+    overflow: visible;
+    text-align: center;
+    opacity: 1;
+    flex: none;
+    margin: 1.5rem 0;
+    &::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(calc(-50% - 16px), -50%);
+      width: 3px;
+      height: 3px;
+      background-color: var(--bs-border-color);
+      border-radius: 50%;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 3px;
+      height: 3px;
+      background-color: var(--bs-border-color);
+      border-radius: 50%;
+      box-shadow: 16px 0 0 var(--bs-border-color);
+    }
+  }
   h1 {
     @extend .fs-3;
     margin-top: 2rem;
@@ -244,19 +284,26 @@ img[src=""] {
       color: var(--an-212529);
       padding: 2px 4px;
       border-radius: 0.25rem;
+      overflow-wrap: normal;
+      white-space: inherit;
     }
   }
   pre {
-    background-color: var(--an-e9ecef);
+    background-color: var(--an-pre);
     border-radius: 0.25rem;
     padding: 1rem;
     max-height: 38rem;
+    white-space: pre-wrap;
+    overflow: auto;
+    code {
+      overflow-wrap: normal;
+      white-space: inherit;
+    }
   }
   blockquote {
     border-left: 0.25rem solid #ced4da;
     padding: 1rem;
     color: #6c757d;
-    background-color: var(--an-e9ecef);
     p {
       color: var(--bs-body-color);
     }
@@ -270,7 +317,10 @@ img[src=""] {
       word-break: initial;
     }
   }
-  ol ol,ol ul,ul ol,ul ul {
+  ol ol,
+  ol ul,
+  ul ol,
+  ul ul {
     margin-bottom: 1rem;
   }
 }
@@ -329,8 +379,8 @@ img[src=""] {
   animation: bg-fade-out 2s ease 0.3s;
 }
 
-
-.btnSvg, .btnSvg:hover {
+.btnSvg,
+.btnSvg:hover {
   display: inline-block;
   font-size: 16px;
   width: 16px;
@@ -348,11 +398,44 @@ img[src=""] {
 }
 
 .bronze {
-  color: #CD7F32;
+  color: #cd7f32;
 }
 .silver {
-  color: #C0C0C0;
+  color: #c0c0c0;
 }
 .gold {
-  color: #FFD700;
+  color: #ffd700;
+}
+
+.view-level1 {
+  color: $orange-600;
+}
+
+.view-level2 {
+  color: $orange-700;
+}
+
+.view-level3 {
+  color: $orange-800;
+}
+
+.mb-12 {
+  margin-bottom: 12px;
+}
+
+.a-code-wrap:hover .a-code-tool {
+  display: block;
+}
+.a-code-tool {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-size: 16px;
+  z-index: 1;
+  display: none;
+  line-height: 1;
+}
+
+.inherit {
+  color: inherit !important;
 }

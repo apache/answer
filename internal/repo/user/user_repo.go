@@ -33,6 +33,7 @@ import (
 	"github.com/apache/answer/plugin"
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
+	"xorm.io/builder"
 	"xorm.io/xorm"
 )
 
@@ -50,7 +51,7 @@ func NewUserRepo(data *data.Data) usercommon.UserRepo {
 
 // AddUser add user
 func (ur *userRepo) AddUser(ctx context.Context, user *entity.User) (err error) {
-	_, err = ur.data.DB.Transaction(func(session *xorm.Session) (interface{}, error) {
+	_, err = ur.data.DB.Transaction(func(session *xorm.Session) (any, error) {
 		session = session.Context(ctx)
 		userInfo := &entity.User{}
 		exist, err := session.Where("username = ?", user.Username).Get(userInfo)
@@ -379,4 +380,18 @@ func decorateByUserCenterUser(original *entity.User, ucUser *plugin.UserCenterBa
 	if ucUser.Status != plugin.UserStatusAvailable {
 		original.Status = int(ucUser.Status)
 	}
+}
+
+func (ur *userRepo) IsAvatarFileUsed(ctx context.Context, filePath string) (bool, error) {
+	user := &entity.User{}
+	count, err := ur.data.DB.Context(ctx).
+		Table("user").
+		Where(builder.Like{"avatar", "%" + filePath + "%"}).
+		Count(&user)
+
+	if err != nil {
+		return false, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+
+	return count > 0, nil
 }

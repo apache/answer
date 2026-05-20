@@ -24,7 +24,7 @@ import request from '@/utils/request';
 import type * as Type from '@/common/interface';
 
 export const useQueryBadges = (params) => {
-  const apiUrl = `/answer/admin/api/badges?${qs.stringify(params)}`;
+  const apiUrl = `/answer/admin/api/badges?${qs.stringify(params, { skipNulls: true })}`;
   const { data, error, mutate } = useSWR<
     Type.ListResult<Type.AdminBadgeListItem>,
     Error

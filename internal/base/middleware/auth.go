@@ -80,7 +80,7 @@ func (am *AuthUserMiddleware) Auth() gin.HandlerFunc {
 func (am *AuthUserMiddleware) EjectUserBySiteInfo() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		mustLogin := false
-		siteInfo, _ := am.siteInfoCommonService.GetSiteLogin(ctx)
+		siteInfo, _ := am.siteInfoCommonService.GetSiteSecurity(ctx)
 		if siteInfo != nil {
 			mustLogin = siteInfo.LoginRequired
 		}
@@ -116,6 +116,10 @@ func (am *AuthUserMiddleware) MustAuthWithoutAccountAvailable() gin.HandlerFunc 
 			ctx.Abort()
 			return
 		}
+		// Check API key scope
+		if am.AuthAPIKeyScope(ctx, token) {
+			return
+		}
 		userInfo, err := am.authService.GetUserCacheInfo(ctx, token)
 		if err != nil || userInfo == nil {
 			handler.HandleResponse(ctx, errors.Unauthorized(reason.UnauthorizedError), nil)
@@ -139,6 +143,10 @@ func (am *AuthUserMiddleware) MustAuthAndAccountAvailable() gin.HandlerFunc {
 		if len(token) == 0 {
 			handler.HandleResponse(ctx, errors.Unauthorized(reason.UnauthorizedError), nil)
 			ctx.Abort()
+			return
+		}
+		// Check API key scope
+		if am.AuthAPIKeyScope(ctx, token) {
 			return
 		}
 		userInfo, err := am.authService.GetUserCacheInfo(ctx, token)
@@ -184,7 +192,22 @@ func (am *AuthUserMiddleware) AdminAuth() gin.HandlerFunc {
 			return
 		}
 		if userInfo != nil {
+			if userInfo.EmailStatus == entity.EmailStatusToBeVerified {
+				_ = am.authService.RemoveAdminUserCacheInfo(ctx, token)
+				handler.HandleResponse(ctx, errors.Forbidden(reason.EmailNeedToBeVerified),
+					&schema.ForbiddenResp{Type: schema.ForbiddenReasonTypeInactive})
+				ctx.Abort()
+				return
+			}
+			if userInfo.UserStatus == entity.UserStatusSuspended {
+				_ = am.authService.RemoveAdminUserCacheInfo(ctx, token)
+				handler.HandleResponse(ctx, errors.Forbidden(reason.UserSuspended),
+					&schema.ForbiddenResp{Type: schema.ForbiddenReasonTypeUserSuspended})
+				ctx.Abort()
+				return
+			}
 			if userInfo.UserStatus == entity.UserStatusDeleted {
+				_ = am.authService.RemoveAdminUserCacheInfo(ctx, token)
 				handler.HandleResponse(ctx, errors.Unauthorized(reason.UnauthorizedError), nil)
 				ctx.Abort()
 				return
@@ -197,7 +220,7 @@ func (am *AuthUserMiddleware) AdminAuth() gin.HandlerFunc {
 
 func (am *AuthUserMiddleware) CheckPrivateMode() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		resp, err := am.siteInfoCommonService.GetSiteLogin(ctx)
+		resp, err := am.siteInfoCommonService.GetSiteSecurity(ctx)
 		if err != nil {
 			ShowIndexPage(ctx)
 			ctx.Abort()
@@ -211,6 +234,26 @@ func (am *AuthUserMiddleware) CheckPrivateMode() gin.HandlerFunc {
 		ctx.Next()
 	}
 }
+
+func (am *AuthUserMiddleware) AuthAPIKeyScope(ctx *gin.Context, accessToken string) (apiHaveNoScope bool) {
+	if !strings.HasPrefix(accessToken, "sk_") {
+		return false
+	}
+	var err error
+	pass, err := am.authService.AuthAPIKey(ctx, ctx.Request.Method == "GET", accessToken)
+	if err != nil {
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
+		ctx.Abort()
+		return true
+	}
+	if !pass {
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
+		ctx.Abort()
+		return true
+	}
+	return false
+}
+
 func ShowIndexPage(ctx *gin.Context) {
 	ctx.Header("content-type", "text/html;charset=utf-8")
 	ctx.Header("X-Frame-Options", "DENY")

@@ -38,7 +38,7 @@ const Index: FC<Props> = ({
   data,
   showAvatar = true,
   avatarClass = '',
-  avatarSize = '20px',
+  avatarSize = '24px',
   className = 'small',
   avatarSearchStr = 's=48',
   showReputation = true,
@@ -49,6 +49,9 @@ const Index: FC<Props> = ({
       {data?.status !== 'deleted' ? (
         <Link
           to={`/users/${data?.username}`}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
           className="d-flex align-items-center">
           {showAvatar && (
             <Avatar

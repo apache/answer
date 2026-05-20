@@ -19,21 +19,44 @@
 
 -->
 {{define "sort-btns"}}
-<div role="group" class="btn-group btn-group-sm">
+<div role="group" class="md-show me-2 btn-group btn-group-sm">
   <a role="button" tabindex="0" href="?order=newest" class="text-capitalize fit-content btn active btn-outline-secondary">
     {{translator ($.language) "ui.question.newest" }}
   </a>
   <a role="button" tabindex="0" href="?order=active" class="text-capitalize fit-content btn btn-outline-secondary">
     {{translator ($.language) "ui.question.active" }}
   </a>
-  <a role="button" tabindex="0" href="?order=hot" class="text-capitalize fit-content d-none d-md-block btn btn-outline-secondary">
+  <!-- <a role="button" tabindex="0" href="?order=hot" class="text-capitalize fit-content d-none d-md-block btn btn-outline-secondary">
     {{translator ($.language) "ui.question.hot" }}
-  </a>
-  <a role="button" tabindex="0" href="?order=score" class="text-capitalize fit-content d-none d-md-block btn btn-outline-secondary">
-    {{translator ($.language) "ui.question.score" }}
-  </a>
+  </a> -->
   <a role="button" tabindex="0" href="?order=unanswered" class="text-capitalize fit-content d-none d-md-block btn btn-outline-secondary" style="border-top-right-radius: 0.25rem; border-bottom-right-radius: 0.25rem;">
-  {{translator ($.language) "ui.question.unanswered" }}
+    {{translator ($.language) "ui.question.unanswered" }}
   </a>
+  <a role="button" tabindex="0" href="?order=frequent" class="text-capitalize fit-content d-none d-md-block btn btn-outline-secondary" style="border-top-right-radius: 0.25rem; border-bottom-right-radius: 0.25rem;">
+    {{translator ($.language) "ui.question.frequent" }}
+  </a>
+  <div role="group" class="show dropdown btn-group">
+    <button type="button" aria-expanded="true" class="dropdown-toggle show btn btn-outline-secondary btn-sm">
+      {{translator ($.language) "ui.btns.more" }}
+    </button>
+    <div x-placement="bottom-start" class="dropdown-menu show" data-popper-reference-hidden="false" data-popper-escaped="false" data-popper-placement="bottom-start" style="position: absolute; inset: 0px auto auto 0px; transform: translate(0px, 33px);">
+      <a href="?order=score" aria-selected="false" class="text-capitalize dropdown-item"> {{translator ($.language) "ui.question.score" }}</a>
+    </div>
+  </div>
+</div>
+
+<div class="dropdown">
+  <button type="button" id="react-aria8245013726-:r5:" aria-expanded="false" class="dropdown-toggle btn btn-outline-secondary btn-sm"><i class="br bi-view-stacked"></i></button>
+  <div x-placement="bottom-end" aria-labelledby="react-aria8245013726-:r5:" class="dropdown-menu dropdown-menu-end" data-popper-reference-hidden="false" data-popper-escaped="false" data-popper-placement="bottom-end" style="position: absolute; inset: 0px 0px auto auto; transform: translate(0px, 33px);">
+    <h6 class="dropdown-header" role="heading">
+      {{translator ($.language) "ui.btns.view" }}
+    </h6>
+    <a aria-selected="true" data-rr-ui-dropdown-item="" class="dropdown-item active" role="button" tabindex="0" href="#" data-footnote-fixed="true">
+      {{translator ($.language) "ui.btns.card" }}
+    </a>
+    <a aria-selected="false" data-rr-ui-dropdown-item="" class="dropdown-item" role="button" tabindex="0" href="#" data-footnote-fixed="true">
+      {{translator ($.language) "ui.btns.compact" }}
+    </a>
+  </div>
 </div>
 {{end}}

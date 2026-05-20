@@ -20,10 +20,12 @@
 package schema
 
 import (
+	"github.com/apache/answer/internal/base/reason"
 	"github.com/apache/answer/internal/base/validator"
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/pkg/converter"
 	"github.com/jinzhu/copier"
+	"github.com/segmentfault/pacman/errors"
 )
 
 // AddCommentReq add comment request
@@ -49,10 +51,19 @@ type AddCommentReq struct {
 	CanEdit bool `json:"-"`
 	// whether user can delete it
 	CanDelete bool `json:"-"`
+
+	IP        string `json:"-"`
+	UserAgent string `json:"-"`
 }
 
 func (req *AddCommentReq) Check() (errFields []*validator.FormErrorField, err error) {
 	req.ParsedText = converter.Markdown2HTML(req.OriginalText)
+	if req.ParsedText == "" {
+		return append(errFields, &validator.FormErrorField{
+			ErrorField: "original_text",
+			ErrorMsg:   reason.CommentContentCannotEmpty,
+		}), errors.BadRequest(reason.CommentContentCannotEmpty)
+	}
 	return nil, nil
 }
 
@@ -88,6 +99,12 @@ type UpdateCommentReq struct {
 
 func (req *UpdateCommentReq) Check() (errFields []*validator.FormErrorField, err error) {
 	req.ParsedText = converter.Markdown2HTML(req.OriginalText)
+	if req.ParsedText == "" {
+		return append(errFields, &validator.FormErrorField{
+			ErrorField: "original_text",
+			ErrorMsg:   reason.CommentContentCannotEmpty,
+		}), errors.BadRequest(reason.CommentContentCannotEmpty)
+	}
 	return nil, nil
 }
 
@@ -133,7 +150,8 @@ type GetCommentWithPageReq struct {
 	// query condition
 	QueryCond string `validate:"omitempty,oneof=vote created_at" form:"query_cond"`
 	// user id
-	UserID string `json:"-"`
+	UserID           string `json:"-"`
+	IsAdminModerator bool   `json:"-"`
 	// whether user can edit it
 	CanEdit bool `json:"-"`
 	// whether user can delete it
@@ -145,7 +163,8 @@ type GetCommentReq struct {
 	// object id
 	ID string `validate:"required" form:"id"`
 	// user id
-	UserID string `json:"-"`
+	UserID           string `json:"-"`
+	IsAdminModerator bool   `json:"-"`
 	// whether user can edit it
 	CanEdit bool `json:"-"`
 	// whether user can delete it

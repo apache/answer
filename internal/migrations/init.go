@@ -23,10 +23,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/apache/answer/internal/base/constant"
 	"time"
 
+	"github.com/apache/answer/internal/base/constant"
+
 	"github.com/apache/answer/internal/base/data"
+	"github.com/apache/answer/internal/repo/revision"
 	"github.com/apache/answer/internal/repo/unique"
 	"github.com/apache/answer/internal/schema"
 	"github.com/segmentfault/pacman/log"
@@ -49,14 +51,15 @@ func NewMentor(ctx context.Context, engine *xorm.Engine, data *InitNeedUserInput
 }
 
 type InitNeedUserInputData struct {
-	Language      string
-	SiteName      string
-	SiteURL       string
-	ContactEmail  string
-	AdminName     string
-	AdminPassword string
-	AdminEmail    string
-	LoginRequired bool
+	Language               string
+	SiteName               string
+	SiteURL                string
+	ContactEmail           string
+	AdminName              string
+	AdminPassword          string
+	AdminEmail             string
+	LoginRequired          bool
+	ExternalContentDisplay string
 }
 
 func (m *Mentor) InitDB() error {
@@ -71,15 +74,21 @@ func (m *Mentor) InitDB() error {
 	m.do("init role power rel", m.initRolePowerRel)
 	m.do("init admin user role rel", m.initAdminUserRoleRel)
 	m.do("init site info interface", m.initSiteInfoInterface)
+	m.do("init site info users settings", m.initSiteInfoUsersSettings)
 	m.do("init site info general config", m.initSiteInfoGeneralData)
 	m.do("init site info login config", m.initSiteInfoLoginConfig)
 	m.do("init site info theme config", m.initSiteInfoThemeConfig)
 	m.do("init site info seo config", m.initSiteInfoSEOConfig)
 	m.do("init site info user config", m.initSiteInfoUsersConfig)
 	m.do("init site info privilege rank", m.initSiteInfoPrivilegeRank)
-	m.do("init site info write", m.initSiteInfoWrite)
+	m.do("init site info write", m.initSiteInfoAdvanced)
+	m.do("init site info write", m.initSiteInfoQuestions)
+	m.do("init site info write", m.initSiteInfoTags)
+	m.do("init site info security", m.initSiteInfoSecurityConfig)
 	m.do("init default content", m.initDefaultContent)
 	m.do("init default badges", m.initDefaultBadges)
+	m.do("init default ai config", m.initSiteInfoAI)
+	m.do("init default MCP config", m.initSiteInfoMCP)
 	return m.err
 }
 
@@ -157,14 +166,46 @@ func (m *Mentor) initAdminUserRoleRel() {
 }
 
 func (m *Mentor) initSiteInfoInterface() {
+	now := time.Now()
+	zoneName, offset := now.In(time.Local).Zone()
+
+	localTimezone := "UTC"
+	for _, tz := range constant.Timezones {
+		loc, err := time.LoadLocation(tz)
+		if err != nil {
+			continue
+		}
+
+		tzNow := now.In(loc)
+		tzName, tzOffset := tzNow.Zone()
+
+		if tzName == zoneName && tzOffset == offset {
+			localTimezone = tz
+			break
+		}
+	}
+
 	interfaceData := map[string]string{
 		"language":  m.userData.Language,
-		"time_zone": "UTC",
+		"time_zone": localTimezone,
 	}
 	interfaceDataBytes, _ := json.Marshal(interfaceData)
 	_, m.err = m.engine.Context(m.ctx).Insert(&entity.SiteInfo{
-		Type:    "interface",
+		Type:    "interface_settings",
 		Content: string(interfaceDataBytes),
+		Status:  1,
+	})
+}
+
+func (m *Mentor) initSiteInfoUsersSettings() {
+	usersSettings := map[string]any{
+		"default_avatar":    "gravatar",
+		"gravatar_base_url": "https://www.gravatar.com/avatar/",
+	}
+	usersSettingsDataBytes, _ := json.Marshal(usersSettings)
+	_, m.err = m.engine.Context(m.ctx).Insert(&entity.SiteInfo{
+		Type:    "users_settings",
+		Content: string(usersSettingsDataBytes),
 		Status:  1,
 	})
 }
@@ -184,11 +225,10 @@ func (m *Mentor) initSiteInfoGeneralData() {
 }
 
 func (m *Mentor) initSiteInfoLoginConfig() {
-	loginConfig := map[string]bool{
+	loginConfig := map[string]any{
 		"allow_new_registrations":   true,
 		"allow_email_registrations": true,
 		"allow_password_login":      true,
-		"login_required":            m.userData.LoginRequired,
 	}
 	loginConfigDataBytes, _ := json.Marshal(loginConfig)
 	_, m.err = m.engine.Context(m.ctx).Insert(&entity.SiteInfo{
@@ -198,8 +238,22 @@ func (m *Mentor) initSiteInfoLoginConfig() {
 	})
 }
 
+func (m *Mentor) initSiteInfoSecurityConfig() {
+	securityConfig := map[string]any{
+		"login_required":           m.userData.LoginRequired,
+		"external_content_display": m.userData.ExternalContentDisplay,
+		"check_update":             true,
+	}
+	securityConfigDataBytes, _ := json.Marshal(securityConfig)
+	_, m.err = m.engine.Context(m.ctx).Insert(&entity.SiteInfo{
+		Type:    "security",
+		Content: string(securityConfigDataBytes),
+		Status:  1,
+	})
+}
+
 func (m *Mentor) initSiteInfoThemeConfig() {
-	themeConfig := `{"theme":"default","theme_config":{"default":{"navbar_style":"colored","primary_color":"#0033ff"}}}`
+	themeConfig := fmt.Sprintf(`{"theme":"default","theme_config":{"default":{"navbar_style":"#0033ff","primary_color":"#0033ff"}},"layout":"%s"}`, constant.ThemeLayoutFullWidth)
 	_, m.err = m.engine.Context(m.ctx).Insert(&entity.SiteInfo{
 		Type:    "theme",
 		Content: themeConfig,
@@ -208,7 +262,7 @@ func (m *Mentor) initSiteInfoThemeConfig() {
 }
 
 func (m *Mentor) initSiteInfoSEOConfig() {
-	seoData := map[string]interface{}{
+	seoData := map[string]any{
 		"permalink": constant.PermalinkQuestionID,
 		"robots":    defaultSEORobotTxt + m.userData.SiteURL + "/sitemap.xml",
 	}
@@ -240,7 +294,7 @@ func (m *Mentor) initSiteInfoUsersConfig() {
 }
 
 func (m *Mentor) initSiteInfoPrivilegeRank() {
-	privilegeRankData := map[string]interface{}{
+	privilegeRankData := map[string]any{
 		"level": schema.PrivilegeLevel2,
 	}
 	privilegeRankDataBytes, _ := json.Marshal(privilegeRankData)
@@ -251,24 +305,53 @@ func (m *Mentor) initSiteInfoPrivilegeRank() {
 	})
 }
 
-func (m *Mentor) initSiteInfoWrite() {
-	writeData := map[string]interface{}{
-		"restrict_answer":       true,
-		"max_image_size":        4,
-		"max_attachment_size":   8,
-		"max_image_megapixel":   40,
-		"authorized_extensions": []string{"jpg", "jpeg", "png", "gif", "webp"},
+func (m *Mentor) initSiteInfoAdvanced() {
+	advancedData := map[string]any{
+		"max_image_size":                   4,
+		"max_attachment_size":              8,
+		"max_image_megapixel":              40,
+		"authorized_image_extensions":      []string{"jpg", "jpeg", "png", "gif", "webp"},
+		"authorized_attachment_extensions": []string{},
 	}
-	writeDataBytes, _ := json.Marshal(writeData)
+	advancedDataBytes, _ := json.Marshal(advancedData)
 	_, m.err = m.engine.Context(m.ctx).Insert(&entity.SiteInfo{
-		Type:    "write",
-		Content: string(writeDataBytes),
+		Type:    "advanced",
+		Content: string(advancedDataBytes),
+		Status:  1,
+	})
+}
+
+func (m *Mentor) initSiteInfoQuestions() {
+	questionsData := map[string]any{
+		"min_tags":        1,
+		"min_content":     6,
+		"restrict_answer": true,
+	}
+	questionsDataBytes, _ := json.Marshal(questionsData)
+	_, m.err = m.engine.Context(m.ctx).Insert(&entity.SiteInfo{
+		Type:    "questions",
+		Content: string(questionsDataBytes),
+		Status:  1,
+	})
+}
+
+func (m *Mentor) initSiteInfoTags() {
+	tagsData := map[string]any{
+		"required_tag":   false,
+		"recommend_tags": []string{},
+		"reserved_tags":  []string{},
+	}
+	tagsDataBytes, _ := json.Marshal(tagsData)
+	_, m.err = m.engine.Context(m.ctx).Insert(&entity.SiteInfo{
+		Type:    "tags",
+		Content: string(tagsDataBytes),
 		Status:  1,
 	})
 }
 
 func (m *Mentor) initDefaultContent() {
 	uniqueIDRepo := unique.NewUniqueIDRepo(&data.Data{DB: m.engine})
+	revisionRepo := revision.NewRevisionRepo(&data.Data{DB: m.engine}, uniqueIDRepo)
 	now := time.Now()
 
 	tagId, err := uniqueIDRepo.GenUniqueIDStr(m.ctx, entity.Tag{}.TableName())
@@ -301,7 +384,7 @@ func (m *Mentor) initDefaultContent() {
 		return
 	}
 
-	tag := entity.Tag{
+	tag := &entity.Tag{
 		ID:            tagId,
 		SlugName:      "support",
 		DisplayName:   "support",
@@ -377,13 +460,71 @@ func (m *Mentor) initDefaultContent() {
 	if m.err != nil {
 		return
 	}
+	tagContent, err := json.Marshal(tag)
+	if err != nil {
+		m.err = err
+		return
+	}
+	m.err = revisionRepo.AddRevision(m.ctx, &entity.Revision{
+		UserID:   tag.UserID,
+		ObjectID: tag.ID,
+		Title:    tag.SlugName,
+		Content:  string(tagContent),
+		Status:   entity.RevisionReviewPassStatus,
+	}, true)
+	if m.err != nil {
+		return
+	}
+	tagForRevision := &entity.TagSimpleInfoForRevision{
+		ID:              tag.ID,
+		MainTagID:       tag.MainTagID,
+		MainTagSlugName: tag.MainTagSlugName,
+		SlugName:        tag.SlugName,
+		DisplayName:     tag.DisplayName,
+		Recommend:       tag.Recommend,
+		Reserved:        tag.Reserved,
+		RevisionID:      tag.RevisionID,
+	}
 
 	_, m.err = m.engine.Context(m.ctx).Insert(q1)
 	if m.err != nil {
 		return
 	}
+	q1Revision := &entity.QuestionWithTagsRevision{
+		Question: *q1,
+		Tags:     []*entity.TagSimpleInfoForRevision{tagForRevision},
+	}
+	q1Content, err := json.Marshal(q1Revision)
+	if err != nil {
+		m.err = err
+		return
+	}
+	m.err = revisionRepo.AddRevision(m.ctx, &entity.Revision{
+		UserID:   q1.UserID,
+		ObjectID: q1.ID,
+		Title:    q1.Title,
+		Content:  string(q1Content),
+		Status:   entity.RevisionReviewPassStatus,
+	}, true)
+	if m.err != nil {
+		return
+	}
 
 	_, m.err = m.engine.Context(m.ctx).Insert(a1)
+	if m.err != nil {
+		return
+	}
+	a1Content, err := json.Marshal(a1)
+	if err != nil {
+		m.err = err
+		return
+	}
+	m.err = revisionRepo.AddRevision(m.ctx, &entity.Revision{
+		UserID:   a1.UserID,
+		ObjectID: a1.ID,
+		Content:  string(a1Content),
+		Status:   entity.RevisionReviewPassStatus,
+	}, true)
 	if m.err != nil {
 		return
 	}
@@ -401,8 +542,41 @@ func (m *Mentor) initDefaultContent() {
 	if m.err != nil {
 		return
 	}
+	q2Revision := &entity.QuestionWithTagsRevision{
+		Question: *q2,
+		Tags:     []*entity.TagSimpleInfoForRevision{tagForRevision},
+	}
+	q2Content, err := json.Marshal(q2Revision)
+	if err != nil {
+		m.err = err
+		return
+	}
+	m.err = revisionRepo.AddRevision(m.ctx, &entity.Revision{
+		UserID:   q2.UserID,
+		ObjectID: q2.ID,
+		Title:    q2.Title,
+		Content:  string(q2Content),
+		Status:   entity.RevisionReviewPassStatus,
+	}, true)
+	if m.err != nil {
+		return
+	}
 
 	_, m.err = m.engine.Context(m.ctx).Insert(a2)
+	if m.err != nil {
+		return
+	}
+	a2Content, err := json.Marshal(a2)
+	if err != nil {
+		m.err = err
+		return
+	}
+	m.err = revisionRepo.AddRevision(m.ctx, &entity.Revision{
+		UserID:   a2.UserID,
+		ObjectID: a2.ID,
+		Content:  string(a2Content),
+		Status:   entity.RevisionReviewPassStatus,
+	}, true)
 	if m.err != nil {
 		return
 	}
@@ -433,5 +607,30 @@ func (m *Mentor) initDefaultBadges() {
 			return
 		}
 	}
-	return
+}
+
+func (m *Mentor) initSiteInfoAI() {
+	content := &schema.SiteAIReq{
+		PromptConfig: &schema.AIPromptConfig{
+			ZhCN: constant.DefaultAIPromptConfigZhCN,
+			EnUS: constant.DefaultAIPromptConfigEnUS,
+		},
+	}
+	writeDataBytes, _ := json.Marshal(content)
+	_, m.err = m.engine.Context(m.ctx).Insert(&entity.SiteInfo{
+		Type:    constant.SiteTypeAI,
+		Content: string(writeDataBytes),
+		Status:  1,
+	})
+}
+func (m *Mentor) initSiteInfoMCP() {
+	content := &schema.SiteMCPReq{
+		Enabled: true,
+	}
+	writeDataBytes, _ := json.Marshal(content)
+	_, m.err = m.engine.Context(m.ctx).Insert(&entity.SiteInfo{
+		Type:    constant.SiteTypeMCP,
+		Content: string(writeDataBytes),
+		Status:  1,
+	})
 }

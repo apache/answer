@@ -48,7 +48,7 @@ func NewLangController(tr i18n.Translator, siteInfoService siteinfo_common.SiteI
 // @Success 200 {object} handler.RespBody{}
 // @Router /answer/api/v1/language/config [get]
 func (u *LangController) GetLangMapping(ctx *gin.Context) {
-	data, _ := u.translator.Dump(handler.GetLang(ctx))
+	data, _ := u.translator.Dump(handler.GetLangByCtx(ctx))
 	var resp map[string]any
 	_ = json.Unmarshal(data, &resp)
 	handler.HandleResponse(ctx, nil, resp)
@@ -57,6 +57,7 @@ func (u *LangController) GetLangMapping(ctx *gin.Context) {
 // GetAdminLangOptions Get language options
 // @Summary Get language options
 // @Description Get language options
+// @Security ApiKeyAuth
 // @Tags Lang
 // @Produce json
 // @Success 200 {object} handler.RespBody{}

@@ -120,7 +120,10 @@ const Index: FC<IProps> = ({ refreshCount }) => {
     }
 
     setTimeout(() => {
-      htmlRender(ref.current);
+      htmlRender(ref.current, {
+        copySuccessText: t('copied', { keyPrefix: 'messages' }),
+        copyText: t('copy', { keyPrefix: 'messages' }),
+      });
     }, 70);
   }, [ref.current]);
 

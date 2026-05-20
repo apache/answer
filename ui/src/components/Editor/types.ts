@@ -24,6 +24,9 @@ export interface Position {
   line: number;
   sticky?: string | undefined;
 }
+
+export type Level = 1 | 2 | 3 | 4 | 5 | 6;
+
 export interface ExtendEditor {
   addKeyMap: (keyMap: Record<string, Command>) => void;
   on: (
@@ -53,16 +56,48 @@ export interface ExtendEditor {
   getSelection: () => string;
   replaceSelection: (value: string) => void;
   focus: () => void;
+  getCursor: () => Position;
+  replaceRange: (value: string, from: Position, to: Position) => void;
+  setSelection: (anchor: Position, head?: Position) => void;
+  setReadOnly: (readOnly: boolean) => void;
+
   wrapText: (before: string, after?: string, defaultText?: string) => void;
   replaceLines: (
     replace: Parameters<Array<string>['map']>[0],
     symbolLen?: number,
   ) => void;
   appendBlock: (content: string) => void;
-  getCursor: () => Position;
-  replaceRange: (value: string, from: Position, to: Position) => void;
-  setSelection: (anchor: Position, head?: Position) => void;
-  setReadOnly: (readOnly: boolean) => void;
+
+  insertBold: (text?: string) => void;
+  insertItalic: (text?: string) => void;
+  insertCode: (text?: string) => void;
+  insertStrikethrough: (text?: string) => void;
+
+  insertHeading: (level: Level, text?: string) => void;
+  insertBlockquote: (text?: string) => void;
+  insertCodeBlock: (language?: string, code?: string) => void;
+  insertHorizontalRule: () => void;
+
+  insertOrderedList: () => void;
+  insertUnorderedList: () => void;
+  toggleOrderedList: () => void;
+  toggleUnorderedList: () => void;
+
+  insertLink: (url: string, text?: string) => void;
+  insertImage: (url: string, alt?: string) => void;
+
+  insertTable: (rows?: number, cols?: number) => void;
+
+  indent: () => void;
+  outdent: () => void;
+
+  isBold: () => boolean;
+  isItalic: () => boolean;
+  isHeading: (level?: number) => boolean;
+  isBlockquote: () => boolean;
+  isCodeBlock: () => boolean;
+  isOrderedList: () => boolean;
+  isUnorderedList: () => boolean;
 }
 
 export type Editor = EditorView & ExtendEditor;
@@ -72,9 +107,12 @@ export interface CodeMirrorEditor extends Editor {
   moduleType;
 }
 
-export interface IEditorContext {
-  editor: Editor;
-  wrapText?;
-  replaceLines?;
-  appendBlock?;
+export interface BaseEditorProps {
+  value: string;
+  onChange?: (value: string) => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
+  placeholder?: string;
+  autoFocus?: boolean;
+  onEditorReady?: (editor: Editor) => void;
 }

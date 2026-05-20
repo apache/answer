@@ -36,7 +36,16 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
 
   const checkValidated = (): boolean => {
     let bol = true;
-    const { site_name, site_url, contact_email, name, password, email } = data;
+    const {
+      site_name,
+      site_url,
+      confirm_password,
+      contact_email,
+      name,
+      password,
+      email,
+    } = data;
+    const nameRegex = /^[\w.-\s]{2,30}$/;
 
     if (!site_name.value) {
       bol = false;
@@ -49,7 +58,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
 
     if (site_name.value && site_name.value.length > 30) {
       bol = false;
-      data.site_url = {
+      data.site_name = {
         value: site_name.value,
         isInvalid: true,
         errorMsg: t('site_name.msg_max_length'),
@@ -61,7 +70,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
       data.site_url = {
         value: '',
         isInvalid: true,
-        errorMsg: t('site_name.msg.empty'),
+        errorMsg: t('site_url.msg.empty'),
       };
     }
 
@@ -107,19 +116,19 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
         isInvalid: true,
         errorMsg: t('admin_name.msg'),
       };
-    } else if (/[^a-z0-9\-._]/.test(name.value)) {
+    } else if (name.value.length < 2 || name.value.length > 30) {
+      bol = false;
+      data.name = {
+        value: name.value,
+        isInvalid: true,
+        errorMsg: t('admin_name.msg_max_length'),
+      };
+    } else if (!nameRegex.test(name.value)) {
       bol = false;
       data.name = {
         value: name.value,
         isInvalid: true,
         errorMsg: t('admin_name.character'),
-      };
-    } else if (data.name.value.length > 30) {
-      bol = false;
-      data.name = {
-        value: data.name.value,
-        isInvalid: true,
-        errorMsg: t('admin_name.msg_max_length'),
       };
     }
 
@@ -147,6 +156,15 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
         value: data.password.value,
         isInvalid: true,
         errorMsg: t('admin_password.msg_max_length'),
+      };
+    }
+
+    if (confirm_password.value !== password.value) {
+      bol = false;
+      data.confirm_password = {
+        value: '',
+        isInvalid: true,
+        errorMsg: t('admin_confirm_password.msg'),
       };
     }
 
@@ -250,7 +268,7 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
           {data.contact_email.errorMsg}
         </Form.Control.Feedback>
       </Form.Group>
-
+      <h5>{t('login_required.label')}</h5>
       <Form.Group controlId="login_required" className="mb-3">
         <Form.Label>{t('login_required.label')}</Form.Label>
         <Form.Check
@@ -269,6 +287,36 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
           }}
         />
         <Form.Text>{t('login_required.text')}</Form.Text>
+      </Form.Group>
+      <Form.Group controlId="external_content_display" className="mb-3">
+        <Form.Label>
+          {t('external_content_display.label', { keyPrefix: 'admin.legal' })}
+        </Form.Label>
+        <Form.Select
+          value={data.external_content_display.value}
+          onChange={(e) => {
+            changeCallback({
+              external_content_display: {
+                value: e.target.value,
+                isInvalid: false,
+                errorMsg: '',
+              },
+            });
+          }}>
+          <option value="always_display">
+            {t('external_content_display.always_display', {
+              keyPrefix: 'admin.legal',
+            })}
+          </option>
+          <option value="ask_before_display">
+            {t('external_content_display.ask_before_display', {
+              keyPrefix: 'admin.legal',
+            })}
+          </option>
+        </Form.Select>
+        <Form.Text>
+          {t('external_content_display.text', { keyPrefix: 'admin.legal' })}
+        </Form.Text>
       </Form.Group>
 
       <h5>{t('admin_account')}</h5>
@@ -313,6 +361,29 @@ const Index: FC<Props> = ({ visible, data, changeCallback, nextCallback }) => {
         <Form.Text>{t('admin_password.text')}</Form.Text>
         <Form.Control.Feedback type="invalid">
           {data.password.errorMsg}
+        </Form.Control.Feedback>
+      </Form.Group>
+
+      <Form.Group controlId="confirm_password" className="mb-3">
+        <Form.Label>{t('admin_confirm_password.label')}</Form.Label>
+        <Form.Control
+          required
+          type="password"
+          value={data.confirm_password.value}
+          isInvalid={data.confirm_password.isInvalid}
+          onChange={(e) => {
+            changeCallback({
+              confirm_password: {
+                value: e.target.value,
+                isInvalid: false,
+                errorMsg: '',
+              },
+            });
+          }}
+        />
+        <Form.Text>{t('admin_confirm_password.text')}</Form.Text>
+        <Form.Control.Feedback type="invalid">
+          {data.confirm_password.errorMsg}
         </Form.Control.Feedback>
       </Form.Group>
 
