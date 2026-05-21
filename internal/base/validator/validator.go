@@ -130,7 +130,7 @@ func NotBlank(fl validator.FieldLevel) (res bool) {
 		return true
 	case reflect.Chan, reflect.Map, reflect.Slice, reflect.Array:
 		return field.Len() > 0
-	case reflect.Pointer, reflect.Interface, reflect.Func:
+	case reflect.Ptr, reflect.Interface, reflect.Func:
 		return !field.IsNil()
 	default:
 		return field.IsValid() && field.Interface() != reflect.Zero(field.Type()).Interface()
@@ -147,7 +147,7 @@ func Sanitizer(fl validator.FieldLevel) (res bool) {
 		return true
 	case reflect.Chan, reflect.Map, reflect.Slice, reflect.Array:
 		return field.Len() > 0
-	case reflect.Pointer, reflect.Interface, reflect.Func:
+	case reflect.Ptr, reflect.Interface, reflect.Func:
 		return !field.IsNil()
 	default:
 		return field.IsValid() && field.Interface() != reflect.Zero(field.Type()).Interface()
