@@ -228,6 +228,8 @@ definitions:
         type: integer
       helpful:
         type: integer
+      reasoning_content:
+        type: string
       role:
         type: string
       unhelpful:
