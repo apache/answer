@@ -64,6 +64,7 @@ const Index: FC<IProps> = ({ visible, id, onClose }) => {
                   isLast={false}
                   isCompleted
                   content={item.content}
+                  reasoningContent={item.reasoning_content || ''}
                   actionData={{
                     helpful: item.helpful,
                     unhelpful: item.unhelpful,

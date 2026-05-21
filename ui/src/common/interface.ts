@@ -860,6 +860,7 @@ export interface AdminConversationListItem {
 export interface ConversationDetailItem {
   chat_completion_id: string;
   content: string;
+  reasoning_content?: string;
   role: string;
   helpful: number;
   unhelpful: number;
