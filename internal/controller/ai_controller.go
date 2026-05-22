@@ -43,6 +43,7 @@ import (
 	tagcommonser "github.com/apache/answer/internal/service/tag_common"
 	usercommon "github.com/apache/answer/internal/service/user_common"
 	"github.com/apache/answer/pkg/token"
+	"github.com/apache/answer/plugin"
 	"github.com/gin-gonic/gin"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/sashabaranov/go-openai"
@@ -672,7 +673,11 @@ func (c *AIController) sendErrorResponse(w http.ResponseWriter, id, model, error
 // getMCPTools
 func (c *AIController) getMCPTools() []openai.Tool {
 	openaiTools := make([]openai.Tool, 0)
+	vectorSearchEnabled := plugin.IsVectorSearchEnabled()
 	for _, mcpTool := range mcp_tools.MCPToolsList {
+		if mcpTool.Name == "semantic_search" && !vectorSearchEnabled {
+			continue
+		}
 		openaiTool := c.convertMCPToolToOpenAI(mcpTool)
 		openaiTools = append(openaiTools, openaiTool)
 	}
