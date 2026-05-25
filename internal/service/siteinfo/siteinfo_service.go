@@ -365,16 +365,52 @@ func (s *SiteInfoService) GetSiteAI(ctx context.Context) (resp *schema.SiteAIRes
 	return resp, nil
 }
 
+// GetAIPromptConfig get AI prompt configuration
+func (s *SiteInfoService) GetAIPromptConfig(ctx context.Context) (resp *schema.AIPromptConfig, err error) {
+	siteAI, err := s.siteInfoCommonService.GetSiteAI(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if siteAI.PromptConfig != nil {
+		return &schema.AIPromptConfig{
+			ZhCN: siteAI.PromptConfig.ZhCN,
+			EnUS: siteAI.PromptConfig.EnUS,
+		}, nil
+	}
+	return &schema.AIPromptConfig{
+		ZhCN: constant.DefaultAIPromptConfigZhCN,
+		EnUS: constant.DefaultAIPromptConfigEnUS,
+	}, nil
+}
+
+// SaveAIPromptConfig save AI prompt configuration
+func (s *SiteInfoService) SaveAIPromptConfig(ctx context.Context, req *schema.AIPromptConfig) (err error) {
+	siteAI, err := s.siteInfoCommonService.GetSiteAI(ctx)
+	if err != nil {
+		return err
+	}
+	siteAI.PromptConfig = req
+
+	content, _ := json.Marshal(siteAI)
+	siteInfo := &entity.SiteInfo{
+		Type:    constant.SiteTypeAI,
+		Content: string(content),
+		Status:  1,
+	}
+	return s.siteInfoRepo.SaveByType(ctx, constant.SiteTypeAI, siteInfo)
+}
+
 // SaveSiteAI save site AI configuration
 func (s *SiteInfoService) SaveSiteAI(ctx context.Context, req *schema.SiteAIReq) (err error) {
 	if err := s.restoreMaskedAIKeys(ctx, req); err != nil {
 		return err
 	}
 	if req.PromptConfig == nil {
-		req.PromptConfig = &schema.AIPromptConfig{
-			ZhCN: constant.DefaultAIPromptConfigZhCN,
-			EnUS: constant.DefaultAIPromptConfigEnUS,
+		promptConfig, err := s.GetAIPromptConfig(ctx)
+		if err != nil {
+			return err
 		}
+		req.PromptConfig = promptConfig
 	}
 
 	aiProvider, err := s.GetAIProvider(ctx)

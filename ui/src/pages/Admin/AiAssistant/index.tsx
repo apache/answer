@@ -22,7 +22,14 @@ import { Table, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 
-import { BaseUserCard, FormatTime, Pagination, Empty } from '@/components';
+import {
+  BaseUserCard,
+  FormatTime,
+  Pagination,
+  Empty,
+  TabNav,
+} from '@/components';
+import { ADMIN_AI_ASSISTANT_NAV_MENUS } from '@/common/constants';
 import { useQueryAdminConversationList } from '@/services';
 
 import DetailModal from './components/DetailModal';
@@ -65,6 +72,11 @@ const Index = () => {
   return (
     <div className="d-flex flex-column flex-grow-1 position-relative">
       <h3 className="mb-4">{t('ai_assistant', { keyPrefix: 'nav_menus' })}</h3>
+      <TabNav
+        menus={ADMIN_AI_ASSISTANT_NAV_MENUS}
+        i18nKeyPrefix="admin.conversations.tabs"
+      />
+
       <Table responsive="md">
         <thead>
           <tr>
@@ -111,7 +123,6 @@ const Index = () => {
       {!isLoading && Number(conversations?.count) <= 0 && (
         <Empty>{t('empty')}</Empty>
       )}
-
       <div className="mt-4 mb-2 d-flex justify-content-center">
         <Pagination
           currentPage={curPage}
@@ -119,6 +130,7 @@ const Index = () => {
           pageSize={PAGE_SIZE}
         />
       </div>
+
       <DetailModal
         visible={detailModal.visible}
         id={detailModal.id}

@@ -165,6 +165,11 @@ export const ADMIN_QA_NAV_MENUS = [
   { name: 'settings', path: '/admin/qa/settings' },
 ];
 
+export const ADMIN_AI_ASSISTANT_NAV_MENUS = [
+  { name: 'conversations', path: '/admin/ai-assistant' },
+  { name: 'settings', path: '/admin/ai-assistant/settings' },
+];
+
 export const ADMIN_TAGS_NAV_MENUS = [
   // { name: 'tags', path: '/admin/tags' },
   {
