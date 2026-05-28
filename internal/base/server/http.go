@@ -52,6 +52,7 @@ func NewHTTPServer(debug bool,
 		gin.SetMode(gin.ReleaseMode)
 	}
 	r := gin.New()
+	r.Use(middleware.Recovery())
 	r.Use(func(ctx *gin.Context) {
 		if strings.Contains(ctx.Request.URL.Path, "/chat/completions") {
 			return
