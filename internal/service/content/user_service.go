@@ -26,6 +26,7 @@ import (
 	"time"
 
 	"github.com/apache/answer/internal/service/eventqueue"
+	"github.com/apache/answer/internal/service/user_anonymity_config"
 	"github.com/apache/answer/pkg/token"
 
 	"github.com/apache/answer/internal/base/constant"
@@ -67,6 +68,7 @@ type UserService struct {
 	userExternalLoginService      *user_external_login.UserExternalLoginService
 	userNotificationConfigRepo    user_notification_config.UserNotificationConfigRepo
 	userNotificationConfigService *user_notification_config.UserNotificationConfigService
+	userAnonymityConfigService    *user_anonymity_config.UserAnonymityConfigService
 	questionService               *questioncommon.QuestionCommon
 	eventQueueService             eventqueue.Service
 	fileRecordService             *file_record.FileRecordService
@@ -83,6 +85,7 @@ func NewUserService(userRepo usercommon.UserRepo,
 	userExternalLoginService *user_external_login.UserExternalLoginService,
 	userNotificationConfigRepo user_notification_config.UserNotificationConfigRepo,
 	userNotificationConfigService *user_notification_config.UserNotificationConfigService,
+	userAnonymityConfigService *user_anonymity_config.UserAnonymityConfigService,
 	questionService *questioncommon.QuestionCommon,
 	eventQueueService eventqueue.Service,
 	fileRecordService *file_record.FileRecordService,
@@ -99,6 +102,7 @@ func NewUserService(userRepo usercommon.UserRepo,
 		userExternalLoginService:      userExternalLoginService,
 		userNotificationConfigRepo:    userNotificationConfigRepo,
 		userNotificationConfigService: userNotificationConfigService,
+		userAnonymityConfigService:    userAnonymityConfigService,
 		questionService:               questionService,
 		eventQueueService:             eventQueueService,
 		fileRecordService:             fileRecordService,
@@ -477,6 +481,9 @@ func (us *UserService) UserRegisterByEmail(ctx context.Context, registerUserInfo
 	}
 	if err := us.userNotificationConfigService.SetDefaultUserNotificationConfig(ctx, []string{userInfo.ID}); err != nil {
 		log.Errorf("set default user notification config failed, err: %v", err)
+	}
+	if err := us.userAnonymityConfigService.SetDefaultUserAnonymityConfig(ctx, []string{userInfo.ID}); err != nil {
+		log.Errorf("set default user anonymity config failed, err: %v", err)
 	}
 
 	// send email

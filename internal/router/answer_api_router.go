@@ -290,6 +290,8 @@ func (a *AnswerAPIRouter) RegisterAnswerAPIRouter(r *gin.RouterGroup) {
 	r.PUT("/user/interface", a.userController.UserUpdateInterface)
 	r.GET("/user/notification/config", a.userController.GetUserNotificationConfig)
 	r.PUT("/user/notification/config", a.userController.UpdateUserNotificationConfig)
+	r.GET("user/anonymity/config", a.userController.GetUserAnonymityConfig)
+	r.PUT("user/anonymity/config", a.userController.UpdateUserAnonymityConfig)
 	r.GET("/user/info/search", a.userController.SearchUserListByName)
 
 	// vote

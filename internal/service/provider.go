@@ -64,6 +64,7 @@ import (
 	tagcommon "github.com/apache/answer/internal/service/tag_common"
 	"github.com/apache/answer/internal/service/uploader"
 	"github.com/apache/answer/internal/service/user_admin"
+	"github.com/apache/answer/internal/service/user_anonymity_config"
 	usercommon "github.com/apache/answer/internal/service/user_common"
 	"github.com/apache/answer/internal/service/user_external_login"
 	"github.com/apache/answer/internal/service/user_notification_config"
@@ -121,6 +122,7 @@ var ProviderSetService = wire.NewSet(
 	activityqueue.NewService,
 	user_notification_config.NewUserNotificationConfigService,
 	notification.NewExternalNotificationService,
+	user_anonymity_config.NewUserAnonymityConfigService,
 	noticequeue.NewExternalService,
 	review.NewReviewService,
 	meta.NewMetaService,

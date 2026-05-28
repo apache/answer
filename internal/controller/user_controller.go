@@ -35,6 +35,7 @@ import (
 	"github.com/apache/answer/internal/service/content"
 	"github.com/apache/answer/internal/service/export"
 	"github.com/apache/answer/internal/service/siteinfo_common"
+	"github.com/apache/answer/internal/service/user_anonymity_config"
 	"github.com/apache/answer/internal/service/user_notification_config"
 	"github.com/apache/answer/pkg/checker"
 	"github.com/gin-gonic/gin"
@@ -50,6 +51,7 @@ type UserController struct {
 	emailService                  *export.EmailService
 	siteInfoCommonService         siteinfo_common.SiteInfoCommonService
 	userNotificationConfigService *user_notification_config.UserNotificationConfigService
+	userAnonymityConfigService    *user_anonymity_config.UserAnonymityConfigService
 }
 
 // NewUserController new controller
@@ -60,6 +62,7 @@ func NewUserController(
 	emailService *export.EmailService,
 	siteInfoCommonService siteinfo_common.SiteInfoCommonService,
 	userNotificationConfigService *user_notification_config.UserNotificationConfigService,
+	userAnonymityConfigService *user_anonymity_config.UserAnonymityConfigService,
 ) *UserController {
 	return &UserController{
 		authService:                   authService,
@@ -68,6 +71,7 @@ func NewUserController(
 		emailService:                  emailService,
 		siteInfoCommonService:         siteInfoCommonService,
 		userNotificationConfigService: userNotificationConfigService,
+		userAnonymityConfigService:    userAnonymityConfigService,
 	}
 }
 
@@ -544,6 +548,42 @@ func (uc *UserController) UpdateUserNotificationConfig(ctx *gin.Context) {
 
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
 	err := uc.userNotificationConfigService.UpdateUserNotificationConfig(ctx, req)
+	handler.HandleResponse(ctx, err, nil)
+}
+
+// GetUserAnonymityConfig get user's anonymity config
+// @Summary get user's anonymity config
+// @Description get user's anonymity config
+// @Tags User
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Success 200 {object} handler.RespBody{data=schema.GetUserAnonymityConfigResp}
+// @Router /answer/api/v1/user/anonymity/config [post]
+func (uc *UserController) GetUserAnonymityConfig(ctx *gin.Context) {
+	userID := middleware.GetLoginUserIDFromContext(ctx)
+	resp, err := uc.userAnonymityConfigService.GetUserAnonymityConfig(ctx, userID)
+	handler.HandleResponse(ctx, err, resp)
+}
+
+// UpdateUserAnonymityConfig update user's anonymity config
+// @Summary update user's anonymity config
+// @Description update user's anonymity config
+// @Tags User
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param data body schema.UpdateUserAnonymityConfigReq true "UpdateUserAnonymityConfigReq"
+// @Success 200 {object} handler.RespBody{}
+// @Router /answer/api/v1/user/anonymity/config [put]
+func (uc *UserController) UpdateUserAnonymityConfig(ctx *gin.Context) {
+	req := &schema.UpdateUserAnonymityConfigReq{}
+	if handler.BindAndCheck(ctx, req) {
+		return
+	}
+
+	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
+	err := uc.userAnonymityConfigService.UpdateUserAnonymityConfig(ctx, req)
 	handler.HandleResponse(ctx, err, nil)
 }
 

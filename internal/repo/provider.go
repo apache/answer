@@ -53,6 +53,7 @@ import (
 	"github.com/apache/answer/internal/repo/tag_common"
 	"github.com/apache/answer/internal/repo/unique"
 	"github.com/apache/answer/internal/repo/user"
+	"github.com/apache/answer/internal/repo/user_anonymity_config"
 	"github.com/apache/answer/internal/repo/user_external_login"
 	"github.com/apache/answer/internal/repo/user_notification_config"
 	"github.com/google/wire"
@@ -103,6 +104,7 @@ var ProviderSetRepo = wire.NewSet(
 	user_external_login.NewUserExternalLoginRepo,
 	plugin_config.NewPluginConfigRepo,
 	user_notification_config.NewUserNotificationConfigRepo,
+	user_anonymity_config.NewUserAnonymityConfigRepo,
 	limit.NewRateLimitRepo,
 	plugin_config.NewPluginUserConfigRepo,
 	review.NewReviewRepo,

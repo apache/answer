@@ -79,6 +79,8 @@ var (
 		&entity.APIKey{},
 		&entity.AIConversation{},
 		&entity.AIConversationRecord{},
+		&entity.FakeUsername{},
+		&entity.UserAnonymityConfig{},
 	}
 
 	roles = []*entity.Role{
