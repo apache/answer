@@ -26,6 +26,7 @@ import (
 	"time"
 
 	"github.com/apache/answer/internal/service/eventqueue"
+	"github.com/apache/answer/internal/service/fake_username"
 	"github.com/apache/answer/plugin"
 
 	"github.com/apache/answer/internal/base/constant"
@@ -93,6 +94,7 @@ type QuestionService struct {
 	configService                    *config.ConfigService
 	eventQueueService                eventqueue.Service
 	reviewRepo                       review.ReviewRepo
+	fakeUsernameService              *fake_username.FakeUsernameService
 }
 
 func NewQuestionService(
@@ -119,6 +121,7 @@ func NewQuestionService(
 	configService *config.ConfigService,
 	eventQueueService eventqueue.Service,
 	reviewRepo review.ReviewRepo,
+	fakeUsernameService *fake_username.FakeUsernameService,
 ) *QuestionService {
 	return &QuestionService{
 		activityRepo:                     activityRepo,
@@ -144,6 +147,7 @@ func NewQuestionService(
 		configService:                    configService,
 		eventQueueService:                eventQueueService,
 		reviewRepo:                       reviewRepo,
+		fakeUsernameService:              fakeUsernameService,
 	}
 }
 
@@ -386,6 +390,11 @@ func (qs *QuestionService) AddQuestion(ctx context.Context, req *schema.Question
 	if err != nil {
 		return
 	}
+
+	if err := qs.fakeUsernameService.AddFakeUsernameIfNeeded(ctx, req.UserID, question.ID); err != nil {
+		return nil, err
+	}
+
 	question.Status = qs.reviewService.AddQuestionReview(ctx, question, req.Tags, req.IP, req.UserAgent)
 	if err := qs.questionRepo.UpdateQuestionStatus(ctx, question.ID, question.Status); err != nil {
 		return nil, err

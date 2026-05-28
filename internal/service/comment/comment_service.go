@@ -23,6 +23,7 @@ import (
 	"context"
 
 	"github.com/apache/answer/internal/service/eventqueue"
+	"github.com/apache/answer/internal/service/fake_username"
 	"github.com/apache/answer/internal/service/review"
 
 	"time"
@@ -93,6 +94,7 @@ type CommentService struct {
 	activityQueueService             activityqueue.Service
 	eventQueueService                eventqueue.Service
 	reviewService                    *review.ReviewService
+	fakeUsernameService              *fake_username.FakeUsernameService
 }
 
 // NewCommentService new comment service
@@ -109,6 +111,7 @@ func NewCommentService(
 	activityQueueService activityqueue.Service,
 	eventQueueService eventqueue.Service,
 	reviewService *review.ReviewService,
+	fakeUsernameService *fake_username.FakeUsernameService,
 ) *CommentService {
 	return &CommentService{
 		commentRepo:                      commentRepo,
@@ -123,6 +126,7 @@ func NewCommentService(
 		activityQueueService:             activityQueueService,
 		eventQueueService:                eventQueueService,
 		reviewService:                    reviewService,
+		fakeUsernameService:              fakeUsernameService,
 	}
 }
 
@@ -164,6 +168,10 @@ func (cs *CommentService) AddComment(ctx context.Context, req *schema.AddComment
 
 	err = cs.commentRepo.AddComment(ctx, comment)
 	if err != nil {
+		return nil, err
+	}
+
+	if err := cs.fakeUsernameService.AddFakeUsernameIfNeeded(ctx, req.UserID, objInfo.QuestionID); err != nil {
 		return nil, err
 	}
 

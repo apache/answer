@@ -35,6 +35,7 @@ import (
 	"github.com/apache/answer/internal/repo/comment"
 	"github.com/apache/answer/internal/repo/config"
 	"github.com/apache/answer/internal/repo/export"
+	"github.com/apache/answer/internal/repo/fake_username"
 	"github.com/apache/answer/internal/repo/file_record"
 	"github.com/apache/answer/internal/repo/limit"
 	"github.com/apache/answer/internal/repo/meta"
@@ -105,6 +106,7 @@ var ProviderSetRepo = wire.NewSet(
 	plugin_config.NewPluginConfigRepo,
 	user_notification_config.NewUserNotificationConfigRepo,
 	user_anonymity_config.NewUserAnonymityConfigRepo,
+	fake_username.NewFakeUsernameRepo,
 	limit.NewRateLimitRepo,
 	plugin_config.NewPluginUserConfigRepo,
 	review.NewReviewRepo,

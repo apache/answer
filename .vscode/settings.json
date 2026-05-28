@@ -4,6 +4,18 @@
   ],
   "explorer.autoReveal": "focusNoScroll",
   "cSpell.words": [
-    "grecaptcha"
+    "activityqueue",
+    "answercommon",
+    "collectioncommon",
+    "errorlist",
+    "grecaptcha",
+    "metacommon",
+    "noticequeue",
+    "questioncommon",
+    "siteinfo",
+    "tagcommon",
+    "tagerr",
+    "taglist",
+    "usercommon"
   ]
 }

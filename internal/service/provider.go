@@ -38,6 +38,7 @@ import (
 	"github.com/apache/answer/internal/service/dashboard"
 	"github.com/apache/answer/internal/service/eventqueue"
 	"github.com/apache/answer/internal/service/export"
+	"github.com/apache/answer/internal/service/fake_username"
 	"github.com/apache/answer/internal/service/feature_toggle"
 	"github.com/apache/answer/internal/service/file_record"
 	"github.com/apache/answer/internal/service/follow"
@@ -123,6 +124,8 @@ var ProviderSetService = wire.NewSet(
 	user_notification_config.NewUserNotificationConfigService,
 	notification.NewExternalNotificationService,
 	user_anonymity_config.NewUserAnonymityConfigService,
+	fake_username.NewFakeUsernameService,
+	fake_username.NewFakeUsernameGenerator,
 	noticequeue.NewExternalService,
 	review.NewReviewService,
 	meta.NewMetaService,

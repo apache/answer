@@ -27,6 +27,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/apache/answer/internal/service/fake_username"
 	"github.com/apache/answer/internal/service/siteinfo_common"
 
 	"github.com/apache/answer/internal/base/constant"
@@ -106,6 +107,7 @@ type QuestionCommon struct {
 	activityQueueService activityqueue.Service
 	revisionRepo         revision.RevisionRepo
 	siteInfoService      siteinfo_common.SiteInfoCommonService
+	fakeUsernameService  *fake_username.FakeUsernameService
 	data                 *data.Data
 }
 
@@ -122,6 +124,7 @@ func NewQuestionCommon(questionRepo QuestionRepo,
 	activityQueueService activityqueue.Service,
 	revisionRepo revision.RevisionRepo,
 	siteInfoService siteinfo_common.SiteInfoCommonService,
+	fakeUsernameService *fake_username.FakeUsernameService,
 	data *data.Data,
 ) *QuestionCommon {
 	return &QuestionCommon{
@@ -138,6 +141,7 @@ func NewQuestionCommon(questionRepo QuestionRepo,
 		activityQueueService: activityQueueService,
 		revisionRepo:         revisionRepo,
 		siteInfoService:      siteInfoService,
+		fakeUsernameService:  fakeUsernameService,
 		data:                 data,
 	}
 }
@@ -464,6 +468,7 @@ func (qs *QuestionCommon) FormatQuestionsPage(
 	return formattedQuestions, nil
 }
 
+// TODO WITH BATCH!!!
 func (qs *QuestionCommon) FormatQuestions(ctx context.Context, questionList []*entity.Question, loginUserID string) ([]*schema.QuestionInfoResp, error) {
 	list := make([]*schema.QuestionInfoResp, 0)
 	objectIds := make([]string, 0)

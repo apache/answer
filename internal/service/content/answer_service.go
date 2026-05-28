@@ -25,6 +25,7 @@ import (
 	"time"
 
 	"github.com/apache/answer/internal/service/eventqueue"
+	"github.com/apache/answer/internal/service/fake_username"
 
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/reason"
@@ -70,6 +71,7 @@ type AnswerService struct {
 	activityQueueService             activityqueue.Service
 	reviewService                    *review.ReviewService
 	eventQueueService                eventqueue.Service
+	fakeUsernameService              *fake_username.FakeUsernameService
 }
 
 func NewAnswerService(
@@ -90,6 +92,7 @@ func NewAnswerService(
 	activityQueueService activityqueue.Service,
 	reviewService *review.ReviewService,
 	eventQueueService eventqueue.Service,
+	fakeUsernameService *fake_username.FakeUsernameService,
 ) *AnswerService {
 	return &AnswerService{
 		answerRepo:                       answerRepo,
@@ -109,6 +112,7 @@ func NewAnswerService(
 		activityQueueService:             activityQueueService,
 		reviewService:                    reviewService,
 		eventQueueService:                eventQueueService,
+		fakeUsernameService:              fakeUsernameService,
 	}
 }
 
@@ -267,6 +271,11 @@ func (as *AnswerService) Insert(ctx context.Context, req *schema.AnswerAddReq) (
 	if err = as.answerRepo.AddAnswer(ctx, insertData); err != nil {
 		return "", err
 	}
+
+	if err := as.fakeUsernameService.AddFakeUsernameIfNeeded(ctx, req.UserID, req.QuestionID); err != nil {
+		return "", err
+	}
+
 	insertData.Status = as.reviewService.AddAnswerReview(ctx, insertData, req.IP, req.UserAgent)
 	if err := as.answerRepo.UpdateAnswerStatus(ctx, insertData.ID, insertData.Status); err != nil {
 		return "", err
