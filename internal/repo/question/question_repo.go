@@ -185,6 +185,12 @@ func (qr *questionRepo) DeletePermanentlyQuestions(ctx context.Context) (err err
 		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
 
+	// delete all fake usernames permanently
+	_, err = qr.data.DB.Context(ctx).In("question_id", ids).Delete(&entity.FakeUsername{})
+	if err != nil {
+		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+
 	_, err = qr.data.DB.Context(ctx).Where("status = ?", entity.QuestionStatusDeleted).Delete(&entity.Question{})
 	if err != nil {
 		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()

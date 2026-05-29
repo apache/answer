@@ -3,7 +3,7 @@ package schema
 import "github.com/apache/answer/internal/entity"
 
 type UserAnonymityConfig struct {
-	Enabled bool `validate:"required" json:"enabled"`
+	Enabled bool `json:"enabled"`
 }
 
 func NewUserAnonymityConfig(uc entity.UserAnonymityConfig) UserAnonymityConfig {

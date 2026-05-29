@@ -182,11 +182,30 @@ func (ur *userAdminRepo) GetUserPage(ctx context.Context, page, pageSize int, us
 
 // DeletePermanentlyUsers delete permanently users
 func (ur *userAdminRepo) DeletePermanentlyUsers(ctx context.Context) (err error) {
+	ids := make([]string, 0)
+	err = ur.data.DB.Context(ctx).Select("id").Table(new(entity.User).TableName()).
+		Where("status = ?", entity.UserStatusDeleted).Find(&ids)
+	if err != nil {
+		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+
+	if len(ids) == 0 {
+		return nil
+	}
+
+	// delete all user anonymity configs permanently
+	_, err = ur.data.DB.Context(ctx).In("user_id", ids).Delete(&entity.UserAnonymityConfig{})
+	if err != nil {
+		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+
+	// delete users permanently
 	_, err = ur.data.DB.Context(ctx).Where("status = ?", entity.UserStatusDeleted).Delete(&entity.User{})
 	if err != nil {
-		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
-	return
+
+	return nil
 }
 
 // GetExpiredSuspendedUsers gets all suspended users whose suspension has expired
