@@ -17,76 +17,50 @@
  * under the License.
  */
 
-import React, { useState, FormEvent, useEffect } from 'react';
+import React, { FC } from 'react';
+import { Nav } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import { NavLink, useMatch } from 'react-router-dom';
 
-import type { FormDataType } from '@/common/interface';
-import { useToast } from '@/hooks';
-import { useGetAnonymityConfig, putAnonymityConfig } from '@/services';
-import { SchemaForm, JSONSchema, UISchema, initFormData } from '@/components';
+import { useGetUserPluginList } from '@/services';
 
-const Index = () => {
-  const toast = useToast();
-  const { t } = useTranslation('translation', {
-    keyPrefix: 'settings.anonymity',
-  });
-  const { data: configData } = useGetAnonymityConfig();
-
-  const schema: JSONSchema = {
-    title: t('heading'),
-    properties: {
-      enabled: {
-        type: 'boolean',
-        title: t('enabled.label'),
-        description: t('enabled.description'),
-        default: configData?.enabled ?? false,
-      },
-    },
-  };
-
-  const uiSchema: UISchema = {
-    enabled: {
-      'ui:widget': 'switch',
-      'ui:options': {
-        label: t('turn_on'),
-      },
-    },
-  };
-
-  const [formData, setFormData] = useState<FormDataType>(initFormData(schema));
-
-  useEffect(() => {
-    setFormData(initFormData(schema));
-  }, [configData]);
-
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
-
-    putAnonymityConfig({ enabled: formData.enabled.value }).then(() => {
-      toast.onShow({
-        msg: t('update', { keyPrefix: 'toast' }),
-        variant: 'success',
-      });
-    });
-  };
-
-  const handleChange = (ud) => {
-    setFormData(ud);
-  };
+const Index: FC = () => {
+  const { t } = useTranslation('translation', { keyPrefix: 'settings.nav' });
+  const settingMatch = useMatch('/users/settings/:setting');
+  const { data } = useGetUserPluginList();
 
   return (
-    <>
-      <h3 className="mb-4">{t('heading')}</h3>
-      <p className="text-secondary mb-4">{t('intro')}</p>
-      <SchemaForm
-        schema={schema}
-        uiSchema={uiSchema}
-        formData={formData}
-        onChange={handleChange}
-        onSubmit={handleSubmit}
-      />
-    </>
+    <Nav variant="pills" className="flex-column">
+      <NavLink
+        className={({ isActive }) =>
+          isActive || !settingMatch ? 'nav-link active' : 'nav-link'
+        }
+        to="/users/settings/profile">
+        {t('profile')}
+      </NavLink>
+      <NavLink className="nav-link" to="/users/settings/notify">
+        {t('notification')}
+      </NavLink>
+      <NavLink className="nav-link" to="/users/settings/account">
+        {t('account')}
+      </NavLink>
+      <NavLink className="nav-link" to="/users/settings/interface">
+        {t('interface')}
+      </NavLink>
+      <NavLink className="nav-link" to="/users/settings/anonymity">
+        {t('anonymity')}
+      </NavLink>
+      {data?.map((item) => {
+        return (
+          <NavLink
+            key={item.slug_name}
+            className="nav-link w-100 text-truncate"
+            to={`/users/settings/${item.slug_name}`}>
+            {item.name}
+          </NavLink>
+        );
+      })}
+    </Nav>
   );
 };
 
