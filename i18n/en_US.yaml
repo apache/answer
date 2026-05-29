@@ -1323,6 +1323,7 @@ ui:
       notification: Notifications
       account: Account
       interface: Interface
+      anonymity: Anonymity
     profile:
       heading: Profile
       btn_name: Save
@@ -1365,6 +1366,19 @@ ui:
       all_new_question_for_following_tags:
         label: All new questions for following tags
         description: Get notified of new questions for following tags.
+    anonymity:
+      heading: Pseudo-Anonymity
+      intro: >-
+        When enabled, your questions and answers will be published without
+        displaying your real username. An alias (pseudonym) will be used instead,
+        your user ID will be hidden in API responses, and links to your author
+        profile will be disabled.
+      turn_on: Turn on
+      enabled:
+        label: Enable pseudo-anonymity
+        description: >-
+          Publish questions and answers without displaying your real user data.
+          Uses an alias instead of your username.
     account:
       heading: Account
       change_email_btn: Change email
@@ -2482,5 +2496,3 @@ ui:
     copy: Copy to clipboard
     copied: Copied
     external_content_warning: External images/media are not displayed.
-
-

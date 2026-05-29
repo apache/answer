@@ -75,3 +75,18 @@ export const useGetUserPluginConfig = (params) => {
 export const updateUserPluginConfig = (params) => {
   return request.put('/answer/api/v1/user/plugin/config', params);
 };
+
+export interface AnonymityConfig {
+  enabled: boolean;
+}
+
+export const useGetAnonymityConfig = () => {
+  return useSWR<AnonymityConfig>(
+    '/answer/api/v1/user/anonymity/config',
+    request.instance.get,
+  );
+};
+
+export const putAnonymityConfig = (data: AnonymityConfig) => {
+  return request.put('/answer/api/v1/user/anonymity/config', data);
+};

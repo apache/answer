@@ -203,6 +203,10 @@ const routes: RouteNode[] = [
                 page: 'pages/Users/Settings/Interface',
               },
               {
+                path: 'anonymity',
+                page: 'pages/Users/Settings/Anonymity',
+              },
+              {
                 path: ':slug_name',
                 page: 'pages/Users/Settings/Plugins',
               },
