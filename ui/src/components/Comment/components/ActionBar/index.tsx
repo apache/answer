@@ -43,7 +43,7 @@ const ActionBar = ({
   return (
     <div className="d-flex justify-content-between flex-wrap small">
       <div className="d-flex align-items-center flex-wrap link-secondary">
-        {userStatus !== 'deleted' ? (
+        {userStatus !== 'deleted' && username ? (
           <Link
             to={`/users/${username}`}
             className="name-ellipsis"
@@ -51,7 +51,7 @@ const ActionBar = ({
             {nickName}
           </Link>
         ) : (
-          <span>{nickName}</span>
+          <span className="name-ellipsis" style={{ maxWidth: '200px' }}>{nickName}</span>
         )}
         <span className="mx-1">•</span>
         <FormatTime time={createdAt} className="me-3 flex-shrink-0" />

@@ -48,7 +48,7 @@ const Index: FC<Props> = ({
 }) => {
   return (
     <div className={classnames('d-flex', className)}>
-      {data?.status !== 'deleted' ? (
+      {data?.status !== 'deleted' && data?.username ? (
         <Link to={`/users/${data?.username}`}>
           <Avatar
             avatar={data?.avatar}
@@ -87,7 +87,7 @@ const Index: FC<Props> = ({
       )}
       <div className="small text-secondary d-flex flex-column">
         <div className="me-1 me-md-0 d-flex align-items-center">
-          {data?.status !== 'deleted' ? (
+          {data?.status !== 'deleted' && data?.username ? (
             <Link
               to={`/users/${data?.username}`}
               className="me-1 text-break name-ellipsis"

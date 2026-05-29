@@ -46,7 +46,7 @@ const Index: FC<Props> = ({
 }) => {
   return (
     <div className={`d-flex align-items-center  text-secondary ${className}`}>
-      {data?.status !== 'deleted' ? (
+      {data?.status !== 'deleted' && data?.username ? (
         <Link
           to={`/users/${data?.username}`}
           onClick={(e) => {
