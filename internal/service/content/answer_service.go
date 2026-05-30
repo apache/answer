@@ -72,6 +72,7 @@ type AnswerService struct {
 	reviewService                    *review.ReviewService
 	eventQueueService                eventqueue.Service
 	fakeUsernameService              *fake_username.FakeUsernameService
+	anonymityService                 *fake_username.AnonymityService
 }
 
 func NewAnswerService(
@@ -93,6 +94,7 @@ func NewAnswerService(
 	reviewService *review.ReviewService,
 	eventQueueService eventqueue.Service,
 	fakeUsernameService *fake_username.FakeUsernameService,
+	anonymityService *fake_username.AnonymityService,
 ) *AnswerService {
 	return &AnswerService{
 		answerRepo:                       answerRepo,
@@ -113,6 +115,7 @@ func NewAnswerService(
 		reviewService:                    reviewService,
 		eventQueueService:                eventQueueService,
 		fakeUsernameService:              fakeUsernameService,
+		anonymityService:                 anonymityService,
 	}
 }
 
@@ -551,6 +554,24 @@ func (as *AnswerService) Get(ctx context.Context, answerID, loginUserID string) 
 		info.UpdateUserInfo = userInfoMap[answerInfo.LastEditUserID]
 	}
 
+	userIDs := []string{
+		answerInfo.UserID,
+		answerInfo.LastEditUserID,
+	}
+
+	anonymizedUsers, err := as.anonymityService.AnonymizeUserData(ctx, userIDs, info.QuestionID, loginUserID)
+	if err != nil {
+		return nil, nil, has, err
+	}
+
+	if au, ok := anonymizedUsers[answerInfo.UserID]; ok {
+		info.UserInfo = au
+	}
+
+	if au, ok := anonymizedUsers[answerInfo.LastEditUserID]; ok {
+		info.UpdateUserInfo = au
+	}
+
 	if loginUserID == "" {
 		return info, questionInfo, has, nil
 	}
@@ -667,6 +688,21 @@ func (as *AnswerService) SearchFormatInfo(ctx context.Context, answers []*entity
 	for _, item := range list {
 		item.UserInfo = userInfoMap[item.UserID]
 		item.UpdateUserInfo = userInfoMap[item.UpdateUserID]
+
+		anonymizedUsers, err := as.anonymityService.AnonymizeUserData(
+			ctx, []string{item.UserID, item.UpdateUserID}, item.QuestionID, "",
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		if au, ok := anonymizedUsers[item.UserID]; ok {
+			item.UserInfo = au
+		}
+
+		if au, ok := anonymizedUsers[item.UpdateUserID]; ok {
+			item.UpdateUserInfo = au
+		}
 	}
 	if len(req.UserID) == 0 {
 		return list, nil

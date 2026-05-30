@@ -95,6 +95,7 @@ type CommentService struct {
 	eventQueueService                eventqueue.Service
 	reviewService                    *review.ReviewService
 	fakeUsernameService              *fake_username.FakeUsernameService
+	anonymityService                 *fake_username.AnonymityService
 }
 
 // NewCommentService new comment service
@@ -112,6 +113,7 @@ func NewCommentService(
 	eventQueueService eventqueue.Service,
 	reviewService *review.ReviewService,
 	fakeUsernameService *fake_username.FakeUsernameService,
+	anonymityService *fake_username.AnonymityService,
 ) *CommentService {
 	return &CommentService{
 		commentRepo:                      commentRepo,
@@ -127,6 +129,7 @@ func NewCommentService(
 		eventQueueService:                eventQueueService,
 		reviewService:                    reviewService,
 		fakeUsernameService:              fakeUsernameService,
+		anonymityService:                 anonymityService,
 	}
 }
 
@@ -344,6 +347,17 @@ func (cs *CommentService) GetComment(ctx context.Context, req *schema.GetComment
 			return nil, err
 		}
 		if exist {
+			anonymizedUsers, err := cs.anonymityService.AnonymizeUserData(
+				ctx, []string{commentUser.ID}, comment.QuestionID, req.UserID)
+			if err != nil {
+				log.Errorf("failed to anonymize user: %w", err)
+			}
+
+			if au, ok := anonymizedUsers[commentUser.ID]; ok {
+				commentUser = au
+			}
+
+			resp.UserID = commentUser.ID
 			resp.Username = commentUser.Username
 			resp.UserDisplayName = commentUser.DisplayName
 			resp.UserAvatar = commentUser.Avatar
@@ -358,6 +372,17 @@ func (cs *CommentService) GetComment(ctx context.Context, req *schema.GetComment
 			return nil, err
 		}
 		if exist {
+			anonymizedUsers, err := cs.anonymityService.AnonymizeUserData(
+				ctx, []string{replyUser.ID}, comment.QuestionID, req.UserID)
+			if err != nil {
+				log.Errorf("failed to anonymize user: %w", err)
+			}
+
+			if au, ok := anonymizedUsers[replyUser.ID]; ok {
+				replyUser = au
+			}
+
+			resp.ReplyUserID = replyUser.ID
 			resp.ReplyUsername = replyUser.Username
 			resp.ReplyUserDisplayName = replyUser.DisplayName
 			resp.ReplyUserStatus = replyUser.Status
@@ -440,6 +465,17 @@ func (cs *CommentService) convertCommentEntity2Resp(ctx context.Context, req *sc
 			return nil, err
 		}
 		if exist {
+			anonymizedUsers, err := cs.anonymityService.AnonymizeUserData(
+				ctx, []string{commentUser.ID}, comment.QuestionID, req.UserID)
+			if err != nil {
+				log.Errorf("failed to anonymize user: %w", err)
+			}
+
+			if au, ok := anonymizedUsers[commentUser.ID]; ok {
+				commentUser = au
+			}
+
+			commentResp.UserID = commentUser.ID
 			commentResp.Username = commentUser.Username
 			commentResp.UserDisplayName = commentUser.DisplayName
 			commentResp.UserAvatar = commentUser.Avatar
@@ -454,6 +490,17 @@ func (cs *CommentService) convertCommentEntity2Resp(ctx context.Context, req *sc
 			return nil, err
 		}
 		if exist {
+			anonymizedUsers, err := cs.anonymityService.AnonymizeUserData(
+				ctx, []string{replyUser.ID}, comment.QuestionID, req.UserID)
+			if err != nil {
+				log.Errorf("failed to anonymize user: %w", err)
+			}
+
+			if au, ok := anonymizedUsers[replyUser.ID]; ok {
+				replyUser = au
+			}
+
+			commentResp.ReplyUserID = replyUser.ID
 			commentResp.ReplyUsername = replyUser.Username
 			commentResp.ReplyUserDisplayName = replyUser.DisplayName
 			commentResp.ReplyUserStatus = replyUser.Status
