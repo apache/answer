@@ -5,7 +5,6 @@ import (
 
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/pkg/checker"
-	"github.com/segmentfault/pacman/log"
 )
 
 type AnonymityService struct {
@@ -48,7 +47,6 @@ func (s *AnonymityService) AnonymizeUserData(
 	for _, item := range fakeUsernames {
 		anonymizeInfo[item.UserID] = &schema.UserBasicInfo{DisplayName: item.FakeName}
 	}
-	log.Errorf("fake usernames for %s: %d", questionID, len(fakeUsernames))
 
 	return
 }
