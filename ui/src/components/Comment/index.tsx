@@ -418,7 +418,8 @@ const Comment: FC<IProps> = ({ objectId, mode, commentId, children }) => {
               ) : (
                 <div className="d-block">
                   {item.reply_user_display_name &&
-                    (item.reply_user_status !== 'deleted' && item.reply_username ? (
+                    (item.reply_user_status !== 'deleted' &&
+                    item.reply_username ? (
                       <Link
                         to={`/users/${item.reply_username}`}
                         className="small me-1 text-nowrap">

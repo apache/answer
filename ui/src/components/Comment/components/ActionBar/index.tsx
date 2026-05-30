@@ -51,7 +51,9 @@ const ActionBar = ({
             {nickName}
           </Link>
         ) : (
-          <span className="name-ellipsis" style={{ maxWidth: '200px' }}>{nickName}</span>
+          <span className="name-ellipsis" style={{ maxWidth: '200px' }}>
+            {nickName}
+          </span>
         )}
         <span className="mx-1">•</span>
         <FormatTime time={createdAt} className="me-3 flex-shrink-0" />
