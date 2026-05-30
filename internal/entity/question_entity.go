@@ -32,6 +32,10 @@ const (
 	QuestionPin             = 2
 	QuestionShow            = 1
 	QuestionHide            = 2
+
+	QuestionPrivateLevelPublic        = "public"
+	QuestionPrivateLevelAuthenticated = "authenticated"
+	QuestionPrivateLevelPrivate       = "private"
 )
 
 var AdminQuestionSearchStatus = map[string]int{
@@ -74,6 +78,7 @@ type Question struct {
 	PostUpdateTime   time.Time `xorm:"post_update_time TIMESTAMP"`
 	RevisionID       string    `xorm:"not null default 0 BIGINT(20) revision_id"`
 	LinkedCount      int       `xorm:"not null default 0 INT(11) linked_count"`
+	PrivateLevel     string    `xorm:"not null default 'public' VARCHAR(20) private_level"`
 }
 
 // TableName question table name

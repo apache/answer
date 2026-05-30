@@ -84,6 +84,8 @@ type QuestionAdd struct {
 	HTML string `json:"-"`
 	// tags
 	Tags []*TagItem `validate:"dive" json:"tags"`
+	// private level: public, authenticated, private
+	PrivateLevel string `validate:"required,oneof=public authenticated private" json:"private_level"`
 	// user id
 	UserID string `json:"-"`
 	QuestionPermission
@@ -267,6 +269,7 @@ type QuestionInfoResp struct {
 	// MemberActions
 	MemberActions  []*PermissionMemberAction `json:"member_actions"`
 	ExtendsActions []*PermissionMemberAction `json:"extends_actions"`
+	PrivateLevel   string                    `json:"private_level"`
 }
 
 // UpdateQuestionResp update question resp

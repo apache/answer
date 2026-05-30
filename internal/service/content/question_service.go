@@ -385,6 +385,10 @@ func (qs *QuestionService) AddQuestion(ctx context.Context, req *schema.Question
 	question.PostUpdateTime = now
 	question.Pin = entity.QuestionUnPin
 	question.Show = entity.QuestionShow
+	question.PrivateLevel = req.PrivateLevel
+	if question.PrivateLevel == "" {
+		question.PrivateLevel = entity.QuestionPrivateLevelPublic
+	}
 	// question.UpdatedAt = nil
 	err = qs.questionRepo.AddQuestion(ctx, question)
 	if err != nil {

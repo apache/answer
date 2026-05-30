@@ -108,7 +108,6 @@ type QuestionCommon struct {
 	revisionRepo         revision.RevisionRepo
 	siteInfoService      siteinfo_common.SiteInfoCommonService
 	fakeUsernameService  *fake_username.FakeUsernameService
-	anonymityService     *fake_username.AnonymityService
 	data                 *data.Data
 }
 
@@ -126,7 +125,6 @@ func NewQuestionCommon(questionRepo QuestionRepo,
 	revisionRepo revision.RevisionRepo,
 	siteInfoService siteinfo_common.SiteInfoCommonService,
 	fakeUsernameService *fake_username.FakeUsernameService,
-	anonymityService *fake_username.AnonymityService,
 	data *data.Data,
 ) *QuestionCommon {
 	return &QuestionCommon{
@@ -144,7 +142,6 @@ func NewQuestionCommon(questionRepo QuestionRepo,
 		revisionRepo:         revisionRepo,
 		siteInfoService:      siteInfoService,
 		fakeUsernameService:  fakeUsernameService,
-		anonymityService:     anonymityService,
 		data:                 data,
 	}
 }
@@ -268,6 +265,18 @@ func (qs *QuestionCommon) Info(ctx context.Context, questionID string, loginUser
 		return resp, errors.NotFound(reason.QuestionNotFound)
 	}
 	resp = qs.ShowFormat(ctx, questionInfo)
+	// Access control based on private_level
+	if resp.PrivateLevel == entity.QuestionPrivateLevelPrivate {
+		// only the author can view private questions
+		if loginUserID != questionInfo.UserID {
+			return resp, errors.Forbidden(reason.QuestionNotFound)
+		}
+	} else if resp.PrivateLevel == entity.QuestionPrivateLevelAuthenticated {
+		// only logged-in users can view authenticated questions
+		if loginUserID == "" {
+			return resp, errors.Forbidden(reason.QuestionNotFound)
+		}
+	}
 	if resp.Status == entity.QuestionStatusClosed {
 		metaInfo, err := qs.metaCommonService.GetMetaByObjectIdAndKey(ctx, questionInfo.ID, entity.QuestionCloseReasonKey)
 		if err != nil {
@@ -342,30 +351,6 @@ func (qs *QuestionCommon) Info(ctx context.Context, questionID string, loginUser
 	resp.UserInfo = userInfoMap[questionInfo.UserID]
 	resp.UpdateUserInfo = userInfoMap[questionInfo.LastEditUserID]
 	resp.LastAnsweredUserInfo = userInfoMap[resp.LastAnsweredUserID]
-
-	userIDs := []string{
-		questionInfo.UserID,
-		questionInfo.LastEditUserID,
-		resp.LastAnsweredUserID,
-	}
-
-	anonymizedUsers, err := qs.anonymityService.AnonymizeUserData(ctx, userIDs, resp.ID, loginUserID)
-	if err != nil {
-		return nil, err
-	}
-
-	if au, ok := anonymizedUsers[questionInfo.UserID]; ok {
-		resp.UserInfo = au
-	}
-
-	if au, ok := anonymizedUsers[questionInfo.LastEditUserID]; ok {
-		resp.UpdateUserInfo = au
-	}
-
-	if au, ok := anonymizedUsers[resp.LastAnsweredUserID]; ok {
-		resp.LastAnsweredUserInfo = au
-	}
-
 	if len(loginUserID) == 0 {
 		return resp, nil
 	}
@@ -484,15 +469,6 @@ func (qs *QuestionCommon) FormatQuestionsPage(
 		userInfo, ok := userInfoMap[item.Operator.ID]
 		if ok {
 			if userInfo != nil {
-				anonymizedUsers, err := qs.anonymityService.AnonymizeUserData(ctx, []string{userInfo.ID}, item.ID, loginUserID)
-				if err != nil {
-					log.Errorf("failed to anonymize user: %w", err)
-				}
-
-				if au, ok := anonymizedUsers[userInfo.ID]; ok {
-					userInfo = au
-				}
-				item.Operator.ID = userInfo.ID
 				item.Operator.DisplayName = userInfo.DisplayName
 				item.Operator.Username = userInfo.Username
 				item.Operator.Rank = userInfo.Rank
@@ -512,6 +488,16 @@ func (qs *QuestionCommon) FormatQuestions(ctx context.Context, questionList []*e
 
 	for _, questionInfo := range questionList {
 		item := qs.ShowFormat(ctx, questionInfo)
+		// filter by private_level
+		if item.PrivateLevel == entity.QuestionPrivateLevelPrivate {
+			if loginUserID != questionInfo.UserID {
+				continue
+			}
+		} else if item.PrivateLevel == entity.QuestionPrivateLevelAuthenticated {
+			if loginUserID == "" {
+				continue
+			}
+		}
 		list = append(list, item)
 		objectIds = append(objectIds, item.ID)
 		userIds = append(userIds, item.UserID, item.LastEditUserID, item.LastAnsweredUserID)
@@ -531,29 +517,6 @@ func (qs *QuestionCommon) FormatQuestions(ctx context.Context, questionList []*e
 		item.UserInfo = userInfoMap[item.UserID]
 		item.UpdateUserInfo = userInfoMap[item.LastEditUserID]
 		item.LastAnsweredUserInfo = userInfoMap[item.LastAnsweredUserID]
-
-		userIDs := []string{
-			item.UserID,
-			item.LastEditUserID,
-			item.LastAnsweredUserID,
-		}
-
-		anonymizedUsers, err := qs.anonymityService.AnonymizeUserData(ctx, userIDs, item.ID, loginUserID)
-		if err != nil {
-			return nil, err
-		}
-
-		if au, ok := anonymizedUsers[item.UserID]; ok {
-			item.UserInfo = au
-		}
-
-		if au, ok := anonymizedUsers[item.LastEditUserID]; ok {
-			item.UpdateUserInfo = au
-		}
-
-		if au, ok := anonymizedUsers[item.LastAnsweredUserID]; ok {
-			item.LastAnsweredUserInfo = au
-		}
 	}
 	if loginUserID == "" {
 		return list, nil
@@ -734,6 +697,10 @@ func (qs *QuestionCommon) ShowFormat(ctx context.Context, data *entity.Question)
 	info.Status = data.Status
 	info.Pin = data.Pin
 	info.Show = data.Show
+	info.PrivateLevel = data.PrivateLevel
+	if info.PrivateLevel == "" {
+		info.PrivateLevel = entity.QuestionPrivateLevelPublic
+	}
 	info.UserID = data.UserID
 	info.LastEditUserID = data.LastEditUserID
 	if data.LastAnswerID != "0" {
