@@ -23,10 +23,22 @@ import (
 	"context"
 
 	"github.com/apache/answer/internal/base/constant"
+	"github.com/gin-gonic/gin"
 )
 
-// GetEnableShortID get language from header
+// GetEnableShortID get short id flag from context
 func GetEnableShortID(ctx context.Context) bool {
+	// Check gin context first (set by ShortIDMiddleware via ctx.Set)
+	if ginCtx, ok := ctx.(*gin.Context); ok {
+		flag, ok := ginCtx.Get(constant.ShortIDFlag)
+		if ok {
+			if flag, ok := flag.(bool); ok {
+				return flag
+			}
+			return false
+		}
+	}
+	// Fallback for non-gin contexts (e.g., SitemapCron uses context.WithValue)
 	flag, ok := ctx.Value(constant.ShortIDContextKey).(bool)
 	if ok {
 		return flag

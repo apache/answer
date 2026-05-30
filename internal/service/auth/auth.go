@@ -145,7 +145,39 @@ func (as *AuthService) RemoveTokensExceptCurrentUser(ctx context.Context, userID
 // Admin
 
 func (as *AuthService) GetAdminUserCacheInfo(ctx context.Context, accessToken string) (userInfo *entity.UserCacheInfo, err error) {
-	return as.authRepo.GetAdminUserCacheInfo(ctx, accessToken)
+	adminCacheInfo, err := as.authRepo.GetAdminUserCacheInfo(ctx, accessToken)
+	if err != nil {
+		return nil, err
+	}
+	if adminCacheInfo == nil {
+		return nil, nil
+	}
+
+	// Keep admin authorization aligned with user-token lifecycle and status refresh.
+	refreshedUserCacheInfo, err := as.GetUserCacheInfo(ctx, accessToken)
+	if err != nil {
+		return nil, err
+	}
+	if refreshedUserCacheInfo == nil {
+		if err = as.authRepo.RemoveAdminUserCacheInfo(ctx, accessToken); err != nil {
+			return nil, err
+		}
+		return nil, nil
+	}
+
+	adminCacheInfo.UserStatus = refreshedUserCacheInfo.UserStatus
+	adminCacheInfo.EmailStatus = refreshedUserCacheInfo.EmailStatus
+	if refreshedUserCacheInfo.RoleID > 0 {
+		adminCacheInfo.RoleID = refreshedUserCacheInfo.RoleID
+	}
+	if len(refreshedUserCacheInfo.ExternalID) > 0 {
+		adminCacheInfo.ExternalID = refreshedUserCacheInfo.ExternalID
+	}
+
+	if err = as.authRepo.SetAdminUserCacheInfo(ctx, accessToken, adminCacheInfo); err != nil {
+		return nil, err
+	}
+	return adminCacheInfo, nil
 }
 
 func (as *AuthService) SetAdminUserCacheInfo(ctx context.Context, accessToken string, userInfo *entity.UserCacheInfo) (err error) {

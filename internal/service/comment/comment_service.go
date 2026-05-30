@@ -348,6 +348,13 @@ func (cs *CommentService) GetComment(ctx context.Context, req *schema.GetComment
 	if !exist {
 		return nil, errors.BadRequest(reason.CommentNotFound)
 	}
+	objInfo, err := cs.objectInfoService.GetInfo(ctx, comment.ObjectID)
+	if err != nil {
+		return nil, err
+	}
+	if err := objInfo.CheckVisibility(req.UserID, req.IsAdminModerator); err != nil {
+		return nil, err
+	}
 
 	resp = &schema.GetCommentResp{
 		CommentID:      comment.ID,
@@ -399,6 +406,13 @@ func (cs *CommentService) GetComment(ctx context.Context, req *schema.GetComment
 // GetCommentWithPage get comment list page
 func (cs *CommentService) GetCommentWithPage(ctx context.Context, req *schema.GetCommentWithPageReq) (
 	pageModel *pager.PageModel, err error) {
+	objInfo, err := cs.objectInfoService.GetInfo(ctx, req.ObjectID)
+	if err != nil {
+		return nil, err
+	}
+	if err := objInfo.CheckVisibility(req.UserID, req.IsAdminModerator); err != nil {
+		return nil, err
+	}
 	dto := &CommentQuery{
 		PageCond:  pager.PageCond{Page: req.Page, PageSize: req.PageSize},
 		ObjectID:  req.ObjectID,

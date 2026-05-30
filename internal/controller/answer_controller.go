@@ -164,8 +164,9 @@ func (ac *AnswerController) GetAnswerInfo(ctx *gin.Context) {
 	id := ctx.Query("id")
 	id = uid.DeShortID(id)
 	userID := middleware.GetLoginUserIDFromContext(ctx)
+	isAdminModerator := middleware.GetUserIsAdminModerator(ctx)
 
-	info, questionInfo, has, err := ac.answerService.Get(ctx, id, userID)
+	info, questionInfo, has, err := ac.answerService.Get(ctx, id, userID, isAdminModerator)
 	if err != nil {
 		handler.HandleResponse(ctx, err, gin.H{})
 		return
@@ -271,7 +272,7 @@ func (ac *AnswerController) AddAnswer(ctx *gin.Context) {
 	if !isAdmin || !linkUrlLimitUser {
 		ac.actionService.ActionRecordAdd(ctx, entity.CaptchaActionAnswer, req.UserID)
 	}
-	info, questionInfo, has, err := ac.answerService.Get(ctx, answerID, req.UserID)
+	info, questionInfo, has, err := ac.answerService.Get(ctx, answerID, req.UserID, isAdmin)
 	if err != nil {
 		handler.HandleResponse(ctx, err, nil)
 		return
@@ -348,7 +349,7 @@ func (ac *AnswerController) UpdateAnswer(ctx *gin.Context) {
 	if !isAdmin || !linkUrlLimitUser {
 		ac.actionService.ActionRecordAdd(ctx, entity.CaptchaActionEdit, req.UserID)
 	}
-	_, _, _, err = ac.answerService.Get(ctx, req.ID, req.UserID)
+	_, _, _, err = ac.answerService.Get(ctx, req.ID, req.UserID, isAdmin)
 	if err != nil {
 		handler.HandleResponse(ctx, err, nil)
 		return
@@ -376,6 +377,7 @@ func (ac *AnswerController) AnswerList(ctx *gin.Context) {
 
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
 	req.QuestionID = uid.DeShortID(req.QuestionID)
+	req.IsAdminModerator = middleware.GetUserIsAdminModerator(ctx)
 
 	canList, err := ac.rankService.CheckOperationPermissions(ctx, req.UserID, []string{
 		permission.AnswerEdit,

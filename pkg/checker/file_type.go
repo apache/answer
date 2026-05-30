@@ -22,9 +22,9 @@ package checker
 import (
 	"fmt"
 	"image"
-	_ "image/gif" // use init to support decode jpeg,jpg,png,gif
-	_ "image/jpeg"
-	_ "image/png"
+	"image/gif"
+	"image/jpeg"
+	"image/png"
 	"io"
 	"os"
 	"path/filepath"
@@ -47,25 +47,26 @@ func IsUnAuthorizedExtension(fileName string, allowedExtensions []string) bool {
 func DecodeAndCheckImageFile(localFilePath string, maxImageMegapixel int) bool {
 	ext := strings.ToLower(strings.TrimPrefix(filepath.Ext(localFilePath), "."))
 	switch ext {
-	case "jpg", "jpeg", "png", "gif": // only allow for `image/jpeg, image/jpg, image/png, image/gif`
-		if !decodeAndCheckImageFile(localFilePath, maxImageMegapixel, standardImageConfigCheck) {
+	case "jpg", "jpeg", "png", "gif":
+		if !decodeAndCheckImageFile(localFilePath, maxImageMegapixel, ext, formatSpecificConfigCheck) {
 			return false
 		}
-		if !decodeAndCheckImageFile(localFilePath, maxImageMegapixel, standardImageCheck) {
+		if !decodeAndCheckImageFile(localFilePath, maxImageMegapixel, ext, formatSpecificImageCheck) {
 			return false
 		}
 	case "webp":
-		if !decodeAndCheckImageFile(localFilePath, maxImageMegapixel, webpImageConfigCheck) {
+		if !decodeAndCheckImageFile(localFilePath, maxImageMegapixel, ext, webpImageConfigCheck) {
 			return false
 		}
-		if !decodeAndCheckImageFile(localFilePath, maxImageMegapixel, webpImageCheck) {
+		if !decodeAndCheckImageFile(localFilePath, maxImageMegapixel, ext, webpImageCheck) {
 			return false
 		}
 	}
 	return true
 }
 
-func decodeAndCheckImageFile(localFilePath string, maxImageMegapixel int, checker func(file io.Reader, maxImageMegapixel int) error) bool {
+func decodeAndCheckImageFile(localFilePath string, maxImageMegapixel int, ext string,
+	checker func(file io.Reader, ext string, maxImageMegapixel int) error) bool {
 	file, err := os.Open(localFilePath)
 	if err != nil {
 		log.Errorf("open file error: %v", err)
@@ -75,15 +76,30 @@ func decodeAndCheckImageFile(localFilePath string, maxImageMegapixel int, checke
 		_ = file.Close()
 	}()
 
-	if err = checker(file, maxImageMegapixel); err != nil {
+	if err = checker(file, ext, maxImageMegapixel); err != nil {
 		log.Errorf("check image format error: %v", err)
 		return false
 	}
 	return true
 }
 
-func standardImageConfigCheck(file io.Reader, maxImageMegapixel int) error {
-	config, _, err := image.DecodeConfig(file)
+// formatSpecificConfigCheck decodes image config using a format-specific decoder
+// based on the file extension. This avoids calling image.DecodeConfig() which
+// dispatches by magic bytes and can invoke unintended decoders (e.g., TIFF)
+// registered by transitive dependencies.
+func formatSpecificConfigCheck(file io.Reader, ext string, maxImageMegapixel int) error {
+	var config image.Config
+	var err error
+	switch ext {
+	case "jpg", "jpeg":
+		config, err = jpeg.DecodeConfig(file)
+	case "png":
+		config, err = png.DecodeConfig(file)
+	case "gif":
+		config, err = gif.DecodeConfig(file)
+	default:
+		return fmt.Errorf("unsupported image format: %s", ext)
+	}
 	if err != nil {
 		return fmt.Errorf("decode image config error: %v", err)
 	}
@@ -93,15 +109,26 @@ func standardImageConfigCheck(file io.Reader, maxImageMegapixel int) error {
 	return nil
 }
 
-func standardImageCheck(file io.Reader, maxImageMegapixel int) error {
-	_, _, err := image.Decode(file)
+// formatSpecificImageCheck fully decodes the image using a format-specific decoder.
+func formatSpecificImageCheck(file io.Reader, ext string, _ int) error {
+	var err error
+	switch ext {
+	case "jpg", "jpeg":
+		_, err = jpeg.Decode(file)
+	case "png":
+		_, err = png.Decode(file)
+	case "gif":
+		_, err = gif.Decode(file)
+	default:
+		return fmt.Errorf("unsupported image format: %s", ext)
+	}
 	if err != nil {
 		return fmt.Errorf("decode image error: %v", err)
 	}
 	return nil
 }
 
-func webpImageConfigCheck(file io.Reader, maxImageMegapixel int) error {
+func webpImageConfigCheck(file io.Reader, _ string, maxImageMegapixel int) error {
 	config, err := webp.DecodeConfig(file)
 	if err != nil {
 		return fmt.Errorf("decode webp image config error: %v", err)
@@ -112,7 +139,7 @@ func webpImageConfigCheck(file io.Reader, maxImageMegapixel int) error {
 	return nil
 }
 
-func webpImageCheck(file io.Reader, maxImageMegapixel int) error {
+func webpImageCheck(file io.Reader, _ string, _ int) error {
 	_, err := webp.Decode(file)
 	if err != nil {
 		return fmt.Errorf("decode webp image error: %v", err)

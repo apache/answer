@@ -23,6 +23,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"html"
 	"mime"
 	"os"
 	"strings"
@@ -224,6 +225,10 @@ func (es *EmailService) TestTemplate(ctx context.Context) (title, body string, e
 	return title, body, nil
 }
 
+func escapeEmailHTMLText(text string) string {
+	return html.EscapeString(text)
+}
+
 // NewAnswerTemplate new answer template
 func (es *EmailService) NewAnswerTemplate(ctx context.Context, raw *schema.NewAnswerTemplateRawData) (
 	title, body string, err error) {
@@ -246,7 +251,14 @@ func (es *EmailService) NewAnswerTemplate(ctx context.Context, raw *schema.NewAn
 
 	lang := handler.GetLangByCtx(ctx)
 	title = translator.TrWithData(lang, constant.EmailTplKeyNewAnswerTitle, templateData)
-	body = translator.TrWithData(lang, constant.EmailTplKeyNewAnswerBody, templateData)
+	body = translator.TrWithData(lang, constant.EmailTplKeyNewAnswerBody, &schema.NewAnswerTemplateData{
+		SiteName:       escapeEmailHTMLText(templateData.SiteName),
+		DisplayName:    escapeEmailHTMLText(templateData.DisplayName),
+		QuestionTitle:  escapeEmailHTMLText(templateData.QuestionTitle),
+		AnswerUrl:      templateData.AnswerUrl,
+		AnswerSummary:  escapeEmailHTMLText(templateData.AnswerSummary),
+		UnsubscribeUrl: templateData.UnsubscribeUrl,
+	})
 	return title, body, nil
 }
 
@@ -271,7 +283,13 @@ func (es *EmailService) NewInviteAnswerTemplate(ctx context.Context, raw *schema
 
 	lang := handler.GetLangByCtx(ctx)
 	title = translator.TrWithData(lang, constant.EmailTplKeyInvitedAnswerTitle, templateData)
-	body = translator.TrWithData(lang, constant.EmailTplKeyInvitedAnswerBody, templateData)
+	body = translator.TrWithData(lang, constant.EmailTplKeyInvitedAnswerBody, &schema.NewInviteAnswerTemplateData{
+		SiteName:       escapeEmailHTMLText(templateData.SiteName),
+		DisplayName:    escapeEmailHTMLText(templateData.DisplayName),
+		QuestionTitle:  escapeEmailHTMLText(templateData.QuestionTitle),
+		InviteUrl:      templateData.InviteUrl,
+		UnsubscribeUrl: templateData.UnsubscribeUrl,
+	})
 	return title, body, nil
 }
 
@@ -298,7 +316,14 @@ func (es *EmailService) NewCommentTemplate(ctx context.Context, raw *schema.NewC
 
 	lang := handler.GetLangByCtx(ctx)
 	title = translator.TrWithData(lang, constant.EmailTplKeyNewCommentTitle, templateData)
-	body = translator.TrWithData(lang, constant.EmailTplKeyNewCommentBody, templateData)
+	body = translator.TrWithData(lang, constant.EmailTplKeyNewCommentBody, &schema.NewCommentTemplateData{
+		SiteName:       escapeEmailHTMLText(templateData.SiteName),
+		DisplayName:    escapeEmailHTMLText(templateData.DisplayName),
+		QuestionTitle:  escapeEmailHTMLText(templateData.QuestionTitle),
+		CommentUrl:     templateData.CommentUrl,
+		CommentSummary: escapeEmailHTMLText(templateData.CommentSummary),
+		UnsubscribeUrl: templateData.UnsubscribeUrl,
+	})
 	return title, body, nil
 }
 
@@ -324,7 +349,13 @@ func (es *EmailService) NewQuestionTemplate(ctx context.Context, raw *schema.New
 
 	lang := handler.GetLangByCtx(ctx)
 	title = translator.TrWithData(lang, constant.EmailTplKeyNewQuestionTitle, templateData)
-	body = translator.TrWithData(lang, constant.EmailTplKeyNewQuestionBody, templateData)
+	body = translator.TrWithData(lang, constant.EmailTplKeyNewQuestionBody, &schema.NewQuestionTemplateData{
+		SiteName:       escapeEmailHTMLText(templateData.SiteName),
+		QuestionTitle:  escapeEmailHTMLText(templateData.QuestionTitle),
+		QuestionUrl:    templateData.QuestionUrl,
+		Tags:           escapeEmailHTMLText(templateData.Tags),
+		UnsubscribeUrl: templateData.UnsubscribeUrl,
+	})
 	return title, body, nil
 }
 

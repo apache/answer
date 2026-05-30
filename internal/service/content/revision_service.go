@@ -392,17 +392,8 @@ func (rs *RevisionService) GetRevisionList(ctx context.Context, req *schema.GetR
 	if infoErr != nil {
 		return nil, infoErr
 	}
-	if !req.IsAdmin && objInfo.IsDeleted() && objInfo.ObjectCreatorUserID != req.UserID {
-		switch objInfo.ObjectType {
-		case constant.QuestionObjectType:
-			return nil, errors.NotFound(reason.QuestionNotFound)
-		case constant.AnswerObjectType:
-			return nil, errors.NotFound(reason.AnswerNotFound)
-		case constant.TagObjectType:
-			return nil, errors.NotFound(reason.TagNotFound)
-		default:
-			return nil, errors.NotFound(reason.ObjectNotFound)
-		}
+	if err := objInfo.CheckVisibility(req.UserID, req.IsAdmin); err != nil {
+		return nil, err
 	}
 
 	_ = copier.Copy(&rev, req)

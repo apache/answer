@@ -58,6 +58,7 @@ func (ac *ActivityController) GetObjectTimeline(ctx *gin.Context) {
 	req.ObjectID = uid.DeShortID(req.ObjectID)
 
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
+	req.IsAdminModerator = middleware.GetUserIsAdminModerator(ctx)
 	if userInfo := middleware.GetUserInfoFromContext(ctx); userInfo != nil {
 		req.IsAdmin = userInfo.RoleID == role.RoleAdminID
 	}
@@ -81,6 +82,7 @@ func (ac *ActivityController) GetObjectTimelineDetail(ctx *gin.Context) {
 	}
 
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
+	req.IsAdminModerator = middleware.GetUserIsAdminModerator(ctx)
 
 	resp, err := ac.activityService.GetObjectTimelineDetail(ctx, req)
 	handler.HandleResponse(ctx, err, resp)

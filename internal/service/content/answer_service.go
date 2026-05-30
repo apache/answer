@@ -533,10 +533,26 @@ func (as *AnswerService) updateAnswerRank(ctx context.Context, userID string,
 	}
 }
 
-func (as *AnswerService) Get(ctx context.Context, answerID, loginUserID string) (*schema.AnswerInfo, *schema.QuestionInfoResp, bool, error) {
+func (as *AnswerService) Get(ctx context.Context, answerID, loginUserID string, isAdminModerator bool) (*schema.AnswerInfo, *schema.QuestionInfoResp, bool, error) {
 	answerInfo, has, err := as.answerRepo.GetByID(ctx, answerID)
 	if err != nil {
 		return nil, nil, has, err
+	}
+	if !has {
+		return nil, nil, false, nil
+	}
+	question, exist, err := as.questionRepo.GetQuestion(ctx, answerInfo.QuestionID)
+	if err != nil {
+		return nil, nil, has, err
+	}
+	if !exist {
+		return nil, nil, false, errors.NotFound(reason.AnswerNotFound)
+	}
+	if (question.Status == entity.QuestionStatusDeleted ||
+		question.Status == entity.QuestionStatusPending ||
+		question.Show == entity.QuestionHide) &&
+		!isAdminModerator && question.UserID != loginUserID {
+		return nil, nil, false, errors.NotFound(reason.AnswerNotFound)
 	}
 	info := as.ShowFormat(ctx, answerInfo)
 	// todo questionFunc
@@ -650,6 +666,19 @@ func (as *AnswerService) AdminSetAnswerStatus(ctx context.Context, req *schema.A
 
 func (as *AnswerService) SearchList(ctx context.Context, req *schema.AnswerListReq) ([]*schema.AnswerInfo, int64, error) {
 	list := make([]*schema.AnswerInfo, 0)
+	questionInfo, exist, err := as.questionRepo.GetQuestion(ctx, req.QuestionID)
+	if err != nil {
+		return list, 0, err
+	}
+	if !exist {
+		return list, 0, errors.NotFound(reason.QuestionNotFound)
+	}
+	if (questionInfo.Status == entity.QuestionStatusDeleted ||
+		questionInfo.Status == entity.QuestionStatusPending ||
+		questionInfo.Show == entity.QuestionHide) &&
+		!req.IsAdminModerator && questionInfo.UserID != req.UserID {
+		return list, 0, errors.NotFound(reason.QuestionNotFound)
+	}
 	dbSearch := entity.AnswerSearch{}
 	dbSearch.QuestionID = req.QuestionID
 	dbSearch.Page = req.Page

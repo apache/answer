@@ -234,6 +234,7 @@ func (qc *QuestionController) GetQuestion(ctx *gin.Context) {
 	id = uid.DeShortID(id)
 	userID := middleware.GetLoginUserIDFromContext(ctx)
 	req := schema.QuestionPermission{}
+	req.IsAdminModerator = middleware.GetUserIsAdminModerator(ctx)
 	canList, err := qc.rankService.CheckOperationPermissions(ctx, userID, []string{
 		permission.QuestionEdit,
 		permission.QuestionDelete,
@@ -590,7 +591,7 @@ func (qc *QuestionController) AddQuestionByAnswer(ctx *gin.Context) {
 			handler.HandleResponse(ctx, err, nil)
 			return
 		}
-		info, questionInfo, has, err := qc.answerService.Get(ctx, answerID, req.UserID)
+		info, questionInfo, has, err := qc.answerService.Get(ctx, answerID, req.UserID, isAdmin)
 		if err != nil {
 			handler.HandleResponse(ctx, err, nil)
 			return

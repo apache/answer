@@ -106,15 +106,16 @@ type AnswerUpdateResp struct {
 }
 
 type AnswerListReq struct {
-	QuestionID string `json:"question_id" form:"question_id"`
-	Order      string `json:"order" form:"order"`
-	Page       int    `json:"page" form:"page"`
-	PageSize   int    `json:"page_size" form:"page_size"`
-	UserID     string `json:"-"`
-	IsAdmin    bool   `json:"-"`
-	CanEdit    bool   `json:"-"`
-	CanDelete  bool   `json:"-"`
-	CanRecover bool   `json:"-"`
+	QuestionID       string `json:"question_id" form:"question_id"`
+	Order            string `json:"order" form:"order"`
+	Page             int    `json:"page" form:"page"`
+	PageSize         int    `json:"page_size" form:"page_size"`
+	UserID           string `json:"-"`
+	IsAdmin          bool   `json:"-"`
+	IsAdminModerator bool   `json:"-"`
+	CanEdit          bool   `json:"-"`
+	CanDelete        bool   `json:"-"`
+	CanRecover       bool   `json:"-"`
 }
 
 type AnswerInfo struct {

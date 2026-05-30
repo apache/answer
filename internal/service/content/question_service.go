@@ -1096,6 +1096,9 @@ func (qs *QuestionService) GetQuestion(ctx context.Context, questionID, userID s
 		question.Status == entity.QuestionStatusPending) && !per.CanReopen && question.UserID != userID {
 		return nil, errors.NotFound(reason.QuestionNotFound)
 	}
+	if question.Show == entity.QuestionHide && !per.IsAdminModerator && question.UserID != userID {
+		return nil, errors.NotFound(reason.QuestionNotFound)
+	}
 	if question.Status != entity.QuestionStatusClosed {
 		per.CanReopen = false
 	}

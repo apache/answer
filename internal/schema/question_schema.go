@@ -143,6 +143,7 @@ func (req *QuestionAddByAnswer) Check() (errFields []*validator.FormErrorField, 
 }
 
 type QuestionPermission struct {
+	IsAdminModerator bool `json:"-"`
 	// whether user can add it
 	CanAdd bool `json:"-"`
 	// whether user can edit it

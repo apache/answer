@@ -353,6 +353,10 @@ func (us *UserService) UpdateInfo(ctx context.Context, req *schema.UpdateInfoReq
 	if !exist {
 		return nil, errors.BadRequest(reason.UserNotFound)
 	}
+	errFields, err = us.validateAvatarInfo(ctx, req.UserID, oldUserInfo.Avatar, req.Avatar)
+	if err != nil {
+		return errFields, err
+	}
 
 	cond := us.formatUserInfoForUpdateInfo(oldUserInfo, req)
 
@@ -364,6 +368,41 @@ func (us *UserService) UpdateInfo(ctx context.Context, req *schema.UpdateInfoReq
 	}
 	us.eventQueueService.Send(ctx, schema.NewEvent(constant.EventUserUpdate, req.UserID))
 	return nil, err
+}
+
+func (us *UserService) validateAvatarInfo(
+	ctx context.Context,
+	userID string,
+	oldAvatarJSON string,
+	newAvatar schema.AvatarInfo,
+) (errFields []*validator.FormErrorField, err error) {
+	if newAvatar.Type != constant.AvatarTypeCustom {
+		return nil, nil
+	}
+	if len(newAvatar.Custom) == 0 {
+		return append(errFields, &validator.FormErrorField{
+			ErrorField: "avatar",
+			ErrorMsg:   reason.UserSetAvatar,
+		}), errors.BadRequest(reason.UserSetAvatar)
+	}
+
+	var oldAvatar schema.AvatarInfo
+	_ = json.Unmarshal([]byte(oldAvatarJSON), &oldAvatar)
+	if oldAvatar.Type == constant.AvatarTypeCustom && oldAvatar.Custom == newAvatar.Custom {
+		return nil, nil
+	}
+
+	fileRecord, err := us.fileRecordService.GetFileRecordByURL(ctx, newAvatar.Custom)
+	if err != nil {
+		return nil, err
+	}
+	if fileRecord == nil || fileRecord.UserID != userID || fileRecord.Source != string(plugin.UserAvatar) {
+		return append(errFields, &validator.FormErrorField{
+			ErrorField: "avatar",
+			ErrorMsg:   reason.UserSetAvatar,
+		}), errors.BadRequest(reason.UserSetAvatar)
+	}
+	return nil, nil
 }
 
 func (us *UserService) cleanUpRemovedAvatar(

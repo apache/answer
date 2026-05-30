@@ -334,7 +334,7 @@ const Index = () => {
                         canType={isGenerate && isLastMessage}
                         chatId={item.chat_completion_id}
                         isLast={isLastMessage}
-                        isCompleted={!isGenerate}
+                        isCompleted={!isGenerate || !isLastMessage}
                         content={item.content}
                         reasoningContent={item.reasoning_content || ''}
                         actionData={{

@@ -27,6 +27,7 @@ import (
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
+	"github.com/apache/answer/pkg/checker"
 	"github.com/apache/answer/pkg/gravatar"
 	"github.com/segmentfault/pacman/log"
 )
@@ -158,6 +159,10 @@ func (s *siteInfoCommonService) selectedAvatar(
 	email string, userStatus int) *schema.AvatarInfo {
 	avatarInfo := &schema.AvatarInfo{}
 	_ = json.Unmarshal([]byte(originalAvatarData), avatarInfo)
+	if len(avatarInfo.Type) == 0 && checker.IsURL(originalAvatarData) {
+		avatarInfo.Type = constant.AvatarTypeCustom
+		avatarInfo.Custom = originalAvatarData
+	}
 
 	if userStatus == entity.UserStatusDeleted {
 		return &schema.AvatarInfo{

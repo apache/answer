@@ -150,7 +150,8 @@ type GetCommentWithPageReq struct {
 	// query condition
 	QueryCond string `validate:"omitempty,oneof=vote created_at" form:"query_cond"`
 	// user id
-	UserID string `json:"-"`
+	UserID           string `json:"-"`
+	IsAdminModerator bool   `json:"-"`
 	// whether user can edit it
 	CanEdit bool `json:"-"`
 	// whether user can delete it
@@ -162,7 +163,8 @@ type GetCommentReq struct {
 	// object id
 	ID string `validate:"required" form:"id"`
 	// user id
-	UserID string `json:"-"`
+	UserID           string `json:"-"`
+	IsAdminModerator bool   `json:"-"`
 	// whether user can edit it
 	CanEdit bool `json:"-"`
 	// whether user can delete it

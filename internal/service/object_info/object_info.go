@@ -200,13 +200,15 @@ func (os *ObjService) GetInfo(ctx context.Context, objectID string) (objInfo *sc
 			break
 		}
 		objInfo = &schema.SimpleObjectInfo{
-			ObjectID:            questionInfo.ID,
-			ObjectCreatorUserID: questionInfo.UserID,
-			QuestionID:          questionInfo.ID,
-			QuestionStatus:      questionInfo.Status,
-			ObjectType:          objectType,
-			Title:               questionInfo.Title,
-			Content:             questionInfo.ParsedText, // todo trim
+			ObjectID:              questionInfo.ID,
+			ObjectCreatorUserID:   questionInfo.UserID,
+			QuestionID:            questionInfo.ID,
+			QuestionCreatorUserID: questionInfo.UserID,
+			QuestionStatus:        questionInfo.Status,
+			QuestionShow:          questionInfo.Show,
+			ObjectType:            objectType,
+			Title:                 questionInfo.Title,
+			Content:               questionInfo.ParsedText, // todo trim
 		}
 	case constant.AnswerObjectType:
 		answerInfo, exist, err := os.answerRepo.GetAnswer(ctx, objectID)
@@ -224,15 +226,17 @@ func (os *ObjService) GetInfo(ctx context.Context, objectID string) (objInfo *sc
 			break
 		}
 		objInfo = &schema.SimpleObjectInfo{
-			ObjectID:            answerInfo.ID,
-			ObjectCreatorUserID: answerInfo.UserID,
-			QuestionID:          answerInfo.QuestionID,
-			QuestionStatus:      questionInfo.Status,
-			AnswerStatus:        answerInfo.Status,
-			AnswerID:            answerInfo.ID,
-			ObjectType:          objectType,
-			Title:               questionInfo.Title,    // this should be question title
-			Content:             answerInfo.ParsedText, // todo trim
+			ObjectID:              answerInfo.ID,
+			ObjectCreatorUserID:   answerInfo.UserID,
+			QuestionID:            answerInfo.QuestionID,
+			QuestionCreatorUserID: questionInfo.UserID,
+			QuestionStatus:        questionInfo.Status,
+			QuestionShow:          questionInfo.Show,
+			AnswerStatus:          answerInfo.Status,
+			AnswerID:              answerInfo.ID,
+			ObjectType:            objectType,
+			Title:                 questionInfo.Title,    // this should be question title
+			Content:               answerInfo.ParsedText, // todo trim
 		}
 	case constant.CommentObjectType:
 		commentInfo, exist, err := os.commentRepo.GetComment(ctx, objectID)
@@ -257,7 +261,9 @@ func (os *ObjService) GetInfo(ctx context.Context, objectID string) (objInfo *sc
 			}
 			if exist {
 				objInfo.QuestionID = questionInfo.ID
+				objInfo.QuestionCreatorUserID = questionInfo.UserID
 				objInfo.QuestionStatus = questionInfo.Status
+				objInfo.QuestionShow = questionInfo.Show
 				objInfo.Title = questionInfo.Title
 			}
 			answerInfo, exist, err := os.answerRepo.GetAnswer(ctx, commentInfo.ObjectID)
