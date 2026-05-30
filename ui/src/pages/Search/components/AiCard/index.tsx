@@ -78,7 +78,10 @@ const Index = () => {
     await requestAi('/answer/api/v1/chat/completions', {
       body: JSON.stringify(params),
       onMessage: (res) => {
-        if (!res.choices[0].delta?.content) {
+        const delta = res.choices[0]?.delta;
+        const deltaContent = delta?.content || '';
+        const deltaReasoning = delta?.reasoning_content || '';
+        if (!deltaContent && !deltaReasoning) {
           return;
         }
         setIsLoading(false);
@@ -90,13 +93,16 @@ const Index = () => {
           if (lastConversion?.chat_completion_id === res?.chat_completion_id) {
             updatedRecords[updatedRecords.length - 1] = {
               ...lastConversion,
-              content: lastConversion.content + res.choices[0].delta.content,
+              content: (lastConversion.content || '') + deltaContent,
+              reasoning_content:
+                (lastConversion.reasoning_content || '') + deltaReasoning,
             };
           } else {
             updatedRecords.push({
               chat_completion_id: res.chat_completion_id,
-              role: res.choices[0].delta.role || 'assistant',
-              content: res.choices[0].delta.content,
+              role: delta?.role || 'assistant',
+              content: deltaContent,
+              reasoning_content: deltaReasoning,
               helpful: 0,
               unhelpful: 0,
               created_at: Date.now(),
@@ -154,6 +160,7 @@ const Index = () => {
                   isLast={isLastMessage}
                   isCompleted={!isGenerate || !isLastMessage}
                   content={item.content}
+                  reasoningContent={item.reasoning_content || ''}
                   actionData={{
                     helpful: item.helpful,
                     unhelpful: item.unhelpful,

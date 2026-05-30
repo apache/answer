@@ -8781,6 +8781,9 @@ const docTemplate = `{
                 "helpful": {
                     "type": "integer"
                 },
+                "reasoning_content": {
+                    "type": "string"
+                },
                 "role": {
                     "type": "string"
                 },
