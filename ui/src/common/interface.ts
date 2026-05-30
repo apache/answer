@@ -83,6 +83,7 @@ export interface QuestionParams extends ImgCodeReq {
   url_title?: string;
   content: string;
   tags: Tag[];
+  private_level: 'public' | 'authenticated' | 'private';
 }
 
 export interface QuestionWithAnswer extends QuestionParams {
