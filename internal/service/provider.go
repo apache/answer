@@ -126,6 +126,7 @@ var ProviderSetService = wire.NewSet(
 	user_anonymity_config.NewUserAnonymityConfigService,
 	fake_username.NewFakeUsernameService,
 	fake_username.NewFakeUsernameGenerator,
+	fake_username.NewAnonymityService,
 	noticequeue.NewExternalService,
 	review.NewReviewService,
 	meta.NewMetaService,

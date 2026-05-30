@@ -43,3 +43,16 @@ func (ur *fakeUsernameRepo) GetByUserIDAndQuestionID(ctx context.Context, userID
 	}
 	return
 }
+
+func (fr *fakeUsernameRepo) BatchGetByUserIDs(
+	ctx context.Context, userIDs []string, questionID string,
+) ([]*entity.FakeUsername, error) {
+	list := make([]*entity.FakeUsername, 0)
+
+	err := fr.data.DB.Context(ctx).In("user_id", userIDs).And("question_id = ?", questionID).Find(&list)
+	if err != nil {
+		return nil, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+
+	return list, nil
+}
