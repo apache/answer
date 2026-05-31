@@ -180,14 +180,18 @@ func (cond *MCPSearchCond) ToQueryString() string {
 		queryBuilder.WriteString(cond.Keyword)
 	}
 	if len(cond.Username) > 0 {
-		queryBuilder.WriteString(" user:" + cond.Username)
+		queryBuilder.WriteString(" user:")
+		queryBuilder.WriteString(cond.Username)
 	}
 	if cond.Score > 0 {
-		queryBuilder.WriteString(" score:" + converter.IntToString(int64(cond.Score)))
+		queryBuilder.WriteString(" score:")
+		queryBuilder.WriteString(converter.IntToString(int64(cond.Score)))
 	}
 	if len(cond.Tags) > 0 {
 		for _, tag := range cond.Tags {
-			queryBuilder.WriteString(" [" + tag + "]")
+			queryBuilder.WriteString(" [")
+			queryBuilder.WriteString(tag)
+			queryBuilder.WriteString("]")
 		}
 	}
 	return strings.TrimSpace(queryBuilder.String())

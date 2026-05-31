@@ -690,7 +690,7 @@ func (as *AnswerService) SearchFormatInfo(ctx context.Context, answers []*entity
 		item.UpdateUserInfo = userInfoMap[item.UpdateUserID]
 
 		anonymizedUsers, err := as.anonymityService.AnonymizeUserData(
-			ctx, []string{item.UserID, item.UpdateUserID}, item.QuestionID, "",
+			ctx, []string{item.UserID, item.UpdateUserID}, item.QuestionID, req.UserID,
 		)
 		if err != nil {
 			return nil, err

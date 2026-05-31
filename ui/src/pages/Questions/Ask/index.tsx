@@ -98,7 +98,9 @@ const Ask = () => {
   const [blockState, setBlockState] = useState(false);
   const [focusType, setForceType] = useState('');
   const [hasDraft, setHasDraft] = useState(false);
-  const [privateLevel, setPrivateLevel] = useState<'public' | 'authenticated' | 'private'>('public');
+  const [privateLevel, setPrivateLevel] = useState<
+    'public' | 'authenticated' | 'private'
+  >('public');
   const resetForm = () => {
     setFormData(initFormData);
     setCheckState(false);
@@ -522,16 +524,44 @@ const Ask = () => {
             </Form.Group>
             {!isEdit && (
               <Form.Group controlId="private_level" className="mb-3">
-                <Form.Label>{t('form.fields.visibility.label', 'Visibility')}</Form.Label>
+                <Form.Label>
+                  {t('form.fields.visibility.label', 'Visibility')}
+                </Form.Label>
                 <div className="d-flex gap-3 flex-wrap">
                   {[
-                    { value: 'public', label: t('form.fields.visibility.public', 'Public'), desc: t('form.fields.visibility.public_desc', 'Everyone can see this question') },
-                    { value: 'authenticated', label: t('form.fields.visibility.authenticated', 'Registered users'), desc: t('form.fields.visibility.authenticated_desc', 'Only logged-in users can see this question') },
-                    { value: 'private', label: t('form.fields.visibility.private', 'Only me'), desc: t('form.fields.visibility.private_desc', 'Only you can see this question') },
+                    {
+                      value: 'public',
+                      label: t('form.fields.visibility.public', 'Public'),
+                      desc: t(
+                        'form.fields.visibility.public_desc',
+                        'Everyone can see this question',
+                      ),
+                    },
+                    {
+                      value: 'authenticated',
+                      label: t(
+                        'form.fields.visibility.authenticated',
+                        'Registered users',
+                      ),
+                      desc: t(
+                        'form.fields.visibility.authenticated_desc',
+                        'Only logged-in users can see this question',
+                      ),
+                    },
+                    {
+                      value: 'private',
+                      label: t('form.fields.visibility.private', 'Only me'),
+                      desc: t(
+                        'form.fields.visibility.private_desc',
+                        'Only you can see this question',
+                      ),
+                    },
                   ].map((opt) => (
                     <div
                       key={opt.value}
-                      onClick={() => setPrivateLevel(opt.value as typeof privateLevel)}
+                      onClick={() =>
+                        setPrivateLevel(opt.value as typeof privateLevel)
+                      }
                       className={`border rounded p-3 cursor-pointer flex-fill ${privateLevel === opt.value ? 'border-primary bg-primary bg-opacity-10' : 'border-secondary'}`}
                       style={{ cursor: 'pointer', minWidth: '140px' }}>
                       <div className="d-flex align-items-center gap-2">
@@ -541,13 +571,17 @@ const Ask = () => {
                           name="private_level"
                           value={opt.value}
                           checked={privateLevel === opt.value}
-                          onChange={() => setPrivateLevel(opt.value as typeof privateLevel)}
+                          onChange={() =>
+                            setPrivateLevel(opt.value as typeof privateLevel)
+                          }
                           label=""
                           style={{ margin: 0 }}
                         />
                         <strong className="small">{opt.label}</strong>
                       </div>
-                      <div className="text-muted small mt-1 ps-4">{opt.desc}</div>
+                      <div className="text-muted small mt-1 ps-4">
+                        {opt.desc}
+                      </div>
                     </div>
                   ))}
                 </div>

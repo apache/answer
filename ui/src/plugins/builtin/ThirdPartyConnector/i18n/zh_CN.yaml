@@ -20,4 +20,3 @@ plugin:
     ui:
       connect: 连接到 {{ auth_name }}
       remove: 解绑 {{ auth_name }}
-

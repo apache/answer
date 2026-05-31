@@ -60,7 +60,8 @@ type QuestionRepo interface {
 	UpdateQuestion(ctx context.Context, question *entity.Question, Cols []string) (err error)
 	GetQuestion(ctx context.Context, id string) (question *entity.Question, exist bool, err error)
 	GetQuestionList(ctx context.Context, question *entity.Question) (questions []*entity.Question, err error)
-	GetQuestionPage(ctx context.Context, page, pageSize int, tagIDs []string, userID, orderCond string, inDays int, showHidden, showPending bool) (
+	GetQuestionPage(ctx context.Context, page, pageSize int, tagIDs []string, userID, orderCond, loginUserID string,
+		inDays int, showHidden, showPending bool) (
 		questionList []*entity.Question, total int64, err error)
 	GetRecommendQuestionPageByTags(ctx context.Context, userID string, tagIDs, followedQuestionIDs []string, page, pageSize int) (questionList []*entity.Question, total int64, err error)
 	UpdateQuestionStatus(ctx context.Context, questionID string, status int) (err error)
@@ -108,6 +109,7 @@ type QuestionCommon struct {
 	revisionRepo         revision.RevisionRepo
 	siteInfoService      siteinfo_common.SiteInfoCommonService
 	fakeUsernameService  *fake_username.FakeUsernameService
+	anonymityService     *fake_username.AnonymityService
 	data                 *data.Data
 }
 
@@ -125,6 +127,7 @@ func NewQuestionCommon(questionRepo QuestionRepo,
 	revisionRepo revision.RevisionRepo,
 	siteInfoService siteinfo_common.SiteInfoCommonService,
 	fakeUsernameService *fake_username.FakeUsernameService,
+	anonymityService *fake_username.AnonymityService,
 	data *data.Data,
 ) *QuestionCommon {
 	return &QuestionCommon{
@@ -142,6 +145,7 @@ func NewQuestionCommon(questionRepo QuestionRepo,
 		revisionRepo:         revisionRepo,
 		siteInfoService:      siteInfoService,
 		fakeUsernameService:  fakeUsernameService,
+		anonymityService:     anonymityService,
 		data:                 data,
 	}
 }
@@ -351,6 +355,30 @@ func (qs *QuestionCommon) Info(ctx context.Context, questionID string, loginUser
 	resp.UserInfo = userInfoMap[questionInfo.UserID]
 	resp.UpdateUserInfo = userInfoMap[questionInfo.LastEditUserID]
 	resp.LastAnsweredUserInfo = userInfoMap[resp.LastAnsweredUserID]
+
+	userIDs := []string{
+		questionInfo.UserID,
+		questionInfo.LastEditUserID,
+		resp.LastAnsweredUserID,
+	}
+
+	anonymizedUsers, err := qs.anonymityService.AnonymizeUserData(ctx, userIDs, resp.ID, loginUserID)
+	if err != nil {
+		return nil, err
+	}
+
+	if au, ok := anonymizedUsers[questionInfo.UserID]; ok {
+		resp.UserInfo = au
+	}
+
+	if au, ok := anonymizedUsers[questionInfo.LastEditUserID]; ok {
+		resp.UpdateUserInfo = au
+	}
+
+	if au, ok := anonymizedUsers[resp.LastAnsweredUserID]; ok {
+		resp.LastAnsweredUserInfo = au
+	}
+
 	if len(loginUserID) == 0 {
 		return resp, nil
 	}
@@ -469,6 +497,15 @@ func (qs *QuestionCommon) FormatQuestionsPage(
 		userInfo, ok := userInfoMap[item.Operator.ID]
 		if ok {
 			if userInfo != nil {
+				anonymizedUsers, err := qs.anonymityService.AnonymizeUserData(ctx, []string{userInfo.ID}, item.ID, loginUserID)
+				if err != nil {
+					log.Errorf("failed to anonymize user: %w", err)
+				}
+
+				if au, ok := anonymizedUsers[userInfo.ID]; ok {
+					userInfo = au
+				}
+				item.Operator.ID = userInfo.ID
 				item.Operator.DisplayName = userInfo.DisplayName
 				item.Operator.Username = userInfo.Username
 				item.Operator.Rank = userInfo.Rank
@@ -517,6 +554,29 @@ func (qs *QuestionCommon) FormatQuestions(ctx context.Context, questionList []*e
 		item.UserInfo = userInfoMap[item.UserID]
 		item.UpdateUserInfo = userInfoMap[item.LastEditUserID]
 		item.LastAnsweredUserInfo = userInfoMap[item.LastAnsweredUserID]
+
+		userIDs := []string{
+			item.UserID,
+			item.LastEditUserID,
+			item.LastAnsweredUserID,
+		}
+
+		anonymizedUsers, err := qs.anonymityService.AnonymizeUserData(ctx, userIDs, item.ID, loginUserID)
+		if err != nil {
+			return nil, err
+		}
+
+		if au, ok := anonymizedUsers[item.UserID]; ok {
+			item.UserInfo = au
+		}
+
+		if au, ok := anonymizedUsers[item.LastEditUserID]; ok {
+			item.UpdateUserInfo = au
+		}
+
+		if au, ok := anonymizedUsers[item.LastAnsweredUserID]; ok {
+			item.LastAnsweredUserInfo = au
+		}
 	}
 	if loginUserID == "" {
 		return list, nil

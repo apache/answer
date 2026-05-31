@@ -1518,7 +1518,7 @@ func (qs *QuestionService) GetQuestionPage(ctx context.Context, req *schema.Ques
 	}
 
 	questionList, total, err := qs.questionRepo.GetQuestionPage(ctx, req.Page, req.PageSize,
-		tagIDs, req.UserIDBeSearched, req.OrderCond, req.InDays, showHidden, req.ShowPending)
+		tagIDs, req.UserIDBeSearched, req.OrderCond, req.LoginUserID, req.InDays, showHidden, req.ShowPending)
 	if err != nil {
 		return nil, 0, err
 	}
