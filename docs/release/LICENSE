@@ -251,6 +251,7 @@ The following components are provided under the MIT License. See project link fo
    (MIT License) swr (https://github.com/vercel/swr) [link](./licenses/LICENSE-vercel-swr.txt)
    (MIT License) zustand (https://github.com/pmndrs/zustand) [link](./licenses/LICENSE-pmndrs-zustand.txt)
    (MIT License) mozillazg-go-pinyin (https://github.com/mozillazg/go-pinyin) [link](./licenses/LICENSE-mozillazg-go-pinyin.txt)
+   (MIT License) mozillazg-go-unidecode (https://github.com/mozillazg/go-unidecode) [link](./licenses/LICENSE-mozillazg-go-unidecode.txt)
    (MIT License) Machiel-slugify (https://github.com/Machiel/slugify) [link](./licenses/LICENSE-Machiel-slugify.txt)
    (MIT License) Masterminds-semver (https://github.com/Masterminds/semver) [link](./licenses/LICENSE-Masterminds-semver.txt)
    (MIT License) anargu-gin-brotli (https://github.com/anargu/gin-brotli) [link](./licenses/LICENSE-anargu-gin-brotli.txt)
