@@ -22,6 +22,7 @@ package middleware
 import (
 	"net/http"
 	"runtime/debug"
+	"strings"
 
 	"github.com/apache/answer/internal/base/handler"
 	"github.com/apache/answer/internal/base/reason"
@@ -29,14 +30,31 @@ import (
 	"github.com/segmentfault/pacman/log"
 )
 
-func Recovery() gin.HandlerFunc {
+func Recovery(apiPrefixes ...string) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		defer func() {
 			if err := recover(); err != nil {
 				log.Errorf("panic recovered: %v\n%s", err, debug.Stack())
-				ctx.AbortWithStatusJSON(http.StatusInternalServerError,
-					handler.NewRespBody(http.StatusInternalServerError, reason.UnknownError).TrMsg(handler.GetLangByCtx(ctx)),
-				)
+
+				// Headers/body already flushed (SSE or any streamed response).
+				// We can no longer rewrite the response cleanly; just stop the chain.
+				if ctx.Writer.Written() {
+					ctx.Abort()
+					return
+				}
+
+				path := ctx.Request.URL.Path
+				for _, p := range apiPrefixes {
+					if strings.HasPrefix(path, p) {
+						ctx.AbortWithStatusJSON(http.StatusInternalServerError,
+							handler.NewRespBody(http.StatusInternalServerError, reason.UnknownError).
+								TrMsg(handler.GetLangByCtx(ctx)),
+						)
+						return
+					}
+				}
+
+				ctx.AbortWithStatus(http.StatusInternalServerError)
 			}
 		}()
 		ctx.Next()
