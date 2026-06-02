@@ -785,7 +785,15 @@ func (as *AnswerService) notificationAnswerTheQuestion(ctx context.Context,
 		AnswerSummary:   answerSummary,
 		UnsubscribeCode: token.GenerateToken(),
 	}
+
 	answerUser, _, _ := as.userCommon.GetUserBasicInfoByID(ctx, answerUserID)
+	fakeUsername, err := as.anonymityService.AnonymizeUserData(ctx, []string{answerUserID}, questionID, "")
+	if err != nil {
+		log.Errorf("failed to get fake username: %w", err)
+	} else if fu, ok := fakeUsername[answerUserID]; ok {
+		answerUser = fu
+	}
+
 	if answerUser != nil {
 		rawData.AnswerUserDisplayName = answerUser.DisplayName
 	}

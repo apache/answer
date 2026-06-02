@@ -25,6 +25,7 @@ import (
 	"time"
 
 	"github.com/apache/answer/internal/base/translator"
+	"github.com/apache/answer/internal/service/fake_username"
 	"github.com/apache/answer/internal/service/siteinfo_common"
 	"github.com/apache/answer/internal/service/user_external_login"
 	"github.com/apache/answer/pkg/display"
@@ -69,6 +70,7 @@ type NotificationCommon struct {
 	notificationQueueService noticequeue.Service
 	userExternalLoginRepo    user_external_login.UserExternalLoginRepo
 	siteInfoService          siteinfo_common.SiteInfoCommonService
+	anonymityService         *fake_username.AnonymityService
 }
 
 func NewNotificationCommon(
@@ -81,6 +83,7 @@ func NewNotificationCommon(
 	notificationQueueService noticequeue.Service,
 	userExternalLoginRepo user_external_login.UserExternalLoginRepo,
 	siteInfoService siteinfo_common.SiteInfoCommonService,
+	anonymityService *fake_username.AnonymityService,
 ) *NotificationCommon {
 	notification := &NotificationCommon{
 		data:                     data,
@@ -92,6 +95,7 @@ func NewNotificationCommon(
 		notificationQueueService: notificationQueueService,
 		userExternalLoginRepo:    userExternalLoginRepo,
 		siteInfoService:          siteInfoService,
+		anonymityService:         anonymityService,
 	}
 	notificationQueueService.RegisterHandler(notification.AddNotification)
 	return notification
@@ -189,6 +193,14 @@ func (ns *NotificationCommon) AddNotification(ctx context.Context, msg *schema.N
 	if !exist {
 		return fmt.Errorf("user not exist: %s", req.TriggerUserID)
 	}
+
+	fakeUsername, err := ns.anonymityService.AnonymizeUserData(ctx, []string{req.TriggerUserID}, questionID, req.ReceiverUserID)
+	if err != nil {
+		log.Errorf("failed to get fake username: %w", err)
+	} else if fu, ok := fakeUsername[req.TriggerUserID]; ok {
+		userBasicInfo = fu
+	}
+
 	req.UserInfo = userBasicInfo
 	content, _ := json.Marshal(req)
 	_, ok := constant.NotificationMsgTypeMapping[req.NotificationAction]

@@ -270,12 +270,13 @@ func (qs *QuestionCommon) Info(ctx context.Context, questionID string, loginUser
 	}
 	resp = qs.ShowFormat(ctx, questionInfo)
 	// Access control based on private_level
-	if resp.PrivateLevel == entity.QuestionPrivateLevelPrivate {
+	switch resp.PrivateLevel {
+	case entity.QuestionPrivateLevelPrivate:
 		// only the author can view private questions
 		if loginUserID != questionInfo.UserID {
 			return resp, errors.Forbidden(reason.QuestionNotFound)
 		}
-	} else if resp.PrivateLevel == entity.QuestionPrivateLevelAuthenticated {
+	case entity.QuestionPrivateLevelAuthenticated:
 		// only logged-in users can view authenticated questions
 		if loginUserID == "" {
 			return resp, errors.Forbidden(reason.QuestionNotFound)
