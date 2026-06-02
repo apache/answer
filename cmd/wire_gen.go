@@ -242,7 +242,7 @@ func initApplication(debug bool, serverConf *conf.Server, dbConf *data.Database,
 	controllerSiteInfoController := controller.NewSiteInfoController(siteInfoCommonService)
 	notificationCommon := notificationcommon.NewNotificationCommon(dataData, notificationRepo, userCommon, activityRepo, followRepo, objService, noticequeueService, userExternalLoginRepo, siteInfoCommonService, anonymityService)
 	badgeRepo := badge.NewBadgeRepo(dataData, uniqueIDRepo)
-	notificationService := notification.NewNotificationService(dataData, notificationRepo, notificationCommon, revisionService, userRepo, reportRepo, reviewService, badgeRepo)
+	notificationService := notification.NewNotificationService(dataData, notificationRepo, notificationCommon, revisionService, userRepo, reportRepo, reviewService, badgeRepo, anonymityService)
 	notificationController := controller.NewNotificationController(notificationService, rankService)
 	dashboardService := dashboard.NewDashboardService(questionRepo, answerRepo, commentCommonRepo, voteRepo, userRepo, reportRepo, configService, siteInfoCommonService, serviceConf, reviewService, revisionRepo, dataData)
 	dashboardController := controller.NewDashboardController(dashboardService)

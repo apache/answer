@@ -32,6 +32,7 @@ import (
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/badge"
+	"github.com/apache/answer/internal/service/fake_username"
 	notficationcommon "github.com/apache/answer/internal/service/notification_common"
 	"github.com/apache/answer/internal/service/report_common"
 	"github.com/apache/answer/internal/service/review"
@@ -53,6 +54,7 @@ type NotificationService struct {
 	reviewService      *review.ReviewService
 	userRepo           usercommon.UserRepo
 	badgeRepo          badge.BadgeRepo
+	anonymityService   *fake_username.AnonymityService
 }
 
 func NewNotificationService(
@@ -64,6 +66,7 @@ func NewNotificationService(
 	reportRepo report_common.ReportRepo,
 	reviewService *review.ReviewService,
 	badgeRepo badge.BadgeRepo,
+	anonymityService *fake_username.AnonymityService,
 ) *NotificationService {
 	return &NotificationService{
 		data:               data,
@@ -74,6 +77,7 @@ func NewNotificationService(
 		reportRepo:         reportRepo,
 		reviewService:      reviewService,
 		badgeRepo:          badgeRepo,
+		anonymityService:   anonymityService,
 	}
 }
 
@@ -226,11 +230,11 @@ func (ns *NotificationService) GetNotificationPage(ctx context.Context, searchCo
 	if err != nil {
 		return nil, err
 	}
-	resp = ns.formatNotificationPage(ctx, notifications)
+	resp = ns.formatNotificationPage(ctx, notifications, searchCond.UserID)
 	return pager.NewPageModel(total, resp), nil
 }
 
-func (ns *NotificationService) formatNotificationPage(ctx context.Context, notifications []*entity.Notification) (
+func (ns *NotificationService) formatNotificationPage(ctx context.Context, notifications []*entity.Notification, receiverUserID string) (
 	resp []*schema.NotificationContent) {
 	lang := handler.GetLangByCtx(ctx)
 	enableShortID := handler.GetEnableShortID(ctx)
@@ -308,6 +312,21 @@ func (ns *NotificationService) formatNotificationPage(ctx context.Context, notif
 			item.UserInfo = &schema.UserBasicInfo{
 				DisplayName: "user" + converter.DeleteUserDisplay(userInfo.ID),
 				Status:      constant.UserDeleted,
+			}
+			continue
+		}
+
+		// Apply anonymization: if the trigger user has enabled anonymity on this question,
+		// replace their user info with the fake username (same logic as questions/answers/comments).
+		questionID := item.ObjectInfo.ObjectMap["question"]
+		if questionID != "" && item.UserInfo.ID != "" {
+			anonymizedUsers, err := ns.anonymityService.AnonymizeUserData(
+				ctx, []string{item.UserInfo.ID}, uid.DeShortID(questionID), receiverUserID,
+			)
+			if err != nil {
+				log.Errorf("failed to anonymize user data for notification: %v", err)
+			} else if au, exists := anonymizedUsers[item.UserInfo.ID]; exists {
+				item.UserInfo = au
 			}
 		}
 	}
