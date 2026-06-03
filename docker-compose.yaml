@@ -18,15 +18,12 @@
 version: "3"
 services:
   answer:
-    build: ./
+    image: apache/answer
     ports:
       - '9080:80'
+    restart: on-failure
     volumes:
       - answer-data:/data
-    # env_file:
-    #   - ./.env
-    # environment:
-    #   - DOCKER_ENV=true
 
 volumes:
   answer-data:
