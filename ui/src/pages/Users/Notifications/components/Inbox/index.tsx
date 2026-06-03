@@ -61,7 +61,9 @@ const Inbox = ({ data, handleReadNotification }) => {
               !item.is_read && 'warning',
             )}>
             <div>
-              {item.user_info && item.user_info.status !== 'deleted' ? (
+              {item.user_info &&
+              item.user_info.status !== 'deleted' &&
+              item.user_info.username ? (
                 <Link to={`/users/${item.user_info.username}`}>
                   {item.user_info.display_name}{' '}
                 </Link>
