@@ -32,6 +32,7 @@ interface IProps {
   isLast: boolean;
   isCompleted: boolean;
   content: string;
+  reasoningContent?: string;
   minHeight?: number;
   actionData: {
     helpful: number;
@@ -55,6 +56,7 @@ const BubbleAi: FC<IProps> = ({
   isLast,
   isCompleted,
   content,
+  reasoningContent = '',
   chatId = '',
   actionData,
   minHeight = 0,
@@ -65,6 +67,7 @@ const BubbleAi: FC<IProps> = ({
   const [isHelpful, setIsHelpful] = useState(false);
   const [isUnhelpful, setIsUnhelpful] = useState(false);
   const [canShowAction, setCanShowAction] = useState(false);
+  const [isThinkingOpen, setIsThinkingOpen] = useState(true);
   const [safeHtml, setSafeHtml] = useState('');
   const typewriterRef = useRef<{
     timer: NodeJS.Timeout | null;
@@ -255,6 +258,14 @@ const BubbleAi: FC<IProps> = ({
     setIsUnhelpful(actionData.unhelpful > 0);
   }, [actionData]);
 
+  // Auto-collapse the "Thinking" panel once the actual answer starts streaming
+  // (only while the message is being generated; users can still toggle manually).
+  useEffect(() => {
+    if (content && !isCompleted) {
+      setIsThinkingOpen(false);
+    }
+  }, [content, isCompleted]);
+
   useEffect(() => {
     if (fmtContainer.current && isCompleted && safeHtml) {
       htmlRender(fmtContainer.current, {
@@ -275,6 +286,33 @@ const BubbleAi: FC<IProps> = ({
       ref={containerRef}
       style={{ minHeight: `${minHeight}px`, overflowAnchor: 'none' }}>
       <div id={chatId}>
+        {reasoningContent ? (
+          <div
+            className="bubble-ai-thinking mb-2 border-start border-2 ps-2 small text-secondary"
+            style={{ borderColor: 'var(--bs-border-color)' }}>
+            <Button
+              variant="link"
+              className="p-0 link-secondary small text-decoration-none d-inline-flex align-items-center"
+              onClick={() => setIsThinkingOpen((v) => !v)}>
+              <Icon name={isThinkingOpen ? 'chevron-down' : 'chevron-right'} />
+              <span className="ms-1">
+                {isCompleted ? t('thoughts') : t('thinking')}
+              </span>
+            </Button>
+            {isThinkingOpen && (
+              <div
+                className="mt-1 text-secondary"
+                style={{
+                  whiteSpace: 'pre-wrap',
+                  fontStyle: 'italic',
+                  opacity: 0.85,
+                }}>
+                {reasoningContent}
+              </div>
+            )}
+          </div>
+        ) : null}
+
         <div
           className="fmt text-break text-wrap"
           ref={fmtContainer}
