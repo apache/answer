@@ -17,29 +17,21 @@
  * under the License.
  */
 
-import { create } from 'zustand';
+package controller
 
-import { AdminSettingsLogin } from '@/common/interface';
+import (
+	"testing"
 
-interface IType {
-  login: AdminSettingsLogin;
-  update: (params: AdminSettingsLogin) => void;
+	"github.com/apache/answer/internal/schema"
+	"github.com/stretchr/testify/assert"
+)
+
+func TestApplyEmailVerificationSetting(t *testing.T) {
+	req := &schema.UserRegisterReq{}
+	applyEmailVerificationSetting(req, &schema.SiteLoginResp{RequireEmailVerification: false})
+	assert.True(t, req.SkipEmailVerification)
+
+	req = &schema.UserRegisterReq{}
+	applyEmailVerificationSetting(req, &schema.SiteLoginResp{RequireEmailVerification: true})
+	assert.False(t, req.SkipEmailVerification)
 }
-
-const loginSetting = create<IType>((set) => ({
-  login: {
-    allow_new_registrations: true,
-    allow_email_registrations: true,
-    allow_email_domains: [],
-    allow_password_login: true,
-    require_email_verification: true,
-  },
-  update: (params) =>
-    set(() => {
-      return {
-        login: params,
-      };
-    }),
-}));
-
-export default loginSetting;

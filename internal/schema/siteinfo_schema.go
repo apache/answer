@@ -21,6 +21,7 @@ package schema
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/mail"
 	"net/url"
@@ -216,12 +217,48 @@ type SiteUsersReq struct {
 	AllowUpdateLocation    bool   `json:"allow_update_location"`
 }
 
+// OptionalBool preserves whether a JSON boolean field was omitted, set to null,
+// or set to a concrete boolean value.
+type OptionalBool struct {
+	Set   bool `json:"-"`
+	Null  bool `json:"-"`
+	Value bool `json:"-"`
+}
+
+func (b *OptionalBool) UnmarshalJSON(data []byte) error {
+	b.Set = true
+	if string(data) == "null" {
+		b.Null = true
+		b.Value = false
+		return nil
+	}
+	b.Null = false
+	return json.Unmarshal(data, &b.Value)
+}
+
+func (b OptionalBool) MarshalJSON() ([]byte, error) {
+	if !b.Set || b.Null {
+		return []byte("null"), nil
+	}
+	return json.Marshal(b.Value)
+}
+
 // SiteLoginReq site login request
 type SiteLoginReq struct {
-	AllowNewRegistrations   bool     `json:"allow_new_registrations"`
-	AllowEmailRegistrations bool     `json:"allow_email_registrations"`
-	AllowPasswordLogin      bool     `json:"allow_password_login"`
-	AllowEmailDomains       []string `json:"allow_email_domains"`
+	AllowNewRegistrations    bool         `json:"allow_new_registrations"`
+	AllowEmailRegistrations  bool         `json:"allow_email_registrations"`
+	AllowPasswordLogin       bool         `json:"allow_password_login"`
+	AllowEmailDomains        []string     `json:"allow_email_domains"`
+	RequireEmailVerification OptionalBool `json:"require_email_verification" swaggertype:"boolean"`
+}
+
+// SiteLoginResp site login response
+type SiteLoginResp struct {
+	AllowNewRegistrations    bool     `json:"allow_new_registrations"`
+	AllowEmailRegistrations  bool     `json:"allow_email_registrations"`
+	AllowPasswordLogin       bool     `json:"allow_password_login"`
+	AllowEmailDomains        []string `json:"allow_email_domains"`
+	RequireEmailVerification bool     `json:"require_email_verification"`
 }
 
 // SiteCustomCssHTMLReq site custom css html
@@ -309,9 +346,6 @@ type SiteInterfaceResp SiteInterfaceReq
 
 // SiteBrandingResp site branding response
 type SiteBrandingResp SiteBrandingReq
-
-// SiteLoginResp site login response
-type SiteLoginResp SiteLoginReq
 
 // SiteCustomCssHTMLResp site custom css html response
 type SiteCustomCssHTMLResp SiteCustomCssHTMLReq

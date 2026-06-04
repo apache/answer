@@ -518,18 +518,20 @@ func (us *UserService) UserRegisterByEmail(ctx context.Context, registerUserInfo
 		log.Errorf("set default user notification config failed, err: %v", err)
 	}
 
-	// send email
-	data := &schema.EmailCodeContent{
-		Email:  registerUserInfo.Email,
-		UserID: userInfo.ID,
-	}
-	code := token.GenerateToken()
-	verifyEmailURL := fmt.Sprintf("%s/users/account-activation?code=%s", us.getSiteUrl(ctx), code)
-	title, body, err := us.emailService.RegisterTemplate(ctx, verifyEmailURL)
+	err = applyRegistrationVerification(userInfo, registerUserInfo.SkipEmailVerification, registrationVerificationActions{
+		sendActivationEmail: func() error {
+			return us.sendRegistrationActivationEmail(ctx, userInfo)
+		},
+		activateUser: func() error {
+			return us.userActivity.UserActive(ctx, userInfo.ID)
+		},
+		markEmailAvailable: func() error {
+			return us.userRepo.UpdateEmailStatus(ctx, userInfo.ID, entity.EmailStatusAvailable)
+		},
+	})
 	if err != nil {
 		return nil, nil, err
 	}
-	go us.emailService.SendAndSaveCode(ctx, userInfo.ID, userInfo.EMail, title, body, code, data.ToJSONString())
 
 	roleID, err := us.userRoleService.GetUserRole(ctx, userInfo.ID)
 	if err != nil {
@@ -558,6 +560,47 @@ func (us *UserService) UserRegisterByEmail(ctx context.Context, registerUserInfo
 		}
 	}
 	return resp, nil, nil
+}
+
+type registrationVerificationActions struct {
+	sendActivationEmail func() error
+	activateUser        func() error
+	markEmailAvailable  func() error
+}
+
+func applyRegistrationVerification(
+	userInfo *entity.User, skipEmailVerification bool, actions registrationVerificationActions,
+) error {
+	userInfo.MailStatus = entity.EmailStatusToBeVerified
+	if !skipEmailVerification {
+		return actions.sendActivationEmail()
+	}
+
+	if err := actions.activateUser(); err != nil {
+		log.Errorf("activate user during registration failed, fallback to email verification, err: %v", err)
+		return actions.sendActivationEmail()
+	}
+	if err := actions.markEmailAvailable(); err != nil {
+		log.Errorf("mark email available during registration failed, fallback to email verification, err: %v", err)
+		return actions.sendActivationEmail()
+	}
+	userInfo.MailStatus = entity.EmailStatusAvailable
+	return nil
+}
+
+func (us *UserService) sendRegistrationActivationEmail(ctx context.Context, userInfo *entity.User) error {
+	data := &schema.EmailCodeContent{
+		Email:  userInfo.EMail,
+		UserID: userInfo.ID,
+	}
+	code := token.GenerateToken()
+	verifyEmailURL := fmt.Sprintf("%s/users/account-activation?code=%s", us.getSiteUrl(ctx), code)
+	title, body, err := us.emailService.RegisterTemplate(ctx, verifyEmailURL)
+	if err != nil {
+		return err
+	}
+	go us.emailService.SendAndSaveCode(ctx, userInfo.ID, userInfo.EMail, title, body, code, data.ToJSONString())
+	return nil
 }
 
 func (us *UserService) UserVerifyEmailSend(ctx context.Context, userID string) error {

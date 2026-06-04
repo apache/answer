@@ -47,6 +47,12 @@ const Index: FC = () => {
         description: t('email_registration.text'),
         default: true,
       },
+      require_email_verification: {
+        type: 'boolean',
+        title: t('email_verification.title'),
+        description: t('email_verification.text'),
+        default: true,
+      },
       allow_password_login: {
         type: 'boolean',
         title: t('password_login.title'),
@@ -71,6 +77,12 @@ const Index: FC = () => {
       'ui:widget': 'switch',
       'ui:options': {
         label: t('email_registration.label'),
+      },
+    },
+    require_email_verification: {
+      'ui:widget': 'switch',
+      'ui:options': {
+        label: t('email_verification.label'),
       },
     },
     allow_password_login: {
@@ -105,6 +117,7 @@ const Index: FC = () => {
       allow_email_registrations: formData.allow_email_registrations.value,
       allow_email_domains: allowedEmailDomains,
       allow_password_login: formData.allow_password_login.value,
+      require_email_verification: formData.require_email_verification.value,
     };
 
     putLoginSetting(reqParams)
@@ -139,6 +152,8 @@ const Index: FC = () => {
             setting.allow_email_domains.join('\n');
         }
         formMeta.allow_password_login.value = setting.allow_password_login;
+        formMeta.require_email_verification.value =
+          setting.require_email_verification;
         setFormData({ ...formMeta });
       }
     });

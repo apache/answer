@@ -109,6 +109,7 @@ var migrations = []Migration{
 	NewMigration("v1.8.1", "ai feat", aiFeat, true),
 	NewMigration("v2.0.1", "change avatar type to text", updateAvatarType, false),
 	NewMigration("v2.0.2", "add reasoning content to ai conversation record", addAIConversationReasoningContent, false),
+	NewMigration("v2.0.3", "add require email verification login setting", addRequireEmailVerification, true),
 }
 
 func GetMigrations() []Migration {

@@ -2516,6 +2516,8 @@ definitions:
         type: boolean
       allow_password_login:
         type: boolean
+      require_email_verification:
+        type: boolean
     type: object
   schema.SiteLoginResp:
     properties:
@@ -2528,6 +2530,8 @@ definitions:
       allow_new_registrations:
         type: boolean
       allow_password_login:
+        type: boolean
+      require_email_verification:
         type: boolean
     type: object
   schema.SiteMCPReq:
