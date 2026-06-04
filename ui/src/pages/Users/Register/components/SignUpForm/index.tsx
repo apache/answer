@@ -23,14 +23,17 @@ import { Link } from 'react-router-dom';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { useCaptchaPlugin } from '@/utils/pluginKit';
-import type { FormDataType, RegisterReqParams } from '@/common/interface';
+import type {
+  FormDataType,
+  RegisterReqParams,
+  UserInfoRes,
+} from '@/common/interface';
 import { register } from '@/services';
-import userStore from '@/stores/loggedUserInfo';
 import { handleFormError, scrollToElementTop } from '@/utils';
 import { useLegalClick } from '@/behaviour/useLegalClick';
 
 interface Props {
-  callback: () => void;
+  callback: (user: UserInfoRes) => void;
 }
 
 const Index: React.FC<Props> = ({ callback }) => {
@@ -53,7 +56,6 @@ const Index: React.FC<Props> = ({ callback }) => {
     },
   });
 
-  const updateUser = userStore((state) => state.update);
   const emailCaptcha = useCaptchaPlugin('email');
   const nameRegex = /^[\w.-\s]{2,30}$/;
 
@@ -139,8 +141,7 @@ const Index: React.FC<Props> = ({ callback }) => {
     register(reqParams)
       .then(async (res) => {
         await emailCaptcha?.close();
-        updateUser(res);
-        callback();
+        callback(res);
       })
       .catch((err) => {
         if (err.isError) {

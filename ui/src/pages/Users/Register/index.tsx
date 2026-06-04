@@ -20,12 +20,14 @@
 import React, { useState } from 'react';
 import { Container, Col } from 'react-bootstrap';
 import { Trans, useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { usePageTags } from '@/hooks';
+import type * as Type from '@/common/interface';
 import { Unactivate, WelcomeTitle, PluginRender } from '@/components';
 import { guard } from '@/utils';
-import { loginSettingStore } from '@/stores';
+import { loggedUserInfoStore, loginSettingStore } from '@/stores';
+import { setupAppTheme } from '@/utils/localize';
 import { PluginType } from '@/utils/pluginKit/interface';
 
 import SignUpForm from './components/SignUpForm';
@@ -33,9 +35,17 @@ import SignUpForm from './components/SignUpForm';
 const Index: React.FC = () => {
   const [showForm, setShowForm] = useState(true);
   const { t } = useTranslation('translation', { keyPrefix: 'login' });
+  const navigate = useNavigate();
   const loginSetting = loginSettingStore((state) => state.login);
-  const onStep = () => {
-    setShowForm((bol) => !bol);
+  const updateUser = loggedUserInfoStore((state) => state.update);
+  const onRegister = (user: Type.UserInfoRes) => {
+    updateUser(user);
+    setupAppTheme();
+    if (user.mail_status === 2) {
+      setShowForm(false);
+      return;
+    }
+    guard.handleLoginRedirect(navigate);
   };
   usePageTags({
     title: t('sign_up', { keyPrefix: 'page_title' }),
@@ -60,7 +70,7 @@ const Index: React.FC = () => {
             slug_name="third_party_connector"
             className="mb-5"
           />
-          {showSignupForm ? <SignUpForm callback={onStep} /> : null}
+          {showSignupForm ? <SignUpForm callback={onRegister} /> : null}
           <div className="text-center mt-5">
             <Trans i18nKey="login.info_login" ns="translation">
               Already have an account? <Link to="/users/login">Log in</Link>

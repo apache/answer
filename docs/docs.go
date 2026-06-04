@@ -12096,6 +12096,9 @@ const docTemplate = `{
                 },
                 "allow_password_login": {
                     "type": "boolean"
+                },
+                "require_email_verification": {
+                    "type": "boolean"
                 }
             }
         },
@@ -12115,6 +12118,9 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "allow_password_login": {
+                    "type": "boolean"
+                },
+                "require_email_verification": {
                     "type": "boolean"
                 }
             }

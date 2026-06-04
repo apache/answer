@@ -12069,6 +12069,9 @@
                 },
                 "allow_password_login": {
                     "type": "boolean"
+                },
+                "require_email_verification": {
+                    "type": "boolean"
                 }
             }
         },
@@ -12088,6 +12091,9 @@
                     "type": "boolean"
                 },
                 "allow_password_login": {
+                    "type": "boolean"
+                },
+                "require_email_verification": {
                     "type": "boolean"
                 }
             }

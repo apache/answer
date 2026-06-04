@@ -2241,6 +2241,10 @@ ui:
         title: Email registration
         label: Allow email registration
         text: Turn off to prevent anyone creating new account through email.
+      email_verification:
+        title: Email verification
+        label: Require email verification
+        text: When enabled, users must verify their email address before using the site.
       allowed_email_domains:
         title: Allowed email domains
         text: Email domains that users must register accounts with. One domain per line. Ignored when empty.
@@ -2484,5 +2488,4 @@ ui:
     copy: Copy to clipboard
     copied: Copied
     external_content_warning: External images/media are not displayed.
-
 

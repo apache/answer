@@ -302,10 +302,11 @@ func splitLegalMenu(ctx context.Context, x *xorm.Engine) error {
 		PrivacyPolicyParsedText:    oldSiteLegal.PrivacyPolicyParsedText,
 	}
 	siteLogin := &schema.SiteLoginResp{
-		AllowNewRegistrations:   oldSiteLogin.AllowNewRegistrations,
-		AllowEmailRegistrations: oldSiteLogin.AllowEmailRegistrations,
-		AllowPasswordLogin:      oldSiteLogin.AllowPasswordLogin,
-		AllowEmailDomains:       oldSiteLogin.AllowEmailDomains,
+		AllowNewRegistrations:    oldSiteLogin.AllowNewRegistrations,
+		AllowEmailRegistrations:  oldSiteLogin.AllowEmailRegistrations,
+		AllowPasswordLogin:       oldSiteLogin.AllowPasswordLogin,
+		AllowEmailDomains:        oldSiteLogin.AllowEmailDomains,
+		RequireEmailVerification: true,
 	}
 	siteGeneral := &schema.SiteGeneralReq{
 		Name:             oldSiteGeneral.Name,
