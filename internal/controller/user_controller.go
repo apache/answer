@@ -279,7 +279,7 @@ func (uc *UserController) UserRegisterByEmail(ctx *gin.Context) {
 		handler.HandleResponse(ctx, errors.BadRequest(reason.EmailIllegalDomainError), nil)
 		return
 	}
-	applyEmailVerificationSetting(req, siteInfo)
+	req.RequireEmailVerification = siteInfo.RequireEmailVerification
 	req.IP = ctx.ClientIP()
 	isAdmin := middleware.GetUserIsAdminModerator(ctx)
 	if !isAdmin {
@@ -304,10 +304,6 @@ func (uc *UserController) UserRegisterByEmail(ctx *gin.Context) {
 	} else {
 		handler.HandleResponse(ctx, err, resp)
 	}
-}
-
-func applyEmailVerificationSetting(req *schema.UserRegisterReq, siteInfo *schema.SiteLoginResp) {
-	req.SkipEmailVerification = !siteInfo.RequireEmailVerification
 }
 
 // UserVerifyEmail godoc

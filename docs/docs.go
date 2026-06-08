@@ -12081,6 +12081,9 @@ const docTemplate = `{
         },
         "schema.SiteLoginReq": {
             "type": "object",
+            "required": [
+                "require_email_verification"
+            ],
             "properties": {
                 "allow_email_domains": {
                     "type": "array",

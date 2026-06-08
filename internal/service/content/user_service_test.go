@@ -29,11 +29,11 @@ import (
 )
 
 func TestApplyRegistrationVerification(t *testing.T) {
-	t.Run("enabled sends activation email and leaves user inactive", func(t *testing.T) {
+	t.Run("required sends activation email and leaves email pending", func(t *testing.T) {
 		userInfo := &entity.User{}
 		calls := map[string]int{}
 
-		err := applyRegistrationVerification(userInfo, false, registrationVerificationActions{
+		err := applyRegistrationVerification(userInfo, true, registrationVerificationActions{
 			sendActivationEmail: func() error {
 				calls["sendActivationEmail"]++
 				return nil
@@ -55,11 +55,11 @@ func TestApplyRegistrationVerification(t *testing.T) {
 		assert.Zero(t, calls["markEmailAvailable"])
 	})
 
-	t.Run("disabled activates once and marks email available", func(t *testing.T) {
+	t.Run("not required activates once and marks email available", func(t *testing.T) {
 		userInfo := &entity.User{}
 		calls := map[string]int{}
 
-		err := applyRegistrationVerification(userInfo, true, registrationVerificationActions{
+		err := applyRegistrationVerification(userInfo, false, registrationVerificationActions{
 			sendActivationEmail: func() error {
 				calls["sendActivationEmail"]++
 				return nil
@@ -81,11 +81,11 @@ func TestApplyRegistrationVerification(t *testing.T) {
 		assert.Equal(t, 1, calls["markEmailAvailable"])
 	})
 
-	t.Run("disabled user activation failure falls back to email verification", func(t *testing.T) {
+	t.Run("not required user activation failure falls back to email verification", func(t *testing.T) {
 		userInfo := &entity.User{}
 		calls := map[string]int{}
 
-		err := applyRegistrationVerification(userInfo, true, registrationVerificationActions{
+		err := applyRegistrationVerification(userInfo, false, registrationVerificationActions{
 			sendActivationEmail: func() error {
 				calls["sendActivationEmail"]++
 				return nil
@@ -107,11 +107,11 @@ func TestApplyRegistrationVerification(t *testing.T) {
 		assert.Zero(t, calls["markEmailAvailable"])
 	})
 
-	t.Run("disabled email status failure falls back to email verification", func(t *testing.T) {
+	t.Run("not required email status failure falls back to email verification", func(t *testing.T) {
 		userInfo := &entity.User{}
 		calls := map[string]int{}
 
-		err := applyRegistrationVerification(userInfo, true, registrationVerificationActions{
+		err := applyRegistrationVerification(userInfo, false, registrationVerificationActions{
 			sendActivationEmail: func() error {
 				calls["sendActivationEmail"]++
 				return nil
@@ -133,11 +133,11 @@ func TestApplyRegistrationVerification(t *testing.T) {
 		assert.Equal(t, 1, calls["markEmailAvailable"])
 	})
 
-	t.Run("fallback email failure returns before active status", func(t *testing.T) {
+	t.Run("fallback email failure returns before available email status", func(t *testing.T) {
 		userInfo := &entity.User{}
 		expectedErr := errors.New("email failed")
 
-		err := applyRegistrationVerification(userInfo, true, registrationVerificationActions{
+		err := applyRegistrationVerification(userInfo, false, registrationVerificationActions{
 			sendActivationEmail: func() error {
 				return expectedErr
 			},

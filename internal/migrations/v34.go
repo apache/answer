@@ -67,6 +67,8 @@ func backfillRequireEmailVerification(content string) (string, error) {
 	}
 
 	requireEmailVerification, exists := loginConfig["require_email_verification"]
+	// Legacy configs that predate this setting should keep the safer behavior.
+	// Treat a missing or null value as requiring email verification.
 	if !exists || bytes.Equal(bytes.TrimSpace(requireEmailVerification), []byte("null")) {
 		loginConfig["require_email_verification"] = json.RawMessage("true")
 	} else {

@@ -518,7 +518,7 @@ func (us *UserService) UserRegisterByEmail(ctx context.Context, registerUserInfo
 		log.Errorf("set default user notification config failed, err: %v", err)
 	}
 
-	err = applyRegistrationVerification(userInfo, registerUserInfo.SkipEmailVerification, registrationVerificationActions{
+	err = applyRegistrationVerification(userInfo, registerUserInfo.RequireEmailVerification, registrationVerificationActions{
 		sendActivationEmail: func() error {
 			return us.sendRegistrationActivationEmail(ctx, userInfo)
 		},
@@ -569,10 +569,10 @@ type registrationVerificationActions struct {
 }
 
 func applyRegistrationVerification(
-	userInfo *entity.User, skipEmailVerification bool, actions registrationVerificationActions,
+	userInfo *entity.User, requireEmailVerification bool, actions registrationVerificationActions,
 ) error {
 	userInfo.MailStatus = entity.EmailStatusToBeVerified
-	if !skipEmailVerification {
+	if requireEmailVerification {
 		return actions.sendActivationEmail()
 	}
 

@@ -28,7 +28,6 @@ import (
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/mock"
-	"github.com/apache/answer/internal/service/siteinfo_common"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
@@ -37,33 +36,17 @@ import (
 func TestSiteInfoService_SaveSiteLoginRequireEmailVerification(t *testing.T) {
 	tests := []struct {
 		name            string
-		currentContent  string
-		requestPayload  string
-		expectGet       bool
+		requireEmail    bool
 		expectedRequire bool
 	}{
 		{
-			name:            "omitted preserves normalized default",
-			currentContent:  `{"allow_new_registrations":true,"allow_email_registrations":true,"allow_password_login":true}`,
-			requestPayload:  `{"allow_new_registrations":true,"allow_email_registrations":true,"allow_password_login":true,"allow_email_domains":[]}`,
-			expectGet:       true,
-			expectedRequire: true,
-		},
-		{
-			name:            "omitted preserves current false",
-			currentContent:  `{"allow_new_registrations":true,"allow_email_registrations":true,"allow_password_login":true,"require_email_verification":false}`,
-			requestPayload:  `{"allow_new_registrations":true,"allow_email_registrations":true,"allow_password_login":true,"allow_email_domains":[]}`,
-			expectGet:       true,
-			expectedRequire: false,
-		},
-		{
-			name:            "null normalizes true",
-			requestPayload:  `{"allow_new_registrations":true,"allow_email_registrations":true,"allow_password_login":true,"allow_email_domains":[],"require_email_verification":null}`,
+			name:            "explicit true persists true",
+			requireEmail:    true,
 			expectedRequire: true,
 		},
 		{
 			name:            "explicit false persists false",
-			requestPayload:  `{"allow_new_registrations":true,"allow_email_registrations":true,"allow_password_login":true,"allow_email_domains":[],"require_email_verification":false}`,
+			requireEmail:    false,
 			expectedRequire: false,
 		},
 	}
@@ -74,11 +57,6 @@ func TestSiteInfoService_SaveSiteLoginRequireEmailVerification(t *testing.T) {
 			defer ctl.Finish()
 
 			repo := mock.NewMockSiteInfoRepo(ctl)
-			if tt.expectGet {
-				repo.EXPECT().GetByType(gomock.Any(), constant.SiteTypeLogin).
-					Return(&entity.SiteInfo{Content: tt.currentContent}, true, nil)
-			}
-
 			var savedContent string
 			repo.EXPECT().SaveByType(gomock.Any(), constant.SiteTypeLogin, gomock.Any()).
 				DoAndReturn(func(_ context.Context, _ string, data *entity.SiteInfo) error {
@@ -86,12 +64,15 @@ func TestSiteInfoService_SaveSiteLoginRequireEmailVerification(t *testing.T) {
 					return nil
 				})
 
-			req := &schema.SiteLoginReq{}
-			require.NoError(t, json.Unmarshal([]byte(tt.requestPayload), req))
-
 			service := &SiteInfoService{
-				siteInfoRepo:          repo,
-				siteInfoCommonService: siteinfo_common.NewSiteInfoCommonService(repo),
+				siteInfoRepo: repo,
+			}
+			req := &schema.SiteLoginReq{
+				AllowNewRegistrations:    true,
+				AllowEmailRegistrations:  true,
+				AllowPasswordLogin:       true,
+				AllowEmailDomains:        []string{},
+				RequireEmailVerification: &tt.requireEmail,
 			}
 			require.NoError(t, service.SaveSiteLogin(context.TODO(), req))
 			assert.NotContains(t, savedContent, `"require_email_verification":null`)
@@ -101,4 +82,16 @@ func TestSiteInfoService_SaveSiteLoginRequireEmailVerification(t *testing.T) {
 			assert.Equal(t, tt.expectedRequire, saved.RequireEmailVerification)
 		})
 	}
+}
+
+func TestSiteInfoService_SaveSiteLoginRequiresEmailVerificationValue(t *testing.T) {
+	service := &SiteInfoService{}
+	req := &schema.SiteLoginReq{
+		AllowNewRegistrations:   true,
+		AllowEmailRegistrations: true,
+		AllowPasswordLogin:      true,
+		AllowEmailDomains:       []string{},
+	}
+
+	require.Error(t, service.SaveSiteLogin(context.TODO(), req))
 }

@@ -291,17 +291,8 @@ func (s *SiteInfoService) SaveSiteSecurity(ctx context.Context, req *schema.Site
 
 // SaveSiteLogin save site legal configuration
 func (s *SiteInfoService) SaveSiteLogin(ctx context.Context, req *schema.SiteLoginReq) (err error) {
-	requireEmailVerification := true
-	if req.RequireEmailVerification.Set {
-		if !req.RequireEmailVerification.Null {
-			requireEmailVerification = req.RequireEmailVerification.Value
-		}
-	} else {
-		currentLogin, err := s.GetSiteLogin(ctx)
-		if err != nil {
-			return err
-		}
-		requireEmailVerification = currentLogin.RequireEmailVerification
+	if req.RequireEmailVerification == nil {
+		return errors.BadRequest(reason.RequestFormatError)
 	}
 
 	loginConfig := &schema.SiteLoginResp{
@@ -309,7 +300,7 @@ func (s *SiteInfoService) SaveSiteLogin(ctx context.Context, req *schema.SiteLog
 		AllowEmailRegistrations:  req.AllowEmailRegistrations,
 		AllowPasswordLogin:       req.AllowPasswordLogin,
 		AllowEmailDomains:        req.AllowEmailDomains,
-		RequireEmailVerification: requireEmailVerification,
+		RequireEmailVerification: *req.RequireEmailVerification,
 	}
 	content, _ := json.Marshal(loginConfig)
 	data := &entity.SiteInfo{
