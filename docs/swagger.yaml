@@ -2518,6 +2518,8 @@ definitions:
         type: boolean
       require_email_verification:
         type: boolean
+    required:
+    - require_email_verification
     type: object
   schema.SiteLoginResp:
     properties:
