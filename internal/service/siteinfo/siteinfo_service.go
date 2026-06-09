@@ -39,7 +39,10 @@ import (
 	"github.com/apache/answer/internal/service/siteinfo_common"
 	tagcommon "github.com/apache/answer/internal/service/tag_common"
 	"github.com/apache/answer/plugin"
+	"net/http"
+
 	"github.com/go-resty/resty/v2"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"github.com/jinzhu/copier"
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
@@ -724,6 +727,7 @@ func (s *SiteInfoService) GetAIModels(ctx context.Context, req *schema.GetAIMode
 	}
 
 	r := resty.New()
+	r.SetTransport(otelhttp.NewTransport(http.DefaultTransport))
 	r.SetHeader("Authorization", fmt.Sprintf("Bearer %s", req.APIKey))
 	r.SetHeader("Content-Type", "application/json")
 	respBody, err := r.R().Get(req.APIHost + "/v1/models")

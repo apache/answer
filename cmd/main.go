@@ -29,6 +29,7 @@ import (
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/cron"
 	"github.com/apache/answer/internal/base/path"
+	"github.com/apache/answer/internal/telemetry"
 	"github.com/apache/answer/internal/schema"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -77,15 +78,19 @@ func runApp() {
 	if err != nil {
 		panic(err)
 	}
+	constant.Version = Version
+	constant.Revision = Revision
+	constant.GoVersion = GoVersion
+	schema.AppStartTime = time.Now()
+
+	providers := telemetry.SetupTelemetry(Version)
+	defer providers.Closer()
+
 	app, cleanup, err := initApplication(
 		c.Debug, c.Server, c.Data.Database, c.Data.Cache, c.I18n, c.Swaggerui, c.ServiceConfig, c.UI, log.GetLogger())
 	if err != nil {
 		panic(err)
 	}
-	constant.Version = Version
-	constant.Revision = Revision
-	constant.GoVersion = GoVersion
-	schema.AppStartTime = time.Now()
 	fmt.Println("answer Version:", constant.Version, " Revision:", constant.Revision)
 
 	defer cleanup()

@@ -26,6 +26,7 @@ import (
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/activityqueue"
+	"github.com/apache/answer/internal/telemetry"
 	"github.com/apache/answer/pkg/converter"
 	"github.com/apache/answer/pkg/uid"
 	"github.com/segmentfault/pacman/log"
@@ -61,7 +62,8 @@ func NewActivityCommon(
 		activityRepo:         activityRepo,
 		activityQueueService: activityQueueService,
 	}
-	activity.activityQueueService.RegisterHandler(activity.HandleActivity)
+	activity.activityQueueService.RegisterHandler(
+		telemetry.WrapQueueHandler("activityqueue process", "activity", activity.HandleActivity))
 	return activity
 }
 

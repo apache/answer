@@ -33,6 +33,7 @@ import (
 	usercommon "github.com/apache/answer/internal/service/user_common"
 	"github.com/apache/answer/internal/service/user_external_login"
 	"github.com/apache/answer/internal/service/user_notification_config"
+	"github.com/apache/answer/internal/telemetry"
 	"github.com/segmentfault/pacman/log"
 )
 
@@ -67,7 +68,8 @@ func NewExternalNotificationService(
 		userExternalLoginRepo:      userExternalLoginRepo,
 		siteInfoService:            siteInfoService,
 	}
-	notificationQueueService.RegisterHandler(n.Handler)
+	notificationQueueService.RegisterHandler(
+		telemetry.WrapQueueHandler("noticequeue process", "notification", n.Handler))
 	return n
 }
 

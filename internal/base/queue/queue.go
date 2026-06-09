@@ -24,7 +24,15 @@ import (
 	"sync"
 
 	"github.com/segmentfault/pacman/log"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
 )
+
+// carrierMsg is implemented by message types that carry a propagation carrier map.
+type carrierMsg interface {
+	getPropagationCarrier() map[string]string
+	initPropagationCarrier() map[string]string
+}
 
 type Service[T any] interface {
 	// Send enqueues a message to be processed asynchronously.
@@ -67,6 +75,11 @@ func (q *Queue[T]) Send(ctx context.Context, msg T) {
 	if q.closed {
 		log.Warnf("[%s] queue is closed, dropping message", q.name)
 		return
+	}
+
+	if cm, ok := any(msg).(carrierMsg); ok {
+		carrier := cm.initPropagationCarrier()
+		otel.GetTextMapPropagator().Inject(ctx, propagation.MapCarrier(carrier))
 	}
 
 	select {
@@ -122,9 +135,14 @@ func (q *Queue[T]) processMessage(msg T) {
 		return
 	}
 
-	// Use background context for async processing
-	// TODO: Consider adding timeout or using a derived context
-	if err := handler(context.TODO(), msg); err != nil {
+	ctx := context.Background()
+	if cm, ok := any(msg).(carrierMsg); ok {
+		if carrier := cm.getPropagationCarrier(); carrier != nil {
+			ctx = otel.GetTextMapPropagator().Extract(ctx, propagation.MapCarrier(carrier))
+		}
+	}
+
+	if err := handler(ctx, msg); err != nil {
 		log.Errorf("[%s] handler error: %v", q.name, err)
 	}
 }

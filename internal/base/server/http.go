@@ -22,16 +22,40 @@ package server
 import (
 	"html/template"
 	"io/fs"
+	"net/http"
 	"os"
 	"strings"
 
 	brotli "github.com/anargu/gin-brotli"
 	"github.com/apache/answer/internal/base/middleware"
 	"github.com/apache/answer/internal/router"
+	"github.com/apache/answer/internal/telemetry"
 	"github.com/apache/answer/plugin"
 	"github.com/apache/answer/ui"
 	"github.com/gin-gonic/gin"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 )
+
+// suppressedRoutes returns false for routes that should not be traced.
+func suppressedRoutes(req *http.Request) bool {
+	p := req.URL.Path
+	return !strings.HasPrefix(p, "/swagger/") &&
+		!strings.HasPrefix(p, "/uploads/posts/") &&
+		!isSsrRoute(p)
+}
+
+func isSsrRoute(p string) bool {
+	return p == "/" ||
+		strings.HasPrefix(p, "/questions") ||
+		strings.HasPrefix(p, "/tags") ||
+		strings.HasPrefix(p, "/users") ||
+		strings.HasPrefix(p, "/sitemap") ||
+		strings.HasPrefix(p, "/robots.txt") ||
+		strings.HasPrefix(p, "/custom.css") ||
+		strings.HasPrefix(p, "/opensearch.xml") ||
+		strings.HasPrefix(p, "/404") ||
+		strings.HasPrefix(p, "/static")
+}
 
 // NewHTTPServer new http server.
 func NewHTTPServer(debug bool,
@@ -52,6 +76,7 @@ func NewHTTPServer(debug bool,
 		gin.SetMode(gin.ReleaseMode)
 	}
 	r := gin.New()
+	r.Use(otelgin.Middleware(telemetry.ServiceName, otelgin.WithFilter(suppressedRoutes)))
 	r.Use(func(ctx *gin.Context) {
 		if strings.Contains(ctx.Request.URL.Path, "/chat/completions") {
 			return

@@ -617,7 +617,7 @@ func (us *UserAdminService) SendUserActivation(ctx context.Context, req *schema.
 	if err != nil {
 		return err
 	}
-	go us.emailService.SendAndSaveCode(ctx, userInfo.ID, userInfo.EMail, title, body, code, data.ToJSONString())
+	go us.emailService.SendAndSaveCode(export.WithEmailType(ctx, "verification"), userInfo.ID, userInfo.EMail, title, body, code, data.ToJSONString())
 	return nil
 }
 

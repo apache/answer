@@ -1,0 +1,62 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: "0.0.0.0:4317"
+      http:
+        endpoint: "0.0.0.0:4318"
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 512
+
+  batch:
+    timeout: 5s
+    send_batch_size: 512
+
+  filter/suppress_noise:
+    error_mode: ignore
+    traces:
+      span:
+        - 'attributes["http.route"] == "/swagger/*any"'
+        - 'attributes["http.route"] == "/uploads/posts/*filepath"'
+
+  attributes/redact:
+    actions:
+      - key: "http.request.header.authorization"
+        action: delete
+      - key: "http.request.header.cookie"
+        action: delete
+      - key: "db.query.text"
+        action: delete
+
+  tail_sampling:
+    decision_wait: 10s
+    policies:
+      - name: errors
+        type: status_code
+        status_code: { status_codes: [ERROR] }
+      - name: slow_requests
+        type: latency
+        latency: { threshold_ms: 2000 }
+      - name: base_rate
+        type: probabilistic
+        probabilistic: { sampling_percentage: 10 }
+
+exporters:
+  otlphttp:
+    endpoint: "${BACKEND_OTLP_ENDPOINT}"
+    headers:
+      authorization: "${BACKEND_AUTH_HEADER}"
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, batch, filter/suppress_noise, attributes/redact, tail_sampling]
+      exporters: [otlphttp]
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [otlphttp]

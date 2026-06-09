@@ -40,7 +40,8 @@ type EventMsg struct {
 	CommentID     string
 	CommentUserID string
 
-	ExtraInfo map[string]string
+	ExtraInfo          map[string]string
+	PropagationCarrier map[string]string
 }
 
 // NewEvent create a new event
@@ -111,4 +112,12 @@ func (e *EventMsg) GetObjectID() string {
 		return e.AnswerID
 	}
 	return e.QuestionID
+}
+
+func (e *EventMsg) getPropagationCarrier() map[string]string { return e.PropagationCarrier }
+func (e *EventMsg) initPropagationCarrier() map[string]string {
+	if e.PropagationCarrier == nil {
+		e.PropagationCarrier = make(map[string]string)
+	}
+	return e.PropagationCarrier
 }

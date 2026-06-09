@@ -25,6 +25,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"net/url"
 	"time"
 
@@ -266,7 +268,7 @@ func (ds *dashboardService) voteCount(ctx context.Context) int64 {
 func (ds *dashboardService) remoteVersion(_ context.Context) string {
 	req, _ := http.NewRequest("GET", "https://answer.apache.org/data/latest.json?from_version="+constant.Version, nil)
 	req.Header.Set("User-Agent", "Answer/"+constant.Version)
-	httpClient := &http.Client{}
+	httpClient := &http.Client{Transport: otelhttp.NewTransport(http.DefaultTransport)}
 	httpClient.Timeout = 15 * time.Second
 	resp, err := httpClient.Do(req)
 	if err != nil {

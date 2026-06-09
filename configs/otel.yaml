@@ -1,0 +1,36 @@
+file_format: "1.0-rc.2"
+disabled: false
+
+resource:
+  attributes:
+    - name: service.name
+      value: ${SERVICE_NAME:-answer}
+    - name: deployment.environment.name
+      value: ${DEPLOY_ENV:-production}
+
+propagator:
+  composite:
+    - tracecontext:
+    - baggage:
+
+tracer_provider:
+  processors:
+    - batch:
+        max_queue_size: 512
+        export_timeout: 5000
+        exporter:
+          otlp_grpc:
+            endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:-http://localhost:4317}
+  sampler:
+    parent_based:
+      root:
+        trace_id_ratio_based:
+          ratio: 0.1
+
+meter_provider:
+  readers:
+    - periodic:
+        interval: 60000
+        exporter:
+          otlp_grpc:
+            endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:-http://localhost:4317}

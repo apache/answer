@@ -236,7 +236,7 @@ func (us *UserService) RetrievePassWord(ctx context.Context, req *schema.UserRet
 	if err != nil {
 		return err
 	}
-	go us.emailService.SendAndSaveCode(ctx, userInfo.ID, req.Email, title, body, code, data.ToJSONString())
+	go us.emailService.SendAndSaveCode(export.WithEmailType(ctx, "password_reset"), userInfo.ID, req.Email, title, body, code, data.ToJSONString())
 	return nil
 }
 
@@ -529,7 +529,7 @@ func (us *UserService) UserRegisterByEmail(ctx context.Context, registerUserInfo
 	if err != nil {
 		return nil, nil, err
 	}
-	go us.emailService.SendAndSaveCode(ctx, userInfo.ID, userInfo.EMail, title, body, code, data.ToJSONString())
+	go us.emailService.SendAndSaveCode(export.WithEmailType(ctx, "verification"), userInfo.ID, userInfo.EMail, title, body, code, data.ToJSONString())
 
 	roleID, err := us.userRoleService.GetUserRole(ctx, userInfo.ID)
 	if err != nil {
@@ -579,7 +579,7 @@ func (us *UserService) UserVerifyEmailSend(ctx context.Context, userID string) e
 	if err != nil {
 		return err
 	}
-	go us.emailService.SendAndSaveCode(ctx, userInfo.ID, userInfo.EMail, title, body, code, data.ToJSONString())
+	go us.emailService.SendAndSaveCode(export.WithEmailType(ctx, "verification"), userInfo.ID, userInfo.EMail, title, body, code, data.ToJSONString())
 	return nil
 }
 
@@ -701,7 +701,7 @@ func (us *UserService) UserChangeEmailSendCode(ctx context.Context, req *schema.
 	}
 	log.Infof("send email confirmation %s", verifyEmailURL)
 
-	go us.emailService.SendAndSaveCode(ctx, userInfo.ID, req.Email, title, body, code, data.ToJSONString())
+	go us.emailService.SendAndSaveCode(export.WithEmailType(ctx, "verification"), userInfo.ID, req.Email, title, body, code, data.ToJSONString())
 	return nil, nil
 }
 

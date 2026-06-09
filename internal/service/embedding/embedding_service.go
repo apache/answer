@@ -23,7 +23,11 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/apache/answer/internal/telemetry"
 	"github.com/apache/answer/plugin"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 )
 
 // EmbeddingService is a thin facade that delegates semantic search to a VectorSearch plugin.
@@ -38,6 +42,14 @@ func NewEmbeddingService() *EmbeddingService {
 // SearchSimilar delegates to the VectorSearch plugin.
 // Returns an error if no plugin is enabled.
 func (s *EmbeddingService) SearchSimilar(ctx context.Context, query string, topK int) ([]plugin.VectorSearchResult, error) {
+	_, span := otel.Tracer(telemetry.Scope).Start(ctx, "vector_search query")
+	span.SetAttributes(
+		attribute.String("db.system.name", "vector_database"),
+		attribute.String("db.operation.name", "search_similar"),
+		attribute.Int("answer.vector_search.top_k", topK),
+	)
+	defer span.End()
+
 	var results []plugin.VectorSearchResult
 	var searchErr error
 	found := false
@@ -48,12 +60,18 @@ func (s *EmbeddingService) SearchSimilar(ctx context.Context, query string, topK
 		return nil
 	})
 	if err != nil {
+		span.SetStatus(codes.Error, "")
+		span.SetAttributes(attribute.String("error.type", "plugin_unavailable"))
 		return nil, fmt.Errorf("call vector search plugin failed: %w", err)
 	}
 	if !found {
+		span.SetStatus(codes.Error, "")
+		span.SetAttributes(attribute.String("error.type", "plugin_unavailable"))
 		return nil, fmt.Errorf("semantic search is not available: no vector search plugin is enabled")
 	}
 	if searchErr != nil {
+		span.SetStatus(codes.Error, "")
+		span.SetAttributes(attribute.String("error.type", "search_error"))
 		return nil, searchErr
 	}
 	return results, nil

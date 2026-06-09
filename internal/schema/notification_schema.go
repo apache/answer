@@ -92,6 +92,7 @@ type NotificationMsg struct {
 	NoNeedPushAllFollow bool
 	// extra info
 	ExtraInfo map[string]string
+	PropagationCarrier map[string]string
 }
 
 type ObjectInfo struct {
@@ -189,4 +190,22 @@ type NotificationClearRequest struct {
 type NotificationClearIDRequest struct {
 	UserID string `json:"-"`
 	ID     string `json:"id" form:"id"`
+}
+
+func (m *NotificationMsg) getPropagationCarrier() map[string]string { return m.PropagationCarrier }
+func (m *NotificationMsg) initPropagationCarrier() map[string]string {
+	if m.PropagationCarrier == nil {
+		m.PropagationCarrier = make(map[string]string)
+	}
+	return m.PropagationCarrier
+}
+
+func (m *ExternalNotificationMsg) getPropagationCarrier() map[string]string {
+	return m.PropagationCarrier
+}
+func (m *ExternalNotificationMsg) initPropagationCarrier() map[string]string {
+	if m.PropagationCarrier == nil {
+		m.PropagationCarrier = make(map[string]string)
+	}
+	return m.PropagationCarrier
 }

@@ -33,6 +33,7 @@ type ExternalNotificationMsg struct {
 	NewInviteAnswerTemplateRawData *NewInviteAnswerTemplateRawData `json:"new_invite_answer_template_raw_data,omitempty"`
 	NewCommentTemplateRawData      *NewCommentTemplateRawData      `json:"new_comment_template_raw_data,omitempty"`
 	NewQuestionTemplateRawData     *NewQuestionTemplateRawData     `json:"new_question_template_raw_data,omitempty"`
+	PropagationCarrier             map[string]string               `json:"-"`
 }
 
 func CreateNewQuestionNotificationMsg(

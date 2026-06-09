@@ -30,9 +30,16 @@ type ActivityMsg struct {
 	ActivityTypeKey  constant.ActivityTypeKey
 	RevisionID       string
 	ExtraInfo        map[string]string
+	PropagationCarrier map[string]string
 }
 
-// GetObjectTimelineReq get object timeline request
+func (m *ActivityMsg) getPropagationCarrier() map[string]string { return m.PropagationCarrier }
+func (m *ActivityMsg) initPropagationCarrier() map[string]string {
+	if m.PropagationCarrier == nil {
+		m.PropagationCarrier = make(map[string]string)
+	}
+	return m.PropagationCarrier
+}
 type GetObjectTimelineReq struct {
 	ObjectID         string `validate:"omitempty,gt=0,lte=100" form:"object_id"`
 	ShowVote         bool   `validate:"omitempty" form:"show_vote"`

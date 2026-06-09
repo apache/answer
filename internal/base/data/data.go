@@ -23,15 +23,20 @@ import (
 	"path/filepath"
 	"time"
 
+	"database/sql"
+
 	"github.com/apache/answer/pkg/dir"
 	"github.com/apache/answer/plugin"
+	otelsql "github.com/XSAM/otelsql"
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
+	semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
 	"github.com/segmentfault/pacman/cache"
 	"github.com/segmentfault/pacman/contrib/cache/memory"
 	"github.com/segmentfault/pacman/log"
 	_ "modernc.org/sqlite"
 	"xorm.io/xorm"
+	"xorm.io/xorm/core"
 	ormlog "xorm.io/xorm/log"
 	"xorm.io/xorm/names"
 	"xorm.io/xorm/schemas"
@@ -41,6 +46,22 @@ import (
 type Data struct {
 	DB    *xorm.Engine
 	Cache cache.Cache
+}
+
+// openOtelWrappedDB opens a *sql.DB with OTel instrumentation while preserving the
+// original driver name so xorm can determine the correct SQL dialect.
+func openOtelWrappedDB(driver, dsn string) (*sql.DB, error) {
+	var opts []otelsql.Option
+	switch driver {
+	case "mysql":
+		opts = append(opts, otelsql.WithAttributes(semconv.DBSystemMySQL))
+	case "postgres":
+		opts = append(opts, otelsql.WithAttributes(semconv.DBSystemPostgreSQL))
+	case "sqlite":
+		opts = append(opts, otelsql.WithAttributes(semconv.DBSystemSqlite))
+	}
+	opts = append(opts, otelsql.WithSpanOptions(otelsql.SpanOptions{DisableQuery: true}))
+	return otelsql.Open(driver, dsn, opts...)
 }
 
 // NewData new data instance
@@ -66,7 +87,15 @@ func NewDB(debug bool, dataConf *Database) (*xorm.Engine, error) {
 		}
 		dataConf.MaxOpenConn = 1
 	}
-	engine, err := xorm.NewEngine(dataConf.Driver, dataConf.Connection)
+
+	sqlDB, err := openOtelWrappedDB(dataConf.Driver, dataConf.Connection)
+	if err != nil {
+		log.Warnf("otelsql: failed to open instrumented db for driver %q: %v", dataConf.Driver, err)
+		// fall back to plain engine
+		return xorm.NewEngine(dataConf.Driver, dataConf.Connection)
+	}
+
+	engine, err := xorm.NewEngineWithDB(dataConf.Driver, dataConf.Connection, core.FromDB(sqlDB))
 	if err != nil {
 		return nil, err
 	}

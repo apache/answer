@@ -25,9 +25,14 @@ import (
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/base/queue"
 	"github.com/apache/answer/internal/repo/vector_search_sync"
+	"github.com/apache/answer/internal/telemetry"
 	"github.com/apache/answer/pkg/uid"
 	"github.com/apache/answer/plugin"
 	"github.com/segmentfault/pacman/log"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
+	"go.opentelemetry.io/otel/trace"
 )
 
 const (
@@ -41,9 +46,10 @@ const (
 const maxRetry = 3
 
 type Task struct {
-	Action     string
-	ObjectType string
-	ObjectID   string
+	Action             string
+	ObjectType         string
+	ObjectID           string
+	PropagationCarrier map[string]string
 }
 
 type Service queue.Service[*Task]
@@ -51,12 +57,33 @@ type Service queue.Service[*Task]
 func NewService(data *data.Data) Service {
 	q := queue.New[*Task]("vector_sync", 128)
 	q.RegisterHandler(func(ctx context.Context, msg *Task) error {
-		return handle(ctx, data, msg)
+		return handleWithSpan(ctx, data, msg)
 	})
 	return q
 }
 
-func handle(ctx context.Context, data *data.Data, msg *Task) error {
+func handleWithSpan(ctx context.Context, data *data.Data, msg *Task) error {
+	link := trace.Link{SpanContext: trace.SpanContextFromContext(ctx)}
+	ctx, span := otel.Tracer(telemetry.Scope).Start(context.Background(), "vector_sync process",
+		trace.WithSpanKind(trace.SpanKindConsumer),
+		trace.WithLinks(link),
+	)
+	span.SetAttributes(
+		attribute.String("messaging.system", "inproc"),
+		attribute.String("messaging.destination.name", "vector_sync"),
+		attribute.String("messaging.operation.type", "process"),
+	)
+	defer span.End()
+
+	err := handle(ctx, data, msg, span)
+	if err != nil {
+		span.SetStatus(codes.Error, "")
+		span.SetAttributes(attribute.String("error.type", "handler_error"))
+	}
+	return err
+}
+
+func handle(ctx context.Context, data *data.Data, msg *Task, span trace.Span) error {
 	if msg == nil || msg.ObjectID == "" {
 		return nil
 	}
@@ -73,6 +100,7 @@ func handle(ctx context.Context, data *data.Data, msg *Task) error {
 	objectID := uid.DeShortID(msg.ObjectID)
 	var lastErr error
 	for attempt := 1; attempt <= maxRetry; attempt++ {
+		span.SetAttributes(attribute.Int("answer.queue.retry_count", attempt-1))
 		err := handleOnce(ctx, data, vectorSearch, msg.Action, msg.ObjectType, objectID)
 		if err == nil {
 			return nil
@@ -112,4 +140,12 @@ func handleOnce(ctx context.Context, data *data.Data, vectorSearch plugin.Vector
 		return vectorSearch.DeleteContent(ctx, objectID)
 	}
 	return vectorSearch.UpdateContent(ctx, content)
+}
+
+func (t *Task) getPropagationCarrier() map[string]string { return t.PropagationCarrier }
+func (t *Task) initPropagationCarrier() map[string]string {
+	if t.PropagationCarrier == nil {
+		t.PropagationCarrier = make(map[string]string)
+	}
+	return t.PropagationCarrier
 }

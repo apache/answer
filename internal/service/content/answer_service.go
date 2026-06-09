@@ -50,6 +50,8 @@ import (
 	"github.com/apache/answer/pkg/uid"
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 )
 
 // AnswerService user service
@@ -481,6 +483,10 @@ func (as *AnswerService) AcceptAnswer(ctx context.Context, req *schema.AcceptAns
 	if err = as.answerRepo.UpdateAcceptedStatus(ctx, req.AnswerID, req.QuestionID); err != nil {
 		return err
 	}
+	trace.SpanFromContext(ctx).SetAttributes(
+		attribute.String("answer.content.type", "answer"),
+		attribute.String("answer.answer.action", "accepted"),
+	)
 
 	// update question status
 	err = as.questionCommon.UpdateAccepted(ctx, req.QuestionID, req.AnswerID)

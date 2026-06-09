@@ -36,6 +36,7 @@ import (
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/activity_common"
 	"github.com/apache/answer/internal/service/noticequeue"
+	"github.com/apache/answer/internal/telemetry"
 	"github.com/apache/answer/internal/service/object_info"
 	usercommon "github.com/apache/answer/internal/service/user_common"
 	"github.com/apache/answer/pkg/uid"
@@ -93,7 +94,8 @@ func NewNotificationCommon(
 		userExternalLoginRepo:    userExternalLoginRepo,
 		siteInfoService:          siteInfoService,
 	}
-	notificationQueueService.RegisterHandler(notification.AddNotification)
+	notificationQueueService.RegisterHandler(
+		telemetry.WrapQueueHandler("noticequeue process", "notification", notification.AddNotification))
 	return notification
 }
 

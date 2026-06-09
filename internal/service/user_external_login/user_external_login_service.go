@@ -328,11 +328,10 @@ func (us *UserExternalLoginService) ExternalLoginBindingUserSendEmail(
 	if err != nil {
 		return nil, err
 	}
-	go us.emailService.SendAndSaveCode(ctx, userInfo.ID, userInfo.EMail, title, body, code, data.ToJSONString())
+	go us.emailService.SendAndSaveCode(export.WithEmailType(ctx, "verification"), userInfo.ID, userInfo.EMail, title, body, code, data.ToJSONString())
 	return resp, nil
 }
 
-// ExternalLoginBindingUser
 // The user clicks on the email link of the bound account and requests the API to bind the user officially
 func (us *UserExternalLoginService) ExternalLoginBindingUser(
 	ctx context.Context, bindingKey string, oldUserInfo *entity.User) (err error) {

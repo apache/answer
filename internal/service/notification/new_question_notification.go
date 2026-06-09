@@ -27,6 +27,7 @@ import (
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/translator"
 	"github.com/apache/answer/internal/schema"
+	"github.com/apache/answer/internal/service/export"
 	"github.com/apache/answer/pkg/display"
 	"github.com/apache/answer/pkg/token"
 	"github.com/apache/answer/plugin"
@@ -194,7 +195,7 @@ func (ns *ExternalNotificationService) sendNewQuestionNotificationEmail(ctx cont
 		SkipValidationLatestCode: true,
 	}
 	ns.emailService.SendAndSaveCodeWithTime(
-		ctx, userInfo.ID, userInfo.EMail, title, body, rawData.UnsubscribeCode, codeContent.ToJSONString(), 1*24*time.Hour)
+		export.WithEmailType(ctx, "follow_notification"), userInfo.ID, userInfo.EMail, title, body, rawData.UnsubscribeCode, codeContent.ToJSONString(), 1*24*time.Hour)
 }
 
 func (ns *ExternalNotificationService) syncNewQuestionNotificationToPlugin(ctx context.Context,

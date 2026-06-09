@@ -64,6 +64,8 @@ import (
 	"github.com/jinzhu/copier"
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 	"golang.org/x/net/context"
 )
 
@@ -390,6 +392,10 @@ func (qs *QuestionService) AddQuestion(ctx context.Context, req *schema.Question
 	if err != nil {
 		return
 	}
+	trace.SpanFromContext(ctx).SetAttributes(
+		attribute.String("answer.content.type", "question"),
+		attribute.Bool("answer.question.has_new_tag", len(tags) < len(tagNameList)),
+	)
 	question.Status = qs.reviewService.AddQuestionReview(ctx, question, req.Tags, req.IP, req.UserAgent)
 	if err := qs.questionRepo.UpdateQuestionStatus(ctx, question.ID, question.Status); err != nil {
 		return nil, err

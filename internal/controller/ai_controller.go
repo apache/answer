@@ -42,6 +42,7 @@ import (
 	"github.com/apache/answer/internal/service/siteinfo_common"
 	tagcommonser "github.com/apache/answer/internal/service/tag_common"
 	usercommon "github.com/apache/answer/internal/service/user_common"
+	"github.com/apache/answer/internal/telemetry"
 	"github.com/apache/answer/pkg/token"
 	"github.com/gin-gonic/gin"
 	"github.com/mark3labs/mcp-go/mcp"
@@ -49,6 +50,10 @@ import (
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/i18n"
 	"github.com/segmentfault/pacman/log"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
+	semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
 )
 
 type AIController struct {
@@ -470,10 +475,21 @@ func (c *AIController) handleAIConversation(ctx *gin.Context, w http.ResponseWri
 
 // processAIStream
 func (c *AIController) processAIStream(
-	_ *gin.Context, w http.ResponseWriter, id, model string, client *openai.Client, aiReq openai.ChatCompletionRequest, messages []openai.ChatCompletionMessage) (
+	gctx *gin.Context, w http.ResponseWriter, id, model string, client *openai.Client, aiReq openai.ChatCompletionRequest, messages []openai.ChatCompletionMessage) (
 	[]openai.ToolCall, []openai.ChatCompletionMessage, bool, string) {
+	spanCtx := gctx.Request.Context()
+	_, llmSpan := otel.Tracer(telemetry.Scope).Start(spanCtx, "llm.chat_completions")
+	llmSpan.SetAttributes(
+		semconv.GenAiSystemOpenai,
+		semconv.GenAiRequestModelKey.String(model),
+		attribute.String("gen_ai.operation.name", "chat"),
+	)
+	defer llmSpan.End()
+
 	stream, err := client.CreateChatCompletionStream(context.Background(), aiReq)
 	if err != nil {
+		llmSpan.SetStatus(codes.Error, "")
+		llmSpan.SetAttributes(attribute.String("error.type", classifyLLMError(err)))
 		log.Errorf("Failed to create stream: %v", err)
 		c.sendErrorResponse(w, id, model, "Failed to create AI stream")
 		return nil, messages, true, ""
@@ -760,4 +776,26 @@ func (c *AIController) callMCPTool(ctx context.Context, toolName string, argumen
 	}
 
 	return "No result found", nil
+}
+
+func classifyLLMError(err error) string {
+	if err == nil {
+		return ""
+	}
+	if apiErr, ok := err.(*openai.APIError); ok {
+		switch apiErr.HTTPStatusCode {
+		case 429:
+			return "rate_limit"
+		case 401, 403:
+			return "authentication"
+		case 408, 504:
+			return "timeout"
+		default:
+			return "server_error"
+		}
+	}
+	if strings.Contains(err.Error(), "timeout") || strings.Contains(err.Error(), "context deadline") {
+		return "timeout"
+	}
+	return "server_error"
 }

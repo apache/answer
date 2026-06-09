@@ -38,10 +38,14 @@ import (
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/config"
 	"github.com/apache/answer/internal/service/siteinfo_common"
+	"github.com/apache/answer/internal/telemetry"
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
 	"golang.org/x/net/context"
 	"gopkg.in/gomail.v2"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 )
 
 // EmailService kit service
@@ -121,9 +125,35 @@ func (es *EmailService) SendAndSaveCodeWithTime(
 
 // Send email send
 func (es *EmailService) Send(ctx context.Context, toEmailAddr, subject, body string) {
+	es.sendWithType(ctx, emailTypeFromCtx(ctx), toEmailAddr, subject, body)
+}
+
+type emailTypeCtxKey struct{}
+
+func WithEmailType(ctx context.Context, emailType string) context.Context {
+	return context.WithValue(ctx, emailTypeCtxKey{}, emailType)
+}
+
+func emailTypeFromCtx(ctx context.Context) string {
+	if v, ok := ctx.Value(emailTypeCtxKey{}).(string); ok && v != "" {
+		return v
+	}
+	return "transactional"
+}
+
+func (es *EmailService) sendWithType(ctx context.Context, emailType, toEmailAddr, subject, body string) {
+	_, span := otel.Tracer(telemetry.Scope).Start(ctx, "messaging.email send")
+	span.SetAttributes(
+		attribute.String("messaging.system", "smtp"),
+		attribute.String("answer.email.type", emailType),
+	)
+	defer span.End()
+
 	log.Infof("try to send email to %s", toEmailAddr)
 	ec, err := es.GetEmailConfig(ctx)
 	if err != nil {
+		span.SetStatus(codes.Error, "")
+		span.SetAttributes(attribute.String("error.type", "smtp_connection"))
 		log.Errorf("get email config failed: %s", err)
 		return
 	}
@@ -150,6 +180,8 @@ func (es *EmailService) Send(ctx context.Context, toEmailAddr, subject, body str
 		d.TLSConfig = &tls.Config{ServerName: d.Host, InsecureSkipVerify: true}
 	}
 	if err := d.DialAndSend(m); err != nil {
+		span.SetStatus(codes.Error, "")
+		span.SetAttributes(attribute.String("error.type", "smtp_connection"))
 		log.Errorf("send email to %s failed: %s", toEmailAddr, err)
 	} else {
 		log.Infof("send email to %s success", toEmailAddr)

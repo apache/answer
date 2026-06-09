@@ -25,6 +25,7 @@ import (
 
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/schema"
+	"github.com/apache/answer/internal/service/export"
 	"github.com/segmentfault/pacman/i18n"
 	"github.com/segmentfault/pacman/log"
 )
@@ -77,5 +78,5 @@ func (ns *ExternalNotificationService) sendNewCommentNotificationEmail(ctx conte
 	}
 
 	ns.emailService.SendAndSaveCodeWithTime(
-		ctx, userID, email, title, body, rawData.UnsubscribeCode, codeContent.ToJSONString(), 1*24*time.Hour)
+		export.WithEmailType(ctx, "answer_notification"), userID, email, title, body, rawData.UnsubscribeCode, codeContent.ToJSONString(), 1*24*time.Hour)
 }

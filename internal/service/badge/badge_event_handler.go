@@ -26,6 +26,7 @@ import (
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/eventqueue"
+	"github.com/apache/answer/internal/telemetry"
 	"github.com/segmentfault/pacman/log"
 )
 
@@ -57,7 +58,8 @@ func NewBadgeEventService(
 		eventRuleRepo:     eventRuleRepo,
 		badgeAwardService: badgeAwardService,
 	}
-	eventQueueService.RegisterHandler(n.Handler)
+	eventQueueService.RegisterHandler(
+		telemetry.WrapQueueHandler("eventqueue process", "event", n.Handler))
 	return n
 }
 
