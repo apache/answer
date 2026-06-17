@@ -28,7 +28,6 @@ import (
 	"github.com/apache/answer/internal/base/translator"
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/pkg/display"
-	"github.com/apache/answer/pkg/token"
 	"github.com/apache/answer/plugin"
 	"github.com/jinzhu/copier"
 	"github.com/segmentfault/pacman/i18n"
@@ -50,25 +49,32 @@ func (ns *ExternalNotificationService) handleNewQuestionNotification(ctx context
 	}
 	log.Debugf("get subscribers %d for question %s", len(subscribers), msg.NewQuestionTemplateRawData.QuestionID)
 
-	for _, subscriber := range subscribers {
-		for _, channel := range subscriber.Channels {
-			if !channel.Enable {
-				continue
-			}
-			if channel.Key == constant.EmailChannel {
-				ns.sendNewQuestionNotificationEmail(ctx, subscriber.UserID, &schema.NewQuestionTemplateRawData{
-					QuestionTitle:   msg.NewQuestionTemplateRawData.QuestionTitle,
-					QuestionID:      msg.NewQuestionTemplateRawData.QuestionID,
-					UnsubscribeCode: token.GenerateToken(),
-					Tags:            msg.NewQuestionTemplateRawData.Tags,
-					TagIDs:          msg.NewQuestionTemplateRawData.TagIDs,
-				})
-			}
-		}
+	interval := newQuestionNotificationEmailSendInterval()
+	if interval > 0 {
+		ns.syncNewQuestionNotificationToPlugin(ctx, msg)
+		ns.sendNewQuestionNotificationEmails(ctx, subscribers, msg.NewQuestionTemplateRawData, interval)
+		return nil
 	}
 
+	ns.sendNewQuestionNotificationEmails(ctx, subscribers, msg.NewQuestionTemplateRawData, interval)
 	ns.syncNewQuestionNotificationToPlugin(ctx, msg)
 	return nil
+}
+
+func (ns *ExternalNotificationService) sendNewQuestionNotificationEmails(
+	ctx context.Context,
+	subscribers []*NewQuestionSubscriber,
+	rawData *schema.NewQuestionTemplateRawData,
+	interval time.Duration,
+) {
+	sendNewQuestionNotificationEmailsWithInterval(
+		ctx,
+		subscribers,
+		rawData,
+		interval,
+		nil,
+		ns.sendNewQuestionNotificationEmail,
+	)
 }
 
 func (ns *ExternalNotificationService) getNewQuestionSubscribers(ctx context.Context, msg *schema.ExternalNotificationMsg) (
