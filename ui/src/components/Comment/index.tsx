@@ -311,10 +311,13 @@ const Comment: FC<IProps> = ({ objectId, mode, commentId, children }) => {
         setComments(
           comments.map((item) => {
             if (item.comment_id === id) {
-              item.vote_count = is_cancel
-                ? item.vote_count - 1
-                : item.vote_count + 1;
-              item.is_vote = !is_cancel;
+              return {
+                ...item,
+                vote_count: is_cancel
+                  ? item.vote_count - 1
+                  : item.vote_count + 1,
+                is_vote: !is_cancel,
+              };
             }
             return item;
           }),
