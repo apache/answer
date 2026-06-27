@@ -24,6 +24,7 @@ import (
 	"encoding/json"
 	"os"
 	"reflect"
+	"sync"
 	"testing"
 	"time"
 
@@ -34,6 +35,7 @@ import (
 	"github.com/apache/answer/internal/service/config"
 	"github.com/apache/answer/internal/service/export"
 	"github.com/apache/answer/internal/service/mock"
+	"github.com/apache/answer/plugin"
 	"go.uber.org/mock/gomock"
 )
 
@@ -79,10 +81,22 @@ func TestNewQuestionNotificationEmailSendInterval(t *testing.T) {
 			want:  0,
 		},
 		{
-			name:  "duration overflow",
-			value: "9223372037",
+			name:  "whitespace",
+			value: "   ",
 			set:   true,
 			want:  0,
+		},
+		{
+			name:  "above max clamps to max",
+			value: "301",
+			set:   true,
+			want:  maxNewQuestionNotificationEmailSendInterval,
+		},
+		{
+			name:  "duration overflow clamps to max",
+			value: "9223372037",
+			set:   true,
+			want:  maxNewQuestionNotificationEmailSendInterval,
 		},
 		{
 			name:  "parse int overflow",
@@ -104,145 +118,7 @@ func TestNewQuestionNotificationEmailSendInterval(t *testing.T) {
 	}
 }
 
-func TestSendNewQuestionNotificationEmailsWithInterval(t *testing.T) {
-	rawData := &schema.NewQuestionTemplateRawData{
-		QuestionTitle: "question",
-		QuestionID:    "1",
-		Tags:          []string{"go"},
-		TagIDs:        []string{"tag-1"},
-	}
-	interval := 3 * time.Second
-
-	tests := []struct {
-		name        string
-		interval    time.Duration
-		subscribers []*NewQuestionSubscriber
-		wantSends   []string
-		wantSleeps  []time.Duration
-		wantEvents  []string
-	}{
-		{
-			name:     "interval 0",
-			interval: 0,
-			subscribers: []*NewQuestionSubscriber{
-				newQuestionSubscriber("user-1", newQuestionEmailChannel(true)),
-				newQuestionSubscriber("user-2", newQuestionEmailChannel(true)),
-			},
-			wantSends: []string{"user-1", "user-2"},
-			wantEvents: []string{
-				"send:user-1",
-				"send:user-2",
-			},
-		},
-		{
-			name:     "0 enabled email attempts",
-			interval: interval,
-			subscribers: []*NewQuestionSubscriber{
-				newQuestionSubscriber("user-1", newQuestionEmailChannel(false)),
-				newQuestionSubscriber("user-2", newQuestionNonEmailChannel(true)),
-			},
-		},
-		{
-			name:     "1 enabled email attempt",
-			interval: interval,
-			subscribers: []*NewQuestionSubscriber{
-				newQuestionSubscriber("user-1", newQuestionEmailChannel(true)),
-			},
-			wantSends: []string{"user-1"},
-			wantEvents: []string{
-				"send:user-1",
-			},
-		},
-		{
-			name:     "N enabled email attempts",
-			interval: interval,
-			subscribers: []*NewQuestionSubscriber{
-				newQuestionSubscriber("user-1", newQuestionEmailChannel(true)),
-				newQuestionSubscriber("user-2", newQuestionEmailChannel(true)),
-				newQuestionSubscriber("user-3", newQuestionEmailChannel(true)),
-			},
-			wantSends:  []string{"user-1", "user-2", "user-3"},
-			wantSleeps: []time.Duration{interval, interval},
-			wantEvents: []string{
-				"send:user-1",
-				"sleep:3s",
-				"send:user-2",
-				"sleep:3s",
-				"send:user-3",
-			},
-		},
-		{
-			name:     "disabled email channel does not add delay",
-			interval: interval,
-			subscribers: []*NewQuestionSubscriber{
-				newQuestionSubscriber("user-1", newQuestionEmailChannel(true)),
-				newQuestionSubscriber("user-2", newQuestionEmailChannel(false)),
-				newQuestionSubscriber("user-3", newQuestionEmailChannel(true)),
-			},
-			wantSends:  []string{"user-1", "user-3"},
-			wantSleeps: []time.Duration{interval},
-			wantEvents: []string{
-				"send:user-1",
-				"sleep:3s",
-				"send:user-3",
-			},
-		},
-		{
-			name:     "non-email channel does not add delay",
-			interval: interval,
-			subscribers: []*NewQuestionSubscriber{
-				newQuestionSubscriber("user-1", newQuestionEmailChannel(true)),
-				newQuestionSubscriber("user-2", newQuestionNonEmailChannel(true)),
-				newQuestionSubscriber("user-3", newQuestionEmailChannel(true)),
-			},
-			wantSends:  []string{"user-1", "user-3"},
-			wantSleeps: []time.Duration{interval},
-			wantEvents: []string{
-				"send:user-1",
-				"sleep:3s",
-				"send:user-3",
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			var gotEvents []string
-			var gotSleeps []time.Duration
-			sleep := func(duration time.Duration) {
-				gotSleeps = append(gotSleeps, duration)
-				gotEvents = append(gotEvents, "sleep:"+duration.String())
-			}
-
-			var gotSends []string
-			var gotCodes []string
-			send := func(_ context.Context, userID string, rawData *schema.NewQuestionTemplateRawData) {
-				gotSends = append(gotSends, userID)
-				gotEvents = append(gotEvents, "send:"+userID)
-				if rawData.UnsubscribeCode == "" {
-					t.Fatalf("expected unsubscribe code for %s", userID)
-				}
-				gotCodes = append(gotCodes, rawData.UnsubscribeCode)
-			}
-
-			sendNewQuestionNotificationEmailsWithInterval(
-				context.Background(), tt.subscribers, rawData, tt.interval, sleep, send)
-
-			if !reflect.DeepEqual(gotSends, tt.wantSends) {
-				t.Fatalf("send calls = %v, want %v", gotSends, tt.wantSends)
-			}
-			if !reflect.DeepEqual(gotSleeps, tt.wantSleeps) {
-				t.Fatalf("sleep calls = %v, want %v", gotSleeps, tt.wantSleeps)
-			}
-			if !reflect.DeepEqual(gotEvents, tt.wantEvents) {
-				t.Fatalf("events = %v, want %v", gotEvents, tt.wantEvents)
-			}
-			assertUniqueNewQuestionUnsubscribeCodes(t, gotCodes)
-		})
-	}
-}
-
-func TestHandleNewQuestionNotificationSendsEmailsThroughFanOut(t *testing.T) {
+func TestHandleNewQuestionNotificationEnqueuesEmailTask(t *testing.T) {
 	setNewQuestionNotificationEmailSendIntervalEnv(t, "0", true)
 
 	cache, cleanup, err := basedata.NewCache(&basedata.CacheConf{})
@@ -305,6 +181,7 @@ func TestHandleNewQuestionNotificationSendsEmailsThroughFanOut(t *testing.T) {
 		},
 		siteInfoService: siteInfoService,
 	}
+	service.newQuestionEmailWorker = newUnstartedNewQuestionEmailWorkerForTest(1)
 
 	err = service.handleNewQuestionNotification(context.Background(), &schema.ExternalNotificationMsg{
 		NewQuestionTemplateRawData: &schema.NewQuestionTemplateRawData{
@@ -319,19 +196,201 @@ func TestHandleNewQuestionNotificationSendsEmailsThroughFanOut(t *testing.T) {
 		t.Fatalf("handleNewQuestionNotification() error = %v", err)
 	}
 
-	wantUsers := []string{"all-user", "dup-user", "tag-user"}
-	assertStringSet(t, emailRepo.userIDs(), wantUsers)
-	for _, userID := range wantUsers {
-		codes := emailRepo.codesByUserID[userID]
-		if len(codes) != 1 {
-			t.Fatalf("saved codes for %s = %v, want exactly one code", userID, codes)
-		}
-		if codes[0] == "" {
-			t.Fatalf("saved empty code for %s", userID)
-		}
+	var task newQuestionEmailTask
+	select {
+	case task = <-service.newQuestionEmailWorker.tasks:
+	default:
+		t.Fatalf("expected enqueued new question email task")
 	}
-	if codes := emailRepo.codesByUserID["author"]; len(codes) > 0 {
-		t.Fatalf("question author received notification codes: %v", codes)
+
+	wantUsers := []string{"all-user", "dup-user", "tag-user"}
+	assertStringSet(t, task.UserIDs, wantUsers)
+	if task.QuestionTitle != "New question" || task.QuestionID != "1" {
+		t.Fatalf("task question data = %+v", task)
+	}
+	if !reflect.DeepEqual(task.Tags, []string{"go"}) || !reflect.DeepEqual(task.TagIDs, []string{"tag-1"}) {
+		t.Fatalf("task tags = %v/%v", task.Tags, task.TagIDs)
+	}
+	if len(emailRepo.codesByUserID) > 0 {
+		t.Fatalf("handler sent emails synchronously: %v", emailRepo.codesByUserID)
+	}
+}
+
+func TestHandleNewQuestionNotificationSkipsEnqueueWithoutEnabledEmailAttempts(t *testing.T) {
+	cache, cleanup, err := basedata.NewCache(&basedata.CacheConf{})
+	if err != nil {
+		t.Fatalf("new cache: %v", err)
+	}
+	t.Cleanup(cleanup)
+
+	service := &ExternalNotificationService{
+		data: &basedata.Data{Cache: cache},
+		userNotificationConfigRepo: &newQuestionNotificationTestUserNotificationConfigRepo{
+			followedTagConfigs: map[string]*entity.UserNotificationConfig{
+				"tag-user": newQuestionNotificationConfig(
+					"tag-user", constant.AllNewQuestionForFollowingTagsSource, false),
+			},
+			allQuestionConfigs: []*entity.UserNotificationConfig{
+				newQuestionNotificationConfig("all-user", constant.AllNewQuestionSource, false),
+			},
+		},
+		followRepo: &newQuestionNotificationTestFollowRepo{
+			followersByObjectID: map[string][]string{"tag-1": {"tag-user"}},
+		},
+		userRepo: &newQuestionNotificationTestUserRepo{
+			users: map[string]*entity.User{
+				"tag-user": newQuestionNotificationTestUser("tag-user"),
+				"all-user": newQuestionNotificationTestUser("all-user"),
+			},
+		},
+		newQuestionEmailWorker: newUnstartedNewQuestionEmailWorkerForTest(1),
+	}
+
+	err = service.handleNewQuestionNotification(context.Background(), &schema.ExternalNotificationMsg{
+		NewQuestionTemplateRawData: &schema.NewQuestionTemplateRawData{
+			QuestionTitle: "New question",
+			QuestionID:    "1",
+			Tags:          []string{"go"},
+			TagIDs:        []string{"tag-1"},
+		},
+	})
+	if err != nil {
+		t.Fatalf("handleNewQuestionNotification() error = %v", err)
+	}
+	select {
+	case task := <-service.newQuestionEmailWorker.tasks:
+		t.Fatalf("unexpected enqueued task: %+v", task)
+	default:
+	}
+}
+
+func TestHandleNewQuestionNotificationReturnsWhenEmailWorkerQueueFull(t *testing.T) {
+	cache, cleanup, err := basedata.NewCache(&basedata.CacheConf{})
+	if err != nil {
+		t.Fatalf("new cache: %v", err)
+	}
+	t.Cleanup(cleanup)
+
+	worker := newUnstartedNewQuestionEmailWorkerForTest(1)
+	if !worker.TryEnqueue(newQuestionEmailWorkerTask("already-queued", "queued-user")) {
+		t.Fatalf("pre-fill TryEnqueue() = false, want true")
+	}
+	service := &ExternalNotificationService{
+		data: &basedata.Data{Cache: cache},
+		userNotificationConfigRepo: &newQuestionNotificationTestUserNotificationConfigRepo{
+			allQuestionConfigs: []*entity.UserNotificationConfig{
+				newQuestionNotificationConfig("all-user", constant.AllNewQuestionSource, true),
+			},
+		},
+		followRepo: &newQuestionNotificationTestFollowRepo{
+			followersByObjectID: map[string][]string{},
+		},
+		userRepo: &newQuestionNotificationTestUserRepo{
+			users: map[string]*entity.User{
+				"all-user": newQuestionNotificationTestUser("all-user"),
+			},
+		},
+		newQuestionEmailWorker: worker,
+	}
+
+	err = service.handleNewQuestionNotification(context.Background(), &schema.ExternalNotificationMsg{
+		NewQuestionTemplateRawData: &schema.NewQuestionTemplateRawData{
+			QuestionTitle: "New question",
+			QuestionID:    "1",
+		},
+	})
+	if err != nil {
+		t.Fatalf("handleNewQuestionNotification() error = %v", err)
+	}
+	if got := len(worker.tasks); got != 1 {
+		t.Fatalf("worker queue length = %d, want 1", got)
+	}
+}
+
+func TestHandleNewQuestionNotificationSyncsPluginBeforeEmailEnqueue(t *testing.T) {
+	cache, cleanup, err := basedata.NewCache(&basedata.CacheConf{})
+	if err != nil {
+		t.Fatalf("new cache: %v", err)
+	}
+	t.Cleanup(cleanup)
+
+	ctrl := gomock.NewController(t)
+	siteInfoService := mock.NewMockSiteInfoCommonService(ctrl)
+	siteInfoService.EXPECT().GetSiteGeneral(gomock.Any()).Return(&schema.SiteGeneralResp{
+		Name:         "Answer",
+		SiteUrl:      "https://answer.test",
+		ContactEmail: "support@answer.test",
+	}, nil).AnyTimes()
+	siteInfoService.EXPECT().GetSiteSeo(gomock.Any()).Return(&schema.SiteSeoResp{
+		Permalink: constant.PermalinkQuestionIDAndTitle,
+	}, nil).AnyTimes()
+	siteInfoService.EXPECT().GetSiteInterface(gomock.Any()).Return(&schema.SiteInterfaceSettingsResp{
+		Language: "en",
+	}, nil).AnyTimes()
+
+	notifyStarted := make(chan plugin.NotificationMessage, 1)
+	releaseNotify := make(chan struct{})
+	enableNewQuestionNotificationTestPlugin(t, notifyStarted, releaseNotify)
+
+	worker := newUnstartedNewQuestionEmailWorkerForTest(1)
+	service := &ExternalNotificationService{
+		data: &basedata.Data{Cache: cache},
+		userNotificationConfigRepo: &newQuestionNotificationTestUserNotificationConfigRepo{
+			followedTagConfigs: map[string]*entity.UserNotificationConfig{
+				"tag-user": newQuestionNotificationConfig(
+					"tag-user", constant.AllNewQuestionForFollowingTagsSource, true),
+			},
+		},
+		followRepo: &newQuestionNotificationTestFollowRepo{
+			followersByObjectID: map[string][]string{"tag-1": {"tag-user"}},
+		},
+		userRepo: &newQuestionNotificationTestUserRepo{
+			users: map[string]*entity.User{
+				"tag-user": newQuestionNotificationTestUser("tag-user"),
+			},
+		},
+		userExternalLoginRepo:  newQuestionNotificationTestUserExternalLoginRepo{},
+		siteInfoService:        siteInfoService,
+		newQuestionEmailWorker: worker,
+	}
+
+	errCh := make(chan error, 1)
+	go func() {
+		errCh <- service.handleNewQuestionNotification(context.Background(), &schema.ExternalNotificationMsg{
+			NewQuestionTemplateRawData: &schema.NewQuestionTemplateRawData{
+				QuestionTitle: "New question",
+				QuestionID:    "1",
+				Tags:          []string{"go"},
+				TagIDs:        []string{"tag-1"},
+			},
+		})
+	}()
+
+	select {
+	case <-notifyStarted:
+	case <-time.After(time.Second):
+		t.Fatalf("plugin notification was not sent")
+	}
+	select {
+	case task := <-worker.tasks:
+		t.Fatalf("email task enqueued before plugin sync completed: %+v", task)
+	default:
+	}
+	close(releaseNotify)
+
+	select {
+	case err := <-errCh:
+		if err != nil {
+			t.Fatalf("handleNewQuestionNotification() error = %v", err)
+		}
+	case <-time.After(time.Second):
+		t.Fatalf("handleNewQuestionNotification() did not return")
+	}
+	select {
+	case task := <-worker.tasks:
+		assertStringSet(t, task.UserIDs, []string{"tag-user"})
+	default:
+		t.Fatalf("expected email task after plugin sync completed")
 	}
 }
 
@@ -649,4 +708,115 @@ func (r *newQuestionNotificationTestEmailRepo) userIDs() []string {
 		userIDs = append(userIDs, userID)
 	}
 	return userIDs
+}
+
+var (
+	newQuestionNotificationTestPluginOnce sync.Once
+	newQuestionNotificationTestPluginInst = &newQuestionNotificationTestPlugin{}
+)
+
+func enableNewQuestionNotificationTestPlugin(
+	t *testing.T,
+	notifyStarted chan plugin.NotificationMessage,
+	releaseNotify <-chan struct{},
+) {
+	t.Helper()
+
+	newQuestionNotificationTestPluginInst.setChannels(notifyStarted, releaseNotify)
+	newQuestionNotificationTestPluginOnce.Do(func() {
+		plugin.Register(newQuestionNotificationTestPluginInst)
+	})
+	plugin.StatusManager.Enable(newQuestionNotificationTestPluginInst.Info().SlugName, true)
+	t.Cleanup(func() {
+		plugin.StatusManager.Enable(newQuestionNotificationTestPluginInst.Info().SlugName, false)
+		newQuestionNotificationTestPluginInst.setChannels(nil, nil)
+	})
+}
+
+type newQuestionNotificationTestPlugin struct {
+	mu            sync.Mutex
+	notifyStarted chan plugin.NotificationMessage
+	releaseNotify <-chan struct{}
+}
+
+func (p *newQuestionNotificationTestPlugin) Info() plugin.Info {
+	return plugin.Info{SlugName: "new-question-notification-test-plugin"}
+}
+
+func (p *newQuestionNotificationTestPlugin) GetNewQuestionSubscribers() []string {
+	return nil
+}
+
+func (p *newQuestionNotificationTestPlugin) Notify(msg plugin.NotificationMessage) {
+	p.mu.Lock()
+	notifyStarted := p.notifyStarted
+	releaseNotify := p.releaseNotify
+	p.mu.Unlock()
+
+	if notifyStarted != nil {
+		select {
+		case notifyStarted <- msg:
+		default:
+		}
+	}
+	if releaseNotify != nil {
+		<-releaseNotify
+	}
+}
+
+func (p *newQuestionNotificationTestPlugin) setChannels(
+	notifyStarted chan plugin.NotificationMessage,
+	releaseNotify <-chan struct{},
+) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	p.notifyStarted = notifyStarted
+	p.releaseNotify = releaseNotify
+}
+
+type newQuestionNotificationTestUserExternalLoginRepo struct{}
+
+func (newQuestionNotificationTestUserExternalLoginRepo) AddUserExternalLogin(
+	context.Context, *entity.UserExternalLogin) error {
+	return nil
+}
+
+func (newQuestionNotificationTestUserExternalLoginRepo) UpdateInfo(
+	context.Context, *entity.UserExternalLogin) error {
+	return nil
+}
+
+func (newQuestionNotificationTestUserExternalLoginRepo) GetByExternalID(
+	context.Context, string, string) (*entity.UserExternalLogin, bool, error) {
+	return nil, false, nil
+}
+
+func (newQuestionNotificationTestUserExternalLoginRepo) GetByUserID(
+	context.Context, string, string) (*entity.UserExternalLogin, bool, error) {
+	return nil, false, nil
+}
+
+func (newQuestionNotificationTestUserExternalLoginRepo) GetUserExternalLoginList(
+	context.Context, string) ([]*entity.UserExternalLogin, error) {
+	return nil, nil
+}
+
+func (newQuestionNotificationTestUserExternalLoginRepo) DeleteUserExternalLogin(
+	context.Context, string, string) error {
+	return nil
+}
+
+func (newQuestionNotificationTestUserExternalLoginRepo) DeleteUserExternalLoginByUserID(
+	context.Context, string) error {
+	return nil
+}
+
+func (newQuestionNotificationTestUserExternalLoginRepo) SetCacheUserExternalLoginInfo(
+	context.Context, string, *schema.ExternalLoginUserInfoCache) error {
+	return nil
+}
+
+func (newQuestionNotificationTestUserExternalLoginRepo) GetCacheUserExternalLoginInfo(
+	context.Context, string) (*schema.ExternalLoginUserInfoCache, error) {
+	return nil, nil
 }
