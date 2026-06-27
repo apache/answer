@@ -49,32 +49,42 @@ func (ns *ExternalNotificationService) handleNewQuestionNotification(ctx context
 	}
 	log.Debugf("get subscribers %d for question %s", len(subscribers), msg.NewQuestionTemplateRawData.QuestionID)
 
-	interval := newQuestionNotificationEmailSendInterval()
-	if interval > 0 {
-		ns.syncNewQuestionNotificationToPlugin(ctx, msg)
-		ns.sendNewQuestionNotificationEmails(ctx, subscribers, msg.NewQuestionTemplateRawData, interval)
-		return nil
-	}
-
-	ns.sendNewQuestionNotificationEmails(ctx, subscribers, msg.NewQuestionTemplateRawData, interval)
 	ns.syncNewQuestionNotificationToPlugin(ctx, msg)
+	ns.enqueueNewQuestionNotificationEmails(subscribers, msg.NewQuestionTemplateRawData)
 	return nil
 }
 
-func (ns *ExternalNotificationService) sendNewQuestionNotificationEmails(
-	ctx context.Context,
+func (ns *ExternalNotificationService) enqueueNewQuestionNotificationEmails(
 	subscribers []*NewQuestionSubscriber,
 	rawData *schema.NewQuestionTemplateRawData,
-	interval time.Duration,
 ) {
-	sendNewQuestionNotificationEmailsWithInterval(
-		ctx,
-		subscribers,
-		rawData,
-		interval,
-		nil,
-		ns.sendNewQuestionNotificationEmail,
-	)
+	task := newQuestionEmailTaskFromRawData(collectNewQuestionNotificationEmailUserIDs(subscribers), rawData)
+	if len(task.UserIDs) == 0 {
+		return
+	}
+	if ns.newQuestionEmailWorker == nil {
+		log.Warnf("[new_question_email] worker is nil, dropping task for question %s", task.QuestionID)
+		return
+	}
+	if !ns.newQuestionEmailWorker.TryEnqueue(task) {
+		log.Warnf("[new_question_email] failed to enqueue task for question %s", task.QuestionID)
+	}
+}
+
+func collectNewQuestionNotificationEmailUserIDs(subscribers []*NewQuestionSubscriber) []string {
+	userIDs := make([]string, 0, len(subscribers))
+	for _, subscriber := range subscribers {
+		if subscriber == nil {
+			continue
+		}
+		for _, channel := range subscriber.Channels {
+			if channel == nil || !channel.Enable || channel.Key != constant.EmailChannel {
+				continue
+			}
+			userIDs = append(userIDs, subscriber.UserID)
+		}
+	}
+	return userIDs
 }
 
 func (ns *ExternalNotificationService) getNewQuestionSubscribers(ctx context.Context, msg *schema.ExternalNotificationMsg) (
