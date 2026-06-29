@@ -137,7 +137,8 @@ func (es *EmailService) Send(ctx context.Context, toEmailAddr, subject, body str
 	m.SetHeader("From", fmt.Sprintf("%s <%s>", fromName, ec.FromEmail))
 	m.SetHeader("To", toEmailAddr)
 	m.SetHeader("Subject", subject)
-	m.SetBody("text/html", body)
+	m.SetHeader("MIME-Version", "1.0")
+	m.SetBody("text/html; charset=UTF-8", body)
 
 	d := gomail.NewDialer(ec.SMTPHost, ec.SMTPPort, ec.SMTPUsername, ec.SMTPPassword)
 	if ec.IsSSL() {
