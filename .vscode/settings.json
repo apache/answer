@@ -5,5 +5,13 @@
   "explorer.autoReveal": "focusNoScroll",
   "cSpell.words": [
     "grecaptcha"
-  ]
+  ],
+  "go.goroot": "${env:USERPROFILE}\\tools\\go",
+  "go.gopath": "${env:USERPROFILE}\\go",
+  "terminal.integrated.env.windows": {
+    "PATH": "${env:USERPROFILE}\\tools\\go\\bin;${env:USERPROFILE}\\tools\\node-v22.16.0-win-x64;${env:PATH}",
+    "GOROOT": "${env:USERPROFILE}\\tools\\go",
+    "GOPATH": "${env:USERPROFILE}\\go"
+  },
+  "go.toolsManagement.autoUpdate": true
 }
