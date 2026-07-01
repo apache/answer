@@ -21,6 +21,7 @@ package notification
 
 import (
 	"context"
+	"os"
 	"reflect"
 	"runtime"
 	"sync"
@@ -30,6 +31,111 @@ import (
 
 	"github.com/apache/answer/internal/schema"
 )
+
+func TestParseNewQuestionEmailWorkerQueueSize(t *testing.T) {
+	tests := []struct {
+		name  string
+		value string
+		want  int
+	}{
+		{
+			name:  "empty",
+			value: "",
+			want:  defaultNewQuestionEmailWorkerQueueSize,
+		},
+		{
+			name:  "whitespace",
+			value: "   ",
+			want:  defaultNewQuestionEmailWorkerQueueSize,
+		},
+		{
+			name:  "invalid",
+			value: "invalid",
+			want:  defaultNewQuestionEmailWorkerQueueSize,
+		},
+		{
+			name:  "zero",
+			value: "0",
+			want:  defaultNewQuestionEmailWorkerQueueSize,
+		},
+		{
+			name:  "negative",
+			value: "-1",
+			want:  defaultNewQuestionEmailWorkerQueueSize,
+		},
+		{
+			name:  "parse int overflow",
+			value: "9223372036854775808",
+			want:  defaultNewQuestionEmailWorkerQueueSize,
+		},
+		{
+			name:  "positive",
+			value: "2048",
+			want:  2048,
+		},
+		{
+			name:  "max",
+			value: "65536",
+			want:  maxNewQuestionEmailWorkerQueueSize,
+		},
+		{
+			name:  "above max",
+			value: "65537",
+			want:  maxNewQuestionEmailWorkerQueueSize,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := parseNewQuestionEmailWorkerQueueSize(tt.value)
+			if got != tt.want {
+				t.Fatalf("parseNewQuestionEmailWorkerQueueSize(%q) = %d, want %d", tt.value, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestNewQuestionEmailWorkerQueueSizeUnsetEnv(t *testing.T) {
+	setNewQuestionEmailWorkerQueueSizeEnv(t, "", false)
+
+	got := newQuestionEmailWorkerQueueSize()
+	if got != defaultNewQuestionEmailWorkerQueueSize {
+		t.Fatalf("newQuestionEmailWorkerQueueSize() = %d, want %d",
+			got, defaultNewQuestionEmailWorkerQueueSize)
+	}
+}
+
+func TestNewQuestionEmailWorkerWithDefaultsUsesQueueSizeEnv(t *testing.T) {
+	tests := []struct {
+		name  string
+		value string
+		want  int
+	}{
+		{
+			name:  "configured",
+			value: "2048",
+			want:  2048,
+		},
+		{
+			name:  "invalid uses default",
+			value: "invalid",
+			want:  defaultNewQuestionEmailWorkerQueueSize,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			setNewQuestionEmailWorkerQueueSizeEnv(t, tt.value, true)
+
+			worker := newQuestionEmailWorkerWithDefaults(func() time.Duration { return 0 }, nil)
+			defer worker.Close()
+
+			if got := cap(worker.tasks); got != tt.want {
+				t.Fatalf("cap(worker.tasks) = %d, want %d", got, tt.want)
+			}
+		})
+	}
+}
 
 func TestNewQuestionEmailWorkerDelaysBetweenAttempts(t *testing.T) {
 	timerFactory := newFakeNewQuestionEmailTimerFactory()
@@ -436,6 +542,28 @@ func newUnstartedNewQuestionEmailWorkerForTest(bufferSize int) *newQuestionEmail
 		ctx:          ctx,
 		cancel:       cancel,
 	}
+}
+
+func setNewQuestionEmailWorkerQueueSizeEnv(t *testing.T, value string, set bool) {
+	t.Helper()
+
+	oldValue, oldSet := os.LookupEnv(newQuestionEmailWorkerQueueSizeEnv)
+	if set {
+		if err := os.Setenv(newQuestionEmailWorkerQueueSizeEnv, value); err != nil {
+			t.Fatalf("set env: %v", err)
+		}
+	} else {
+		if err := os.Unsetenv(newQuestionEmailWorkerQueueSizeEnv); err != nil {
+			t.Fatalf("unset env: %v", err)
+		}
+	}
+	t.Cleanup(func() {
+		if oldSet {
+			_ = os.Setenv(newQuestionEmailWorkerQueueSizeEnv, oldValue)
+		} else {
+			_ = os.Unsetenv(newQuestionEmailWorkerQueueSizeEnv)
+		}
+	})
 }
 
 func receiveNewQuestionEmailSend(t *testing.T, sendCh <-chan newQuestionEmailSendEvent) newQuestionEmailSendEvent {

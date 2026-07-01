@@ -21,6 +21,9 @@ package notification
 
 import (
 	"context"
+	"os"
+	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -29,7 +32,11 @@ import (
 	"github.com/segmentfault/pacman/log"
 )
 
-const newQuestionEmailWorkerQueueSize = 128
+const defaultNewQuestionEmailWorkerQueueSize = 1024
+
+const maxNewQuestionEmailWorkerQueueSize = 65536
+
+const newQuestionEmailWorkerQueueSizeEnv = "NEW_QUESTION_NOTIFICATION_EMAIL_QUEUE_SIZE"
 
 type newQuestionEmailTask struct {
 	UserIDs       []string
@@ -68,8 +75,27 @@ func newQuestionEmailWorkerWithDefaults(
 		interval,
 		send,
 		newRealNewQuestionEmailTimer,
-		newQuestionEmailWorkerQueueSize,
+		newQuestionEmailWorkerQueueSize(),
 	)
+}
+
+func newQuestionEmailWorkerQueueSize() int {
+	return parseNewQuestionEmailWorkerQueueSize(os.Getenv(newQuestionEmailWorkerQueueSizeEnv))
+}
+
+func parseNewQuestionEmailWorkerQueueSize(value string) int {
+	value = strings.TrimSpace(value)
+	if len(value) == 0 {
+		return defaultNewQuestionEmailWorkerQueueSize
+	}
+	queueSize, err := strconv.ParseInt(value, 10, 64)
+	if err != nil || queueSize <= 0 {
+		return defaultNewQuestionEmailWorkerQueueSize
+	}
+	if queueSize > int64(maxNewQuestionEmailWorkerQueueSize) {
+		return maxNewQuestionEmailWorkerQueueSize
+	}
+	return int(queueSize)
 }
 
 func newQuestionEmailWorkerWithBuffer(
