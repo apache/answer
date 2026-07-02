@@ -54,6 +54,10 @@ type UserExternalLoginRepo interface {
 	DeleteUserExternalLoginByUserID(ctx context.Context, userID string) (err error)
 	SetCacheUserExternalLoginInfo(ctx context.Context, key string, info *schema.ExternalLoginUserInfoCache) (err error)
 	GetCacheUserExternalLoginInfo(ctx context.Context, key string) (info *schema.ExternalLoginUserInfoCache, err error)
+	SetCacheOAuthState(ctx context.Context, state string, info *schema.ExternalLoginOAuthState,
+		duration time.Duration) (err error)
+	GetCacheOAuthState(ctx context.Context, state string) (info *schema.ExternalLoginOAuthState, err error)
+	DeleteCacheOAuthState(ctx context.Context, state string) (err error)
 }
 
 // UserExternalLoginService user external login service
@@ -86,6 +90,41 @@ func NewUserExternalLoginService(
 		userActivity:                  userActivity,
 		userNotificationConfigService: userNotificationConfigService,
 	}
+}
+
+func (us *UserExternalLoginService) GenerateOAuthState(
+	ctx context.Context, provider, intent, userID string) (state string, err error) {
+	state = token.GenerateToken()
+	duration := constant.ConnectorOAuthStateCacheTime
+	if intent == schema.ExternalLoginOAuthStateBindIntent {
+		duration = constant.ConnectorOAuthBindStateCacheTime
+	}
+	err = us.userExternalLoginRepo.SetCacheOAuthState(ctx, state, &schema.ExternalLoginOAuthState{
+		Provider: provider,
+		Intent:   intent,
+		UserID:   userID,
+	}, duration)
+	return state, err
+}
+
+func (us *UserExternalLoginService) GetOAuthState(
+	ctx context.Context, state string) (info *schema.ExternalLoginOAuthState, err error) {
+	if len(state) == 0 {
+		return nil, nil
+	}
+	return us.userExternalLoginRepo.GetCacheOAuthState(ctx, state)
+}
+
+func (us *UserExternalLoginService) ConsumeOAuthState(
+	ctx context.Context, state string) (info *schema.ExternalLoginOAuthState, err error) {
+	info, err = us.GetOAuthState(ctx, state)
+	if err != nil || info == nil {
+		return info, err
+	}
+	if err = us.userExternalLoginRepo.DeleteCacheOAuthState(ctx, state); err != nil {
+		log.Errorf("delete oauth state failed: %v", err)
+	}
+	return info, nil
 }
 
 // ExternalLogin if user is already a member logged in
@@ -151,12 +190,16 @@ func (us *UserExternalLoginService) ExternalLogin(
 	if err != nil {
 		return nil, err
 	}
+	if exist {
+		return &schema.UserExternalLoginResp{
+			ErrTitle: translator.Tr(handler.GetLangByCtx(ctx), reason.UserAccessDenied),
+			ErrMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.UserAccessDenied),
+		}, nil
+	}
 	// if user is not a member, register a new user
-	if !exist {
-		oldUserInfo, err = us.registerNewUser(ctx, externalUserInfo)
-		if err != nil {
-			return nil, err
-		}
+	oldUserInfo, err = us.registerNewUser(ctx, externalUserInfo)
+	if err != nil {
+		return nil, err
 	}
 	// bind external user info to user
 	err = us.bindOldUser(ctx, externalUserInfo, oldUserInfo)
@@ -176,8 +219,39 @@ func (us *UserExternalLoginService) ExternalLogin(
 	}
 
 	accessToken, _, err := us.userCommonService.CacheLoginUserInfo(
-		ctx, oldUserInfo.ID, newMailStatus, oldUserInfo.Status, oldExternalLoginUserInfo.ExternalID)
+		ctx, oldUserInfo.ID, newMailStatus, oldUserInfo.Status, externalUserInfo.ExternalID)
 	return &schema.UserExternalLoginResp{AccessToken: accessToken}, err
+}
+
+func (us *UserExternalLoginService) BindExternalLoginToUser(ctx context.Context,
+	userID string, externalUserInfo *schema.ExternalLoginUserInfoCache) error {
+	if len(userID) == 0 || len(externalUserInfo.ExternalID) == 0 {
+		return errors.BadRequest(reason.UserAccessDenied)
+	}
+	oldUserInfo, exist, err := us.userRepo.GetByUserID(ctx, userID)
+	if err != nil {
+		return err
+	}
+	if !exist || oldUserInfo.Status == entity.UserStatusDeleted {
+		return errors.BadRequest(reason.UserNotFound)
+	}
+	oldExternalLoginUserInfo, exist, err := us.userExternalLoginRepo.GetByExternalID(ctx,
+		externalUserInfo.Provider, externalUserInfo.ExternalID)
+	if err != nil {
+		return err
+	}
+	if exist && oldExternalLoginUserInfo.UserID != userID {
+		return errors.BadRequest(reason.UserAccessDenied)
+	}
+	currentExternalLoginUserInfo, exist, err := us.userExternalLoginRepo.GetByUserID(ctx,
+		externalUserInfo.Provider, userID)
+	if err != nil {
+		return err
+	}
+	if exist && currentExternalLoginUserInfo.ExternalID != externalUserInfo.ExternalID {
+		return errors.BadRequest(reason.UserAccessDenied)
+	}
+	return us.bindOldUser(ctx, externalUserInfo, oldUserInfo)
 }
 
 func (us *UserExternalLoginService) registerNewUser(ctx context.Context,
@@ -297,18 +371,20 @@ func (us *UserExternalLoginService) ExternalLoginBindingUserSendEmail(
 		resp.EmailExistAndMustBeConfirmed = true
 		return resp, nil
 	}
+	if exist {
+		resp.EmailExistAndMustBeConfirmed = true
+		return resp, nil
+	}
 
-	if !exist {
-		externalLoginInfo.Email = req.Email
-		userInfo, err = us.registerNewUser(ctx, externalLoginInfo)
-		if err != nil {
-			return nil, err
-		}
-		resp.AccessToken, _, err = us.userCommonService.CacheLoginUserInfo(
-			ctx, userInfo.ID, userInfo.MailStatus, userInfo.Status, externalLoginInfo.ExternalID)
-		if err != nil {
-			log.Error(err)
-		}
+	externalLoginInfo.Email = req.Email
+	userInfo, err = us.registerNewUser(ctx, externalLoginInfo)
+	if err != nil {
+		return nil, err
+	}
+	resp.AccessToken, _, err = us.userCommonService.CacheLoginUserInfo(
+		ctx, userInfo.ID, userInfo.MailStatus, userInfo.Status, externalLoginInfo.ExternalID)
+	if err != nil {
+		log.Error(err)
 	}
 	err = us.userExternalLoginRepo.SetCacheUserExternalLoginInfo(ctx, req.BindingKey, externalLoginInfo)
 	if err != nil {
@@ -339,6 +415,9 @@ func (us *UserExternalLoginService) ExternalLoginBindingUser(
 	externalLoginInfo, err := us.userExternalLoginRepo.GetCacheUserExternalLoginInfo(ctx, bindingKey)
 	if err != nil || externalLoginInfo == nil {
 		return errors.BadRequest(reason.UserNotFound)
+	}
+	if len(externalLoginInfo.Email) == 0 || externalLoginInfo.Email != oldUserInfo.EMail {
+		return errors.BadRequest(reason.UserAccessDenied)
 	}
 	return us.bindOldUser(ctx, externalLoginInfo, oldUserInfo)
 }

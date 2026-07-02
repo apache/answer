@@ -19,6 +19,11 @@
 
 package schema
 
+const (
+	ExternalLoginOAuthStateLoginIntent = "login"
+	ExternalLoginOAuthStateBindIntent  = "bind"
+)
+
 // UserExternalLoginResp user external login resp
 type UserExternalLoginResp struct {
 	BindingKey  string `json:"binding_key"`
@@ -73,6 +78,13 @@ type ExternalLoginUserInfoCache struct {
 	MetaInfo string
 	// optional. The bio provided by the third-party login platform
 	Bio string
+}
+
+// ExternalLoginOAuthState stores the local OAuth request state.
+type ExternalLoginOAuthState struct {
+	Provider string `json:"provider"`
+	Intent   string `json:"intent"`
+	UserID   string `json:"user_id,omitempty"`
 }
 
 // ExternalLoginUnbindingReq external login unbinding user
