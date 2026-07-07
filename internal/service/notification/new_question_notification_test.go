@@ -798,18 +798,3 @@ func (newQuestionNotificationTestUserExternalLoginRepo) GetCacheUserExternalLogi
 	context.Context, string) (*schema.ExternalLoginUserInfoCache, error) {
 	return nil, nil
 }
-
-func (newQuestionNotificationTestUserExternalLoginRepo) SetCacheOAuthState(
-	context.Context, string, *schema.ExternalLoginOAuthState, time.Duration) error {
-	return nil
-}
-
-func (newQuestionNotificationTestUserExternalLoginRepo) GetCacheOAuthState(
-	context.Context, string) (*schema.ExternalLoginOAuthState, error) {
-	return nil, nil
-}
-
-func (newQuestionNotificationTestUserExternalLoginRepo) DeleteCacheOAuthState(
-	context.Context, string) error {
-	return nil
-}
