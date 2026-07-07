@@ -181,7 +181,7 @@ func TestHandleNewQuestionNotificationEnqueuesEmailTask(t *testing.T) {
 		},
 		siteInfoService: siteInfoService,
 	}
-	service.newQuestionEmailWorker = newUnstartedNewQuestionEmailWorkerForTest(1)
+	service.newQuestionEmailWorker = newUnstartedNewQuestionEmailWorkerForTest()
 
 	err = service.handleNewQuestionNotification(context.Background(), &schema.ExternalNotificationMsg{
 		NewQuestionTemplateRawData: &schema.NewQuestionTemplateRawData{
@@ -243,7 +243,7 @@ func TestHandleNewQuestionNotificationSkipsEnqueueWithoutEnabledEmailAttempts(t 
 				"all-user": newQuestionNotificationTestUser("all-user"),
 			},
 		},
-		newQuestionEmailWorker: newUnstartedNewQuestionEmailWorkerForTest(1),
+		newQuestionEmailWorker: newUnstartedNewQuestionEmailWorkerForTest(),
 	}
 
 	err = service.handleNewQuestionNotification(context.Background(), &schema.ExternalNotificationMsg{
@@ -271,7 +271,7 @@ func TestHandleNewQuestionNotificationReturnsWhenEmailWorkerQueueFull(t *testing
 	}
 	t.Cleanup(cleanup)
 
-	worker := newUnstartedNewQuestionEmailWorkerForTest(1)
+	worker := newUnstartedNewQuestionEmailWorkerForTest()
 	if !worker.TryEnqueue(newQuestionEmailWorkerTask("already-queued", "queued-user")) {
 		t.Fatalf("pre-fill TryEnqueue() = false, want true")
 	}
@@ -332,7 +332,7 @@ func TestHandleNewQuestionNotificationSyncsPluginBeforeEmailEnqueue(t *testing.T
 	releaseNotify := make(chan struct{})
 	enableNewQuestionNotificationTestPlugin(t, notifyStarted, releaseNotify)
 
-	worker := newUnstartedNewQuestionEmailWorkerForTest(1)
+	worker := newUnstartedNewQuestionEmailWorkerForTest()
 	service := &ExternalNotificationService{
 		data: &basedata.Data{Cache: cache},
 		userNotificationConfigRepo: &newQuestionNotificationTestUserNotificationConfigRepo{
@@ -428,23 +428,9 @@ func setNewQuestionNotificationEmailSendIntervalEnv(t *testing.T, value string, 
 	})
 }
 
-func newQuestionSubscriber(userID string, channels ...*schema.NotificationChannelConfig) *NewQuestionSubscriber {
-	return &NewQuestionSubscriber{
-		UserID:   userID,
-		Channels: channels,
-	}
-}
-
 func newQuestionEmailChannel(enable bool) *schema.NotificationChannelConfig {
 	return &schema.NotificationChannelConfig{
 		Key:    constant.EmailChannel,
-		Enable: enable,
-	}
-}
-
-func newQuestionNonEmailChannel(enable bool) *schema.NotificationChannelConfig {
-	return &schema.NotificationChannelConfig{
-		Key:    constant.NotificationChannelKey("inbox"),
 		Enable: enable,
 	}
 }
@@ -702,14 +688,6 @@ func (r *newQuestionNotificationTestEmailRepo) VerifyCode(context.Context, strin
 	return "", nil
 }
 
-func (r *newQuestionNotificationTestEmailRepo) userIDs() []string {
-	userIDs := make([]string, 0, len(r.codesByUserID))
-	for userID := range r.codesByUserID {
-		userIDs = append(userIDs, userID)
-	}
-	return userIDs
-}
-
 var (
 	newQuestionNotificationTestPluginOnce sync.Once
 	newQuestionNotificationTestPluginInst = &newQuestionNotificationTestPlugin{}
@@ -819,4 +797,19 @@ func (newQuestionNotificationTestUserExternalLoginRepo) SetCacheUserExternalLogi
 func (newQuestionNotificationTestUserExternalLoginRepo) GetCacheUserExternalLoginInfo(
 	context.Context, string) (*schema.ExternalLoginUserInfoCache, error) {
 	return nil, nil
+}
+
+func (newQuestionNotificationTestUserExternalLoginRepo) SetCacheOAuthState(
+	context.Context, string, *schema.ExternalLoginOAuthState, time.Duration) error {
+	return nil
+}
+
+func (newQuestionNotificationTestUserExternalLoginRepo) GetCacheOAuthState(
+	context.Context, string) (*schema.ExternalLoginOAuthState, error) {
+	return nil, nil
+}
+
+func (newQuestionNotificationTestUserExternalLoginRepo) DeleteCacheOAuthState(
+	context.Context, string) error {
+	return nil
 }
