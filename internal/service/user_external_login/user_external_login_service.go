@@ -186,18 +186,16 @@ func (us *UserExternalLoginService) ExternalLogin(
 		}, nil
 	}
 
-	oldUserInfo, exist, err := us.userRepo.GetByEmail(ctx, externalUserInfo.Email)
-	if err != nil {
+	if _, exist, err := us.userRepo.GetByEmail(ctx, externalUserInfo.Email); err != nil {
 		return nil, err
-	}
-	if exist {
+	} else if exist {
 		return &schema.UserExternalLoginResp{
 			ErrTitle: translator.Tr(handler.GetLangByCtx(ctx), reason.UserAccessDenied),
 			ErrMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.UserAccessDenied),
 		}, nil
 	}
 	// if user is not a member, register a new user
-	oldUserInfo, err = us.registerNewUser(ctx, externalUserInfo)
+	oldUserInfo, err := us.registerNewUser(ctx, externalUserInfo)
 	if err != nil {
 		return nil, err
 	}
@@ -363,21 +361,18 @@ func (us *UserExternalLoginService) ExternalLoginBindingUserSendEmail(
 		return &schema.ExternalLoginBindingUserSendEmailResp{}, nil
 	}
 
-	userInfo, exist, err := us.userRepo.GetByEmail(ctx, req.Email)
-	if err != nil {
+	if _, exist, err := us.userRepo.GetByEmail(ctx, req.Email); err != nil {
 		return nil, err
-	}
-	if exist && !req.Must {
+	} else if exist && !req.Must {
 		resp.EmailExistAndMustBeConfirmed = true
 		return resp, nil
-	}
-	if exist {
+	} else if exist {
 		resp.EmailExistAndMustBeConfirmed = true
 		return resp, nil
 	}
 
 	externalLoginInfo.Email = req.Email
-	userInfo, err = us.registerNewUser(ctx, externalLoginInfo)
+	userInfo, err := us.registerNewUser(ctx, externalLoginInfo)
 	if err != nil {
 		return nil, err
 	}

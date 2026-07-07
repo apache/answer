@@ -20,6 +20,7 @@
 package report
 
 import (
+	"context"
 	"encoding/json"
 
 	"github.com/apache/answer/internal/service/eventqueue"
@@ -44,7 +45,6 @@ import (
 	"github.com/jinzhu/copier"
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
-	"golang.org/x/net/context"
 )
 
 // ReportService user service

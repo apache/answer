@@ -200,13 +200,11 @@ func TestQueue_ConcurrentRegisterHandler(t *testing.T) {
 	// Concurrently register handlers - should not race
 	var wg sync.WaitGroup
 	for range 10 {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+		wg.Go(func() {
 			q.RegisterHandler(func(ctx context.Context, msg *testMessage) error {
 				return nil
 			})
-		}()
+		})
 	}
 	wg.Wait()
 }
