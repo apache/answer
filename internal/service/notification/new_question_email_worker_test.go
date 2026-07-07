@@ -346,7 +346,7 @@ func TestNewQuestionEmailWorkerBuildsFreshRawDataPerAttempt(t *testing.T) {
 }
 
 func TestNewQuestionEmailWorkerTryEnqueueCopiesTaskAndFailsFast(t *testing.T) {
-	worker := newUnstartedNewQuestionEmailWorkerForTest(1)
+	worker := newUnstartedNewQuestionEmailWorkerForTest()
 	task := newQuestionEmailTask{
 		UserIDs:       []string{"user-1"},
 		QuestionTitle: "Question",
@@ -380,7 +380,7 @@ func TestNewQuestionEmailWorkerTryEnqueueCopiesTaskAndFailsFast(t *testing.T) {
 		t.Fatalf("TryEnqueue() after Close() = true, want false")
 	}
 
-	canceledWorker := newUnstartedNewQuestionEmailWorkerForTest(1)
+	canceledWorker := newUnstartedNewQuestionEmailWorkerForTest()
 	canceledWorker.cancel()
 	if canceledWorker.TryEnqueue(newQuestionEmailWorkerTask("question-5", "user-5")) {
 		t.Fatalf("TryEnqueue() after cancel = true, want false")
@@ -393,8 +393,8 @@ func TestNewQuestionEmailWorkerTryEnqueueConcurrentClose(t *testing.T) {
 		senders    = 32
 	)
 
-	for iteration := 0; iteration < iterations; iteration++ {
-		worker := newUnstartedNewQuestionEmailWorkerForTest(1)
+	for iteration := range iterations {
+		worker := newUnstartedNewQuestionEmailWorkerForTest()
 		if !worker.TryEnqueue(newQuestionEmailWorkerTask("already-queued", "queued-user")) {
 			t.Fatalf("iteration %d: pre-fill TryEnqueue() = false, want true", iteration)
 		}
@@ -406,10 +406,8 @@ func TestNewQuestionEmailWorkerTryEnqueueConcurrentClose(t *testing.T) {
 		var acceptedAfterCloseObserved atomic.Int64
 		var wg sync.WaitGroup
 
-		for sender := 0; sender < senders; sender++ {
-			wg.Add(1)
-			go func(sender int) {
-				defer wg.Done()
+		for range senders {
+			wg.Go(func() {
 				defer func() {
 					if recovered := recover(); recovered != nil {
 						panicCh <- recovered
@@ -428,9 +426,9 @@ func TestNewQuestionEmailWorkerTryEnqueueConcurrentClose(t *testing.T) {
 					}
 					runtime.Gosched()
 				}
-			}(sender)
+			})
 		}
-		for sender := 0; sender < senders; sender++ {
+		for range senders {
 			<-ready
 		}
 
@@ -533,10 +531,10 @@ func newQuestionEmailWorkerTask(questionID string, userIDs ...string) newQuestio
 	}
 }
 
-func newUnstartedNewQuestionEmailWorkerForTest(bufferSize int) *newQuestionEmailWorker {
+func newUnstartedNewQuestionEmailWorkerForTest() *newQuestionEmailWorker {
 	ctx, cancel := context.WithCancel(context.Background())
 	return &newQuestionEmailWorker{
-		tasks:        make(chan newQuestionEmailTask, bufferSize),
+		tasks:        make(chan newQuestionEmailTask, 1),
 		interval:     func() time.Duration { return 0 },
 		timerFactory: newRealNewQuestionEmailTimer,
 		ctx:          ctx,
