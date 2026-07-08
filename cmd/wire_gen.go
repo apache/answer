@@ -244,7 +244,7 @@ func initApplication(debug bool, serverConf *conf.Server, dbConf *data.Database,
 	notificationRepo := notification2.NewNotificationRepo(dataData)
 	pluginUserConfigRepo := plugin_config.NewPluginUserConfigRepo(dataData)
 	badgeAwardRepo := badge_award.NewBadgeAwardRepo(dataData, uniqueIDRepo)
-	userAdminService := user_admin.NewUserAdminService(userAdminRepo, userRoleRelService, authService, userCommon, userActiveActivityRepo, siteInfoCommonService, emailService, questionRepo, answerRepo, commentCommonRepo, userExternalLoginRepo, notificationRepo, pluginUserConfigRepo, badgeAwardRepo)
+	userAdminService := user_admin.NewUserAdminService(userAdminRepo, userRoleRelService, authService, userCommon, userActiveActivityRepo, siteInfoCommonService, emailService, questionRepo, answerRepo, commentCommonRepo, userExternalLoginRepo, notificationRepo, pluginUserConfigRepo, badgeAwardRepo, apiKeyRepo)
 	userAdminController := controller_admin.NewUserAdminController(userAdminService)
 	reasonRepo := reason.NewReasonRepo(configService)
 	reasonService := reason2.NewReasonService(reasonRepo)
