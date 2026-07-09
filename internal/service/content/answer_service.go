@@ -554,10 +554,16 @@ func (as *AnswerService) Get(ctx context.Context, answerID, loginUserID string, 
 	if !exist {
 		return nil, nil, false, errors.NotFound(reason.AnswerNotFound)
 	}
+
 	if (question.Status == entity.QuestionStatusDeleted ||
 		question.Status == entity.QuestionStatusPending ||
 		question.Show == entity.QuestionHide) &&
 		!isAdminModerator && question.UserID != loginUserID {
+		return nil, nil, false, errors.NotFound(reason.AnswerNotFound)
+	}
+	if (answerInfo.Status == entity.AnswerStatusDeleted ||
+		answerInfo.Status == entity.AnswerStatusPending) &&
+		!isAdminModerator && answerInfo.UserID != loginUserID {
 		return nil, nil, false, errors.NotFound(reason.AnswerNotFound)
 	}
 	info := as.ShowFormat(ctx, answerInfo)

@@ -196,8 +196,12 @@ func (ar *answerRepo) GetAnswerCount(ctx context.Context) (count int64, err erro
 // GetAnswerList get answer list all
 func (ar *answerRepo) GetAnswerList(ctx context.Context, answer *entity.Answer) (answerList []*entity.Answer, err error) {
 	answerList = make([]*entity.Answer, 0)
-	answer.ID = uid.DeShortID(answer.ID)
-	answer.QuestionID = uid.DeShortID(answer.QuestionID)
+	if len(answer.ID) > 0 {
+		answer.ID = uid.DeShortID(answer.ID)
+	}
+	if len(answer.QuestionID) > 0 {
+		answer.QuestionID = uid.DeShortID(answer.QuestionID)
+	}
 	err = ar.data.DB.Context(ctx).Find(&answerList, answer)
 	if err != nil {
 		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
