@@ -176,6 +176,7 @@ func (ts *TagService) GetTagInfo(ctx context.Context, req *schema.GetTagInfoReq)
 	resp.CreatedAt = tagInfo.CreatedAt.Unix()
 	resp.UpdatedAt = tagInfo.UpdatedAt.Unix()
 	resp.SlugName = tagInfo.SlugName
+	resp.Domain = tagInfo.Domain
 	resp.DisplayName = tagInfo.DisplayName
 	resp.OriginalText = tagInfo.OriginalText
 	resp.ParsedText = tagInfo.ParsedText
@@ -189,6 +190,11 @@ func (ts *TagService) GetTagInfo(ctx context.Context, req *schema.GetTagInfoReq)
 	resp.MemberActions = permission.GetTagPermission(ctx, tagInfo.Status, req.CanEdit, req.CanDelete, req.CanMerge, req.CanRecover)
 	resp.GetExcerpt()
 	return resp, nil
+}
+
+// GetTagByDomain returns the active tag bound to a host name.
+func (ts *TagService) GetTagByDomain(ctx context.Context, domain string) (*entity.Tag, bool, error) {
+	return ts.tagCommonService.GetTagByDomain(ctx, domain)
 }
 
 // GetTagsBySlugName get tags by slug name
@@ -418,6 +424,7 @@ func (ts *TagService) GetTagWithPage(ctx context.Context, req *schema.GetTagWith
 		item := &schema.GetTagPageResp{
 			TagID:         tag.ID,
 			SlugName:      tag.SlugName,
+			Domain:        tag.Domain,
 			Description:   htmltext.FetchExcerpt(tag.ParsedText, "...", 240),
 			DisplayName:   tag.DisplayName,
 			OriginalText:  tag.OriginalText,

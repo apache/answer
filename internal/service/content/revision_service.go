@@ -485,6 +485,7 @@ func (rs *RevisionService) parseItem(ctx context.Context, item *schema.GetRevisi
 			CreatedAt:     tag.CreatedAt.Unix(),
 			UpdatedAt:     tag.UpdatedAt.Unix(),
 			SlugName:      tag.SlugName,
+			Domain:        tag.Domain,
 			DisplayName:   tag.DisplayName,
 			OriginalText:  tag.OriginalText,
 			ParsedText:    tag.ParsedText,

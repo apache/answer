@@ -76,6 +76,18 @@ func (tr *tagCommonRepo) GetTagBySlugName(ctx context.Context, slugName string) 
 	return
 }
 
+// GetTagByDomain returns the active tag bound to a domain.
+func (tr *tagCommonRepo) GetTagByDomain(ctx context.Context, domain string) (tagInfo *entity.Tag, exist bool, err error) {
+	tagInfo = &entity.Tag{}
+	session := tr.data.DB.Context(ctx).Where("LOWER(domain) = ?", domain)
+	session.Where(builder.Eq{"status": entity.TagStatusAvailable})
+	exist, err = session.Get(tagInfo)
+	if err != nil {
+		return nil, false, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	return
+}
+
 // GetTagListByName get tag list all like name
 func (tr *tagCommonRepo) GetTagListByName(ctx context.Context, name string, recommend, reserved bool) (tagList []*entity.Tag, err error) {
 	cond := &entity.Tag{}

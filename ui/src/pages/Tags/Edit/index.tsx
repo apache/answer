@@ -35,6 +35,7 @@ import { useTagInfo, modifyTag, useQueryRevisions } from '@/services';
 interface FormDataItem {
   displayName: Type.FormValue<string>;
   slugName: Type.FormValue<string>;
+  domain: Type.FormValue<string>;
   description: Type.FormValue<string>;
   editSummary: Type.FormValue<string>;
 }
@@ -45,6 +46,11 @@ const initFormData = {
     errorMsg: '',
   },
   slugName: {
+    value: '',
+    isInvalid: false,
+    errorMsg: '',
+  },
+  domain: {
     value: '',
     isInvalid: false,
     errorMsg: '',
@@ -86,22 +92,31 @@ const Index = () => {
   useEffect(() => {
     initFormData.displayName.value = data?.display_name || '';
     initFormData.slugName.value = data?.slug_name || '';
+    initFormData.domain.value = data?.domain || '';
     initFormData.description.value = data?.original_text || '';
     setFormData(initFormData);
     setImmData(initFormData);
   }, [data]);
 
   useEffect(() => {
-    const { displayName, slugName, description, editSummary } = formData;
+    const {
+      displayName,
+      slugName,
+      domain: currentDomain,
+      description,
+      editSummary,
+    } = formData;
     const {
       displayName: display_name,
       slugName: slug_name,
+      domain: initialDomain,
       description: original_text,
     } = immData;
 
     if (
       display_name.value !== displayName.value ||
       slug_name.value !== slugName.value ||
+      initialDomain.value !== currentDomain.value ||
       original_text.value !== description.value ||
       editSummary.value
     ) {
@@ -112,6 +127,7 @@ const Index = () => {
   }, [
     formData.displayName.value,
     formData.slugName.value,
+    formData.domain.value,
     formData.description.value,
     formData.editSummary.value,
   ]);
@@ -196,6 +212,7 @@ const Index = () => {
     const params = {
       display_name: formData.displayName.value,
       slug_name: formData.slugName.value,
+      domain: formData.domain.value,
       original_text: formData.description.value,
       parsed_text: editorRef.current.getHtml(),
       tag_id: data?.tag_id,
@@ -215,6 +232,7 @@ const Index = () => {
     formData.description.value = revision.content.original_text;
     formData.displayName.value = revision.content.display_name;
     formData.slugName.value = revision.content.slug_name;
+    formData.domain.value = revision.content.domain || '';
     setImmData({ ...formData });
     setFormData({ ...formData });
   };
@@ -237,6 +255,13 @@ const Index = () => {
     setFormData({
       ...formData,
       slugName: { ...formData.slugName, value: e.currentTarget.value },
+    });
+  };
+
+  const handleDomainChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      domain: { ...formData.domain, value: e.currentTarget.value },
     });
   };
 
@@ -306,6 +331,27 @@ const Index = () => {
               </Form.Text>
               <Form.Control.Feedback type="invalid">
                 {formData.slugName.errorMsg}
+              </Form.Control.Feedback>
+            </Form.Group>
+
+            <Form.Group controlId="domain" className="mb-3">
+              <Form.Label>
+                {t('form.fields.domain.label', { keyPrefix: 'tag_modal' })}
+              </Form.Label>
+              <Form.Control
+                value={formData.domain.value}
+                isInvalid={formData.domain.isInvalid}
+                disabled={role_id !== 2 && role_id !== 3}
+                onChange={handleDomainChange}
+                placeholder={t('form.fields.domain.placeholder', {
+                  keyPrefix: 'tag_modal',
+                })}
+              />
+              <Form.Text as="div">
+                {t('form.fields.domain.desc', { keyPrefix: 'tag_modal' })}
+              </Form.Text>
+              <Form.Control.Feedback type="invalid">
+                {formData.domain.errorMsg}
               </Form.Control.Feedback>
             </Form.Group>
 

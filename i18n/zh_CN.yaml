@@ -251,6 +251,10 @@ backend:
     tag:
       already_exist:
         other: 标签已存在。
+      domain_already_exist:
+        other: 此域名已绑定到其他标签。
+      domain_invalid:
+        other: 请输入有效的域名。
       not_found:
         other: 标签未找到。
       recommend_tag_not_found:
@@ -1021,6 +1025,12 @@ ui:
             empty: URL 固定链接不能为空。
             range: URL 固定链接不能超过 35 个字符。
             character: URL 固定链接包含非法字符。
+        domain:
+          label: 域名
+          desc: 可选。访问此域名时将跳转到当前标签。
+          placeholder: tag.example.com
+          msg:
+            invalid: 请输入有效的域名。
         desc:
           label: 描述
         revision:
@@ -2446,5 +2456,3 @@ ui:
     copy: 复制到剪贴板
     copied: 已复制
     external_content_warning: 外部图像/媒体未显示。
-
-

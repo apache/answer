@@ -20,6 +20,7 @@
 package templaterender
 
 import (
+	"context"
 	"math"
 
 	"github.com/apache/answer/internal/service/content"
@@ -46,6 +47,15 @@ type TemplateRenderController struct {
 	commentService  *comment.CommentService
 	siteInfoService siteinfo_common.SiteInfoCommonService
 	questionRepo    questioncommon.QuestionRepo
+}
+
+// GetTagSlugByDomain resolves a host name to its bound tag slug.
+func (q *TemplateRenderController) GetTagSlugByDomain(ctx context.Context, domain string) (string, bool, error) {
+	tagInfo, exist, err := q.tagService.GetTagByDomain(ctx, domain)
+	if err != nil || !exist {
+		return "", exist, err
+	}
+	return tagInfo.SlugName, true, nil
 }
 
 func NewTemplateRenderController(

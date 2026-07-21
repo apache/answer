@@ -35,6 +35,7 @@ import { TAG_SLUG_NAME_MAX_LENGTH } from '@/common/constants';
 interface FormDataItem {
   displayName: Type.FormValue<string>;
   slugName: Type.FormValue<string>;
+  domain: Type.FormValue<string>;
   description: Type.FormValue<string>;
 }
 
@@ -46,6 +47,11 @@ const Index = () => {
       errorMsg: '',
     },
     slugName: {
+      value: '',
+      isInvalid: false,
+      errorMsg: '',
+    },
+    domain: {
       value: '',
       isInvalid: false,
       errorMsg: '',
@@ -74,10 +80,16 @@ const Index = () => {
   });
 
   useEffect(() => {
-    const { displayName, slugName, description } = formData;
+    const {
+      displayName,
+      slugName,
+      domain: currentDomain,
+      description,
+    } = formData;
     const {
       displayName: display_name,
       slugName: slug_name,
+      domain: initialDomain,
       description: original_text,
     } = immData;
     if (!display_name || !slug_name || !original_text) {
@@ -87,6 +99,7 @@ const Index = () => {
     if (
       display_name.value !== displayName.value ||
       slug_name.value !== slugName.value ||
+      initialDomain.value !== currentDomain.value ||
       original_text.value !== description.value
     ) {
       setContentChanged(true);
@@ -96,6 +109,7 @@ const Index = () => {
   }, [
     formData.displayName.value,
     formData.slugName.value,
+    formData.domain.value,
     formData.description.value,
   ]);
 
@@ -182,6 +196,7 @@ const Index = () => {
     const params = {
       display_name: formData.displayName.value,
       slug_name: formData.slugName.value,
+      domain: formData.domain.value,
       original_text: formData.description.value,
     };
     createTag(params)
@@ -226,6 +241,17 @@ const Index = () => {
     });
   };
 
+  const handleDomainChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      domain: {
+        ...formData.domain,
+        value: e.currentTarget.value,
+        isInvalid: false,
+      },
+    });
+  };
+
   usePageTags({
     title: t('create_tag', { keyPrefix: 'page_title' }),
   });
@@ -262,6 +288,22 @@ const Index = () => {
               <Form.Text as="div">{t('form.fields.slug_name.desc')}</Form.Text>
               <Form.Control.Feedback type="invalid">
                 {formData.slugName.errorMsg}
+              </Form.Control.Feedback>
+            </Form.Group>
+
+            <Form.Group controlId="domain" className="mb-3">
+              <Form.Label>{t('form.fields.domain.label')}</Form.Label>
+              <Form.Control
+                type="text"
+                value={formData.domain.value}
+                isInvalid={formData.domain.isInvalid}
+                disabled={role_id !== 2 && role_id !== 3}
+                onChange={handleDomainChange}
+                placeholder={t('form.fields.domain.placeholder')}
+              />
+              <Form.Text as="div">{t('form.fields.domain.desc')}</Form.Text>
+              <Form.Control.Feedback type="invalid">
+                {formData.domain.errorMsg}
               </Form.Control.Feedback>
             </Form.Group>
 

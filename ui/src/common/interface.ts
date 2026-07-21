@@ -66,6 +66,7 @@ export interface SynonymsTag extends Tag {
 
 export interface TagInfo extends TagBase {
   tag_id: string;
+  domain?: string;
   original_text: string;
   parsed_text: string;
   follow_count: number;

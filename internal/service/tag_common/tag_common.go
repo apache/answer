@@ -23,6 +23,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net"
 	"sort"
 	"strings"
 
@@ -45,6 +46,7 @@ type TagCommonRepo interface {
 	AddTagList(ctx context.Context, tagList []*entity.Tag) (err error)
 	GetTagListByIDs(ctx context.Context, ids []string) (tagList []*entity.Tag, err error)
 	GetTagBySlugName(ctx context.Context, slugName string) (tagInfo *entity.Tag, exist bool, err error)
+	GetTagByDomain(ctx context.Context, domain string) (tagInfo *entity.Tag, exist bool, err error)
 	GetTagListByName(ctx context.Context, name string, recommend, reserved bool) (tagList []*entity.Tag, err error)
 	GetTagListByNames(ctx context.Context, names []string) (tagList []*entity.Tag, err error)
 	GetTagByID(ctx context.Context, tagID string, includeDeleted bool) (tag *entity.Tag, exist bool, err error)
@@ -347,10 +349,20 @@ func (ts *TagCommonService) AddTag(ctx context.Context, req *schema.AddTagReq) (
 	if exist {
 		return nil, errors.BadRequest(reason.TagAlreadyExist)
 	}
+	if req.Domain != "" {
+		_, exist, err = ts.GetTagByDomain(ctx, req.Domain)
+		if err != nil {
+			return nil, err
+		}
+		if exist {
+			return nil, errors.BadRequest(reason.TagDomainAlreadyExists)
+		}
+	}
 	slugName := strings.ReplaceAll(req.SlugName, " ", "-")
 	slugName = strings.ToLower(slugName)
 	tagInfo := &entity.Tag{
 		SlugName:     slugName,
+		Domain:       req.Domain,
 		DisplayName:  req.DisplayName,
 		OriginalText: req.OriginalText,
 		ParsedText:   req.ParsedText,
@@ -412,6 +424,23 @@ func (ts *TagCommonService) GetTagBySlugName(ctx context.Context, slugName strin
 	}
 	ts.tagFormatRecommendAndReserved(ctx, tag)
 	return
+}
+
+// GetTagByDomain returns the active tag bound to a host name.
+func (ts *TagCommonService) GetTagByDomain(ctx context.Context, domain string) (tag *entity.Tag, exist bool, err error) {
+	domain = normalizeTagDomain(domain)
+	if domain == "" {
+		return nil, false, nil
+	}
+	return ts.tagCommonRepo.GetTagByDomain(ctx, domain)
+}
+
+func normalizeTagDomain(domain string) string {
+	domain = strings.ToLower(strings.TrimSpace(domain))
+	if host, _, err := net.SplitHostPort(domain); err == nil {
+		domain = host
+	}
+	return strings.TrimSuffix(domain, ".")
 }
 
 // GetTagListByIDs get object tag
@@ -889,11 +918,22 @@ func (ts *TagCommonService) UpdateTag(ctx context.Context, req *schema.UpdateTag
 	// If the content is the same, ignore it
 	if tagInfo.OriginalText == req.OriginalText &&
 		tagInfo.DisplayName == req.DisplayName &&
-		tagInfo.SlugName == slugName {
+		tagInfo.SlugName == slugName &&
+		tagInfo.Domain == req.Domain {
 		return nil
+	}
+	if req.Domain != "" {
+		domainTag, domainExists, err := ts.GetTagByDomain(ctx, req.Domain)
+		if err != nil {
+			return err
+		}
+		if domainExists && domainTag.ID != tagInfo.ID {
+			return errors.BadRequest(reason.TagDomainAlreadyExists)
+		}
 	}
 
 	tagInfo.SlugName = slugName
+	tagInfo.Domain = req.Domain
 	tagInfo.DisplayName = req.DisplayName
 	tagInfo.OriginalText = req.OriginalText
 	tagInfo.ParsedText = req.ParsedText

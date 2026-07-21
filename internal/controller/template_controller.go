@@ -136,6 +136,13 @@ func (tc *TemplateController) SiteInfo(ctx *gin.Context) *schema.TemplateSiteInf
 
 // Index question list
 func (tc *TemplateController) Index(ctx *gin.Context) {
+	if tagSlug, exists, err := tc.templateRenderController.GetTagSlugByDomain(ctx, ctx.Request.Host); err != nil {
+		log.Error(err)
+	} else if exists {
+		ctx.Redirect(http.StatusFound, tagDomainRedirectPath(ctx.Request.URL.Path, tagSlug))
+		return
+	}
+
 	req := &schema.QuestionPageReq{
 		OrderCond: "newest",
 	}
@@ -173,6 +180,11 @@ func (tc *TemplateController) Index(ctx *gin.Context) {
 		"path":        "questions",
 		"hotQuestion": hotQuestion,
 	})
+}
+
+func tagDomainRedirectPath(requestPath, tagSlug string) string {
+	basePath := strings.TrimSuffix(requestPath, "/")
+	return fmt.Sprintf("%s/tags/%s", basePath, url.PathEscape(tagSlug))
 }
 
 func (tc *TemplateController) QuestionList(ctx *gin.Context) {

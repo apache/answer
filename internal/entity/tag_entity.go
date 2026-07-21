@@ -39,6 +39,7 @@ type Tag struct {
 	MainTagID       int64     `xorm:"not null default 0 BIGINT(20) main_tag_id"`
 	MainTagSlugName string    `xorm:"not null default '' VARCHAR(35) main_tag_slug_name"`
 	SlugName        string    `xorm:"not null default '' unique VARCHAR(35) slug_name"`
+	Domain          string    `xorm:"not null default '' VARCHAR(253) domain index"`
 	DisplayName     string    `xorm:"not null default '' VARCHAR(35) display_name"`
 	OriginalText    string    `xorm:"not null MEDIUMTEXT original_text"`
 	ParsedText      string    `xorm:"not null MEDIUMTEXT parsed_text"`

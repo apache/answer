@@ -20,6 +20,7 @@
 package schema
 
 import (
+	"errors"
 	"strings"
 
 	"github.com/apache/answer/internal/base/validator"
@@ -74,6 +75,7 @@ type GetTagResp struct {
 	CreatedAt     int64                     `json:"created_at"`
 	UpdatedAt     int64                     `json:"updated_at"`
 	SlugName      string                    `json:"slug_name"`
+	Domain        string                    `json:"domain"`
 	DisplayName   string                    `json:"display_name"`
 	Excerpt       string                    `json:"excerpt"`
 	OriginalText  string                    `json:"original_text"`
@@ -105,6 +107,8 @@ type GetTagPageResp struct {
 	TagID string `json:"tag_id"`
 	// slug_name
 	SlugName string `json:"slug_name"`
+	// domain
+	Domain string `json:"domain"`
 	// display_name
 	DisplayName string `json:"display_name"`
 	// excerpt
@@ -168,6 +172,8 @@ type RemoveTagReq struct {
 type AddTagReq struct {
 	// slug_name
 	SlugName string `validate:"required,gt=0,lte=35" json:"slug_name"`
+	// domain binds the tag to a host name
+	Domain string `json:"domain"`
 	// display_name
 	DisplayName string `validate:"required,gt=0,lte=35" json:"display_name"`
 	// original text
@@ -181,6 +187,9 @@ type AddTagReq struct {
 func (req *AddTagReq) Check() (errFields []*validator.FormErrorField, err error) {
 	req.ParsedText = converter.Markdown2HTML(req.OriginalText)
 	req.SlugName = strings.ToLower(req.SlugName)
+	if req.Domain, err = normalizeTagDomain(req.Domain); err != nil {
+		return []*validator.FormErrorField{{ErrorField: "domain", ErrorMsg: "error.tag.domain_invalid"}}, err
+	}
 	return nil, nil
 }
 
@@ -195,6 +204,8 @@ type UpdateTagReq struct {
 	TagID string `validate:"required" json:"tag_id"`
 	// slug_name
 	SlugName string `validate:"omitempty,gt=0,lte=35" json:"slug_name"`
+	// domain binds the tag to a host name
+	Domain string `json:"domain"`
 	// display_name
 	DisplayName string `validate:"omitempty,gt=0,lte=35" json:"display_name"`
 	// original text
@@ -210,7 +221,31 @@ type UpdateTagReq struct {
 
 func (r *UpdateTagReq) Check() (errFields []*validator.FormErrorField, err error) {
 	r.ParsedText = converter.Markdown2HTML(r.OriginalText)
+	if r.Domain, err = normalizeTagDomain(r.Domain); err != nil {
+		return []*validator.FormErrorField{{ErrorField: "domain", ErrorMsg: "error.tag.domain_invalid"}}, err
+	}
 	return nil, nil
+}
+
+func normalizeTagDomain(domain string) (string, error) {
+	domain = strings.TrimSuffix(strings.ToLower(strings.TrimSpace(domain)), ".")
+	if domain == "" {
+		return "", nil
+	}
+	if len(domain) > 253 || strings.ContainsAny(domain, "/?#:@") {
+		return "", errors.New("invalid tag domain")
+	}
+	for _, label := range strings.Split(domain, ".") {
+		if len(label) == 0 || len(label) > 63 || label[0] == '-' || label[len(label)-1] == '-' {
+			return "", errors.New("invalid tag domain")
+		}
+		for _, char := range label {
+			if (char < 'a' || char > 'z') && (char < '0' || char > '9') && char != '-' {
+				return "", errors.New("invalid tag domain")
+			}
+		}
+	}
+	return domain, nil
 }
 
 // RecoverTagReq update tag request

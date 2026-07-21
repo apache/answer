@@ -252,6 +252,10 @@ backend:
     tag:
       already_exist:
         other: Tag already exists.
+      domain_already_exist:
+        other: This domain is already bound to another tag.
+      domain_invalid:
+        other: Please enter a valid domain name.
       not_found:
         other: Tag not found.
       recommend_tag_not_found:
@@ -1034,6 +1038,12 @@ ui:
             empty: URL slug cannot be empty.
             range: URL slug up to 35 characters.
             character: URL slug contains unallowed character set.
+        domain:
+          label: Domain
+          desc: Optional domain that redirects to this tag.
+          placeholder: tag.example.com
+          msg:
+            invalid: Please enter a valid domain name.
         desc:
           label: Description
         revision:
@@ -2488,4 +2498,3 @@ ui:
     copy: Copy to clipboard
     copied: Copied
     external_content_warning: External images/media are not displayed.
-
