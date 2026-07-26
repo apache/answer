@@ -33,6 +33,7 @@ import {
 } from '@/stores';
 import {
   Header,
+  CustomBanner,
   Toast,
   Customize,
   CustomizeTheme,
@@ -211,6 +212,7 @@ const Layout: FC = () => {
           revalidateOnFocus: false,
         }}>
         <Header />
+        <CustomBanner />
         <div
           className={classnames(
             'position-relative page-wrap d-flex flex-column flex-fill',

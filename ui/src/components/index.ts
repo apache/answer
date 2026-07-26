@@ -56,6 +56,7 @@ import QuestionList from './QuestionList';
 import HotQuestions from './HotQuestions';
 import HttpErrorContent from './HttpErrorContent';
 import CustomSidebar from './CustomSidebar';
+import CustomBanner from './CustomBanner';
 import ImgViewer from './ImgViewer';
 import SideNav from './SideNav';
 import PluginRender from './PluginRender';
@@ -111,6 +112,7 @@ export {
   HotQuestions,
   HttpErrorContent,
   CustomSidebar,
+  CustomBanner,
   ImgViewer,
   SideNav,
   PluginRender,

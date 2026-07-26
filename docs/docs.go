@@ -11864,6 +11864,10 @@ const docTemplate = `{
         "schema.SiteCustomCssHTMLReq": {
             "type": "object",
             "properties": {
+                "custom_banner": {
+                    "type": "string",
+                    "maxLength": 65536
+                },
                 "custom_css": {
                     "type": "string",
                     "maxLength": 65536
@@ -11889,6 +11893,10 @@ const docTemplate = `{
         "schema.SiteCustomCssHTMLResp": {
             "type": "object",
             "properties": {
+                "custom_banner": {
+                    "type": "string",
+                    "maxLength": 65536
+                },
                 "custom_css": {
                     "type": "string",
                     "maxLength": 65536
