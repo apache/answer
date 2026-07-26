@@ -21,7 +21,6 @@ package tag_common
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -171,10 +170,20 @@ func (tr *tagCommonRepo) GetTagPage(ctx context.Context, page, pageSize int, tag
 	session := tr.data.DB.Context(ctx)
 
 	if len(tag.SlugName) > 0 {
+		// Both sides lowered, so the search is case-insensitive.
+		//
+		// This previously read LOWER(%s) formatted against the *search term*,
+		// which put the function name into the value: the query became
+		// slug_name LIKE '%LOWER(coco)%' and could never match. Only the
+		// display_name clause did anything, and that is case-sensitive on
+		// Postgres, so typing a tag in lower case -- which is how tags are
+		// written and therefore how anyone types them -- returned nothing at all
+		// and read as "no such tag".
+		search := searchTermForTag(tag.SlugName)
 		mainTagCond := builder.And(
 			builder.Or(
-				builder.Like{"slug_name", fmt.Sprintf("LOWER(%s)", tag.SlugName)},
-				builder.Like{"display_name", tag.SlugName},
+				builder.Like{"LOWER(slug_name)", search},
+				builder.Like{"LOWER(display_name)", search},
 			),
 			builder.Eq{"main_tag_id": 0},
 		)
@@ -292,4 +301,11 @@ func (tr *tagCommonRepo) UpdateTagsAttribute(ctx context.Context, tags []string,
 		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
 	return
+}
+
+// searchTermForTag normalises a tag search term. Lowering it here, and lowering
+// the columns in the query, is what makes the search case-insensitive: tags are
+// written in lower case, so that is how people type them.
+func searchTermForTag(term string) string {
+	return strings.ToLower(strings.TrimSpace(term))
 }
