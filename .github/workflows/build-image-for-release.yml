@@ -34,33 +34,31 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Docker meta
-      id: meta
-      uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
-      with:
-        images: apache/answer
-        tags: |
-          type=ref,enable=true,priority=600,prefix=,suffix=,event=branch
-          type=semver,pattern={{version}}
-
     - name: Set up QEMU
-      uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.6.0
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y qemu-user-static
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
+      run: |
+        docker buildx create --name answer-builder --driver docker-container --use
+        docker buildx inspect --bootstrap
 
     - name: Login to DockerHub
-      uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
-      with:
-        username: ${{ secrets.DOCKERHUB_USER }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+      run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login --username "${{ secrets.DOCKERHUB_USER }}" --password-stdin
 
     - name: Build and push
-      uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
-      with:
-        context: .
-        platforms: linux/amd64,linux/arm64
-        push: true
-        file: ./Dockerfile
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
+      env:
+        IMAGE_TAG: ${{ github.ref_name }}
+      run: |
+        BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+        docker buildx build \
+          --file ./Dockerfile \
+          --platform linux/amd64,linux/arm64 \
+          --push \
+          --tag "apache/answer:${IMAGE_TAG#v}" \
+          --label org.opencontainers.image.created="${BUILD_DATE}" \
+          --label org.opencontainers.image.revision="${GITHUB_SHA}" \
+          --label org.opencontainers.image.source="https://github.com/${GITHUB_REPOSITORY}" \
+          --label org.opencontainers.image.version="${IMAGE_TAG#v}" \
+          .

@@ -20,10 +20,11 @@
 package templaterender
 
 import (
+	"context"
+
 	"github.com/apache/answer/internal/base/pager"
 	"github.com/apache/answer/internal/schema"
 	"github.com/jinzhu/copier"
-	"golang.org/x/net/context"
 )
 
 func (q *TemplateRenderController) TagList(ctx context.Context, req *schema.GetTagWithPageReq) (resp *pager.PageModel, err error) {

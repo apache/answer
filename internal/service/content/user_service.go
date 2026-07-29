@@ -360,7 +360,7 @@ func (us *UserService) UpdateInfo(ctx context.Context, req *schema.UpdateInfoReq
 
 	cond := us.formatUserInfoForUpdateInfo(oldUserInfo, req)
 
-	us.cleanUpRemovedAvatar(ctx, oldUserInfo.Avatar, cond.Avatar)
+	us.cleanUpRemovedAvatar(ctx, req.UserID, oldUserInfo.Avatar, cond.Avatar)
 
 	err = us.userRepo.UpdateInfo(ctx, cond)
 	if err != nil {
@@ -407,6 +407,7 @@ func (us *UserService) validateAvatarInfo(
 
 func (us *UserService) cleanUpRemovedAvatar(
 	ctx context.Context,
+	updatingUserID string,
 	oldAvatarJSON string,
 	newAvatarJSON string,
 ) {
@@ -432,6 +433,13 @@ func (us *UserService) cleanUpRemovedAvatar(
 		}
 		if fileRecord == nil {
 			log.Warn("no file record found for old avatar url:", oldAvatar.Custom)
+			return
+		}
+		if fileRecord.UserID != updatingUserID || fileRecord.Source != string(plugin.UserAvatar) {
+			log.Warnf(
+				"refuse to clean avatar url %q: file record owner/source mismatch (owner=%s source=%s updating_user=%s)",
+				oldAvatar.Custom, fileRecord.UserID, fileRecord.Source, updatingUserID,
+			)
 			return
 		}
 		if err := us.fileRecordService.DeleteAndMoveFileRecord(ctx, fileRecord); err != nil {

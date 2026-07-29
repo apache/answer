@@ -20,6 +20,7 @@
 package content
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"strings"
@@ -64,7 +65,6 @@ import (
 	"github.com/jinzhu/copier"
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
-	"golang.org/x/net/context"
 )
 
 // QuestionRepo question repository

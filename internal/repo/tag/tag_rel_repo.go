@@ -195,6 +195,7 @@ func (tr *tagRelRepo) CountTagRelByTagID(ctx context.Context, tagID string) (cou
 // GetTagRelDefaultStatusByObjectID get tag rel default status
 func (tr *tagRelRepo) GetTagRelDefaultStatusByObjectID(ctx context.Context, objectID string) (status int, err error) {
 	question := entity.Question{}
+	objectID = uid.DeShortID(objectID)
 	exist, err := tr.data.DB.Context(ctx).ID(objectID).Cols("show", "status").Get(&question)
 	if err != nil {
 		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
