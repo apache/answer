@@ -17,7 +17,7 @@
  * under the License.
  */
 
-/// <reference types="react-scripts" />
+/// <reference types="vite/client" />
 declare module '*.yaml';
 
 declare module '*.ico';
