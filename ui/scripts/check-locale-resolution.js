@@ -48,7 +48,7 @@ const util = require('util');
 const UI_DIR = path.resolve(__dirname, '..');
 const PROBE = path.resolve(__dirname, 'locale-probe.js');
 const LOCALIZE_SOURCE = path.resolve(UI_DIR, 'src/utils/localize.ts');
-const DEV_SERVER_CONFIG = path.resolve(UI_DIR, 'vite.config.ts');
+const DEV_SERVER_CONFIG = path.resolve(UI_DIR, 'vite.config.mts');
 
 // A language written in a script the default language does not use, so
 // "resolved the language that was asked for" cannot be mistaken for "fell
