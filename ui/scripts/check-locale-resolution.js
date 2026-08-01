@@ -109,7 +109,8 @@ async function openProbe() {
   };
 
   return {
-    load: async (langName) => (await importProbe()).loadLocaleResource(langName),
+    load: async (langName) =>
+      (await importProbe()).loadLocaleResource(langName),
 
     // Ask for the language file the way the browser will: over HTTP, at the
     // path the dev server assigns to a file outside the frontend root.
@@ -125,7 +126,9 @@ async function openProbe() {
       const resolved = await ssr.pluginContainer.resolveId(specifier, PROBE);
 
       if (!resolved || !resolved.id) {
-        fail(`${specifier} does not resolve at all, so there is nothing for a browser to request`);
+        fail(
+          `${specifier} does not resolve at all, so there is nothing for a browser to request`,
+        );
       }
 
       const url = `${baseUrl}/@fs${resolved.id.split('?')[0]}`;
@@ -133,7 +136,9 @@ async function openProbe() {
       try {
         response = await fetch(url);
       } catch (err) {
-        fail(`requesting ${langName} at ${url} failed outright: ${err.message}`);
+        fail(
+          `requesting ${langName} at ${url} failed outright: ${err.message}`,
+        );
       }
 
       if (!response.ok) {

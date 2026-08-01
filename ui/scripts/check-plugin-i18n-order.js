@@ -88,7 +88,9 @@ async function main() {
 
     // If the helper and this check hold different copies, every assertion
     // below is measuring an object nothing under test ever touched.
-    const loaded = [...server.environments.ssr.moduleGraph.idToModuleMap.keys()].filter(
+    const loaded = [
+      ...server.environments.ssr.moduleGraph.idToModuleMap.keys(),
+    ].filter(
       (id) => /[\\/]i18next[\\/]/.test(id) && !/[\\/]\.vite[\\/]/.test(id),
     );
     if (loaded.length !== 1) {
@@ -125,7 +127,8 @@ async function main() {
     await i18next.init({ lng: LANG, fallbackLng: LANG, resources: {} });
 
     const bundle = i18next.getResourceBundle(LANG, PLUGIN_NS);
-    const title = bundle && bundle[SLUG] && bundle[SLUG].ui && bundle[SLUG].ui.title;
+    const title =
+      bundle && bundle[SLUG] && bundle[SLUG].ui && bundle[SLUG].ui.title;
 
     if (title !== SENTINEL) {
       fail(
