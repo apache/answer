@@ -50,7 +50,7 @@ export const loadLanguageOptions = async (forAdmin = false) => {
   const languageOptions = forAdmin
     ? await getAdminLanguageOptions()
     : await getLanguageOptions();
-  if (process.env.NODE_ENV === 'development') {
+  if (import.meta.env.DEV) {
     const { default: optConf } = await import('@i18n/i18n.yaml');
     optConf?.language_options.forEach((opt) => {
       if (!languageOptions.find((_) => opt.value === _.value)) {
@@ -82,7 +82,7 @@ const pullLanguageConf = (res) => {
 const addI18nResource = async (langName) => {
   const res = { lng: langName, resources: undefined };
   const storageResource = Storage.get(LANG_RESOURCE_STORAGE_KEY);
-  if (process.env.NODE_ENV === 'development') {
+  if (import.meta.env.DEV) {
     try {
       const { default: resConf } = await import(`@i18n/${langName}.yaml`);
       res.resources = resConf.ui;
