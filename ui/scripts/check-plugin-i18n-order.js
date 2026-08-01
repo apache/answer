@@ -40,7 +40,7 @@ const util = require('util');
 
 const UI_DIR = path.resolve(__dirname, '..');
 const PLUGIN_UTILS = path.resolve(UI_DIR, 'src/utils/pluginKit/utils.ts');
-const DEV_SERVER_CONFIG = path.resolve(UI_DIR, 'vite.config.ts');
+const DEV_SERVER_CONFIG = path.resolve(UI_DIR, 'vite.config.mts');
 
 const LANG = 'en_US';
 const PLUGIN_NS = 'plugin';
