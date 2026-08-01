@@ -20,6 +20,7 @@
 package controller
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/apache/answer/ui"
@@ -39,7 +40,8 @@ import (
 func TestGetStyleResolvesBuiltAssets(t *testing.T) {
 	const builtIndexPath = "build/index.html"
 
-	if _, err := ui.Build.ReadFile(builtIndexPath); err != nil {
+	raw, err := ui.Build.ReadFile(builtIndexPath)
+	if err != nil {
 		t.Skipf("no frontend build embedded at %s; build the frontend and re-run: %v", builtIndexPath, err)
 	}
 
@@ -57,4 +59,20 @@ func TestGetStyleResolvesBuiltAssets(t *testing.T) {
 		require.NotEmpty(t, href,
 			"stylesheet href %d parsed out of %s is empty; server-rendered pages would load unstyled", i, builtIndexPath)
 	}
+
+	// Finding every stylesheet matters as much as finding one. The build emits
+	// more than a single entry stylesheet, and a parser that stopped at the
+	// first one would still satisfy every assertion above while half the page's
+	// CSS silently stopped loading. That regression has happened once already.
+	//
+	// Count them again by a deliberately different and cruder method than the
+	// parser uses, so the two have to agree. It is a lower bound: a build that
+	// quotes attributes differently drives this to zero and the comparison
+	// simply stops constraining, which is why it supplements the assertions
+	// above rather than replacing them.
+	declared := strings.Count(string(raw), `rel="stylesheet"`)
+	require.GreaterOrEqual(t, len(css), declared,
+		"%s declares at least %d stylesheets but only %d were parsed out of it; "+
+			"server-rendered pages would load missing part of their CSS",
+		builtIndexPath, declared, len(css))
 }
