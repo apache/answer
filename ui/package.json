@@ -13,6 +13,7 @@
     "clean": "rm -rf node_modules && rm -rf src/plugins/**/node_modules",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "check-locales": "node ./scripts/check-locale-resolution.js",
+    "check-plugin-i18n": "node ./scripts/check-plugin-i18n-order.js",
     "setup-lint": "node scripts/setup-eslint.js && cd .. && husky install",
     "lint": "eslint . --cache --fix --ext .ts,.tsx",
     "prettier": "prettier --write \"src/**/*.{ts,tsx,css,scss,md}\"",
