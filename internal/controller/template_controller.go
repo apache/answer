@@ -20,6 +20,7 @@
 package controller
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"html/template"
@@ -50,6 +51,7 @@ import (
 	"github.com/apache/answer/ui"
 	"github.com/gin-gonic/gin"
 	"github.com/segmentfault/pacman/log"
+	"golang.org/x/net/html"
 )
 
 var SiteUrl = ""
@@ -88,19 +90,59 @@ func GetStyle() (script []string, css string) {
 	if err != nil {
 		return
 	}
-	scriptRegexp := regexp.MustCompile(`<script defer="defer" src="([^"]*)"></script>`)
-	scriptData := scriptRegexp.FindAllStringSubmatch(string(file), -1)
-	for _, s := range scriptData {
-		if len(s) == 2 {
-			script = append(script, s[1])
-		}
+
+	// The frontend build tool controls attribute order, attribute set (e.g.
+	// module vs classic scripts), and quoting for the emitted tags, and that
+	// shape has already changed once. Walk the parsed DOM instead of matching
+	// a literal tag shape so the next bundler change fails a test instead of
+	// silently shipping pages with no JS or CSS.
+	doc, err := html.Parse(bytes.NewReader(file))
+	if err != nil {
+		return
 	}
 
-	cssRegexp := regexp.MustCompile(`<link href="(.*)" rel="stylesheet">`)
-	cssListData := cssRegexp.FindStringSubmatch(string(file))
-	if len(cssListData) == 2 {
-		css = cssListData[1]
+	attr := func(n *html.Node, key string) (string, bool) {
+		for _, a := range n.Attr {
+			if a.Key == key {
+				return a.Val, true
+			}
+		}
+		return "", false
 	}
+	isStylesheet := func(n *html.Node) bool {
+		rel, ok := attr(n, "rel")
+		if !ok {
+			return false
+		}
+		for _, tok := range strings.Fields(rel) {
+			if strings.EqualFold(tok, "stylesheet") {
+				return true
+			}
+		}
+		return false
+	}
+
+	var walk func(*html.Node)
+	walk = func(n *html.Node) {
+		if n.Type == html.ElementNode {
+			switch n.Data {
+			case "script":
+				if src, ok := attr(n, "src"); ok && src != "" {
+					script = append(script, src)
+				}
+			case "link":
+				if css == "" && isStylesheet(n) {
+					if href, ok := attr(n, "href"); ok && href != "" {
+						css = href
+					}
+				}
+			}
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			walk(c)
+		}
+	}
+	walk(doc)
 	return
 }
 func (tc *TemplateController) SiteInfo(ctx *gin.Context) *schema.TemplateSiteInfoResp {
