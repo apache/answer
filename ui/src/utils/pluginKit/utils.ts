@@ -55,7 +55,17 @@ const addResourceBundle = (resource: I18nResource) => {
 };
 
 const initI18nResource = (resource: I18nResource) => {
-  addResourceBundle(resource);
+  /**
+   * `i18next` only attaches its resource-store methods to the instance while
+   * `init` runs, so they do not exist yet if a plugin's i18n module happens to
+   * evaluate first. Module evaluation order is decided by the bundler, so
+   * registering unconditionally works or crashes depending on how the chunks
+   * come out. Register now only when there is something to register into, and
+   * otherwise let the handler below do it.
+   */
+  if (i18next.isInitialized) {
+    addResourceBundle(resource);
+  }
   /**
    * Note: In development mode,
    * when the base i18n file is changed, `i18next` will reinitialise the updated resource file,
