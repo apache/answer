@@ -57,8 +57,11 @@ import (
 var SiteUrl = ""
 
 type TemplateController struct {
-	scriptPath               []string
-	cssPath                  string
+	scriptPath []string
+	// cssPath lists every stylesheet the frontend build emits, in document
+	// order; a build that emits more than one entry stylesheet needs all of
+	// them, not just the first, or server-rendered pages come back unstyled.
+	cssPath                  []string
 	templateRenderController *templaterender.TemplateRenderController
 	siteInfoService          siteinfo_common.SiteInfoCommonService
 	eventQueueService        eventqueue.Service
@@ -85,7 +88,7 @@ func NewTemplateController(
 		questionService:          questionService,
 	}
 }
-func GetStyle() (script []string, css string) {
+func GetStyle() (script []string, css []string) {
 	file, err := ui.Build.ReadFile("build/index.html")
 	if err != nil {
 		return
@@ -131,9 +134,9 @@ func GetStyle() (script []string, css string) {
 					script = append(script, src)
 				}
 			case "link":
-				if css == "" && isStylesheet(n) {
+				if isStylesheet(n) {
 					if href, ok := attr(n, "href"); ok && href != "" {
-						css = href
+						css = append(css, href)
 					}
 				}
 			}
@@ -602,7 +605,7 @@ func (tc *TemplateController) Page404(ctx *gin.Context) {
 
 func (tc *TemplateController) html(ctx *gin.Context, code int, tpl string, siteInfo *schema.TemplateSiteInfoResp, data gin.H) {
 	prefix := ""
-	cssPath := ""
+	cssPath := make([]string, len(tc.cssPath))
 	scriptPath := make([]string, len(tc.scriptPath))
 
 	_ = plugin.CallCDN(func(fn plugin.CDN) error {
@@ -614,7 +617,9 @@ func (tc *TemplateController) html(ctx *gin.Context, code int, tpl string, siteI
 		if prefix[len(prefix)-1:] == "/" {
 			prefix = strings.TrimSuffix(prefix, "/")
 		}
-		cssPath = prefix + tc.cssPath
+		for i, path := range tc.cssPath {
+			cssPath[i] = prefix + path
+		}
 		for i, path := range tc.scriptPath {
 			scriptPath[i] = prefix + path
 		}
