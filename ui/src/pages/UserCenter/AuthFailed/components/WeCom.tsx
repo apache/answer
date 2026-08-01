@@ -22,27 +22,32 @@ import { Card, Col, Carousel } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
 import { userCenterStore } from '@/stores';
+import CarouselWecom1 from '@/assets/images/carousel-wecom-1.jpg';
+import CarouselWecom2 from '@/assets/images/carousel-wecom-2.jpg';
+import CarouselWecom3 from '@/assets/images/carousel-wecom-3.jpg';
+import CarouselWecom4 from '@/assets/images/carousel-wecom-4.jpg';
+import CarouselWecom5 from '@/assets/images/carousel-wecom-5.jpg';
 
 const data = [
   {
     id: 1,
-    url: require('@/assets/images/carousel-wecom-1.jpg'),
+    url: CarouselWecom1,
   },
   {
     id: 2,
-    url: require('@/assets/images/carousel-wecom-2.jpg'),
+    url: CarouselWecom2,
   },
   {
     id: 3,
-    url: require('@/assets/images/carousel-wecom-3.jpg'),
+    url: CarouselWecom3,
   },
   {
     id: 4,
-    url: require('@/assets/images/carousel-wecom-4.jpg'),
+    url: CarouselWecom4,
   },
   {
     id: 5,
-    url: require('@/assets/images/carousel-wecom-5.jpg'),
+    url: CarouselWecom5,
   },
 ];
 
