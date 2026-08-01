@@ -18,12 +18,11 @@
  */
 
 import i18next from 'i18next';
+import * as Diff from 'diff';
 
 import pattern from '@/common/pattern';
 import { USER_AGENT_NAMES } from '@/common/constants';
 import type * as Type from '@/common/interface';
-
-const Diff = require('diff');
 
 function thousandthDivision(num) {
   const reg = /\d{1,3}(?=(\d{3})+$)/g;
