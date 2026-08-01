@@ -117,7 +117,7 @@ func GetStyle() (script []string, css []string) {
 		if !ok {
 			return false
 		}
-		for _, tok := range strings.Fields(rel) {
+		for tok := range strings.FieldsSeq(rel) {
 			if strings.EqualFold(tok, "stylesheet") {
 				return true
 			}
