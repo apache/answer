@@ -111,18 +111,12 @@ importers:
       '@modyfi/vite-plugin-yaml':
         specifier: ^1.1.1
         version: 1.1.1(rollup@2.79.2)(vite@8.2.0(@types/node@20.19.43)(jiti@1.21.6)(sass@1.79.6)(terser@5.37.0)(yaml@2.7.0))
-      '@testing-library/dom':
-        specifier: ^8.17.1
-        version: 8.20.1
       '@testing-library/jest-dom':
         specifier: ^4.2.4
         version: 4.2.4
       '@testing-library/react':
         specifier: ^13.3.0
         version: 13.4.0(@types/react@18.3.16)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@testing-library/user-event':
-        specifier: ^13.5.0
-        version: 13.5.0(@testing-library/dom@8.20.1)
       '@types/color':
         specifier: ^3.0.3
         version: 3.0.6
@@ -204,9 +198,6 @@ importers:
       lint-staged:
         specifier: ^15.5.0
         version: 15.5.0
-      postcss:
-        specifier: ^8.0.0
-        version: 8.4.49
       prettier:
         specifier: ^3.1.0
         version: 3.4.2
@@ -851,12 +842,6 @@ packages:
     peerDependencies:
       react: ^18.0.0
       react-dom: ^18.0.0
-
-  '@testing-library/user-event@13.5.0':
-    resolution: {integrity: sha512-5Kwtbo3Y/NowpkbRuSepbyMFkZmHgD+vPzYB/RJ4oxt5Gj/avFFBYjhw27cqSVPVw/3a67NK1PbiIr9k4Gwmdg==}
-    engines: {node: '>=10', npm: '>=6'}
-    peerDependencies:
-      '@testing-library/dom': '>=7.21.4'
 
   '@tsconfig/node10@1.0.11':
     resolution: {integrity: sha512-DcRjDCujK/kCk/cUe8Xz8ZSpm8mS3mNNpta+jGCA6USEDfktlNvm1+IuZ9eTcDbNk41BHwpHHeW+N1lKCz4zOw==}
@@ -2548,11 +2533,6 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  nanoid@3.3.8:
-    resolution: {integrity: sha512-WNLf5Sd8oZxOm+TzppcYk8gVOgP+l58xNy58D0nbUnOxOWRWvlcCV4kUF7ltmI6PsrLl/BgKEyS4mqsGChFN0w==}
-    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
-    hasBin: true
-
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
@@ -2713,10 +2693,6 @@ packages:
   possible-typed-array-names@1.0.0:
     resolution: {integrity: sha512-d7Uw+eZoloe0EHDIYoe+bQ5WXnGMOpmiZFTuMWCwpjzzkL2nTjcKiAk4hh8TjnGye2TwWOk3UXucZ+3rbmBa8Q==}
     engines: {node: '>= 0.4'}
-
-  postcss@8.4.49:
-    resolution: {integrity: sha512-OCVPnIObs4N29kxTjzLfUryOkvZEq+pf8jTF0lg8E7uETuWHA+v7j3c/xJmiqpX450191LlmZfUKkXxkTry7nA==}
-    engines: {node: ^10 || ^12 || >=14}
 
   postcss@8.5.25:
     resolution: {integrity: sha512-DTPx3RWSSnWyzLxQnlH0rJP+EW5ekl16ZU4/psbIhA0e53kJfdgaN5vKM+xP7yJtXVu+nfdVFmlgFDEKAe4Pyw==}
@@ -4336,11 +4312,6 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
     transitivePeerDependencies:
       - '@types/react'
-
-  '@testing-library/user-event@13.5.0(@testing-library/dom@8.20.1)':
-    dependencies:
-      '@babel/runtime': 7.26.0
-      '@testing-library/dom': 8.20.1
 
   '@tsconfig/node10@1.0.11': {}
 
@@ -6165,8 +6136,6 @@ snapshots:
 
   nanoid@3.3.16: {}
 
-  nanoid@3.3.8: {}
-
   natural-compare@1.4.0: {}
 
   next-share@0.18.4(react@18.3.1):
@@ -6325,12 +6294,6 @@ snapshots:
   pngjs@5.0.0: {}
 
   possible-typed-array-names@1.0.0: {}
-
-  postcss@8.4.49:
-    dependencies:
-      nanoid: 3.3.8
-      picocolors: 1.1.1
-      source-map-js: 1.2.1
 
   postcss@8.5.25:
     dependencies:
