@@ -53,4 +53,8 @@ func TestGetStyleResolvesBuiltAssets(t *testing.T) {
 
 	require.NotEmpty(t, css,
 		"no stylesheet href parsed out of %s; server-rendered pages would load unstyled", builtIndexPath)
+	for i, href := range css {
+		require.NotEmpty(t, href,
+			"stylesheet href %d parsed out of %s is empty; server-rendered pages would load unstyled", i, builtIndexPath)
+	}
 }
