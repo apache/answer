@@ -20,7 +20,7 @@
 .md-editor-wrap {
   display: flex;
   flex-direction: column;
-  background-color: var(-bs-body-bg);
+  background-color: var(--bs-body-bg);
   border: 1px solid var(--an-ced4da);
   overflow: hidden;
   .toolbar-wrap {
