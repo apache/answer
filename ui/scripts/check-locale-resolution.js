@@ -20,27 +20,35 @@
 /*
  * src/utils/localize.ts loads a language with a template-literal dynamic
  * import through the @i18n alias, which points outside the frontend root. A
- * bundler that cannot enumerate that pattern still produces a clean build and
+ * build tool that cannot resolve that shape still produces a clean build and
  * still serves a working app; the resources simply never arrive. The failure
  * is confined to runtime and to languages other than the default one, so
  * neither a green build nor a smoke test in the default language sees it.
  *
- * So: bundle that same import with the project's own bundler configuration,
- * run it, and require two different languages to come back as different, real
+ * So: start the project's own dev server, load that same import through it,
+ * and require two different languages to come back as different, real
  * translated content.
+ *
+ * Two separate things have to hold, and only one of them is about resolution:
+ *
+ *   1. The module graph resolves the alias and parses the file. Covered by
+ *      importing the probe through the server's module runner.
+ *   2. A browser is actually allowed to fetch it. The languages live outside
+ *      the frontend root, so they are reachable only if the dev server's
+ *      filesystem allow-list includes their directory. The module runner does
+ *      not go through that allow-list. A real request does, so this makes one.
+ *
+ * Checking only the first would pass while every language 403s in a browser.
  */
 
 const fs = require('fs');
-const os = require('os');
 const path = require('path');
 const util = require('util');
-const Module = require('module');
-const { createRequire } = require('module');
 
 const UI_DIR = path.resolve(__dirname, '..');
 const PROBE = path.resolve(__dirname, 'locale-probe.js');
 const LOCALIZE_SOURCE = path.resolve(UI_DIR, 'src/utils/localize.ts');
-const OVERRIDES_CONFIG = path.resolve(UI_DIR, 'config-overrides.js');
+const DEV_SERVER_CONFIG = path.resolve(UI_DIR, 'vite.config.ts');
 
 // A language written in a script the default language does not use, so
 // "resolved the language that was asked for" cannot be mistaken for "fell
@@ -69,83 +77,84 @@ function assertProbeStillMatchesApplication() {
   }
 }
 
-function bundleWithProjectConfig(outDir) {
-  const uiRequire = createRequire(path.join(UI_DIR, 'package.json'));
-  const reactScriptsRequire = createRequire(
-    uiRequire.resolve('react-scripts/package.json'),
-  );
-
-  // config-overrides.js requires webpack directly, and the package layout does
-  // not expose webpack at the frontend root. Add the copy react-scripts
-  // depends on to the global module search path so the project's real
-  // configuration loads instead of an approximation of it.
-  process.env.NODE_PATH = path.resolve(
-    path.dirname(reactScriptsRequire.resolve('webpack')),
-    '..',
-    '..',
-  );
-  Module._initPaths();
-
-  const webpack = reactScriptsRequire('webpack');
-  const overrides = require(OVERRIDES_CONFIG);
-
-  // config-overrides.js mutates a config in place, so hand it the minimum
-  // shape it reaches into and let it install the real alias table and loaders.
-  const projectConfig = overrides.webpack(
-    {
-      plugins: [],
-      resolve: { alias: {}, plugins: [] },
-      module: { rules: [{ oneOf: [] }] },
-      optimization: {},
-    },
-    'development',
-  );
-
-  const compiler = webpack({
-    ...projectConfig,
-    mode: 'development',
-    devtool: false,
-    target: 'node',
-    context: UI_DIR,
-    entry: PROBE,
-    output: {
-      path: outDir,
-      filename: 'probe.js',
-      library: { type: 'commonjs2' },
-    },
-    // Chunk splitting is a production concern and would scatter the probe.
-    optimization: {
-      ...projectConfig.optimization,
-      splitChunks: false,
-      runtimeChunk: false,
-    },
-  });
-
-  return new Promise((resolve, reject) => {
-    compiler.run((err, stats) => {
-      compiler.close(() => {});
-      if (err) {
-        reject(err);
-        return;
-      }
-      if (stats.hasErrors()) {
-        reject(new Error(stats.toString({ all: false, errors: true })));
-        return;
-      }
-      resolve();
-    });
-  });
-}
-
-function bundleProbe(outDir) {
-  if (fs.existsSync(OVERRIDES_CONFIG)) {
-    return bundleWithProjectConfig(outDir);
+async function openProbe() {
+  if (!fs.existsSync(DEV_SERVER_CONFIG)) {
+    fail(
+      `no dev server configuration this check knows how to drive was found at ` +
+        `${rel(DEV_SERVER_CONFIG)}; teach it how to load ${rel(PROBE)} with the current ` +
+        `tooling before relying on it again`,
+    );
   }
-  fail(
-    `no bundler configuration this check knows how to drive was found in ${rel(UI_DIR) || '.'}; ` +
-      `teach it how to bundle ${rel(PROBE)} with the current one before relying on it again`,
-  );
-  return Promise.resolve();
+
+  const { createServer, createServerModuleRunner } = await import('vite');
+  const server = await createServer({
+    root: UI_DIR,
+    configFile: DEV_SERVER_CONFIG,
+    logLevel: 'warn',
+  });
+  await server.listen();
+
+  const ssr = server.environments.ssr;
+  const baseUrl = (server.resolvedUrls.local[0] || '').replace(/\/$/, '');
+
+  // Loaded on demand rather than up front, because the reachability check
+  // below is only meaningful before anything pulls a language into the module
+  // graph. See the comment on assertBrowserCanFetch.
+  let probe = null;
+  const importProbe = async () => {
+    if (!probe) {
+      probe = await createServerModuleRunner(ssr).import(PROBE);
+    }
+    return probe;
+  };
+
+  return {
+    load: async (langName) => (await importProbe()).loadLocaleResource(langName),
+
+    // Ask for the language file the way the browser will: over HTTP, at the
+    // path the dev server assigns to a file outside the frontend root.
+    //
+    // ORDER MATTERS. Run this before any language is loaded through the module
+    // graph. Once a module is in the graph the dev server answers from the
+    // transform pipeline instead of reading the file, and the request stops
+    // passing through the filesystem allow-list. Checking afterwards returns
+    // 200 even when the allow-list would give a browser a 403, which is to say
+    // it checks nothing. Resolve the path without loading it, then ask.
+    async assertBrowserCanFetch(langName) {
+      const specifier = `@i18n/${langName}.yaml`;
+      const resolved = await ssr.pluginContainer.resolveId(specifier, PROBE);
+
+      if (!resolved || !resolved.id) {
+        fail(`${specifier} does not resolve at all, so there is nothing for a browser to request`);
+      }
+
+      const url = `${baseUrl}/@fs${resolved.id.split('?')[0]}`;
+      let response;
+      try {
+        response = await fetch(url);
+      } catch (err) {
+        fail(`requesting ${langName} at ${url} failed outright: ${err.message}`);
+      }
+
+      if (!response.ok) {
+        fail(
+          `the dev server answered ${response.status} for ${langName} at ${url}; the language ` +
+            `files sit outside the frontend root, so a browser would get this too and every ` +
+            `language other than the default would fail to load`,
+        );
+      }
+
+      const body = await response.text();
+      if (!TARGET_SCRIPT.test(body)) {
+        fail(
+          `the dev server served ${langName} at ${url} but the response carries none of its ` +
+            `script; a browser would receive something that is not the translated file`,
+        );
+      }
+    },
+
+    close: () => server.close(),
+  };
 }
 
 function resourcesOf(resConf, langName) {
@@ -167,13 +176,13 @@ function resourcesOf(resConf, langName) {
 async function main() {
   assertProbeStillMatchesApplication();
 
-  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'answer-locale-check-'));
+  const probe = await openProbe();
   try {
-    await bundleProbe(outDir);
+    // Before any load, while the filesystem allow-list still governs the request.
+    await probe.assertBrowserCanFetch(TARGET_LANG);
 
-    const probe = require(path.join(outDir, 'probe.js'));
-    const target = resourcesOf(await probe.loadLocaleResource(TARGET_LANG), TARGET_LANG);
-    const fallback = resourcesOf(await probe.loadLocaleResource(DEFAULT_LANG), DEFAULT_LANG);
+    const target = resourcesOf(await probe.load(TARGET_LANG), TARGET_LANG);
+    const fallback = resourcesOf(await probe.load(DEFAULT_LANG), DEFAULT_LANG);
 
     if (JSON.stringify(target) === JSON.stringify(fallback)) {
       fail(
@@ -190,10 +199,11 @@ async function main() {
     }
 
     console.log(
-      `OK: ${TARGET_LANG} and ${DEFAULT_LANG} both resolve at runtime to distinct translated resources`,
+      `OK: ${TARGET_LANG} and ${DEFAULT_LANG} resolve at runtime to distinct translated ` +
+        `resources, and ${TARGET_LANG} is fetchable over the dev server`,
     );
   } finally {
-    fs.rmSync(outDir, { recursive: true, force: true });
+    await probe.close();
   }
 }
 
