@@ -56,7 +56,7 @@
       data-rh="true"
     />
     {{range $path := .scriptPath}}
-    <script defer="defer" src="{{$path}}"></script>
+    <script type="module" defer="defer" src="{{$path}}"></script>
     {{end}}
     {{if $.siteinfo.JsonLD }}{{ .siteinfo.JsonLD | templateHTML}}{{end}}
 

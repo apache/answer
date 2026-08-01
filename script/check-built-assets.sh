@@ -82,10 +82,13 @@ expect_failure() {
   echo "    check failed as expected"
 }
 
-expect_failure "module script tags" \
-  '<!doctype html><html><head><meta charset="utf-8"/><script type="module" crossorigin src="/static/js/index-a1b2c3d4.js"></script><link rel="stylesheet" crossorigin href="/static/css/index-e5f6a7b8.css"></head><body><div id="root"></div></body></html>'
+expect_failure "stylesheet link but no script src" \
+  '<!doctype html><html><head><meta charset="utf-8"/><link rel="stylesheet" crossorigin href="/static/css/index-e5f6a7b8.css"></head><body><div id="root"></div></body></html>'
 
-expect_failure "stylesheet attributes in rel-then-href order" \
-  '<!doctype html><html><head><meta charset="utf-8"/><script defer="defer" src="/static/js/main.js"></script><link rel="stylesheet" href="/static/css/main.css"></head><body><div id="root"></div></body></html>'
+expect_failure "script src but no stylesheet link" \
+  '<!doctype html><html><head><meta charset="utf-8"/><script type="module" crossorigin src="/static/js/index-a1b2c3d4.js"></script></head><body><div id="root"></div></body></html>'
+
+expect_failure "only an inline script, no src" \
+  '<!doctype html><html><head><meta charset="utf-8"/><link rel="stylesheet" crossorigin href="/static/css/index-e5f6a7b8.css"></head><body><div id="root"></div><script>window.__inline=1;</script></body></html>'
 
 echo "==> self-check passed"
