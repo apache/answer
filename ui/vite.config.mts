@@ -31,6 +31,13 @@ const i18nDir = path.resolve(rootDir, '../i18n');
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, rootDir, 'REACT_APP_');
 
+  // configs/config.yaml ui.public_url, as written by scripts/env.js, may or
+  // may not already carry a trailing slash (the root value is exactly "/").
+  // Vite requires base to end with one, so add it only when missing rather
+  // than concatenating blindly and risking "//".
+  const publicUrl = env.REACT_APP_PUBLIC_URL || '/';
+  const base = publicUrl.endsWith('/') ? publicUrl : `${publicUrl}/`;
+
   return {
     plugins: [react(), yaml()],
 
@@ -38,6 +45,8 @@ export default defineConfig(({ mode }) => {
     // configs/config.yaml using REACT_APP_ names. Reading that prefix keeps the
     // generator as the single source of truth for both sides.
     envPrefix: 'REACT_APP_',
+
+    base,
 
     resolve: {
       alias: {
