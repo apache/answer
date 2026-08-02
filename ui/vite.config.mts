@@ -36,6 +36,14 @@ export default defineConfig(({ mode }) => {
   // may not already carry a trailing slash (the root value is exactly "/").
   // Vite requires base to end with one, so add it only when missing rather
   // than concatenating blindly and risking "//".
+  //
+  // Vite keeps an absolute external base (e.g. a CDN URL) exactly as given
+  // only for `vite build`. `vite dev` and `vite preview` reduce the same
+  // base to its bare pathname, dropping the scheme and host. That split is
+  // intentional here, not a bug to unify: those two commands only serve
+  // this app locally, and the Go server only ever embeds `vite build`'s
+  // output, so the reduction never reaches anything a real deployment
+  // serves.
   const publicUrl = env.REACT_APP_PUBLIC_URL || '/';
   const base = publicUrl.endsWith('/') ? publicUrl : `${publicUrl}/`;
 
