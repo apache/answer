@@ -99,11 +99,20 @@ async function openProbe() {
     configFile: DEV_SERVER_CONFIG,
     logLevel: 'warn',
   });
-  await withTimeout(
-    server.listen(),
-    30000,
-    'dev server did not start within 30s',
-  );
+  try {
+    await withTimeout(
+      server.listen(),
+      30000,
+      'dev server did not start within 30s',
+    );
+  } catch (err) {
+    // listen() failed or timed out, but the server (and the watcher and
+    // websocket server it created before listen() ever ran) already exists.
+    // Nothing else will hold a reference to it once this throws, so close it
+    // here or it keeps the event loop alive forever.
+    await server.close().catch(() => {});
+    throw err;
+  }
 
   const ssr = server.environments.ssr;
   const baseUrl = (server.resolvedUrls.local[0] || '').replace(/\/$/, '');
