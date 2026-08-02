@@ -22,6 +22,7 @@ import { fileURLToPath } from 'url';
 
 import react from '@vitejs/plugin-react';
 import yaml from '@modyfi/vite-plugin-yaml';
+import { CORE_SCHEMA } from 'js-yaml';
 import { defineConfig, loadEnv } from 'vite';
 
 // This file is loaded as a real ES module, where __dirname does not exist.
@@ -39,7 +40,12 @@ export default defineConfig(({ mode }) => {
   const base = publicUrl.endsWith('/') ? publicUrl : `${publicUrl}/`;
 
   return {
-    plugins: [react(), yaml()],
+    // The previous yaml-loader (yaml@2.6.1 core schema) kept bare dates as
+    // strings and left merge keys unresolved. @modyfi/vite-plugin-yaml
+    // defaults to js-yaml's DEFAULT_SCHEMA, which resolves bare YYYY-MM-DD
+    // scalars to JS Date objects and enables merge keys. Pin CORE_SCHEMA so
+    // yaml imports keep parsing the way they did before the migration.
+    plugins: [react(), yaml({ schema: CORE_SCHEMA })],
 
     css: {
       preprocessorOptions: {
