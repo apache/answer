@@ -36,8 +36,7 @@ import { floppyNavigation } from './floppyNavigation';
 import { isIgnoredPath, IGNORE_PATH_LIST } from './guard';
 
 const baseConfig = {
-  baseURL:
-    import.meta.env.DEV ? '' : import.meta.env.REACT_APP_API_URL,
+  baseURL: import.meta.env.DEV ? '' : import.meta.env.REACT_APP_API_URL,
   timeout: 10000,
   withCredentials: true,
 };
