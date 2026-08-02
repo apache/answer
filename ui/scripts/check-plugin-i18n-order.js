@@ -160,8 +160,40 @@ async function main() {
       );
     }
 
+    // i18next.init already ran above, and the 'initialized' event it fires
+    // has already been consumed by the first scenario's listener. Registering
+    // a second plugin now only works if initI18nResource also takes the
+    // immediate branch, which had no coverage until this scenario existed.
+    const slugAfterInit = 'check_only_plugin_after_init';
+    const sentinelAfterInit = 'registered after init';
+
+    pluginUtils.initI18nResource({
+      [LANG]: {
+        plugin: { [slugAfterInit]: { ui: { title: sentinelAfterInit } } },
+      },
+    });
+    const bundleAfterInit = i18next.getResourceBundle(LANG, PLUGIN_NS);
+    const titleAfterInit =
+      bundleAfterInit &&
+      bundleAfterInit[slugAfterInit] &&
+      bundleAfterInit[slugAfterInit].ui &&
+      bundleAfterInit[slugAfterInit].ui.title;
+
+    if (titleAfterInit !== sentinelAfterInit) {
+      fail(
+        `registering a plugin's translations after i18next.init did not land ` +
+          `synchronously: expected ${util.inspect(sentinelAfterInit)} at ` +
+          `${PLUGIN_NS}.${slugAfterInit}.ui.title, got ${util.inspect(bundleAfterInit)}.\n` +
+          `  The 'initialized' event already fired for the first scenario, so this ` +
+          `only passes if initI18nResource also registers immediately when i18next ` +
+          `is already initialised. Missing that branch means every plugin loaded ` +
+          `after i18next.init renders untranslated.`,
+      );
+    }
+
     console.log(
-      `OK: plugin translations registered before i18next.init survive and are present afterwards`,
+      `OK: plugin translations registered before i18next.init (deferred) and ` +
+        `after i18next.init (immediate) both survive and are present`,
     );
   } finally {
     await server.close();
