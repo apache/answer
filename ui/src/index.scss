@@ -19,6 +19,10 @@
 
 @import 'common/variable';
 @import 'bootstrap/scss/bootstrap';
+// The package's font-dir variable defaults to "./fonts", a path relative to
+// the partial inside node_modules. Sass does not rebase url()s, so without
+// this override the built CSS ships a path Vite can never resolve.
+$bootstrap-icons-font-dir: 'bootstrap-icons/font/fonts';
 @import 'bootstrap-icons/font/bootstrap-icons';
 @import 'common/color';
 
