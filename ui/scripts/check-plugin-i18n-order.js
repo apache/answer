@@ -50,8 +50,15 @@ const SENTINEL = 'registered before init';
 const rel = (file) => path.relative(UI_DIR, file);
 
 function fail(message) {
-  console.error(`FAIL: ${message}`);
-  process.exit(1);
+  throw new Error(`FAIL: ${message}`);
+}
+
+function withTimeout(promise, ms, message) {
+  let timer;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(new Error(`FAIL: ${message}`)), ms);
+  });
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
 }
 
 async function main() {
@@ -75,7 +82,11 @@ async function main() {
     // guards it too.
     ssr: { noExternal: ['i18next'] },
   });
-  await server.listen();
+  await withTimeout(
+    server.listen(),
+    30000,
+    'dev server did not start within 30s',
+  );
 
   try {
     const runner = createServerModuleRunner(server.environments.ssr);
@@ -83,8 +94,17 @@ async function main() {
     // Deliberately load the plugin helper first and never touch the app's own
     // i18n bootstrap, so i18next is guaranteed to be uninitialised here. This
     // is the ordering the bundler is free to produce.
-    const pluginUtils = await runner.import(PLUGIN_UTILS);
-    const i18next = (await runner.import('i18next')).default;
+    const pluginUtils = await withTimeout(
+      runner.import(PLUGIN_UTILS),
+      30000,
+      'module runner did not import the plugin utils within 30s',
+    );
+    const i18nextModule = await withTimeout(
+      runner.import('i18next'),
+      30000,
+      'module runner did not import i18next within 30s',
+    );
+    const i18next = i18nextModule.default;
 
     // If the helper and this check hold different copies, every assertion
     // below is measuring an object nothing under test ever touched.
@@ -148,4 +168,7 @@ async function main() {
   }
 }
 
-main().catch((err) => fail(err.stack || String(err)));
+main().catch((err) => {
+  console.error(err.message || err.stack || String(err));
+  process.exitCode = 1;
+});
