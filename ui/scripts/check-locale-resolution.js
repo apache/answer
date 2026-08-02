@@ -60,8 +60,15 @@ const TARGET_SCRIPT = /[一-鿿]/;
 const rel = (file) => path.relative(UI_DIR, file);
 
 function fail(message) {
-  console.error(`FAIL: ${message}`);
-  process.exit(1);
+  throw new Error(`FAIL: ${message}`);
+}
+
+function withTimeout(promise, ms, message) {
+  let timer;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(new Error(`FAIL: ${message}`)), ms);
+  });
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
 }
 
 // The probe carries a copy of the application's import expression, so it is
@@ -92,7 +99,11 @@ async function openProbe() {
     configFile: DEV_SERVER_CONFIG,
     logLevel: 'warn',
   });
-  await server.listen();
+  await withTimeout(
+    server.listen(),
+    30000,
+    'dev server did not start within 30s',
+  );
 
   const ssr = server.environments.ssr;
   const baseUrl = (server.resolvedUrls.local[0] || '').replace(/\/$/, '');
@@ -103,7 +114,11 @@ async function openProbe() {
   let probe = null;
   const importProbe = async () => {
     if (!probe) {
-      probe = await createServerModuleRunner(ssr).import(PROBE);
+      probe = await withTimeout(
+        createServerModuleRunner(ssr).import(PROBE),
+        30000,
+        'module runner did not import the probe within 30s',
+      );
     }
     return probe;
   };
@@ -212,4 +227,7 @@ async function main() {
   }
 }
 
-main().catch((err) => fail(err.stack || String(err)));
+main().catch((err) => {
+  console.error(err.message || err.stack || String(err));
+  process.exitCode = 1;
+});
