@@ -47,6 +47,21 @@ const PLUGIN_NS = 'plugin';
 const SLUG = 'check_only_plugin';
 const SENTINEL = 'registered before init';
 
+// The check is a failure until it proves otherwise, so an unexpected
+// event-loop drain (a pending promise with no live handles) cannot exit 0.
+process.exitCode = 1;
+
+// unref lets a finished run exit on time; a run held alive by any leaked
+// or hung handle still gets terminated with a verdict.
+// Must exceed the sum of every bounded step below (worst case 130s), or a
+// run whose steps all succeed slowly gets a false FAIL from its own backstop.
+const WATCHDOG_MS = 180000;
+const watchdog = setTimeout(() => {
+  console.error(`FAIL: check did not complete within ${WATCHDOG_MS / 1000}s`);
+  process.exit(1);
+}, WATCHDOG_MS);
+watchdog.unref();
+
 const rel = (file) => path.relative(UI_DIR, file);
 
 function fail(message) {
