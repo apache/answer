@@ -41,6 +41,15 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react(), yaml()],
 
+    css: {
+      preprocessorOptions: {
+        // bootstrap 5.3.3's own scss internals emit dozens of deprecation
+        // warnings (color functions, mixed-decls) on every build. They are
+        // unactionable here and bury warnings that point at our own code.
+        scss: { quietDeps: true },
+      },
+    },
+
     // scripts/env.js generates .env.production from the server's own
     // configs/config.yaml using REACT_APP_ names. Reading that prefix keeps the
     // generator as the single source of truth for both sides.
