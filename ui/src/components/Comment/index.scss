@@ -23,6 +23,7 @@
 
 .comments-wrap {
   .comment-item {
+    border-bottom: 1px solid var(--an-comment-item-border-bottom);
     &:hover {
       @include media-breakpoint-up(md) {
         .control-area {
@@ -30,7 +31,6 @@
         }
       }
     }
-    border-bottom: 1px solid var(--an-comment-item-border-bottom);
   }
   .fmt {
     display: inline;
