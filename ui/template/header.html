@@ -58,7 +58,7 @@
       data-rh="true"
     />
     {{range $path := .scriptPath}}
-    <script type="module" src="{{$path}}"></script>
+    <script type="module" crossorigin src="{{$path}}"></script>
     {{end}}
     {{if $.siteinfo.JsonLD }}{{ .siteinfo.JsonLD | templateHTML}}{{end}}
 
