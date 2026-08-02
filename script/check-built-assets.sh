@@ -32,6 +32,12 @@ INDEX_HTML="$REPO_ROOT/ui/build/index.html"
 TEST_PACKAGE="./internal/controller/"
 TEST_NAME="TestGetStyleResolvesBuiltAssets"
 
+list_output="$(cd "$REPO_ROOT" && go test "$TEST_PACKAGE" -list "^${TEST_NAME}$" 2>&1)"
+if ! grep -qx "$TEST_NAME" <<<"$list_output"; then
+  echo "no test named $TEST_NAME in $TEST_PACKAGE; go test -run with a stale/renamed test name matches nothing and still exits 0, which would turn this check into a silent no-op" >&2
+  exit 1
+fi
+
 skip_build=0
 self_check=0
 for arg in "$@"; do
