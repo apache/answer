@@ -18,6 +18,20 @@
  */
 
 /// <reference types="vite/client" />
+
+// Without this, ImportMetaEnv falls back to an index signature and a typo
+// in import.meta.env.REACT_APP_* compiles clean. strictImportMetaEnv turns
+// that off, so only the keys declared below (plus vite/client's own
+// BASE_URL, MODE, DEV, PROD, SSR) are valid to read.
+interface ViteTypeOptions {
+  strictImportMetaEnv: unknown;
+}
+
+interface ImportMetaEnv {
+  readonly REACT_APP_API_URL: string;
+  readonly REACT_APP_BASE_URL: string;
+}
+
 declare module '*.yaml';
 
 declare module '*.ico';
