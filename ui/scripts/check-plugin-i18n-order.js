@@ -82,13 +82,13 @@ async function main() {
     // guards it too.
     ssr: { noExternal: ['i18next'] },
   });
-  await withTimeout(
-    server.listen(),
-    30000,
-    'dev server did not start within 30s',
-  );
-
   try {
+    await withTimeout(
+      server.listen(),
+      30000,
+      'dev server did not start within 30s',
+    );
+
     const runner = createServerModuleRunner(server.environments.ssr);
 
     // Deliberately load the plugin helper first and never touch the app's own
