@@ -94,11 +94,15 @@ async function openProbe() {
   }
 
   const { createServer, createServerModuleRunner } = await import('vite');
-  const server = await createServer({
-    root: UI_DIR,
-    configFile: DEV_SERVER_CONFIG,
-    logLevel: 'warn',
-  });
+  const server = await withTimeout(
+    createServer({
+      root: UI_DIR,
+      configFile: DEV_SERVER_CONFIG,
+      logLevel: 'warn',
+    }),
+    30000,
+    'dev server creation did not complete within 30s',
+  );
   try {
     await withTimeout(
       server.listen(),
@@ -110,7 +114,11 @@ async function openProbe() {
     // websocket server it created before listen() ever ran) already exists.
     // Nothing else will hold a reference to it once this throws, so close it
     // here or it keeps the event loop alive forever.
-    await server.close().catch(() => {});
+    await withTimeout(
+      server.close(),
+      10000,
+      'dev server close did not complete within 10s',
+    ).catch(() => {});
     throw err;
   }
 
@@ -182,7 +190,12 @@ async function openProbe() {
       }
     },
 
-    close: () => server.close(),
+    close: () =>
+      withTimeout(
+        server.close(),
+        10000,
+        'dev server close did not complete within 10s',
+      ).catch(() => {}),
   };
 }
 
@@ -232,11 +245,22 @@ async function main() {
         `resources, and ${TARGET_LANG} is fetchable over the dev server`,
     );
   } finally {
-    await probe.close();
+    await withTimeout(
+      probe.close(),
+      10000,
+      'probe close did not complete within 10s',
+    ).catch(() => {});
   }
 }
 
-main().catch((err) => {
-  console.error(err.message || err.stack || String(err));
-  process.exitCode = 1;
-});
+// Every finally above has already run by the time either callback below
+// fires, so a hard exit here cannot skip cleanup; it only guarantees
+// termination on both outcomes, including when a bounded-but-hung close
+// would otherwise keep a finished check alive after success.
+main().then(
+  () => process.exit(0),
+  (err) => {
+    console.error(err.message || err.stack || String(err));
+    process.exit(1);
+  },
+);

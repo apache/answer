@@ -71,17 +71,21 @@ async function main() {
   }
 
   const { createServer, createServerModuleRunner } = await import('vite');
-  const server = await createServer({
-    root: UI_DIR,
-    configFile: DEV_SERVER_CONFIG,
-    logLevel: 'warn',
-    // Without this the helper under test and this check each resolve their own
-    // copy of i18next, and the check ends up inspecting an instance nobody
-    // registered anything into. It reads as a failure with a confusing message
-    // rather than as a broken harness, so the single-instance assertion below
-    // guards it too.
-    ssr: { noExternal: ['i18next'] },
-  });
+  const server = await withTimeout(
+    createServer({
+      root: UI_DIR,
+      configFile: DEV_SERVER_CONFIG,
+      logLevel: 'warn',
+      // Without this the helper under test and this check each resolve
+      // their own copy of i18next, and the check ends up inspecting an
+      // instance nobody registered anything into. It reads as a failure
+      // with a confusing message rather than as a broken harness, so the
+      // single-instance assertion below guards it too.
+      ssr: { noExternal: ['i18next'] },
+    }),
+    30000,
+    'dev server creation did not complete within 30s',
+  );
   try {
     await withTimeout(
       server.listen(),
@@ -196,11 +200,22 @@ async function main() {
         `after i18next.init (immediate) both survive and are present`,
     );
   } finally {
-    await server.close();
+    await withTimeout(
+      server.close(),
+      10000,
+      'dev server close did not complete within 10s',
+    ).catch(() => {});
   }
 }
 
-main().catch((err) => {
-  console.error(err.message || err.stack || String(err));
-  process.exitCode = 1;
-});
+// Every finally above has already run by the time either callback below
+// fires, so a hard exit here cannot skip cleanup; it only guarantees
+// termination on both outcomes, including when a bounded-but-hung close
+// would otherwise keep a finished check alive after success.
+main().then(
+  () => process.exit(0),
+  (err) => {
+    console.error(err.message || err.stack || String(err));
+    process.exit(1);
+  },
+);
