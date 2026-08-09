@@ -6,6 +6,12 @@ An open-source knowledge-based community software. You can use it quickly to bui
 - Kubernetes 1.20+
 ## Configuration
 
+Answer can run without a persisted `config.yaml` when the complete runtime
+configuration is supplied through environment variables. See [runtime
+configuration from environment variables](../docs/runtime-configuration.md).
+Uploads still require persistent or external storage if they must survive pod
+replacement.
+
 The following table lists the configurable parameters of the answer chart and their default values.
 
 | Parameter | Description | Default |

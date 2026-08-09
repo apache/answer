@@ -80,7 +80,8 @@ extraContainers: []
   #     - containerPort: 5432
 
 # Persistence for the /data volume
-# Without persistence, your uploads and config.yaml will not be remembered between restarts.
+# Without persistence, uploads will not survive restarts. config.yaml can be
+# replaced by the documented ANSWER_* runtime environment variables.
 persistence:
   enabled: true
   # If set to "-", storageClassName: "", which disables dynamic provisioning
