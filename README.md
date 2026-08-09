@@ -28,6 +28,11 @@ docker run -d -p 9080:80 -v answer-data:/data --name answer apache/answer:2.0.2
 
 For more information, see [Installation](https://answer.apache.org/docs/installation).
 
+Answer can also start from a complete set of runtime environment variables
+without a local `config.yaml`. See [runtime configuration from environment
+variables](docs/runtime-configuration.md) for the supported variables,
+precedence rules, and safe export workflow.
+
 ### Plugins
 
 Answer provides a plugin system for developers to create custom plugins and expand Answer’s features. You can find the [plugin documentation here](https://answer.apache.org/community/plugins).
