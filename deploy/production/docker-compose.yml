@@ -61,12 +61,8 @@ services:
     logging: *default-logging
 
   answer:
-    build:
-      context: ../..
-      dockerfile: Dockerfile
-      args:
-        GOPROXY: ${GOPROXY:-https://proxy.golang.org,direct}
-    image: hnu-forum:${IMAGE_TAG:-production}
+    image: ${ANSWER_IMAGE:-ghcr.io/irofahaxikk/hnu-forum}:${IMAGE_TAG:-production}
+    pull_policy: always
     restart: unless-stopped
     environment:
       TZ: Asia/Hong_Kong
