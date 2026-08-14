@@ -998,6 +998,7 @@ func (qc *QuestionController) GetQuestionLink(ctx *gin.Context) {
 		return
 	}
 	req.LoginUserID = middleware.GetLoginUserIDFromContext(ctx)
+	req.IsAdminModerator = middleware.GetUserIsAdminModerator(ctx)
 	req.QuestionID = uid.DeShortID(req.QuestionID)
 	questions, total, err := qc.questionService.GetQuestionLink(ctx, req)
 	if err != nil {

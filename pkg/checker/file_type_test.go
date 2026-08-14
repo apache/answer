@@ -17,22 +17,20 @@
  * under the License.
  */
 
-package middleware
+package checker
 
 import (
-	"strings"
-
-	"github.com/gin-gonic/gin"
+	"os"
+	"path/filepath"
+	"testing"
 )
 
-const contentSecurityPolicy = "default-src 'self'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: http: https:; font-src 'self' data:; connect-src 'self'"
-
-func HeadersByRequestURI() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Header("Content-Security-Policy", contentSecurityPolicy)
-		c.Header("X-Content-Type-Options", "nosniff")
-		if strings.HasPrefix(c.Request.RequestURI, "/static/") {
-			c.Header("cache-control", "public, max-age=31536000")
-		}
+func TestDecodeAndCheckImageFileRejectsUnsupportedExtension(t *testing.T) {
+	filePath := filepath.Join(t.TempDir(), "not-an-image.svg")
+	if err := os.WriteFile(filePath, []byte("<svg></svg>"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if DecodeAndCheckImageFile(filePath, 1_000_000) {
+		t.Fatal("unsupported image extensions must be rejected")
 	}
 }

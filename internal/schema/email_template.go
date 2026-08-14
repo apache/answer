@@ -28,7 +28,7 @@ import (
 const (
 	AccountActivationSourceType EmailSourceType = "account-activation"
 	PasswordResetSourceType     EmailSourceType = "password-reset"
-	ConfirmNewEmailSourceType   EmailSourceType = "password-reset"
+	ConfirmNewEmailSourceType   EmailSourceType = "confirm-new-email"
 	UnsubscribeSourceType       EmailSourceType = "unsubscribe"
 	BindingSourceType           EmailSourceType = "binding"
 )
@@ -54,6 +54,15 @@ func (r *EmailCodeContent) ToJSONString() string {
 
 func (r *EmailCodeContent) FromJSONString(data string) error {
 	return json.Unmarshal([]byte(data), &r)
+}
+
+func (r *EmailCodeContent) IsSourceType(sourceTypes ...EmailSourceType) bool {
+	for _, sourceType := range sourceTypes {
+		if r.SourceType == sourceType {
+			return true
+		}
+	}
+	return false
 }
 
 type RegisterTemplateData struct {

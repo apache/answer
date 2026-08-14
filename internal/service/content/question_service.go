@@ -1748,7 +1748,7 @@ func (qs *QuestionService) GetQuestionLink(ctx context.Context, req *schema.GetQ
 		req.InDays = schema.HotInDays
 	}
 
-	questionList, total, err := qs.questionRepo.GetQuestionLink(ctx, req.Page, req.PageSize, req.QuestionID, req.OrderCond, req.InDays)
+	questionList, total, err := qs.questionRepo.GetQuestionLink(ctx, req.Page, req.PageSize, req.QuestionID, req.LoginUserID, req.IsAdminModerator, req.OrderCond, req.InDays)
 	if err != nil {
 		return nil, 0, err
 	}
