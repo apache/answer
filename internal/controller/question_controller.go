@@ -144,18 +144,27 @@ func (qc *QuestionController) OperationQuestion(ctx *gin.Context) {
 		handler.HandleResponse(ctx, err, nil)
 		return
 	}
-	req.CanPin = canList[0]
-	req.CanList = canList[1]
-	if (req.Operation == schema.QuestionOperationPin || req.Operation == schema.QuestionOperationUnPin) && !req.CanPin {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
-		return
-	}
-	if (req.Operation == schema.QuestionOperationHide || req.Operation == schema.QuestionOperationShow) && !req.CanList {
+	if !canOperateQuestion(req.Operation, canList) {
 		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
 		return
 	}
 	err = qc.questionService.OperationQuestion(ctx, req)
 	handler.HandleResponse(ctx, err, nil)
+}
+
+func canOperateQuestion(operation string, canList []bool) bool {
+	switch operation {
+	case schema.QuestionOperationPin:
+		return canList[0]
+	case schema.QuestionOperationUnPin:
+		return canList[1]
+	case schema.QuestionOperationHide:
+		return canList[2]
+	case schema.QuestionOperationShow:
+		return canList[3]
+	default:
+		return true
+	}
 }
 
 // CloseQuestion Close question
