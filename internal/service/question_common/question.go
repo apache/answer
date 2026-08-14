@@ -88,7 +88,7 @@ type QuestionRepo interface {
 	RemoveQuestionLink(ctx context.Context, link ...*entity.QuestionLink) (err error)
 	RecoverQuestionLink(ctx context.Context, link ...*entity.QuestionLink) (err error)
 	UpdateQuestionLinkStatus(ctx context.Context, status int, links ...*entity.QuestionLink) (err error)
-	GetQuestionLink(ctx context.Context, page, pageSize int, questionID string, orderCond string, inDays int) (questions []*entity.Question, total int64, err error)
+	GetQuestionLink(ctx context.Context, page, pageSize int, questionID, loginUserID string, isAdminModerator bool, orderCond string, inDays int) (questions []*entity.Question, total int64, err error)
 }
 
 // QuestionCommon user service

@@ -319,13 +319,13 @@ func (us *uploaderService) uploadImageFile(ctx *gin.Context, file *multipart.Fil
 	if err := ctx.SaveUploadedFile(file, filePath); err != nil {
 		return "", errors.InternalServer(reason.UnknownError).WithError(err).WithStack()
 	}
-
-	src, err := file.Open()
-	if err != nil {
-		return "", errors.InternalServer(reason.UnknownError).WithError(err).WithStack()
-	}
+	saved := false
 	defer func() {
-		_ = src.Close()
+		if !saved {
+			if removeErr := os.Remove(filePath); removeErr != nil && !os.IsNotExist(removeErr) {
+				log.Errorf("remove failed uploaded file failed: %v", removeErr)
+			}
+		}
 	}()
 
 	if !checker.DecodeAndCheckImageFile(filePath, siteAdvanced.GetMaxImageMegapixel()) {
@@ -337,6 +337,7 @@ func (us *uploaderService) uploadImageFile(ctx *gin.Context, file *multipart.Fil
 	}
 
 	url = fmt.Sprintf("%s/uploads/%s", siteGeneral.SiteUrl, fileSubPath)
+	saved = true
 	return url, nil
 }
 

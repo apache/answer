@@ -20,19 +20,26 @@
 package middleware
 
 import (
-	"strings"
+	"net/http"
+	"net/http/httptest"
+	"testing"
 
 	"github.com/gin-gonic/gin"
 )
 
-const contentSecurityPolicy = "default-src 'self'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: http: https:; font-src 'self' data:; connect-src 'self'"
+func TestHeadersByRequestURI(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	router := gin.New()
+	router.Use(HeadersByRequestURI())
+	router.GET("/", func(ctx *gin.Context) { ctx.Status(http.StatusNoContent) })
 
-func HeadersByRequestURI() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Header("Content-Security-Policy", contentSecurityPolicy)
-		c.Header("X-Content-Type-Options", "nosniff")
-		if strings.HasPrefix(c.Request.RequestURI, "/static/") {
-			c.Header("cache-control", "public, max-age=31536000")
-		}
+	response := httptest.NewRecorder()
+	router.ServeHTTP(response, httptest.NewRequest(http.MethodGet, "/", nil))
+
+	if got := response.Header().Get("X-Content-Type-Options"); got != "nosniff" {
+		t.Fatalf("X-Content-Type-Options = %q, want nosniff", got)
+	}
+	if got := response.Header().Get("Content-Security-Policy"); got != contentSecurityPolicy {
+		t.Fatalf("Content-Security-Policy = %q, want %q", got, contentSecurityPolicy)
 	}
 }
