@@ -59,12 +59,12 @@ const PinList: FC<IProps> = ({ data }) => {
                 </h6>
 
                 <Counts
+                  answersLabel="comments"
                   data={{
                     votes: item.vote_count,
                     answers: item.answer_count,
                     views: item.view_count,
                   }}
-                  isAccepted={item.accepted_answer_id >= 1}
                   showViews={false}
                   className="mt-2 mt-md-0 small text-secondary"
                 />

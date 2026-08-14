@@ -108,7 +108,7 @@ export const useQueryAnswerInfo = (id: string) => {
   return useSWR<{
     info;
     question;
-  }>(`/answer/api/v1/answer/info?id=${id}`, request.instance.get);
+  }>(`/answer/api/v1/post/comment/info?id=${id}`, request.instance.get);
 };
 
 export const modifyQuestion = (
@@ -118,7 +118,7 @@ export const modifyQuestion = (
 };
 
 export const modifyAnswer = (params: Type.AnswerParams) => {
-  return request.put(`/answer/api/v1/answer`, params);
+  return request.put(`/answer/api/v1/post/comment`, params);
 };
 
 export const login = (params: Type.LoginReqParams) => {
@@ -227,12 +227,12 @@ export const useQuestionLink = (params: {
 };
 
 export const getAnswers = (params: Type.AnswersReq) => {
-  const apiUrl = `/answer/api/v1/answer/page?${qs.stringify(params)}`;
+  const apiUrl = `/answer/api/v1/post/comment/page?${qs.stringify(params)}`;
   return request.get<Type.ListResult<Type.AnswerItem>>(apiUrl);
 };
 
 export const postAnswer = (params: Type.PostAnswerReq) => {
-  return request.post('/answer/api/v1/answer', params);
+  return request.post('/answer/api/v1/post/comment', params);
 };
 
 export const bookmark = (params: {
@@ -303,7 +303,7 @@ export const deleteAnswer = (params: {
   captcha_code?: string;
   captcha_id?: string;
 }) => {
-  return request.delete('/answer/api/v1/answer', params);
+  return request.delete('/answer/api/v1/post/comment', params);
 };
 
 export const closeQuestion = (params: {

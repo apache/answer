@@ -154,6 +154,18 @@ func (qs *QuestionCommon) GetPersonalUserQuestionCount(ctx context.Context, logi
 	return qs.questionRepo.GetUserQuestionCount(ctx, userID, show)
 }
 
+// GetPersonalUserCommentCount returns the number of visible top-level forum
+// comments created by a user. Answers are the underlying storage model for
+// these comments, and deleted parent posts are excluded by the repository.
+func (qs *QuestionCommon) GetPersonalUserCommentCount(ctx context.Context, userID string) (count int64, err error) {
+	_, count, err = qs.AnswerCommon.PersonalAnswerPage(ctx, &entity.PersonalAnswerPageQueryCond{
+		Page:     1,
+		PageSize: 1,
+		UserID:   userID,
+	})
+	return count, err
+}
+
 func (qs *QuestionCommon) UpdatePv(ctx context.Context, questionID string) error {
 	return qs.questionRepo.UpdatePvCount(ctx, questionID)
 }

@@ -53,8 +53,8 @@ interface ListRes {
 }
 
 export const usePersonalTop = (username: string, tabName: string) => {
-  const apiUrl = '/answer/api/v1/personal/qa/top?username=';
-  const { data, error } = useSWR<{ answer: any[]; question: any[] }, Error>(
+  const apiUrl = '/answer/api/v1/personal/content/top?username=';
+  const { data, error } = useSWR<{ comments: any[]; posts: any[] }, Error>(
     tabName === 'overview' ? `${apiUrl}${username}` : null,
     request.instance.get,
   );
@@ -67,19 +67,19 @@ export const usePersonalTop = (username: string, tabName: string) => {
 
 export const usePersonalListByTabName = (params: ListReq, tabName: string) => {
   let apiUrl: string | null = '';
-  if (tabName === 'answers') {
-    apiUrl = '/answer/api/v1/personal/answer/page';
+  if (tabName === 'comments') {
+    apiUrl = '/answer/api/v1/personal/post/comment/page';
   }
-  if (tabName === 'questions') {
-    apiUrl = '/answer/api/v1/personal/question/page';
+  if (tabName === 'posts') {
+    apiUrl = '/answer/api/v1/personal/post/page';
   }
   if (tabName === 'bookmarks') {
     delete params.order;
     apiUrl = '/answer/api/v1/personal/collection/page';
   }
-  if (tabName === 'comments') {
+  if (tabName === 'replies') {
     delete params.order;
-    apiUrl = '/answer/api/v1/personal/comment/page';
+    apiUrl = '/answer/api/v1/personal/reply/page';
   }
   if (tabName === 'votes') {
     delete params.username;

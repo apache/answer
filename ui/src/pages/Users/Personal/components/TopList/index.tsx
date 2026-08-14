@@ -26,21 +26,26 @@ import { Icon } from '@/components';
 
 interface Props {
   data: any[];
-  type: 'answer' | 'question';
+  type: 'comment' | 'post';
 }
 const Index: FC<Props> = ({ data, type }) => {
   const { t } = useTranslation('translation', { keyPrefix: 'personal' });
+  const visibleData = data.filter((item) =>
+    type === 'comment'
+      ? item.answer_id && item.question_id && item.question_info?.title
+      : item.question_id && item.title,
+  );
   return (
     <ol className="list-unstyled">
-      {data?.map((item, index) => {
+      {visibleData.map((item, index) => {
         return (
           <li
-            className={`${index === data.length - 1 ? '' : 'mb-2'}`}
-            key={type === 'answer' ? item.answer_id : item.question_id}>
+            className={`${index === visibleData.length - 1 ? '' : 'mb-2'}`}
+            key={type === 'comment' ? item.answer_id : item.question_id}>
             <Link
               className="text-truncate-1"
               to={
-                type === 'answer'
+                type === 'comment'
                   ? pathFactory.answerLanding({
                       questionId: item.question_id,
                       slugTitle: item.question_info?.url_title,
@@ -51,7 +56,7 @@ const Index: FC<Props> = ({ data, type }) => {
                       item.url_title,
                     )
               }>
-              {type === 'answer' ? item.question_info.title : item.title}
+              {type === 'comment' ? item.question_info.title : item.title}
             </Link>
 
             <div className="text-secondary small">
@@ -60,28 +65,14 @@ const Index: FC<Props> = ({ data, type }) => {
                 {item.vote_count} {t('votes', { keyPrefix: 'counts' })}
               </span>
 
-              {type === 'question' && (
-                <div
-                  className={`d-inline-block text-secondary ms-3 small ${
-                    Number(item.accepted_answer_id) > 0 ? 'text-success' : ''
-                  }`}>
-                  {Number(item.accepted_answer_id) > 0 ? (
-                    <Icon name="check-circle-fill" />
-                  ) : (
-                    <Icon name="chat-square-text-fill" />
-                  )}
+              {type === 'post' && (
+                <div className="d-inline-block text-secondary ms-3 small">
+                  <Icon name="chat-square-text-fill" />
 
                   <span>
                     {' '}
-                    {item.answer_count} {t('answers', { keyPrefix: 'counts' })}
+                    {item.answer_count} {t('comments')}
                   </span>
-                </div>
-              )}
-
-              {type === 'answer' && item.accepted === 2 && (
-                <div className="d-inline-block text-success ms-3 small">
-                  <Icon name="check-circle-fill" />
-                  <span> {t('accepted')}</span>
                 </div>
               )}
             </div>

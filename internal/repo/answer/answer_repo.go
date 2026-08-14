@@ -394,6 +394,11 @@ func (ar *answerRepo) GetPersonalAnswerPage(ctx context.Context, req *entity.Per
 		UserID: req.UserID,
 	}
 	session := ar.data.DB.Context(ctx)
+	session.And(`EXISTS (
+		SELECT 1 FROM question
+		WHERE question.id = answer.question_id
+		AND question.status != ?
+	)`, entity.QuestionStatusDeleted)
 	switch req.Order {
 	case entity.AnswerSearchOrderByTime:
 		session = session.OrderBy("created_at desc")

@@ -36,6 +36,7 @@ interface Props {
   showViews?: boolean;
   showAccepted?: boolean;
   isAccepted?: boolean;
+  answersLabel?: 'answers' | 'comments';
   className?: string;
 }
 const Index: FC<Props> = ({
@@ -45,6 +46,7 @@ const Index: FC<Props> = ({
   showViews = true,
   isAccepted = false,
   showAccepted = false,
+  answersLabel = 'answers',
   className = '',
 }) => {
   const { t } = useTranslation('translation', { keyPrefix: 'counts' });
@@ -77,7 +79,7 @@ const Index: FC<Props> = ({
             <Icon name="chat-square-text-fill me-1" />
           )}
           <span className="fw-medium">{data.answers}</span>
-          <span className="ms-1">{t('answers')}</span>
+          <span className="ms-1">{t(answersLabel)}</span>
         </div>
       )}
       {showViews && (

@@ -36,23 +36,27 @@ const Index: FC<Props> = ({ visible, tabName, data }) => {
   if (!visible) {
     return null;
   }
+  const visibleData = data.filter((item) => {
+    const id = tabName === 'posts' ? item.question_id : item.id;
+    return id && item.title;
+  });
 
   return (
     <ListGroup className="rounded-0">
-      {data.map((item) => {
+      {visibleData.map((item) => {
         return (
           <ListGroupItem
             className="py-3 px-0 bg-transparent border-start-0 border-end-0"
-            key={tabName === 'questions' ? item.question_id : item.id}>
+            key={tabName === 'posts' ? item.question_id : item.id}>
             <h6 className="mb-2">
               <Link
                 className="text-break"
                 to={pathFactory.questionLanding(
-                  tabName === 'questions' ? item.question_id : item.id,
+                  tabName === 'posts' ? item.question_id : item.id,
                   item.url_title,
                 )}>
                 {item.title}
-                {tabName === 'questions' && item.status === 'closed'
+                {tabName === 'posts' && item.status === 'closed'
                   ? ` [${t('closed', { keyPrefix: 'question' })}]`
                   : null}
               </Link>
@@ -73,7 +77,7 @@ const Index: FC<Props> = ({ visible, tabName, data }) => {
               />
 
               <Counts
-                isAccepted={Number(item.accepted_answer_id) > 0}
+                answersLabel="comments"
                 data={{
                   votes: item.vote_count,
                   answers: item.answer_count,

@@ -100,12 +100,16 @@ const Index: FC<Props> = ({ data }) => {
 
         <div className="d-flex flex-wrap mb-3">
           <div className="me-3">
-            <strong className="fs-5">{data.answer_count || 0}</strong>
-            <span className="text-secondary"> {t('x_answers')}</span>
+            <strong className="fs-5">
+              {data.comment_count ?? data.answer_count ?? 0}
+            </strong>
+            <span className="text-secondary"> {t('x_comments')}</span>
           </div>
           <div>
-            <strong className="fs-5">{data?.question_count || 0}</strong>
-            <span className="text-secondary"> {t('x_questions')}</span>
+            <strong className="fs-5">
+              {data.post_count ?? data.question_count ?? 0}
+            </strong>
+            <span className="text-secondary"> {t('x_posts')}</span>
           </div>
         </div>
 

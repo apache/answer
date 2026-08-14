@@ -181,7 +181,11 @@ func (a *AnswerAPIRouter) RegisterUnAuthAnswerAPIRouter(r *gin.RouterGroup) {
 	// answer
 	r.GET("/answer/info", a.answerController.GetAnswerInfo)
 	r.GET("/answer/page", a.answerController.AnswerList)
+	// Forum-oriented aliases: answers are top-level comments on posts.
+	r.GET("/post/comment/info", a.answerController.GetAnswerInfo)
+	r.GET("/post/comment/page", a.answerController.AnswerList)
 	r.GET("/personal/answer/page", a.questionController.PersonalAnswerPage)
+	r.GET("/personal/post/comment/page", a.questionController.PersonalAnswerPage)
 
 	// question
 	r.GET("/question/info", a.questionController.GetQuestion)
@@ -189,13 +193,19 @@ func (a *AnswerAPIRouter) RegisterUnAuthAnswerAPIRouter(r *gin.RouterGroup) {
 	r.GET("/question/page", a.questionController.QuestionPage)
 	r.GET("/question/recommend/page", a.questionController.QuestionRecommendPage)
 	r.GET("/question/similar/tag", a.questionController.SimilarQuestion)
+	// Forum-oriented alias: related posts currently use the first tag.
+	r.GET("/post/related", a.questionController.SimilarQuestion)
 	r.GET("/personal/qa/top", a.questionController.UserTop)
 	r.GET("/personal/question/page", a.questionController.PersonalQuestionPage)
+	r.GET("/personal/content/top", a.questionController.UserContentTop)
+	r.GET("/personal/post/page", a.questionController.PersonalQuestionPage)
 	r.GET("/question/link", a.questionController.GetQuestionLink)
 
 	// comment
 	r.GET("/comment/page", a.commentController.GetCommentWithPage)
 	r.GET("/personal/comment/page", a.commentController.GetCommentPersonalWithPage)
+	// Forum-oriented alias: low-level comments are replies.
+	r.GET("/personal/reply/page", a.commentController.GetCommentPersonalWithPage)
 	r.GET("/comment", a.commentController.GetComment)
 
 	// tag
@@ -284,6 +294,11 @@ func (a *AnswerAPIRouter) RegisterAnswerAPIRouter(r *gin.RouterGroup) {
 	r.POST("/answer/acceptance", a.answerController.AcceptAnswer)
 	r.DELETE("/answer", a.answerController.RemoveAnswer)
 	r.POST("/answer/recover", a.answerController.RecoverAnswer)
+	// Forum-oriented aliases for top-level post comments.
+	r.POST("/post/comment", a.answerController.AddAnswer)
+	r.PUT("/post/comment", a.answerController.UpdateAnswer)
+	r.DELETE("/post/comment", a.answerController.RemoveAnswer)
+	r.POST("/post/comment/recover", a.answerController.RecoverAnswer)
 
 	// user
 	r.PUT("/user/password", middleware.BanAPIForUserCenter, a.userController.UserModifyPassWord)

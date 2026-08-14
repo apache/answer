@@ -18,7 +18,7 @@
  */
 
 import { memo, FC, useEffect, useRef } from 'react';
-import { Button, Alert, Badge } from 'react-bootstrap';
+import { Alert } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 
@@ -26,21 +26,18 @@ import {
   Actions,
   Operate,
   UserCard,
-  Icon,
   Comment,
   htmlRender,
   ImgViewer,
 } from '@/components';
 import { scrollToElementTop, bgFadeOut } from '@/utils';
 import { AnswerItem } from '@/common/interface';
-import { acceptanceAnswer } from '@/services';
 import { useRenderHtmlPlugin } from '@/utils/pluginKit';
 
 interface Props {
   data: AnswerItem;
   /** router answer id */
   aid?: string;
-  canAccept: boolean;
   questionTitle: string;
   isLogged: boolean;
   callback: (type: string) => void;
@@ -51,7 +48,6 @@ const Index: FC<Props> = ({
   isLogged,
   questionTitle = '',
   callback,
-  canAccept = false,
 }) => {
   const { t } = useTranslation('translation', {
     keyPrefix: 'question_detail',
@@ -60,15 +56,6 @@ const Index: FC<Props> = ({
   const answerRef = useRef<HTMLDivElement>(null);
 
   useRenderHtmlPlugin(answerRef.current?.querySelector('.fmt') as HTMLElement);
-
-  const acceptAnswer = () => {
-    acceptanceAnswer({
-      question_id: data.question_id,
-      answer_id: data.accepted === 2 ? '0' : data.id,
-    }).then(() => {
-      callback?.('');
-    });
-  };
 
   useEffect(() => {
     if (!answerRef?.current) {
@@ -120,15 +107,6 @@ const Index: FC<Props> = ({
             timelinePath={`/posts/${data.question_id}/${data.id}/timeline`}
           />
         </div>
-
-        {data?.accepted === 2 && (
-          <div className="lh-1">
-            <Badge bg="success" pill>
-              <Icon name="check-circle-fill me-1" />
-              Best answer
-            </Badge>
-          </div>
-        )}
       </div>
       <ImgViewer>
         <article
@@ -150,20 +128,6 @@ const Index: FC<Props> = ({
             username: data?.user_info?.username,
           }}
         />
-
-        {canAccept && (
-          <Button
-            variant={data.accepted === 2 ? 'success' : 'outline-success'}
-            className="ms-3"
-            onClick={acceptAnswer}>
-            <Icon name="check-circle-fill" className="me-2" />
-            <span>
-              {data.accepted === 2
-                ? t('answers.btn_accepted')
-                : t('answers.btn_accept')}
-            </span>
-          </Button>
-        )}
       </div>
 
       <Comment

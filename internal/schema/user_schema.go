@@ -67,6 +67,10 @@ type UserLoginResp struct {
 	AnswerCount int `json:"answer_count"`
 	// question count
 	QuestionCount int `json:"question_count"`
+	// forum comment count (compatibility alias of answer_count)
+	CommentCount int `json:"comment_count"`
+	// forum post count (compatibility alias of question_count)
+	PostCount int `json:"post_count"`
 	// rank
 	Rank int `json:"rank"`
 	// authority group
@@ -105,6 +109,8 @@ type UserLoginResp struct {
 
 func (r *UserLoginResp) ConvertFromUserEntity(userInfo *entity.User) {
 	_ = copier.Copy(r, userInfo)
+	r.CommentCount = userInfo.AnswerCount
+	r.PostCount = userInfo.QuestionCount
 	r.CreatedAt = userInfo.CreatedAt.Unix()
 	r.LastLoginDate = userInfo.LastLoginDate.Unix()
 	r.Status = constant.ConvertUserStatus(userInfo.Status, userInfo.MailStatus)
@@ -121,6 +127,8 @@ type GetCurrentLoginUserInfoResp struct {
 
 func (r *GetCurrentLoginUserInfoResp) ConvertFromUserEntity(userInfo *entity.User) {
 	_ = copier.Copy(r, userInfo)
+	r.CommentCount = userInfo.AnswerCount
+	r.PostCount = userInfo.QuestionCount
 	r.CreatedAt = userInfo.CreatedAt.Unix()
 	r.LastLoginDate = userInfo.LastLoginDate.Unix()
 	r.Status = constant.ConvertUserStatus(userInfo.Status, userInfo.MailStatus)
@@ -149,6 +157,10 @@ type GetOtherUserInfoByUsernameResp struct {
 	AnswerCount int `json:"answer_count"`
 	// question count
 	QuestionCount int `json:"question_count"`
+	// forum comment count (compatibility alias of answer_count)
+	CommentCount int `json:"comment_count"`
+	// forum post count (compatibility alias of question_count)
+	PostCount int `json:"post_count"`
 	// rank
 	Rank int `json:"rank"`
 	// display name
@@ -173,6 +185,8 @@ type GetOtherUserInfoByUsernameResp struct {
 
 func (r *GetOtherUserInfoByUsernameResp) ConvertFromUserEntity(userInfo *entity.User) {
 	_ = copier.Copy(r, userInfo)
+	r.CommentCount = userInfo.AnswerCount
+	r.PostCount = userInfo.QuestionCount
 	r.CreatedAt = userInfo.CreatedAt.Unix()
 	r.LastLoginDate = userInfo.LastLoginDate.Unix()
 	r.Status = constant.ConvertUserStatus(userInfo.Status, userInfo.MailStatus)

@@ -32,9 +32,12 @@ const Index: FC<Props> = ({ visible, data }) => {
   if (!visible || !data?.length) {
     return null;
   }
+  const visibleData = data.filter(
+    (item) => item.answer_id && item.question_id && item.question_info?.title,
+  );
   return (
     <ListGroup className="rounded-0">
-      {data.map((item) => {
+      {visibleData.map((item) => {
         return (
           <ListGroupItem
             className="py-3 px-0 bg-transparent border-start-0 border-end-0"
@@ -57,7 +60,6 @@ const Index: FC<Props> = ({ visible, data }) => {
                 data={{ votes: item?.vote_count, views: 0, answers: 0 }}
                 showAnswers={false}
                 showViews={false}
-                showAccepted={item.accepted === 2}
               />
             </div>
             <div>

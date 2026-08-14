@@ -46,7 +46,6 @@ import {
   WriteAnswer,
   Alert,
   ContentLoader,
-  InviteToAnswer,
   LinkedQuestions,
 } from './components';
 
@@ -76,9 +75,7 @@ const Index = () => {
   });
   const { setUsers } = usePageUsers();
   const userInfo = loggedUserInfoStore((state) => state.user);
-  const isAuthor = userInfo?.username === question?.user_info?.username;
   const isAdmin = userInfo?.role_id === 2;
-  const isModerator = userInfo?.role_id === 3;
   const isLogged = Boolean(userInfo?.access_token);
   const location = useLocation();
 
@@ -229,17 +226,7 @@ const Index = () => {
     keywords: question?.tags.map((_) => _.slug_name).join(','),
   });
 
-  const showInviteToAnswer = question?.id;
   const showLinkedQuestions = question?.id && question.id !== '';
-  let canInvitePeople = false;
-  if (showInviteToAnswer && Array.isArray(question.extends_actions)) {
-    const inviteAct = question.extends_actions.find((op) => {
-      return op.action === 'invite_other_to_answer';
-    });
-    if (inviteAct) {
-      canInvitePeople = true;
-    }
-  }
 
   return (
     <Row className="questionDetailPage pt-4 mb-5">
@@ -265,7 +252,6 @@ const Index = () => {
                   key={item?.id}
                   data={item}
                   questionTitle={question?.title || ''}
-                  canAccept={isAuthor || isAdmin || isModerator}
                   callback={initPage}
                   isLogged={isLogged}
                 />
@@ -299,12 +285,6 @@ const Index = () => {
       </Col>
       <Col className="page-right-side mt-4 mt-xl-0">
         <CustomSidebar />
-        {showInviteToAnswer ? (
-          <InviteToAnswer
-            questionId={question.id}
-            readOnly={!canInvitePeople}
-          />
-        ) : null}
         {showLinkedQuestions ? <LinkedQuestions id={question.id} /> : null}
         <RelatedQuestions id={question?.id || ''} />
       </Col>

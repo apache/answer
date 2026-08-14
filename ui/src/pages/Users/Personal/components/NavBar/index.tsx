@@ -34,12 +34,12 @@ const list = [
     name: 'overview',
   },
   {
-    path: '/answers',
-    name: 'answers',
+    path: '/comments',
+    name: 'comments',
   },
   {
-    path: '/questions',
-    name: 'questions',
+    path: '/posts',
+    name: 'posts',
   },
   {
     role: 'self', // Only visible to author
@@ -47,8 +47,8 @@ const list = [
     name: 'bookmarks',
   },
   {
-    path: '/comments',
-    name: 'comments',
+    path: '/replies',
+    name: 'replies',
   },
   {
     role: 'self', // Only visible to author

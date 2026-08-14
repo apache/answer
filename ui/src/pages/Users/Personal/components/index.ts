@@ -24,9 +24,9 @@ import TopList from './TopList';
 import Alert from './Alert';
 import ListHead from './ListHead';
 import DefaultList from './DefaultList';
-import Comments from './Comments';
+import Comments from './Answers';
+import Replies from './Comments';
 import Votes from './Votes';
-import Answers from './Answers';
 
 export {
   Alert,
@@ -37,6 +37,6 @@ export {
   ListHead,
   DefaultList,
   Comments,
+  Replies,
   Votes,
-  Answers,
 };

@@ -1253,19 +1253,15 @@ func (qs *QuestionService) PersonalAnswerPage(ctx context.Context, req *schema.P
 	}
 
 	for _, item := range answerlist {
-		_, ok := questionMaps[item.QuestionID]
-		if ok {
-			item.QuestionInfo = questionMaps[item.QuestionID]
-		} else {
+		questionInfo, ok := questionMaps[item.QuestionID]
+		if !ok || questionInfo.Status == entity.QuestionStatusDeleted {
 			continue
 		}
+		item.QuestionInfo = questionInfo
 		info := &schema.UserAnswerInfo{}
 		_ = copier.Copy(info, item)
 		info.AnswerID = item.ID
 		info.QuestionID = item.QuestionID
-		if item.QuestionInfo.Status == entity.QuestionStatusDeleted {
-			info.QuestionInfo.Title = "Deleted question"
-		}
 		userAnswerlist = append(userAnswerlist, info)
 	}
 
@@ -1297,16 +1293,13 @@ func (qs *QuestionService) PersonalCollectionPage(ctx context.Context, req *sche
 		if handler.GetEnableShortID(ctx) {
 			id = uid.EnShortID(id)
 		}
-		_, ok := questionMaps[id]
-		if ok {
-			questionMaps[id].LastAnsweredUserInfo = nil
-			questionMaps[id].UpdateUserInfo = nil
-			questionMaps[id].Content = ""
-			questionMaps[id].HTML = ""
-			if questionMaps[id].Status == entity.QuestionStatusDeleted {
-				questionMaps[id].Title = "Deleted question"
-			}
-			list = append(list, questionMaps[id])
+		questionInfo, ok := questionMaps[id]
+		if ok && questionInfo.Status != entity.QuestionStatusDeleted {
+			questionInfo.LastAnsweredUserInfo = nil
+			questionInfo.UpdateUserInfo = nil
+			questionInfo.Content = ""
+			questionInfo.HTML = ""
+			list = append(list, questionInfo)
 		}
 	}
 
@@ -1336,12 +1329,14 @@ func (qs *QuestionService) SearchUserTopList(ctx context.Context, userName strin
 	if err != nil {
 		return userQuestionlist, userAnswerlist, err
 	}
-	answersearch := &entity.AnswerSearch{}
-	answersearch.UserID = userinfo.ID
-	answersearch.PageSize = 5
-	answersearch.Order = entity.AnswerSearchOrderByVote
+	answersearch := &entity.PersonalAnswerPageQueryCond{
+		Page:     1,
+		PageSize: 5,
+		UserID:   userinfo.ID,
+		Order:    entity.AnswerSearchOrderByVote,
+	}
 	questionIDs := make([]string, 0)
-	answerList, _, err := qs.questioncommon.AnswerCommon.Search(ctx, answersearch)
+	answerList, _, err := qs.questioncommon.AnswerCommon.PersonalAnswerPage(ctx, answersearch)
 	if err != nil {
 		return userQuestionlist, userAnswerlist, err
 	}
@@ -1355,9 +1350,9 @@ func (qs *QuestionService) SearchUserTopList(ctx context.Context, userName strin
 		return userQuestionlist, userAnswerlist, err
 	}
 	for _, item := range answerlist {
-		_, ok := questionMaps[item.QuestionID]
-		if ok {
-			item.QuestionInfo = questionMaps[item.QuestionID]
+		questionInfo, ok := questionMaps[item.QuestionID]
+		if ok && questionInfo.Status != entity.QuestionStatusDeleted {
+			item.QuestionInfo = questionInfo
 		}
 	}
 
@@ -1369,6 +1364,9 @@ func (qs *QuestionService) SearchUserTopList(ctx context.Context, userName strin
 	}
 
 	for _, item := range answerlist {
+		if item.QuestionInfo == nil || item.QuestionInfo.Status == entity.QuestionStatusDeleted {
+			continue
+		}
 		info := &schema.UserAnswerInfo{}
 		_ = copier.Copy(info, item)
 		info.AnswerID = item.ID

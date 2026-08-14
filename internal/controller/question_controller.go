@@ -830,6 +830,26 @@ func (qc *QuestionController) UserTop(ctx *gin.Context) {
 	})
 }
 
+// UserContentTop lists a user's top forum posts and top-level comments.
+// It is a forum-oriented compatibility API over the question/answer model.
+// @Summary UserContentTop
+// @Description List a user's top forum posts and comments
+// @Tags Personal
+// @Accept json
+// @Produce json
+// @Param username query string true "username"
+// @Success 200 {object} handler.RespBody
+// @Router /answer/api/v1/personal/content/top [get]
+func (qc *QuestionController) UserContentTop(ctx *gin.Context) {
+	userName := ctx.Query("username")
+	userID := middleware.GetLoginUserIDFromContext(ctx)
+	postList, commentList, err := qc.questionService.SearchUserTopList(ctx, userName, userID)
+	handler.HandleResponse(ctx, err, gin.H{
+		"posts":    postList,
+		"comments": commentList,
+	})
+}
+
 // PersonalQuestionPage list personal questions
 // @Summary list personal questions
 // @Description list personal questions

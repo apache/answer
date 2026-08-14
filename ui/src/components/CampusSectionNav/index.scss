@@ -64,8 +64,8 @@
 
   .campus-section-link.active {
     color: var(--an-side-nav-link-hover-color);
-    background-color: transparent;
-    font-weight: normal;
+    background-color: var(--bs-gray-200);
+    font-weight: 600;
   }
 
   .campus-section-note {

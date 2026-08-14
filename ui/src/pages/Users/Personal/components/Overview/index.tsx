@@ -47,17 +47,17 @@ const Index: FC<Props> = ({ visible, introduction, data }) => {
 
       <Row className="mb-4">
         <Col sm={12} md={6} className="mb-4">
-          <h5 className="mb-3">{t('top_answers')}</h5>
-          {data?.answer?.length > 0 ? (
-            <TopList data={data?.answer} type="answer" />
+          <h5 className="mb-3">{t('top_comments')}</h5>
+          {data?.comments?.length > 0 ? (
+            <TopList data={data.comments} type="comment" />
           ) : (
             <div className="mb-5">{t('content_empty')}</div>
           )}
         </Col>
         <Col sm={12} md={6}>
-          <h5 className="mb-3">{t('top_questions')}</h5>
-          {data?.question?.length > 0 ? (
-            <TopList data={data?.question} type="question" />
+          <h5 className="mb-3">{t('top_posts')}</h5>
+          {data?.posts?.length > 0 ? (
+            <TopList data={data.posts} type="post" />
           ) : (
             <div className="mb-5">{t('content_empty')}</div>
           )}

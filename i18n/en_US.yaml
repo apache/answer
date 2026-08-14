@@ -1123,7 +1123,7 @@ ui:
     react_emoji: react with {{ emoji }}
     unreact_emoji: unreact with {{ emoji }}
   comment:
-    btn_add_comment: Add comment
+    btn_add_comment: Add reply
     reply_to: Reply to
     btn_reply: Reply
     btn_edit: Edit
@@ -1131,24 +1131,23 @@ ui:
     btn_flag: Flag
     btn_save_edits: Save edits
     btn_cancel: Cancel
-    show_more: "{{count}} more comments"
+    show_more: "{{count}} more replies"
     tip_question: >-
-      Use comments to ask for more information or suggest improvements. Avoid
-      answering questions in comments.
+      Use replies to add information or suggest improvements.
     tip_answer: >-
-      Use comments to reply to other users or notify them of changes. If you are
-      adding new information, edit your post instead of commenting.
+      Use replies to join the discussion. Edit the original comment to improve
+      its main content.
     tip_vote: It adds something useful to the post
   edit_answer:
-    title: Edit Answer
-    default_reason: Edit answer
-    default_first_reason: Add answer
+    title: Edit Comment
+    default_reason: Edit comment
+    default_first_reason: Add comment
     form:
       fields:
         revision:
           label: Revision
         answer:
-          label: Answer
+          label: Comment
           feedback:
             characters: content must be at least 6 characters in length.
         edit_summary:
@@ -1460,8 +1459,8 @@ ui:
     review: Your revision will show after review.
     sent_success: Sent successfully
   related_question:
-    title: Related
-    answers: answers
+    title: Related Posts
+    answers: comments
   linked_question:
     title: Linked
     description: Posts linked to
@@ -1475,50 +1474,50 @@ ui:
   question_detail:
     action: Action
     created: Created
-    Asked: Asked
-    asked: asked
+    Asked: Posted
+    asked: posted
     update: Modified
     Edited: Edited
     edit: edited
     commented: commented
     Views: Viewed
-    Follow: Follow
+    Follow: Follow this post
     Following: Following
-    follow_tip: Follow this question to receive notifications
-    answered: answered
+    follow_tip: Follow this post to receive notifications
+    answered: commented
     closed_in: Closed in
-    show_exist: Show existing question.
+    show_exist: Show related posts.
     useful: Useful
-    question_useful: It is useful and clear
-    question_un_useful: It is unclear or not useful
-    question_bookmark: Bookmark this question
-    answer_useful: It is useful
-    answer_un_useful: It is not useful
+    question_useful: This post is useful and clear
+    question_un_useful: This post is unclear or not useful
+    question_bookmark: Bookmark this post
+    answer_useful: This comment is useful
+    answer_un_useful: This comment is not useful
     answers:
-      title: Answers
+      title: Comments
       score: Score
       newest: Newest
       oldest: Oldest
       btn_accept: Accept
       btn_accepted: Accepted
     write_answer:
-      title: Your Answer
-      edit_answer: Edit my existing answer
-      btn_name: Post your answer
-      add_another_answer: Add another answer
-      confirm_title: Continue to answer
+      title: Add a Comment
+      edit_answer: Edit my comment
+      btn_name: Post Comment
+      add_another_answer: Add another comment
+      confirm_title: Continue commenting
       continue: Continue
       confirm_info: >-
-        <p>Are you sure you want to add another answer?</p><p>You could use the
-        edit link to refine and improve your existing answer, instead.</p>
-      empty: Answer cannot be empty.
+        <p>Are you sure you want to add another comment?</p><p>You could also
+        edit and improve your existing comment.</p>
+      empty: Comment cannot be empty.
       characters: content must be at least 6 characters in length.
       tips:
-        header_1: Thanks for your answer
-        li1_1: Please be sure to <strong>answer the question</strong>. Provide details and share your research.
+        header_1: Thanks for your comment
+        li1_1: Keep your comment relevant to the post and provide helpful information.
         li1_2: Back up any statements you make with references or personal experience.
         header_2: But <strong>avoid</strong> ...
-        li2_1: Asking for help, seeking clarification, or responding to other answers.
+        li2_1: Posting off-topic content or duplicate comments.
     reopen:
       confirm_btn: Reopen
       title: Reopen this post
@@ -1689,9 +1688,14 @@ ui:
     answer: answer
     questions: Questions
     question: question
+    posts: Posts
+    post: post
     bookmarks: Bookmarks
     reputation: Reputation
     comments: Comments
+    comment: comment
+    replies: Replies
+    reply: reply
     votes: Votes
     badges: Badges
     newest: Newest
@@ -1706,6 +1710,8 @@ ui:
     about_me_empty: "// Hello, World !"
     top_answers: Top Answers
     top_questions: Top Questions
+    top_comments: Top Comments
+    top_posts: Top Posts
     stats: Stats
     list_empty: No posts found.<br />Perhaps you'd like to select a different tab?
     content_empty: No posts found.
@@ -1719,6 +1725,8 @@ ui:
     x_votes: votes received
     x_answers: answers
     x_questions: questions
+    x_comments: comments
+    x_posts: posts
     recent_badges: Recent Badges
   install:
     title: Installation
@@ -1840,6 +1848,7 @@ ui:
     views: views
     votes: votes
     answers: answers
+    comments: comments
     accepted: Accepted
   page_error:
     http_error: HTTP Error {{ code }}

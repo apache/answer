@@ -31,7 +31,7 @@ interface Props {
   visible: boolean;
 }
 const Index: FC<Props> = ({
-  tabName = 'answers',
+  tabName = 'comments',
   visible,
   sort,
   count = 0,
@@ -47,7 +47,7 @@ const Index: FC<Props> = ({
       <h5 className="mb-0">
         {count} {t(tabName)}
       </h5>
-      {(tabName === 'answers' || tabName === 'questions') && (
+      {(tabName === 'comments' || tabName === 'posts') && (
         <QueryGroup
           data={sortBtns}
           currentSort={sort}

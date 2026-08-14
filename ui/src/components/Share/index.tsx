@@ -26,7 +26,7 @@ import copy from 'copy-to-clipboard';
 import classNames from 'classnames';
 
 import { BASE_ORIGIN } from '@/router/alias';
-import { loggedUserInfoStore } from '@/stores';
+import { loggedUserInfoStore, siteInfoStore } from '@/stores';
 
 interface IProps {
   type: 'answer' | 'question';
@@ -40,6 +40,7 @@ interface IProps {
 
 const Index: FC<IProps> = ({ type, qid, aid, title, className, mode }) => {
   const user = loggedUserInfoStore((state) => state.user);
+  const siteName = siteInfoStore((state) => state.siteInfo.name);
   const [show, setShow] = useState(false);
   const [showTip, setShowTip] = useState(false);
   const [canSystemShare, setSystemShareState] = useState(false);
@@ -72,7 +73,7 @@ const Index: FC<IProps> = ({ type, qid, aid, title, className, mode }) => {
   const systemShare = () => {
     navigator.share({
       title,
-      text: `${title} - Answer：`,
+      text: `${title} - ${siteName}：`,
       url: baseUrl,
     });
   };

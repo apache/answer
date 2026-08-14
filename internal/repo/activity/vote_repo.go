@@ -198,7 +198,22 @@ func (vr *VoteRepo) ListUserVotes(ctx context.Context, userID string,
 			builder.In("activity_type", activityTypes),
 		)
 
-	session.Where(cond).Desc("updated_at")
+	session.Where(cond)
+	session.And(`(
+		EXISTS (
+			SELECT 1 FROM question
+			WHERE question.id = activity.object_id
+			AND question.status != ?
+		)
+		OR EXISTS (
+			SELECT 1 FROM answer
+			INNER JOIN question ON question.id = answer.question_id
+			WHERE answer.id = activity.object_id
+			AND answer.status != ?
+			AND question.status != ?
+		)
+	)`, entity.QuestionStatusDeleted, entity.AnswerStatusDeleted, entity.QuestionStatusDeleted)
+	session.Desc("updated_at")
 
 	total, err = pager.Help(page, pageSize, &voteList, &entity.Activity{}, session)
 	if err != nil {

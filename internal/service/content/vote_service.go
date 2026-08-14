@@ -219,6 +219,9 @@ func (vs *VoteService) ListUserVotes(ctx context.Context, req schema.GetVoteWith
 			log.Error(err)
 			continue
 		}
+		if objInfo.IsDeletedOrParentDeleted() {
+			continue
+		}
 
 		item := &schema.GetVoteWithPageResp{
 			CreatedAt:  voteInfo.CreatedAt.Unix(),
@@ -232,9 +235,6 @@ func (vs *VoteService) ListUserVotes(ctx context.Context, req schema.GetVoteWith
 		}
 		item.VoteType = translator.Tr(lang,
 			activity_type.ActivityTypeFlagMapping[activityTypeMapping[voteInfo.ActivityType]])
-		if objInfo.QuestionStatus == entity.QuestionStatusDeleted {
-			item.Title = translator.Tr(lang, constant.DeletedQuestionTitleTrKey)
-		}
 		votes = append(votes, item)
 	}
 	return pager.NewPageModel(total, votes), err

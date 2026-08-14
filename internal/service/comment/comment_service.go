@@ -68,6 +68,8 @@ type CommentQuery struct {
 	QueryCond string
 	// user id
 	UserID string
+	// exclude comments whose object or parent question has been deleted
+	ExcludeDeletedContent bool
 }
 
 func (c *CommentQuery) GetOrderBy() string {
@@ -529,9 +531,10 @@ func (cs *CommentService) GetCommentPersonalWithPage(ctx context.Context, req *s
 	}
 
 	dto := &CommentQuery{
-		PageCond:  pager.PageCond{Page: req.Page, PageSize: req.PageSize},
-		UserID:    req.UserID,
-		QueryCond: "created_at",
+		PageCond:              pager.PageCond{Page: req.Page, PageSize: req.PageSize},
+		UserID:                req.UserID,
+		QueryCond:             "created_at",
+		ExcludeDeletedContent: true,
 	}
 	commentList, total, err := cs.commentRepo.GetCommentPage(ctx, dto)
 	if err != nil {
@@ -549,16 +552,16 @@ func (cs *CommentService) GetCommentPersonalWithPage(ctx context.Context, req *s
 			objInfo, err := cs.objectInfoService.GetInfo(ctx, comment.ObjectID)
 			if err != nil {
 				log.Error(err)
-			} else {
-				commentResp.ObjectType = objInfo.ObjectType
-				commentResp.Title = objInfo.Title
-				commentResp.UrlTitle = htmltext.UrlTitle(objInfo.Title)
-				commentResp.QuestionID = objInfo.QuestionID
-				commentResp.AnswerID = objInfo.AnswerID
-				if objInfo.QuestionStatus == entity.QuestionStatusDeleted {
-					commentResp.Title = "Deleted question"
-				}
+				continue
 			}
+			if objInfo.IsDeletedOrParentDeleted() {
+				continue
+			}
+			commentResp.ObjectType = objInfo.ObjectType
+			commentResp.Title = objInfo.Title
+			commentResp.UrlTitle = htmltext.UrlTitle(objInfo.Title)
+			commentResp.QuestionID = objInfo.QuestionID
+			commentResp.AnswerID = objInfo.AnswerID
 		}
 		resp = append(resp, commentResp)
 	}

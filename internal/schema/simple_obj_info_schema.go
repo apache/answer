@@ -60,6 +60,16 @@ func (s *SimpleObjectInfo) IsDeleted() bool {
 	return false
 }
 
+// IsDeletedOrParentDeleted reports whether an object, or the question that
+// contains it, has been deleted. Personal activity pages must not expose links
+// to either kind of deleted content.
+func (s *SimpleObjectInfo) IsDeletedOrParentDeleted() bool {
+	if s == nil {
+		return true
+	}
+	return s.IsDeleted() || s.QuestionStatus == entity.QuestionStatusDeleted
+}
+
 func (s *SimpleObjectInfo) CheckVisibility(userID string, isAdminModerator bool) error {
 	if s == nil {
 		return errors.NotFound(reason.ObjectNotFound)

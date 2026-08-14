@@ -207,6 +207,11 @@ func (cr *collectionRepo) SearchList(ctx context.Context, search *entity.Collect
 	} else {
 		return rows, count, nil
 	}
+	session = session.And(`EXISTS (
+		SELECT 1 FROM question
+		WHERE question.id = collection.object_id
+		AND question.status != ?
+	)`, entity.QuestionStatusDeleted)
 	session = session.Limit(search.PageSize, offset)
 	count, err = session.OrderBy("updated_at desc").FindAndCount(&rows)
 	if err != nil {

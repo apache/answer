@@ -33,9 +33,16 @@ const Index: FC<Props> = ({ visible, data }) => {
   if (!visible || !data?.length) {
     return null;
   }
+  const visibleData = data.filter(
+    (item) =>
+      item.title &&
+      item.question_id &&
+      (item.object_type === 'question' ||
+        (item.object_type === 'answer' && item.answer_id)),
+  );
   return (
     <ListGroup className="rounded-0">
-      {data.map((item) => {
+      {visibleData.map((item) => {
         return (
           <ListGroupItem
             className="py-3 px-0 bg-transparent border-start-0 border-end-0"

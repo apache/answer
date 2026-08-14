@@ -157,6 +157,12 @@ func (us *UserService) GetOtherUserInfoByUsername(ctx context.Context, req *sche
 		return nil, err
 	}
 	resp.QuestionCount = int(questionCount)
+	resp.PostCount = resp.QuestionCount
+	commentCount, err := us.questionService.GetPersonalUserCommentCount(ctx, userInfo.ID)
+	if err != nil {
+		return nil, err
+	}
+	resp.CommentCount = int(commentCount)
 	return resp, nil
 }
 

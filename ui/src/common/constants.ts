@@ -17,7 +17,7 @@
  * under the License.
  */
 
-export const DEFAULT_SITE_NAME = 'Answer';
+export const DEFAULT_SITE_NAME = 'Dongpolakeside';
 export const DEFAULT_LANG = 'en_US';
 export const CURRENT_LANG_STORAGE_KEY = '_a_lang_';
 export const LANG_RESOURCE_STORAGE_KEY = '_a_lang_r_';

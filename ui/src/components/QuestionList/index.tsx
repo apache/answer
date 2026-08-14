@@ -221,12 +221,12 @@ const QuestionList: FC<Props> = ({
                   </div>
                   <div className="small text-secondary">
                     <Counts
+                      answersLabel="comments"
                       data={{
                         votes: li.vote_count,
                         answers: li.answer_count,
                         views: li.view_count,
                       }}
-                      isAccepted={li.accepted_answer_id >= 1}
                       className="mt-2 mt-md-0"
                     />
                   </div>

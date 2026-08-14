@@ -20,6 +20,7 @@
 import { FC, memo } from 'react';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import { pathFactory } from '@/router/pathFactory';
 import { FormatTime } from '@/components';
@@ -30,13 +31,21 @@ interface Props {
 }
 
 const Index: FC<Props> = ({ visible, data }) => {
+  const { t } = useTranslation('translation', { keyPrefix: 'personal' });
   if (!visible || !data?.length) {
     return null;
   }
+  const visibleData = data.filter(
+    (item) =>
+      item.title &&
+      item.question_id &&
+      (item.object_type === 'question' ||
+        (item.object_type === 'answer' && item.answer_id)),
+  );
 
   return (
     <ListGroup className="rounded-0">
-      {data.map((item) => {
+      {visibleData.map((item) => {
         return (
           <ListGroupItem
             className="d-flex py-3 px-0 bg-transparent border-start-0 border-end-0"
@@ -64,7 +73,9 @@ const Index: FC<Props> = ({ visible, data }) => {
                 {item.title}
               </Link>
               <div className="d-flex align-items-center small text-secondary">
-                <span>{item.object_type}</span>
+                <span>
+                  {t(item.object_type === 'question' ? 'post' : 'comment')}
+                </span>
 
                 <span className="split-dot" />
                 <FormatTime time={item.created_at} className="me-4" />

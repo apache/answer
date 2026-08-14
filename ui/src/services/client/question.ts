@@ -74,7 +74,7 @@ export const useSimilarQuestion = (params: {
   question_id: string;
   page_size: number;
 }) => {
-  const apiUrl = `/answer/api/v1/question/similar/tag?${qs.stringify(params)}`;
+  const apiUrl = `/answer/api/v1/post/related?${qs.stringify(params)}`;
 
   const { data, error } = useSWR<Type.ListResult, Error>(
     params.question_id ? apiUrl : null,
@@ -108,7 +108,7 @@ export const putInviteUser = (
 };
 
 export const unDeleteAnswer = (id) => {
-  return request.post('/answer/api/v1/answer/recover', {
+  return request.post('/answer/api/v1/post/comment/recover', {
     answer_id: id,
   });
 };

@@ -84,6 +84,7 @@ const Index: FC<Props> = ({ data }) => {
         <FormatTime time={data.object?.created_at} className="me-3" />
 
         <Counts
+          answersLabel="comments"
           className="my-2 my-sm-0"
           showViews={false}
           isAccepted={data.object?.accepted}

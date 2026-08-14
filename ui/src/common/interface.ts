@@ -177,6 +177,10 @@ export interface UserInfoBase {
 export interface UserInfoRes extends UserInfoBase {
   bio: string;
   bio_html: string;
+  post_count?: number;
+  comment_count?: number;
+  question_count?: number;
+  answer_count?: number;
   create_time?: string;
   /**
    * value = 1 active;

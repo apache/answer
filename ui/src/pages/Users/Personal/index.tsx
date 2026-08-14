@@ -20,7 +20,7 @@
 import { FC } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { useParams, useSearchParams, Link } from 'react-router-dom';
+import { useParams, useSearchParams, Link, Navigate } from 'react-router-dom';
 
 import { usePageTags } from '@/hooks';
 import { Pagination, FormatTime, Empty } from '@/components';
@@ -40,16 +40,20 @@ import {
   ListHead,
   DefaultList,
   Comments,
-  Answers,
+  Replies,
   Votes,
 } from './components';
 
 const Personal: FC = () => {
   const { tabName: routeTabName = 'overview', username = '' } = useParams();
+  const legacyTabMap: Record<string, string> = {
+    answers: 'comments',
+    questions: 'posts',
+  };
   const tabName =
     routeTabName === 'reputation' || routeTabName === 'badges'
       ? 'overview'
-      : routeTabName;
+      : legacyTabMap[routeTabName] || routeTabName;
   const [searchParams] = useSearchParams();
   const page = searchParams.get('page') || 1;
   const order = searchParams.get('order') || 'newest';
@@ -78,6 +82,12 @@ const Personal: FC = () => {
   usePageTags({
     title: pageTitle,
   });
+
+  if (legacyTabMap[routeTabName]) {
+    const query = searchParams.toString();
+    const target = `/users/${username}/${legacyTabMap[routeTabName]}`;
+    return <Navigate replace to={`${target}${query ? `?${query}` : ''}`} />;
+  }
 
   return (
     <div className="pt-4 mb-5">
@@ -112,13 +122,13 @@ const Personal: FC = () => {
             visible={tabName !== 'overview'}
             tabName={tabName}
           />
-          <Answers data={list} visible={tabName === 'answers'} />
+          <Comments data={list} visible={tabName === 'comments'} />
           <DefaultList
             data={list}
             tabName={tabName}
-            visible={tabName === 'questions' || tabName === 'bookmarks'}
+            visible={tabName === 'posts' || tabName === 'bookmarks'}
           />
-          <Comments data={list} visible={tabName === 'comments'} />
+          <Replies data={list} visible={tabName === 'replies'} />
           <Votes data={list} visible={tabName === 'votes'} />
           {!list?.length && !isLoading && <Empty />}
 

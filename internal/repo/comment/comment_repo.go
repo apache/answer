@@ -150,6 +150,18 @@ func (cr *commentRepo) GetCommentPage(ctx context.Context, commentQuery *comment
 	session := cr.data.DB.Context(ctx)
 	session.OrderBy(commentQuery.GetOrderBy())
 	session.Where("status = ?", entity.CommentStatusAvailable)
+	if commentQuery.ExcludeDeletedContent {
+		session.And(`EXISTS (
+			SELECT 1 FROM question
+			WHERE question.id = comment.question_id
+			AND question.status != ?
+		)`, entity.QuestionStatusDeleted)
+		session.And(`NOT EXISTS (
+			SELECT 1 FROM answer
+			WHERE answer.id = comment.object_id
+			AND answer.status = ?
+		)`, entity.AnswerStatusDeleted)
+	}
 
 	cond := &entity.Comment{ObjectID: commentQuery.ObjectID, UserID: commentQuery.UserID}
 	total, err = pager.Help(commentQuery.Page, commentQuery.PageSize, &commentList, cond, session)

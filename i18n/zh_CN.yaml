@@ -1107,7 +1107,7 @@ ui:
     react_emoji: 用 {{ emoji }} 回应
     unreact_emoji: 撤销 {{ emoji }}
   comment:
-    btn_add_comment: 添加评论
+    btn_add_comment: 添加回复
     reply_to: 回复
     btn_reply: 回复
     btn_edit: 编辑
@@ -1115,22 +1115,22 @@ ui:
     btn_flag: 举报
     btn_save_edits: 保存更改
     btn_cancel: 取消
-    show_more: "{{count}} 条剩余评论"
+    show_more: "{{count}} 条剩余回复"
     tip_question: >-
-      使用评论提问更多信息或者提出改进意见。避免在评论里回答问题。
+      使用回复补充信息或提出改进建议。
     tip_answer: >-
-      使用评论对回答者进行回复，或者通知回答者你已更新了问题的内容。如果要补充或者完善问题的内容，请在原问题中更改。
+      使用回复参与讨论；如果要完善主要内容，请编辑原评论。
     tip_vote: 它给帖子添加了一些有用的内容
   edit_answer:
-    title: 编辑回答
-    default_reason: 编辑回答
-    default_first_reason: 添加答案
+    title: 编辑评论
+    default_reason: 编辑评论
+    default_first_reason: 添加评论
     form:
       fields:
         revision:
           label: 编辑历史
         answer:
-          label: 回答内容
+          label: 评论内容
           feedback:
             characters: 内容长度至少 6 个字符
         edit_summary:
@@ -1433,8 +1433,8 @@ ui:
     review: 您的修订将在审阅通过后显示。
     sent_success: 发送成功
   related_question:
-    title: 相似
-    answers: 个回答
+    title: 相关帖子
+    answers: 条评论
   linked_question:
     title: 关联
     description: 帖子关联到
@@ -1448,49 +1448,49 @@ ui:
   question_detail:
     action: 操作
     created: 创建于
-    Asked: 提问于
-    asked: 提问于
+    Asked: 发布于
+    asked: 发布于
     update: 修改于
     Edited: 编辑于
     edit: 编辑于
     commented: 评论
     Views: 阅读次数
-    Follow: 关注此问题
+    Follow: 关注此帖子
     Following: 已关注
-    follow_tip: 关注此问题以接收通知
-    answered: 回答于
+    follow_tip: 关注此帖子以接收通知
+    answered: 评论于
     closed_in: 关闭于
-    show_exist: 查看类似问题。
+    show_exist: 查看相关帖子。
     useful: 有用的
-    question_useful: 它是有用和明确的
-    question_un_useful: 它不明确或没用的
-    question_bookmark: 收藏该问题
-    answer_useful: 这是有用的
-    answer_un_useful: 它是没有用的
+    question_useful: 这个帖子有用且内容明确
+    question_un_useful: 这个帖子内容不明确或没有帮助
+    question_bookmark: 收藏该帖子
+    answer_useful: 这条评论有用
+    answer_un_useful: 这条评论没有用
     answers:
-      title: 个回答
+      title: 条评论
       score: 评分
       newest: 最新
       oldest: 最旧
       btn_accept: 采纳
       btn_accepted: 已被采纳
     write_answer:
-      title: 你的回答
-      edit_answer: 编辑我的回答
-      btn_name: 提交你的回答
-      add_another_answer: 添加另一个回答
-      confirm_title: 继续回答
+      title: 发表评论
+      edit_answer: 编辑我的评论
+      btn_name: 提交评论
+      add_another_answer: 添加另一条评论
+      confirm_title: 继续发表评论
       continue: 继续
       confirm_info: >-
-        <p>你确定要提交一个新的回答吗？</p><p>作为替代，你可以通过编辑来完善和改进之前的回答。</p>
-      empty: 回答内容不能为空。
+        <p>你确定要提交一条新评论吗？</p><p>你也可以编辑并完善之前发表的评论。</p>
+      empty: 评论内容不能为空。
       characters: 内容长度至少 6 个字符。
       tips:
-        header_1: 感谢你的回答
-        li1_1: 请务必确定在 <strong>回答问题</strong>。提供详细信息并分享你的研究。
+        header_1: 感谢你的评论
+        li1_1: 请围绕帖子主题发表评论，并提供有帮助的信息。
         li1_2: 用参考资料或个人经历来支持你所做的任何陈述。
         header_2: 但是 <strong>请避免</strong>...
-        li2_1: 请求帮助，寻求澄清，或答复其他答案。
+        li2_1: 发布与帖子主题无关的内容或重复评论。
     reopen:
       confirm_btn: 重新打开
       title: 重新打开这个帖子
@@ -1654,9 +1654,14 @@ ui:
     answer: 回答
     questions: 问题
     question: 问题
+    posts: 帖子
+    post: 帖子
     bookmarks: 收藏
     reputation: 声望
     comments: 评论
+    comment: 评论
+    replies: 回复
+    reply: 回复
     votes: 得票
     badges: 徽章
     newest: 最新
@@ -1671,6 +1676,8 @@ ui:
     about_me_empty: "// Hello, World!"
     top_answers: 高分回答
     top_questions: 高分问题
+    top_comments: 热门评论
+    top_posts: 热门帖子
     stats: 状态
     list_empty: 没有找到相关的内容。<br />试试看其他选项卡？
     content_empty: 未找到帖子。
@@ -1684,6 +1691,8 @@ ui:
     x_votes: 得票
     x_answers: 个回答
     x_questions: 个问题
+    x_comments: 条评论
+    x_posts: 篇帖子
     recent_badges: 最近的徽章
   install:
     title: 安装
@@ -1800,6 +1809,7 @@ ui:
     views: 次浏览
     votes: 个点赞
     answers: 个回答
+    comments: 条评论
     accepted: 已被采纳
   page_error:
     http_error: HTTP 错误 {{ code }}
