@@ -26,7 +26,6 @@ import (
 	"github.com/apache/answer/internal/service/apikey"
 	"github.com/apache/answer/pkg/token"
 	"github.com/apache/answer/plugin"
-	"github.com/segmentfault/pacman/log"
 )
 
 // AuthRepo auth repository
@@ -198,9 +197,7 @@ func (as *AuthService) AuthAPIKey(ctx context.Context, read bool, apiKey string)
 	}
 	// If the request is not read-only, check if the API key has write permissions
 	if !read && apiKeyInfo.Scope == "read-only" {
-		log.Warnf("API key %s does not have write permissions", apiKeyInfo.AccessKey)
 		return false, nil
 	}
-	log.Infof("API key %s is valid, scope: %s", apiKeyInfo.AccessKey, apiKeyInfo.Scope)
 	return true, nil
 }
