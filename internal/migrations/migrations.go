@@ -110,6 +110,7 @@ var migrations = []Migration{
 	NewMigration("v2.0.1", "change avatar type to text", updateAvatarType, false),
 	NewMigration("v2.0.2", "add reasoning content to ai conversation record", addAIConversationReasoningContent, false),
 	NewMigration("v2.0.3", "add require email verification login setting", addRequireEmailVerification, true),
+	NewMigration("v2.0.4", "add campus forum sections", addCampusForumSections, true),
 }
 
 func GetMigrations() []Migration {
@@ -146,8 +147,9 @@ func ExpectedVersion() int64 {
 func Migrate(debug bool, dbConf *data.Database, cacheConf *data.CacheConf, upgradeToSpecificVersion string) error {
 	cache, cacheCleanup, err := data.NewCache(cacheConf)
 	if err != nil {
-		fmt.Println("new cache failed:", err.Error())
+		return fmt.Errorf("new cache failed: %w", err)
 	}
+	defer cacheCleanup()
 	engine, err := data.NewDB(debug, dbConf)
 	if err != nil {
 		fmt.Println("new database failed: ", err.Error())
@@ -192,9 +194,6 @@ func Migrate(debug bool, dbConf *data.Database, cacheConf *data.CacheConf, upgra
 			return err
 		}
 		currentDBVersion++
-	}
-	if cache != nil {
-		cacheCleanup()
 	}
 	return nil
 }

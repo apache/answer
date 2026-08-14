@@ -270,6 +270,11 @@ func (ts *TagCommonService) GetTagListByNames(ctx context.Context, tagNames []st
 }
 
 func (ts *TagCommonService) ExistRecommend(ctx context.Context, tags []*schema.TagItem) (bool, error) {
+	// Tags are optional. Only enforce recommended-tag rules after a user adds a tag.
+	if len(tags) == 0 {
+		return true, nil
+	}
+
 	taginfo, err := ts.siteInfoService.GetSiteTag(ctx)
 	if err != nil {
 		return false, err
@@ -660,7 +665,7 @@ func (ts *TagCommonService) CheckChangeReservedTag(ctx context.Context, oldobjec
 // ObjectChangeTag change object tag list
 func (ts *TagCommonService) ObjectChangeTag(ctx context.Context, objectTagData *schema.TagChange, minimumTags int) (errorlist []*validator.FormErrorField, err error) {
 	// checks if the tags sent in the put req are less than the minimum, if so, tag changes are not applied
-	if len(objectTagData.Tags) < minimumTags {
+	if len(objectTagData.Tags) > 0 && len(objectTagData.Tags) < minimumTags {
 		errorlist := make([]*validator.FormErrorField, 0)
 		errorlist = append(errorlist, &validator.FormErrorField{
 			ErrorField: "tags",

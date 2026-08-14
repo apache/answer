@@ -84,6 +84,8 @@ type QuestionAdd struct {
 	HTML string `json:"-"`
 	// tags
 	Tags []*TagItem `validate:"dive" json:"tags"`
+	// campus forum section (leaf section only)
+	SectionID int64 `validate:"required,min=1" json:"section_id"`
 	// user id
 	UserID string `json:"-"`
 	QuestionPermission
@@ -113,7 +115,8 @@ type QuestionAddByAnswer struct {
 	AnswerContent string `validate:"required,notblank,gte=6,lte=65535" json:"answer_content"`
 	AnswerHTML    string `json:"-"`
 	// tags
-	Tags []*TagItem `validate:"dive" json:"tags"`
+	Tags      []*TagItem `validate:"dive" json:"tags"`
+	SectionID int64      `validate:"required,min=1" json:"section_id"`
 	// user id
 	UserID              string   `json:"-"`
 	MentionUsernameList []string `validate:"omitempty" json:"mention_username_list"`
@@ -144,6 +147,7 @@ func (req *QuestionAddByAnswer) Check() (errFields []*validator.FormErrorField, 
 
 type QuestionPermission struct {
 	IsAdminModerator bool `json:"-"`
+	IsAdmin          bool `json:"-"`
 	// whether user can add it
 	CanAdd bool `json:"-"`
 	// whether user can edit it
@@ -237,6 +241,7 @@ type QuestionInfoResp struct {
 	HTML                 string         `json:"html"`
 	Description          string         `json:"description"`
 	Tags                 []*TagResp     `json:"tags"`
+	SectionID            int64          `json:"section_id"`
 	ViewCount            int            `json:"view_count"`
 	UniqueViewCount      int            `json:"unique_view_count"`
 	VoteCount            int            `json:"vote_count"`
@@ -372,6 +377,7 @@ type QuestionPageReq struct {
 	Tag       string `validate:"omitempty,gt=0,lte=100" form:"tag"`
 	Username  string `validate:"omitempty,gt=0,lte=100" form:"username"`
 	InDays    int    `validate:"omitempty,min=1" form:"in_days"`
+	Section   string `validate:"omitempty,lte=50" form:"section"`
 
 	LoginUserID      string `json:"-"`
 	UserIDBeSearched string `json:"-"`
@@ -395,6 +401,7 @@ type QuestionPageResp struct {
 	Show        int        `json:"show"` // 0: show, 1: hide
 	Status      int        `json:"status"`
 	Tags        []*TagResp `json:"tags"`
+	SectionID   int64      `json:"section_id"`
 
 	// question statistical information
 	ViewCount       int `json:"view_count"`

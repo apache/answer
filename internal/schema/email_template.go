@@ -61,6 +61,12 @@ type RegisterTemplateData struct {
 	RegisterUrl string
 }
 
+type RegisterCodeTemplateData struct {
+	SiteName       string
+	Code           string
+	ExpiresMinutes int
+}
+
 type PassResetTemplateData struct {
 	SiteName     string
 	PassResetUrl string

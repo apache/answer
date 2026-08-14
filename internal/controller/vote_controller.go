@@ -73,15 +73,13 @@ func (vc *VoteController) VoteUp(ctx *gin.Context) {
 	req.ObjectID = uid.DeShortID(req.ObjectID)
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
 
-	can, needRank, err := vc.rankService.CheckVotePermission(ctx, req.UserID, req.ObjectID, true)
+	can, _, err := vc.rankService.CheckVotePermission(ctx, req.UserID, req.ObjectID, true)
 	if err != nil {
 		handler.HandleResponse(ctx, err, nil)
 		return
 	}
 	if !can {
-		lang := handler.GetLangByCtx(ctx)
-		msg := translator.TrWithData(lang, reason.NoEnoughRankToOperate, &schema.PermissionTrTplData{Rank: needRank})
-		handler.HandleResponse(ctx, errors.Forbidden(reason.NoEnoughRankToOperate).WithMsg(msg), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 
@@ -128,15 +126,13 @@ func (vc *VoteController) VoteDown(ctx *gin.Context) {
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
 	isAdmin := middleware.GetUserIsAdminModerator(ctx)
 
-	can, needRank, err := vc.rankService.CheckVotePermission(ctx, req.UserID, req.ObjectID, false)
+	can, _, err := vc.rankService.CheckVotePermission(ctx, req.UserID, req.ObjectID, false)
 	if err != nil {
 		handler.HandleResponse(ctx, err, nil)
 		return
 	}
 	if !can {
-		lang := handler.GetLangByCtx(ctx)
-		msg := translator.TrWithData(lang, reason.NoEnoughRankToOperate, &schema.PermissionTrTplData{Rank: needRank})
-		handler.HandleResponse(ctx, errors.Forbidden(reason.NoEnoughRankToOperate).WithMsg(msg), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 

@@ -121,15 +121,20 @@ func (es *EmailService) SendAndSaveCodeWithTime(
 
 // Send email send
 func (es *EmailService) Send(ctx context.Context, toEmailAddr, subject, body string) {
+	if err := es.SendWithResult(ctx, toEmailAddr, subject, body); err != nil {
+		log.Errorf("send email to %s failed: %s", toEmailAddr, err)
+	}
+}
+
+// SendWithResult sends an email and reports configuration or SMTP failures.
+func (es *EmailService) SendWithResult(ctx context.Context, toEmailAddr, subject, body string) error {
 	log.Infof("try to send email to %s", toEmailAddr)
 	ec, err := es.GetEmailConfig(ctx)
 	if err != nil {
-		log.Errorf("get email config failed: %s", err)
-		return
+		return fmt.Errorf("get email config: %w", err)
 	}
 	if len(ec.SMTPHost) == 0 {
-		log.Warnf("smtp host is empty, skip send email")
-		return
+		return fmt.Errorf("smtp host is empty")
 	}
 
 	m := gomail.NewMessage()
@@ -150,10 +155,10 @@ func (es *EmailService) Send(ctx context.Context, toEmailAddr, subject, body str
 		d.TLSConfig = &tls.Config{ServerName: d.Host, InsecureSkipVerify: true}
 	}
 	if err := d.DialAndSend(m); err != nil {
-		log.Errorf("send email to %s failed: %s", toEmailAddr, err)
-	} else {
-		log.Infof("send email to %s success", toEmailAddr)
+		return fmt.Errorf("send email to %s: %w", toEmailAddr, err)
 	}
+	log.Infof("send email to %s success", toEmailAddr)
+	return nil
 }
 
 // VerifyUrlExpired email send
@@ -178,6 +183,27 @@ func (es *EmailService) RegisterTemplate(ctx context.Context, registerUrl string
 	lang := handler.GetLangByCtx(ctx)
 	title = translator.TrWithData(lang, constant.EmailTplKeyRegisterTitle, templateData)
 	body = translator.TrWithData(lang, constant.EmailTplKeyRegisterBody, templateData)
+	return title, body, nil
+}
+
+func (es *EmailService) RegisterCodeTemplate(
+	ctx context.Context,
+	code string,
+	expiresMinutes int,
+) (title, body string, err error) {
+	siteInfo, err := es.siteInfoService.GetSiteGeneral(ctx)
+	if err != nil {
+		return "", "", err
+	}
+	templateData := &schema.RegisterCodeTemplateData{
+		SiteName:       siteInfo.Name,
+		Code:           code,
+		ExpiresMinutes: expiresMinutes,
+	}
+
+	lang := handler.GetLangByCtx(ctx)
+	title = translator.TrWithData(lang, constant.EmailTplKeyRegisterCodeTitle, templateData)
+	body = translator.TrWithData(lang, constant.EmailTplKeyRegisterCodeBody, templateData)
 	return title, body, nil
 }
 

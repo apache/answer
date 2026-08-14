@@ -39,7 +39,6 @@ import {
   Alert,
   ListHead,
   DefaultList,
-  Reputation,
   Comments,
   Answers,
   Votes,
@@ -47,7 +46,8 @@ import {
 } from './components';
 
 const Personal: FC = () => {
-  const { tabName = 'overview', username = '' } = useParams();
+  const { tabName: routeTabName = 'overview', username = '' } = useParams();
+  const tabName = routeTabName === 'reputation' ? 'overview' : routeTabName;
   const [searchParams] = useSearchParams();
   const page = searchParams.get('page') || 1;
   const order = searchParams.get('order') || 'newest';
@@ -106,7 +106,7 @@ const Personal: FC = () => {
           />
 
           <ListHead
-            count={tabName === 'reputation' ? Number(userInfo?.rank) : count}
+            count={count}
             sort={order}
             visible={tabName !== 'overview'}
             tabName={tabName}
@@ -117,7 +117,6 @@ const Personal: FC = () => {
             tabName={tabName}
             visible={tabName === 'questions' || tabName === 'bookmarks'}
           />
-          <Reputation data={list} visible={tabName === 'reputation'} />
           <Comments data={list} visible={tabName === 'comments'} />
           <Votes data={list} visible={tabName === 'votes'} />
           <Badges

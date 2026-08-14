@@ -42,6 +42,7 @@ import (
 	"github.com/apache/answer/internal/service/feature_toggle"
 	"github.com/apache/answer/internal/service/file_record"
 	"github.com/apache/answer/internal/service/follow"
+	forumsectionservice "github.com/apache/answer/internal/service/forum_section"
 	"github.com/apache/answer/internal/service/importer"
 	"github.com/apache/answer/internal/service/meta"
 	metacommon "github.com/apache/answer/internal/service/meta_common"
@@ -80,6 +81,7 @@ var ProviderSetService = wire.NewSet(
 	content.NewVoteService,
 	tag.NewTagService,
 	follow.NewFollowService,
+	forumsectionservice.NewForumSectionService,
 	collection.NewCollectionGroupService,
 	collection.NewCollectionService,
 	action.NewCaptchaService,

@@ -59,7 +59,7 @@ type QuestionRepo interface {
 	UpdateQuestion(ctx context.Context, question *entity.Question, Cols []string) (err error)
 	GetQuestion(ctx context.Context, id string) (question *entity.Question, exist bool, err error)
 	GetQuestionList(ctx context.Context, question *entity.Question) (questions []*entity.Question, err error)
-	GetQuestionPage(ctx context.Context, page, pageSize int, tagIDs []string, userID, orderCond string, inDays int, showHidden, showPending bool) (
+	GetQuestionPage(ctx context.Context, page, pageSize int, tagIDs []string, sectionIDs []int64, userID, orderCond string, inDays int, showHidden, showPending bool) (
 		questionList []*entity.Question, total int64, err error)
 	GetRecommendQuestionPageByTags(ctx context.Context, userID string, tagIDs, followedQuestionIDs []string, page, pageSize int) (questionList []*entity.Question, total int64, err error)
 	UpdateQuestionStatus(ctx context.Context, questionID string, status int) (err error)
@@ -385,6 +385,7 @@ func (qs *QuestionCommon) FormatQuestionsPage(
 			LastAnswerID:     questionInfo.LastAnswerID,
 			Pin:              questionInfo.Pin,
 			Show:             questionInfo.Show,
+			SectionID:        questionInfo.SectionID,
 			Operator:         &schema.QuestionPageRespOperator{ID: questionInfo.UserID},
 		}
 
@@ -683,6 +684,7 @@ func (qs *QuestionCommon) ShowFormat(ctx context.Context, data *entity.Question)
 		}
 	}
 	info.Tags = make([]*schema.TagResp, 0)
+	info.SectionID = data.SectionID
 	return &info
 }
 func (qs *QuestionCommon) ShowFormatWithTag(ctx context.Context, data *entity.QuestionWithTagsRevision) *schema.QuestionInfoResp {

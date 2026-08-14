@@ -51,6 +51,7 @@ import (
 	"github.com/apache/answer/internal/repo/config"
 	"github.com/apache/answer/internal/repo/export"
 	"github.com/apache/answer/internal/repo/file_record"
+	"github.com/apache/answer/internal/repo/forum_section"
 	"github.com/apache/answer/internal/repo/limit"
 	"github.com/apache/answer/internal/repo/meta"
 	notification2 "github.com/apache/answer/internal/repo/notification"
@@ -58,6 +59,7 @@ import (
 	"github.com/apache/answer/internal/repo/question"
 	"github.com/apache/answer/internal/repo/rank"
 	"github.com/apache/answer/internal/repo/reason"
+	"github.com/apache/answer/internal/repo/registration"
 	"github.com/apache/answer/internal/repo/report"
 	"github.com/apache/answer/internal/repo/review"
 	"github.com/apache/answer/internal/repo/revision"
@@ -93,6 +95,7 @@ import (
 	"github.com/apache/answer/internal/service/feature_toggle"
 	file_record2 "github.com/apache/answer/internal/service/file_record"
 	"github.com/apache/answer/internal/service/follow"
+	forum_section2 "github.com/apache/answer/internal/service/forum_section"
 	"github.com/apache/answer/internal/service/importer"
 	meta2 "github.com/apache/answer/internal/service/meta"
 	"github.com/apache/answer/internal/service/meta_common"
@@ -147,6 +150,8 @@ func initApplication(debug bool, serverConf *conf.Server, dbConf *data.Database,
 		cleanup()
 		return nil, nil, err
 	}
+	forumSectionRepo := forum_section.NewForumSectionRepo(dataData)
+	forumSectionService := forum_section2.NewForumSectionService(forumSectionRepo)
 	siteInfoRepo := site_info.NewSiteInfo(dataData)
 	siteInfoCommonService := siteinfo_common.NewSiteInfoCommonService(siteInfoRepo)
 	langController := controller.NewLangController(i18nTranslator, siteInfoCommonService)
@@ -191,7 +196,8 @@ func initApplication(debug bool, serverConf *conf.Server, dbConf *data.Database,
 	eventqueueService := eventqueue.NewService()
 	fileRecordRepo := file_record.NewFileRecordRepo(dataData)
 	fileRecordService := file_record2.NewFileRecordService(fileRecordRepo, revisionRepo, serviceConf, siteInfoCommonService, userCommon)
-	userService := content.NewUserService(userRepo, userActiveActivityRepo, activityRepo, emailService, authService, siteInfoCommonService, userRoleRelService, userCommon, userExternalLoginService, userNotificationConfigRepo, userNotificationConfigService, questionCommon, eventqueueService, fileRecordService)
+	registrationSecurityRepo := registration.NewRegistrationRepo(dataData)
+	userService := content.NewUserService(userRepo, userActiveActivityRepo, activityRepo, emailService, authService, siteInfoCommonService, userRoleRelService, userCommon, userExternalLoginService, userNotificationConfigRepo, userNotificationConfigService, questionCommon, eventqueueService, fileRecordService, registrationSecurityRepo)
 	captchaRepo := captcha.NewCaptchaRepo(dataData)
 	captchaService := action.NewCaptchaService(captchaRepo)
 	userController := controller.NewUserController(authService, userService, captchaService, emailService, siteInfoCommonService, userNotificationConfigService)
@@ -215,7 +221,7 @@ func initApplication(debug bool, serverConf *conf.Server, dbConf *data.Database,
 	answerActivityRepo := activity.NewAnswerActivityRepo(dataData, activityRepo, userRankRepo, noticequeueService)
 	answerActivityService := activity2.NewAnswerActivityService(answerActivityRepo, configService)
 	externalNotificationService := notification.NewExternalNotificationService(dataData, userNotificationConfigRepo, followRepo, emailService, userRepo, externalService, userExternalLoginRepo, siteInfoCommonService)
-	questionService := content.NewQuestionService(activityRepo, questionRepo, answerRepo, tagCommonService, tagService, questionCommon, userCommon, userRepo, userRoleRelService, revisionService, metaCommonService, collectionCommon, answerActivityService, emailService, noticequeueService, externalService, service, siteInfoCommonService, externalNotificationService, reviewService, configService, eventqueueService, reviewRepo, vector_syncService)
+	questionService := content.NewQuestionService(activityRepo, questionRepo, answerRepo, tagCommonService, tagService, questionCommon, userCommon, userRepo, userRoleRelService, revisionService, metaCommonService, collectionCommon, answerActivityService, emailService, noticequeueService, externalService, service, siteInfoCommonService, externalNotificationService, reviewService, configService, eventqueueService, reviewRepo, vector_syncService, forumSectionService)
 	answerService := content.NewAnswerService(answerRepo, questionRepo, questionCommon, userCommon, collectionCommon, userRepo, revisionService, answerActivityService, answerCommon, voteRepo, emailService, userRoleRelService, noticequeueService, externalService, service, reviewService, eventqueueService, vector_syncService)
 	reportHandle := report_handle.NewReportHandle(questionService, answerService, commentService)
 	reportService := report2.NewReportService(reportRepo, objService, userCommon, answerRepo, questionRepo, commentCommonRepo, reportHandle, configService, eventqueueService)
@@ -231,6 +237,7 @@ func initApplication(debug bool, serverConf *conf.Server, dbConf *data.Database,
 	collectionService := collection2.NewCollectionService(collectionRepo, collectionGroupRepo, questionCommon)
 	collectionController := controller.NewCollectionController(collectionService)
 	questionController := controller.NewQuestionController(questionService, answerService, rankService, siteInfoCommonService, captchaService, rateLimitMiddleware)
+	forumSectionController := controller.NewForumSectionController(forumSectionService)
 	answerController := controller.NewAnswerController(answerService, rankService, captchaService, siteInfoCommonService, rateLimitMiddleware)
 	searchParser := search_parser.NewSearchParser(tagCommonService, userCommon)
 	searchRepo := search_common.NewSearchRepo(dataData, uniqueIDRepo, userCommon, tagCommonService)
@@ -293,7 +300,7 @@ func initApplication(debug bool, serverConf *conf.Server, dbConf *data.Database,
 	aiController := controller.NewAIController(searchService, siteInfoCommonService, tagCommonService, questionCommon, commentRepo, userCommon, answerRepo, mcpController, aiConversationService, featureToggleService)
 	aiConversationController := controller.NewAIConversationController(aiConversationService, featureToggleService)
 	aiConversationAdminController := controller_admin.NewAIConversationAdminController(aiConversationService, featureToggleService)
-	answerAPIRouter := router.NewAnswerAPIRouter(langController, userController, commentController, reportController, voteController, tagController, followController, collectionController, questionController, answerController, searchController, revisionController, rankController, userAdminController, reasonController, themeController, siteInfoController, controllerSiteInfoController, notificationController, dashboardController, uploadController, activityController, roleController, pluginController, permissionController, userPluginController, reviewController, metaController, badgeController, controller_adminBadgeController, adminAPIKeyController, aiController, aiConversationController, aiConversationAdminController, mcpController)
+	answerAPIRouter := router.NewAnswerAPIRouter(langController, userController, commentController, reportController, voteController, tagController, followController, collectionController, questionController, answerController, searchController, revisionController, rankController, userAdminController, reasonController, themeController, siteInfoController, controllerSiteInfoController, notificationController, dashboardController, uploadController, activityController, roleController, pluginController, permissionController, userPluginController, reviewController, metaController, badgeController, controller_adminBadgeController, adminAPIKeyController, aiController, aiConversationController, aiConversationAdminController, mcpController, forumSectionController)
 	swaggerRouter := router.NewSwaggerRouter(swaggerConf)
 	uiRouter := router.NewUIRouter(controllerSiteInfoController, siteInfoCommonService)
 	authUserMiddleware := middleware.NewAuthUserMiddleware(authService, siteInfoCommonService)

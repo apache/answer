@@ -93,7 +93,7 @@ func (us *UserNotificationConfigService) UpdateUserNotificationConfig(
 func (us *UserNotificationConfigService) SetDefaultUserNotificationConfig(ctx context.Context, userIDs []string) (
 	err error) {
 	return us.userNotificationConfigRepo.Add(ctx, userIDs,
-		string(constant.InboxSource), `[{"key":"email","enable":true}]`)
+		string(constant.InboxSource), `[{"key":"email","enable":false}]`)
 }
 
 func (us *UserNotificationConfigService) convertToEntity(_ context.Context, userID string,

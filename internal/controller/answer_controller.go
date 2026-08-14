@@ -106,7 +106,7 @@ func (ac *AnswerController) RemoveAnswer(ctx *gin.Context) {
 	}
 	req.CanDelete = canList[0] || objectOwner
 	if !req.CanDelete {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 
@@ -143,7 +143,7 @@ func (ac *AnswerController) RecoverAnswer(ctx *gin.Context) {
 		return
 	}
 	if !canList[0] {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 
@@ -239,7 +239,7 @@ func (ac *AnswerController) AddAnswer(ctx *gin.Context) {
 		return
 	}
 	if !can {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 
@@ -337,7 +337,7 @@ func (ac *AnswerController) UpdateAnswer(ctx *gin.Context) {
 	req.CanEdit = canList[0] || objectOwner
 	req.NoNeedReview = canList[1] || objectOwner
 	if !req.CanEdit {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 
@@ -428,7 +428,7 @@ func (ac *AnswerController) AcceptAnswer(ctx *gin.Context) {
 		return
 	}
 	if !can {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 

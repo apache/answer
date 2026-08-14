@@ -23,7 +23,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { loggedUserInfoStore, sideNavStore, aiControlStore } from '@/stores';
-import { Icon, PluginRender } from '@/components';
+import { Icon, PluginRender, CampusSectionNav } from '@/components';
 import { PluginType } from '@/utils/pluginKit';
 import request from '@/utils/request';
 
@@ -38,65 +38,59 @@ const Index: FC = () => {
   const navigate = useNavigate();
 
   return (
-    <Nav variant="pills" className="flex-column" id="sideNav">
-      <NavLink
-        to="/questions"
-        className={({ isActive }) =>
-          isActive || pathname === '/' ? 'nav-link active' : 'nav-link'
-        }>
-        <Icon name="question-circle-fill" className="me-2" />
-        <span>{t('header.nav.question')}</span>
-      </NavLink>
-
-      {ai_enabled && (
+    <div className="side-nav-content d-flex h-100 flex-column" id="sideNav">
+      <Nav variant="pills" className="flex-column">
         <NavLink
-          to="/ai-assistant"
+          to="/"
+          end
           className={() =>
-            pathname === '/ai-assistant' ? 'nav-link active' : 'nav-link'
+            pathname === '/' || pathname === '/questions'
+              ? 'nav-link active'
+              : 'nav-link'
           }>
-          <Icon name="chat-square-text-fill" className="me-2" />
-          <span>{t('ai_assistant', { keyPrefix: 'page_title' })}</span>
+          <Icon name="house-door-fill" className="me-2" />
+          <span>{t('header.nav.question')}</span>
         </NavLink>
-      )}
+      </Nav>
 
-      <NavLink
-        to="/tags"
-        className={() =>
-          pathname === '/tags' ? 'nav-link active' : 'nav-link'
-        }>
-        <Icon name="tags-fill" className="me-2" />
-        <span>{t('header.nav.tag')}</span>
-      </NavLink>
+      <CampusSectionNav />
 
-      <NavLink to="/users" className="nav-link">
-        <Icon name="people-fill" className="me-2" />
-        <span>{t('header.nav.user')}</span>
-      </NavLink>
+      <Nav variant="pills" className="flex-column mt-3">
+        {ai_enabled && (
+          <NavLink
+            to="/ai-assistant"
+            className={() =>
+              pathname === '/ai-assistant' ? 'nav-link active' : 'nav-link'
+            }>
+            <Icon name="chat-square-text-fill" className="me-2" />
+            <span>{t('ai_assistant', { keyPrefix: 'page_title' })}</span>
+          </NavLink>
+        )}
 
-      <NavLink to="/badges" className="nav-link">
-        <Icon name="award-fill" className="me-2" />
-        <span>{t('header.nav.badges')}</span>
-      </NavLink>
-
-      <PluginRender
-        slug_name="quick_links"
-        type={PluginType.Sidebar}
-        request={request}
-        navigate={navigate}
-      />
+        <PluginRender
+          slug_name="quick_links"
+          type={PluginType.Sidebar}
+          request={request}
+          navigate={navigate}
+        />
+      </Nav>
 
       {can_revision || userInfo?.role_id === 2 ? (
-        <>
-          <div className="py-2 px-3 mt-3 small fw-bold">
+        <Nav
+          variant="pills"
+          className="side-nav-admin flex-column mt-auto pt-4">
+          <div className="px-3 pb-2 small fw-bold text-secondary">
             {t('header.nav.moderation')}
           </div>
           {can_revision && (
             <NavLink to="/review" className="nav-link">
               <Icon name="shield-fill-check" className="me-2" />
               <span>{t('header.nav.review')}</span>
-              <span className="float-end">
-                {revision > 99 ? '99+' : revision > 0 ? revision : ''}
-              </span>
+              {revision > 0 ? (
+                <span className="badge rounded-pill bg-danger float-end mt-1">
+                  {revision > 99 ? '99+' : revision}
+                </span>
+              ) : null}
             </NavLink>
           )}
 
@@ -106,9 +100,9 @@ const Index: FC = () => {
               <span>{t('header.nav.admin')}</span>
             </NavLink>
           ) : null}
-        </>
+        </Nav>
       ) : null}
-    </Nav>
+    </div>
   );
 };
 

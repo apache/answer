@@ -1,20 +1,3 @@
-# Licensed to the Apache Software Foundation (ASF) under one
-# or more contributor license agreements.  See the NOTICE file
-# distributed with this work for additional information
-# regarding copyright ownership.  The ASF licenses this file
-# to you under the Apache License, Version 2.0 (the
-# "License"); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
-#
-#   http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing,
-# software distributed under the License is distributed on an
-# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-# KIND, either express or implied.  See the License for the
-# specific language governing permissions and limitations
-# under the License.
-
 basePath: /
 definitions:
   constant.NotificationChannelKey:
@@ -765,6 +748,23 @@ definitions:
       is_followed:
         description: if user is followed object will be true,otherwise false
         type: boolean
+    type: object
+  schema.ForumSectionResp:
+    properties:
+      admin_only:
+        type: boolean
+      children:
+        items:
+          $ref: '#/definitions/schema.ForumSectionResp'
+        type: array
+      id:
+        type: integer
+      name:
+        type: string
+      parent_id:
+        type: integer
+      slug:
+        type: string
     type: object
   schema.GetAIModelResp:
     properties:
@@ -1761,6 +1761,10 @@ definitions:
         maxLength: 65535
         minLength: 0
         type: string
+      section_id:
+        description: campus forum section (leaf section only)
+        minimum: 1
+        type: integer
       tags:
         description: tags
         items:
@@ -1772,6 +1776,7 @@ definitions:
         minLength: 6
         type: string
     required:
+    - section_id
     - title
     type: object
   schema.QuestionAddByAnswer:
@@ -1794,6 +1799,9 @@ definitions:
         items:
           type: string
         type: array
+      section_id:
+        minimum: 1
+        type: integer
       tags:
         description: tags
         items:
@@ -1806,6 +1814,7 @@ definitions:
         type: string
     required:
     - answer_content
+    - section_id
     - title
     type: object
   schema.QuestionInfoResp:
@@ -1855,6 +1864,8 @@ definitions:
         $ref: '#/definitions/schema.Operation'
       pin:
         type: integer
+      section_id:
+        type: integer
       show:
         type: integer
       status:
@@ -1903,6 +1914,9 @@ definitions:
       page_size:
         minimum: 1
         type: integer
+      section:
+        maxLength: 50
+        type: string
       tag:
         maxLength: 100
         type: string
@@ -1938,6 +1952,8 @@ definitions:
         $ref: '#/definitions/schema.QuestionPageRespOperator'
       pin:
         description: '1: unpin, 2: pin'
+        type: integer
+      section_id:
         type: integer
       show:
         description: '0: show, 1: hide'
@@ -2126,6 +2142,11 @@ definitions:
     properties:
       question_id:
         type: string
+    type: object
+  schema.RetryAfterResp:
+    properties:
+      retry_after:
+        type: integer
     type: object
   schema.ReviewReportReq:
     properties:
@@ -3401,7 +3422,7 @@ definitions:
     - code
     - pass
     type: object
-  schema.UserRegisterReq:
+  schema.UserRegisterEmailCodeReq:
     properties:
       captcha_code:
         type: string
@@ -3409,6 +3430,16 @@ definitions:
         type: string
       e_mail:
         maxLength: 500
+        type: string
+    required:
+    - e_mail
+    type: object
+  schema.UserRegisterReq:
+    properties:
+      e_mail:
+        maxLength: 500
+        type: string
+      email_code:
         type: string
       name:
         maxLength: 30
@@ -3418,10 +3449,16 @@ definitions:
         maxLength: 32
         minLength: 8
         type: string
+      pass_confirm:
+        maxLength: 32
+        minLength: 8
+        type: string
     required:
     - e_mail
+    - email_code
     - name
     - pass
+    - pass_confirm
     type: object
   schema.UserRetrievePassWordRequest:
     properties:
@@ -5983,6 +6020,26 @@ paths:
       summary: update user follow tags
       tags:
       - Activity
+  /answer/api/v1/forum/sections:
+    get:
+      description: returns parent sections and their child sections
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.RespBody'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/schema.ForumSectionResp'
+                  type: array
+              type: object
+      summary: list campus forum sections
+      tags:
+      - Forum Section
   /answer/api/v1/language/config:
     get:
       description: get language config mapping
@@ -8258,6 +8315,38 @@ paths:
                   $ref: '#/definitions/schema.UserLoginResp'
               type: object
       summary: UserRegisterByEmail
+      tags:
+      - User
+  /answer/api/v1/user/register/email/code:
+    post:
+      consumes:
+      - application/json
+      description: Sends a six-digit registration code after captcha and rate-limit
+        checks
+      parameters:
+      - description: UserRegisterEmailCodeReq
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/schema.UserRegisterEmailCodeReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.RespBody'
+        "429":
+          description: Too Many Requests
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.RespBody'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.RetryAfterResp'
+              type: object
+      summary: Send registration email verification code
       tags:
       - User
   /answer/api/v1/user/staff:

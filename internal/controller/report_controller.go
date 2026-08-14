@@ -92,7 +92,7 @@ func (rc *ReportController) AddReport(ctx *gin.Context) {
 		return
 	}
 	if !can {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 

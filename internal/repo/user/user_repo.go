@@ -239,7 +239,7 @@ func (ur *userRepo) GetByUsernames(ctx context.Context, usernames []string) ([]*
 // GetByEmail get user by email
 func (ur *userRepo) GetByEmail(ctx context.Context, email string) (userInfo *entity.User, exist bool, err error) {
 	userInfo = &entity.User{}
-	exist, err = ur.data.DB.Context(ctx).Where("e_mail = ?", email).
+	exist, err = ur.data.DB.Context(ctx).Where("LOWER(e_mail) = ?", strings.ToLower(strings.TrimSpace(email))).
 		Where("status != ?", entity.UserStatusDeleted).Get(userInfo)
 	if err != nil {
 		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()

@@ -28,7 +28,7 @@ import isEqual from 'lodash/isEqual';
 import debounce from 'lodash/debounce';
 import fm from 'front-matter';
 
-import { writeSettingStore } from '@/stores';
+import { writeSettingStore, loggedUserInfoStore } from '@/stores';
 import { usePageTags, usePromptWithUnload } from '@/hooks';
 import { Editor, EditorRef, TagSelector } from '@/components';
 import type * as Type from '@/common/interface';
@@ -41,6 +41,7 @@ import {
   queryQuestionByTitle,
   getTagsBySlugName,
   saveQuestionWithAnswer,
+  useForumSections,
 } from '@/services';
 import {
   handleFormError,
@@ -54,6 +55,7 @@ import { useCaptchaPlugin } from '@/utils/pluginKit';
 import SearchQuestion from './components/SearchQuestion';
 
 interface FormDataItem {
+  section_id: Type.FormValue<number>;
   title: Type.FormValue<string>;
   tags: Type.FormValue<Type.Tag[]>;
   content: Type.FormValue<string>;
@@ -65,6 +67,11 @@ const saveDraft = new SaveDraft({ type: 'question' });
 
 const Ask = () => {
   const initFormData = {
+    section_id: {
+      value: 0,
+      isInvalid: false,
+      errorMsg: '',
+    },
     title: {
       value: '',
       isInvalid: false,
@@ -122,6 +129,8 @@ const Ask = () => {
     });
   };
   const writeInfo = writeSettingStore((state) => state.write);
+  const { user: loggedUser } = loggedUserInfoStore();
+  const { data: forumSections } = useForumSections();
 
   const isEdit = qid !== undefined;
 
@@ -161,6 +170,7 @@ const Ask = () => {
           formData.title.value = draft.title;
           formData.content.value = draft.content;
           formData.tags.value = draft.tags;
+          formData.section_id.value = draft.section_id || 0;
           formData.answer_content.value = draft.answer_content;
           setCheckState(Boolean(draft.answer_content));
           setHasDraft(true);
@@ -177,7 +187,7 @@ const Ask = () => {
   }, [qid]);
 
   useEffect(() => {
-    const { title, tags, content, answer_content } = formData;
+    const { title, tags, content, answer_content, section_id } = formData;
     const { title: editTitle, tags: editTags, content: editContent } = immData;
 
     // edited
@@ -199,6 +209,7 @@ const Ask = () => {
     // write
     if (
       title.value ||
+      section_id.value > 0 ||
       tags.value.length > 0 ||
       content.value ||
       answer_content.value
@@ -207,6 +218,7 @@ const Ask = () => {
       saveDraft.save({
         params: {
           title: title.value,
+          section_id: section_id.value,
           tags: tags.value,
           content: content.value,
           answer_content: answer_content.value,
@@ -240,6 +252,7 @@ const Ask = () => {
           original_text: '',
         };
       });
+      formData.section_id.value = res.section_id || 0;
       setImmData({ ...formData });
       setFormData({ ...formData });
     });
@@ -276,6 +289,16 @@ const Ask = () => {
     setFormData({
       ...formData,
       tags: { value, errorMsg: '', isInvalid: false },
+    });
+
+  const handleSectionChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
+    setFormData({
+      ...formData,
+      section_id: {
+        value: Number(event.currentTarget.value),
+        isInvalid: false,
+        errorMsg: '',
+      },
     });
 
   const handleAnswerChange = (value: string) =>
@@ -383,11 +406,24 @@ const Ask = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
+    if (!isEdit && formData.section_id.value <= 0) {
+      setFormData({
+        ...formData,
+        section_id: {
+          ...formData.section_id,
+          isInvalid: true,
+          errorMsg: t('form.fields.section.msg.empty'),
+        },
+      });
+      scrollToElementTop(document.getElementById('section_id'));
+      return;
+    }
 
     const params: Type.QuestionParams = {
       title: formData.title.value,
       content: formData.content.value,
       tags: formData.tags.value,
+      section_id: formData.section_id.value,
     };
 
     if (isEdit) {
@@ -468,6 +504,37 @@ const Ask = () => {
                 </Form.Select>
               </Form.Group>
             )}
+            {!isEdit && (
+              <Form.Group controlId="section_id" className="mb-3">
+                <Form.Label>{t('form.fields.section.label')}</Form.Label>
+                <Form.Select
+                  value={formData.section_id.value}
+                  isInvalid={formData.section_id.isInvalid}
+                  onChange={handleSectionChange}>
+                  <option value={0}>
+                    {t('form.fields.section.placeholder')}
+                  </option>
+                  {forumSections.map((parent) => (
+                    <optgroup key={parent.id} label={parent.name}>
+                      {parent.children
+                        .filter(
+                          (child) =>
+                            !child.admin_only || loggedUser.role_id === 2,
+                        )
+                        .map((child) => (
+                          <option key={child.id} value={child.id}>
+                            {child.name}
+                          </option>
+                        ))}
+                    </optgroup>
+                  ))}
+                </Form.Select>
+                <Form.Control.Feedback type="invalid">
+                  {formData.section_id.errorMsg}
+                </Form.Control.Feedback>
+                <Form.Text>{t('form.fields.section.hint')}</Form.Text>
+              </Form.Group>
+            )}
             <Form.Group controlId="title" className="mb-3">
               <Form.Label>{t('form.fields.title.label')}</Form.Label>
               <Form.Control
@@ -515,6 +582,7 @@ const Ask = () => {
                 showRequiredTag
                 maxTagLength={5}
                 isInvalid={formData.tags.isInvalid}
+                formText={t('form.fields.tags.hint')}
                 errMsg={formData.tags.errorMsg}
               />
             </Form.Group>

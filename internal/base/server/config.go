@@ -21,7 +21,8 @@ package server
 
 // HTTP http config
 type HTTP struct {
-	Addr string `json:"addr" mapstructure:"addr"`
+	Addr           string   `json:"addr" mapstructure:"addr" yaml:"addr"`
+	TrustedProxies []string `json:"trusted_proxies" mapstructure:"trusted_proxies" yaml:"trusted_proxies"`
 }
 
 // UI ui config

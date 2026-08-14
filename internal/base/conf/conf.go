@@ -21,8 +21,11 @@ package conf
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
+	"strings"
 
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/base/path"
@@ -50,6 +53,15 @@ type envConfigOverrides struct {
 	SwaggerHost        string
 	SwaggerAddressPort string
 	SiteAddr           string
+	TrustedProxies     string
+	CacheType          string
+	RedisHost          string
+	RedisPort          string
+	RedisUsername      string
+	RedisPassword      string
+	RedisDB            string
+	RedisKeyPrefix     string
+	RedisPoolSize      string
 }
 
 func loadEnvs() (envOverrides *envConfigOverrides) {
@@ -57,6 +69,15 @@ func loadEnvs() (envOverrides *envConfigOverrides) {
 		SwaggerHost:        os.Getenv("SWAGGER_HOST"),
 		SwaggerAddressPort: os.Getenv("SWAGGER_ADDRESS_PORT"),
 		SiteAddr:           os.Getenv("SITE_ADDR"),
+		TrustedProxies:     os.Getenv("TRUSTED_PROXIES"),
+		CacheType:          os.Getenv("CACHE_TYPE"),
+		RedisHost:          os.Getenv("REDIS_HOST"),
+		RedisPort:          os.Getenv("REDIS_PORT"),
+		RedisUsername:      os.Getenv("REDIS_USERNAME"),
+		RedisPassword:      os.Getenv("REDIS_PASSWORD"),
+		RedisDB:            os.Getenv("REDIS_DB"),
+		RedisKeyPrefix:     os.Getenv("REDIS_KEY_PREFIX"),
+		RedisPoolSize:      os.Getenv("REDIS_POOL_SIZE"),
 	}
 }
 
@@ -77,15 +98,59 @@ type Data struct {
 
 // SetDefault set default config
 func (c *AllConfig) SetDefault() {
+	if c.Server == nil {
+		c.Server = &Server{}
+	}
+	if c.Server.HTTP == nil {
+		c.Server.HTTP = &server.HTTP{}
+	}
+	if c.Server.HTTP.TrustedProxies == nil {
+		c.Server.HTTP.TrustedProxies = []string{"127.0.0.1", "::1"}
+	}
 	if c.UI == nil {
 		c.UI = &server.UI{}
 	}
+	if c.Data == nil {
+		c.Data = &Data{}
+	}
+	if c.Data.Cache == nil {
+		c.Data.Cache = &data.CacheConf{}
+	}
+
+	// Application configuration defaults to Redis.
+	// Direct NewCache(&CacheConf{}) calls still use Memory for tests.
+	if c.Data.Cache.Type == "" {
+		c.Data.Cache.Type = data.CacheTypeRedis
+	}
+	if c.Data.Cache.Redis.Host == "" {
+		c.Data.Cache.Redis.Host = data.DefaultRedisHost
+	}
+	if c.Data.Cache.Redis.Port == 0 {
+		c.Data.Cache.Redis.Port = data.DefaultRedisPort
+	}
+	if c.Data.Cache.Redis.KeyPrefix == "" {
+		c.Data.Cache.Redis.KeyPrefix = data.DefaultRedisKeyPrefix
+	}
+	if c.Data.Cache.Redis.PoolSize == 0 {
+		c.Data.Cache.Redis.PoolSize = data.DefaultRedisPoolSize
+	}
 }
 
-func (c *AllConfig) SetEnvironmentOverrides() {
+func (c *AllConfig) SetEnvironmentOverrides() error {
 	envs := loadEnvs()
+
 	if envs.SiteAddr != "" {
 		c.Server.HTTP.Addr = envs.SiteAddr
+	}
+	if envs.TrustedProxies != "" {
+		c.Server.HTTP.TrustedProxies = c.Server.HTTP.TrustedProxies[:0]
+		if !strings.EqualFold(strings.TrimSpace(envs.TrustedProxies), "none") {
+			for _, proxy := range strings.Split(envs.TrustedProxies, ",") {
+				if proxy = strings.TrimSpace(proxy); proxy != "" {
+					c.Server.HTTP.TrustedProxies = append(c.Server.HTTP.TrustedProxies, proxy)
+				}
+			}
+		}
 	}
 	if envs.SwaggerHost != "" {
 		c.Swaggerui.Host = envs.SwaggerHost
@@ -93,6 +158,47 @@ func (c *AllConfig) SetEnvironmentOverrides() {
 	if envs.SwaggerAddressPort != "" {
 		c.Swaggerui.Address = envs.SwaggerAddressPort
 	}
+	if envs.CacheType != "" {
+		c.Data.Cache.Type = envs.CacheType
+	}
+	if envs.RedisHost != "" {
+		c.Data.Cache.Redis.Host = envs.RedisHost
+	}
+	if envs.RedisPort != "" {
+		port, err := strconv.Atoi(envs.RedisPort)
+		if err != nil || port < 1 || port > 65535 {
+			return fmt.Errorf("REDIS_PORT must be an integer between 1 and 65535, got %q", envs.RedisPort)
+		}
+		c.Data.Cache.Redis.Port = port
+	}
+	if envs.RedisUsername != "" {
+		c.Data.Cache.Redis.Username = envs.RedisUsername
+	}
+	if envs.RedisPassword != "" {
+		c.Data.Cache.Redis.Password = envs.RedisPassword
+	}
+	if envs.RedisDB != "" {
+		db, err := strconv.Atoi(envs.RedisDB)
+		if err != nil || db < 0 {
+			return fmt.Errorf("REDIS_DB must be a non-negative integer, got %q", envs.RedisDB)
+		}
+		c.Data.Cache.Redis.DB = db
+	}
+	if envs.RedisKeyPrefix != "" {
+		c.Data.Cache.Redis.KeyPrefix = envs.RedisKeyPrefix
+	}
+	if envs.RedisPoolSize != "" {
+		poolSize, err := strconv.Atoi(envs.RedisPoolSize)
+		if err != nil || poolSize <= 0 {
+			return fmt.Errorf(
+				"REDIS_POOL_SIZE must be a positive integer, got %q",
+				envs.RedisPoolSize,
+			)
+		}
+		c.Data.Cache.Redis.PoolSize = poolSize
+	}
+
+	return nil
 }
 
 // ReadConfig read config
@@ -109,7 +215,9 @@ func ReadConfig(configFilePath string) (c *AllConfig, err error) {
 		return nil, err
 	}
 	c.SetDefault()
-	c.SetEnvironmentOverrides()
+	if err = c.SetEnvironmentOverrides(); err != nil {
+		return nil, err
+	}
 	return c, nil
 }
 

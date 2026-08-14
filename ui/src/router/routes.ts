@@ -430,10 +430,6 @@ const routes: RouteNode[] = [
             page: 'pages/Admin/Login',
           },
           {
-            path: 'rules/privileges',
-            page: 'pages/Admin/Privileges',
-          },
-          {
             path: 'installed-plugins',
             page: 'pages/Admin/Plugins/Installed',
           },

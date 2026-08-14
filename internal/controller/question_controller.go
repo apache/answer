@@ -107,7 +107,7 @@ func (qc *QuestionController) RemoveQuestion(ctx *gin.Context) {
 		return
 	}
 	if !can {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 	err = qc.questionService.RemoveQuestion(ctx, req)
@@ -147,11 +147,11 @@ func (qc *QuestionController) OperationQuestion(ctx *gin.Context) {
 	req.CanPin = canList[0]
 	req.CanList = canList[1]
 	if (req.Operation == schema.QuestionOperationPin || req.Operation == schema.QuestionOperationUnPin) && !req.CanPin {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 	if (req.Operation == schema.QuestionOperationHide || req.Operation == schema.QuestionOperationShow) && !req.CanList {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 	err = qc.questionService.OperationQuestion(ctx, req)
@@ -181,7 +181,7 @@ func (qc *QuestionController) CloseQuestion(ctx *gin.Context) {
 		return
 	}
 	if !can {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 
@@ -212,7 +212,7 @@ func (qc *QuestionController) ReopenQuestion(ctx *gin.Context) {
 		return
 	}
 	if !can {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 
@@ -399,7 +399,7 @@ func (qc *QuestionController) AddQuestion(ctx *gin.Context) {
 	}()
 
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
-	canList, requireRanks, err := qc.rankService.CheckOperationPermissionsForRanks(ctx, req.UserID, []string{
+	canList, _, err := qc.rankService.CheckOperationPermissionsForRanks(ctx, req.UserID, []string{
 		permission.QuestionAdd,
 		permission.QuestionEdit,
 		permission.QuestionDelete,
@@ -415,6 +415,7 @@ func (qc *QuestionController) AddQuestion(ctx *gin.Context) {
 	}
 	linkUrlLimitUser := canList[7]
 	isAdmin := middleware.GetUserIsAdminModerator(ctx)
+	req.IsAdmin = middleware.GetIsAdminFromContext(ctx)
 	if !isAdmin || !linkUrlLimitUser {
 		captchaPass := qc.actionService.ActionRecordVerifyCaptcha(ctx, entity.CaptchaActionQuestion, req.UserID, req.CaptchaID, req.CaptchaCode)
 		if !captchaPass {
@@ -435,7 +436,7 @@ func (qc *QuestionController) AddQuestion(ctx *gin.Context) {
 	req.CanUseReservedTag = canList[5]
 	req.CanAddTag = canList[6]
 	if !req.CanAdd {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 
@@ -446,9 +447,7 @@ func (qc *QuestionController) AddQuestion(ctx *gin.Context) {
 		return
 	}
 	if !req.CanAddTag && hasNewTag {
-		lang := handler.GetLangByCtx(ctx)
-		msg := translator.TrWithData(lang, reason.NoEnoughRankToOperate, &schema.PermissionTrTplData{Rank: requireRanks[6]})
-		handler.HandleResponse(ctx, errors.Forbidden(reason.NoEnoughRankToOperate).WithMsg(msg), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 
@@ -520,6 +519,7 @@ func (qc *QuestionController) AddQuestionByAnswer(ctx *gin.Context) {
 
 	linkUrlLimitUser := canList[6]
 	isAdmin := middleware.GetUserIsAdminModerator(ctx)
+	req.IsAdmin = middleware.GetIsAdminFromContext(ctx)
 	if !isAdmin || !linkUrlLimitUser {
 		captchaPass := qc.actionService.ActionRecordVerifyCaptcha(ctx, entity.CaptchaActionQuestion, req.UserID, req.CaptchaID, req.CaptchaCode)
 		if !captchaPass {
@@ -538,7 +538,7 @@ func (qc *QuestionController) AddQuestionByAnswer(ctx *gin.Context) {
 	req.CanReopen = canList[4]
 	req.CanUseReservedTag = canList[5]
 	if !req.CanAdd {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 	questionReq := new(schema.QuestionAdd)
@@ -628,7 +628,7 @@ func (qc *QuestionController) UpdateQuestion(ctx *gin.Context) {
 	}
 	req.ID = uid.DeShortID(req.ID)
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
-	canList, requireRanks, err := qc.rankService.CheckOperationPermissionsForRanks(ctx, req.UserID, []string{
+	canList, _, err := qc.rankService.CheckOperationPermissionsForRanks(ctx, req.UserID, []string{
 		permission.QuestionEdit,
 		permission.QuestionDelete,
 		permission.QuestionEditWithoutReview,
@@ -661,7 +661,7 @@ func (qc *QuestionController) UpdateQuestion(ctx *gin.Context) {
 	req.CanUseReservedTag = canList[3]
 	req.CanAddTag = canList[4]
 	if !req.CanEdit {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 
@@ -682,9 +682,7 @@ func (qc *QuestionController) UpdateQuestion(ctx *gin.Context) {
 		return
 	}
 	if !req.CanAddTag && hasNewTag {
-		lang := handler.GetLangByCtx(ctx)
-		msg := translator.TrWithData(lang, reason.NoEnoughRankToOperate, &schema.PermissionTrTplData{Rank: requireRanks[4]})
-		handler.HandleResponse(ctx, errors.Forbidden(reason.NoEnoughRankToOperate).WithMsg(msg), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 
@@ -730,7 +728,7 @@ func (qc *QuestionController) QuestionRecover(ctx *gin.Context) {
 		return
 	}
 	if !canList[0] {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 
@@ -783,7 +781,7 @@ func (qc *QuestionController) UpdateQuestionInviteUser(ctx *gin.Context) {
 
 	req.CanInviteOtherToAnswer = canList[0]
 	if !req.CanInviteOtherToAnswer {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 	err = qc.questionService.UpdateQuestionInviteUser(ctx, req)

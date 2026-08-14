@@ -23,7 +23,6 @@ import (
 	"context"
 
 	"github.com/apache/answer/internal/base/data"
-	"github.com/apache/answer/internal/base/translator"
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/activity_common"
@@ -77,25 +76,18 @@ func NewExternalNotificationService(
 }
 
 func (ns *ExternalNotificationService) Handler(ctx context.Context, msg *schema.ExternalNotificationMsg) error {
-	log.Debugf("try to send external notification %+v", msg)
+	log.Debugf("content email notifications are disabled, handling external notification %+v", msg)
 
-	// If receiver not set language, use site default language.
-	if len(msg.ReceiverLang) == 0 || msg.ReceiverLang == translator.DefaultLangOption {
-		if interfaceInfo, _ := ns.siteInfoService.GetSiteInterface(ctx); interfaceInfo != nil {
-			msg.ReceiverLang = interfaceInfo.Language
-		}
-	}
+	// Content activity is delivered through the in-app notification queue.
+	// Keep plugin notifications for new questions, but never send content emails.
 	if msg.NewQuestionTemplateRawData != nil {
-		return ns.handleNewQuestionNotification(ctx, msg)
+		ns.syncNewQuestionNotificationToPlugin(ctx, msg)
+		return nil
 	}
-	if msg.NewCommentTemplateRawData != nil {
-		return ns.handleNewCommentNotification(ctx, msg)
-	}
-	if msg.NewAnswerTemplateRawData != nil {
-		return ns.handleNewAnswerNotification(ctx, msg)
-	}
-	if msg.NewInviteAnswerTemplateRawData != nil {
-		return ns.handleInviteAnswerNotification(ctx, msg)
+	if msg.NewCommentTemplateRawData != nil ||
+		msg.NewAnswerTemplateRawData != nil ||
+		msg.NewInviteAnswerTemplateRawData != nil {
+		return nil
 	}
 	log.Errorf("unknown notification message: %+v", msg)
 	return nil

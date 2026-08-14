@@ -23,7 +23,6 @@ import { Link } from 'react-router-dom';
 import classnames from 'classnames';
 
 import { Avatar, FormatTime } from '@/components';
-import { formatCount } from '@/utils';
 
 interface Props {
   data: any;
@@ -97,9 +96,6 @@ const Index: FC<Props> = ({
           ) : (
             <span className="me-1 text-break">{data?.display_name}</span>
           )}
-          <span className="fw-bold" title="Reputation">
-            {formatCount(data?.rank)}
-          </span>
         </div>
         {time &&
           (isLogged ? (

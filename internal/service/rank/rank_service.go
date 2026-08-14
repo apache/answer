@@ -43,9 +43,29 @@ import (
 	"xorm.io/xorm"
 )
 
-const (
-	PermissionPrefix = "rank."
-)
+// isMemberPermission reports whether an available signed-in user can perform
+// the action without relying on reputation. Ownership and staff permissions
+// are checked separately.
+func isMemberPermission(action string) bool {
+	switch action {
+	case permission.QuestionAdd,
+		permission.QuestionVoteUp,
+		permission.QuestionVoteDown,
+		permission.AnswerAdd,
+		permission.AnswerVoteUp,
+		permission.AnswerVoteDown,
+		permission.AnswerInviteSomeoneToAnswer,
+		permission.CommentAdd,
+		permission.CommentVoteUp,
+		permission.CommentVoteDown,
+		permission.ReportAdd,
+		permission.TagAdd,
+		permission.VoteDetail:
+		return true
+	default:
+		return false
+	}
+}
 
 type UserRankRepo interface {
 	GetMaxDailyRank(ctx context.Context) (maxDailyRank int, err error)
@@ -92,7 +112,7 @@ func (rs *RankService) CheckOperationPermission(ctx context.Context, userID stri
 	}
 
 	// get the rank of the current user
-	userInfo, exist, err := rs.userCommon.GetUserBasicInfoByID(ctx, userID)
+	_, exist, err := rs.userCommon.GetUserBasicInfoByID(ctx, userID)
 	if err != nil {
 		return false, err
 	}
@@ -115,9 +135,7 @@ func (rs *RankService) CheckOperationPermission(ctx context.Context, userID stri
 			return true, nil
 		}
 	}
-
-	can, _ = rs.checkUserRank(ctx, userInfo.ID, userInfo.Rank, PermissionPrefix+action)
-	return can, nil
+	return isMemberPermission(action), nil
 }
 
 // CheckOperationPermissionsForRanks verify that the user has permission
@@ -130,7 +148,7 @@ func (rs *RankService) CheckOperationPermissionsForRanks(ctx context.Context, us
 	}
 
 	// get the rank of the current user
-	userInfo, exist, err := rs.userCommon.GetUserBasicInfoByID(ctx, userID)
+	_, exist, err := rs.userCommon.GetUserBasicInfoByID(ctx, userID)
 	if err != nil {
 		return can, requireRanks, err
 	}
@@ -144,9 +162,7 @@ func (rs *RankService) CheckOperationPermissionsForRanks(ctx context.Context, us
 			can[idx] = true
 			continue
 		}
-		meetRank, requireRank := rs.checkUserRank(ctx, userInfo.ID, userInfo.Rank, PermissionPrefix+action)
-		can[idx] = meetRank
-		requireRanks[idx] = requireRank
+		can[idx] = isMemberPermission(action)
 	}
 	return can, requireRanks, nil
 }
@@ -175,14 +191,14 @@ func (rs *RankService) CheckOperationObjectOwner(ctx context.Context, userID, ob
 }
 
 // CheckVotePermission verify that the user has vote permission
-func (rs *RankService) CheckVotePermission(ctx context.Context, userID, objectID string, voteUp bool) (
+func (rs *RankService) CheckVotePermission(ctx context.Context, userID, objectID string, _ bool) (
 	can bool, needRank int, err error) {
 	if len(userID) == 0 || len(objectID) == 0 {
 		return false, 0, nil
 	}
 
 	// get the rank of the current user
-	userInfo, exist, err := rs.userCommon.GetUserBasicInfoByID(ctx, userID)
+	_, exist, err := rs.userCommon.GetUserBasicInfoByID(ctx, userID)
 	if err != nil {
 		return can, 0, err
 	}
@@ -193,33 +209,16 @@ func (rs *RankService) CheckVotePermission(ctx context.Context, userID, objectID
 	if err != nil {
 		return can, 0, err
 	}
-	action := ""
 	switch objectInfo.ObjectType {
 	case constant.QuestionObjectType:
-		if voteUp {
-			action = permission.QuestionVoteUp
-		} else {
-			action = permission.QuestionVoteDown
-		}
-	case constant.AnswerObjectType:
-		if voteUp {
-			action = permission.AnswerVoteUp
-		} else {
-			action = permission.AnswerVoteDown
-		}
-	case constant.CommentObjectType:
-		if voteUp {
-			action = permission.CommentVoteUp
-		} else {
-			action = permission.CommentVoteDown
-		}
-	}
-	powerMapping := rs.getUserPowerMapping(ctx, userID)
-	if powerMapping[action] {
 		return true, 0, nil
+	case constant.AnswerObjectType:
+		return true, 0, nil
+	case constant.CommentObjectType:
+		return true, 0, nil
+	default:
+		return false, 0, nil
 	}
-	can, needRank = rs.checkUserRank(ctx, userInfo.ID, userInfo.Rank, PermissionPrefix+action)
-	return can, needRank, nil
 }
 
 // getUserPowerMapping get user power mapping
@@ -240,23 +239,6 @@ func (rs *RankService) getUserPowerMapping(ctx context.Context, userID string) (
 		powerMapping[power] = true
 	}
 	return powerMapping
-}
-
-// checkUserRank verify that the user meets the prestige criteria
-func (rs *RankService) checkUserRank(ctx context.Context, userID string, userRank int, action string) (
-	can bool, rank int) {
-	// get the amount of rank required for the current operation
-	requireRank, err := rs.configService.GetIntValue(ctx, action)
-	if err != nil {
-		log.Error(err)
-		return false, requireRank
-	}
-	if userRank < requireRank || requireRank < 0 {
-		log.Debugf("user %s want to do action %s, but rank %d < %d",
-			userID, action, userRank, requireRank)
-		return false, requireRank
-	}
-	return true, requireRank
 }
 
 // GetRankPersonalPage get personal comment list page

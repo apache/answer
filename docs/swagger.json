@@ -4222,6 +4222,41 @@
                 }
             }
         },
+        "/answer/api/v1/forum/sections": {
+            "get": {
+                "description": "returns parent sections and their child sections",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Forum Section"
+                ],
+                "summary": "list campus forum sections",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.RespBody"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/schema.ForumSectionResp"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/answer/api/v1/language/config": {
             "get": {
                 "description": "get language config mapping",
@@ -7972,6 +8007,58 @@
                 }
             }
         },
+        "/answer/api/v1/user/register/email/code": {
+            "post": {
+                "description": "Sends a six-digit registration code after captcha and rate-limit checks",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Send registration email verification code",
+                "parameters": [
+                    {
+                        "description": "UserRegisterEmailCodeReq",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.UserRegisterEmailCodeReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.RespBody"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.RespBody"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.RetryAfterResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/answer/api/v1/user/staff": {
             "get": {
                 "description": "get user staff",
@@ -9540,6 +9627,32 @@
                 }
             }
         },
+        "schema.ForumSectionResp": {
+            "type": "object",
+            "properties": {
+                "admin_only": {
+                    "type": "boolean"
+                },
+                "children": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.ForumSectionResp"
+                    }
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "parent_id": {
+                    "type": "integer"
+                },
+                "slug": {
+                    "type": "string"
+                }
+            }
+        },
         "schema.GetAIModelResp": {
             "type": "object",
             "properties": {
@@ -10957,6 +11070,7 @@
         "schema.QuestionAdd": {
             "type": "object",
             "required": [
+                "section_id",
                 "title"
             ],
             "properties": {
@@ -10972,6 +11086,11 @@
                     "type": "string",
                     "maxLength": 65535,
                     "minLength": 0
+                },
+                "section_id": {
+                    "description": "campus forum section (leaf section only)",
+                    "type": "integer",
+                    "minimum": 1
                 },
                 "tags": {
                     "description": "tags",
@@ -10992,6 +11111,7 @@
             "type": "object",
             "required": [
                 "answer_content",
+                "section_id",
                 "title"
             ],
             "properties": {
@@ -11018,6 +11138,10 @@
                     "items": {
                         "type": "string"
                     }
+                },
+                "section_id": {
+                    "type": "integer",
+                    "minimum": 1
                 },
                 "tags": {
                     "description": "tags",
@@ -11104,6 +11228,9 @@
                 "pin": {
                     "type": "integer"
                 },
+                "section_id": {
+                    "type": "integer"
+                },
                 "show": {
                     "type": "integer"
                 },
@@ -11172,6 +11299,10 @@
                     "type": "integer",
                     "minimum": 1
                 },
+                "section": {
+                    "type": "string",
+                    "maxLength": 50
+                },
                 "tag": {
                     "type": "string",
                     "maxLength": 100
@@ -11222,6 +11353,9 @@
                 },
                 "pin": {
                     "description": "1: unpin, 2: pin",
+                    "type": "integer"
+                },
+                "section_id": {
                     "type": "integer"
                 },
                 "show": {
@@ -11499,6 +11633,14 @@
             "properties": {
                 "question_id": {
                     "type": "string"
+                }
+            }
+        },
+        "schema.RetryAfterResp": {
+            "type": "object",
+            "properties": {
+                "retry_after": {
+                    "type": "integer"
                 }
             }
         },
@@ -13348,12 +13490,10 @@
                 }
             }
         },
-        "schema.UserRegisterReq": {
+        "schema.UserRegisterEmailCodeReq": {
             "type": "object",
             "required": [
-                "e_mail",
-                "name",
-                "pass"
+                "e_mail"
             ],
             "properties": {
                 "captcha_code": {
@@ -13365,6 +13505,25 @@
                 "e_mail": {
                     "type": "string",
                     "maxLength": 500
+                }
+            }
+        },
+        "schema.UserRegisterReq": {
+            "type": "object",
+            "required": [
+                "e_mail",
+                "email_code",
+                "name",
+                "pass",
+                "pass_confirm"
+            ],
+            "properties": {
+                "e_mail": {
+                    "type": "string",
+                    "maxLength": 500
+                },
+                "email_code": {
+                    "type": "string"
                 },
                 "name": {
                     "type": "string",
@@ -13372,6 +13531,11 @@
                     "minLength": 2
                 },
                 "pass": {
+                    "type": "string",
+                    "maxLength": 32,
+                    "minLength": 8
+                },
+                "pass_confirm": {
                     "type": "string",
                     "maxLength": 32,
                     "minLength": 8

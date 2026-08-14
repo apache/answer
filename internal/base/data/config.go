@@ -19,6 +19,16 @@
 
 package data
 
+const (
+	CacheTypeMemory = "memory"
+	CacheTypeRedis  = "redis"
+
+	DefaultRedisHost      = "127.0.0.1"
+	DefaultRedisPort      = 6379
+	DefaultRedisKeyPrefix = "hnu-forum:"
+	DefaultRedisPoolSize  = 20
+)
+
 // Database database config
 type Database struct {
 	Driver          string `json:"driver" mapstructure:"driver" yaml:"driver"`
@@ -30,5 +40,18 @@ type Database struct {
 
 // CacheConf cache
 type CacheConf struct {
-	FilePath string `json:"file_path" mapstructure:"file_path" yaml:"file_path"`
+	Type     string         `json:"type" mapstructure:"type" yaml:"type"`
+	FilePath string         `json:"file_path" mapstructure:"file_path" yaml:"file_path,omitempty"`
+	Redis    RedisCacheConf `json:"redis" mapstructure:"redis" yaml:"redis"`
+}
+
+// RedisCacheConf configures Redis as the shared application cache.
+type RedisCacheConf struct {
+	Host      string `json:"host" mapstructure:"host" yaml:"host"`
+	Port      int    `json:"port" mapstructure:"port" yaml:"port"`
+	Username  string `json:"username" mapstructure:"username" yaml:"username,omitempty"`
+	Password  string `json:"password" mapstructure:"password" yaml:"password,omitempty"`
+	DB        int    `json:"db" mapstructure:"db" yaml:"db"`
+	KeyPrefix string `json:"key_prefix" mapstructure:"key_prefix" yaml:"key_prefix"`
+	PoolSize  int    `json:"pool_size" mapstructure:"pool_size" yaml:"pool_size,omitempty"`
 }

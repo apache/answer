@@ -1,0 +1,63 @@
+.campus-section-nav {
+  width: 100%;
+
+  .accordion {
+    --bs-accordion-border-width: 0;
+    --bs-accordion-bg: transparent;
+    --bs-accordion-btn-bg: transparent;
+    --bs-accordion-active-bg: transparent;
+    --bs-accordion-active-color: var(--an-side-nav-link-hover-color);
+  }
+
+  .campus-section-group {
+    border: 0;
+    background: transparent;
+  }
+
+  .accordion-button {
+    padding: 0.5rem 1rem;
+    border-radius: var(--bs-border-radius);
+    color: var(--an-side-nav-link);
+    font-size: 1rem;
+    box-shadow: none;
+  }
+
+  .accordion-button:hover {
+    color: var(--an-side-nav-link-hover-color);
+    background-color: var(--bs-gray-100);
+  }
+
+  .accordion-button::after {
+    width: 0.8rem;
+    height: 0.8rem;
+    background-size: 0.8rem;
+  }
+
+  .accordion-body {
+    padding: 0 0 0.35rem 2.5rem;
+  }
+
+  .campus-section-link {
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--bs-border-radius);
+    color: var(--an-side-nav-link);
+    text-decoration: none;
+    font-size: 0.875rem;
+  }
+
+  .campus-section-link:hover {
+    color: var(--an-side-nav-link-hover-color);
+    background-color: var(--bs-gray-100);
+  }
+
+  .campus-section-link.active {
+    color: var(--an-side-nav-link-hover-color);
+    background-color: var(--bs-gray-200);
+    font-weight: 600;
+  }
+
+  .campus-section-note {
+    color: var(--bs-secondary-color);
+    font-size: 0.75rem;
+  }
+}

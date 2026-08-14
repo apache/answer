@@ -219,13 +219,12 @@ type UserEmailLoginReq struct {
 
 // UserRegisterReq user register request
 type UserRegisterReq struct {
-	Name                     string `validate:"required,gte=2,lte=30" json:"name"`
-	Email                    string `validate:"required,email,gt=0,lte=500" json:"e_mail" `
-	Pass                     string `validate:"required,gte=8,lte=32" json:"pass"`
-	CaptchaID                string `json:"captcha_id"`
-	CaptchaCode              string `json:"captcha_code"`
-	IP                       string `json:"-" `
-	RequireEmailVerification bool   `json:"-"`
+	Name        string `validate:"required,gte=2,lte=30" json:"name"`
+	Email       string `validate:"required,email,gt=0,lte=500" json:"e_mail"`
+	Pass        string `validate:"required,gte=8,lte=32" json:"pass"`
+	PassConfirm string `validate:"required,gte=8,lte=32" json:"pass_confirm"`
+	EmailCode   string `validate:"required,len=6,numeric" json:"email_code"`
+	IP          string `json:"-"`
 }
 
 func (u *UserRegisterReq) Check() (errFields []*validator.FormErrorField, err error) {
@@ -236,7 +235,25 @@ func (u *UserRegisterReq) Check() (errFields []*validator.FormErrorField, err er
 		})
 		return errFields, err
 	}
+	if u.Pass != u.PassConfirm {
+		errFields = append(errFields, &validator.FormErrorField{
+			ErrorField: "pass_confirm",
+			ErrorMsg:   reason.PasswordConfirmationMismatch,
+		})
+		return errFields, errors.BadRequest(reason.PasswordConfirmationMismatch)
+	}
 	return nil, nil
+}
+
+type UserRegisterEmailCodeReq struct {
+	Email       string `validate:"required,email,gt=0,lte=500" json:"e_mail"`
+	CaptchaID   string `json:"captcha_id"`
+	CaptchaCode string `json:"captcha_code"`
+	IP          string `json:"-"`
+}
+
+type RetryAfterResp struct {
+	RetryAfter int64 `json:"retry_after"`
 }
 
 type UserModifyPasswordReq struct {

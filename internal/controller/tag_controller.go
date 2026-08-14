@@ -108,7 +108,7 @@ func (tc *TagController) RemoveTag(ctx *gin.Context) {
 		return
 	}
 	if !can {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 	err = tc.tagService.RemoveTag(ctx, req)
@@ -140,7 +140,7 @@ func (tc *TagController) AddTag(ctx *gin.Context) {
 		return
 	}
 	if !canList[0] {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 
@@ -174,7 +174,7 @@ func (tc *TagController) UpdateTag(ctx *gin.Context) {
 		return
 	}
 	if !canList[0] {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 	req.NoNeedReview = canList[1]
@@ -212,7 +212,7 @@ func (tc *TagController) RecoverTag(ctx *gin.Context) {
 		return
 	}
 	if !canList[0] {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 
@@ -349,7 +349,7 @@ func (tc *TagController) UpdateTagSynonym(ctx *gin.Context) {
 		return
 	}
 	if !can {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 
@@ -375,7 +375,7 @@ func (tc *TagController) MergeTag(ctx *gin.Context) {
 
 	isAdminModerator := middleware.GetUserIsAdminModerator(ctx)
 	if !isAdminModerator {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 

@@ -64,10 +64,5 @@ func (r *GetPermissionResp) TrTip(lang i18n.Language, requireRank int) {
 	if r.HasPermission {
 		return
 	}
-	if requireRank <= 0 {
-		r.NoPermissionTip = translator.Tr(lang, reason.RankFailToMeetTheCondition)
-	} else {
-		r.NoPermissionTip = translator.TrWithData(
-			lang, reason.NoEnoughRankToOperate, &PermissionTrTplData{Rank: requireRank})
-	}
+	r.NoPermissionTip = translator.Tr(lang, reason.ForbiddenError)
 }

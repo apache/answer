@@ -40,6 +40,7 @@ func (q *QuestionService) RefreshHottestCron(ctx context.Context) {
 			ctx,
 			page, pageSize,
 			[]string{},
+			[]int64{},
 			"", "newest",
 			schema.HotInDays,
 			false, false)

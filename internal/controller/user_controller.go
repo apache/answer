@@ -20,6 +20,7 @@
 package controller
 
 import (
+	"net/http"
 	"net/url"
 
 	"github.com/apache/answer/internal/base/constant"
@@ -41,6 +42,11 @@ import (
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
 )
+
+var registrationEmailDomains = []string{
+	"hainanu.edu.cn",
+	"alumni.hainanu.edu.cn",
+}
 
 // UserController user controller
 type UserController struct {
@@ -275,24 +281,18 @@ func (uc *UserController) UserRegisterByEmail(ctx *gin.Context) {
 	if handler.BindAndCheck(ctx, req) {
 		return
 	}
-	if !checker.EmailInAllowEmailDomain(req.Email, siteInfo.AllowEmailDomains) {
-		handler.HandleResponse(ctx, errors.BadRequest(reason.EmailIllegalDomainError), nil)
+	if !checker.EmailInAllowEmailDomain(req.Email, registrationEmailDomains) {
+		errFields := []*validator.FormErrorField{{
+			ErrorField: "e_mail",
+			ErrorMsg: translator.Tr(
+				handler.GetLangByCtx(ctx),
+				reason.EmailIllegalDomainError,
+			),
+		}}
+		handler.HandleResponse(ctx, errors.BadRequest(reason.EmailIllegalDomainError), errFields)
 		return
 	}
-	req.RequireEmailVerification = siteInfo.RequireEmailVerification
 	req.IP = ctx.ClientIP()
-	isAdmin := middleware.GetUserIsAdminModerator(ctx)
-	if !isAdmin {
-		captchaPass := uc.actionService.ActionRecordVerifyCaptcha(ctx, entity.CaptchaActionEmail, req.IP, req.CaptchaID, req.CaptchaCode)
-		if !captchaPass {
-			errFields := append([]*validator.FormErrorField{}, &validator.FormErrorField{
-				ErrorField: "captcha_code",
-				ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.CaptchaVerificationFailed),
-			})
-			handler.HandleResponse(ctx, errors.BadRequest(reason.CaptchaVerificationFailed), errFields)
-			return
-		}
-	}
 
 	resp, errFields, err := uc.userService.UserRegisterByEmail(ctx, req)
 	if len(errFields) > 0 {
@@ -304,6 +304,81 @@ func (uc *UserController) UserRegisterByEmail(ctx *gin.Context) {
 	} else {
 		handler.HandleResponse(ctx, err, resp)
 	}
+}
+
+// UserRegisterEmailCodeSend godoc
+// @Summary Send registration email verification code
+// @Description Sends a six-digit registration code after captcha and rate-limit checks
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param data body schema.UserRegisterEmailCodeReq true "UserRegisterEmailCodeReq"
+// @Success 200 {object} handler.RespBody
+// @Failure 429 {object} handler.RespBody{data=schema.RetryAfterResp}
+// @Router /answer/api/v1/user/register/email/code [post]
+func (uc *UserController) UserRegisterEmailCodeSend(ctx *gin.Context) {
+	siteInfo, err := uc.siteInfoCommonService.GetSiteLogin(ctx)
+	if err != nil {
+		handler.HandleResponse(ctx, err, nil)
+		return
+	}
+	if !siteInfo.AllowNewRegistrations || !siteInfo.AllowEmailRegistrations {
+		handler.HandleResponse(ctx, errors.BadRequest(reason.NotAllowedRegistration), nil)
+		return
+	}
+
+	req := &schema.UserRegisterEmailCodeReq{}
+	if handler.BindAndCheck(ctx, req) {
+		return
+	}
+	if !checker.EmailInAllowEmailDomain(req.Email, registrationEmailDomains) {
+		errFields := []*validator.FormErrorField{{
+			ErrorField: "e_mail",
+			ErrorMsg: translator.Tr(
+				handler.GetLangByCtx(ctx),
+				reason.EmailIllegalDomainError,
+			),
+		}}
+		handler.HandleResponse(ctx, errors.BadRequest(reason.EmailIllegalDomainError), errFields)
+		return
+	}
+
+	req.IP = ctx.ClientIP()
+	if !uc.actionService.ActionRecordVerifyCaptcha(
+		ctx,
+		entity.CaptchaActionEmail,
+		req.IP,
+		req.CaptchaID,
+		req.CaptchaCode,
+	) {
+		errFields := []*validator.FormErrorField{{
+			ErrorField: "captcha_code",
+			ErrorMsg: translator.Tr(
+				handler.GetLangByCtx(ctx),
+				reason.CaptchaVerificationFailed,
+			),
+		}}
+		handler.HandleResponse(ctx, errors.BadRequest(reason.CaptchaVerificationFailed), errFields)
+		return
+	}
+
+	retryAfter, errFields, err := uc.userService.UserRegisterEmailCodeSend(ctx, req)
+	if len(errFields) > 0 {
+		for _, field := range errFields {
+			field.ErrorMsg = translator.Tr(handler.GetLangByCtx(ctx), field.ErrorMsg)
+		}
+		handler.HandleResponse(ctx, err, errFields)
+		return
+	}
+	if retryAfter > 0 {
+		handler.HandleResponse(
+			ctx,
+			errors.New(http.StatusTooManyRequests, reason.EmailSendTooFrequent),
+			&schema.RetryAfterResp{RetryAfter: retryAfter},
+		)
+		return
+	}
+	handler.HandleResponse(ctx, err, nil)
 }
 
 // UserVerifyEmail godoc

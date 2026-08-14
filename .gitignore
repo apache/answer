@@ -36,3 +36,5 @@ dist/
 
 # Environment variables
 .env
+
+AGENT.md

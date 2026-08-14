@@ -154,6 +154,8 @@ backend:
     password:
       space_invalid:
         other: 密码不得含有空格。
+      confirmation_mismatch:
+        other: 两次输入的密码不一致。
     admin:
       cannot_update_their_password:
         other: 你无法修改自己的密码。
@@ -186,6 +188,10 @@ backend:
     email:
       duplicate:
         other: 邮箱已存在。
+      verification_code_invalid:
+        other: 邮箱验证码错误或已过期。
+      send_too_frequent:
+        other: 邮箱验证码发送过于频繁，请稍后再试。
       need_to_be_verified:
         other: 邮箱需要验证。
       verify_url_expired:
@@ -236,6 +242,11 @@ backend:
         other: 内容不能为空。
       content_less_than_minimum:
         other: 输入的内容不足。
+    forum_section:
+      invalid:
+        other: 请选择有效的校园板块。
+      admin_only:
+        other: 站务公告仅允许管理员发布。
     rank:
       fail_to_meet_the_condition:
         other: 声望值未达到要求。
@@ -517,6 +528,11 @@ backend:
         other: "[{{.SiteName}}] 确认你的新账户"
       body:
         other: "欢迎加入 {{.SiteName}}！<br><br>\n\n请点击以下链接确认并激活你的新账户：<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\n如果上面的链接不能点击，请将其复制并粘贴到你的浏览器地址栏中。\n<br><br>\n\n--<br>\n这是系统自动发送的电子邮件，请勿回复，因为您的回复将不会被看到"
+    register_code:
+      title:
+        other: "[{{.SiteName}}] 注册验证码"
+      body:
+        other: "欢迎加入 {{.SiteName}}！<br><br>\n\n你的注册验证码是：<br>\n<strong style='font-size:24px;letter-spacing:4px'>{{.Code}}</strong><br><br>\n\n验证码在 {{.ExpiresMinutes}} 分钟内有效。如果不是你本人操作，请忽略此邮件。"
     test:
       title:
         other: "[{{.SiteName}}] 测试邮件"
@@ -1136,6 +1152,11 @@ ui:
     no_desc: 此标签无描述。
     more: 更多
     wiki: 维基
+  campus_forum:
+    sections: 校园板块
+    all_sections: 全部帖子
+    admin_only: 管理员发布
+    last_30_days: 最近 30 天
   ask:
     title: 创建问题
     edit_title: 编辑问题
@@ -1144,11 +1165,17 @@ ui:
     similar_questions: 相似问题
     form:
       fields:
+        section:
+          label: 校园板块
+          placeholder: 请选择发帖板块
+          hint: 帖子发布后会展示在所选板块中。
+          msg:
+            empty: 请选择一个校园板块
         revision:
           label: 修订版本
         title:
           label: 标题
-          placeholder: 你的主题是什么？请具体说明。
+          placeholder: 请输入帖子标题
           msg:
             empty: 标题不能为空。
             range: 标题最多 150 个字符
@@ -1160,7 +1187,8 @@ ui:
             optional_body: 描述这个问题是什么。
             minimum_characters: "详细描述这个问题，至少需要 {{min_content_length}} 字符。"
         tags:
-          label: 标签
+          label: 标签（选填）
+          hint: 建议尽量添加相关标签，方便其他用户发现和浏览帖子。
           msg:
             empty: 必须选择一个标签
         answer:
@@ -1171,10 +1199,10 @@ ui:
           label: 编辑备注
           placeholder: >-
             简单描述更改原因（更正拼写、修复语法、改进格式）
-    btn_post_question: 提交问题
+    btn_post_question: 发布帖子
     btn_save_edits: 保存更改
     answer_question: 回答自己的问题
-    post_question&answer: 提交问题和回答
+    post_question&answer: 发布帖子和回答
   tag_selector:
     add_btn: 添加标签
     create_btn: 创建新标签
@@ -1183,10 +1211,10 @@ ui:
     hint_zero_tags: 描述您的内容与什么有关。
     hint_more_than_one_tag: "描述您的内容是关于什么，至少需要{{min_tags_number}}个标签。"
     no_result: 没有匹配的标签
-    tag_required_text: 必选标签（至少一个）
+    tag_required_text: 推荐标签
   header:
     nav:
-      question: 问题
+      question: 首页
       tag: 标签
       user: 用户
       badges: 徽章
@@ -1238,11 +1266,29 @@ ui:
       label: 邮箱
       msg:
         empty: 邮箱不能为空
+        invalid: 请输入有效的邮箱地址
+        domain: 仅支持 hainanu.edu.cn 学生邮箱和 alumni.hainanu.edu.cn 校友邮箱
     password:
       label: 密码
       msg:
         empty: 密码不能为空
+        range: 密码长度必须在 8 至 32 个字符之间
         different: 两次输入密码不一致
+    password_confirm:
+      label: 确认密码
+      msg:
+        empty: 请再次输入密码
+        different: 两次输入密码不一致
+    verification_code:
+      label: 邮箱验证码
+      placeholder: 请输入 6 位验证码
+      send: 发送验证码
+      sending: 发送中...
+      resend: "{{seconds}} 秒后重发"
+      sent: 验证码已发送，请检查邮箱
+      msg:
+        empty: 邮箱验证码不能为空
+        invalid: 请输入 6 位数字验证码
   account_forgot:
     page_title: 忘记密码
     btn_name: 发送恢复邮件
@@ -1330,7 +1376,8 @@ ui:
         label: 位置
         placeholder: "城市，国家"
     notification:
-      heading: 邮件通知
+      heading: 消息通知
+      email_disabled: 回复、评论、提及和邀请等消息仅通过站内通知展示，不会发送邮件。
       turn_on: 开启
       inbox:
         label: 收件箱通知
@@ -1582,18 +1629,18 @@ ui:
     save: 保存
     follow_tag_tip: 关注标签来筛选你的问题列表。
     hot_questions: 热门问题
-    all_questions: 全部问题
+    all_questions: 校园帖子
     x_questions: "{{ count }} 个问题"
     x_answers: "{{ count }} 个回答"
     x_posts: "{{ count }} 个帖子"
     questions: 问题
     answers: 回答
-    newest: 最新
-    active: 活跃
+    newest: 最新发表
+    active: 最新回复
     hot: 热门
     frequent: 频繁的
     recommend: 推荐
-    score: 评分
+    score: 点赞热门
     unanswered: 未回答
     modified: 更新于
     answered: 回答于
@@ -2353,7 +2400,7 @@ ui:
     proposed: 提案
     question_edit: 问题编辑
     answer_edit: 回答编辑
-    tag_edit: '标签管理: 编辑标签'
+    tag_edit: "标签管理: 编辑标签"
     edit_summary: 编辑备注
     edit_question: 编辑问题
     edit_answer: 编辑回答
@@ -2382,7 +2429,7 @@ ui:
     upvote: 点赞
     accept: 采纳
     cancelled: 已取消
-    commented: '评论:'
+    commented: "评论:"
     rollback: 回滚
     edited: 最后编辑于
     answered: 回答于
@@ -2446,5 +2493,3 @@ ui:
     copy: 复制到剪贴板
     copied: 已复制
     external_content_warning: 外部图像/媒体未显示。
-
-

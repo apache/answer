@@ -18,12 +18,25 @@
 server:
   http:
     addr: 0.0.0.0:80
+    # Trust only the reverse proxy that directly connects to Answer.
+    trusted_proxies:
+      - 127.0.0.1
+      - ::1
 data:
   database:
     driver: "sqlite3"
     connection: "/data/sqlite3/answer.db"
   cache:
+    type: "redis"
     file_path: "/data/cache/cache.db"
+    redis:
+      host: "127.0.0.1"
+      port: 6379
+      username: ""
+      password: ""
+      db: 0
+      key_prefix: "hnu-forum:"
+      pool_size: 20
 i18n:
   bundle_dir: "/data/i18n"
 swaggerui:
@@ -41,4 +54,3 @@ ui:
   api_url: '/'
   base_url: ''
   api_base_url: ''
-

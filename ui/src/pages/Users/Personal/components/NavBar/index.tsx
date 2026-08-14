@@ -47,10 +47,6 @@ const list = [
     name: 'bookmarks',
   },
   {
-    path: '/reputation',
-    name: 'reputation',
-  },
-  {
     path: '/comments',
     name: 'comments',
   },

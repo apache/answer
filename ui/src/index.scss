@@ -80,14 +80,17 @@ img[src=''] {
   }
 }
 
-.unread-dot {
-  width: 18px;
+.unread-count {
+  min-width: 18px;
   height: 18px;
-  border-radius: 50%;
   position: absolute;
-  left: 15px;
-  top: 0;
+  left: 17px;
+  top: -4px;
+  padding: 0 5px;
   border: 1px solid #fff;
+  font-size: 0.625rem;
+  line-height: 16px;
+  text-align: center;
 }
 
 .badge-tag {

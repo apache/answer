@@ -155,6 +155,8 @@ backend:
     password:
       space_invalid:
         other: Password cannot contain spaces.
+      confirmation_mismatch:
+        other: The two passwords do not match.
     admin:
       cannot_update_their_password:
         other: You cannot modify your password.
@@ -187,6 +189,10 @@ backend:
     email:
       duplicate:
         other: Email already exists.
+      verification_code_invalid:
+        other: The email verification code is invalid or has expired.
+      send_too_frequent:
+        other: Email verification codes are being sent too frequently. Please try again later.
       need_to_be_verified:
         other: Email should be verified.
       verify_url_expired:
@@ -237,6 +243,11 @@ backend:
         other: Content cannot be empty.
       content_less_than_minimum:
         other: Not enough content entered.
+    forum_section:
+      invalid:
+        other: Please select a valid campus section.
+      admin_only:
+        other: Only administrators can publish site announcements.
     rank:
       fail_to_meet_the_condition:
         other: Reputation rank fail to meet the condition.
@@ -518,6 +529,11 @@ backend:
         other: "[{{.SiteName}}] Confirm your new account"
       body:
         other: "Welcome to {{.SiteName}}!<br><br>\n\nClick the following link to confirm and activate your new account:<br>\n<a href='{{.RegisterUrl}}' target='_blank'>{{.RegisterUrl}}</a><br><br>\n\nIf the above link is not clickable, try copying and pasting it into the address bar of your web browser.\n<br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen."
+    register_code:
+      title:
+        other: "[{{.SiteName}}] Registration verification code"
+      body:
+        other: "Welcome to {{.SiteName}}!<br><br>\n\nYour registration verification code is:<br>\n<strong style='font-size:24px;letter-spacing:4px'>{{.Code}}</strong><br><br>\n\nThis code expires in {{.ExpiresMinutes}} minutes. If you did not request it, please ignore this email."
     test:
       title:
         other: "[{{.SiteName}}] Test Email"
@@ -1155,6 +1171,11 @@ ui:
     no_desc: The tag has no description.
     more: More
     wiki: Wiki
+  campus_forum:
+    sections: Campus sections
+    all_sections: All posts
+    admin_only: Admin only
+    last_30_days: Last 30 days
   ask:
     title: Create Question
     edit_title: Edit Question
@@ -1163,11 +1184,17 @@ ui:
     similar_questions: Similar questions
     form:
       fields:
+        section:
+          label: Campus section
+          placeholder: Select a section
+          hint: Your post will appear in the selected campus section.
+          msg:
+            empty: Please select a campus section.
         revision:
           label: Revision
         title:
           label: Title
-          placeholder: What's your topic? Be specific.
+          placeholder: Enter a post title
           msg:
             empty: Title cannot be empty.
             range: Title up to 150 characters
@@ -1179,7 +1206,8 @@ ui:
             optional_body: Describe what the question is about.
             minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
         tags:
-          label: Tags
+          label: Tags (optional)
+          hint: Add relevant tags when possible to help others discover and browse your post.
           msg:
             empty: Tags cannot be empty.
         answer:
@@ -1191,10 +1219,10 @@ ui:
           placeholder: >-
             Briefly explain your changes (corrected spelling, fixed grammar,
             improved formatting)
-    btn_post_question: Post your question
+    btn_post_question: Publish post
     btn_save_edits: Save edits
     answer_question: Answer your own question
-    post_question&answer: Post your question and answer
+    post_question&answer: Publish post and answer
   tag_selector:
     add_btn: Add tag
     create_btn: Create new tag
@@ -1203,10 +1231,10 @@ ui:
     hint_zero_tags: Describe what your content is about.
     hint_more_than_one_tag: "Describe what your content is about, at least {{min_tags_number}} tags are required."
     no_result: No tags matched
-    tag_required_text: Required tag (at least one)
+    tag_required_text: Recommended tags
   header:
     nav:
-      question: Questions
+      question: Home
       tag: Tags
       user: Users
       badges: Badges
@@ -1260,11 +1288,29 @@ ui:
       label: Email
       msg:
         empty: Email cannot be empty.
+        invalid: Please enter a valid email address.
+        domain: Only hainanu.edu.cn and alumni.hainanu.edu.cn email addresses are allowed.
     password:
       label: Password
       msg:
         empty: Password cannot be empty.
+        range: Password must be between 8 and 32 characters.
         different: The passwords entered on both sides are inconsistent
+    password_confirm:
+      label: Confirm password
+      msg:
+        empty: Please enter the password again.
+        different: The two passwords do not match.
+    verification_code:
+      label: Email verification code
+      placeholder: 6-digit code
+      send: Send code
+      sending: Sending...
+      resend: Resend in {{seconds}}s
+      sent: Verification code sent. Please check your email.
+      msg:
+        empty: Verification code cannot be empty.
+        invalid: Please enter the 6-digit verification code.
   account_forgot:
     page_title: Forgot Your Password
     btn_name: Send me recovery email
@@ -1356,7 +1402,8 @@ ui:
         label: Location
         placeholder: "City, Country"
     notification:
-      heading: Email Notifications
+      heading: Notifications
+      email_disabled: Replies, comments, mentions, and invitations are shown only as in-app notifications and are not sent by email.
       turn_on: Turn on
       inbox:
         label: Inbox notifications
@@ -1617,18 +1664,18 @@ ui:
     save: Save
     follow_tag_tip: Follow tags to curate your list of questions.
     hot_questions: Hot Questions
-    all_questions: All Questions
+    all_questions: Campus posts
     x_questions: "{{ count }} Questions"
     x_answers: "{{ count }} answers"
     x_posts: "{{ count }} Posts"
     questions: Questions
     answers: Answers
-    newest: Newest
-    active: Active
+    newest: New posts
+    active: Latest replies
     hot: Hot
     frequent: Frequent
     recommend: Recommend
-    score: Score
+    score: Most liked
     unanswered: Unanswered
     modified: modified
     answered: answered
@@ -2488,4 +2535,3 @@ ui:
     copy: Copy to clipboard
     copied: Copied
     external_content_warning: External images/media are not displayed.
-

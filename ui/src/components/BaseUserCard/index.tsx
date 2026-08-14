@@ -21,13 +21,11 @@ import { memo, FC } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Avatar } from '@/components';
-import { formatCount } from '@/utils';
 
 interface Props {
   data: any;
   showAvatar?: boolean;
   avatarSize?: string;
-  showReputation?: boolean;
   avatarSearchStr?: string;
   className?: string;
   avatarClass?: string;
@@ -41,7 +39,6 @@ const Index: FC<Props> = ({
   avatarSize = '24px',
   className = 'small',
   avatarSearchStr = 's=48',
-  showReputation = true,
   nameMaxWidth = '300px',
 }) => {
   return (
@@ -81,12 +78,6 @@ const Index: FC<Props> = ({
           )}
           <span className="me-1 name-ellipsis">{data?.display_name}</span>
         </>
-      )}
-
-      {showReputation && (
-        <span className="fw-bold" title="Reputation">
-          {formatCount(data?.rank)}
-        </span>
       )}
     </div>
   );

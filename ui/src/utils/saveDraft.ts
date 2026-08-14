@@ -30,6 +30,7 @@ export type QuestionDraft = {
     title: string;
     content: string;
     tags: any[];
+    section_id?: number;
     answer_content: string;
   };
   callback?: () => void;

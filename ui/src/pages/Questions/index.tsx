@@ -28,34 +28,44 @@ import {
   QuestionList,
   HotQuestions,
   CustomSidebar,
+  CampusSectionNav,
 } from '@/components';
 import {
   siteInfoStore,
   loggedUserInfoStore,
   loginSettingStore,
 } from '@/stores';
-import { useQuestionList, useQuestionRecommendList } from '@/services';
+import { useQuestionList } from '@/services';
 import * as Type from '@/common/interface';
 import { userCenter, floppyNavigation } from '@/utils';
-import { QUESTION_ORDER_KEYS } from '@/components/QuestionList';
+
+const CAMPUS_QUESTION_ORDER_KEYS: Type.QuestionOrderBy[] = [
+  'active',
+  'newest',
+  'score',
+];
 
 const Questions: FC = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'question' });
   const { t: t2 } = useTranslation('translation');
+  const { t: tCampus } = useTranslation('translation', {
+    keyPrefix: 'campus_forum',
+  });
   const { user: loggedUser } = loggedUserInfoStore((_) => _);
   const [urlSearchParams] = useSearchParams();
   const curPage = Number(urlSearchParams.get('page')) || 1;
-  const curOrder = (urlSearchParams.get('order') ||
-    QUESTION_ORDER_KEYS[0]) as Type.QuestionOrderBy;
+  const requestedOrder = urlSearchParams.get('order') as Type.QuestionOrderBy;
+  const curOrder = CAMPUS_QUESTION_ORDER_KEYS.includes(requestedOrder)
+    ? requestedOrder
+    : CAMPUS_QUESTION_ORDER_KEYS[0];
   const reqParams: Type.QueryQuestionsReq = {
     page_size: 20,
     page: curPage,
     order: curOrder as Type.QuestionOrderBy,
+    in_days: 30,
+    section: urlSearchParams.get('section') || undefined,
   };
-  const { data: listData, isLoading: listLoading } =
-    curOrder === 'recommend'
-      ? useQuestionRecommendList(reqParams)
-      : useQuestionList(reqParams);
+  const { data: listData, isLoading: listLoading } = useQuestionList(reqParams);
   const isIndexPage = useMatch('/');
   let pageTitle = t('questions', { keyPrefix: 'page_title' });
   let slogan = '';
@@ -70,15 +80,15 @@ const Questions: FC = () => {
   return (
     <Row className="pt-4 mb-5">
       <Col className="page-main flex-auto overflow-x-hidden">
+        <CampusSectionNav mobile />
+        <div className="small text-secondary mb-2">
+          {tCampus('last_30_days')}
+        </div>
         <QuestionList
           source="questions"
           data={listData}
           order={curOrder}
-          orderList={
-            loggedUser.username
-              ? QUESTION_ORDER_KEYS
-              : QUESTION_ORDER_KEYS.filter((key) => key !== 'recommend')
-          }
+          orderList={CAMPUS_QUESTION_ORDER_KEYS}
           isLoading={listLoading}
         />
       </Col>

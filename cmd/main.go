@@ -95,6 +95,9 @@ func runApp() {
 }
 
 func newApplication(serverConf *conf.Server, server *gin.Engine, manager *cron.ScheduledTaskManager) *pacman.Application {
+	if err := server.SetTrustedProxies(serverConf.HTTP.TrustedProxies); err != nil {
+		panic(err)
+	}
 	manager.Run()
 	return pacman.NewApp(
 		pacman.WithName(Name),

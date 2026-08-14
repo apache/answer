@@ -83,6 +83,16 @@ export interface QuestionParams extends ImgCodeReq {
   url_title?: string;
   content: string;
   tags: Tag[];
+  section_id?: number;
+}
+
+export interface ForumSection {
+  id: number;
+  parent_id: number;
+  slug: string;
+  name: string;
+  admin_only: boolean;
+  children: ForumSection[];
 }
 
 export interface QuestionWithAnswer extends QuestionParams {
@@ -112,6 +122,12 @@ export interface LoginReqParams {
 
 export interface RegisterReqParams extends LoginReqParams {
   name: string;
+  pass_confirm: string;
+  email_code: string;
+}
+
+export interface RegisterEmailCodeReq extends ImgCodeReq {
+  e_mail: string;
 }
 
 export interface ModifyPasswordReq {
@@ -308,6 +324,7 @@ export interface QueryQuestionsReq extends Paging {
   order: QuestionOrderBy;
   tag?: string;
   in_days?: number;
+  section?: string;
 }
 
 export type AdminQuestionStatus =

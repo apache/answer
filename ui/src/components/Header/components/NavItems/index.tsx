@@ -34,6 +34,8 @@ interface Props {
   logOut: (e) => void;
 }
 
+const formatUnreadCount = (count = 0) => (count > 99 ? '99+' : count);
+
 const Index: FC<Props> = ({ redDot, userInfo, logOut }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -57,11 +59,12 @@ const Index: FC<Props> = ({ redDot, userInfo, logOut }) => {
           className="icon-link nav-link d-flex align-items-center justify-content-center p-0 me-2 position-relative">
           <Icon name="bell-fill" className="fs-4" />
           {(redDot?.inbox || 0) > 0 && (
-            <div className="unread-dot bg-danger">
+            <span className="unread-count badge rounded-pill bg-danger">
+              {formatUnreadCount(redDot?.inbox)}
               <span className="visually-hidden">
                 {t('new_alerts', { keyPrefix: 'notifications' })}
               </span>
-            </div>
+            </span>
           )}
         </NavLink>
 
@@ -71,11 +74,12 @@ const Index: FC<Props> = ({ redDot, userInfo, logOut }) => {
           className="icon-link nav-link d-flex align-items-center justify-content-center p-0 me-2 position-relative">
           <Icon name="trophy-fill" className="fs-4" />
           {(redDot?.achievement || 0) > 0 && (
-            <div className="unread-dot bg-danger">
+            <span className="unread-count badge rounded-pill bg-danger">
+              {formatUnreadCount(redDot?.achievement)}
               <span className="visually-hidden">
                 {t('new_alerts', { keyPrefix: 'notifications' })}
               </span>
-            </div>
+            </span>
           )}
         </NavLink>
       </Nav>

@@ -21,8 +21,11 @@ package content
 
 import (
 	"context"
+	"crypto/rand"
 	"encoding/json"
 	"fmt"
+	"math/big"
+	"strings"
 	"time"
 
 	"github.com/apache/answer/internal/service/eventqueue"
@@ -43,6 +46,7 @@ import (
 	"github.com/apache/answer/internal/service/auth"
 	"github.com/apache/answer/internal/service/export"
 	"github.com/apache/answer/internal/service/file_record"
+	"github.com/apache/answer/internal/service/registration"
 	"github.com/apache/answer/internal/service/role"
 	"github.com/apache/answer/internal/service/siteinfo_common"
 	usercommon "github.com/apache/answer/internal/service/user_common"
@@ -70,6 +74,7 @@ type UserService struct {
 	questionService               *questioncommon.QuestionCommon
 	eventQueueService             eventqueue.Service
 	fileRecordService             *file_record.FileRecordService
+	registrationSecurityRepo      registration.SecurityRepo
 }
 
 func NewUserService(userRepo usercommon.UserRepo,
@@ -86,6 +91,7 @@ func NewUserService(userRepo usercommon.UserRepo,
 	questionService *questioncommon.QuestionCommon,
 	eventQueueService eventqueue.Service,
 	fileRecordService *file_record.FileRecordService,
+	registrationSecurityRepo registration.SecurityRepo,
 ) *UserService {
 	return &UserService{
 		userCommonService:             userCommonService,
@@ -102,6 +108,7 @@ func NewUserService(userRepo usercommon.UserRepo,
 		questionService:               questionService,
 		eventQueueService:             eventQueueService,
 		fileRecordService:             fileRecordService,
+		registrationSecurityRepo:      registrationSecurityRepo,
 	}
 }
 
@@ -487,6 +494,7 @@ func (us *UserService) UserUpdateInterface(ctx context.Context, req *schema.Upda
 func (us *UserService) UserRegisterByEmail(ctx context.Context, registerUserInfo *schema.UserRegisterReq) (
 	resp *schema.UserLoginResp, errFields []*validator.FormErrorField, err error,
 ) {
+	registerUserInfo.Email = normalizeRegistrationEmail(registerUserInfo.Email)
 	_, has, err := us.userRepo.GetByEmail(ctx, registerUserInfo.Email)
 	if err != nil {
 		return nil, nil, err
@@ -498,14 +506,9 @@ func (us *UserService) UserRegisterByEmail(ctx context.Context, registerUserInfo
 		})
 		return nil, errFields, errors.BadRequest(reason.EmailDuplicate)
 	}
-
 	userInfo := &entity.User{}
 	userInfo.EMail = registerUserInfo.Email
 	userInfo.DisplayName = registerUserInfo.Name
-	userInfo.Pass, err = us.encryptPassword(ctx, registerUserInfo.Pass)
-	if err != nil {
-		return nil, nil, err
-	}
 	userInfo.Username, err = us.userCommonService.MakeUsername(ctx, registerUserInfo.Name)
 	if err != nil {
 		errFields = append(errFields, &validator.FormErrorField{
@@ -514,31 +517,61 @@ func (us *UserService) UserRegisterByEmail(ctx context.Context, registerUserInfo
 		})
 		return nil, errFields, err
 	}
+	userInfo.Pass, err = us.encryptPassword(ctx, registerUserInfo.Pass)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	verificationToken, validCode, err := us.registrationSecurityRepo.VerifyAndLockEmailCode(
+		ctx,
+		registerUserInfo.Email,
+		registerUserInfo.EmailCode,
+	)
+	if err != nil {
+		return nil, nil, err
+	}
+	if !validCode {
+		errFields = append(errFields, &validator.FormErrorField{
+			ErrorField: "email_code",
+			ErrorMsg:   reason.EmailVerificationCodeInvalid,
+		})
+		return nil, errFields, errors.BadRequest(reason.EmailVerificationCodeInvalid)
+	}
+	defer func() {
+		if releaseErr := us.registrationSecurityRepo.ReleaseEmailCodeLock(
+			ctx,
+			registerUserInfo.Email,
+			verificationToken,
+		); releaseErr != nil {
+			log.Errorf("release registration email code lock failed: %v", releaseErr)
+		}
+	}()
+
 	userInfo.IPInfo = registerUserInfo.IP
-	userInfo.MailStatus = entity.EmailStatusToBeVerified
+	userInfo.MailStatus = entity.EmailStatusAvailable
 	userInfo.Status = entity.UserStatusAvailable
 	userInfo.LastLoginDate = time.Now()
 	err = us.userRepo.AddUser(ctx, userInfo)
 	if err != nil {
 		return nil, nil, err
 	}
+	if _, deleteErr := us.registrationSecurityRepo.DeleteEmailCodeIfMatches(
+		ctx,
+		registerUserInfo.Email,
+		registerUserInfo.EmailCode,
+	); deleteErr != nil {
+		// The account already exists at this point. Keep registration successful;
+		// the duplicate-email check prevents the retained code from being reused.
+		log.Errorf("delete registration email code after user creation failed: %v", deleteErr)
+	}
 	if err := us.userNotificationConfigService.SetDefaultUserNotificationConfig(ctx, []string{userInfo.ID}); err != nil {
 		log.Errorf("set default user notification config failed, err: %v", err)
 	}
 
-	err = applyRegistrationVerification(userInfo, registerUserInfo.RequireEmailVerification, registrationVerificationActions{
-		sendActivationEmail: func() error {
-			return us.sendRegistrationActivationEmail(ctx, userInfo)
-		},
-		activateUser: func() error {
-			return us.userActivity.UserActive(ctx, userInfo.ID)
-		},
-		markEmailAvailable: func() error {
-			return us.userRepo.UpdateEmailStatus(ctx, userInfo.ID, entity.EmailStatusAvailable)
-		},
-	})
-	if err != nil {
-		return nil, nil, err
+	if err = us.userActivity.UserActive(ctx, userInfo.ID); err != nil {
+		// UserActive awards registration activity/rank; the verified account is
+		// already valid and should not become unusable when that auxiliary step fails.
+		log.Errorf("record registration activity for verified user failed: %v", err)
 	}
 
 	roleID, err := us.userRoleService.GetUserRole(ctx, userInfo.ID)
@@ -568,6 +601,75 @@ func (us *UserService) UserRegisterByEmail(ctx context.Context, registerUserInfo
 		}
 	}
 	return resp, nil, nil
+}
+
+// UserRegisterEmailCodeSend validates the account and sends a one-time email code.
+func (us *UserService) UserRegisterEmailCodeSend(
+	ctx context.Context,
+	req *schema.UserRegisterEmailCodeReq,
+) (retryAfter int64, errFields []*validator.FormErrorField, err error) {
+	req.Email = normalizeRegistrationEmail(req.Email)
+	_, exists, err := us.userRepo.GetByEmail(ctx, req.Email)
+	if err != nil {
+		return 0, nil, err
+	}
+	if exists {
+		errFields = append(errFields, &validator.FormErrorField{
+			ErrorField: "e_mail",
+			ErrorMsg:   reason.EmailDuplicate,
+		})
+		return 0, errFields, errors.BadRequest(reason.EmailDuplicate)
+	}
+
+	retry, err := us.registrationSecurityRepo.CheckAndRecordSendLimit(ctx, req.Email, req.IP)
+	if err != nil {
+		return 0, nil, err
+	}
+	if retry > 0 {
+		seconds := int64((retry + time.Second - 1) / time.Second)
+		return seconds, nil, errors.New(429, reason.EmailSendTooFrequent)
+	}
+
+	code, err := generateRegistrationEmailCode()
+	if err != nil {
+		return 0, nil, errors.InternalServer(reason.UnknownError).WithError(err).WithStack()
+	}
+	if err = us.registrationSecurityRepo.SaveEmailCode(
+		ctx,
+		req.Email,
+		code,
+		registration.EmailCodeTTL,
+	); err != nil {
+		return 0, nil, err
+	}
+
+	title, body, err := us.emailService.RegisterCodeTemplate(
+		ctx,
+		code,
+		int(registration.EmailCodeTTL/time.Minute),
+	)
+	if err == nil {
+		err = us.emailService.SendWithResult(ctx, req.Email, title, body)
+	}
+	if err != nil {
+		if _, deleteErr := us.registrationSecurityRepo.DeleteEmailCodeIfMatches(ctx, req.Email, code); deleteErr != nil {
+			log.Errorf("delete registration code after email failure: %v", deleteErr)
+		}
+		return 0, nil, errors.InternalServer(reason.UnknownError).WithError(err).WithStack()
+	}
+	return 0, nil, nil
+}
+
+func generateRegistrationEmailCode() (string, error) {
+	value, err := rand.Int(rand.Reader, big.NewInt(1000000))
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("%06d", value.Int64()), nil
+}
+
+func normalizeRegistrationEmail(email string) string {
+	return strings.ToLower(strings.TrimSpace(email))
 }
 
 type registrationVerificationActions struct {

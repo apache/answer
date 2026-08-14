@@ -39,7 +39,9 @@ const Users = () => {
     return null;
   }
 
-  const keys = Object.keys(users);
+  const keys = Object.keys(users).filter(
+    (key) => key !== 'users_with_the_most_reputation',
+  );
   return (
     <Row className="py-4 mb-4 d-flex justify-content-center">
       <Col xxl={12}>
@@ -84,9 +86,7 @@ const Users = () => {
                           {user.display_name}
                         </Link>
                         <div className="text-secondary small">
-                          {key === 'users_with_the_most_vote'
-                            ? `${user.vote_count} ${t('votes')}`
-                            : `${user.rank} ${t('reputation')}`}
+                          {`${user.vote_count} ${t('votes')}`}
                         </div>
                       </div>
                     </div>

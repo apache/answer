@@ -36,6 +36,7 @@ import (
 	"github.com/apache/answer/internal/repo/config"
 	"github.com/apache/answer/internal/repo/export"
 	"github.com/apache/answer/internal/repo/file_record"
+	"github.com/apache/answer/internal/repo/forum_section"
 	"github.com/apache/answer/internal/repo/limit"
 	"github.com/apache/answer/internal/repo/meta"
 	"github.com/apache/answer/internal/repo/notification"
@@ -43,6 +44,7 @@ import (
 	"github.com/apache/answer/internal/repo/question"
 	"github.com/apache/answer/internal/repo/rank"
 	"github.com/apache/answer/internal/repo/reason"
+	"github.com/apache/answer/internal/repo/registration"
 	"github.com/apache/answer/internal/repo/report"
 	"github.com/apache/answer/internal/repo/review"
 	"github.com/apache/answer/internal/repo/revision"
@@ -93,6 +95,7 @@ var ProviderSetRepo = wire.NewSet(
 	search_common.NewSearchRepo,
 	meta.NewMetaRepo,
 	export.NewEmailRepo,
+	registration.NewRegistrationRepo,
 	reason.NewReasonRepo,
 	site_info.NewSiteInfo,
 	notification.NewNotificationRepo,
@@ -111,6 +114,7 @@ var ProviderSetRepo = wire.NewSet(
 	badge_group.NewBadgeGroupRepo,
 	badge_award.NewBadgeAwardRepo,
 	file_record.NewFileRecordRepo,
+	forum_section.NewForumSectionRepo,
 	api_key.NewAPIKeyRepo,
 	ai_conversation.NewAIConversationRepo,
 )

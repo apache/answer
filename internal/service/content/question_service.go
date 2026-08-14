@@ -44,6 +44,7 @@ import (
 	collectioncommon "github.com/apache/answer/internal/service/collection_common"
 	"github.com/apache/answer/internal/service/config"
 	"github.com/apache/answer/internal/service/export"
+	forumsectionservice "github.com/apache/answer/internal/service/forum_section"
 	metacommon "github.com/apache/answer/internal/service/meta_common"
 	"github.com/apache/answer/internal/service/noticequeue"
 	"github.com/apache/answer/internal/service/notification"
@@ -95,6 +96,7 @@ type QuestionService struct {
 	eventQueueService                eventqueue.Service
 	reviewRepo                       review.ReviewRepo
 	vectorSyncService                vector_sync.Service
+	forumSectionService              *forumsectionservice.Service
 }
 
 func NewQuestionService(
@@ -122,6 +124,7 @@ func NewQuestionService(
 	eventQueueService eventqueue.Service,
 	reviewRepo review.ReviewRepo,
 	vectorSyncService vector_sync.Service,
+	forumSectionService *forumsectionservice.Service,
 ) *QuestionService {
 	return &QuestionService{
 		activityRepo:                     activityRepo,
@@ -148,6 +151,7 @@ func NewQuestionService(
 		eventQueueService:                eventQueueService,
 		reviewRepo:                       reviewRepo,
 		vectorSyncService:                vectorSyncService,
+		forumSectionService:              forumSectionService,
 	}
 }
 
@@ -237,7 +241,7 @@ func (qs *QuestionService) CheckAddQuestion(ctx context.Context, req *schema.Que
 	if err != nil {
 		return
 	}
-	if len(req.Tags) < minimumTags {
+	if len(req.Tags) > 0 && len(req.Tags) < minimumTags {
 		errorlist := make([]*validator.FormErrorField, 0)
 		errorlist = append(errorlist, &validator.FormErrorField{
 			ErrorField: "tags",
@@ -305,11 +309,15 @@ func (qs *QuestionService) HasNewTag(ctx context.Context, tags []*schema.TagItem
 
 // AddQuestion add question
 func (qs *QuestionService) AddQuestion(ctx context.Context, req *schema.QuestionAdd) (questionInfo any, err error) {
+	_, err = qs.forumSectionService.ValidatePostingSection(ctx, req.SectionID, req.IsAdmin)
+	if err != nil {
+		return nil, err
+	}
 	minimumTags, err := qs.tagCommon.GetMinimumTags(ctx)
 	if err != nil {
 		return
 	}
-	if len(req.Tags) < minimumTags {
+	if len(req.Tags) > 0 && len(req.Tags) < minimumTags {
 		errorlist := make([]*validator.FormErrorField, 0)
 		errorlist = append(errorlist, &validator.FormErrorField{
 			ErrorField: "tags",
@@ -372,6 +380,7 @@ func (qs *QuestionService) AddQuestion(ctx context.Context, req *schema.Question
 	question := &entity.Question{}
 	now := time.Now()
 	question.UserID = req.UserID
+	question.SectionID = req.SectionID
 	question.Title = req.Title
 	question.OriginalText = req.Content
 	question.ParsedText = req.HTML
@@ -1484,6 +1493,17 @@ func (qs *QuestionService) GetQuestionPage(ctx context.Context, req *schema.Ques
 	}
 	// query by tag condition
 	var tagIDs = make([]string, 0)
+	var sectionIDs = make([]int64, 0)
+	if req.Section != "" {
+		var exists bool
+		sectionIDs, exists, err = qs.forumSectionService.ResolveSectionIDs(ctx, req.Section)
+		if err != nil {
+			return nil, 0, err
+		}
+		if !exists {
+			return questions, 0, nil
+		}
+	}
 	if len(req.Tag) > 0 {
 		tagInfo, exist, err := qs.tagCommon.GetTagBySlugName(ctx, strings.ToLower(req.Tag))
 		if err != nil {
@@ -1518,7 +1538,7 @@ func (qs *QuestionService) GetQuestionPage(ctx context.Context, req *schema.Ques
 	}
 
 	questionList, total, err := qs.questionRepo.GetQuestionPage(ctx, req.Page, req.PageSize,
-		tagIDs, req.UserIDBeSearched, req.OrderCond, req.InDays, showHidden, req.ShowPending)
+		tagIDs, sectionIDs, req.UserIDBeSearched, req.OrderCond, req.InDays, showHidden, req.ShowPending)
 	if err != nil {
 		return nil, 0, err
 	}

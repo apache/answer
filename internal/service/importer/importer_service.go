@@ -23,9 +23,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/apache/answer/internal/base/handler"
 	"github.com/apache/answer/internal/base/reason"
-	"github.com/apache/answer/internal/base/translator"
 	"github.com/apache/answer/internal/base/validator"
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/content"
@@ -104,7 +102,7 @@ func (ip *ImporterService) ImportQuestion(ctx context.Context, questionInfo plug
 			DisplayName: tag,
 		}
 	}
-	canList, requireRanks, err := ip.rankService.CheckOperationPermissionsForRanks(ctx, req.UserID, []string{
+	canList, _, err := ip.rankService.CheckOperationPermissionsForRanks(ctx, req.UserID, []string{
 		permission.QuestionAdd,
 		permission.QuestionEdit,
 		permission.QuestionDelete,
@@ -135,10 +133,7 @@ func (ip *ImporterService) ImportQuestion(ctx context.Context, questionInfo plug
 		return err
 	}
 	if !req.CanAddTag && hasNewTag {
-		lang := handler.GetLangByCtx(ctx.(*gin.Context))
-		msg := translator.TrWithData(lang, reason.NoEnoughRankToOperate, &schema.PermissionTrTplData{Rank: requireRanks[6]})
-		log.Errorf("error: %v", msg)
-		return errors.BadRequest(msg)
+		return errors.BadRequest(reason.ForbiddenError)
 	}
 
 	errList, err := ip.questionService.CheckAddQuestion(ctx, req)

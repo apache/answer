@@ -68,6 +68,7 @@ import BubbleAi from './BubbleAi';
 import BubbleUser from './BubbleUser';
 import Sender from './Sender';
 import TabNav from './TabNav';
+import CampusSectionNav from './CampusSectionNav';
 
 export {
   Avatar,
@@ -123,5 +124,6 @@ export {
   BubbleUser,
   Sender,
   TabNav,
+  CampusSectionNav,
 };
 export type { EditorRef, JSONSchema, UISchema };

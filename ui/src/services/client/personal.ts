@@ -81,10 +81,6 @@ export const usePersonalListByTabName = (params: ListReq, tabName: string) => {
     delete params.order;
     apiUrl = '/answer/api/v1/personal/comment/page';
   }
-  if (tabName === 'reputation') {
-    delete params.order;
-    apiUrl = '/answer/api/v1/personal/rank/page';
-  }
   if (tabName === 'votes') {
     delete params.username;
     apiUrl = '/answer/api/v1/personal/vote/page';

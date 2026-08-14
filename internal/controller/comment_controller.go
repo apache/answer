@@ -117,7 +117,7 @@ func (cc *CommentController) AddComment(ctx *gin.Context) {
 	req.CanEdit = canList[1]
 	req.CanDelete = canList[2]
 	if !req.CanAdd {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 
@@ -166,7 +166,7 @@ func (cc *CommentController) RemoveComment(ctx *gin.Context) {
 		return
 	}
 	if !can {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 
@@ -206,7 +206,7 @@ func (cc *CommentController) UpdateComment(ctx *gin.Context) {
 	req.CanEdit = canList[0] || cc.rankService.CheckOperationObjectOwner(ctx, req.UserID, req.CommentID)
 	linkUrlLimitUser := canList[1]
 	if !req.CanEdit {
-		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
 

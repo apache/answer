@@ -32,8 +32,10 @@ const (
 	EmailTplKeyPassResetTitle = "email_tpl.pass_reset.title"
 	EmailTplKeyPassResetBody  = "email_tpl.pass_reset.body"
 
-	EmailTplKeyRegisterTitle = "email_tpl.register.title"
-	EmailTplKeyRegisterBody  = "email_tpl.register.body"
+	EmailTplKeyRegisterTitle     = "email_tpl.register.title"
+	EmailTplKeyRegisterBody      = "email_tpl.register.body"
+	EmailTplKeyRegisterCodeTitle = "email_tpl.register_code.title"
+	EmailTplKeyRegisterCodeBody  = "email_tpl.register_code.body"
 
 	EmailTplKeyTestTitle = "email_tpl.test.title"
 	EmailTplKeyTestBody  = "email_tpl.test.body"

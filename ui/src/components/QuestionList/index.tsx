@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { ListGroup, Dropdown } from 'react-bootstrap';
 import { NavLink, useSearchParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -39,6 +39,7 @@ import * as Type from '@/common/interface';
 import { useSkeletonControl } from '@/hooks';
 import Storage from '@/utils/storage';
 import { LIST_VIEW_STORAGE_KEY } from '@/common/constants';
+import { useForumSections } from '@/services';
 
 export const QUESTION_ORDER_KEYS: Type.QuestionOrderBy[] = [
   'newest',
@@ -82,6 +83,14 @@ const QuestionList: FC<Props> = ({
   );
 
   const [viewType, setViewType] = useState('card');
+  const { data: forumSections } = useForumSections();
+  const sectionMap = useMemo(() => {
+    const mapping = new Map<number, Type.ForumSection>();
+    forumSections.forEach((parent) => {
+      parent.children.forEach((child) => mapping.set(child.id, child));
+    });
+    return mapping;
+  }, [forumSections]);
 
   const handleViewMode = (key) => {
     Storage.set(LIST_VIEW_STORAGE_KEY, key);
@@ -188,6 +197,14 @@ const QuestionList: FC<Props> = ({
                   )}
 
                   <div className="question-tags mb-12">
+                    {sectionMap.has(li.section_id) ? (
+                      <NavLink
+                        to={`/questions?section=${sectionMap.get(li.section_id)?.slug}`}
+                        className="badge text-bg-primary text-decoration-none me-1"
+                        onClick={(e) => e.stopPropagation()}>
+                        {sectionMap.get(li.section_id)?.name}
+                      </NavLink>
+                    ) : null}
                     {Array.isArray(li.tags)
                       ? li.tags.map((tag, index) => {
                           return (

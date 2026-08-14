@@ -70,19 +70,7 @@ const Achievements = ({ data, handleReadNotification }) => {
             )}>
             {item.object_info.object_type === 'badge_award' ? (
               <div className="icon text-end">👏</div>
-            ) : (
-              <>
-                {item.rank > 0 && (
-                  <div className="text-success num text-end">{`+${item.rank}`}</div>
-                )}
-                {item.rank === 0 && (
-                  <div className="num text-end">{item.rank}</div>
-                )}
-                {item.rank < 0 && (
-                  <div className="text-danger num text-end">{`${item.rank}`}</div>
-                )}
-              </>
-            )}
+            ) : null}
 
             <div className="d-flex flex-column ms-3 flex-fill">
               <Link to={url} onClick={() => handleReadNotification(item.id)}>

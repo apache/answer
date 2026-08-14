@@ -35,6 +35,9 @@ import {
 } from '@/stores';
 import { logout, useQueryNotificationStatus } from '@/services';
 import { Icon, MobileSideNav } from '@/components';
+import Storage from '@/utils/storage';
+import { RouteAlias, BASE_ORIGIN } from '@/router/alias';
+import { REDIRECT_PATH_STORAGE_KEY } from '@/common/constants';
 
 import NavItems from './components/NavItems';
 import SearchInput from './components/SearchInput';
@@ -73,7 +76,8 @@ const Header: FC = () => {
     evt.preventDefault();
     await logout();
     clearUserStore();
-    window.location.replace(window.location.href);
+    Storage.remove(REDIRECT_PATH_STORAGE_KEY);
+    window.location.replace(`${BASE_ORIGIN}${RouteAlias.home}`);
   };
 
   useEffect(() => {

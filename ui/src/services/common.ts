@@ -135,6 +135,12 @@ export const register = (params: Type.RegisterReqParams) => {
   );
 };
 
+export const sendRegisterEmailCode = (params: Type.RegisterEmailCodeReq) => {
+  return request.post('/answer/api/v1/user/register/email/code', params, {
+    timeout: 20000,
+  });
+};
+
 export const logout = () => {
   return request.get('/answer/api/v1/user/logout');
 };

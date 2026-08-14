@@ -48,7 +48,7 @@ func SetDefaultConfig(dbConf *data.Database, cacheConf *data.CacheConf, field *C
 
 	cache, cacheCleanup, err := data.NewCache(cacheConf)
 	if err != nil {
-		fmt.Println("new cache failed")
+		return fmt.Errorf("initialize cache: %w", err)
 	}
 	defer func() {
 		if cache != nil {

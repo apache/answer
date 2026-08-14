@@ -45,7 +45,6 @@ import {
   changeUserStatus,
   deletePermanently,
 } from '@/services';
-import { formatCount } from '@/utils';
 import { ADMIN_USERS_NAV_MENUS } from '@/common/constants';
 
 import DeleteUserModal from './components/DeleteUserModal';
@@ -251,7 +250,6 @@ const Users: FC = () => {
         <thead>
           <tr>
             <th>{t('name')}</th>
-            <th style={{ width: '12%' }}>{t('reputation')}</th>
             <th style={{ width: '15%' }} className="min-w-15">
               {t('email')}
             </th>
@@ -291,11 +289,9 @@ const Users: FC = () => {
                     avatarSize="32px"
                     avatarSearchStr="s=48"
                     avatarClass="me-2"
-                    showReputation={false}
                     nameMaxWidth="160px"
                   />
                 </td>
-                <td>{formatCount(user.rank)}</td>
                 <td className="text-break">{user.e_mail}</td>
                 <td>
                   <FormatTime time={user.created_at} />

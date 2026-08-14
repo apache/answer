@@ -80,7 +80,6 @@ const Index = () => {
   const isAdmin = userInfo?.role_id === 2;
   const isModerator = userInfo?.role_id === 3;
   const isLogged = Boolean(userInfo?.access_token);
-  const loggedUserRank = userInfo?.rank;
   const location = useLocation();
 
   useEffect(() => {
@@ -292,7 +291,6 @@ const Index = () => {
               data={{
                 qid,
                 answered: question?.answered,
-                loggedUserRank,
                 first_answer_id: question?.first_answer_id,
               }}
               callback={writeAnswerCallback}

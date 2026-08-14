@@ -130,7 +130,6 @@ const Index: FC<Props> = ({ data, isAdmin, objectInfo, revisionList }) => {
               className="fs-normal"
               data={data?.user_info}
               showAvatar={false}
-              showReputation={false}
             />
           )}
         </td>

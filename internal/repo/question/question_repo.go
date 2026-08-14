@@ -393,7 +393,7 @@ func (qr *questionRepo) SitemapQuestions(ctx context.Context, page, pageSize int
 
 // GetQuestionPage query question page
 func (qr *questionRepo) GetQuestionPage(ctx context.Context, page, pageSize int,
-	tagIDs []string, userID, orderCond string, inDays int, showHidden, showPending bool) (
+	tagIDs []string, sectionIDs []int64, userID, orderCond string, inDays int, showHidden, showPending bool) (
 	questionList []*entity.Question, total int64, err error) {
 	questionList = make([]*entity.Question, 0)
 	session := qr.data.DB.Context(ctx)
@@ -411,6 +411,9 @@ func (qr *questionRepo) GetQuestionPage(ctx context.Context, page, pageSize int,
 		session.In("tag_rel.tag_id", tagIDs)
 		session.And("tag_rel.status = ?", entity.TagRelStatusAvailable)
 	}
+	if len(sectionIDs) > 0 {
+		session.In("question.section_id", sectionIDs)
+	}
 	if len(userID) > 0 {
 		session.And("question.user_id = ?", userID)
 		if !showHidden {
@@ -420,7 +423,11 @@ func (qr *questionRepo) GetQuestionPage(ctx context.Context, page, pageSize int,
 		session.And("question.show = ?", entity.QuestionShow)
 	}
 	if inDays > 0 {
-		session.And("question.created_at > ?", time.Now().AddDate(0, 0, -inDays))
+		if orderCond == schema.QuestionOrderCondActive {
+			session.And("question.post_update_time > ?", time.Now().AddDate(0, 0, -inDays))
+		} else {
+			session.And("question.created_at > ?", time.Now().AddDate(0, 0, -inDays))
+		}
 	}
 
 	switch orderCond {

@@ -19,17 +19,14 @@
 
 import { memo, FC } from 'react';
 import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 
 import { Avatar } from '@/components';
-import { formatCount } from '@/utils';
 
 interface Props {
   data: any;
 }
 
 const Index: FC<Props> = ({ data }) => {
-  const { t } = useTranslation('translation', { keyPrefix: 'badges' });
   return (
     <div className="d-flex">
       {data?.status !== 'deleted' ? (
@@ -80,10 +77,6 @@ const Index: FC<Props> = ({ data }) => {
         ) : (
           <span className="me-1 text-break">{data?.display_name}</span>
         )}
-        <div className="text-secondary">
-          {formatCount(data?.rank)}{' '}
-          {t('x_reputation', { keyPrefix: 'personal' })}
-        </div>
       </div>
     </div>
   );

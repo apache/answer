@@ -20,7 +20,10 @@
 package data
 
 import (
+	"errors"
+	"fmt"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/apache/answer/pkg/dir"
@@ -96,6 +99,9 @@ func NewDB(debug bool, dataConf *Database) (*xorm.Engine, error) {
 
 // NewCache new cache instance
 func NewCache(c *CacheConf) (cache.Cache, func(), error) {
+	if c == nil {
+		return nil, func() {}, errors.New("cache config is required")
+	}
 	var pluginCache plugin.Cache
 	_ = plugin.CallCache(func(fn plugin.Cache) error {
 		pluginCache = fn
@@ -104,21 +110,43 @@ func NewCache(c *CacheConf) (cache.Cache, func(), error) {
 	if pluginCache != nil {
 		return pluginCache, func() {}, nil
 	}
+	cacheType := strings.ToLower(strings.TrimSpace(c.Type))
+	switch cacheType {
+	case CacheTypeRedis:
+		redisCache, err := NewRedisCache(c.Redis)
+		if err != nil {
+			return nil, func() {}, err
+		}
+		log.Infof("using redis cache with key prefix %s", c.Redis.KeyPrefix)
+		cleanup := func() {
+			if err := redisCache.Close(); err != nil {
+				log.Warn(err)
+			}
+		}
+		return redisCache, cleanup, nil
+	case "", CacheTypeMemory:
+		return newMemoryCache(c)
+	default:
+		return nil, func() {}, fmt.Errorf("unsupported cache type %q", c.Type)
+	}
+}
 
-	// TODO What cache type should be initialized according to the configuration file
+func newMemoryCache(c *CacheConf) (cache.Cache, func(), error) {
 	memCache := memory.NewCache()
 
 	if len(c.FilePath) > 0 {
 		cacheFileDir := filepath.Dir(c.FilePath)
 		log.Debugf("try to create cache directory %s", cacheFileDir)
-		err := dir.CreateDirIfNotExist(cacheFileDir)
-		if err != nil {
+
+		if err := dir.CreateDirIfNotExist(cacheFileDir); err != nil {
 			log.Errorf("create cache dir failed: %s", err)
 		}
+
 		log.Infof("try to load cache file from %s", c.FilePath)
 		if err := memory.Load(memCache, c.FilePath); err != nil {
 			log.Warn(err)
 		}
+
 		go func() {
 			ticker := time.Tick(time.Minute)
 			for range ticker {
@@ -128,11 +156,16 @@ func NewCache(c *CacheConf) (cache.Cache, func(), error) {
 			}
 		}()
 	}
+
 	cleanup := func() {
+		if c.FilePath == "" {
+			return
+		}
 		log.Infof("try to save cache file to %s", c.FilePath)
 		if err := memory.Save(memCache, c.FilePath); err != nil {
 			log.Warn(err)
 		}
 	}
+
 	return memCache, cleanup, nil
 }
