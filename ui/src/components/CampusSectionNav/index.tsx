@@ -19,7 +19,7 @@
 
 import { FC } from 'react';
 import { Accordion, Form, Placeholder } from 'react-bootstrap';
-import { NavLink, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { useForumSections } from '@/services';
@@ -42,6 +42,7 @@ const SECTION_ICONS: Record<string, string> = {
 const CampusSectionNav: FC<Props> = ({ mobile = false }) => {
   const { t } = useTranslation('translation', { keyPrefix: 'campus_forum' });
   const { data, isLoading } = useForumSections();
+  const { pathname } = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const current = searchParams.get('section') || '';
 
@@ -108,17 +109,22 @@ const CampusSectionNav: FC<Props> = ({ mobile = false }) => {
               </Accordion.Header>
               <Accordion.Body>
                 {parent.children.map((child) => (
-                  <NavLink
+                  <Link
                     key={child.id}
                     to={sectionHref(child.slug)}
-                    className={`campus-section-link campus-section-child d-block ${current === child.slug ? 'active' : ''}`}>
+                    aria-current={
+                      pathname === '/questions' && current === child.slug
+                        ? 'page'
+                        : undefined
+                    }
+                    className={`campus-section-link campus-section-child d-block ${pathname === '/questions' && current === child.slug ? 'active' : ''}`}>
                     {child.name}
                     {child.admin_only ? (
                       <span className="campus-section-note ms-1">
                         · {t('admin_only')}
                       </span>
                     ) : null}
-                  </NavLink>
+                  </Link>
                 ))}
               </Accordion.Body>
             </Accordion.Item>

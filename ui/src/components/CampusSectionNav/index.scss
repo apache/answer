@@ -22,6 +22,10 @@
     box-shadow: none;
   }
 
+  .accordion-button:focus:not(:focus-visible) {
+    box-shadow: none;
+  }
+
   .accordion-button:hover {
     color: var(--an-side-nav-link-hover-color);
     background-color: var(--bs-gray-100);
