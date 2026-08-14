@@ -57,7 +57,6 @@ func NewBadgeEventService(
 		eventRuleRepo:     eventRuleRepo,
 		badgeAwardService: badgeAwardService,
 	}
-	eventQueueService.RegisterHandler(n.Handler)
 	return n
 }
 

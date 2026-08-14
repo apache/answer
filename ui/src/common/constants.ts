@@ -116,7 +116,6 @@ export const ADMIN_NAV_MENUS = [
     icon: 'people-fill',
     children: [
       { name: 'users', pathPrefix: 'users/' },
-      { name: 'badges' },
       { name: 'rules', path: 'rules/policies', pathPrefix: 'rules/' },
     ],
   },

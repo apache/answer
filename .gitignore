@@ -36,5 +36,6 @@ dist/
 
 # Environment variables
 .env
+/deploy/production/.env
 
 AGENT.md

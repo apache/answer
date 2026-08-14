@@ -2046,6 +2046,12 @@ ui:
       edit_profile: Edit profile
       change_status: Change status
       change_role: Change role
+      make_admin:
+        action: Make forum administrator
+        title: Make forum administrator
+        content: Are you sure you want to make this user a forum administrator? They will receive full access to the administration area and will need to sign in again.
+        confirm: Make administrator
+        success: The user is now a forum administrator.
       show_logs: Show logs
       add_user: Add user
       deactivate_user:

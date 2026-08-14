@@ -6,7 +6,8 @@
     --bs-accordion-bg: transparent;
     --bs-accordion-btn-bg: transparent;
     --bs-accordion-active-bg: transparent;
-    --bs-accordion-active-color: var(--an-side-nav-link-hover-color);
+    --bs-accordion-active-color: var(--an-side-nav-link);
+    --bs-accordion-btn-focus-box-shadow: none;
   }
 
   .campus-section-group {
@@ -20,6 +21,17 @@
     color: var(--an-side-nav-link);
     font-size: 1rem;
     box-shadow: none;
+  }
+
+  .accordion-button,
+  .accordion-button:not(.collapsed),
+  .accordion-button:focus,
+  .accordion-button:focus-visible,
+  .campus-section-link,
+  .campus-section-link:focus,
+  .campus-section-link:focus-visible,
+  .campus-section-link.active {
+    box-shadow: none !important;
   }
 
   .accordion-button:hover {
@@ -52,8 +64,8 @@
 
   .campus-section-link.active {
     color: var(--an-side-nav-link-hover-color);
-    background-color: var(--bs-gray-200);
-    font-weight: 600;
+    background-color: transparent;
+    font-weight: normal;
   }
 
   .campus-section-note {

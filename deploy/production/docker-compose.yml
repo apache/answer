@@ -1,0 +1,107 @@
+name: hnu-forum
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Hong_Kong
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is required}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-answer}
+      MYSQL_USER: ${MYSQL_USER:-answer}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?MYSQL_PASSWORD is required}
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-time-zone=+08:00
+      - --innodb-buffer-pool-size=384M
+      - --max-connections=100
+    volumes:
+      - ${HNU_DATA_ROOT:-/srv/hnu-forum}/mysql:/var/lib/mysql
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - mysqladmin ping -h 127.0.0.1 -uroot -p"$${MYSQL_ROOT_PASSWORD}" --silent
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    networks:
+      - backend
+    mem_limit: 768m
+    logging: *default-logging
+
+  redis:
+    image: redis:7.4-alpine
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Hong_Kong
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?REDIS_PASSWORD is required}
+    command:
+      - sh
+      - -c
+      - exec redis-server --appendonly yes --requirepass "$$REDIS_PASSWORD" --maxmemory 128mb --maxmemory-policy allkeys-lru
+    volumes:
+      - ${HNU_DATA_ROOT:-/srv/hnu-forum}/redis:/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - redis-cli -a "$${REDIS_PASSWORD}" ping | grep -q PONG
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    networks:
+      - backend
+    mem_limit: 256m
+    logging: *default-logging
+
+  answer:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+      args:
+        GOPROXY: ${GOPROXY:-https://proxy.golang.org,direct}
+    image: hnu-forum:${IMAGE_TAG:-production}
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Hong_Kong
+      SITE_ADDR: 0.0.0.0:80
+      CACHE_TYPE: redis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?REDIS_PASSWORD is required}
+      REDIS_DB: 0
+      REDIS_KEY_PREFIX: "hnu-forum:"
+      REDIS_POOL_SIZE: 10
+      TRUSTED_PROXIES: 172.16.0.0/12
+      SWAGGER_HOST: ${DOMAIN:-dongpolakeside.com}
+      SWAGGER_ADDRESS_PORT: ":443"
+    ports:
+      - 127.0.0.1:9080:80
+    volumes:
+      - ${HNU_DATA_ROOT:-/srv/hnu-forum}/answer:/data
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -fsS http://127.0.0.1/ >/dev/null || exit 1
+      interval: 15s
+      timeout: 5s
+      retries: 20
+    networks:
+      - backend
+    mem_limit: 1g
+    logging: *default-logging
+
+networks:
+  backend:
+    driver: bridge

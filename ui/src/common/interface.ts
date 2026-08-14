@@ -146,7 +146,7 @@ export interface ModifyUserReq {
   website: string;
 }
 
-enum RoleId {
+export enum RoleId {
   User = 1,
   Admin = 2,
   Moderator = 3,

@@ -2005,6 +2005,12 @@ ui:
       edit_profile: 编辑资料
       change_status: 更改状态
       change_role: 更改角色
+      make_admin:
+        action: 设为论坛管理员
+        title: 设为论坛管理员
+        content: 确定要将该用户设为论坛管理员吗？该用户将获得完整的后台管理权限，并且需要重新登录。
+        confirm: 确认设为管理员
+        success: 已将该用户设为论坛管理员。
       show_logs: 显示日志
       add_user: 添加用户
       deactivate_user:
