@@ -215,12 +215,6 @@ func (a *AnswerAPIRouter) RegisterUnAuthAnswerAPIRouter(r *gin.RouterGroup) {
 	// reaction
 	r.GET("/meta/reaction", a.metaController.GetReaction)
 
-	// badges
-	r.GET("/badge", a.badgeController.GetBadgeInfo)
-	r.GET("/badge/awards/page", a.badgeController.GetBadgeAwardList)
-	r.GET("/badge/user/awards/recent", a.badgeController.GetRecentBadgeAwardListByUsername)
-	r.GET("/badge/user/awards", a.badgeController.GetAllBadgeAwardListByUsername)
-	r.GET("/badges", a.badgeController.GetBadgeList)
 }
 
 func (a *AnswerAPIRouter) RegisterAuthUserWithAnyStatusAnswerAPIRouter(r *gin.RouterGroup) {
@@ -418,10 +412,6 @@ func (a *AnswerAPIRouter) RegisterAnswerAdminAPIRouter(r *gin.RouterGroup) {
 	r.PUT("/plugin/status", a.pluginController.UpdatePluginStatus)
 	r.GET("/plugin/config", a.pluginController.GetPluginConfig)
 	r.PUT("/plugin/config", a.pluginController.UpdatePluginConfig)
-
-	// badge
-	r.GET("/badges", a.adminBadgeController.GetBadgeList)
-	r.PUT("/badge/status", a.adminBadgeController.UpdateBadgeStatus)
 
 	// api key
 	r.GET("/api-key/all", a.apiKeyController.GetAllAPIKeys)

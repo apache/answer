@@ -42,12 +42,14 @@ import {
   Comments,
   Answers,
   Votes,
-  Badges,
 } from './components';
 
 const Personal: FC = () => {
   const { tabName: routeTabName = 'overview', username = '' } = useParams();
-  const tabName = routeTabName === 'reputation' ? 'overview' : routeTabName;
+  const tabName =
+    routeTabName === 'reputation' || routeTabName === 'badges'
+      ? 'overview'
+      : routeTabName;
   const [searchParams] = useSearchParams();
   const page = searchParams.get('page') || 1;
   const order = searchParams.get('order') || 'newest';
@@ -102,7 +104,6 @@ const Personal: FC = () => {
             visible={tabName === 'overview'}
             introduction={userInfo?.bio_html || ''}
             data={topData}
-            username={username}
           />
 
           <ListHead
@@ -119,11 +120,6 @@ const Personal: FC = () => {
           />
           <Comments data={list} visible={tabName === 'comments'} />
           <Votes data={list} visible={tabName === 'votes'} />
-          <Badges
-            data={list}
-            visible={tabName === 'badges'}
-            username={username}
-          />
           {!list?.length && !isLoading && <Empty />}
 
           {count > 0 && (

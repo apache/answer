@@ -31,9 +31,11 @@ import {
 import {
   updateUserPassword,
   changeUserStatus,
+  changeUserRole,
   updateUserProfile,
 } from '@/services';
 import { toastStore } from '@/stores';
+import { RoleId } from '@/common/interface';
 
 interface Props {
   showActionPassword?: boolean;
@@ -142,6 +144,28 @@ const UserOperation = ({
       });
     }
 
+    if (type === 'make_admin') {
+      Modal.confirm({
+        title: t('make_admin.title'),
+        content: t('make_admin.content'),
+        cancelBtnVariant: 'link',
+        confirmBtnVariant: 'primary',
+        confirmText: t('make_admin.confirm'),
+        onConfirm: () => {
+          changeUserRole({
+            user_id,
+            role_id: RoleId.Admin,
+          }).then(() => {
+            Toast.onShow({
+              msg: t('make_admin.success'),
+              variant: 'success',
+            });
+            refreshUsers?.();
+          });
+        },
+      });
+    }
+
     if (type === 'password') {
       changePasswordModal.onShow(user_id);
     }
@@ -207,9 +231,17 @@ const UserOperation = ({
             {t('edit_profile')}
           </Dropdown.Item>
           {showActionRole ? (
-            <Dropdown.Item onClick={() => handleAction('role')}>
-              {t('change_role')}
-            </Dropdown.Item>
+            <>
+              {userData.role_id !== RoleId.Admin && (
+                <Dropdown.Item onClick={() => handleAction('make_admin')}>
+                  <Icon name="shield-check" className="me-2" />
+                  {t('make_admin.action')}
+                </Dropdown.Item>
+              )}
+              <Dropdown.Item onClick={() => handleAction('role')}>
+                {t('change_role')}
+              </Dropdown.Item>
+            </>
           ) : null}
           {userData.status === 'inactive' ? (
             <Dropdown.Item onClick={() => handleAction('activation')}>

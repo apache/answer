@@ -39,9 +39,8 @@ import {
   PageTags,
   HttpErrorContent,
 } from '@/components';
-import { LoginToContinueModal, BadgeModal } from '@/components/Modal';
+import { LoginToContinueModal } from '@/components/Modal';
 import { changeTheme, Storage, scrollToElementTop } from '@/utils';
-import { useQueryNotificationStatus } from '@/services';
 import { useExternalToast } from '@/hooks';
 import { EXTERNAL_CONTENT_DISPLAY_MODE } from '@/common/constants';
 
@@ -57,7 +56,6 @@ const Layout: FC = () => {
   };
   const { code: httpStatusCode, reset: httpStatusReset } = errorCodeStore();
   const { show: showLoginToContinueModal } = loginToContinueStore();
-  const { data: notificationData } = useQueryNotificationStatus();
   const layout = themeSettingStore((state) => state.layout);
   useEffect(() => {
     // handle footnote links
@@ -225,10 +223,6 @@ const Layout: FC = () => {
         <Toast msg={toastMsg} variant={variant} onClose={closeToast} />
         <Customize />
         <LoginToContinueModal visible={showLoginToContinueModal} />
-        <BadgeModal
-          badge={notificationData?.badge_award}
-          visible={Boolean(notificationData?.badge_award)}
-        />
         <ScrollRestoration />
       </SWRConfig>
     </HelmetProvider>

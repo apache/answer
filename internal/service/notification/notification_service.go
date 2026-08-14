@@ -91,8 +91,6 @@ func (ns *NotificationService) GetRedDot(ctx context.Context, req *schema.GetRed
 		redBot.Revision = ns.countAllReviewAmount(ctx, req)
 	}
 
-	// get badge award
-	redBot.BadgeAward = ns.getBadgeAward(ctx, req.UserID)
 	return redBot, nil
 }
 
