@@ -19,7 +19,12 @@
 
 import { FC } from 'react';
 import { Nav } from 'react-bootstrap';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import {
+  NavLink,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { loggedUserInfoStore, sideNavStore, aiControlStore } from '@/stores';
@@ -32,6 +37,7 @@ import './index.scss';
 const Index: FC = () => {
   const { t } = useTranslation();
   const { pathname } = useLocation();
+  const [searchParams] = useSearchParams();
   const { user: userInfo } = loggedUserInfoStore();
   const { can_revision, revision } = sideNavStore();
   const { ai_enabled } = aiControlStore();
@@ -44,7 +50,8 @@ const Index: FC = () => {
           to="/"
           end
           className={() =>
-            pathname === '/' || pathname === '/questions'
+            pathname === '/' ||
+            (pathname === '/questions' && !searchParams.has('section'))
               ? 'nav-link active'
               : 'nav-link'
           }>
