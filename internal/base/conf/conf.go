@@ -145,7 +145,7 @@ func (c *AllConfig) SetEnvironmentOverrides() error {
 	if envs.TrustedProxies != "" {
 		c.Server.HTTP.TrustedProxies = c.Server.HTTP.TrustedProxies[:0]
 		if !strings.EqualFold(strings.TrimSpace(envs.TrustedProxies), "none") {
-			for _, proxy := range strings.Split(envs.TrustedProxies, ",") {
+			for proxy := range strings.SplitSeq(envs.TrustedProxies, ",") {
 				if proxy = strings.TrimSpace(proxy); proxy != "" {
 					c.Server.HTTP.TrustedProxies = append(c.Server.HTTP.TrustedProxies, proxy)
 				}

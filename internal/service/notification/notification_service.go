@@ -94,37 +94,6 @@ func (ns *NotificationService) GetRedDot(ctx context.Context, req *schema.GetRed
 	return redBot, nil
 }
 
-func (ns *NotificationService) getBadgeAward(ctx context.Context, userID string) (badgeAward *schema.RedDotBadgeAward) {
-	key := fmt.Sprintf(constant.RedDotCacheKey, constant.NotificationTypeBadgeAchievement, userID)
-	cacheData, exist, err := ns.data.Cache.GetString(ctx, key)
-	if err != nil {
-		log.Errorf("get badge award failed: %v", err)
-		return nil
-	}
-	if !exist {
-		return nil
-	}
-
-	c := schema.NewRedDotBadgeAwardCache()
-	c.FromJSON(cacheData)
-	award := c.GetBadgeAward()
-	if award == nil {
-		return nil
-	}
-	badgeInfo, exists, err := ns.badgeRepo.GetByID(ctx, award.BadgeID)
-	if err != nil {
-		log.Errorf("get badge info failed: %v", err)
-		return nil
-	}
-	if !exists {
-		return nil
-	}
-	award.Name = translator.Tr(handler.GetLangByCtx(ctx), badgeInfo.Name)
-	award.Icon = badgeInfo.Icon
-	award.Level = badgeInfo.Level
-	return award
-}
-
 func (ns *NotificationService) countAllReviewAmount(ctx context.Context, req *schema.GetRedDot) (amount int64) {
 	// get queue amount
 	if req.IsAdmin {

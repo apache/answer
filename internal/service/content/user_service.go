@@ -704,21 +704,6 @@ func applyRegistrationVerification(
 	return nil
 }
 
-func (us *UserService) sendRegistrationActivationEmail(ctx context.Context, userInfo *entity.User) error {
-	data := &schema.EmailCodeContent{
-		Email:  userInfo.EMail,
-		UserID: userInfo.ID,
-	}
-	code := token.GenerateToken()
-	verifyEmailURL := fmt.Sprintf("%s/users/account-activation?code=%s", us.getSiteUrl(ctx), code)
-	title, body, err := us.emailService.RegisterTemplate(ctx, verifyEmailURL)
-	if err != nil {
-		return err
-	}
-	go us.emailService.SendAndSaveCode(ctx, userInfo.ID, userInfo.EMail, title, body, code, data.ToJSONString())
-	return nil
-}
-
 func (us *UserService) UserVerifyEmailSend(ctx context.Context, userID string) error {
 	userInfo, has, err := us.userRepo.GetByUserID(ctx, userID)
 	if err != nil {
