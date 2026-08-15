@@ -36,7 +36,7 @@
 
   .accordion-button:hover {
     color: var(--an-side-nav-link-hover-color);
-    background-color: var(--bs-gray-100);
+    background-color: var(--bs-tertiary-bg);
   }
 
   .accordion-button::after {
@@ -59,12 +59,12 @@
 
   .campus-section-link:hover {
     color: var(--an-side-nav-link-hover-color);
-    background-color: var(--bs-gray-100);
+    background-color: var(--bs-tertiary-bg);
   }
 
   .campus-section-link.active {
     color: var(--an-side-nav-link-hover-color);
-    background-color: var(--bs-gray-200);
+    background-color: var(--bs-secondary-bg);
     font-weight: 600;
   }
 
