@@ -30,6 +30,8 @@ excludes = [
   "ui/.browserslistrc",
   "ui/.npmrc",
   "ui/.env.*",
+  ".env.example",
+  "deploy/production/.env.example",
   "script/plugin_list",
   "charts/templates/_helpers.tpl",
   "charts/.helmignore",
