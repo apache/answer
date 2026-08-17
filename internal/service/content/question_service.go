@@ -1091,13 +1091,8 @@ func (qs *QuestionService) GetQuestion(ctx context.Context, questionID, userID s
 	if err != nil {
 		return
 	}
-	// If the question is deleted or pending, only the administrator and the author can view it
-	if (question.Status == entity.QuestionStatusDeleted ||
-		question.Status == entity.QuestionStatusPending) && !per.CanReopen && question.UserID != userID {
-		return nil, errors.NotFound(reason.QuestionNotFound)
-	}
-	if question.Show == entity.QuestionHide && !per.IsAdminModerator && question.UserID != userID {
-		return nil, errors.NotFound(reason.QuestionNotFound)
+	if err = checkQuestionVisibility(question, userID, per); err != nil {
+		return nil, err
 	}
 	if question.Status != entity.QuestionStatusClosed {
 		per.CanReopen = false
@@ -1142,6 +1137,19 @@ func (qs *QuestionService) GetQuestion(ctx context.Context, questionID, userID s
 	return question, nil
 }
 
+func checkQuestionVisibility(question *schema.QuestionInfoResp, userID string, per schema.QuestionPermission) error {
+	// Deleted and pending questions are visible only to their author or users who can reopen them.
+	if (question.Status == entity.QuestionStatusDeleted ||
+		question.Status == entity.QuestionStatusPending) && !per.CanReopen && question.UserID != userID {
+		return errors.NotFound(reason.QuestionNotFound)
+	}
+	// Hidden questions are visible only to their author or an administrator/moderator.
+	if question.Show == entity.QuestionHide && !per.IsAdminModerator && question.UserID != userID {
+		return errors.NotFound(reason.QuestionNotFound)
+	}
+	return nil
+}
+
 // GetQuestionAndAddPV get question one
 func (qs *QuestionService) GetQuestionAndAddPV(ctx context.Context, questionID, loginUserID string,
 	per schema.QuestionPermission) (
@@ -1153,7 +1161,11 @@ func (qs *QuestionService) GetQuestionAndAddPV(ctx context.Context, questionID, 
 	return qs.GetQuestion(ctx, questionID, loginUserID, per)
 }
 
-func (qs *QuestionService) InviteUserInfo(ctx context.Context, questionID string) (inviteList []*schema.UserBasicInfo, err error) {
+func (qs *QuestionService) InviteUserInfo(ctx context.Context, questionID, userID string,
+	per schema.QuestionPermission) (inviteList []*schema.UserBasicInfo, err error) {
+	if _, err = qs.GetQuestion(ctx, questionID, userID, per); err != nil {
+		return nil, err
+	}
 	return qs.questioncommon.InviteUserInfo(ctx, questionID)
 }
 

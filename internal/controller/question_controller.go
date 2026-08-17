@@ -242,6 +242,24 @@ func (qc *QuestionController) GetQuestion(ctx *gin.Context) {
 	id := ctx.Query("id")
 	id = uid.DeShortID(id)
 	userID := middleware.GetLoginUserIDFromContext(ctx)
+	req, err := qc.questionPermission(ctx, userID, id)
+	if err != nil {
+		handler.HandleResponse(ctx, err, nil)
+		return
+	}
+
+	info, err := qc.questionService.GetQuestionAndAddPV(ctx, id, userID, req)
+	if err != nil {
+		handler.HandleResponse(ctx, err, nil)
+		return
+	}
+	if handler.GetEnableShortID(ctx) {
+		info.ID = uid.EnShortID(info.ID)
+	}
+	handler.HandleResponse(ctx, nil, info)
+}
+
+func (qc *QuestionController) questionPermission(ctx *gin.Context, userID, questionID string) (schema.QuestionPermission, error) {
 	req := schema.QuestionPermission{}
 	req.IsAdminModerator = middleware.GetUserIsAdminModerator(ctx)
 	canList, err := qc.rankService.CheckOperationPermissions(ctx, userID, []string{
@@ -257,10 +275,9 @@ func (qc *QuestionController) GetQuestion(ctx *gin.Context) {
 		permission.QuestionUnDelete,
 	})
 	if err != nil {
-		handler.HandleResponse(ctx, err, nil)
-		return
+		return req, err
 	}
-	objectOwner := qc.rankService.CheckOperationObjectOwner(ctx, userID, id)
+	objectOwner := qc.rankService.CheckOperationObjectOwner(ctx, userID, questionID)
 
 	req.CanEdit = canList[0] || objectOwner
 	req.CanDelete = canList[1]
@@ -272,16 +289,7 @@ func (qc *QuestionController) GetQuestion(ctx *gin.Context) {
 	req.CanShow = canList[7]
 	req.CanInviteOtherToAnswer = canList[8]
 	req.CanRecover = canList[9]
-
-	info, err := qc.questionService.GetQuestionAndAddPV(ctx, id, userID, req)
-	if err != nil {
-		handler.HandleResponse(ctx, err, nil)
-		return
-	}
-	if handler.GetEnableShortID(ctx) {
-		info.ID = uid.EnShortID(info.ID)
-	}
-	handler.HandleResponse(ctx, nil, info)
+	return req, nil
 }
 
 // GetQuestionInviteUserInfo get question invite user info
@@ -295,7 +303,13 @@ func (qc *QuestionController) GetQuestion(ctx *gin.Context) {
 // @Router /answer/api/v1/question/invite [get]
 func (qc *QuestionController) GetQuestionInviteUserInfo(ctx *gin.Context) {
 	questionID := uid.DeShortID(ctx.Query("id"))
-	resp, err := qc.questionService.InviteUserInfo(ctx, questionID)
+	userID := middleware.GetLoginUserIDFromContext(ctx)
+	per, err := qc.questionPermission(ctx, userID, questionID)
+	if err != nil {
+		handler.HandleResponse(ctx, err, nil)
+		return
+	}
+	resp, err := qc.questionService.InviteUserInfo(ctx, questionID, userID, per)
 	handler.HandleResponse(ctx, err, resp)
 }
 
