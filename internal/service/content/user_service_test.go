@@ -20,13 +20,56 @@
 package content
 
 import (
+	"context"
 	"errors"
 	"testing"
 
 	"github.com/apache/answer/internal/entity"
+	"github.com/apache/answer/internal/schema"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
+func TestEmailCodePurposeIsEnforcedBeforeUserMutation(t *testing.T) {
+	service := &UserService{}
+	ctx := context.Background()
+
+	t.Run("password reset rejects a code issued for another purpose", func(t *testing.T) {
+		content := (&schema.EmailCodeContent{
+			SourceType: schema.UnsubscribeSourceType,
+			Email:      "user@example.test",
+		}).ToJSONString()
+
+		err := service.UpdatePasswordWhenForgot(ctx, &schema.UserRePassWordRequest{Content: content})
+		if err == nil {
+			t.Fatal("password reset accepted an unsubscribe code")
+		}
+	})
+
+	t.Run("email activation rejects a password reset code", func(t *testing.T) {
+		content := (&schema.EmailCodeContent{
+			SourceType: schema.PasswordResetSourceType,
+			Email:      "user@example.test",
+		}).ToJSONString()
+
+		_, err := service.UserVerifyEmail(ctx, &schema.UserVerifyEmailReq{Content: content})
+		if err == nil {
+			t.Fatal("email activation accepted a password reset code")
+		}
+	})
+
+	t.Run("change email rejects a password reset code", func(t *testing.T) {
+		content := (&schema.EmailCodeContent{
+			SourceType: schema.PasswordResetSourceType,
+			Email:      "user@example.test",
+		}).ToJSONString()
+
+		_, err := service.UserChangeEmailVerify(ctx, content)
+		if err == nil {
+			t.Fatal("change email accepted a password reset code")
+		}
+	})
+}
 
 func TestApplyRegistrationVerification(t *testing.T) {
 	t.Run("required sends activation email and leaves email pending", func(t *testing.T) {

@@ -139,7 +139,7 @@ func (c *MCPController) MCPQuestionDetailHandler() func(ctx context.Context, req
 		}
 
 		question, err := c.questioncommon.Info(ctx, cond.QuestionID, "")
-		if err != nil {
+		if err != nil || !mcpQuestionIsPublic(question) {
 			log.Errorf("get question failed: %v", err)
 			return mcp.NewToolResultText("No question found."), nil
 		}
@@ -161,6 +161,9 @@ func (c *MCPController) MCPAnswersHandler() func(ctx context.Context, request mc
 			return nil, err
 		}
 		cond := schema.NewMCPSearchAnswerCond(request)
+		if len(cond.QuestionID) == 0 {
+			return mcp.NewToolResultText("[]"), nil
+		}
 
 		siteGeneral, err := c.siteInfoService.GetSiteGeneral(ctx)
 		if err != nil {
@@ -169,6 +172,10 @@ func (c *MCPController) MCPAnswersHandler() func(ctx context.Context, request mc
 		}
 
 		if len(cond.QuestionID) > 0 {
+			question, err := c.questioncommon.Info(ctx, cond.QuestionID, "")
+			if err != nil || !mcpQuestionIsPublic(question) {
+				return mcp.NewToolResultText("[]"), nil
+			}
 			answerList, err := c.answerRepo.GetAnswerList(ctx, &entity.Answer{QuestionID: cond.QuestionID})
 			if err != nil {
 				log.Errorf("get answers failed: %v", err)
@@ -214,12 +221,33 @@ func (c *MCPController) MCPAnswersHandler() func(ctx context.Context, request mc
 	}
 }
 
+func mcpQuestionIsPublic(question *schema.QuestionInfoResp) bool {
+	return question != nil && question.Show == entity.QuestionShow &&
+		(question.Status == entity.QuestionStatusAvailable || question.Status == entity.QuestionStatusClosed)
+}
+
+func (c *MCPController) mcpObjectQuestionIsPublic(ctx context.Context, objectID string) bool {
+	question, err := c.questioncommon.Info(ctx, objectID, "")
+	if err == nil {
+		return mcpQuestionIsPublic(question)
+	}
+	answer, exist, err := c.answerRepo.GetAnswer(ctx, objectID)
+	if err != nil || !exist || answer.Status != entity.AnswerStatusAvailable {
+		return false
+	}
+	question, err = c.questioncommon.Info(ctx, answer.QuestionID, "")
+	return err == nil && mcpQuestionIsPublic(question)
+}
+
 func (c *MCPController) MCPCommentsHandler() func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		if err := c.ensureMCPEnabled(ctx); err != nil {
 			return nil, err
 		}
 		cond := schema.NewMCPSearchCommentCond(request)
+		if len(cond.ObjectID) == 0 || !c.mcpObjectQuestionIsPublic(ctx, cond.ObjectID) {
+			return mcp.NewToolResultText("No comments found."), nil
+		}
 
 		siteGeneral, err := c.siteInfoService.GetSiteGeneral(ctx)
 		if err != nil {

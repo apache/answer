@@ -17,22 +17,25 @@
  * under the License.
  */
 
-package middleware
+package importer
 
 import (
 	"strings"
+	"testing"
 
-	"github.com/gin-gonic/gin"
+	"github.com/apache/answer/plugin"
 )
 
-const contentSecurityPolicy = "default-src 'self'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: http: https:; font-src 'self' data:; connect-src 'self'"
+func TestNewImportedQuestionRequestSanitizesContent(t *testing.T) {
+	request := newImportedQuestionRequest(plugin.QuestionImporterInfo{
+		Title:   "Imported question",
+		Content: `<img src=x onerror=alert(1)><script>alert(1)</script>`,
+		Tags:    []string{"security"},
+	})
 
-func HeadersByRequestURI() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Header("Content-Security-Policy", contentSecurityPolicy)
-		c.Header("X-Content-Type-Options", "nosniff")
-		if strings.HasPrefix(c.Request.RequestURI, "/static/") {
-			c.Header("cache-control", "public, max-age=31536000")
+	for _, unsafeContent := range []string{"onerror", "<script"} {
+		if strings.Contains(strings.ToLower(request.HTML), unsafeContent) {
+			t.Fatalf("imported question HTML contains unsafe content %q: %s", unsafeContent, request.HTML)
 		}
 	}
 }
