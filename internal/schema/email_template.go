@@ -21,6 +21,7 @@ package schema
 
 import (
 	"encoding/json"
+	"slices"
 
 	"github.com/apache/answer/internal/base/constant"
 )
@@ -57,12 +58,7 @@ func (r *EmailCodeContent) FromJSONString(data string) error {
 }
 
 func (r *EmailCodeContent) IsSourceType(sourceTypes ...EmailSourceType) bool {
-	for _, sourceType := range sourceTypes {
-		if r.SourceType == sourceType {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(sourceTypes, r.SourceType)
 }
 
 type RegisterTemplateData struct {
