@@ -833,11 +833,12 @@ func (qr *questionRepo) GetQuestionLink(ctx context.Context, page, pageSize int,
 		Distinct("question.id").
 		Where("question_link.status = ?", entity.QuestionLinkStatusAvailable).
 		Select("question.*")
-	if isAdminModerator {
+	switch {
+	case isAdminModerator:
 		session.Where("question.status IN (?, ?, ?)", entity.QuestionStatusAvailable, entity.QuestionStatusClosed, entity.QuestionStatusPending)
-	} else if loginUserID != "" {
+	case loginUserID != "":
 		session.Where("(question.status IN (?, ?) OR (question.status = ? AND question.user_id = ?))", entity.QuestionStatusAvailable, entity.QuestionStatusClosed, entity.QuestionStatusPending, loginUserID)
-	} else {
+	default:
 		session.In("question.status", []int{entity.QuestionStatusAvailable, entity.QuestionStatusClosed})
 	}
 
