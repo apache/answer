@@ -64,9 +64,9 @@ backend:
       user:
         other: Benutzer
       admin:
-        other: Admin
+        other: Verwaltung
       moderator:
-        other: Moderator
+        other: Moderation
     description:
       user:
         other: Standard ohne speziellen Zugriff.
@@ -235,7 +235,7 @@ backend:
       content_cannot_empty:
         other: Der Inhalt darf nicht leer sein.
       content_less_than_minimum:
-        other: Not enough content entered.
+        other: Der Text ist zu kurz.
     rank:
       fail_to_meet_the_condition:
         other: Ansehenssrang erfüllt die Bedingung nicht.
@@ -266,7 +266,7 @@ backend:
       cannot_set_synonym_as_itself:
         other: Du kannst das Synonym des aktuellen Tags nicht als sich selbst festlegen.
       minimum_count:
-        other: Not enough tags were entered.
+        other: Es wurden zu wenige Schlagwörter angegeben.
     smtp:
       config_from_name_cannot_be_email:
         other: Der Absendername kann keine E-Mail-Adresse sein.
@@ -311,13 +311,13 @@ backend:
       add_bulk_users_amount_error:
         other: "Die Anzahl der Benutzer, die du auf einmal hinzufügst, sollte im Bereich von 1-{{.MaxAmount}} liegen."
       status_suspended_forever:
-        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+        other: "<strong>Dieses Konto wurde dauerhaft gesperrt.</strong> Es verstößt gegen die Regeln der Gemeinschaft."
       status_suspended_until:
-        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+        other: "<strong>Dieses Konto ist bis {{.SuspendedUntil}} gesperrt.</strong> Es verstößt gegen die Regeln der Gemeinschaft."
       status_deleted:
-        other: "This user was deleted."
+        other: "Dieses Konto wurde gelöscht."
       status_inactive:
-        other: "This user is inactive."
+        other: "Dieses Konto ist nicht aktiv."
     config:
       read_config_failed:
         other: Lesekonfiguration fehlgeschlagen
@@ -561,7 +561,7 @@ backend:
           other: Erledigte unser neues Benutzerhandbuch.
       editor:
         name:
-          other: Editor
+          other: Lektor
         desc:
           other: Erster Beitrag bearbeiten.
       first_flag:
@@ -661,7 +661,7 @@ backend:
           other: Lade 3 einfache Benutzer ein.
       champion:
         name:
-          other: Champion
+          other: Vorbild
         desc:
           other: Hat 5 Mitglieder eingeladen.
       thank_you:
@@ -681,12 +681,12 @@ backend:
           other: Beitrag mit 500 Upvotes und 1000 abgegebenen Upvotes.
       enthusiast:
         name:
-          other: Enthusiast
+          other: Stammgast
         desc:
           other: Besucht 10 aufeinander folgende Tage.
       aficionado:
         name:
-          other: Aficionado
+          other: Kenner
         desc:
           other: Besucht 100 aufeinander folgende Tage.
       devotee:
@@ -821,7 +821,7 @@ ui:
     tag_wiki: tag Wiki
     create_tag: Tag erstellen
     edit_tag: Tag bearbeiten
-    ask_a_question: Create Question
+    ask_a_question: Frage stellen
     edit_question: Frage bearbeiten
     edit_answer: Antwort bearbeiten
     search: Suchen
@@ -845,17 +845,17 @@ ui:
     http_50X: HTTP-Fehler 500
     http_403: HTTP Fehler 403
     logout: Ausloggen
-    posts: Posts
-    ai_assistant: AI Assistant
+    posts: Beiträge
+    ai_assistant: KI-Assistent
   ai_assistant:
-    description: Got a question? Ask it and get answers, perspectives, and recommendations.
-    recent_conversations: Recent Conversations
-    show_more: Show more
-    new: New chat
-    ai_generate: AI-generated from posts and may not be accurate.
-    copy: Copy
-    ask_a_follow_up: Ask a follow-up
-    ask_placeholder: Ask a question
+    description: Eine Frage? Stelle sie und erhalte Antworten, Einschätzungen und Empfehlungen.
+    recent_conversations: Zuletzt geführte Gespräche
+    show_more: Mehr anzeigen
+    new: Neues Gespräch
+    ai_generate: Von einer KI aus vorhandenen Beiträgen erzeugt — kann Fehler enthalten.
+    copy: Kopieren
+    ask_a_follow_up: Nachfragen
+    ask_placeholder: Stelle eine Frage
   notifications:
     title: Benachrichtigungen
     inbox: Posteingang
@@ -882,19 +882,19 @@ ui:
     blockquote:
       text: Blockzitat
     bold:
-      text: Stark
+      text: Fett
     chart:
       text: Bestenliste
       flow_chart: Flussdiagramm
       sequence_diagram: Sequenzdiagramm
-      class_diagram: Klassen Diagramm
+      class_diagram: Klassendiagramm
       state_diagram: Zustandsdiagramm
       entity_relationship_diagram: Entitätsbeziehungsdiagramm
       user_defined_diagram: Benutzerdefiniertes Diagramm
       gantt_chart: Gantt-Diagramm
-      pie_chart: Kuchendiagramm
+      pie_chart: Tortendiagramm
     code:
-      text: Code Beispiel
+      text: Codebeispiel
       add_code: Code-Beispiel hinzufügen
       form:
         fields:
@@ -910,8 +910,8 @@ ui:
     formula:
       text: Formel
       options:
-        inline: Inline Formel
-        block: Block Formel
+        inline: Formel im Text
+        block: Formel als Block
     heading:
       text: Überschrift
       options:
@@ -924,7 +924,7 @@ ui:
     help:
       text: Hilfe
     hr:
-      text: Horizontale Richtlinie
+      text: Trennlinie
     image:
       text: Bild
       add_image: Bild hinzufügen
@@ -957,9 +957,9 @@ ui:
     outdent:
       text: Ausrücken
     italic:
-      text: Hervorhebung
+      text: Kursiv
     link:
-      text: Hyperlink
+      text: Verweis
       add_link: Hyperlink hinzufügen
       form:
         fields:
@@ -1033,8 +1033,8 @@ ui:
     btn_submit: Senden
     btn_post: Neuen Tag erstellen
   tag_info:
-    created_at: Erstellt
-    edited_at: Bearbeitet
+    created_at: Angelegt am
+    edited_at: Bearbeitet am
     history: Verlauf
     synonyms:
       title: Synonyme
@@ -1045,12 +1045,12 @@ ui:
       btn_save: Speichern
     synonyms_text: Die folgenden Tags werden neu zugeordnet zu
     delete:
-      title: Diesen Tag löschen
+      title: Schlagwort löschen
       tip_with_posts: >-
         <p>Wir erlauben es nicht, <strong>Tags mit Beiträgen</strong>zu löschen.</p> <p>Bitte entfernen Sie dieses Tag zuerst aus den Beiträgen.</p>
       tip_with_synonyms: >-
         <p>Wir erlauben nicht <strong>Tags mit Synonymen</strong>zu löschen.</p> <p>Bitte entfernen Sie zuerst die Synonyme von diesem Schlagwort.</p>
-      tip: Bist du sicher, dass du löschen möchtest?
+      tip: Ein Schlagwort, das benutzt wird, lässt sich nicht löschen.
       close: Schließen
     merge:
       title: Tags zusammenführen
@@ -1062,15 +1062,15 @@ ui:
       btn_submit: Absenden
       btn_close: Schließen
   edit_tag:
-    title: Tag bearbeiten
-    default_reason: Tag bearbeiten
+    title: Neues Schlagwort anlegen
+    default_reason: Beschreibung des Schlagworts bearbeitet
     default_first_reason: Tag hinzufügen
     btn_save_edits: Änderungen speichern
     btn_cancel: Abbrechen
   dates:
-    long_date: DD. MMM
-    long_date_with_year: "DD. MMM YYYY"
-    long_date_with_time: "DD. MMM YYYY [at] HH:mm"
+    long_date: DD.MM.YYYY
+    long_date_with_year: "DD.MM.YYYY"
+    long_date_with_time: "DD.MM.YYYY [um] HH:mm"
     now: Gerade eben
     x_seconds_ago: "Vor {{count}}s"
     x_minutes_ago: "Vor {{count}}m"
@@ -1079,9 +1079,9 @@ ui:
     day: tag
     hours: Stunden
     days: Tage
-    month: month
-    months: months
-    year: year
+    month: Monat
+    months: Monate
+    year: Jahr
   reaction:
     heart: Herz
     smile: Lächeln
@@ -1130,17 +1130,17 @@ ui:
       name: Name
       newest: Neueste
     button_follow: Folgen
-    button_following: Folgend
-    tag_label: fragen
-    search_placeholder: Nach Tagnamen filtern
-    no_desc: Der Tag hat keine Beschreibung.
+    button_following: Folge ich
+    tag_label: Fragen
+    search_placeholder: Schlagwort suchen
+    no_desc: Für dieses Schlagwort gibt es noch keine Beschreibung.
     more: Mehr
-    wiki: Wiki
+    wiki: Beschreibung
   ask:
-    title: Create Question
+    title: Frage stellen
     edit_title: Frage bearbeiten
     default_reason: Frage bearbeiten
-    default_first_reason: Create question
+    default_first_reason: Frage stellen
     similar_questions: Ähnliche Fragen
     form:
       fields:
@@ -1148,17 +1148,17 @@ ui:
           label: Version
         title:
           label: Titel
-          placeholder: What's your topic? Be specific.
+          placeholder: Worum geht es? Bitte möglichst genau.
           msg:
             empty: Der Titel darf nicht leer sein.
             range: Titel bis zu 150 Zeichen
         body:
-          label: Körper
+          label: Beitrag
           msg:
             empty: Körper darf nicht leer sein.
           hint:
-            optional_body: Describe what the question is about.
-            minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
+            optional_body: Beschreibe, worum es geht.
+            minimum_characters: "Beschreibe, worum es geht — mindestens {{min_content_length}} Zeichen."
         tags:
           label: Stichworte
           msg:
@@ -1177,13 +1177,13 @@ ui:
     post_question&answer: Poste deine Frage und Antwort
   tag_selector:
     add_btn: Schlagwort hinzufügen
-    create_btn: Neuen Tag erstellen
-    search_tag: Tag suchen
-    hint: Describe what your content is about, at least one tag is required.
-    hint_zero_tags: Describe what your content is about.
-    hint_more_than_one_tag: "Describe what your content is about, at least {{min_tags_number}} tags are required."
-    no_result: Keine Tags gefunden
-    tag_required_text: Benötigter Tag (mindestens eins)
+    create_btn: Neues Schlagwort anlegen
+    search_tag: Schlagwort suchen
+    hint: Beschreibe, worum es geht. Mindestens ein Schlagwort ist nötig.
+    hint_zero_tags: Beschreibe, worum es geht.
+    hint_more_than_one_tag: "Beschreibe, worum es geht. Mindestens {{min_tags_number}} Schlagwörter sind nötig."
+    no_result: Kein Schlagwort gefunden
+    tag_required_text: Nötiges Schlagwort
   header:
     nav:
       question: Fragen
@@ -1200,12 +1200,12 @@ ui:
     search:
       placeholder: Suchen
   footer:
-    build_on: Powered by <1> Apache Answer </1>
+    build_on: ""
   upload_img:
     name: Ändern
     loading: wird geladen...
   pic_auth_code:
-    title: Captcha
+    title: Sicherheitsabfrage
     placeholder: Gib den Text oben ein
     msg:
       empty: Captcha darf nicht leer sein.
@@ -1233,7 +1233,7 @@ ui:
       msg:
         empty: Der Name darf nicht leer sein.
         range: Der Name muss zwischen 2 und 30 Zeichen lang sein.
-        character: 'Must use the character set "a-z", "0-9", " - . _"'
+        character: "Erlaubt sind \"a-z\", \"0-9\", \" - . _"
     email:
       label: E-Mail
       msg:
@@ -1311,14 +1311,14 @@ ui:
         caption: Leute können dich als "@Benutzername" erwähnen.
         msg: Benutzername darf nicht leer sein.
         msg_range: Der Benutzername muss zwischen 2 und 30 Zeichen lang sein.
-        character: 'Must use the character set "a-z", "0-9", "- . _"'
+        character: "Erlaubt sind \"a-z\", \"0-9\", \"- . _"
       avatar:
         label: Profilbild
         gravatar: Gravatar
         gravatar_text: Du kannst das Bild ändern auf
         custom: Benutzerdefiniert
         custom_text: Du kannst dein Bild hochladen.
-        default: System
+        default: Vorgabe
         msg: Bitte lade einen Avatar hoch
       bio:
         label: Über mich
@@ -1386,12 +1386,12 @@ ui:
     review: Deine Überarbeitung wird nach der Überprüfung angezeigt.
     sent_success: Erfolgreich gesendet
   related_question:
-    title: Related
+    title: Ähnliche Fragen
     answers: antworten
   linked_question:
-    title: Linked
-    description: Posts linked to
-    no_linked_question: No contents linked from this content.
+    title: Verknüpft
+    description: Beiträge, die hierher verweisen
+    no_linked_question: Auf diesen Beitrag verweist nichts.
   invite_to_answer:
     title: Frage jemanden
     desc: Lade Leute ein, von denen du glaubst, dass sie die Antwort wissen könnten.
@@ -1400,14 +1400,14 @@ ui:
     search: Personen suchen
   question_detail:
     action: Aktion
-    created: Created
+    created: Erstellt am
     Asked: Gefragt
     asked: gefragt
     update: Geändert
-    Edited: Edited
+    Edited: Bearbeitet am
     edit: bearbeitet
     commented: kommentiert
-    Views: Gesehen
+    Views: "Aufrufe:"
     Follow: Folgen
     Following: Folgend
     follow_tip: Folge dieser Frage, um Benachrichtigungen zu erhalten
@@ -1508,9 +1508,9 @@ ui:
     system_setting: System-Einstellung
     default: Standard
     reset: Zurücksetzen
-    tag: Tag
-    post_lowercase: post
-    filter: Filter
+    tag: Schlagwort
+    post_lowercase: Beitrag
+    filter: Filtern
     ignore: Ignorieren
     submit: Absenden
     normal: Normal
@@ -1533,7 +1533,7 @@ ui:
     follow: Folgen
     following: Folgend
     counts: "{{count}} Ergebnisse"
-    counts_loading: "... Results"
+    counts_loading: "… Ergebnisse"
     more: Mehr
     sort_btns:
       relevance: Relevanz
@@ -1585,7 +1585,7 @@ ui:
     all_questions: Alle Fragen
     x_questions: "{{ count }} Fragen"
     x_answers: "{{ count }} Antworten"
-    x_posts: "{{ count }} Posts"
+    x_posts: "{{ count }} Beiträge"
     questions: Fragen
     answers: Antworten
     newest: Neueste
@@ -1639,7 +1639,7 @@ ui:
     x_questions: Fragen
     recent_badges: Neueste Abzeichen
   install:
-    title: Installation
+    title: Einrichtung
     next: Nächste
     done: Erledigt
     config_yaml_error: Die Datei config.yaml kann nicht erstellt werden.
@@ -1670,9 +1670,9 @@ ui:
     ssl_enabled:
       label: SSL aktivieren
     ssl_enabled_on:
-      label: On
+      label: An
     ssl_enabled_off:
-      label: Off
+      label: Aus
     ssl_mode:
       label: SSL-Modus
     ssl_root_cert:
@@ -1716,7 +1716,7 @@ ui:
     admin_name:
       label: Name
       msg: Der Name darf nicht leer sein.
-      character: 'Must use the character set "a-z", "0-9", " - . _"'
+      character: "Erlaubt sind \"a-z\", \"0-9\", \" - . _"
       msg_max_length: Der Name muss zwischen 2 und 30 Zeichen lang sein.
     admin_password:
       label: Passwort
@@ -1750,7 +1750,7 @@ ui:
     db_failed_desc: >-
       Das bedeutet entweder, dass die Datenbankinformationen in deiner <1>config.yaml</1> Datei falsch sind oder dass der Kontakt zum Datenbankserver nicht hergestellt werden konnte. Das könnte bedeuten, dass der Datenbankserver deines Hosts ausgefallen ist.
   counts:
-    views: Ansichten
+    views: Aufrufe
     votes: Stimmen
     answers: Antworten
     accepted: Akzeptiert
@@ -1763,7 +1763,7 @@ ui:
   page_maintenance:
     desc: "Wir werden gewartet, wir sind bald wieder da."
   nav_menus:
-    dashboard: Dashboard
+    dashboard: Übersicht
     contents: Inhalt
     questions: Fragen
     answers: Antworten
@@ -1774,10 +1774,10 @@ ui:
     general: Allgemein
     interface: Benutzeroberfläche
     smtp: SMTP
-    branding: Branding
+    branding: Erscheinungsbild
     legal: Rechtliches
     write: Schreiben
-    terms: Terms
+    terms: Nutzungsbedingungen
     tos: Nutzungsbedingungen
     privacy: Privatsphäre
     seo: SEO
@@ -1788,17 +1788,17 @@ ui:
     plugins: Erweiterungen (Plugins)
     installed_plugins: Installierte Plugins
     apperance: Erscheinungsbild
-    community: Community
-    advanced: Advanced
-    tags: Tags
-    rules: Rules
-    policies: Policies
-    security: Security
-    files: Files
-    apikeys: API Keys
-    intelligence: Intelligence
-    ai_assistant: AI Assistant
-    ai_settings: AI Settings
+    community: Gemeinschaft
+    advanced: Erweitert
+    tags: Schlagwörter
+    rules: Regeln
+    policies: Richtlinien
+    security: Sicherheit
+    files: Dateien
+    apikeys: API-Schlüssel
+    intelligence: Intelligenz
+    ai_assistant: KI-Assistent
+    ai_settings: KI-Einstellungen
     mcp: MCP
   website_welcome: Willkommen auf {{site_name}}
   user_center:
@@ -1821,7 +1821,7 @@ ui:
     admin_header:
       title: Administrator
     dashboard:
-      title: Dashboard
+      title: Übersicht
       welcome: Willkommen im Admin Bereich!
       site_statistics: Website-Statistiken
       questions: "Fragen:"
@@ -1848,8 +1848,8 @@ ui:
       database_size: "Datenbankgröße:"
       storage_used: "Verwendeter Speicher:"
       uptime: "Betriebszeit:"
-      links: Links
-      plugins: Plugins
+      links: Verweise
+      plugins: Erweiterungen
       github: GitHub
       blog: Blog
       contact: Kontakt
@@ -1937,7 +1937,7 @@ ui:
       created_at: Angelegt am
       delete_at: Löschzeit
       suspend_at: Sperrzeit
-      suspend_until: Suspend until
+      suspend_until: Gesperrt bis
       status: Status
       role: Rolle
       action: Aktion
@@ -1972,8 +1972,8 @@ ui:
       suspend_user:
         title: Diesen Benutzer sperren
         content: Ein gesperrter Benutzer kann sich nicht einloggen.
-        label: How long will the user be suspended for?
-        forever: Forever
+        label: Wie lange soll das Konto gesperrt werden?
+        forever: Dauerhaft
     questions:
       page_title: Fragen
       unlisted: Nicht gelistet
@@ -2035,11 +2035,11 @@ ui:
         msg: Die Zeitzone darf nicht leer sein.
         text: Wähle eine Stadt in der gleichen Zeitzone wie du.
       avatar:
-        label: Default avatar
-        text: For users without a custom avatar of their own.
+        label: Vorgabebild
+        text: Für Konten ohne eigenes Bild.
       gravatar_base_url:
-        label: Gravatar base URL
-        text: URL of the Gravatar provider's API base. Ignored when empty.
+        label: Gravatar-Basisadresse
+        text: Adresse der Gravatar-Schnittstelle. Leer lassen, um sie nicht zu nutzen.
     smtp:
       page_title: SMTP
       from_email:
@@ -2082,7 +2082,7 @@ ui:
         "yes": "Ja"
         "no": "Nein"
     branding:
-      page_title: Branding
+      page_title: Erscheinungsbild
       logo:
         label: Logo
         msg: Logo darf nicht leer sein.
@@ -2111,17 +2111,17 @@ ui:
         always_display: Externen Inhalt immer anzeigen
         ask_before_display: Vor der Anzeige externer Inhalte fragen
     write:
-      page_title: Files
+      page_title: Beiträge
       min_content:
-        label: Minimum question body length
-        text: Minimum allowed question body length in characters.
+        label: Mindestlänge des Fragetextes
+        text: Mindestzahl der Zeichen im Text einer Frage.
       restrict_answer:
         title: Antwort bearbeiten
         label: Jeder Benutzer kann für jede Frage nur eine Antwort schreiben
         text: "Schalten Sie aus, um es Benutzern zu ermöglichen, mehrere Antworten auf dieselbe Frage zu schreiben, was dazu führen kann, dass Antworten nicht im Fokus stehen."
       min_tags:
-        label: "Minimum tags per question"
-        text: "Minimum number of tags required in a question."
+        label: "Schlagwörter je Frage"
+        text: "Mindestzahl der Schlagwörter, die eine Frage braucht."
       recommend_tags:
         label: Empfohlene Tags
         text: "Empfohlene Tags werden standardmäßig in der Dropdown-Liste angezeigt."
@@ -2170,9 +2170,9 @@ ui:
         label: Primäre Farbe
         text: Ändere die Farben, die von deinen Themes verwendet werden
       layout:
-        label: Layout
-        full_width: Full-width
-        fixed_width: Fixed-width
+        label: Anordnung
+        full_width: Volle Breite
+        fixed_width: Feste Breite
     css_and_html:
       page_title: CSS und HTML
       custom_css:
@@ -2184,7 +2184,7 @@ ui:
         text: >
 
       header:
-        label: Header
+        label: Kopfbereich
         text: >
 
       footer:
@@ -2278,69 +2278,69 @@ ui:
       status: Status
       title: Abzeichen
     apikeys:
-      title: API Keys
-      add_api_key: Add API Key
-      desc: Description
-      scope: Scope
+      title: API-Schlüssel
+      add_api_key: API-Schlüssel anlegen
+      desc: Beschreibung
+      scope: Geltungsbereich
       key: Key
-      created: Created
-      last_used: Last used
+      created: Erstellt
+      last_used: Zuletzt genutzt
       add_or_edit_modal:
-        add_title: Add API Key
-        edit_title: Edit API Key
-        description: Description
-        description_required: Description is required.
-        scope: Scope
-        global: Global
-        read-only: Read-only
+        add_title: API-Schlüssel anlegen
+        edit_title: API-Schlüssel bearbeiten
+        description: Beschreibung
+        description_required: Eine Beschreibung ist nötig.
+        scope: Geltungsbereich
+        global: Uneingeschränkt
+        read-only: Nur lesen
       created_modal:
-        title: API key created
-        api_key: API key
-        description: This key will not be displayed again. Make sure you take a copy before continuing.
+        title: API-Schlüssel angelegt
+        api_key: API-Schlüssel
+        description: Dieser Schlüssel wird kein zweites Mal angezeigt. Kopiere ihn, bevor du fortfährst.
       delete_modal:
-        title: Delete API Key
-        content: Any applications or scripts using this key will no longer be able to access the API. This is permanent!
+        title: API-Schlüssel löschen
+        content: Programme und Skripte, die diesen Schlüssel nutzen, verlieren den Zugriff. Das lässt sich nicht rückgängig machen.
     ai_settings:
       enabled:
-        label: AI enabled
-        check: Enable AI features
-        text: The AI model must be configured correctly before it can be used.
+        label: KI aktiv
+        check: KI-Funktionen einschalten
+        text: Das Modell muss richtig eingerichtet sein, bevor es genutzt werden kann.
       provider:
-        label: Provider
+        label: Anbieter
       api_host:
-        label: API host
-        msg: API host is required
+        label: Adresse der Schnittstelle
+        msg: Die Adresse ist erforderlich
       api_key:
-        label: API key
-        check: Check
-        check_success: "Connection successful."
-        msg: API key is required
+        label: API-Schlüssel
+        check: Prüfen
+        check_success: "Verbindung hergestellt."
+        msg: Der Schlüssel ist erforderlich
       model:
-        label: Model
-        msg: Model is required
-      add_success: AI settings updated successfully.
+        label: Modell
+        msg: Ein Modell ist erforderlich
+      add_success: KI-Einstellungen gespeichert.
     conversations:
-      topic: Topic
-      helpful: Helpful
-      unhelpful: Unhelpful
-      created: Created
-      action: Action
-      empty: No conversations found.
+      topic: Thema
+      helpful: Hilfreich
+      unhelpful: Nicht hilfreich
+      created: Erstellt
+      action: Aktion
+      empty: Keine Gespräche vorhanden.
       delete_modal:
-        title: Delete conversation
-        content: Are you sure you want to delete this conversation? This is permanent!
-        delete_success: Conversation deleted successfully.
+        title: Gespräch löschen
+        content: Dieses Gespräch wirklich löschen? Das lässt sich nicht rückgängig machen.
+        delete_success: Gespräch gelöscht.
     mcp:
       mcp_server:
-        label: MCP server
-        switch: Enabled
+        label: MCP-Dienst
+        switch: Aktiv
       type:
-        label: Type
+        label: Art
       url:
         label: URL
       http_header:
-        label: HTTP header
-        text: Please replace {key} with the API Key.
+        label: HTTP-Kopfzeile
+        text: Bitte {key} durch den API-Schlüssel ersetzen.
   form:
     optional: (optional)
     empty: kann nicht leer sein
@@ -2437,7 +2437,7 @@ ui:
     user_normal: Dieser Benutzer ist bereits normal.
     user_suspended: Dieser Nutzer wurde gesperrt.
     user_deleted: Benutzer wurde gelöscht.
-    user_added: User has been added successfully.
+    user_added: Konto wurde angelegt.
     badge_activated: Dieses Abzeichen wurde aktiviert.
     badge_inactivated: Dieses Abzeichen wurde deaktiviert.
     users_deleted: Der Benutzer wurde gelöscht.
