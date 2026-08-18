@@ -52,6 +52,10 @@ import {
 
 import './index.scss';
 
+// Answers are paginated; the request, the page count and the pagination
+// control all have to agree on this number.
+const ANSWER_PAGE_SIZE = 15;
+
 const Index = () => {
   const navigate = useNavigate();
   const { t } = useTranslation('translation');
@@ -101,8 +105,8 @@ const Index = () => {
     const res = await getAnswers({
       order: order === 'updated' || order === 'created' ? order : 'default',
       question_id: qid,
-      page: 1,
-      page_size: 999,
+      page: page || 1,
+      page_size: ANSWER_PAGE_SIZE,
     });
 
     if (res) {
@@ -121,7 +125,7 @@ const Index = () => {
         return v;
       });
 
-      setAnswers({ ...res, count: res.list.length });
+      setAnswers({ ...res, count: res.count });
       if (page > 0 || order) {
         // scroll into view;
         const element = document.getElementById('answerHeader');
@@ -275,11 +279,11 @@ const Index = () => {
           </>
         )}
 
-        {!isLoading && Math.ceil(answers.count / 15) > 1 && (
+        {!isLoading && Math.ceil(answers.count / ANSWER_PAGE_SIZE) > 1 && (
           <div className="d-flex justify-content-center answer-item pt-4">
             <Pagination
               currentPage={Number(page || 1)}
-              pageSize={15}
+              pageSize={ANSWER_PAGE_SIZE}
               totalSize={answers?.count || 0}
             />
           </div>
