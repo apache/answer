@@ -18,15 +18,18 @@
  */
 
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 import react from '@vitejs/plugin-react';
 import yaml from '@modyfi/vite-plugin-yaml';
 import { defineConfig, loadEnv } from 'vite';
 
-const i18nDir = path.resolve(__dirname, '../i18n');
+// This file is loaded as a real ES module, where __dirname does not exist.
+const rootDir = path.dirname(fileURLToPath(import.meta.url));
+const i18nDir = path.resolve(rootDir, '../i18n');
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, __dirname, 'REACT_APP_');
+  const env = loadEnv(mode, rootDir, 'REACT_APP_');
 
   return {
     plugins: [react(), yaml()],
@@ -38,7 +41,7 @@ export default defineConfig(({ mode }) => {
 
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, 'src'),
+        '@': path.resolve(rootDir, 'src'),
         '@i18n': i18nDir,
       },
     },
@@ -54,9 +57,8 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           // Keep emitted files grouped under static/js, static/css and
-          // static/media. The repository's .gitignore and the analyze script
-          // both match on that layout, and a flat static/ directory silently
-          // escapes both.
+          // static/media. The analyze script globs that layout, and a flat
+          // static/ directory silently matches nothing.
           entryFileNames: 'static/js/[name].[hash].js',
           chunkFileNames: 'static/js/[name].[hash].chunk.js',
           assetFileNames: (assetInfo) => {
@@ -89,7 +91,7 @@ export default defineConfig(({ mode }) => {
       },
       fs: {
         // Languages live outside this root and are loaded through @i18n.
-        allow: [__dirname, i18nDir],
+        allow: [rootDir, i18nDir],
       },
     },
   };
