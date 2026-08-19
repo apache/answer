@@ -21,9 +21,10 @@
 # why that is not implied by a successful build.
 #
 # --skip-build   reuse an existing ui/build, do not rebuild
-# --self-check   additionally rewrite ui/build/index.html with asset tag
-#                shapes the server cannot parse and confirm the check fails
-#                on them. Restores the real build output afterwards.
+# --self-check   additionally rewrite ui/build/index.html so a script
+#                or stylesheet tag is missing, and confirm the check
+#                fails on the missing asset. Restores the real build
+#                output afterwards.
 
 set -euo pipefail
 
@@ -69,9 +70,9 @@ if [ "$self_check" -eq 0 ]; then
   exit 0
 fi
 
-# Confirm the check actually fails when the asset tags change shape. Without
-# this, a check that silently stopped asserting anything would look identical
-# to a passing one.
+# Confirm the check actually fails when a required asset is missing from
+# the build output. Without this, a check that silently stopped asserting
+# anything would look identical to a passing one.
 backup="$(mktemp)"
 cp "$INDEX_HTML" "$backup"
 trap 'cp "$backup" "$INDEX_HTML"; rm -f "$backup"' EXIT
