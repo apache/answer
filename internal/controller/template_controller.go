@@ -94,11 +94,11 @@ func GetStyle() (script []string, css []string) {
 		return
 	}
 
-	// The frontend build tool controls attribute order, attribute set (e.g.
-	// module vs classic scripts), and quoting for the emitted tags, and that
-	// shape has already changed once. Walk the parsed DOM instead of matching
-	// a literal tag shape so the next bundler change fails a test instead of
-	// silently shipping pages with no JS or CSS.
+	// Script and stylesheet tags are read from the parsed document, so
+	// attribute order, attribute set (module vs classic scripts), and
+	// quoting do not matter. That shape has already changed once; a
+	// bundler change that breaks it now fails the guarding test instead
+	// of silently shipping pages with no JS or CSS.
 	doc, err := html.Parse(bytes.NewReader(file))
 	if err != nil {
 		return
