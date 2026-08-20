@@ -21,6 +21,7 @@ package usercommon
 
 import (
 	"context"
+	"regexp"
 	"strings"
 
 	"github.com/apache/answer/internal/base/constant"
@@ -35,6 +36,7 @@ import (
 	"github.com/apache/answer/pkg/checker"
 	"github.com/apache/answer/pkg/random"
 	"github.com/mozillazg/go-pinyin"
+	"github.com/mozillazg/go-unidecode"
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
 )
@@ -190,6 +192,10 @@ func (us *UserCommon) FormatUserBasicInfo(ctx context.Context, userInfo *entity.
 	return userBasicInfo
 }
 
+// usernameDisallowed matches everything checker.IsInvalidUsername rejects.
+// Kept in sync with pkg/checker/username.go.
+var usernameDisallowed = regexp.MustCompile(`[^\w.\- ]`)
+
 // MakeUsername
 // Generate a unique Username based on the displayName
 func (us *UserCommon) MakeUsername(ctx context.Context, displayName string) (username string, err error) {
@@ -197,6 +203,17 @@ func (us *UserCommon) MakeUsername(ctx context.Context, displayName string) (use
 	if has := checker.IsChinese(displayName); has {
 		displayName = strings.Join(pinyin.LazyConvert(displayName, nil), "")
 	}
+
+	// Other non-Latin characters, such as German umlauts or accented
+	// letters, are transliterated the same way question URLs are (see
+	// pkg/htmltext). Without this, a display name like "Jürgen Müller"
+	// would produce an invalid username and registration would fail.
+	displayName = unidecode.Unidecode(displayName)
+
+	// Transliteration can emit characters a username may not contain:
+	// "Ольга" becomes "Ol'ga", for example. Drop those, so the result
+	// still satisfies checker.IsInvalidUsername below.
+	displayName = usernameDisallowed.ReplaceAllString(displayName, "")
 
 	username = strings.ReplaceAll(displayName, " ", "-")
 	username = strings.ToLower(username)
