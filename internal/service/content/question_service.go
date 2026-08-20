@@ -1232,6 +1232,7 @@ func (qs *QuestionService) PersonalAnswerPage(ctx context.Context, req *schema.P
 	cond.Page = req.Page
 	cond.PageSize = req.PageSize
 	cond.ShowPending = req.IsAdmin || req.LoginUserID == cond.UserID
+	cond.ShowHidden = req.IsAdmin || req.LoginUserID == cond.UserID
 	if req.OrderCond == "newest" {
 		cond.Order = entity.AnswerSearchOrderByTime
 	} else {
