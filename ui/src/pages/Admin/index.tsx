@@ -36,20 +36,20 @@ const Index: FC = () => {
   });
   return (
     <div className="admin-container d-flex">
-      <div
+      <nav
         className="position-sticky px-3 border-end pt-4 d-none d-xl-block"
         id="pcSideNav">
         <AdminSideNav />
-      </div>
+      </nav>
       <div className="flex-fill w-100">
         <div className="d-flex justify-content-center px-0 px-md-4">
-          <div className="answer-container main-mx-with">
+          <main className="answer-container main-mx-with">
             <Row className="py-4">
               <Col className="page-main flex-auto">
                 <Outlet />
               </Col>
             </Row>
-          </div>
+          </main>
         </div>
         <div className="d-flex justify-content-center px-0 px-md-4">
           <div className="main-mx-with">
