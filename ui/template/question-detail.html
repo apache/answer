@@ -68,7 +68,7 @@
             {{range .detail.Tags}}
             <a href="{{$.baseURL}}/tags/{{.SlugName}}"
                 class="badge-tag rounded-1 {{if .Reserved}}badge-tag-reserved{{end}} {{if .Recommend}}badge-tag-required{{end}} m-1">
-              <span class="">{{.SlugName}}</span>
+              <span class="">{{.DisplayName}}</span>
             </a>
             {{end}}
           </div>
