@@ -81,7 +81,7 @@ const Tags = () => {
   return (
     <Row className="py-4 mb-4">
       <Col xxl={12}>
-        <h3 className="mb-4">{t('title')}</h3>
+        <h1 className="fs-3 mb-4">{t('title')}</h1>
         <div className="d-block d-sm-flex justify-content-between align-items-center flex-wrap">
           <Stack direction="horizontal" gap={3} className="mb-3 mb-sm-0">
             <Form>
