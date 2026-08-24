@@ -35,19 +35,19 @@
   <a role="button" tabindex="0" href="?order=frequent" class="text-capitalize fit-content d-none d-md-block btn btn-outline-secondary" style="border-top-right-radius: 0.25rem; border-bottom-right-radius: 0.25rem;">
     {{translator ($.language) "ui.question.frequent" }}
   </a>
-  <div role="group" class="show dropdown btn-group">
-    <button type="button" aria-expanded="true" class="dropdown-toggle show btn btn-outline-secondary btn-sm">
+  <div role="group" class="dropdown btn-group">
+    <button type="button" aria-expanded="false" class="dropdown-toggle btn btn-outline-secondary btn-sm">
       {{translator ($.language) "ui.btns.more" }}
     </button>
-    <div x-placement="bottom-start" class="dropdown-menu show" data-popper-reference-hidden="false" data-popper-escaped="false" data-popper-placement="bottom-start" style="position: absolute; inset: 0px auto auto 0px; transform: translate(0px, 33px);">
+    <div class="dropdown-menu">
       <a href="?order=score" aria-selected="false" class="text-capitalize dropdown-item"> {{translator ($.language) "ui.question.score" }}</a>
     </div>
   </div>
 </div>
 
 <div class="dropdown">
-  <button type="button" id="react-aria8245013726-:r5:" aria-expanded="false" class="dropdown-toggle btn btn-outline-secondary btn-sm"><i class="br bi-view-stacked"></i></button>
-  <div x-placement="bottom-end" aria-labelledby="react-aria8245013726-:r5:" class="dropdown-menu dropdown-menu-end" data-popper-reference-hidden="false" data-popper-escaped="false" data-popper-placement="bottom-end" style="position: absolute; inset: 0px 0px auto auto; transform: translate(0px, 33px);">
+  <button type="button" id="question-layout-toggle" aria-expanded="false" class="dropdown-toggle btn btn-outline-secondary btn-sm"><i class="br bi-view-stacked"></i></button>
+  <div aria-labelledby="question-layout-toggle" class="dropdown-menu dropdown-menu-end">
     <h6 class="dropdown-header" role="heading">
       {{translator ($.language) "ui.btns.view" }}
     </h6>
