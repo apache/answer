@@ -25,7 +25,7 @@
       <div class="page-main flex-auto col">
         <div class="tag-box mb-5">
           <h3 class="mb-3">
-            <a class="link-dark" href="{{$.baseURL}}/tags/{{$.tag.SlugName}}">{{$.tag.SlugName}}</a>
+            <a class="link-dark" href="{{$.baseURL}}/tags/{{$.tag.SlugName}}">{{$.tag.DisplayName}}</a>
           </h3>
           <p class="text-break">{{formatLinkNofollow $.tag.ParsedText}}</p>
         </div>
@@ -80,7 +80,7 @@
                 {{range .Tags }}
                 <a href="{{$.baseURL}}/tags/{{.SlugName}}"
                   class="badge-tag rounded-1 {{if .Reserved}}badge-tag-reserved{{end}} {{if .Recommend}}badge-tag-required{{end}} m-1">
-                  <span class="">{{.SlugName}}</span>
+                  <span class="">{{.DisplayName}}</span>
                 </a>
                 {{end}}
               </div>
