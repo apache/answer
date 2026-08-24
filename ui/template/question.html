@@ -36,7 +36,7 @@
               <div class="d-flex flex-wrap text-secondary small mb-12">
                 <div class="d-flex align-items-center  text-secondary me-1">
                   <a href="{{$.baseURL}}/users/{{.Operator.Username}}">
-                    <img src="{{$.baseURL}}/users/{{.Operator.Avatar}}" width="24px" height="24px" class="rounded-circle me-1" alt="shuai" data-processed="true">
+                    <img src="{{.Operator.Avatar}}" width="24" height="24" class="rounded-circle me-1" alt="{{.Operator.DisplayName}}" data-processed="true">
                     <span class="me-1 name-ellipsis" style="max-width: 300px;">{{.Operator.DisplayName}}</span>
                   </a>
                   <span class="fw-bold" title="Reputation">{{.Operator.Rank}}</span>
