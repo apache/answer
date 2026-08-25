@@ -102,13 +102,14 @@ func (as *AuthService) SetUserCacheInfo(ctx context.Context, userInfo *entity.Us
 
 func (as *AuthService) CheckUserVisitToken(ctx context.Context, visitToken string) bool {
 	accessToken, err := as.authRepo.GetUserVisitCacheInfo(ctx, visitToken)
-	if err != nil {
+	if err != nil || len(accessToken) == 0 {
 		return false
 	}
-	if len(accessToken) == 0 {
+	userInfo, err := as.GetUserCacheInfo(ctx, accessToken)
+	if err != nil || userInfo == nil {
 		return false
 	}
-	return true
+	return userInfo.EmailStatus == entity.EmailStatusAvailable && userInfo.UserStatus == entity.UserStatusAvailable
 }
 
 func (as *AuthService) SetUserStatus(ctx context.Context, userInfo *entity.UserCacheInfo) (err error) {
