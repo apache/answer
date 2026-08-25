@@ -1385,7 +1385,7 @@ func (qs *QuestionService) SearchUserTopList(ctx context.Context, userName strin
 }
 
 // GetQuestionsByTitle get questions by title
-func (qs *QuestionService) GetQuestionsByTitle(ctx context.Context, title string) (
+func (qs *QuestionService) GetQuestionsByTitle(ctx context.Context, title, userID string, per schema.QuestionPermission) (
 	resp []*schema.QuestionBaseInfo, err error) {
 	resp = make([]*schema.QuestionBaseInfo, 0)
 	if len(title) == 0 {
@@ -1428,6 +1428,9 @@ func (qs *QuestionService) GetQuestionsByTitle(ctx context.Context, title string
 		}
 	}
 	for _, question := range questions {
+		if !canViewSimilarQuestion(question, userID, per) {
+			continue
+		}
 		item := &schema.QuestionBaseInfo{}
 		item.ID = question.ID
 		item.Title = question.Title
@@ -1446,6 +1449,17 @@ func (qs *QuestionService) GetQuestionsByTitle(ctx context.Context, title string
 		resp = append(resp, item)
 	}
 	return resp, nil
+}
+
+func canViewSimilarQuestion(question *entity.Question, userID string, per schema.QuestionPermission) bool {
+	if question == nil || question.Status == entity.QuestionStatusDeleted {
+		return false
+	}
+	return checkQuestionVisibility(&schema.QuestionInfoResp{
+		UserID: question.UserID,
+		Status: question.Status,
+		Show:   question.Show,
+	}, userID, per) == nil
 }
 
 // SimilarQuestion
