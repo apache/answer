@@ -539,30 +539,38 @@ func (cs *CommentService) GetCommentPersonalWithPage(ctx context.Context, req *s
 	}
 	resp := make([]*schema.GetCommentPersonalWithPageResp, 0)
 	for _, comment := range commentList {
-		commentResp := &schema.GetCommentPersonalWithPageResp{
-			CommentID: comment.ID,
-			CreatedAt: comment.CreatedAt.Unix(),
-			ObjectID:  comment.ObjectID,
-			Content:   comment.ParsedText, // todo trim
+		if len(comment.ObjectID) == 0 {
+			continue
 		}
-		if len(comment.ObjectID) > 0 {
-			objInfo, err := cs.objectInfoService.GetInfo(ctx, comment.ObjectID)
-			if err != nil {
-				log.Error(err)
-			} else {
-				commentResp.ObjectType = objInfo.ObjectType
-				commentResp.Title = objInfo.Title
-				commentResp.UrlTitle = htmltext.UrlTitle(objInfo.Title)
-				commentResp.QuestionID = objInfo.QuestionID
-				commentResp.AnswerID = objInfo.AnswerID
-				if objInfo.QuestionStatus == entity.QuestionStatusDeleted {
-					commentResp.Title = "Deleted question"
-				}
-			}
+		objInfo, err := cs.objectInfoService.GetInfo(ctx, comment.ObjectID)
+		if err != nil {
+			log.Error(err)
+			continue
+		}
+		if !canViewPersonalComment(objInfo, req.LoginUserID, req.IsAdminModerator) {
+			continue
+		}
+		commentResp := &schema.GetCommentPersonalWithPageResp{
+			CommentID:  comment.ID,
+			CreatedAt:  comment.CreatedAt.Unix(),
+			ObjectID:   comment.ObjectID,
+			Content:    comment.ParsedText, // todo trim
+			ObjectType: objInfo.ObjectType,
+			Title:      objInfo.Title,
+			UrlTitle:   htmltext.UrlTitle(objInfo.Title),
+			QuestionID: objInfo.QuestionID,
+			AnswerID:   objInfo.AnswerID,
+		}
+		if objInfo.QuestionStatus == entity.QuestionStatusDeleted {
+			commentResp.Title = "Deleted question"
 		}
 		resp = append(resp, commentResp)
 	}
 	return pager.NewPageModel(total, resp), nil
+}
+
+func canViewPersonalComment(objInfo *schema.SimpleObjectInfo, userID string, isAdminModerator bool) bool {
+	return objInfo.CheckVisibility(userID, isAdminModerator) == nil
 }
 
 func (cs *CommentService) notificationQuestionComment(ctx context.Context, questionUserID,
