@@ -73,7 +73,8 @@ func (rc *ReportController) AddReport(ctx *gin.Context) {
 	}
 	req.ObjectID = uid.DeShortID(req.ObjectID)
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
-	isAdmin := middleware.GetUserIsAdminModerator(ctx)
+	req.IsAdminModerator = middleware.GetUserIsAdminModerator(ctx)
+	isAdmin := req.IsAdminModerator
 	if !isAdmin {
 		captchaPass := rc.actionService.ActionRecordVerifyCaptcha(ctx, entity.CaptchaActionReport, req.UserID, req.CaptchaID, req.CaptchaCode)
 		if !captchaPass {

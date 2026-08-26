@@ -44,7 +44,8 @@ type AddCommentReq struct {
 	CaptchaCode         string   `json:"captcha_code"`
 
 	// user id
-	UserID string `json:"-"`
+	UserID           string `json:"-"`
+	IsAdminModerator bool   `json:"-"`
 	// whether user can add it
 	CanAdd bool `json:"-"`
 	// whether user can edit it
