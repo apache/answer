@@ -239,6 +239,7 @@ type SiteCustomCssHTMLReq struct {
 	CustomHead    string `validate:"omitempty,gt=0,lte=65536" json:"custom_head"`
 	CustomCss     string `validate:"omitempty,gt=0,lte=65536" json:"custom_css"`
 	CustomHeader  string `validate:"omitempty,gt=0,lte=65536" json:"custom_header"`
+	CustomBanner  string `validate:"omitempty,gt=0,lte=65536" json:"custom_banner"`
 	CustomFooter  string `validate:"omitempty,gt=0,lte=65536" json:"custom_footer"`
 	CustomSideBar string `validate:"omitempty,gt=0,lte=65536" json:"custom_sidebar"`
 }

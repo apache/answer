@@ -50,6 +50,11 @@ const Index: FC = () => {
         title: t('header.label'),
         description: t('header.text'),
       },
+      custom_banner: {
+        type: 'string',
+        title: t('banner.label'),
+        description: t('banner.text'),
+      },
       custom_sidebar: {
         type: 'string',
         title: t('sidebar.label'),
@@ -84,6 +89,13 @@ const Index: FC = () => {
         className: ['small', 'font-monospace'],
       },
     },
+    custom_banner: {
+      'ui:widget': 'textarea',
+      'ui:options': {
+        rows: 10,
+        className: ['small', 'font-monospace'],
+      },
+    },
     custom_sidebar: {
       'ui:widget': 'textarea',
       'ui:options': {
@@ -108,6 +120,7 @@ const Index: FC = () => {
       custom_css: formData.custom_css.value,
       custom_head: formData.custom_head.value,
       custom_header: formData.custom_header.value,
+      custom_banner: formData.custom_banner.value,
       custom_sidebar: formData.custom_sidebar.value,
       custom_footer: formData.custom_footer.value,
     };
@@ -137,6 +150,7 @@ const Index: FC = () => {
         formMeta.custom_css.value = setting.custom_css;
         formMeta.custom_head.value = setting.custom_head;
         formMeta.custom_header.value = setting.custom_header;
+        formMeta.custom_banner.value = setting.custom_banner;
         formMeta.custom_sidebar.value = setting.custom_sidebar;
         formMeta.custom_footer.value = setting.custom_footer;
         setFormData(formMeta);
