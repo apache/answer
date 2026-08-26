@@ -170,6 +170,7 @@ func (us *UserAdminService) UpdateUserStatus(ctx context.Context, req *schema.Up
 		if err := us.revokeUserAPIKeys(ctx, userInfo.ID); err != nil {
 			return err
 		}
+		us.authService.RemoveUserAllTokens(ctx, userInfo.ID)
 	}
 
 	// remove all content that user created, such as question, answer, comment, etc.

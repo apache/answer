@@ -144,6 +144,9 @@ func (cs *CommentService) AddComment(ctx context.Context, req *schema.AddComment
 	if objInfo.IsDeleted() {
 		return nil, errors.BadRequest(reason.NewObjectAlreadyDeleted)
 	}
+	if err := objInfo.CheckVisibility(req.UserID, req.IsAdminModerator); err != nil {
+		return nil, err
+	}
 	objInfo.ObjectID = uid.DeShortID(objInfo.ObjectID)
 	objInfo.QuestionID = uid.DeShortID(objInfo.QuestionID)
 	objInfo.AnswerID = uid.DeShortID(objInfo.AnswerID)

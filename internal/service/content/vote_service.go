@@ -94,6 +94,9 @@ func (vs *VoteService) VoteUp(ctx context.Context, req *schema.VoteReq) (resp *s
 	if objectInfo.IsDeleted() {
 		return nil, errors.BadRequest(reason.NewObjectAlreadyDeleted)
 	}
+	if err := objectInfo.CheckVisibility(req.UserID, req.IsAdminModerator); err != nil {
+		return nil, err
+	}
 	// make object id must be decoded
 	objectInfo.ObjectID = req.ObjectID
 
@@ -144,6 +147,9 @@ func (vs *VoteService) VoteDown(ctx context.Context, req *schema.VoteReq) (resp 
 	}
 	if objectInfo.IsDeleted() {
 		return nil, errors.BadRequest(reason.NewObjectAlreadyDeleted)
+	}
+	if err := objectInfo.CheckVisibility(req.UserID, req.IsAdminModerator); err != nil {
+		return nil, err
 	}
 	// make object id must be decoded
 	objectInfo.ObjectID = req.ObjectID
