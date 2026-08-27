@@ -17,33 +17,25 @@
  * under the License.
  */
 
-import { create } from 'zustand';
+package schema
 
-interface AiControlStore {
-  ai_enabled: boolean;
-  ai_vision_enabled: boolean;
-  update: (params: {
-    ai_enabled: boolean;
-    ai_vision_enabled?: boolean;
-  }) => void;
-  reset: () => void;
+import "testing"
+
+func TestNormalizeAPIHost(t *testing.T) {
+	cases := []struct{ in, want string }{
+		{"https://token.sensenova.cn", "https://token.sensenova.cn/v1"},
+		{"https://token.sensenova.cn/", "https://token.sensenova.cn/v1"},
+		{"https://token.sensenova.cn///", "https://token.sensenova.cn/v1"},
+		{"https://token.sensenova.cn/v1", "https://token.sensenova.cn/v1"},
+		{" https://api.openai.com ", "https://api.openai.com/v1"},
+		{"https://generativelanguage.googleapis.com/v1beta/openai",
+			"https://generativelanguage.googleapis.com/v1beta/openai"},
+		{"", ""},
+		{"   ", ""},
+	}
+	for _, c := range cases {
+		if got := NormalizeAPIHost(c.in); got != c.want {
+			t.Errorf("NormalizeAPIHost(%q) = %q, want %q", c.in, got, c.want)
+		}
+	}
 }
-
-const aiControlStore = create<AiControlStore>((set) => ({
-  ai_enabled: false,
-  ai_vision_enabled: false,
-  update: (params: {
-    ai_enabled: boolean;
-    ai_vision_enabled?: boolean;
-  }) =>
-    set((state) => {
-      return {
-        ...state,
-        ...params,
-      };
-    }),
-  reset: () =>
-    set({ ai_enabled: false, ai_vision_enabled: false }),
-}));
-
-export default aiControlStore;

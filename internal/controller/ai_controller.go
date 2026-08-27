@@ -111,6 +111,9 @@ type ChatCompletionsRequest struct {
 type Message struct {
 	Role    string `json:"role" binding:"required"`
 	Content string `json:"content" binding:"required"`
+	// Images carries optional attachments (base64 data URLs or HTTPS URLs)
+	// for vision-capable providers. Only the first user message accepts them.
+	Images []string `json:"images,omitempty"`
 }
 
 type ChatCompletionsResponse struct {
@@ -161,6 +164,9 @@ type ConversationContext struct {
 	Messages          []*ai_conversation.ConversationMessage
 	IsNewConversation bool
 	Model             string
+	// Images holds the attachments of the current user turn only; history
+	// records keep a textual placeholder instead of persisting image data.
+	Images []string
 }
 
 func (c *ConversationContext) GetOpenAIMessages() []openai.ChatCompletionMessage {
@@ -172,6 +178,22 @@ func (c *ConversationContext) GetOpenAIMessages() []openai.ChatCompletionMessage
 		}
 	}
 	return messages
+}
+
+// getVisionMessages returns the OpenAI messages with the current turn's images
+// attached to the final user message as MultiContent parts.
+func (c *ConversationContext) getVisionMessages() ([]openai.ChatCompletionMessage, error) {
+	messages := c.GetOpenAIMessages()
+	last := len(messages) - 1
+	if last < 0 || messages[last].Role != openai.ChatMessageRoleUser {
+		return messages, nil
+	}
+	vmsg, err := ValidateAndPrepareImages(messages[last].Content, c.Images)
+	if err != nil {
+		return nil, err
+	}
+	messages[last] = *vmsg
+	return messages, nil
 }
 
 // sendStreamData
@@ -211,8 +233,31 @@ func (c *AIController) ChatCompletions(ctx *gin.Context) {
 	}
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
 
-	data, _ := json.Marshal(req)
-	log.Infof("ai chat request data: %s", string(data))
+	// Reject or validate image attachments before the SSE stream starts, so
+	// clients still receive a proper JSON error with the right status code.
+	if len(req.Messages) > 0 && len(req.Messages[0].Images) > 0 {
+		if !aiProvider.VisionEnabled {
+			handler.HandleResponse(ctx, errors.BadRequest("image input is not enabled for the current AI provider"), nil)
+			return
+		}
+		if _, verr := ValidateAndPrepareImages(req.Messages[0].Content, req.Messages[0].Images); verr != nil {
+			handler.HandleResponse(ctx, errors.BadRequest(verr.Error()), nil)
+			return
+		}
+	}
+
+	// Never dump image data into logs; summarize attachments as a count.
+	if len(req.Messages) > 0 && len(req.Messages[0].Images) > 0 {
+		logReq := *req
+		logReq.Messages = make([]Message, len(req.Messages))
+		copy(logReq.Messages, req.Messages)
+		logReq.Messages[0].Images = []string{fmt.Sprintf("<%d images>", len(req.Messages[0].Images))}
+		data, _ := json.Marshal(logReq)
+		log.Infof("ai chat request data: %s", string(data))
+	} else {
+		data, _ := json.Marshal(req)
+		log.Infof("ai chat request data: %s", string(data))
+	}
 
 	ctx.Header("Content-Type", "text/event-stream")
 	ctx.Header("Cache-Control", "no-cache")
@@ -271,32 +316,34 @@ func (c *AIController) ChatCompletions(ctx *gin.Context) {
 
 func (c *AIController) redirectRequestToAI(ctx *gin.Context, w http.ResponseWriter, id string, conversationCtx *ConversationContext) {
 	client := c.createOpenAIClient()
+	if client == nil {
+		c.sendErrorResponse(w, id, conversationCtx.Model, "AI service is not properly configured")
+		return
+	}
 
 	c.handleAIConversation(ctx, w, id, client, conversationCtx)
 }
 
-// createOpenAIClient
+// createOpenAIClient builds an OpenAI-compatible client from the site AI
+// provider config. Returns nil when AI is disabled or config cannot be read.
 func (c *AIController) createOpenAIClient() *openai.Client {
-	config := openai.DefaultConfig("")
-	config.BaseURL = ""
-
 	aiConfig, err := c.siteInfoService.GetSiteAI(context.Background())
 	if err != nil {
 		log.Errorf("Failed to get AI config: %v", err)
-		return openai.NewClientWithConfig(config)
+		return nil
 	}
 
 	if !aiConfig.Enabled {
 		log.Warn("AI feature is disabled")
-		return openai.NewClientWithConfig(config)
+		return nil
 	}
 
 	aiProvider := aiConfig.GetProvider()
 
-	config = openai.DefaultConfig(aiProvider.APIKey)
-	config.BaseURL = aiProvider.APIHost
-	if !strings.HasSuffix(config.BaseURL, "/v1") {
-		config.BaseURL += "/v1"
+	config := openai.DefaultConfig(aiProvider.APIKey)
+	config.BaseURL = schema.NormalizeAPIHost(aiProvider.APIHost)
+	if aiProvider.ThinkingMode == "on" {
+		config.HTTPClient = newThinkingHTTPClient()
 	}
 	return openai.NewClientWithConfig(config)
 }
@@ -350,6 +397,9 @@ func (c *AIController) initializeConversationContext(ctx *gin.Context, model str
 		ConversationID: req.ConversationID,
 		Model:          model,
 	}
+	if len(req.Messages) > 0 {
+		conversationCtx.Images = req.Messages[0].Images
+	}
 
 	conversationDetail, exist, err := c.aiConversationService.GetConversationDetail(ctx, &schema.AIConversationDetailReq{
 		ConversationID: req.ConversationID,
@@ -361,6 +411,10 @@ func (c *AIController) initializeConversationContext(ctx *gin.Context, model str
 	}
 	if !exist {
 		conversationCtx.UserQuestion = req.Messages[0].Content
+		if len(conversationCtx.Images) > 0 {
+			// Persist a placeholder only; image data is not stored.
+			conversationCtx.UserQuestion += "\n[图片]"
+		}
 		conversationCtx.Messages = c.buildInitialMessages(ctx, req)
 		conversationCtx.IsNewConversation = true
 		return conversationCtx
@@ -432,7 +486,12 @@ func (c *AIController) saveConversationRecord(ctx context.Context, chatcmplID st
 
 func (c *AIController) handleAIConversation(ctx *gin.Context, w http.ResponseWriter, id string, client *openai.Client, conversationCtx *ConversationContext) {
 	maxRounds := 10
-	messages := conversationCtx.GetOpenAIMessages()
+	messages, err := conversationCtx.getVisionMessages()
+	if err != nil {
+		log.Errorf("Failed to prepare vision messages: %v", err)
+		c.sendErrorResponse(w, id, conversationCtx.Model, err.Error())
+		return
+	}
 
 	for round := range maxRounds {
 		log.Debugf("AI conversation round: %d", round+1)

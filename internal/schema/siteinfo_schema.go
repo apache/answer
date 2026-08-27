@@ -295,6 +295,12 @@ type SiteAIProvider struct {
 	APIHost  string `validate:"omitempty,lte=512" form:"api_host" json:"api_host"`
 	APIKey   string `validate:"omitempty,lte=256" form:"api_key" json:"api_key"`
 	Model    string `validate:"omitempty,lte=100" form:"model" json:"model"`
+	// ThinkingMode toggles deep-thinking for reasoning-capable models.
+	// Empty value or "off" keeps requests unchanged; "on" injects the
+	// OpenAI-compatible "enable_thinking" flag into chat completions.
+	ThinkingMode string `validate:"omitempty,oneof=on off" form:"thinking_mode" json:"thinking_mode"`
+	// VisionEnabled allows users to attach images to AI conversations.
+	VisionEnabled bool `validate:"omitempty" form:"vision_enabled" json:"vision_enabled"`
 }
 
 // SiteAIResp AI configuration response
@@ -369,24 +375,25 @@ type SiteSeoResp SiteSeoReq
 
 // SiteInfoResp get site info response
 type SiteInfoResp struct {
-	General       *SiteGeneralResp           `json:"general"`
-	Interface     *SiteInterfaceSettingsResp `json:"interface"`
-	UsersSettings *SiteUsersSettingsResp     `json:"users_settings"`
-	Branding      *SiteBrandingResp          `json:"branding"`
-	Login         *SiteLoginResp             `json:"login"`
-	Theme         *SiteThemeResp             `json:"theme"`
-	CustomCssHtml *SiteCustomCssHTMLResp     `json:"custom_css_html"`
-	SiteSeo       *SiteSeoResp               `json:"site_seo"`
-	SiteUsers     *SiteUsersResp             `json:"site_users"`
-	Advanced      *SiteAdvancedResp          `json:"site_advanced"`
-	Questions     *SiteQuestionsResp         `json:"site_questions"`
-	Tags          *SiteTagsResp              `json:"site_tags"`
-	Legal         *SiteLegalSimpleResp       `json:"site_legal"`
-	Security      *SiteSecurityResp          `json:"site_security"`
-	Version       string                     `json:"version"`
-	Revision      string                     `json:"revision"`
-	AIEnabled     bool                       `json:"ai_enabled"`
-	MCPEnabled    bool                       `json:"mcp_enabled"`
+	General         *SiteGeneralResp           `json:"general"`
+	Interface       *SiteInterfaceSettingsResp `json:"interface"`
+	UsersSettings   *SiteUsersSettingsResp     `json:"users_settings"`
+	Branding        *SiteBrandingResp          `json:"branding"`
+	Login           *SiteLoginResp             `json:"login"`
+	Theme           *SiteThemeResp             `json:"theme"`
+	CustomCssHtml   *SiteCustomCssHTMLResp     `json:"custom_css_html"`
+	SiteSeo         *SiteSeoResp               `json:"site_seo"`
+	SiteUsers       *SiteUsersResp             `json:"site_users"`
+	Advanced        *SiteAdvancedResp          `json:"site_advanced"`
+	Questions       *SiteQuestionsResp         `json:"site_questions"`
+	Tags            *SiteTagsResp              `json:"site_tags"`
+	Legal           *SiteLegalSimpleResp       `json:"site_legal"`
+	Security        *SiteSecurityResp          `json:"site_security"`
+	Version         string                     `json:"version"`
+	Revision        string                     `json:"revision"`
+	AIEnabled       bool                       `json:"ai_enabled"`
+	AIVisionEnabled bool                       `json:"ai_vision_enabled"`
+	MCPEnabled      bool                       `json:"mcp_enabled"`
 }
 
 type TemplateSiteInfoResp struct {

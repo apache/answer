@@ -112,6 +112,9 @@ func (sc *SiteInfoController) GetSiteInfo(ctx *gin.Context) {
 	}
 	if aiConf, err := sc.siteInfoService.GetSiteAI(ctx); err == nil {
 		resp.AIEnabled = aiConf.Enabled
+		if p := aiConf.GetProvider(); p != nil {
+			resp.AIVisionEnabled = p.VisionEnabled
+		}
 	}
 
 	if mcpConf, err := sc.siteInfoService.GetSiteMCP(ctx); err == nil {
