@@ -100,7 +100,7 @@ const Index = () => {
     });
   };
 
-  const handleSubmit = async (userMsg) => {
+  const handleSubmit = async (userMsg, images: string[] = []) => {
     setIsLoading(true);
     if (conversions?.records.length === 0) {
       setRecentNewItem({
@@ -147,6 +147,7 @@ const Index = () => {
         {
           role: 'user',
           content: userMsg,
+          ...(images.length ? { images } : {}),
         },
       ],
     };
@@ -202,13 +203,16 @@ const Index = () => {
     });
   };
 
-  const handleSender = (userMsg) => {
+  const handleSender = (userMsg, images: string[] = []) => {
     if (conversions?.records.length <= 0) {
       const newConversationId = uuidv4();
       navigate(`/ai-assistant/${newConversationId}`);
-      Storage.set('_a_once_msg', userMsg);
+      Storage.set(
+        '_a_once_msg',
+        JSON.stringify({ text: userMsg, images }),
+      );
     } else {
-      handleSubmit(userMsg);
+      handleSubmit(userMsg, images);
     }
   };
 
@@ -227,9 +231,17 @@ const Index = () => {
       const msg = Storage.get('_a_once_msg');
       Storage.remove('_a_once_msg');
       if (msg) {
-        if (msg) {
-          handleSubmit(msg);
+        // Accepts both legacy plain text and { text, images } payloads.
+        try {
+          const parsed = JSON.parse(msg);
+          if (parsed && typeof parsed === 'object' && parsed.text) {
+            handleSubmit(parsed.text, parsed.images || []);
+            return;
+          }
+        } catch {
+          // legacy plain-text message
         }
+        handleSubmit(msg);
         return;
       }
       fetchDetail();

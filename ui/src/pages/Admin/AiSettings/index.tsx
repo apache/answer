@@ -68,6 +68,16 @@ const Index = () => {
       isInvalid: false,
       errorMsg: '',
     },
+    thinking_mode: {
+      value: 'off',
+      isInvalid: false,
+      errorMsg: '',
+    },
+    vision_enabled: {
+      value: false,
+      isInvalid: false,
+      errorMsg: '',
+    },
   });
   const [apiHostPlaceholder, setApiHostPlaceholder] = useState('');
   const [modelsData, setModels] = useState<{ id: string }[]>([]);
@@ -146,6 +156,16 @@ const Index = () => {
         isInvalid: false,
         errorMsg: '',
       },
+      thinking_mode: {
+        value: findHistoryProvider?.thinking_mode || 'off',
+        isInvalid: false,
+        errorMsg: '',
+      },
+      vision_enabled: {
+        value: !!findHistoryProvider?.vision_enabled,
+        isInvalid: false,
+        errorMsg: '',
+      },
     });
     const provider = aiProviders?.find((item) => item.name === value);
     const host = findHistoryProvider?.api_host || provider?.default_api_host;
@@ -218,9 +238,16 @@ const Index = () => {
           api_host: formData.api_host.value,
           api_key: formData.api_key.value,
           model: formData.model.value,
+          thinking_mode:
+            (formData.thinking_mode.value as string) === 'on' ? 'on' : 'off',
+          vision_enabled: !!formData.vision_enabled.value,
         };
       }
-      return v;
+      return {
+        ...v,
+        thinking_mode: v.thinking_mode || 'off',
+        vision_enabled: !!v.vision_enabled,
+      };
     });
 
     const params = {
@@ -292,6 +319,16 @@ const Index = () => {
       },
       model: {
         value: currentAiConfig?.model || '',
+        isInvalid: false,
+        errorMsg: '',
+      },
+      thinking_mode: {
+        value: currentAiConfig?.thinking_mode || 'off',
+        isInvalid: false,
+        errorMsg: '',
+      },
+      vision_enabled: {
+        value: !!currentAiConfig?.vision_enabled,
         isInvalid: false,
         errorMsg: '',
       },
@@ -476,6 +513,48 @@ const Index = () => {
 
             <div className="invalid-feedback">{formData.model.errorMsg}</div>
           </div>
+
+          <Form.Group className="mb-3" controlId="thinking_mode">
+            <Form.Check
+              type="switch"
+              id="switch-thinking-mode"
+              label={t('thinking_mode.label')}
+              checked={formData.thinking_mode.value === 'on'}
+              onChange={(e) =>
+                handleValueChange({
+                  thinking_mode: {
+                    value: e.target.checked ? 'on' : 'off',
+                    errorMsg: '',
+                    isInvalid: false,
+                  },
+                })
+              }
+            />
+            <Form.Text className="text-muted">
+              {t('thinking_mode.tip')}
+            </Form.Text>
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="vision_enabled">
+            <Form.Check
+              type="switch"
+              id="switch-vision-enabled"
+              label={t('vision_enabled.label')}
+              checked={!!formData.vision_enabled.value}
+              onChange={(e) =>
+                handleValueChange({
+                  vision_enabled: {
+                    value: e.target.checked,
+                    errorMsg: '',
+                    isInvalid: false,
+                  },
+                })
+              }
+            />
+            <Form.Text className="text-muted">
+              {t('vision_enabled.tip')}
+            </Form.Text>
+          </Form.Group>
 
           <Button type="submit">{t('save', { keyPrefix: 'btns' })}</Button>
         </Form>

@@ -856,6 +856,9 @@ ui:
     copy: 复制
     ask_a_follow_up: 提出后续问题
     ask_placeholder: 提问
+    image_upload: 添加图片
+    image_too_large: 图片超过 4MB 限制
+    image_max_count: 最多只能添加 4 张图片
   notifications:
     title: 通知
     inbox: 收件箱
@@ -2318,6 +2321,12 @@ ui:
       model:
         label: 模型
         msg: 模型是必需的
+      thinking_mode:
+        label: 深度思考模式
+        tip: 开启后请求将携带 enable_thinking 参数，支持推理的模型将输出思考过程。
+      vision_enabled:
+        label: 允许图片输入
+        tip: 允许用户在与 AI 对话时附带最多 4 张 PNG/JPEG/WebP 图片（每张不超过 4MB）。
       add_success: AI 设置更新成功。
     conversations:
       topic: 主题
