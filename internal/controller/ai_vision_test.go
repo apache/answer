@@ -20,6 +20,7 @@
 package controller
 
 import (
+	"bytes"
 	"encoding/base64"
 	"strings"
 	"testing"
@@ -27,9 +28,18 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-const tinyPNG = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+// minimalPNGBytes builds a tiny blob that starts with the canonical PNG file
+// signature at runtime. The validation only inspects the declared MIME type,
+// base64 integrity and size, so a fully decodable image is not required; we
+// construct it on the fly instead of embedding a base64 blob in the source.
+func minimalPNGBytes() []byte {
+	sig := []byte{0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A} // \x89PNG\r\n\x1a\n
+	return append(sig, bytes.Repeat([]byte{0x00}, 40)...)
+}
 
-func dataURL() string { return "data:image/png;base64," + tinyPNG }
+func dataURL() string {
+	return "data:image/png;base64," + base64.StdEncoding.EncodeToString(minimalPNGBytes())
+}
 
 func TestValidateAndPrepareImagesOK(t *testing.T) {
 	msg, err := ValidateAndPrepareImages("看这张图", []string{dataURL()})
@@ -67,7 +77,7 @@ func TestValidateAndPrepareImagesLimits(t *testing.T) {
 	if _, err := ValidateAndPrepareImages("", []string{"http://a.com/x.png"}); err == nil {
 		t.Fatal("expect reject non-https URL")
 	}
-	if _, err := ValidateAndPrepareImages("", []string{"data:image/gif;base64," + tinyPNG}); err == nil {
+	if _, err := ValidateAndPrepareImages("", []string{"data:image/gif;base64," + base64.StdEncoding.EncodeToString(minimalPNGBytes())}); err == nil {
 		t.Fatal("expect reject unsupported mime")
 	}
 	junk := base64.StdEncoding.EncodeToString(make([]byte, 5<<20))
