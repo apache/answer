@@ -47,6 +47,16 @@ const Index = () => {
       isInvalid: false,
       errorMsg: '',
     },
+    home_chat_enabled: {
+      value: false,
+      isInvalid: false,
+      errorMsg: '',
+    },
+    home_chat_guest_enabled: {
+      value: false,
+      isInvalid: false,
+      errorMsg: '',
+    },
     provider: {
       value: '',
       isInvalid: false,
@@ -225,6 +235,8 @@ const Index = () => {
 
     const params = {
       enabled: formData.enabled.value,
+      home_chat_enabled: !!formData.home_chat_enabled.value,
+      home_chat_guest_enabled: !!formData.home_chat_guest_enabled.value,
       chosen_provider: formData.provider.value,
       ai_providers: newProviders,
     };
@@ -232,6 +244,8 @@ const Index = () => {
       .then(() => {
         aiControlStore.getState().update({
           ai_enabled: formData.enabled.value,
+          ai_home_chat_enabled: !!formData.home_chat_enabled.value,
+          ai_home_chat_guest_enabled: !!formData.home_chat_guest_enabled.value,
         });
 
         historyConfigRef.current = {
@@ -271,6 +285,16 @@ const Index = () => {
     setFormData({
       enabled: {
         value: aiConfig.enabled || false,
+        isInvalid: false,
+        errorMsg: '',
+      },
+      home_chat_enabled: {
+        value: !!aiConfig.home_chat_enabled,
+        isInvalid: false,
+        errorMsg: '',
+      },
+      home_chat_guest_enabled: {
+        value: !!aiConfig.home_chat_guest_enabled,
         isInvalid: false,
         errorMsg: '',
       },
@@ -348,6 +372,48 @@ const Index = () => {
             <Form.Control.Feedback type="invalid">
               {formData.enabled.errorMsg}
             </Form.Control.Feedback>
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="home_chat_enabled">
+            <Form.Check
+              type="switch"
+              id="switch-home-chat-enabled"
+              label={t('home_chat.label')}
+              checked={!!formData.home_chat_enabled.value}
+              onChange={(e) =>
+                handleValueChange({
+                  home_chat_enabled: {
+                    value: e.target.checked,
+                    errorMsg: '',
+                    isInvalid: false,
+                  },
+                })
+              }
+            />
+            <Form.Text className="text-muted">
+              {t('home_chat.tip')}
+            </Form.Text>
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="home_chat_guest_enabled">
+            <Form.Check
+              type="switch"
+              id="switch-home-chat-guest"
+              label={t('home_chat_guest.label')}
+              checked={!!formData.home_chat_guest_enabled.value}
+              onChange={(e) =>
+                handleValueChange({
+                  home_chat_guest_enabled: {
+                    value: e.target.checked,
+                    errorMsg: '',
+                    isInvalid: false,
+                  },
+                })
+              }
+            />
+            <Form.Text className="text-muted">
+              {t('home_chat_guest.tip')}
+            </Form.Text>
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="provider">

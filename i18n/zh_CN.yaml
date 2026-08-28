@@ -856,6 +856,8 @@ ui:
     copy: 复制
     ask_a_follow_up: 提出后续问题
     ask_placeholder: 提问
+    thinking: 思考中…
+    thoughts: 思考过程
   notifications:
     title: 通知
     inbox: 收件箱
@@ -2305,6 +2307,12 @@ ui:
         label: AI 已启用
         check: 启用AI功能
         text: AI 模型必须正确配置才能使用。
+      home_chat:
+        label: 首页展示 AI 助手
+        tip: 开启后将在网站首页右下角展示 AI 助手悬浮入口。
+      home_chat_guest:
+        label: 允许游客使用首页 AI 助手
+        tip: 开启后未登录访客也可使用首页 AI 助手；游客会话仅保留在浏览器中，不会被保存。
       provider:
         label: 提供商
       api_host:

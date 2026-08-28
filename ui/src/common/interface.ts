@@ -428,6 +428,8 @@ export interface SiteSettings {
   revision: string;
   site_security: AdminSettingsSecurity;
   ai_enabled: boolean;
+  ai_home_chat_enabled?: boolean;
+  ai_home_chat_guest_enabled?: boolean;
 }
 
 export interface AdminSettingBranding {
@@ -828,6 +830,8 @@ export interface AddOrEditApiKeyParams {
 
 export interface AiConfig {
   enabled: boolean;
+  home_chat_enabled?: boolean;
+  home_chat_guest_enabled?: boolean;
   chosen_provider: string;
   ai_providers: Array<{
     provider: string;

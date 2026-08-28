@@ -2347,6 +2347,12 @@ ui:
         label: AI enabled
         check: Enable AI features
         text: The AI model must be configured correctly before it can be used.
+      home_chat:
+        label: Show AI assistant on homepage
+        tip: Shows a floating AI assistant entry at the bottom-right of the homepage.
+      home_chat_guest:
+        label: Allow guests to use the homepage AI assistant
+        tip: Logged-out visitors can chat with the homepage AI assistant; guest conversations stay in the browser and are never saved.
       provider:
         label: Provider
       api_host:
