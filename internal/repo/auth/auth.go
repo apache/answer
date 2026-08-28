@@ -224,6 +224,14 @@ func (ar *authRepo) RemoveUserTokens(ctx context.Context, userID string, remainT
 		if token == remainToken {
 			continue
 		}
+		userInfo, err := ar.GetUserCacheInfo(ctx, token)
+		if err != nil {
+			log.Error(err)
+		} else if userInfo != nil && len(userInfo.VisitToken) > 0 {
+			if err := ar.RemoveUserVisitCacheInfo(ctx, userInfo.VisitToken); err != nil {
+				log.Error(err)
+			}
+		}
 		if err := ar.RemoveUserCacheInfo(ctx, token); err != nil {
 			log.Error(err)
 		} else {
@@ -232,6 +240,14 @@ func (ar *authRepo) RemoveUserTokens(ctx context.Context, userID string, remainT
 	}
 	if err := ar.RemoveUserStatus(ctx, userID); err != nil {
 		log.Error(err)
+	}
+	if remainToken != "" {
+		mapping = map[string]bool{remainToken: true}
+		content, _ := json.Marshal(mapping)
+		if err := ar.data.Cache.SetString(ctx, key, string(content), constant.UserTokenCacheTime); err != nil {
+			log.Error(err)
+		}
+		return
 	}
 	if err := ar.data.Cache.Del(ctx, key); err != nil {
 		log.Error(err)

@@ -47,17 +47,18 @@ const (
 )
 
 type AnswerAddReq struct {
-	QuestionID  string `json:"question_id"`
-	Content     string `validate:"required,notblank,gte=6,lte=65535" json:"content"`
-	HTML        string `json:"-"`
-	UserID      string `json:"-"`
-	CanEdit     bool   `json:"-"`
-	CanDelete   bool   `json:"-"`
-	CanRecover  bool   `json:"-"`
-	CaptchaID   string `json:"captcha_id"`
-	CaptchaCode string `json:"captcha_code"`
-	IP          string `json:"-"`
-	UserAgent   string `json:"-"`
+	QuestionID       string `json:"question_id"`
+	Content          string `validate:"required,notblank,gte=6,lte=65535" json:"content"`
+	HTML             string `json:"-"`
+	UserID           string `json:"-"`
+	IsAdminModerator bool   `json:"-"`
+	CanEdit          bool   `json:"-"`
+	CanDelete        bool   `json:"-"`
+	CanRecover       bool   `json:"-"`
+	CaptchaID        string `json:"captcha_id"`
+	CaptchaCode      string `json:"captcha_code"`
+	IP               string `json:"-"`
+	UserAgent        string `json:"-"`
 }
 
 func (req *AnswerAddReq) Check() (errFields []*validator.FormErrorField, err error) {

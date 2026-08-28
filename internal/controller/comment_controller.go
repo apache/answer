@@ -88,6 +88,7 @@ func (cc *CommentController) AddComment(ctx *gin.Context) {
 	}()
 	req.ObjectID = uid.DeShortID(req.ObjectID)
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
+	req.IsAdminModerator = middleware.GetUserIsAdminModerator(ctx)
 
 	canList, err := cc.rankService.CheckOperationPermissions(ctx, req.UserID, []string{
 		permission.CommentAdd,
@@ -100,7 +101,7 @@ func (cc *CommentController) AddComment(ctx *gin.Context) {
 		return
 	}
 	linkUrlLimitUser := canList[3]
-	isAdmin := middleware.GetUserIsAdminModerator(ctx)
+	isAdmin := req.IsAdminModerator
 	if !isAdmin || !linkUrlLimitUser {
 		captchaPass := cc.actionService.ActionRecordVerifyCaptcha(ctx, entity.CaptchaActionComment, req.UserID, req.CaptchaID, req.CaptchaCode)
 		if !captchaPass {
@@ -280,7 +281,11 @@ func (cc *CommentController) GetCommentPersonalWithPage(ctx *gin.Context) {
 		return
 	}
 
-	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
+	req.LoginUserID = middleware.GetLoginUserIDFromContext(ctx)
+	if len(req.Username) == 0 {
+		req.UserID = req.LoginUserID
+	}
+	req.IsAdminModerator = middleware.GetUserIsAdminModerator(ctx)
 
 	resp, err := cc.commentService.GetCommentPersonalWithPage(ctx, req)
 	handler.HandleResponse(ctx, err, resp)

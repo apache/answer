@@ -832,7 +832,17 @@ func (qc *QuestionController) UpdateQuestionInviteUser(ctx *gin.Context) {
 // @Router /answer/api/v1/question/similar [get]
 func (qc *QuestionController) GetSimilarQuestions(ctx *gin.Context) {
 	title := ctx.Query("title")
-	resp, err := qc.questionService.GetQuestionsByTitle(ctx, title)
+	userID := middleware.GetLoginUserIDFromContext(ctx)
+	canReopen, err := qc.rankService.CheckOperationPermission(ctx, userID, permission.QuestionReopen, "")
+	if err != nil {
+		handler.HandleResponse(ctx, err, nil)
+		return
+	}
+	per := schema.QuestionPermission{
+		IsAdminModerator: middleware.GetUserIsAdminModerator(ctx),
+		CanReopen:        canReopen,
+	}
+	resp, err := qc.questionService.GetQuestionsByTitle(ctx, title, userID, per)
 	handler.HandleResponse(ctx, err, resp)
 }
 
