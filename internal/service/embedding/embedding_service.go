@@ -38,12 +38,7 @@ func NewEmbeddingService() *EmbeddingService {
 // Available reports whether a VectorSearch plugin is currently enabled, so
 // callers can hide semantic search capabilities instead of failing at call time.
 func (s *EmbeddingService) Available() bool {
-	found := false
-	_ = plugin.CallVectorSearch(func(vs plugin.VectorSearch) error {
-		found = true
-		return nil
-	})
-	return found
+	return plugin.IsVectorSearchEnabled()
 }
 
 // SearchSimilar delegates to the VectorSearch plugin.
