@@ -488,3 +488,10 @@ func (c *MCPController) MCPSemanticSearchHandler() func(ctx context.Context, req
 		return mcp.NewToolResultText(string(data)), nil
 	}
 }
+
+// SemanticSearchAvailable reports whether a VectorSearch plugin is currently
+// enabled, so the AI chat can omit the semantic_search tool entirely instead
+// of letting the model call into a missing capability.
+func (c *MCPController) SemanticSearchAvailable() bool {
+	return c.embeddingService.Available()
+}
