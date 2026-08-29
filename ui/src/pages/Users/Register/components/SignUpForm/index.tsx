@@ -57,7 +57,7 @@ const Index: React.FC<Props> = ({ callback }) => {
   });
 
   const emailCaptcha = useCaptchaPlugin('email');
-  const nameRegex = /^[\w.-\s]{2,30}$/;
+  const nameRegex = /^[\p{L}\p{N}._\s-]{2,30}$/u;
 
   const handleChange = (params: FormDataType) => {
     setFormData({ ...formData, ...params });
