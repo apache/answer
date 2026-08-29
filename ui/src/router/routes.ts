@@ -249,93 +249,101 @@ const routes: RouteNode[] = [
         ],
       },
       {
-        path: 'users/login',
-        page: 'pages/Users/Login',
-        guard: () => {
-          const notLogged = guard.notLogged();
-          if (notLogged.ok) {
-            return notLogged;
-          }
+        // Pages with no layout of their own — signing in, recovering an
+        // account, the error pages. Wrapped so they reach a main landmark
+        // as well; see pages/PlainLayout.
+        page: 'pages/PlainLayout',
+        children: [
+          {
+            path: 'users/login',
+            page: 'pages/Users/Login',
+            guard: () => {
+              const notLogged = guard.notLogged();
+              if (notLogged.ok) {
+                return notLogged;
+              }
 
-          return guard.notActivated();
-        },
-      },
-      {
-        path: 'users/register',
-        page: 'pages/Users/Register',
-        guard: () => {
-          const allowNew = guard.allowNewRegistration();
-          if (!allowNew.ok) {
-            return allowNew;
-          }
-          const notLogged = guard.notLogged();
-          if (notLogged.ok) {
-            const sa = guard.singUpAgent();
-            if (!sa.ok) {
-              return sa;
-            }
-          }
-          return notLogged;
-        },
-      },
-      {
-        path: 'users/logout',
-        page: 'pages/Users/Logout',
-        guard: () => {
-          return guard.loggedRedirectHome();
-        },
-      },
-      {
-        path: 'users/account-recovery',
-        page: 'pages/Users/AccountForgot',
-        guard: () => {
-          return guard.notLogged();
-        },
-      },
-      {
-        path: 'users/change-email',
-        page: 'pages/Users/ChangeEmail',
-      },
-      {
-        path: 'users/password-reset',
-        page: 'pages/Users/PasswordReset',
-      },
-      {
-        path: 'users/account-activation',
-        page: 'pages/Users/ActiveEmail',
-      },
-      {
-        path: 'users/account-activation/success',
-        page: 'pages/Users/ActivationResult',
-        guard: () => {
-          return guard.activated();
-        },
-      },
-      {
-        path: '/users/account-activation/failed',
-        page: 'pages/Users/ActivationResult',
-        guard: () => {
-          return guard.notActivated();
-        },
-      },
-      {
-        path: '/users/confirm-new-email',
-        page: 'pages/Users/ConfirmNewEmail',
-      },
-      {
-        path: '/users/account-suspended',
-        page: 'pages/Users/Suspended',
-        guard: () => {
-          return guard.notLogged();
-        },
-      },
-      {
-        path: '/users/confirm-email',
-        page: 'pages/Users/OauthBindEmail',
-      },
-      {
-        path: '/users/auth-landing',
-        page: 'pages/Users/AuthCallback',
+              return guard.notActivated();
+            },
+          },
+          {
+            path: 'users/register',
+            page: 'pages/Users/Register',
+            guard: () => {
+              const allowNew = guard.allowNewRegistration();
+              if (!allowNew.ok) {
+                return allowNew;
+              }
+              const notLogged = guard.notLogged();
+              if (notLogged.ok) {
+                const sa = guard.singUpAgent();
+                if (!sa.ok) {
+                  return sa;
+                }
+              }
+              return notLogged;
+            },
+          },
+          {
+            path: 'users/logout',
+            page: 'pages/Users/Logout',
+            guard: () => {
+              return guard.loggedRedirectHome();
+            },
+          },
+          {
+            path: 'users/account-recovery',
+            page: 'pages/Users/AccountForgot',
+            guard: () => {
+              return guard.notLogged();
+            },
+          },
+          {
+            path: 'users/change-email',
+            page: 'pages/Users/ChangeEmail',
+          },
+          {
+            path: 'users/password-reset',
+            page: 'pages/Users/PasswordReset',
+          },
+          {
+            path: 'users/account-activation',
+            page: 'pages/Users/ActiveEmail',
+          },
+          {
+            path: 'users/account-activation/success',
+            page: 'pages/Users/ActivationResult',
+            guard: () => {
+              return guard.activated();
+            },
+          },
+          {
+            path: '/users/account-activation/failed',
+            page: 'pages/Users/ActivationResult',
+            guard: () => {
+              return guard.notActivated();
+            },
+          },
+          {
+            path: '/users/confirm-new-email',
+            page: 'pages/Users/ConfirmNewEmail',
+          },
+          {
+            path: '/users/account-suspended',
+            page: 'pages/Users/Suspended',
+            guard: () => {
+              return guard.notLogged();
+            },
+          },
+          {
+            path: '/users/confirm-email',
+            page: 'pages/Users/OauthBindEmail',
+          },
+          {
+            path: '/users/auth-landing',
+            page: 'pages/Users/AuthCallback',
+          },
+        ],
       },
       // for admin
       {
@@ -464,24 +472,32 @@ const routes: RouteNode[] = [
         ],
       },
       {
-        path: '/user-center/auth',
-        page: 'pages/UserCenter/Auth',
-        guard: () => {
-          const notLogged = guard.notLogged();
-          return notLogged;
-        },
-      },
-      {
-        path: '/user-center/auth-failed',
-        page: 'pages/UserCenter/AuthFailed',
-      },
-      {
-        path: '*',
-        page: 'pages/404',
-      },
-      {
-        path: '50x',
-        page: 'pages/50X',
+        // Pages with no layout of their own — signing in, recovering an
+        // account, the error pages. Wrapped so they reach a main landmark
+        // as well; see pages/PlainLayout.
+        page: 'pages/PlainLayout',
+        children: [
+          {
+            path: '/user-center/auth',
+            page: 'pages/UserCenter/Auth',
+            guard: () => {
+              const notLogged = guard.notLogged();
+              return notLogged;
+            },
+          },
+          {
+            path: '/user-center/auth-failed',
+            page: 'pages/UserCenter/AuthFailed',
+          },
+          {
+            path: '*',
+            page: 'pages/404',
+          },
+          {
+            path: '50x',
+            page: 'pages/50X',
+          },
+        ],
       },
       // ai
       {
@@ -532,12 +548,20 @@ const routes: RouteNode[] = [
         ],
       },
       {
-        path: '/users/unsubscribe',
-        page: 'pages/Users/Unsubscribe',
-      },
-      {
-        path: '403',
-        page: 'pages/403',
+        // Pages with no layout of their own — signing in, recovering an
+        // account, the error pages. Wrapped so they reach a main landmark
+        // as well; see pages/PlainLayout.
+        page: 'pages/PlainLayout',
+        children: [
+          {
+            path: '/users/unsubscribe',
+            page: 'pages/Users/Unsubscribe',
+          },
+          {
+            path: '403',
+            page: 'pages/403',
+          },
+        ],
       },
     ],
   },
