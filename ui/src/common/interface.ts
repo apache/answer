@@ -430,6 +430,8 @@ export interface SiteSettings {
   ai_enabled: boolean;
   ai_home_chat_enabled?: boolean;
   ai_home_chat_guest_enabled?: boolean;
+  ai_welcome_text?: string;
+  ai_initial_messages?: string;
 }
 
 export interface AdminSettingBranding {
@@ -833,6 +835,12 @@ export interface AiConfig {
   home_chat_enabled?: boolean;
   home_chat_guest_enabled?: boolean;
   chosen_provider: string;
+  ai_welcome_text?: string;
+  ai_initial_messages?: string;
+  prompt_config?: {
+    zh_cn?: string;
+    en_us?: string;
+  };
   ai_providers: Array<{
     provider: string;
     api_host: string;

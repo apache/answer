@@ -23,10 +23,14 @@ interface AiControlStore {
   ai_enabled: boolean;
   ai_home_chat_enabled: boolean;
   ai_home_chat_guest_enabled: boolean;
+  ai_welcome_text: string;
+  ai_initial_messages: string;
   update: (params: {
     ai_enabled: boolean;
     ai_home_chat_enabled?: boolean;
     ai_home_chat_guest_enabled?: boolean;
+    ai_welcome_text?: string;
+    ai_initial_messages?: string;
   }) => void;
   reset: () => void;
 }
@@ -35,10 +39,14 @@ const aiControlStore = create<AiControlStore>((set) => ({
   ai_enabled: false,
   ai_home_chat_enabled: false,
   ai_home_chat_guest_enabled: false,
+  ai_welcome_text: '',
+  ai_initial_messages: '',
   update: (params: {
     ai_enabled: boolean;
     ai_home_chat_enabled?: boolean;
     ai_home_chat_guest_enabled?: boolean;
+    ai_welcome_text?: string;
+    ai_initial_messages?: string;
   }) =>
     set((state) => {
       return {
@@ -51,6 +59,8 @@ const aiControlStore = create<AiControlStore>((set) => ({
       ai_enabled: false,
       ai_home_chat_enabled: false,
       ai_home_chat_guest_enabled: false,
+      ai_welcome_text: '',
+      ai_initial_messages: '',
     }),
 }));
 

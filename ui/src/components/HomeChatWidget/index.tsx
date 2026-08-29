@@ -131,8 +131,13 @@ const HomeChatWidget: React.FC = () => {
                   }
                 }}
                 guest={!isLogged}
-                height="100%"
-              />
+                height="100%">
+                <div
+                  slot="sender-footer-prefix"
+                  className="small text-secondary ps-2 text-truncate">
+                  {t('ai_disclaimer')}
+                </div>
+              </AnswerChatBot>
             </Suspense>
           </div>
         </div>

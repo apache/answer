@@ -174,12 +174,8 @@ const Index = () => {
         <Col
           className={classNames(
             'page-main flex-auto d-flex flex-column flex-grow-1',
-            !conversions?.conversation_id ? 'justify-content-center' : '',
           )}
           style={{ maxWidth: '772px' }}>
-          {conversions?.conversation_id ? null : (
-            <h5 className="text-center mb-3">{t('description')}</h5>
-          )}
           <div
             style={{
               flex: '1 1 auto',
@@ -196,8 +192,13 @@ const Index = () => {
                   navigate(`/ai-assistant/${cid}`, { replace: true });
                 }
               }}
-              height="100%"
-            />
+              height="100%">
+              <div
+                slot="sender-footer-prefix"
+                className="small text-secondary ps-2 text-truncate">
+                {t('ai_disclaimer')}
+              </div>
+            </AnswerChatBot>
           </div>
         </Col>
         {isShowConversationList && (

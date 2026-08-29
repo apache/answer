@@ -279,6 +279,13 @@ type SiteAIReq struct {
 	// Guest conversations are kept in memory client-side only and are never
 	// persisted, and voting is disabled for them.
 	HomeChatGuestEnabled bool `validate:"omitempty" form:"home_chat_guest_enabled" json:"home_chat_guest_enabled"`
+	// WelcomeText overrides the assistant welcome description shown in a
+	// fresh conversation. Empty keeps the built-in i18n text.
+	WelcomeText string `validate:"omitempty,lte=500" form:"ai_welcome_text" json:"ai_welcome_text"`
+	// InitialMessages holds admin-configured assistant messages (one per
+	// line, markdown allowed) rendered in a fresh conversation. When set,
+	// the built-in suggestion chips are hidden.
+	InitialMessages string `validate:"omitempty,lte=5000" form:"ai_initial_messages" json:"ai_initial_messages"`
 }
 
 func (s *SiteAIResp) GetProvider() *SiteAIProvider {
@@ -394,6 +401,8 @@ type SiteInfoResp struct {
 	AIEnabled            bool                       `json:"ai_enabled"`
 	AIHomeChatEnabled    bool                       `json:"ai_home_chat_enabled"`
 	AIHomeChatGuestEnabled bool                     `json:"ai_home_chat_guest_enabled"`
+	AIWelcomeText        string                     `json:"ai_welcome_text"`
+	AIInitialMessages    string                     `json:"ai_initial_messages"`
 	MCPEnabled           bool                       `json:"mcp_enabled"`
 }
 

@@ -391,6 +391,8 @@ export const initAppSettingsStore = async () => {
       ai_enabled: appSettings.ai_enabled,
       ai_home_chat_enabled: appSettings.ai_home_chat_enabled ?? false,
       ai_home_chat_guest_enabled: appSettings.ai_home_chat_guest_enabled ?? false,
+      ai_welcome_text: appSettings.ai_welcome_text ?? '',
+      ai_initial_messages: appSettings.ai_initial_messages ?? '',
     });
     siteSecurityStore.getState().update(appSettings.site_security);
   }
