@@ -134,14 +134,14 @@ const Index: FC = () => {
           </div>
         ) : (
           <div className="tag-box mb-5">
-            <h3 className="mb-3">
+            <h1 className="fs-3 mb-3">
               <Link
                 to={pathFactory.tagLanding(tagInfo.slug_name)}
                 replace
                 className="link-dark">
                 {tagInfo.display_name}
               </Link>
-            </h3>
+            </h1>
 
             <div
               className="text-break"

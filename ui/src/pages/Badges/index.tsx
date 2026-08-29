@@ -35,11 +35,11 @@ const Index = () => {
 
   return (
     <div className="pt-4 mb-5">
-      <h3 className="mb-4">{t('title')}</h3>
+      <h1 className="fs-3 mb-4">{t('title')}</h1>
       {badgesList?.map((item) => {
         return (
           <div key={item.group_name} className="mb-4">
-            <h5 className="mb-4">{item.group_name}</h5>
+            <h2 className="fs-5 mb-4">{item.group_name}</h2>
             <Row>
               {item.badges?.map((badge) => {
                 return (
