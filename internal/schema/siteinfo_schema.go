@@ -269,10 +269,23 @@ type AIPromptConfig struct {
 
 // SiteAIReq AI configuration request
 type SiteAIReq struct {
-	Enabled         bool              `validate:"omitempty" form:"enabled" json:"enabled"`
-	ChosenProvider  string            `validate:"omitempty,lte=50" form:"chosen_provider" json:"chosen_provider"`
+	Enabled        bool              `validate:"omitempty" form:"enabled" json:"enabled"`
+	ChosenProvider string            `validate:"omitempty,lte=50" form:"chosen_provider" json:"chosen_provider"`
 	SiteAIProviders []*SiteAIProvider `validate:"omitempty,dive" form:"ai_providers" json:"ai_providers"`
-	PromptConfig    *AIPromptConfig   `validate:"omitempty" form:"prompt_config" json:"prompt_config,omitempty"`
+	PromptConfig   *AIPromptConfig   `validate:"omitempty" form:"prompt_config" json:"prompt_config,omitempty"`
+	// HomeChatEnabled shows the AI chat entry on the homepage.
+	HomeChatEnabled bool `validate:"omitempty" form:"home_chat_enabled" json:"home_chat_enabled"`
+	// HomeChatGuestEnabled lets logged-out visitors use the homepage AI chat.
+	// Guest conversations are kept in memory client-side only and are never
+	// persisted, and voting is disabled for them.
+	HomeChatGuestEnabled bool `validate:"omitempty" form:"home_chat_guest_enabled" json:"home_chat_guest_enabled"`
+	// WelcomeText overrides the assistant welcome description shown in a
+	// fresh conversation. Empty keeps the built-in i18n text.
+	WelcomeText string `validate:"omitempty,lte=500" form:"ai_welcome_text" json:"ai_welcome_text"`
+	// InitialMessages holds admin-configured assistant messages (one per
+	// line, markdown allowed) rendered in a fresh conversation. When set,
+	// the built-in suggestion chips are hidden.
+	InitialMessages string `validate:"omitempty,lte=5000" form:"ai_initial_messages" json:"ai_initial_messages"`
 }
 
 func (s *SiteAIResp) GetProvider() *SiteAIProvider {
@@ -385,8 +398,12 @@ type SiteInfoResp struct {
 	Security      *SiteSecurityResp          `json:"site_security"`
 	Version       string                     `json:"version"`
 	Revision      string                     `json:"revision"`
-	AIEnabled     bool                       `json:"ai_enabled"`
-	MCPEnabled    bool                       `json:"mcp_enabled"`
+	AIEnabled            bool                       `json:"ai_enabled"`
+	AIHomeChatEnabled    bool                       `json:"ai_home_chat_enabled"`
+	AIHomeChatGuestEnabled bool                     `json:"ai_home_chat_guest_enabled"`
+	AIWelcomeText        string                     `json:"ai_welcome_text"`
+	AIInitialMessages    string                     `json:"ai_initial_messages"`
+	MCPEnabled           bool                       `json:"mcp_enabled"`
 }
 
 type TemplateSiteInfoResp struct {

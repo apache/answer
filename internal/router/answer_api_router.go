@@ -171,6 +171,10 @@ func (a *AnswerAPIRouter) RegisterUnAuthAnswerAPIRouter(r *gin.RouterGroup) {
 	r.GET("/user/ranking", a.userController.UserRanking)
 	r.GET("/user/staff", a.userController.UserStaff)
 
+	// AI chat (guest-capable: the handler enforces the admin switches; logged
+	// in users always work, guests only when home chat guest access is on)
+	r.POST("/chat/completions", a.aiController.ChatCompletions)
+
 	// answer
 	r.GET("/answer/info", a.answerController.GetAnswerInfo)
 	r.GET("/answer/page", a.answerController.AnswerList)
@@ -324,10 +328,10 @@ func (a *AnswerAPIRouter) RegisterAnswerAPIRouter(r *gin.RouterGroup) {
 	// meta
 	r.PUT("/meta/reaction", a.metaController.AddOrUpdateReaction)
 
-	// AI chat
-	r.POST("/chat/completions", a.aiController.ChatCompletions)
-
 	// AI conversation
+	// NOTE: /chat/completions is registered in RegisterUnAuthAnswerAPIRouter
+	// so logged-out visitors can use the homepage AI chat when the admin
+	// enables guest access; the handler enforces that switch itself.
 	r.GET("/ai/conversation/page", a.aiConversationController.GetConversationList)
 	r.GET("/ai/conversation", a.aiConversationController.GetConversationDetail)
 	r.POST("/ai/conversation/vote", a.aiConversationController.VoteRecord)

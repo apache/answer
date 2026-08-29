@@ -29,6 +29,7 @@ import {
   HotQuestions,
   CustomSidebar,
 } from '@/components';
+import HomeChatWidget from '@/components/HomeChatWidget';
 import {
   siteInfoStore,
   loggedUserInfoStore,
@@ -113,6 +114,7 @@ const Questions: FC = () => {
         {loggedUser.access_token && <FollowingTags />}
         <HotQuestions />
       </Col>
+      <HomeChatWidget />
     </Row>
   );
 };

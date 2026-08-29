@@ -21,20 +21,47 @@ import { create } from 'zustand';
 
 interface AiControlStore {
   ai_enabled: boolean;
-  update: (params: { ai_enabled: boolean }) => void;
+  ai_home_chat_enabled: boolean;
+  ai_home_chat_guest_enabled: boolean;
+  ai_welcome_text: string;
+  ai_initial_messages: string;
+  update: (params: {
+    ai_enabled: boolean;
+    ai_home_chat_enabled?: boolean;
+    ai_home_chat_guest_enabled?: boolean;
+    ai_welcome_text?: string;
+    ai_initial_messages?: string;
+  }) => void;
   reset: () => void;
 }
 
 const aiControlStore = create<AiControlStore>((set) => ({
   ai_enabled: false,
-  update: (params: { ai_enabled: boolean }) =>
+  ai_home_chat_enabled: false,
+  ai_home_chat_guest_enabled: false,
+  ai_welcome_text: '',
+  ai_initial_messages: '',
+  update: (params: {
+    ai_enabled: boolean;
+    ai_home_chat_enabled?: boolean;
+    ai_home_chat_guest_enabled?: boolean;
+    ai_welcome_text?: string;
+    ai_initial_messages?: string;
+  }) =>
     set((state) => {
       return {
         ...state,
         ...params,
       };
     }),
-  reset: () => set({ ai_enabled: false }),
+  reset: () =>
+    set({
+      ai_enabled: false,
+      ai_home_chat_enabled: false,
+      ai_home_chat_guest_enabled: false,
+      ai_welcome_text: '',
+      ai_initial_messages: '',
+    }),
 }));
 
 export default aiControlStore;

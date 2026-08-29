@@ -211,6 +211,14 @@ func (c *AIController) ChatCompletions(ctx *gin.Context) {
 	}
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
 
+	// The route is registered as unauthenticated so logged-out visitors can
+	// use the homepage AI chat; guests are only served when the admin enables
+	// guest access, and their conversations are never persisted.
+	if req.UserID == "" && !aiConfig.HomeChatGuestEnabled {
+		handler.HandleResponse(ctx, errors.Unauthorized("guest access to AI chat is not enabled"), nil)
+		return
+	}
+
 	data, _ := json.Marshal(req)
 	log.Infof("ai chat request data: %s", string(data))
 
@@ -349,6 +357,34 @@ func (c *AIController) initializeConversationContext(ctx *gin.Context, model str
 		Messages:       make([]*ai_conversation.ConversationMessage, 0),
 		ConversationID: req.ConversationID,
 		Model:          model,
+	}
+
+	// Guest session: storage is never touched. The client sends the whole
+	// page-side history in the request, and a system prompt is prepended for
+	// the assistant to work with MCP tools.
+	if req.UserID == "" {
+		conversationCtx.IsNewConversation = true
+		question := ""
+		for i := len(req.Messages) - 1; i >= 0; i-- {
+			if req.Messages[i].Role == openai.ChatMessageRoleUser {
+				question = req.Messages[i].Content
+				break
+			}
+		}
+		conversationCtx.UserQuestion = question
+		currentLang := handler.GetLangByCtx(ctx)
+		prompt := c.getPromptByLanguage(currentLang, question)
+		conversationCtx.Messages = append(conversationCtx.Messages, &ai_conversation.ConversationMessage{
+			Role:    openai.ChatMessageRoleSystem,
+			Content: prompt,
+		})
+		for _, m := range req.Messages {
+			conversationCtx.Messages = append(conversationCtx.Messages, &ai_conversation.ConversationMessage{
+				Role:    m.Role,
+				Content: m.Content,
+			})
+		}
+		return conversationCtx
 	}
 
 	conversationDetail, exist, err := c.aiConversationService.GetConversationDetail(ctx, &schema.AIConversationDetailReq{
