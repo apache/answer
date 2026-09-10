@@ -72,7 +72,7 @@ backend:
       user:
         other: Default with no special access.
       admin:
-        other: Have the full power to access the site.
+        other: Has full access to the site.
       moderator:
         other: Has access to all posts except admin settings.
   privilege:
@@ -166,22 +166,22 @@ backend:
         other: Email and password do not match.
     answer:
       not_found:
-        other: Answer do not found.
+        other: Answer not found.
       cannot_deleted:
         other: No permission to delete.
       cannot_update:
         other: No permission to update.
       question_closed_cannot_add:
-        other: Questions are closed and cannot be added.
+        other: This question is closed and cannot accept new answers.
       content_cannot_empty:
         other: Answer content cannot be empty.
     comment:
       edit_without_permission:
-        other: Comment are not allowed to edit.
+        other: This comment cannot be edited.
       not_found:
         other: Comment not found.
       cannot_edit_after_deadline:
-        other: The comment time has been too long to modify.
+        other: This comment can no longer be modified.
       content_cannot_empty:
         other: Comment content cannot be empty.
     email:
@@ -190,15 +190,15 @@ backend:
       need_to_be_verified:
         other: Email should be verified.
       verify_url_expired:
-        other: Email verified URL has expired, please resend the email.
+        other: The email verification URL has expired. Please resend the email.
       illegal_email_domain_error:
-        other: Email is not allowed from that email domain. Please use another one.
+        other: Email addresses from that domain are not allowed. Please use another one.
     lang:
       not_found:
         other: Language file not found.
     object:
       captcha_verification_failed:
-        other: Captcha wrong.
+        other: Incorrect CAPTCHA.
       disallow_follow:
         other: You are not allowed to follow.
       disallow_vote:
@@ -212,7 +212,7 @@ backend:
       email_or_password_incorrect:
         other: Email and password do not match.
       old_password_verification_failed:
-        other: The old password verification failed
+        other: The old password is incorrect.
       new_password_same_as_previous_setting:
         other: The new password is the same as the previous one.
       already_deleted:
@@ -239,14 +239,14 @@ backend:
         other: Not enough content entered.
     rank:
       fail_to_meet_the_condition:
-        other: Reputation rank fail to meet the condition.
+        other: Reputation does not meet the requirement.
       vote_fail_to_meet_the_condition:
         other: Thanks for the feedback. You need at least {{.Rank}} reputation to cast a vote.
       no_enough_rank_to_operate:
         other: You need at least {{.Rank}} reputation to do this.
     report:
       handle_failed:
-        other: Report handle failed.
+        other: Failed to process the report.
       not_found:
         other: Report not found.
     tag:
@@ -255,7 +255,7 @@ backend:
       not_found:
         other: Tag not found.
       recommend_tag_not_found:
-        other: Recommend tag is not exist.
+        other: Recommended tag does not exist.
       recommend_tag_enter:
         other: Please enter at least one required tag.
       not_contain_synonym_tags:
@@ -270,18 +270,18 @@ backend:
         other: Not enough tags were entered.
     smtp:
       config_from_name_cannot_be_email:
-        other: The from name cannot be a email address.
+        other: The email sender name cannot be an email address.
     theme:
       not_found:
         other: Theme not found.
     revision:
       review_underway:
-        other: Can't edit currently, there is a version in the review queue.
+        other: This item cannot be edited while a revision is in the review queue.
       no_permission:
         other: No permission to revise.
     user:
       external_login_missing_user_id:
-        other: The third-party platform does not provide a unique UserID, so you cannot login, please contact the website administrator.
+        other: The third-party platform does not provide a unique user ID, so you cannot log in. Please contact the website administrator.
       external_login_unbinding_forbidden:
         other: Please set a login password for your account before you remove this login.
       email_or_password_wrong:
@@ -302,7 +302,7 @@ backend:
       not_allowed_registration:
         other: Currently the site is not open for registration.
       not_allowed_login_via_password:
-        other: Currently the site is not allowed to login via password.
+        other: The site currently does not allow password login.
       access_denied:
         other: Access denied
       page_access_denied:
@@ -344,7 +344,7 @@ backend:
       name:
         other: spam
       desc:
-        other: This post is an advertisement, or vandalism. It is not useful or relevant to the current topic.
+        other: This post is an advertisement or vandalism. It is not useful or relevant to the current topic.
     rude_or_abusive:
       name:
         other: rude or abusive
@@ -361,7 +361,7 @@ backend:
       name:
         other: not an answer
       desc:
-        other: "This was posted as an answer, but it does not attempt to answer the question. It should possibly be an edit, a comment, another question,or deleted altogether."
+        other: "This was posted as an answer, but it does not attempt to answer the question. It should possibly be an edit, a comment, another question, or deleted altogether."
     no_longer_needed:
       name:
         other: no longer needed
@@ -574,7 +574,7 @@ backend:
         name:
           other: First Upvote
         desc:
-          other: First up voted a post.
+          other: First upvoted a post.
       first_link:
         name:
           other: First Link
@@ -599,7 +599,7 @@ backend:
         name:
           other: Commentator
         desc:
-          other: Leave 5 comments.
+          other: Left 5 comments.
       new_user_of_the_month:
         name:
           other: New User of the Month
@@ -614,12 +614,12 @@ backend:
         name:
           other: Reader
         desc:
-          other: Read every answers in a topic with more than 10 answers.
+          other: Read every answer in a topic with more than 10 answers.
       welcome:
         name:
           other: Welcome
         desc:
-          other: Received a up vote.
+          other: Received an upvote.
       nice_share:
         name:
           other: Nice Share
@@ -639,17 +639,17 @@ backend:
         name:
           other: Out of Love
         desc:
-          other: Used 50 up votes in a day.
+          other: Used 50 upvotes in a day.
       higher_love:
         name:
           other: Higher Love
         desc:
-          other: Used 50 up votes in a day 5 times.
+          other: Used 50 upvotes in a day 5 times.
       crazy_in_love:
         name:
           other: Crazy in Love
         desc:
-          other: Used 50 up votes in a day 20 times.
+          other: Used 50 upvotes in a day 20 times.
       promoter:
         name:
           other: Promoter
@@ -669,17 +669,17 @@ backend:
         name:
           other: Thank You
         desc:
-          other: Has 20 up voted posts and gave 10 up votes.
+          other: Has 20 upvoted posts and gave 10 upvotes.
       gives_back:
         name:
           other: Gives Back
         desc:
-          other: Has 100 up voted posts and gave 100 up votes.
+          other: Has 100 upvoted posts and gave 100 upvotes.
       empathetic:
         name:
           other: Empathetic
         desc:
-          other: Has 500 up voted posts and gave 1000 up votes.
+          other: Has 500 upvoted posts and gave 1000 upvotes.
       enthusiast:
         name:
           other: Enthusiast
@@ -704,37 +704,37 @@ backend:
         name:
           other: Appreciated
         desc:
-          other: Received 1 up vote on 20 posts.
+          other: Received 1 upvote on 20 posts.
       respected:
         name:
           other: Respected
         desc:
-          other: Received 2 up votes on 100 posts.
+          other: Received 2 upvotes on 100 posts.
       admired:
         name:
           other: Admired
         desc:
-          other: Received 5 up votes on 300 posts.
+          other: Received 5 upvotes on 300 posts.
       solved:
         name:
           other: Solved
         desc:
-          other: Have an answer be accepted.
+          other: Had an answer accepted.
       guidance_counsellor:
         name:
           other: Guidance Counsellor
         desc:
-          other: Have 10 answers be accepted.
+          other: Had 10 answers accepted.
       know_it_all:
         name:
           other: Know-it-All
         desc:
-          other: Have 50 answers be accepted.
+          other: Had 50 answers accepted.
       solution_institution:
         name:
           other: Solution Institution
         desc:
-          other: Have 150 answers be accepted.
+          other: Had 150 answers accepted.
       nice_answer:
         name:
           other: Nice Answer
@@ -994,7 +994,7 @@ ui:
       cell: Cell
     file:
       text: Attach files
-      not_supported: "Don’t support that file type. Try again with {{file_type}}."
+      not_supported: "That file type is not supported. Try one of these file types: {{file_type}}."
       max_size: "Attach files size cannot exceed {{size}} MB."
   close_modal:
     title: I am closing this post as...
@@ -1295,8 +1295,8 @@ ui:
       label: Email
       msg:
         empty: Email cannot be empty.
-    modal_title: Email already existes.
-    modal_content: This email address already registered. Are you sure you want to connect to the existing account?
+    modal_title: Email already exists.
+    modal_content: This email address is already registered. Are you sure you want to connect to the existing account?
     modal_cancel: Change email
     modal_confirm: Connect to the existing account
   password_reset:
@@ -1486,7 +1486,7 @@ ui:
       content: Are you sure you want to unlist?
     pin:
       title: Pin this post
-      content: Are you sure you wish to pinned globally? This post will appear at the top of all post lists.
+      content: Are you sure you want to pin this post globally? It will appear at the top of all post lists.
       confirm_btn: Pin
   delete:
     title: Delete this post
@@ -1731,14 +1731,14 @@ ui:
     site_name:
       label: Site name
       msg: Site name cannot be empty.
-      msg_max_length: Site name must be at maximum 30 characters in length.
+      msg_max_length: Site name must be at most 30 characters in length.
     site_url:
       label: Site URL
       text: The address of your site.
       msg:
         empty: Site URL cannot be empty.
         incorrect: Site URL incorrect format.
-        max_length: Site URL must be at maximum 512 characters in length.
+        max_length: Site URL must be at most 512 characters in length.
     contact_email:
       label: Contact email
       text: Email address of key contact responsible for this site.
@@ -1761,7 +1761,7 @@ ui:
         location.
       msg: Password cannot be empty.
       msg_min_length: Password must be at least 8 characters in length.
-      msg_max_length: Password must be at maximum 32 characters in length.
+      msg_max_length: Password must be at most 32 characters in length.
     admin_confirm_password:
       label: "Confirm Password"
       text: "Please re-enter your password to confirm."
@@ -1844,7 +1844,7 @@ ui:
   user_center:
     login: Login
     qrcode_login_tip: Please use {{ agentName }} to scan the QR code and log in.
-    login_failed_email_tip: Login failed, please allow this app to access your email information before try again.
+    login_failed_email_tip: Login failed. Please allow this app to access your email information before trying again.
   badges:
     modal:
       title: Congratulations
