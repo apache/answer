@@ -172,7 +172,7 @@ backend:
       cannot_update:
         other: No permission to update.
       question_closed_cannot_add:
-        other: This question is closed and cannot accept new answers.
+        other: Answers cannot be added to this question.
       content_cannot_empty:
         other: Answer content cannot be empty.
     comment:
