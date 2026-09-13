@@ -56,21 +56,33 @@ const PersonalAccessTokens = () => {
   const [selectedScopes, setSelectedScopes] = useState<
     Type.PersonalAccessTokenScope[]
   >([]);
-  const [expirationDays, setExpirationDays] = useState(30);
+  const [expirationDays, setExpirationDays] = useState('30');
+  const [customExpiration, setCustomExpiration] = useState('');
+  const [showInactive, setShowInactive] = useState(false);
   const [createdToken, setCreatedToken] = useState('');
   const [password, setPassword] = useState('');
   const [pendingCreate, setPendingCreate] =
     useState<Type.CreatePersonalAccessTokenParams>();
 
   const canCreate = useMemo(
-    () => name.trim().length > 0 && selectedScopes.length > 0,
-    [name, selectedScopes],
+    () =>
+      name.trim().length > 0 &&
+      selectedScopes.length > 0 &&
+      (expirationDays !== 'custom' || Boolean(customExpiration)),
+    [customExpiration, expirationDays, name, selectedScopes],
+  );
+
+  const visibleTokens = useMemo(
+    () =>
+      showInactive ? data : data.filter((item) => item.status === 'active'),
+    [data, showInactive],
   );
 
   const resetCreate = () => {
     setName('');
     setSelectedScopes([]);
-    setExpirationDays(30);
+    setExpirationDays('30');
+    setCustomExpiration('');
     setShowCreate(false);
   };
 
@@ -102,7 +114,10 @@ const PersonalAccessTokens = () => {
     const params: Type.CreatePersonalAccessTokenParams = {
       name: name.trim(),
       scopes: selectedScopes,
-      expires_at: dayjs().add(expirationDays, 'day').unix(),
+      expires_at:
+        expirationDays === 'custom'
+          ? dayjs(customExpiration).endOf('day').unix()
+          : dayjs().add(Number(expirationDays), 'day').unix(),
     };
     finishCreate(params);
   };
@@ -152,6 +167,13 @@ const PersonalAccessTokens = () => {
           {t('create')}
         </Button>
       )}
+      <Form.Check
+        className="mb-3"
+        type="checkbox"
+        label={t('show_inactive')}
+        checked={showInactive}
+        onChange={(event) => setShowInactive(event.target.checked)}
+      />
       <Table responsive>
         <thead>
           <tr>
@@ -164,7 +186,7 @@ const PersonalAccessTokens = () => {
           </tr>
         </thead>
         <tbody>
-          {data.map((item) => (
+          {visibleTokens.map((item) => (
             <tr key={item.id}>
               <td>{item.name}</td>
               <td>answer_pat_••••{item.token_suffix}</td>
@@ -220,15 +242,24 @@ const PersonalAccessTokens = () => {
             <Form.Label>{t('expiration')}</Form.Label>
             <Form.Select
               value={expirationDays}
-              onChange={(event) =>
-                setExpirationDays(Number(event.target.value))
-              }>
+              onChange={(event) => setExpirationDays(event.target.value)}>
               {[7, 30, 90, 365].map((days) => (
-                <option key={days} value={days}>
+                <option key={days} value={String(days)}>
                   {t('days', { count: days })}
                 </option>
               ))}
+              <option value="custom">{t('custom_expiration')}</option>
             </Form.Select>
+            {expirationDays === 'custom' && (
+              <Form.Control
+                className="mt-2"
+                type="date"
+                min={dayjs().add(1, 'day').format('YYYY-MM-DD')}
+                max={dayjs().add(365, 'day').format('YYYY-MM-DD')}
+                value={customExpiration}
+                onChange={(event) => setCustomExpiration(event.target.value)}
+              />
+            )}
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>

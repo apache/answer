@@ -377,6 +377,12 @@ func (uc *UserController) UserVerifyEmailSend(ctx *gin.Context) {
 }
 
 // UserReauthenticate confirms a local password for sensitive account operations.
+// @Summary Reauthenticate the current user
+// @Tags User
+// @Security ApiKeyAuth
+// @Param data body schema.UserReauthenticateReq true "reauthentication"
+// @Success 200 {object} handler.RespBody
+// @Router /answer/api/v1/user/reauthenticate [post]
 func (uc *UserController) UserReauthenticate(ctx *gin.Context) {
 	req := &schema.UserReauthenticateReq{}
 	if handler.BindAndCheck(ctx, req) {

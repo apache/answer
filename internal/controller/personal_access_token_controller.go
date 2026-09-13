@@ -48,6 +48,12 @@ func NewPersonalAccessTokenController(
 	return &PersonalAccessTokenController{tokens: tokens, siteInfo: siteInfo, userCommon: userCommon}
 }
 
+// List returns the current user's Personal Access Tokens.
+// @Summary List personal access tokens
+// @Tags Personal Access Token
+// @Security ApiKeyAuth
+// @Success 200 {object} handler.RespBody{data=[]schema.PersonalAccessTokenInfo}
+// @Router /answer/api/v1/personal-access-tokens [get]
 func (c *PersonalAccessTokenController) List(ctx *gin.Context) {
 	userID := middleware.GetLoginUserIDFromContext(ctx)
 	items, err := c.tokens.List(ctx, userID)
@@ -71,6 +77,13 @@ func (c *PersonalAccessTokenController) List(ctx *gin.Context) {
 	handler.HandleResponse(ctx, nil, resp)
 }
 
+// Create creates a Personal Access Token and returns its secret once.
+// @Summary Create a personal access token
+// @Tags Personal Access Token
+// @Security ApiKeyAuth
+// @Param data body schema.PersonalAccessTokenCreateReq true "personal access token"
+// @Success 200 {object} handler.RespBody{data=schema.PersonalAccessTokenCreateResp}
+// @Router /answer/api/v1/personal-access-tokens [post]
 func (c *PersonalAccessTokenController) Create(ctx *gin.Context) {
 	request := &schema.PersonalAccessTokenCreateReq{}
 	if handler.BindAndCheck(ctx, request) {
@@ -114,6 +127,13 @@ func (c *PersonalAccessTokenController) Create(ctx *gin.Context) {
 	handler.HandleResponse(ctx, nil, resp)
 }
 
+// Revoke permanently revokes one of the current user's Personal Access Tokens.
+// @Summary Revoke a personal access token
+// @Tags Personal Access Token
+// @Security ApiKeyAuth
+// @Param id query int true "personal access token id"
+// @Success 200 {object} handler.RespBody
+// @Router /answer/api/v1/personal-access-tokens [delete]
 func (c *PersonalAccessTokenController) Revoke(ctx *gin.Context) {
 	request := &schema.PersonalAccessTokenRevokeReq{}
 	if handler.BindAndCheck(ctx, request) {
@@ -123,6 +143,12 @@ func (c *PersonalAccessTokenController) Revoke(ctx *gin.Context) {
 	handler.HandleResponse(ctx, err, nil)
 }
 
+// Current returns metadata for the PAT authenticating the request.
+// @Summary Inspect the current personal access token
+// @Tags Personal Access Token
+// @Security ApiKeyAuth
+// @Success 200 {object} handler.RespBody{data=schema.PersonalAccessTokenCurrentResp}
+// @Router /answer/api/v1/personal-access-tokens/current [get]
 func (c *PersonalAccessTokenController) Current(ctx *gin.Context) {
 	token := middleware.GetPATFromContext(ctx)
 	if token == nil {

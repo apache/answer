@@ -1417,12 +1417,14 @@ ui:
       expiration: Expiration
       expires: Expires
       status: Status
+      show_inactive: Show expired and revoked tokens
       revoke: Revoke
       revoke_confirm: Are you sure you want to revoke this token?
       created_title: Personal access token created
       created_warning: Copy this token now. It will not be shown again.
       copy: Copy token
       days: "{{count}} days"
+      custom_expiration: Custom date
       reauthenticate: Confirm your identity
       reauthenticate_failed: Authentication failed.
       reauthenticate_external: Sign out and sign in again with your external identity provider, then retry.

@@ -147,4 +147,3 @@ func extractPAT(ctx *gin.Context) (rawToken string, candidate bool, validTranspo
 	}
 	return parts[1], true, true
 }
-
