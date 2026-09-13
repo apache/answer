@@ -368,18 +368,30 @@ func (us *UserExternalLoginService) ExternalLoginBindingUserSendEmail(
 		return &schema.ExternalLoginBindingUserSendEmailResp{}, nil
 	}
 
-	if _, exist, err := us.userRepo.GetByEmail(ctx, req.Email); err != nil {
+	oldUserInfo, exist, err := us.userRepo.GetByEmail(ctx, req.Email)
+	if err != nil {
 		return nil, err
 	} else if exist && !req.Must {
 		resp.EmailExistAndMustBeConfirmed = true
 		return resp, nil
-	} else if exist {
-		resp.EmailExistAndMustBeConfirmed = true
-		return resp, nil
 	}
 
-	externalLoginInfo.Email = req.Email
-	userInfo, err := us.registerNewUser(ctx, externalLoginInfo)
+	var userInfo *entity.User
+	if !exist {
+		externalLoginInfo.Email = req.Email
+		userInfo, err = us.registerNewUser(ctx, externalLoginInfo)
+		if err != nil {
+			return nil, err
+		}
+		resp.AccessToken, _, err = us.userCommonService.CacheLoginUserInfo(
+			ctx, userInfo.ID, userInfo.MailStatus, userInfo.Status, externalLoginInfo.ExternalID)
+		if err != nil {
+			log.Error(err)
+		}
+	} else {
+		externalLoginInfo.Email = req.Email
+		userInfo = oldUserInfo
+	}
 	if err != nil {
 		return nil, err
 	}
