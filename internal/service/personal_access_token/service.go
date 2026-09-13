@@ -76,7 +76,11 @@ type Service struct {
 	generateSecret func() (string, error)
 }
 
-func NewService(repo Repository, options ...Option) *Service {
+func NewService(repo Repository) *Service {
+	return NewServiceWithOptions(repo)
+}
+
+func NewServiceWithOptions(repo Repository, options ...Option) *Service {
 	s := &Service{
 		repo:           repo,
 		now:            time.Now,

@@ -149,7 +149,7 @@ func (c *Client) doOnce(ctx context.Context, method, endpoint string, bodyConten
 	if err != nil {
 		return nil, method == http.MethodGet, &APIError{Message: err.Error(), OutcomeUnknown: method != http.MethodGet}
 	}
-	defer response.Body.Close()
+	defer func() { _ = response.Body.Close() }()
 	content, err := io.ReadAll(response.Body)
 	if err != nil {
 		return nil, method == http.MethodGet, err

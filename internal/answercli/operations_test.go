@@ -27,15 +27,16 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestQuestionCreateReadsBodyFromStdin(t *testing.T) {
 	var payload map[string]any
 	server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		require.Equal(t, http.MethodPost, request.Method)
-		require.Equal(t, "/answer/api/v1/question", request.URL.Path)
-		require.NoError(t, json.NewDecoder(request.Body).Decode(&payload))
+		assert.Equal(t, http.MethodPost, request.Method)
+		assert.Equal(t, "/answer/api/v1/question", request.URL.Path)
+		assert.NoError(t, json.NewDecoder(request.Body).Decode(&payload))
 		writer.Header().Set("Content-Type", "application/json")
 		_, _ = writer.Write([]byte(`{"code":200,"reason":"base.success","msg":"Success.","data":{"id":"1001"}}`))
 	}))

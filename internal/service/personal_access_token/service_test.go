@@ -32,7 +32,7 @@ import (
 func TestUserCanCreateAndAuthenticatePersonalAccessToken(t *testing.T) {
 	now := time.Date(2026, time.September, 13, 12, 0, 0, 0, time.UTC)
 	repo := newMemoryRepository()
-	service := pat.NewService(repo,
+	service := pat.NewServiceWithOptions(repo,
 		pat.WithClock(func() time.Time { return now }),
 		pat.WithSecretGenerator(func() (string, error) { return "0123456789abcdefghijklmnopqrstuvwxyzAB", nil }),
 	)
@@ -61,7 +61,7 @@ func TestUserCanCreateAndAuthenticatePersonalAccessToken(t *testing.T) {
 func TestRevokedAndExpiredPersonalAccessTokensCannotAuthenticate(t *testing.T) {
 	now := time.Date(2026, time.September, 13, 12, 0, 0, 0, time.UTC)
 	repo := newMemoryRepository()
-	service := pat.NewService(repo,
+	service := pat.NewServiceWithOptions(repo,
 		pat.WithClock(func() time.Time { return now }),
 		pat.WithSecretGenerator(func() (string, error) { return "0123456789abcdefghijklmnopqrstuvwxyzAB", nil }),
 	)
@@ -90,7 +90,7 @@ func TestRevokedAndExpiredPersonalAccessTokensCannotAuthenticate(t *testing.T) {
 
 func TestPersonalAccessTokenScopeMustBeKnownAndExpiryIsBounded(t *testing.T) {
 	now := time.Date(2026, time.September, 13, 12, 0, 0, 0, time.UTC)
-	service := pat.NewService(newMemoryRepository(), pat.WithClock(func() time.Time { return now }))
+	service := pat.NewServiceWithOptions(newMemoryRepository(), pat.WithClock(func() time.Time { return now }))
 
 	_, err := service.Create(context.Background(), pat.CreateInput{
 		UserID: "42", Name: "invalid", Scopes: []string{"admin.access"}, ExpiresAt: now.Add(time.Hour),

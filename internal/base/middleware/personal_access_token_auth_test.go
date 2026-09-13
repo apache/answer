@@ -38,7 +38,7 @@ func TestPersonalAccessTokenRequestAuthorization(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	now := time.Date(2026, time.September, 13, 12, 0, 0, 0, time.UTC)
 	repo := &middlewarePATRepository{}
-	service := pat.NewService(repo,
+	service := pat.NewServiceWithOptions(repo,
 		pat.WithClock(func() time.Time { return now }),
 		pat.WithSecretGenerator(func() (string, error) { return "0123456789abcdefghijklmnopqrstuvwxyzAB", nil }),
 	)

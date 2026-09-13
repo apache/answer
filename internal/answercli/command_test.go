@@ -26,6 +26,7 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -33,7 +34,7 @@ func TestAuthStatusUsesConfiguredBearerTokenAndWritesJSON(t *testing.T) {
 	var authorization string
 	server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		authorization = request.Header.Get("Authorization")
-		require.Equal(t, "/answer/api/v1/personal-access-tokens/current", request.URL.Path)
+		assert.Equal(t, "/answer/api/v1/personal-access-tokens/current", request.URL.Path)
 		writer.Header().Set("Content-Type", "application/json")
 		_, _ = writer.Write([]byte(`{"code":200,"reason":"base.success","msg":"Success.","data":{"user":{"id":"42","username":"alice","display_name":"Alice"},"token":{"name":"agent","scopes":["question.read"]}}}`))
 	}))

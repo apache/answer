@@ -27,7 +27,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-var ErrProfileNotConfigured = errors.New("Answer CLI profile is not configured")
+var ErrProfileNotConfigured = errors.New("answer CLI profile is not configured")
 
 type Profile struct {
 	Server            string `yaml:"server" json:"server"`
