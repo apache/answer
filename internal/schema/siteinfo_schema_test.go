@@ -28,6 +28,37 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestSiteSecurityPATReauthenticationWindow(t *testing.T) {
+	tests := []struct {
+		name        string
+		minutes     int
+		expectError bool
+		expected    int
+	}{
+		{name: "omitted uses default", minutes: 0, expected: 60},
+		{name: "minimum", minutes: 5, expected: 5},
+		{name: "maximum", minutes: 120, expected: 120},
+		{name: "below minimum", minutes: 4, expectError: true},
+		{name: "above maximum", minutes: 121, expectError: true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := &SiteSecurityReq{
+				ExternalContentDisplay:           "always_display",
+				PATReauthenticationWindowMinutes: tt.minutes,
+			}
+			_, err := validator.GetValidatorByLang(i18n.DefaultLanguage).Check(req)
+			if tt.expectError {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
+			require.Equal(t, tt.expected, req.PATReauthenticationWindow())
+		})
+	}
+}
+
 func TestSiteLoginReqRequireEmailVerificationValidation(t *testing.T) {
 	tests := []struct {
 		name        string

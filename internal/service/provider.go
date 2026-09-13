@@ -49,6 +49,7 @@ import (
 	"github.com/apache/answer/internal/service/notification"
 	notficationcommon "github.com/apache/answer/internal/service/notification_common"
 	"github.com/apache/answer/internal/service/object_info"
+	"github.com/apache/answer/internal/service/personal_access_token"
 	"github.com/apache/answer/internal/service/plugin_common"
 	questioncommon "github.com/apache/answer/internal/service/question_common"
 	"github.com/apache/answer/internal/service/rank"
@@ -134,6 +135,7 @@ var ProviderSetService = wire.NewSet(
 	importer.NewImporterService,
 	file_record.NewFileRecordService,
 	apikey.NewAPIKeyService,
+	personal_access_token.NewService,
 	ai_conversation.NewAIConversationService,
 	feature_toggle.NewFeatureToggleService,
 	embedding.NewEmbeddingService,

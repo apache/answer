@@ -174,10 +174,21 @@ type SitePoliciesReq struct {
 	PrivacyPolicyParsedText    string `json:"privacy_policy_parsed_text"`
 }
 
+const DefaultPATReauthenticationWindowMinutes = 60
+
 type SiteSecurityReq struct {
-	LoginRequired          bool   `json:"login_required"`
-	ExternalContentDisplay string `validate:"required,oneof=always_display ask_before_display" json:"external_content_display"`
-	CheckUpdate            bool   `validate:"omitempty,sanitizer" form:"check_update" json:"check_update"`
+	LoginRequired                    bool   `json:"login_required"`
+	ExternalContentDisplay           string `validate:"required,oneof=always_display ask_before_display" json:"external_content_display"`
+	CheckUpdate                      bool   `validate:"omitempty,sanitizer" form:"check_update" json:"check_update"`
+	PersonalAccessTokensEnabled      bool   `json:"personal_access_tokens_enabled"`
+	PATReauthenticationWindowMinutes int    `validate:"omitempty,min=5,max=120" json:"pat_reauthentication_window_minutes"`
+}
+
+func (s *SiteSecurityReq) PATReauthenticationWindow() int {
+	if s.PATReauthenticationWindowMinutes == 0 {
+		return DefaultPATReauthenticationWindowMinutes
+	}
+	return s.PATReauthenticationWindowMinutes
 }
 
 type SitePoliciesResp SitePoliciesReq
