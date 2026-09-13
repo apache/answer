@@ -30,6 +30,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+	"golang.org/x/term"
 )
 
 type Options struct {
@@ -45,6 +46,7 @@ type commandState struct {
 	options    Options
 	configPath string
 	profile    string
+	output     string
 }
 
 func NewRootCommand(options Options) *cobra.Command {
@@ -69,6 +71,7 @@ func NewRootCommand(options Options) *cobra.Command {
 	root.SetErr(options.Stderr)
 	root.PersistentFlags().StringVar(&state.configPath, "config", state.configPath, "configuration file")
 	root.PersistentFlags().StringVar(&state.profile, "profile", "", "profile name")
+	root.PersistentFlags().StringVar(&state.output, "output", "json", "output format: json or text")
 	root.AddCommand(state.authCommand(), state.questionCommand(), state.answerCommand(), state.voteCommand(), state.tagCommand())
 	return root
 }
@@ -87,7 +90,7 @@ func (s *commandState) authCommand() *cobra.Command {
 			if err != nil {
 				return s.writeError(err)
 			}
-			return writeSuccess(s.options.Stdout, data)
+			return s.writeSuccess(data)
 		},
 	})
 	return authCommand
@@ -102,11 +105,10 @@ func (s *commandState) authLoginCommand() *cobra.Command {
 			if !withToken {
 				return s.writeError(fmt.Errorf("--with-token is required"))
 			}
-			tokenBytes, err := io.ReadAll(s.options.Stdin)
+			token, err := s.readToken()
 			if err != nil {
 				return s.writeError(err)
 			}
-			token := string(bytes.TrimSpace(tokenBytes))
 			if server == "" || token == "" {
 				return s.writeError(fmt.Errorf("--server and a token on stdin are required"))
 			}
@@ -129,7 +131,7 @@ func (s *commandState) authLoginCommand() *cobra.Command {
 			if err := SaveConfig(path, config); err != nil {
 				return s.writeError(err)
 			}
-			return writeSuccess(s.options.Stdout, mustJSON(map[string]string{"profile": profileName, "server": server}))
+			return s.writeSuccess(mustJSON(map[string]string{"profile": profileName, "server": server}))
 		},
 	}
 	command.Flags().StringVar(&server, "server", "", "Answer server URL")
@@ -137,6 +139,17 @@ func (s *commandState) authLoginCommand() *cobra.Command {
 	command.Flags().BoolVar(&withToken, "with-token", false, "read the PAT from stdin")
 	command.Flags().BoolVar(&allowInsecureHTTP, "allow-insecure-http", false, "allow non-loopback HTTP")
 	return command
+}
+
+func (s *commandState) readToken() (string, error) {
+	if file, ok := s.options.Stdin.(*os.File); ok && term.IsTerminal(int(file.Fd())) {
+		_, _ = fmt.Fprint(s.options.Stderr, "Personal access token: ")
+		content, err := term.ReadPassword(int(file.Fd()))
+		_, _ = fmt.Fprintln(s.options.Stderr)
+		return string(bytes.TrimSpace(content)), err
+	}
+	content, err := io.ReadAll(s.options.Stdin)
+	return string(bytes.TrimSpace(content)), err
 }
 
 func (s *commandState) authLogoutCommand() *cobra.Command {
@@ -163,7 +176,7 @@ func (s *commandState) authLogoutCommand() *cobra.Command {
 			if err := SaveConfig(path, config); err != nil {
 				return s.writeError(err)
 			}
-			return writeSuccess(s.options.Stdout, mustJSON(map[string]any{"profile": profileName, "revoked": false}))
+			return s.writeSuccess(mustJSON(map[string]any{"profile": profileName, "revoked": false}))
 		},
 	}
 }
@@ -195,6 +208,9 @@ func (s *commandState) client() (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
+	if profile.AllowInsecureHTTP && insecureNonLoopback(profile.Server) {
+		_, _ = fmt.Fprintln(s.options.Stderr, "warning: sending a personal access token over insecure HTTP")
+	}
 	return NewClient(profile, s.options.HTTPClient)
 }
 
@@ -203,12 +219,23 @@ func mustJSON(value any) json.RawMessage {
 	return content
 }
 
-func writeSuccess(output io.Writer, data json.RawMessage) error {
+func (s *commandState) writeSuccess(data json.RawMessage) error {
+	if s.output == "text" {
+		var formatted bytes.Buffer
+		if err := json.Indent(&formatted, data, "", "  "); err != nil {
+			return err
+		}
+		_, err := fmt.Fprintln(s.options.Stdout, formatted.String())
+		return err
+	}
+	if s.output != "json" {
+		return fmt.Errorf("unsupported output format %q", s.output)
+	}
 	result := struct {
 		OK   bool            `json:"ok"`
 		Data json.RawMessage `json:"data"`
 	}{OK: true, Data: data}
-	return json.NewEncoder(output).Encode(result)
+	return json.NewEncoder(s.options.Stdout).Encode(result)
 }
 
 func (s *commandState) writeError(err error) error {
@@ -264,6 +291,8 @@ func normalizeError(err error) cliError {
 		result.Type = "invalid_token"
 	case apiErr.Reason == "error.personal_access_token.insufficient_scope":
 		result.Type = "insufficient_token_scope"
+	case apiErr.Reason == "error.feature.disabled":
+		result.Type = "agent_access_disabled"
 	case apiErr.HTTPStatus == http.StatusForbidden:
 		result.Type = "permission_denied"
 	default:

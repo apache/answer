@@ -217,7 +217,7 @@ func (s *commandState) run(cmd *cobra.Command, method, path string, query url.Va
 	if err != nil {
 		return s.writeError(err)
 	}
-	return writeSuccess(s.options.Stdout, data)
+	return s.writeSuccess(data)
 }
 
 func readJSONObject(stdin io.Reader, path string) (map[string]any, error) {

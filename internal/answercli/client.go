@@ -92,6 +92,16 @@ func ValidateServerURL(server string, allowInsecure bool) error {
 	return ErrInsecureHTTP
 }
 
+func insecureNonLoopback(server string) bool {
+	parsed, err := url.Parse(server)
+	if err != nil || parsed.Scheme != "http" {
+		return false
+	}
+	host := parsed.Hostname()
+	ip := net.ParseIP(host)
+	return host != "localhost" && (ip == nil || !ip.IsLoopback())
+}
+
 func (c *Client) Do(ctx context.Context, method, path string, query url.Values, body any) (json.RawMessage, error) {
 	var bodyContent []byte
 	if body != nil {
@@ -131,6 +141,7 @@ func (c *Client) doOnce(ctx context.Context, method, endpoint string, bodyConten
 	}
 	request.Header.Set("Authorization", "Bearer "+c.token)
 	request.Header.Set("Accept", "application/json")
+	request.Header.Set("User-Agent", "answer-cli")
 	if bodyContent != nil {
 		request.Header.Set("Content-Type", "application/json")
 	}
