@@ -194,6 +194,13 @@ func (s *SiteSecurityReq) PATReauthenticationWindow() int {
 type SitePoliciesResp SitePoliciesReq
 type SiteSecurityResp SiteSecurityReq
 
+func (s *SiteSecurityResp) PATReauthenticationWindow() int {
+	if s.PATReauthenticationWindowMinutes == 0 {
+		return DefaultPATReauthenticationWindowMinutes
+	}
+	return s.PATReauthenticationWindowMinutes
+}
+
 // GetSiteLegalInfoReq site site legal request
 type GetSiteLegalInfoReq struct {
 	InfoType string `validate:"required,oneof=tos privacy" form:"info_type"`

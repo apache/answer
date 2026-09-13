@@ -129,11 +129,13 @@ type CreatedToken struct {
 }
 
 type AuthenticatedToken struct {
-	ID        int64
-	UserID    string
-	Name      string
-	Scopes    []string
-	ExpiresAt time.Time
+	ID          int64
+	UserID      string
+	Name        string
+	TokenSuffix string
+	Scopes      []string
+	CreatedAt   time.Time
+	ExpiresAt   time.Time
 }
 
 func (s *Service) Create(ctx context.Context, input CreateInput) (*CreatedToken, error) {
@@ -166,7 +168,9 @@ func (s *Service) Create(ctx context.Context, input CreateInput) (*CreatedToken,
 	if err := s.repo.Create(ctx, token); err != nil {
 		return nil, err
 	}
-	return &CreatedToken{Token: rawToken, Info: toInfo(token, scopes)}, nil
+	info := toInfo(token, scopes)
+	info.Status = StatusActive
+	return &CreatedToken{Token: rawToken, Info: info}, nil
 }
 
 func (s *Service) List(ctx context.Context, userID string) ([]TokenInfo, error) {
@@ -217,7 +221,8 @@ func (s *Service) Authenticate(ctx context.Context, rawToken string) (*Authentic
 	}
 	return &AuthenticatedToken{
 		ID: token.ID, UserID: token.UserID, Name: token.Name,
-		Scopes: scopes, ExpiresAt: token.ExpiresAt,
+		TokenSuffix: token.TokenSuffix, Scopes: scopes, CreatedAt: token.CreatedAt,
+		ExpiresAt: token.ExpiresAt,
 	}, nil
 }
 

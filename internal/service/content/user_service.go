@@ -43,6 +43,7 @@ import (
 	"github.com/apache/answer/internal/service/auth"
 	"github.com/apache/answer/internal/service/export"
 	"github.com/apache/answer/internal/service/file_record"
+	personalaccesstoken "github.com/apache/answer/internal/service/personal_access_token"
 	"github.com/apache/answer/internal/service/role"
 	"github.com/apache/answer/internal/service/siteinfo_common"
 	usercommon "github.com/apache/answer/internal/service/user_common"
@@ -70,6 +71,7 @@ type UserService struct {
 	questionService               *questioncommon.QuestionCommon
 	eventQueueService             eventqueue.Service
 	fileRecordService             *file_record.FileRecordService
+	personalAccessTokenService    *personalaccesstoken.Service
 }
 
 func NewUserService(userRepo usercommon.UserRepo,
@@ -86,6 +88,7 @@ func NewUserService(userRepo usercommon.UserRepo,
 	questionService *questioncommon.QuestionCommon,
 	eventQueueService eventqueue.Service,
 	fileRecordService *file_record.FileRecordService,
+	personalAccessTokenService *personalaccesstoken.Service,
 ) *UserService {
 	return &UserService{
 		userCommonService:             userCommonService,
@@ -102,6 +105,7 @@ func NewUserService(userRepo usercommon.UserRepo,
 		questionService:               questionService,
 		eventQueueService:             eventQueueService,
 		fileRecordService:             fileRecordService,
+		personalAccessTokenService:    personalAccessTokenService,
 	}
 }
 
@@ -263,9 +267,23 @@ func (us *UserService) UpdatePasswordWhenForgot(ctx context.Context, req *schema
 	if err != nil {
 		return err
 	}
-	// When the user changes the password, all the current user's tokens are invalid.
+	// Account recovery invalidates both login sessions and delegated credentials.
 	us.authService.RemoveUserAllTokens(ctx, userInfo.ID)
+	if err := us.personalAccessTokenService.RevokeAll(ctx, userInfo.ID); err != nil {
+		return err
+	}
 	return nil
+}
+
+func (us *UserService) VerifyPassword(ctx context.Context, userID, password string) (bool, error) {
+	userInfo, has, err := us.userRepo.GetByUserID(ctx, userID)
+	if err != nil {
+		return false, err
+	}
+	if !has {
+		return false, errors.BadRequest(reason.UserNotFound)
+	}
+	return us.verifyPassword(ctx, password, userInfo.Pass), nil
 }
 
 func (us *UserService) UserModifyPassWordVerification(ctx context.Context, req *schema.UserModifyPasswordReq) (bool, error) {
@@ -308,6 +326,11 @@ func (us *UserService) UserModifyPassword(ctx context.Context, req *schema.UserM
 	}
 
 	us.authService.RemoveTokensExceptCurrentUser(ctx, userInfo.ID, req.AccessToken)
+	if req.RevokePersonalAccessTokens {
+		if err := us.personalAccessTokenService.RevokeAll(ctx, userInfo.ID); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 

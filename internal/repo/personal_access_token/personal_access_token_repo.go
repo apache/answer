@@ -71,7 +71,7 @@ func (r *repository) Revoke(ctx context.Context, userID string, id int64, revoke
 
 func (r *repository) RevokeAllByUserID(ctx context.Context, userID string, revokedAt time.Time) error {
 	_, err := r.data.DB.Context(ctx).
-		Where(builder.Eq{"user_id": userID}.And(builder.Eq{"revoked_at": time.Time{}})).
+		Where("user_id = ? AND revoked_at IS NULL", userID).
 		Cols("revoked_at").Update(&entity.PersonalAccessToken{RevokedAt: revokedAt})
 	return databaseError(err)
 }

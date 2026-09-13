@@ -155,6 +155,11 @@ backend:
     password:
       space_invalid:
         other: Password cannot contain spaces.
+    personal_access_token:
+      insufficient_scope:
+        other: The personal access token does not have the required scope.
+      reauthentication_required:
+        other: Please authenticate again before creating a personal access token.
     admin:
       cannot_update_their_password:
         other: You cannot modify your password.

@@ -64,4 +64,15 @@ func TestPersonalAccessTokenRepositoryLifecycle(t *testing.T) {
 	revoked, err = repo.Revoke(ctx, "2", token.ID, revokedAt)
 	require.NoError(t, err)
 	require.False(t, revoked)
+
+	second := &entity.PersonalAccessToken{
+		UserID: "2", Name: "second agent", TokenHash: "hash-two", TokenSuffix: "last",
+		Scopes: `["answer.read"]`, ExpiresAt: expiresAt,
+	}
+	require.NoError(t, repo.Create(ctx, second))
+	require.NoError(t, repo.RevokeAllByUserID(ctx, "2", revokedAt))
+	found, exists, err = repo.FindByHash(ctx, "hash-two")
+	require.NoError(t, err)
+	require.True(t, exists)
+	require.Equal(t, revokedAt.Unix(), found.RevokedAt.Unix())
 }

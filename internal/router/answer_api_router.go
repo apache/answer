@@ -62,6 +62,7 @@ type AnswerAPIRouter struct {
 	aiConversationController      *controller.AIConversationController
 	aiConversationAdminController *controller_admin.AIConversationAdminController
 	mcpController                 *controller.MCPController
+	personalAccessTokenController *controller.PersonalAccessTokenController
 }
 
 func NewAnswerAPIRouter(
@@ -100,6 +101,7 @@ func NewAnswerAPIRouter(
 	aiConversationController *controller.AIConversationController,
 	aiConversationAdminController *controller_admin.AIConversationAdminController,
 	mcpController *controller.MCPController,
+	personalAccessTokenController *controller.PersonalAccessTokenController,
 ) *AnswerAPIRouter {
 	return &AnswerAPIRouter{
 		langController:                langController,
@@ -137,6 +139,7 @@ func NewAnswerAPIRouter(
 		aiConversationController:      aiConversationController,
 		aiConversationAdminController: aiConversationAdminController,
 		mcpController:                 mcpController,
+		personalAccessTokenController: personalAccessTokenController,
 	}
 }
 
@@ -284,7 +287,14 @@ func (a *AnswerAPIRouter) RegisterAnswerAPIRouter(r *gin.RouterGroup) {
 	r.DELETE("/answer", a.answerController.RemoveAnswer)
 	r.POST("/answer/recover", a.answerController.RecoverAnswer)
 
+	// personal access tokens
+	r.GET("/personal-access-tokens", a.personalAccessTokenController.List)
+	r.POST("/personal-access-tokens", a.personalAccessTokenController.Create)
+	r.DELETE("/personal-access-tokens", a.personalAccessTokenController.Revoke)
+	r.GET("/personal-access-tokens/current", a.personalAccessTokenController.Current)
+
 	// user
+	r.POST("/user/reauthenticate", middleware.BanAPIForUserCenter, a.userController.UserReauthenticate)
 	r.PUT("/user/password", middleware.BanAPIForUserCenter, a.userController.UserModifyPassWord)
 	r.PUT("/user/info", a.userController.UserUpdateInfo)
 	r.PUT("/user/interface", a.userController.UserUpdateInterface)

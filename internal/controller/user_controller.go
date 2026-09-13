@@ -376,6 +376,50 @@ func (uc *UserController) UserVerifyEmailSend(ctx *gin.Context) {
 	handler.HandleResponse(ctx, err, nil)
 }
 
+// UserReauthenticate confirms a local password for sensitive account operations.
+func (uc *UserController) UserReauthenticate(ctx *gin.Context) {
+	req := &schema.UserReauthenticateReq{}
+	if handler.BindAndCheck(ctx, req) {
+		return
+	}
+	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
+	req.AccessToken = middleware.ExtractToken(ctx)
+	isAdmin := middleware.GetUserIsAdminModerator(ctx)
+	if !isAdmin {
+		captchaPass := uc.actionService.ActionRecordVerifyCaptcha(ctx, entity.CaptchaActionEditUserinfo, req.UserID,
+			req.CaptchaID, req.CaptchaCode)
+		if !captchaPass {
+			errFields := []*validator.FormErrorField{{
+				ErrorField: "captcha_code",
+				ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.CaptchaVerificationFailed),
+			}}
+			handler.HandleResponse(ctx, errors.BadRequest(reason.CaptchaVerificationFailed), errFields)
+			return
+		}
+		uc.actionService.ActionRecordAdd(ctx, entity.CaptchaActionEditUserinfo, req.UserID)
+	}
+
+	valid, err := uc.userService.VerifyPassword(ctx, req.UserID, req.Password)
+	if err != nil {
+		handler.HandleResponse(ctx, err, nil)
+		return
+	}
+	if !valid {
+		errFields := []*validator.FormErrorField{{
+			ErrorField: "password",
+			ErrorMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.OldPasswordVerificationFailed),
+		}}
+		handler.HandleResponse(ctx, errors.BadRequest(reason.OldPasswordVerificationFailed), errFields)
+		return
+	}
+	if err := uc.authService.MarkReauthenticated(ctx, req.AccessToken); err != nil {
+		handler.HandleResponse(ctx, err, nil)
+		return
+	}
+	uc.actionService.ActionRecordDel(ctx, entity.CaptchaActionEditUserinfo, req.UserID)
+	handler.HandleResponse(ctx, nil, nil)
+}
+
 // UserModifyPassWord godoc
 // @Summary UserModifyPassWord
 // @Description UserModifyPassWord

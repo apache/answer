@@ -54,6 +54,7 @@ import (
 	"github.com/apache/answer/internal/repo/limit"
 	"github.com/apache/answer/internal/repo/meta"
 	notification2 "github.com/apache/answer/internal/repo/notification"
+	"github.com/apache/answer/internal/repo/personal_access_token"
 	"github.com/apache/answer/internal/repo/plugin_config"
 	"github.com/apache/answer/internal/repo/question"
 	"github.com/apache/answer/internal/repo/rank"
@@ -100,6 +101,7 @@ import (
 	"github.com/apache/answer/internal/service/notification"
 	"github.com/apache/answer/internal/service/notification_common"
 	"github.com/apache/answer/internal/service/object_info"
+	personal_access_token2 "github.com/apache/answer/internal/service/personal_access_token"
 	"github.com/apache/answer/internal/service/plugin_common"
 	"github.com/apache/answer/internal/service/question_common"
 	rank2 "github.com/apache/answer/internal/service/rank"
@@ -153,6 +155,8 @@ func initApplication(debug bool, serverConf *conf.Server, dbConf *data.Database,
 	authRepo := auth.NewAuthRepo(dataData)
 	apiKeyRepo := api_key.NewAPIKeyRepo(dataData)
 	authService := auth2.NewAuthService(authRepo, apiKeyRepo)
+	personalAccessTokenRepo := personal_access_token.NewRepository(dataData)
+	personalAccessTokenService := personal_access_token2.NewService(personalAccessTokenRepo)
 	userRepo := user.NewUserRepo(dataData)
 	uniqueIDRepo := unique.NewUniqueIDRepo(dataData)
 	configRepo := config.NewConfigRepo(dataData)
@@ -191,7 +195,7 @@ func initApplication(debug bool, serverConf *conf.Server, dbConf *data.Database,
 	eventqueueService := eventqueue.NewService()
 	fileRecordRepo := file_record.NewFileRecordRepo(dataData)
 	fileRecordService := file_record2.NewFileRecordService(fileRecordRepo, revisionRepo, serviceConf, siteInfoCommonService, userCommon)
-	userService := content.NewUserService(userRepo, userActiveActivityRepo, activityRepo, emailService, authService, siteInfoCommonService, userRoleRelService, userCommon, userExternalLoginService, userNotificationConfigRepo, userNotificationConfigService, questionCommon, eventqueueService, fileRecordService)
+	userService := content.NewUserService(userRepo, userActiveActivityRepo, activityRepo, emailService, authService, siteInfoCommonService, userRoleRelService, userCommon, userExternalLoginService, userNotificationConfigRepo, userNotificationConfigService, questionCommon, eventqueueService, fileRecordService, personalAccessTokenService)
 	captchaRepo := captcha.NewCaptchaRepo(dataData)
 	captchaService := action.NewCaptchaService(captchaRepo)
 	userController := controller.NewUserController(authService, userService, captchaService, emailService, siteInfoCommonService, userNotificationConfigService)
@@ -244,7 +248,7 @@ func initApplication(debug bool, serverConf *conf.Server, dbConf *data.Database,
 	notificationRepo := notification2.NewNotificationRepo(dataData)
 	pluginUserConfigRepo := plugin_config.NewPluginUserConfigRepo(dataData)
 	badgeAwardRepo := badge_award.NewBadgeAwardRepo(dataData, uniqueIDRepo)
-	userAdminService := user_admin.NewUserAdminService(userAdminRepo, userRoleRelService, authService, userCommon, userActiveActivityRepo, siteInfoCommonService, emailService, questionRepo, answerRepo, commentCommonRepo, userExternalLoginRepo, notificationRepo, pluginUserConfigRepo, badgeAwardRepo, apiKeyRepo)
+	userAdminService := user_admin.NewUserAdminService(userAdminRepo, userRoleRelService, authService, userCommon, userActiveActivityRepo, siteInfoCommonService, emailService, questionRepo, answerRepo, commentCommonRepo, userExternalLoginRepo, notificationRepo, pluginUserConfigRepo, badgeAwardRepo, apiKeyRepo, personalAccessTokenService)
 	userAdminController := controller_admin.NewUserAdminController(userAdminService)
 	reasonRepo := reason.NewReasonRepo(configService)
 	reasonService := reason2.NewReasonService(reasonRepo)
@@ -293,10 +297,12 @@ func initApplication(debug bool, serverConf *conf.Server, dbConf *data.Database,
 	aiController := controller.NewAIController(searchService, siteInfoCommonService, tagCommonService, questionCommon, commentRepo, userCommon, answerRepo, mcpController, aiConversationService, featureToggleService)
 	aiConversationController := controller.NewAIConversationController(aiConversationService, featureToggleService)
 	aiConversationAdminController := controller_admin.NewAIConversationAdminController(aiConversationService, featureToggleService)
-	answerAPIRouter := router.NewAnswerAPIRouter(langController, userController, commentController, reportController, voteController, tagController, followController, collectionController, questionController, answerController, searchController, revisionController, rankController, userAdminController, reasonController, themeController, siteInfoController, controllerSiteInfoController, notificationController, dashboardController, uploadController, activityController, roleController, pluginController, permissionController, userPluginController, reviewController, metaController, badgeController, controller_adminBadgeController, adminAPIKeyController, aiController, aiConversationController, aiConversationAdminController, mcpController)
+	personalAccessTokenController := controller.NewPersonalAccessTokenController(personalAccessTokenService, siteInfoCommonService, userCommon)
+	answerAPIRouter := router.NewAnswerAPIRouter(langController, userController, commentController, reportController, voteController, tagController, followController, collectionController, questionController, answerController, searchController, revisionController, rankController, userAdminController, reasonController, themeController, siteInfoController, controllerSiteInfoController, notificationController, dashboardController, uploadController, activityController, roleController, pluginController, permissionController, userPluginController, reviewController, metaController, badgeController, controller_adminBadgeController, adminAPIKeyController, aiController, aiConversationController, aiConversationAdminController, mcpController, personalAccessTokenController)
 	swaggerRouter := router.NewSwaggerRouter(swaggerConf)
 	uiRouter := router.NewUIRouter(controllerSiteInfoController, siteInfoCommonService)
-	authUserMiddleware := middleware.NewAuthUserMiddleware(authService, siteInfoCommonService)
+	patRequestAuthorizer := middleware.NewPATRequestAuthorizer(personalAccessTokenService, authService, siteInfoCommonService)
+	authUserMiddleware := middleware.NewAuthUserMiddleware(authService, siteInfoCommonService, patRequestAuthorizer)
 	avatarMiddleware := middleware.NewAvatarMiddleware(serviceConf, uploaderService)
 	shortIDMiddleware := middleware.NewShortIDMiddleware(siteInfoCommonService)
 	templateRenderController := templaterender.NewTemplateRenderController(questionService, userService, tagService, answerService, commentService, siteInfoCommonService, questionRepo)

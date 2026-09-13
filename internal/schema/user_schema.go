@@ -240,12 +240,13 @@ func (u *UserRegisterReq) Check() (errFields []*validator.FormErrorField, err er
 }
 
 type UserModifyPasswordReq struct {
-	OldPass     string `validate:"omitempty,gte=8,lte=32" json:"old_pass"`
-	Pass        string `validate:"required,gte=8,lte=32" json:"pass"`
-	CaptchaID   string `json:"captcha_id"`
-	CaptchaCode string `json:"captcha_code"`
-	UserID      string `json:"-"`
-	AccessToken string `json:"-"`
+	OldPass                    string `validate:"omitempty,gte=8,lte=32" json:"old_pass"`
+	Pass                       string `validate:"required,gte=8,lte=32" json:"pass"`
+	CaptchaID                  string `json:"captcha_id"`
+	CaptchaCode                string `json:"captcha_code"`
+	UserID                     string `json:"-"`
+	AccessToken                string `json:"-"`
+	RevokePersonalAccessTokens bool   `json:"revoke_personal_access_tokens"`
 }
 
 func (u *UserModifyPasswordReq) Check() (errFields []*validator.FormErrorField, err error) {
