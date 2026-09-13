@@ -1,8 +1,10 @@
-.PHONY: build clean ui
+.PHONY: build build-cli clean ui
 
 VERSION=2.0.2
 BIN=answer
 DIR_SRC=./cmd/answer
+CLI_BIN=answer-cli
+CLI_DIR_SRC=./cmd/answer-cli
 DOCKER_CMD=docker
 
 GO_ENV=CGO_ENABLED=0 GO111MODULE=on
@@ -21,6 +23,9 @@ $(GOLANGCI):
 
 build: generate
 	@$(GO) build $(GO_FLAGS) -o $(BIN) $(DIR_SRC)
+
+build-cli:
+	@$(GO) build -ldflags="-X main.version=$(VERSION)" -o $(CLI_BIN) $(CLI_DIR_SRC)
 
 # https://dev.to/thewraven/universal-macos-binaries-with-go-1-16-3mm3
 universal: generate
@@ -50,7 +55,7 @@ test:
 # clean all build result
 clean:
 	@$(GO) clean ./...
-	@rm -f $(BIN)
+	@rm -f $(BIN) $(CLI_BIN)
 
 install-ui-packages:
 	@corepack enable
