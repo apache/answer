@@ -17,19 +17,27 @@
  * under the License.
  */
 
-export * from './activity';
-export * from './personal';
-export * from './notification';
-export * from './question';
-export * from './search';
-export * from './tag';
-export * from './settings';
-export * from './legal';
-export * from './timeline';
-export * from './revision';
-export * from './user';
-export * from './Oauth';
-export * from './review';
-export * from './badges';
-export * from './ai';
-export * from './personalAccessTokens';
+import useSWR from 'swr';
+
+import type * as Type from '@/common/interface';
+import request from '@/utils/request';
+
+const endpoint = '/answer/api/v1/personal-access-tokens';
+
+export const usePersonalAccessTokens = () => {
+  const { data, error, mutate } = useSWR<Type.PersonalAccessTokenInfo[]>(
+    endpoint,
+    request.instance.get,
+  );
+  return { data, error, mutate, isLoading: !data && !error };
+};
+
+export const createPersonalAccessToken = (
+  params: Type.CreatePersonalAccessTokenParams,
+) => request.post<Type.CreatePersonalAccessTokenResp>(endpoint, params);
+
+export const revokePersonalAccessToken = (id: number) =>
+  request.delete(endpoint, { id });
+
+export const reauthenticate = (password: string) =>
+  request.post('/answer/api/v1/user/reauthenticate', { password });

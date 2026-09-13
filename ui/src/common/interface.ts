@@ -117,6 +117,7 @@ export interface RegisterReqParams extends LoginReqParams {
 export interface ModifyPasswordReq {
   old_pass: string;
   pass: string;
+  revoke_personal_access_tokens?: boolean;
 }
 
 /** User  */
@@ -410,6 +411,8 @@ export interface AdminSettingsSecurity {
   external_content_display: string;
   check_update: boolean;
   login_required: boolean;
+  personal_access_tokens_enabled: boolean;
+  pat_reauthentication_window_minutes: number;
 }
 
 export interface SiteSettings {
@@ -809,6 +812,34 @@ export interface BadgeDetailListItem {
 export interface BadgeDetailListRes {
   count: number;
   list: BadgeDetailListItem[];
+}
+
+export type PersonalAccessTokenScope =
+  | 'question.read'
+  | 'question.create'
+  | 'answer.read'
+  | 'answer.create'
+  | 'vote.write';
+
+export interface PersonalAccessTokenInfo {
+  id: number;
+  name: string;
+  token_suffix: string;
+  scopes: PersonalAccessTokenScope[];
+  created_at: number;
+  expires_at: number;
+  revoked_at?: number;
+  status: 'active' | 'expired' | 'revoked' | 'temporarily_unavailable';
+}
+
+export interface CreatePersonalAccessTokenParams {
+  name: string;
+  scopes: PersonalAccessTokenScope[];
+  expires_at: number;
+}
+
+export interface CreatePersonalAccessTokenResp extends PersonalAccessTokenInfo {
+  token: string;
 }
 
 export interface AdminApiKeysItem {

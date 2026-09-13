@@ -76,6 +76,20 @@ const Security = () => {
         title: t('check_update.label', { keyPrefix: 'admin.general' }),
         default: true,
       },
+      personal_access_tokens_enabled: {
+        type: 'boolean',
+        title: t('personal_access_tokens.label'),
+        description: t('personal_access_tokens.text'),
+        default: false,
+      },
+      pat_reauthentication_window_minutes: {
+        type: 'number',
+        title: t('pat_reauthentication_window.label'),
+        description: t('pat_reauthentication_window.text'),
+        min: 5,
+        max: 120,
+        default: 60,
+      },
     },
   };
   const uiSchema: UISchema = {
@@ -99,6 +113,18 @@ const Security = () => {
         label: t('check_update.label', { keyPrefix: 'admin.general' }),
       },
     },
+    personal_access_tokens_enabled: {
+      'ui:widget': 'switch',
+      'ui:options': {
+        label: t('personal_access_tokens.label'),
+      },
+    },
+    pat_reauthentication_window_minutes: {
+      'ui:widget': 'input',
+      'ui:options': {
+        inputType: 'number',
+      },
+    },
   };
   const [formData, setFormData] = useState(initFormData(schema));
 
@@ -113,6 +139,10 @@ const Security = () => {
       login_required: formData.login_required.value,
       external_content_display: formData.external_content_display.value,
       check_update: formData.check_update.value,
+      personal_access_tokens_enabled:
+        formData.personal_access_tokens_enabled.value,
+      pat_reauthentication_window_minutes:
+        formData.pat_reauthentication_window_minutes.value,
     };
     putSecuritySetting(reqParams)
       .then(() => {
@@ -140,6 +170,10 @@ const Security = () => {
         formMeta.external_content_display.value =
           setting.external_content_display;
         formMeta.check_update.value = setting.check_update;
+        formMeta.personal_access_tokens_enabled.value =
+          setting.personal_access_tokens_enabled;
+        formMeta.pat_reauthentication_window_minutes.value =
+          setting.pat_reauthentication_window_minutes || 60;
         setFormData(formMeta);
       }
     });
