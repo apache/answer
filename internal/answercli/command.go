@@ -72,8 +72,27 @@ func NewRootCommand(options Options) *cobra.Command {
 	root.PersistentFlags().StringVar(&state.configPath, "config", state.configPath, "configuration file")
 	root.PersistentFlags().StringVar(&state.profile, "profile", "", "profile name")
 	root.PersistentFlags().StringVar(&state.output, "output", "json", "output format: json or text")
-	root.AddCommand(state.authCommand(), state.questionCommand(), state.answerCommand(), state.voteCommand(), state.tagCommand())
+	root.AddCommand(state.authCommand(), state.configCommand(), state.questionCommand(), state.answerCommand(), state.voteCommand(), state.tagCommand())
 	return root
+}
+
+func (s *commandState) configCommand() *cobra.Command {
+	configCommand := &cobra.Command{Use: "config"}
+	configCommand.AddCommand(&cobra.Command{
+		Use: "show", Short: "Show configuration with credentials redacted",
+		RunE: func(_ *cobra.Command, _ []string) error {
+			path, err := s.resolvedConfigPath()
+			if err != nil {
+				return s.writeError(err)
+			}
+			config, err := LoadConfig(path)
+			if err != nil {
+				return s.writeError(err)
+			}
+			return s.writeSuccess(mustJSON(config))
+		},
+	})
+	return configCommand
 }
 
 func (s *commandState) authCommand() *cobra.Command {
