@@ -118,7 +118,7 @@ const PersonalAccessTokens = () => {
       scopes: selectedScopes,
       expires_at:
         expirationDays === 'custom'
-          ? dayjs(customExpiration).endOf('day').unix()
+          ? dayjs(customExpiration).startOf('day').unix()
           : dayjs().add(Number(expirationDays), 'day').unix(),
     };
     finishCreate(params);
@@ -190,6 +190,7 @@ const PersonalAccessTokens = () => {
         </Button>
       )}
       <Form.Check
+        id="pat-show-inactive"
         className="mb-3"
         type="checkbox"
         label={t('show_inactive')}
@@ -253,6 +254,7 @@ const PersonalAccessTokens = () => {
             {scopes.map((scope) => (
               <Form.Check
                 key={scope}
+                id={`pat-scope-${scope}`}
                 type="checkbox"
                 label={t(`scope.${scope}`)}
                 checked={selectedScopes.includes(scope)}

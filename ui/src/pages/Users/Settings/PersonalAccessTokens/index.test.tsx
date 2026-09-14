@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 import PersonalAccessTokens from './index';
 
@@ -51,8 +51,27 @@ jest.mock('@/utils/pluginKit', () => ({
 }));
 
 test('hides token creation while the instance feature is disabled', () => {
+  security.personal_access_tokens_enabled = false;
   render(<PersonalAccessTokens />);
 
   expect(screen.getByText('disabled')).not.toBeNull();
   expect(screen.queryByRole('button', { name: 'create' })).toBeNull();
+});
+
+test('requires an explicit scope selection before token creation', () => {
+  security.personal_access_tokens_enabled = true;
+  render(<PersonalAccessTokens />);
+
+  fireEvent.click(screen.getByRole('button', { name: 'create' }));
+  const scopeCheckboxes = screen.getAllByRole('checkbox').slice(1);
+  expect(scopeCheckboxes).toHaveLength(5);
+  expect(
+    scopeCheckboxes.every(
+      (checkbox) => !(checkbox as HTMLInputElement).checked,
+    ),
+  ).toBe(true);
+  const createButtons = screen.getAllByRole('button', { name: 'create' });
+  expect(createButtons[createButtons.length - 1].hasAttribute('disabled')).toBe(
+    true,
+  );
 });

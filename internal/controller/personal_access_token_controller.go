@@ -103,8 +103,7 @@ func (c *PersonalAccessTokenController) Create(ctx *gin.Context) {
 		handler.HandleResponse(ctx, pacmanerrors.Forbidden(reason.ErrFeatureDisabled), gin.H{"feature": "personal_access_tokens"})
 		return
 	}
-	if userInfo.AuthenticatedAt <= 0 || time.Since(time.Unix(userInfo.AuthenticatedAt, 0)) >
-		time.Duration(security.PATReauthenticationWindow())*time.Minute {
+	if !isPATAuthenticationRecent(userInfo.AuthenticatedAt, time.Now(), security.PATReauthenticationWindow()) {
 		handler.HandleResponse(ctx, pacmanerrors.Forbidden(reason.PersonalAccessTokenReauthenticationRequired), nil)
 		return
 	}
@@ -172,6 +171,14 @@ func (c *PersonalAccessTokenController) Current(ctx *gin.Context) {
 		},
 	}
 	handler.HandleResponse(ctx, nil, resp)
+}
+
+func isPATAuthenticationRecent(authenticatedAt int64, now time.Time, windowMinutes int) bool {
+	if authenticatedAt <= 0 {
+		return false
+	}
+	elapsed := now.Sub(time.Unix(authenticatedAt, 0))
+	return elapsed >= 0 && elapsed <= time.Duration(windowMinutes)*time.Minute
 }
 
 func convertPATInfo(info pat.TokenInfo) schema.PersonalAccessTokenInfo {
