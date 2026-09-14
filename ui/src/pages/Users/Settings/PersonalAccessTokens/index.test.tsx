@@ -63,6 +63,9 @@ test('requires an explicit scope selection before token creation', () => {
   render(<PersonalAccessTokens />);
 
   fireEvent.click(screen.getByRole('button', { name: 'create' }));
+  expect(screen.getByText('scope_group.question')).not.toBeNull();
+  expect(screen.getByText('scope_group.answer')).not.toBeNull();
+  expect(screen.getByText('scope_group.vote')).not.toBeNull();
   const scopeCheckboxes = screen.getAllByRole('checkbox').slice(1);
   expect(scopeCheckboxes).toHaveLength(5);
   expect(

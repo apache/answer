@@ -34,12 +34,22 @@ import { loggedUserInfoStore, siteSecurityStore } from '@/stores';
 import { useToast } from '@/hooks';
 import { useCaptchaPlugin } from '@/utils/pluginKit';
 
-const scopes: Type.PersonalAccessTokenScope[] = [
-  'question.read',
-  'question.create',
-  'answer.read',
-  'answer.create',
-  'vote.write',
+const scopeGroups: Array<{
+  topic: 'question' | 'answer' | 'vote';
+  scopes: Type.PersonalAccessTokenScope[];
+}> = [
+  {
+    topic: 'question',
+    scopes: ['question.read', 'question.create'],
+  },
+  {
+    topic: 'answer',
+    scopes: ['answer.read', 'answer.create'],
+  },
+  {
+    topic: 'vote',
+    scopes: ['vote.write'],
+  },
 ];
 
 const PersonalAccessTokens = () => {
@@ -251,15 +261,22 @@ const PersonalAccessTokens = () => {
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>{t('scopes')}</Form.Label>
-            {scopes.map((scope) => (
-              <Form.Check
-                key={scope}
-                id={`pat-scope-${scope}`}
-                type="checkbox"
-                label={t(`scope.${scope}`)}
-                checked={selectedScopes.includes(scope)}
-                onChange={() => toggleScope(scope)}
-              />
+            {scopeGroups.map((group) => (
+              <fieldset key={group.topic} className="mb-3">
+                <legend className="fs-6 mb-2">
+                  {t(`scope_group.${group.topic}`)}
+                </legend>
+                {group.scopes.map((scope) => (
+                  <Form.Check
+                    key={scope}
+                    id={`pat-scope-${scope}`}
+                    type="checkbox"
+                    label={t(`scope.${scope}`)}
+                    checked={selectedScopes.includes(scope)}
+                    onChange={() => toggleScope(scope)}
+                  />
+                ))}
+              </fieldset>
             ))}
           </Form.Group>
           <Form.Group>

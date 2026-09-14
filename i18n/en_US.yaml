@@ -1433,6 +1433,10 @@ ui:
       reauthenticate_external: Sign out and sign in again with your external identity provider, then retry.
       password: Current password
       continue: Continue
+      scope_group:
+        question: Question
+        answer: Answer
+        vote: Vote
       scope:
         question:
           read: Read questions
@@ -1441,7 +1445,7 @@ ui:
           read: Read answers
           create: Create answers
         vote:
-          write: Vote on questions and answers
+          write: Cast and retract votes
       token_status:
         active: Active
         expired: Expired
