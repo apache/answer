@@ -7,7 +7,7 @@ The ASF licenses this file to You under the Apache License, Version 2.0.
 
 # Question workflow
 
-1. Confirm `question.read` for discovery and `question.create` for publication.
+1. Confirm both `question.read` and `answer.read` for search, plus `question.create` for publication.
 2. Search Answer for semantically related wording and likely duplicates.
 3. Read the strongest matching questions and relevant answers.
 4. Search tags and reuse established tag slugs.

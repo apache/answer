@@ -46,6 +46,10 @@ jest.mock('@/hooks', () => ({
   useToast: () => ({ onShow: jest.fn() }),
 }));
 
+jest.mock('@/utils/pluginKit', () => ({
+  useCaptchaPlugin: () => undefined,
+}));
+
 test('hides token creation while the instance feature is disabled', () => {
   render(<PersonalAccessTokens />);
 

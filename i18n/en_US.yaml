@@ -160,6 +160,9 @@ backend:
         other: The personal access token does not have the required scope.
       reauthentication_required:
         other: Please authenticate again before creating a personal access token.
+    feature:
+      disabled:
+        other: This feature is disabled.
     admin:
       cannot_update_their_password:
         other: You cannot modify your password.

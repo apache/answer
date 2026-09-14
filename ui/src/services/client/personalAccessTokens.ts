@@ -39,5 +39,6 @@ export const createPersonalAccessToken = (
 export const revokePersonalAccessToken = (id: number) =>
   request.delete(endpoint, { id });
 
-export const reauthenticate = (password: string) =>
-  request.post('/answer/api/v1/user/reauthenticate', { password });
+export const reauthenticate = (
+  params: { password: string } & Type.ImgCodeReq,
+) => request.post('/answer/api/v1/user/reauthenticate', params);

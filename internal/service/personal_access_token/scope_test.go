@@ -42,6 +42,7 @@ func TestRoutePolicyIsDenyByDefault(t *testing.T) {
 		{name: "create question", method: http.MethodPost, path: "/answer/api/v1/question", scopes: []string{ScopeQuestionCreate}, allow: true},
 		{name: "update question denied", method: http.MethodPut, path: "/answer/api/v1/question", scopes: []string{ScopeQuestionCreate}},
 		{name: "notification denied", method: http.MethodGet, path: "/answer/api/v1/notification/page", scopes: []string{ScopeQuestionRead, ScopeAnswerRead}},
+		{name: "token management denied", method: http.MethodPost, path: "/answer/api/v1/personal-access-tokens", scopes: []string{ScopeQuestionRead, ScopeQuestionCreate}},
 		{name: "self inspection", method: http.MethodGet, path: "/answer/api/v1/personal-access-tokens/current", allow: true},
 	}
 

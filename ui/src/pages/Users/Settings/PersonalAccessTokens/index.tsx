@@ -32,6 +32,7 @@ import {
 } from '@/services';
 import { loggedUserInfoStore, siteSecurityStore } from '@/stores';
 import { useToast } from '@/hooks';
+import { useCaptchaPlugin } from '@/utils/pluginKit';
 
 const scopes: Type.PersonalAccessTokenScope[] = [
   'question.read',
@@ -48,6 +49,7 @@ const PersonalAccessTokens = () => {
   const toast = useToast();
   const security = siteSecurityStore();
   const user = loggedUserInfoStore((state) => state.user);
+  const reauthenticationCaptcha = useCaptchaPlugin('edit_userinfo');
   const { data = [], mutate } = usePersonalAccessTokens();
   const [showCreate, setShowCreate] = useState(false);
   const [showSecret, setShowSecret] = useState(false);
@@ -126,18 +128,38 @@ const PersonalAccessTokens = () => {
     if (!pendingCreate || !password) {
       return;
     }
-    reauthenticate(password)
-      .then(() => {
+    const params: {
+      password: string;
+      captcha_id?: string;
+      captcha_code?: string;
+    } = {
+      password,
+    };
+    reauthenticationCaptcha?.resolveCaptchaReq(params);
+    reauthenticate(params)
+      .then(async () => {
+        await reauthenticationCaptcha?.close();
         setPassword('');
         setShowReauthenticate(false);
         finishCreate(pendingCreate);
       })
       .catch((error) => {
+        if (error?.isError) {
+          reauthenticationCaptcha?.handleCaptchaError(error.list);
+        }
         toast.onShow({
           msg: error?.msg || t('reauthenticate_failed'),
           variant: 'danger',
         });
       });
+  };
+
+  const handleReauthentication = () => {
+    if (!reauthenticationCaptcha) {
+      confirmReauthentication();
+      return;
+    }
+    reauthenticationCaptcha.check(confirmReauthentication);
   };
 
   const toggleScope = (scope: Type.PersonalAccessTokenScope) => {
@@ -307,7 +329,7 @@ const PersonalAccessTokens = () => {
         </Modal.Body>
         {user.have_password && (
           <Modal.Footer>
-            <Button disabled={!password} onClick={confirmReauthentication}>
+            <Button disabled={!password} onClick={handleReauthentication}>
               {t('continue')}
             </Button>
           </Modal.Footer>
