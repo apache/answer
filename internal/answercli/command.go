@@ -28,6 +28,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
@@ -40,6 +41,9 @@ type Options struct {
 	Stderr     io.Writer
 	HTTPClient *http.Client
 	Version    string
+	Revision   string
+	BuildTime  string
+	Modified   bool
 }
 
 type commandState struct {
@@ -60,9 +64,10 @@ func NewRootCommand(options Options) *cobra.Command {
 		options.Stderr = os.Stderr
 	}
 	state := &commandState{options: options, configPath: options.ConfigPath}
+	versionText := formatVersion(options)
 	root := &cobra.Command{
 		Use:           "answer-cli",
-		Version:       options.Version,
+		Version:       versionText,
 		SilenceUsage:  true,
 		SilenceErrors: true,
 	}
@@ -72,8 +77,40 @@ func NewRootCommand(options Options) *cobra.Command {
 	root.PersistentFlags().StringVar(&state.configPath, "config", state.configPath, "configuration file")
 	root.PersistentFlags().StringVar(&state.profile, "profile", "", "profile name")
 	root.PersistentFlags().StringVar(&state.output, "output", "json", "output format: json or text")
-	root.AddCommand(state.authCommand(), state.configCommand(), state.questionCommand(), state.answerCommand(), state.voteCommand(), state.tagCommand())
+	root.AddCommand(
+		&cobra.Command{
+			Use: "version", Short: "Show answer-cli build information", Args: cobra.NoArgs,
+			RunE: func(cmd *cobra.Command, _ []string) error {
+				_, err := fmt.Fprintf(cmd.OutOrStdout(), "answer-cli version %s\n", versionText)
+				return err
+			},
+		},
+		state.authCommand(), state.configCommand(), state.questionCommand(),
+		state.answerCommand(), state.voteCommand(), state.tagCommand(),
+	)
 	return root
+}
+
+func formatVersion(options Options) string {
+	version := options.Version
+	if version == "" {
+		version = "dev"
+	}
+	lines := []string{version}
+	if options.Revision != "" {
+		revision := options.Revision
+		if len(revision) > 12 {
+			revision = revision[:12]
+		}
+		if options.Modified {
+			revision += "-dirty"
+		}
+		lines = append(lines, "revision: "+revision)
+	}
+	if options.BuildTime != "" {
+		lines = append(lines, "build time: "+options.BuildTime)
+	}
+	return strings.Join(lines, "\n")
 }
 
 func (s *commandState) configCommand() *cobra.Command {

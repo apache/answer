@@ -21,17 +21,48 @@ package main
 
 import (
 	"os"
+	"runtime/debug"
 
 	"github.com/apache/answer/internal/answercli"
 )
 
-var version = "dev"
+var (
+	version   = "dev"
+	revision  string
+	buildTime string
+)
 
 func main() {
+	resolvedRevision, resolvedBuildTime, modified := buildMetadata()
 	command := answercli.NewRootCommand(answercli.Options{
-		Stdin: os.Stdin, Stdout: os.Stdout, Stderr: os.Stderr, Version: version,
+		Stdin: os.Stdin, Stdout: os.Stdout, Stderr: os.Stderr,
+		Version: version, Revision: resolvedRevision, BuildTime: resolvedBuildTime, Modified: modified,
 	})
 	if err := command.Execute(); err != nil {
 		os.Exit(answercli.ExitCode(err))
 	}
+}
+
+func buildMetadata() (resolvedRevision, resolvedBuildTime string, modified bool) {
+	resolvedRevision = revision
+	resolvedBuildTime = buildTime
+	info, ok := debug.ReadBuildInfo()
+	if !ok {
+		return resolvedRevision, resolvedBuildTime, false
+	}
+	for _, setting := range info.Settings {
+		switch setting.Key {
+		case "vcs.revision":
+			if resolvedRevision == "" {
+				resolvedRevision = setting.Value
+			}
+		case "vcs.time":
+			if resolvedBuildTime == "" {
+				resolvedBuildTime = setting.Value
+			}
+		case "vcs.modified":
+			modified = setting.Value == "true"
+		}
+	}
+	return resolvedRevision, resolvedBuildTime, modified
 }

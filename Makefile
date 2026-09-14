@@ -10,6 +10,7 @@ DOCKER_CMD=docker
 GO_ENV=CGO_ENABLED=0 GO111MODULE=on
 Revision=$(shell git rev-parse --short HEAD 2>/dev/null || echo "")
 GO_FLAGS=-ldflags="-X github.com/apache/answer/cmd.Version=$(VERSION) -X 'github.com/apache/answer/cmd.Revision=$(Revision)' -X 'github.com/apache/answer/cmd.Time=`date +%s`' -extldflags -static"
+CLI_GO_FLAGS=-ldflags="-X main.version=$(VERSION) -X main.revision=$(Revision) -X main.buildTime=$(shell date -u +%Y-%m-%dT%H:%M:%SZ)"
 GO=$(GO_ENV) "$(shell which go)"
 
 GOLANGCI_VERSION ?= v2.6.2
@@ -25,7 +26,7 @@ build: generate
 	@$(GO) build $(GO_FLAGS) -o $(BIN) $(DIR_SRC)
 
 build-cli:
-	@$(GO) build -ldflags="-X main.version=$(VERSION)" -o $(CLI_BIN) $(CLI_DIR_SRC)
+	@$(GO) build $(CLI_GO_FLAGS) -o $(CLI_BIN) $(CLI_DIR_SRC)
 
 # https://dev.to/thewraven/universal-macos-binaries-with-go-1-16-3mm3
 universal: generate

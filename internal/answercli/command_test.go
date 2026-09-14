@@ -30,6 +30,24 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestVersionIncludesBuildRevision(t *testing.T) {
+	stdout := &bytes.Buffer{}
+	command := NewRootCommand(Options{
+		Stdout:    stdout,
+		Stderr:    &bytes.Buffer{},
+		Version:   "dev",
+		Revision:  "0123456789abcdef",
+		BuildTime: "2026-09-14T12:00:00Z",
+		Modified:  true,
+	})
+	command.SetArgs([]string{"version"})
+
+	require.NoError(t, command.Execute())
+	require.Contains(t, stdout.String(), "version dev")
+	require.Contains(t, stdout.String(), "revision: 0123456789ab-dirty")
+	require.Contains(t, stdout.String(), "build time: 2026-09-14T12:00:00Z")
+}
+
 func TestAuthStatusUsesConfiguredBearerTokenAndWritesJSON(t *testing.T) {
 	var authorization string
 	server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {

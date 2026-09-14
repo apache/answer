@@ -54,7 +54,7 @@ builds:
   - id: build-cli
     main: ./cmd/answer-cli/.
     binary: answer-cli
-    ldflags: -s -w -X main.version={{.RawVersion}}
+    ldflags: -s -w -X main.version={{.RawVersion}} -X main.revision={{.ShortCommit}} -X main.buildTime={{.Date}}
     flags: -v
     goos:
       - linux
@@ -65,7 +65,7 @@ builds:
   - id: build-cli-windows
     main: ./cmd/answer-cli/.
     binary: answer-cli
-    ldflags: -s -w -X main.version={{.RawVersion}}
+    ldflags: -s -w -X main.version={{.RawVersion}} -X main.revision={{.ShortCommit}} -X main.buildTime={{.Date}}
     flags: -v
     goos:
       - windows
