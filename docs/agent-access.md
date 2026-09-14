@@ -1,7 +1,5 @@
 # Answer Agent Access Design
 
-Status: agreed design
-
 Issue: [apache/answer#1555](https://github.com/apache/answer/issues/1555)
 
 ## Summary
