@@ -29,7 +29,13 @@ import { handleFormError } from '@/utils';
 import { usePageTags, usePromptWithUnload } from '@/hooks';
 import { useCaptchaPlugin, useRenderHtmlPlugin } from '@/utils/pluginKit';
 import { pathFactory } from '@/router/pathFactory';
-import { Editor, EditorRef, Icon, htmlRender } from '@/components';
+import {
+  AITranslateButton,
+  Editor,
+  EditorRef,
+  Icon,
+  htmlRender,
+} from '@/components';
 import type * as Type from '@/common/interface';
 import {
   useQueryAnswerInfo,
@@ -284,6 +290,14 @@ const Index = () => {
                 }}
                 ref={editorRef}
               />
+              <div className="mt-2">
+                <AITranslateButton
+                  content={formData.content.value}
+                  onApply={(translated) =>
+                    handleAnswerChange(translated.content)
+                  }
+                />
+              </div>
               <Form.Control
                 value={formData.content.value}
                 type="text"

@@ -30,7 +30,12 @@ import fm from 'front-matter';
 
 import { writeSettingStore } from '@/stores';
 import { usePageTags, usePromptWithUnload } from '@/hooks';
-import { Editor, EditorRef, TagSelector } from '@/components';
+import {
+  AITranslateButton,
+  Editor,
+  EditorRef,
+  TagSelector,
+} from '@/components';
 import type * as Type from '@/common/interface';
 import { DRAFT_QUESTION_STORAGE_KEY } from '@/common/constants';
 import {
@@ -502,6 +507,25 @@ const Ask = () => {
                 }}
                 ref={editorRef}
               />
+              <div className="mt-2">
+                <AITranslateButton
+                  title={formData.title.value}
+                  content={formData.content.value}
+                  onApply={(translated) =>
+                    setFormData((previous) => ({
+                      ...previous,
+                      title: {
+                        ...previous.title,
+                        value: translated.title || previous.title.value,
+                      },
+                      content: {
+                        ...previous.content,
+                        value: translated.content,
+                      },
+                    }))
+                  }
+                />
+              </div>
               <Form.Text>{handleContentHint()}</Form.Text>
               <Form.Control.Feedback type="invalid">
                 {formData.content.errorMsg}
@@ -546,6 +570,14 @@ const Ask = () => {
                         setForceType('');
                       }}
                     />
+                    <div className="mt-2">
+                      <AITranslateButton
+                        content={formData.answer_content.value}
+                        onApply={(translated) =>
+                          handleAnswerChange(translated.content)
+                        }
+                      />
+                    </div>
                     <Form.Control
                       type="text"
                       isInvalid={formData.answer_content.isInvalid}

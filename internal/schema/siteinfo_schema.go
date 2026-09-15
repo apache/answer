@@ -269,10 +269,17 @@ type AIPromptConfig struct {
 
 // SiteAIReq AI configuration request
 type SiteAIReq struct {
-	Enabled         bool              `validate:"omitempty" form:"enabled" json:"enabled"`
-	ChosenProvider  string            `validate:"omitempty,lte=50" form:"chosen_provider" json:"chosen_provider"`
-	SiteAIProviders []*SiteAIProvider `validate:"omitempty,dive" form:"ai_providers" json:"ai_providers"`
-	PromptConfig    *AIPromptConfig   `validate:"omitempty" form:"prompt_config" json:"prompt_config,omitempty"`
+	Enabled            bool              `validate:"omitempty" form:"enabled" json:"enabled"`
+	TranslationEnabled *bool             `validate:"omitempty" form:"translation_enabled" json:"translation_enabled,omitempty"`
+	ChosenProvider     string            `validate:"omitempty,lte=50" form:"chosen_provider" json:"chosen_provider"`
+	SiteAIProviders    []*SiteAIProvider `validate:"omitempty,dive" form:"ai_providers" json:"ai_providers"`
+	PromptConfig       *AIPromptConfig   `validate:"omitempty" form:"prompt_config" json:"prompt_config,omitempty"`
+}
+
+// IsTranslationEnabled defaults to true for configurations saved before the
+// translation setting was introduced.
+func (s *SiteAIResp) IsTranslationEnabled() bool {
+	return s.TranslationEnabled == nil || *s.TranslationEnabled
 }
 
 func (s *SiteAIResp) GetProvider() *SiteAIProvider {
@@ -369,24 +376,25 @@ type SiteSeoResp SiteSeoReq
 
 // SiteInfoResp get site info response
 type SiteInfoResp struct {
-	General       *SiteGeneralResp           `json:"general"`
-	Interface     *SiteInterfaceSettingsResp `json:"interface"`
-	UsersSettings *SiteUsersSettingsResp     `json:"users_settings"`
-	Branding      *SiteBrandingResp          `json:"branding"`
-	Login         *SiteLoginResp             `json:"login"`
-	Theme         *SiteThemeResp             `json:"theme"`
-	CustomCssHtml *SiteCustomCssHTMLResp     `json:"custom_css_html"`
-	SiteSeo       *SiteSeoResp               `json:"site_seo"`
-	SiteUsers     *SiteUsersResp             `json:"site_users"`
-	Advanced      *SiteAdvancedResp          `json:"site_advanced"`
-	Questions     *SiteQuestionsResp         `json:"site_questions"`
-	Tags          *SiteTagsResp              `json:"site_tags"`
-	Legal         *SiteLegalSimpleResp       `json:"site_legal"`
-	Security      *SiteSecurityResp          `json:"site_security"`
-	Version       string                     `json:"version"`
-	Revision      string                     `json:"revision"`
-	AIEnabled     bool                       `json:"ai_enabled"`
-	MCPEnabled    bool                       `json:"mcp_enabled"`
+	General              *SiteGeneralResp           `json:"general"`
+	Interface            *SiteInterfaceSettingsResp `json:"interface"`
+	UsersSettings        *SiteUsersSettingsResp     `json:"users_settings"`
+	Branding             *SiteBrandingResp          `json:"branding"`
+	Login                *SiteLoginResp             `json:"login"`
+	Theme                *SiteThemeResp             `json:"theme"`
+	CustomCssHtml        *SiteCustomCssHTMLResp     `json:"custom_css_html"`
+	SiteSeo              *SiteSeoResp               `json:"site_seo"`
+	SiteUsers            *SiteUsersResp             `json:"site_users"`
+	Advanced             *SiteAdvancedResp          `json:"site_advanced"`
+	Questions            *SiteQuestionsResp         `json:"site_questions"`
+	Tags                 *SiteTagsResp              `json:"site_tags"`
+	Legal                *SiteLegalSimpleResp       `json:"site_legal"`
+	Security             *SiteSecurityResp          `json:"site_security"`
+	Version              string                     `json:"version"`
+	Revision             string                     `json:"revision"`
+	AIEnabled            bool                       `json:"ai_enabled"`
+	AITranslationEnabled bool                       `json:"ai_translation_enabled"`
+	MCPEnabled           bool                       `json:"mcp_enabled"`
 }
 
 type TemplateSiteInfoResp struct {

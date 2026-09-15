@@ -27,7 +27,7 @@ import classNames from 'classnames';
 
 import { usePromptWithUnload } from '@/hooks';
 import { useCaptchaPlugin } from '@/utils/pluginKit';
-import { Editor, Modal, TextArea } from '@/components';
+import { AITranslateButton, Editor, Modal, TextArea } from '@/components';
 import { FormDataType, PostAnswerReq } from '@/common/interface';
 import { postAnswer } from '@/services';
 import { guard, handleFormError, SaveDraft, storageExpires } from '@/utils';
@@ -288,6 +288,20 @@ const Index: FC<Props> = ({ visible = false, data, callback }) => {
                   setFocusType('');
                 }}
               />
+              <div className="mt-2">
+                <AITranslateButton
+                  content={formData.content.value}
+                  onApply={(translated) =>
+                    setFormData({
+                      content: {
+                        value: translated.content,
+                        isInvalid: false,
+                        errorMsg: '',
+                      },
+                    })
+                  }
+                />
+              </div>
 
               <Alert
                 variant="warning"

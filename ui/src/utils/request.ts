@@ -233,7 +233,7 @@ class Request {
   public post<T = any>(
     url: string,
     data?: any,
-    config?: AxiosRequestConfig,
+    config?: ApiConfig,
   ): Promise<T> {
     return this.instance.post(url, data, config);
   }
