@@ -177,7 +177,7 @@ backend:
         other: Answer content cannot be empty.
     comment:
       edit_without_permission:
-        other: This comment cannot be edited.
+        other: You do not have permission to edit this comment.
       not_found:
         other: Comment not found.
       cannot_edit_after_deadline:
