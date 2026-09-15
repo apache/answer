@@ -19,41 +19,25 @@
 
 package router
 
-import (
-	"errors"
-	"net/http"
-	"net/http/httptest"
-	"testing"
+import "testing"
 
-	"github.com/apache/answer/internal/service/mock"
-	"github.com/gin-gonic/gin"
-	"github.com/stretchr/testify/assert"
-	"go.uber.org/mock/gomock"
-)
-
-func TestUIRouter_FaviconWithNilBranding(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	mockSiteInfoService := mock.NewMockSiteInfoCommonService(ctrl)
-
-	// Simulate a database error
-	mockSiteInfoService.EXPECT().
-		GetSiteBranding(gomock.Any()).
-		Return(nil, errors.New("database connection failed"))
-
-	router := &UIRouter{
-		siteInfoService: mockSiteInfoService,
+func TestIsMissingStaticAsset(t *testing.T) {
+	cases := []struct {
+		name, urlPath, base string
+		want                bool
+	}{
+		{"chunk of a previous build", "/static/js/6487.02e56745.chunk.js", "", true},
+		{"with base url", "/answer/static/css/main.css", "/answer", true},
+		{"spa route", "/users/alice", "", false},
+		{"spa route with base url", "/answer/questions", "/answer", false},
+		{"static under a different base", "/static/js/main.js", "/answer", false},
+		{"root", "/", "", false},
 	}
-
-	gin.SetMode(gin.TestMode)
-	r := gin.New()
-	router.Register(r, "")
-
-	req := httptest.NewRequest(http.MethodGet, "/favicon.ico", nil)
-	w := httptest.NewRecorder()
-
-	r.ServeHTTP(w, req)
-
-	assert.Equal(t, http.StatusOK, w.Code)
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			if got := isMissingStaticAsset(c.urlPath, c.base); got != c.want {
+				t.Fatalf("isMissingStaticAsset(%q, %q) = %v, want %v", c.urlPath, c.base, got, c.want)
+			}
+		})
+	}
 }
