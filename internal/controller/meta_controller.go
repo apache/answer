@@ -57,6 +57,7 @@ func (mc *MetaController) AddOrUpdateReaction(ctx *gin.Context) {
 	}
 	req.ObjectID = uid.DeShortID(req.ObjectID)
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
+	req.IsAdminModerator = middleware.GetUserIsAdminModerator(ctx)
 
 	resp, err := mc.metaService.AddOrUpdateReaction(ctx, req)
 	handler.HandleResponse(ctx, err, resp)
@@ -78,6 +79,7 @@ func (mc *MetaController) GetReaction(ctx *gin.Context) {
 	}
 	req.ObjectID = uid.DeShortID(req.ObjectID)
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
+	req.IsAdminModerator = middleware.GetUserIsAdminModerator(ctx)
 
 	resp, err := mc.metaService.GetReactionByObjectId(ctx, req)
 	handler.HandleResponse(ctx, err, resp)
