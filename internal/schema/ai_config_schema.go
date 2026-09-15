@@ -19,6 +19,23 @@
 
 package schema
 
+import "strings"
+
+// NormalizeAPIHost normalizes an OpenAI-compatible API base host:
+// trims whitespace/slashes and appends "/v1" unless already versioned,
+// so that hosts with or without the "/v1" suffix resolve identically.
+func NormalizeAPIHost(host string) string {
+	h := strings.TrimSpace(host)
+	h = strings.TrimRight(h, "/")
+	if h == "" {
+		return ""
+	}
+	if strings.HasSuffix(h, "/v1") || strings.Contains(h, "/v1beta") {
+		return h
+	}
+	return h + "/v1"
+}
+
 // GetAIProviderResp get AI providers response
 type GetAIProviderResp struct {
 	Name           string `json:"name"`

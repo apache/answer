@@ -869,6 +869,9 @@ ui:
     ask_placeholder: Ask a question
     thinking: Thinking…
     thoughts: Thoughts
+    image_upload: Add images
+    image_too_large: Image exceeds the 4MB limit
+    image_max_count: You can attach up to 4 images
   notifications:
     title: Notifications
     inbox: Inbox
@@ -2360,6 +2363,12 @@ ui:
       model:
         label: Model
         msg: Model is required
+      thinking_mode:
+        label: Deep thinking mode
+        tip: Sends the enable_thinking flag so reasoning-capable models show their thought process.
+      vision_enabled:
+        label: Allow image input
+        tip: Let users attach up to 4 PNG/JPEG/WebP images (max 4MB each) to AI conversations.
       add_success: AI settings updated successfully.
     conversations:
       topic: Topic

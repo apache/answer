@@ -428,6 +428,7 @@ export interface SiteSettings {
   revision: string;
   site_security: AdminSettingsSecurity;
   ai_enabled: boolean;
+  ai_vision_enabled?: boolean;
 }
 
 export interface AdminSettingBranding {
@@ -834,6 +835,8 @@ export interface AiConfig {
     api_host: string;
     api_key: string;
     model: string;
+    thinking_mode?: string;
+    vision_enabled?: boolean;
   }>;
 }
 

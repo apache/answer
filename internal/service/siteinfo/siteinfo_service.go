@@ -737,14 +737,15 @@ func (s *SiteInfoService) GetAIModels(ctx context.Context, req *schema.GetAIMode
 	r := resty.New()
 	r.SetHeader("Authorization", fmt.Sprintf("Bearer %s", req.APIKey))
 	r.SetHeader("Content-Type", "application/json")
-	respBody, err := r.R().Get(req.APIHost + "/v1/models")
+	respBody, err := r.R().Get(schema.NormalizeAPIHost(req.APIHost) + "/models")
 	if err != nil {
 		log.Error(err)
 		return resp, errors.BadRequest(fmt.Sprintf("failed to get AI models %s", err.Error()))
 	}
 	if !respBody.IsSuccess() {
-		log.Error(fmt.Sprintf("failed to get AI models, status code: %d, body: %s", respBody.StatusCode(), respBody.String()))
-		return resp, errors.BadRequest(fmt.Sprintf("failed to get AI models, response: %s", respBody.String()))
+		summary := summarizeUpstreamError(respBody.Body(), respBody.StatusCode())
+		log.Error(fmt.Sprintf("failed to get AI models, status code: %d, body: %s", respBody.StatusCode(), summary))
+		return resp, errors.BadRequest(fmt.Sprintf("failed to get AI models (%s)", summary))
 	}
 
 	data := schema.GetAIModelsResp{}
@@ -766,18 +767,43 @@ func (s *SiteInfoService) getStoredAIKey(ctx context.Context, apiHost string) (s
 	if err != nil {
 		return "", err
 	}
+	// Prefer the key of the provider currently chosen in site settings;
+	// fall back to host matching for callers that bypass the chosen provider.
+	if current.ChosenProvider != "" {
+		for _, provider := range current.SiteAIProviders {
+			if provider.Provider == current.ChosenProvider && provider.APIKey != "" {
+				return provider.APIKey, nil
+			}
+		}
+	}
 	apiHost = strings.TrimRight(apiHost, "/")
 	for _, provider := range current.SiteAIProviders {
 		if strings.TrimRight(provider.APIHost, "/") == apiHost && provider.APIKey != "" {
 			return provider.APIKey, nil
 		}
 	}
-	if current.ChosenProvider != "" {
-		for _, provider := range current.SiteAIProviders {
-			if provider.Provider == current.ChosenProvider {
-				return provider.APIKey, nil
+	return "", nil
+}
+
+// summarizeUpstreamError extracts a short message from an OpenAI-style error
+// body instead of echoing the full upstream response back to the client.
+func summarizeUpstreamError(body []byte, statusCode int) string {
+	var wrapper struct {
+		Error struct {
+			Code    any    `json:"code"`
+			Message string `json:"message"`
+		} `json:"error"`
+	}
+	if err := json.Unmarshal(body, &wrapper); err == nil && wrapper.Error.Message != "" {
+		switch v := wrapper.Error.Code.(type) {
+		case float64:
+			return fmt.Sprintf("code %d: %s", int(v), wrapper.Error.Message)
+		case string:
+			if v != "" {
+				return fmt.Sprintf("code %s: %s", v, wrapper.Error.Message)
 			}
 		}
+		return wrapper.Error.Message
 	}
-	return "", nil
+	return fmt.Sprintf("HTTP %d", statusCode)
 }

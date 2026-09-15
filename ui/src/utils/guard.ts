@@ -389,6 +389,7 @@ export const initAppSettingsStore = async () => {
     });
     aiControlStore.getState().update({
       ai_enabled: appSettings.ai_enabled,
+      ai_vision_enabled: appSettings.ai_vision_enabled ?? false,
     });
     siteSecurityStore.getState().update(appSettings.site_security);
   }
