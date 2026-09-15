@@ -100,13 +100,21 @@ const QuestionList: FC<Props> = ({
   return (
     <div>
       <div className="mb-3 d-flex flex-wrap justify-content-between">
-        <h5 className="fs-5 text-nowrap mb-3 mb-md-0">
-          {source === 'questions'
-            ? t('all_questions')
-            : source === 'linked'
+        {/* `h1` where this heading is the page's own — the question list at
+            /questions has no other. Everywhere else the page brings its own
+            `h1` and this one sits below it. `fs-5` keeps the size it had as
+            an `h5`. */}
+        {source === 'questions' ? (
+          <h1 className="fs-5 text-nowrap mb-3 mb-md-0">
+            {t('all_questions')}
+          </h1>
+        ) : (
+          <h2 className="fs-5 text-nowrap mb-3 mb-md-0">
+            {source === 'linked'
               ? t('x_posts', { count })
               : t('x_questions', { count })}
-        </h5>
+          </h2>
+        )}
         <div className="d-flex flex-wrap">
           <QueryGroup
             data={orderKeys}
@@ -167,7 +175,9 @@ const QuestionList: FC<Props> = ({
                       className="text-secondary ms-1 flex-shrink-0"
                     />
                   </div>
-                  <h5 className="text-wrap text-break">
+                  {/* One level below the list's own heading, not the same
+                      one it used to share with it. `fs-5` keeps the size. */}
+                  <h3 className="fs-5 text-wrap text-break">
                     <NavLink
                       className="link-dark d-block"
                       onClick={(e) => e.stopPropagation()}
@@ -175,7 +185,7 @@ const QuestionList: FC<Props> = ({
                       {li.title}
                       {li.status === 2 ? ` [${t('closed')}]` : ''}
                     </NavLink>
-                  </h5>
+                  </h3>
                   {viewType === 'card' && (
                     <div className="text-truncate-2 mb-2">
                       <NavLink

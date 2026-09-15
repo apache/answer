@@ -43,7 +43,7 @@ const Users = () => {
   return (
     <Row className="py-4 mb-4 d-flex justify-content-center">
       <Col xxl={12}>
-        <h3 className="mb-4">{t('title')}</h3>
+        <h1 className="fs-3 mb-4">{t('title')}</h1>
       </Col>
 
       <Col xxl={12}>
@@ -55,7 +55,7 @@ const Users = () => {
             <Fragment key={key}>
               <Row className="mb-4">
                 <Col>
-                  <h6 className="mb-0">{t(key)}</h6>
+                  <h2 className="fs-6 mb-0">{t(key)}</h2>
                 </Col>
               </Row>
               <Row className={index === keys.length - 1 ? '' : 'mb-4'}>
