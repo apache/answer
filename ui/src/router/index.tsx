@@ -27,6 +27,8 @@ import baseRoutes, { RouteNode } from './routes';
 import RouteGuard from './RouteGuard';
 import RouteErrorBoundary from './RouteErrorBoundary';
 
+const STALE_CHUNK_KEY = 'answer_stale_chunk_reload';
+
 const routeWrapper = (routeNodes: RouteNode[], root: RouteNode[]) => {
   routeNodes.forEach((rn) => {
     if (rn.page === 'pages/Layout') {
@@ -48,7 +50,25 @@ const routeWrapper = (routeNodes: RouteNode[], root: RouteNode[]) => {
 
       if (typeof rn.page === 'string') {
         const pagePath = rn.page.replace('pages/', '');
-        Ctrl = lazy(() => import(`@/pages/${pagePath}`));
+        Ctrl = lazy(() =>
+          import(`@/pages/${pagePath}`).then(
+            (m) => {
+              sessionStorage.removeItem(STALE_CHUNK_KEY);
+              return m;
+            },
+            (err) => {
+              // A tab opened before an upgrade still runs the old bundle; the hashed chunk
+              // names it asks for no longer exist on the server, so reload once to pick up
+              // the new index.html instead of rendering the 50X error page.
+              if (!sessionStorage.getItem(STALE_CHUNK_KEY)) {
+                sessionStorage.setItem(STALE_CHUNK_KEY, '1');
+                window.location.reload();
+                return new Promise<never>(() => {});
+              }
+              throw err;
+            },
+          ),
+        );
       } else {
         Ctrl = rn.page;
       }
