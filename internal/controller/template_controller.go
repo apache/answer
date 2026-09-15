@@ -52,6 +52,17 @@ import (
 	"github.com/segmentfault/pacman/log"
 )
 
+// maxTemplateAnswerPageSize caps how many answers are rendered into the
+// server-side page. The template shows every answer it is given and has no
+// pagination, so this value is also the number of answers a crawler sees.
+//
+// It exists because the previous value of 999 made long questions unusable:
+// the server fetches the answers, then the comments for every one of them,
+// and the browser has to parse and hydrate the result. On a question with
+// 999 answers that took 2.6s on the server and 23.5s until the first answer
+// was visible, against 0.2s for an ordinary question.
+const maxTemplateAnswerPageSize = 100
+
 var SiteUrl = ""
 
 type TemplateController struct {
@@ -345,7 +356,7 @@ func (tc *TemplateController) QuestionInfo(ctx *gin.Context) {
 		QuestionID: id,
 		Order:      "",
 		Page:       1,
-		PageSize:   999,
+		PageSize:   maxTemplateAnswerPageSize,
 		UserID:     "",
 	}
 	answers, answerCount, err := tc.templateRenderController.AnswerList(ctx, answerReq)
