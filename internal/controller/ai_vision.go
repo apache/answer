@@ -20,6 +20,7 @@
 package controller
 
 import (
+	"bytes"
 	"encoding/base64"
 	"fmt"
 	"strings"
@@ -39,6 +40,20 @@ var allowedImagePrefixes = []string{
 	"data:image/jpeg;base64,",
 	"data:image/webp;base64,",
 	"https://",
+}
+
+// hasImageMagicBytes reports whether raw starts with the signature of one of
+// the accepted raster formats (PNG/JPEG/WebP). A declared image MIME type plus
+// base64 integrity alone does not prove the payload is an image.
+func hasImageMagicBytes(raw []byte) bool {
+	pngSig := []byte{0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A}
+	if bytes.HasPrefix(raw, pngSig) {
+		return true
+	}
+	if bytes.HasPrefix(raw, []byte{0xFF, 0xD8, 0xFF}) {
+		return true
+	}
+	return len(raw) >= 12 && bytes.Equal(raw[:4], []byte("RIFF")) && bytes.Equal(raw[8:12], []byte("WEBP"))
 }
 
 // ValidateAndPrepareImages validates attachments and wraps them together with
@@ -73,6 +88,9 @@ func ValidateAndPrepareImages(text string, images []string) (*openai.ChatComplet
 			}
 			if len(raw) > maxImageBytes {
 				return nil, fmt.Errorf("image too large (max 4MB)")
+			}
+			if !hasImageMagicBytes(raw) {
+				return nil, fmt.Errorf("image content is not a valid PNG/JPEG/WebP file")
 			}
 		}
 	}

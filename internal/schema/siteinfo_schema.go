@@ -297,7 +297,10 @@ type SiteAIProvider struct {
 	Model    string `validate:"omitempty,lte=100" form:"model" json:"model"`
 	// ThinkingMode toggles deep-thinking for reasoning-capable models.
 	// Empty value or "off" keeps requests unchanged; "on" injects the
-	// OpenAI-compatible "enable_thinking" flag into chat completions.
+	// thinking parameter documented by the configured provider host
+	// (DashScope/Qwen: top-level "enable_thinking", DeepSeek: a
+	// thinking object). Hosts without a documented OpenAI-compatible
+	// parameter are left unchanged.
 	ThinkingMode string `validate:"omitempty,oneof=on off" form:"thinking_mode" json:"thinking_mode"`
 	// VisionEnabled allows users to attach images to AI conversations.
 	VisionEnabled bool `validate:"omitempty" form:"vision_enabled" json:"vision_enabled"`

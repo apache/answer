@@ -102,6 +102,11 @@ func (c *AIController) ensureAIChatEnabled(ctx *gin.Context) bool {
 	return true
 }
 
+// maxChatRequestBodyBytes caps the whole chat completion request body before
+// it is bound or logged: 4 images × 4MB with base64 expansion (~21.3MB) plus
+// text history.
+const maxChatRequestBodyBytes = 32 << 20
+
 type ChatCompletionsRequest struct {
 	Messages       []Message `validate:"required,gte=1" json:"messages"`
 	ConversationID string    `json:"conversation_id"`
@@ -175,6 +180,9 @@ func (c *ConversationContext) GetOpenAIMessages() []openai.ChatCompletionMessage
 		messages[i] = openai.ChatCompletionMessage{
 			Role:    msg.Role,
 			Content: msg.Content,
+			// Preserved so tool-bearing follow-up requests can pass prior
+			// reasoning back to the model (required by e.g. DeepSeek).
+			ReasoningContent: msg.ReasoningContent,
 		}
 	}
 	return messages
@@ -227,11 +235,29 @@ func (c *AIController) ChatCompletions(ctx *gin.Context) {
 
 	aiProvider := aiConfig.GetProvider()
 
+	// Cap the complete request body before binding so oversized payloads are
+	// rejected instead of being buffered or written to logs.
+	if ctx.Request.ContentLength > maxChatRequestBodyBytes {
+		handler.HandleResponse(ctx, errors.BadRequest("request body too large"), nil)
+		return
+	}
+	ctx.Request.Body = http.MaxBytesReader(ctx.Writer, ctx.Request.Body, maxChatRequestBodyBytes)
+
 	req := &ChatCompletionsRequest{}
 	if handler.BindAndCheck(ctx, req) {
 		return
 	}
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
+
+	// Attachments are accepted on the first message only; images on later
+	// messages are neither validated nor forwarded to the model, so reject
+	// them outright.
+	for i, msg := range req.Messages {
+		if i > 0 && len(msg.Images) > 0 {
+			handler.HandleResponse(ctx, errors.BadRequest("images are only allowed on the first message"), nil)
+			return
+		}
+	}
 
 	// Reject or validate image attachments before the SSE stream starts, so
 	// clients still receive a proper JSON error with the right status code.
@@ -246,18 +272,18 @@ func (c *AIController) ChatCompletions(ctx *gin.Context) {
 		}
 	}
 
-	// Never dump image data into logs; summarize attachments as a count.
-	if len(req.Messages) > 0 && len(req.Messages[0].Images) > 0 {
-		logReq := *req
-		logReq.Messages = make([]Message, len(req.Messages))
-		copy(logReq.Messages, req.Messages)
-		logReq.Messages[0].Images = []string{fmt.Sprintf("<%d images>", len(req.Messages[0].Images))}
-		data, _ := json.Marshal(logReq)
-		log.Infof("ai chat request data: %s", string(data))
-	} else {
-		data, _ := json.Marshal(req)
-		log.Infof("ai chat request data: %s", string(data))
+	// Never dump image data into logs; summarize attachments as a count
+	// across every message before marshaling.
+	logReq := *req
+	logReq.Messages = make([]Message, len(req.Messages))
+	for i, msg := range req.Messages {
+		logReq.Messages[i] = msg
+		if len(msg.Images) > 0 {
+			logReq.Messages[i].Images = []string{fmt.Sprintf("<%d images>", len(msg.Images))}
+		}
 	}
+	data, _ := json.Marshal(logReq)
+	log.Infof("ai chat request data: %s", string(data))
 
 	ctx.Header("Content-Type", "text/event-stream")
 	ctx.Header("Cache-Control", "no-cache")
@@ -343,7 +369,9 @@ func (c *AIController) createOpenAIClient() *openai.Client {
 	config := openai.DefaultConfig(aiProvider.APIKey)
 	config.BaseURL = schema.NormalizeAPIHost(aiProvider.APIHost)
 	if aiProvider.ThinkingMode == "on" {
-		config.HTTPClient = newThinkingHTTPClient()
+		if param := thinkingParamForHost(aiProvider.APIHost); len(param) > 0 {
+			config.HTTPClient = newThinkingHTTPClient(param)
+		}
 	}
 	return openai.NewClientWithConfig(config)
 }
@@ -426,6 +454,7 @@ func (c *AIController) initializeConversationContext(ctx *gin.Context, model str
 			ChatCompletionID: record.ChatCompletionID,
 			Role:             record.Role,
 			Content:          record.Content,
+			ReasoningContent: record.ReasoningContent,
 		})
 	}
 	conversationCtx.Messages = append(conversationCtx.Messages, &ai_conversation.ConversationMessage{

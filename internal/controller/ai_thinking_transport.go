@@ -28,25 +28,50 @@ import (
 	"strings"
 )
 
-// ThinkingParamKey is the OpenAI-compatible request flag understood by
-// reasoning-capable model gateways (DeepSeek, Qwen/DashScope, SenseNova, ...).
-const ThinkingParamKey = "enable_thinking"
+// thinkingParamForHost returns the request body patch that enables thinking
+// for a provider host, or nil when the host has no documented
+// OpenAI-compatible thinking parameter. The flag is gateway-specific rather
+// than a neutral OpenAI extension:
+//   - DashScope/Qwen compatibility mode documents top-level "enable_thinking"
+//     (https://help.aliyun.com/en/model-studio/qwen-api-via-dashscope).
+//   - DeepSeek documents an object parameter, thinking: {"type": "enabled"}
+//     (https://api-docs.deepseek.com/guides/thinking_mode/).
+//   - Gemini's OpenAI-compatible endpoint accepts neither.
+//
+// Unknown hosts receive no provider-specific field instead of a global guess.
+func thinkingParamForHost(apiHost string) map[string]any {
+	h := strings.ToLower(strings.TrimSpace(apiHost))
+	switch {
+	case strings.Contains(h, "dashscope.aliyuncs.com"):
+		return map[string]any{"enable_thinking": true}
+	case strings.Contains(h, "api.deepseek.com"):
+		return map[string]any{"thinking": map[string]any{"type": "enabled"}}
+	default:
+		return nil
+	}
+}
 
-// thinkingTransport merges the thinking flag into chat completion request
+// thinkingTransport merges the thinking parameter into chat completion request
 // bodies before they leave the process. The openai SDK has no generic extra
 // body hook, so an http.Client with this transport is attached to the client
-// config when the provider enables thinking mode.
-type thinkingTransport struct{ base http.RoundTripper }
+// config when the provider enables thinking mode and its host documents a
+// thinking parameter.
+type thinkingTransport struct {
+	base  http.RoundTripper
+	param map[string]any
+}
 
 func (t *thinkingTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-	if req.Body != nil && req.ContentLength != 0 &&
+	if len(t.param) > 0 && req.Body != nil && req.ContentLength != 0 &&
 		strings.HasSuffix(req.URL.Path, "/chat/completions") {
 		b, err := io.ReadAll(req.Body)
 		_ = req.Body.Close()
 		if err == nil {
 			var payload map[string]any
 			if json.Unmarshal(b, &payload) == nil && payload != nil {
-				payload[ThinkingParamKey] = true
+				for k, v := range t.param {
+					payload[k] = v
+				}
 				nb, mErr := json.Marshal(payload)
 				if mErr == nil {
 					req.Body = io.NopCloser(bytes.NewReader(nb))
@@ -66,6 +91,6 @@ func (t *thinkingTransport) RoundTrip(req *http.Request) (*http.Response, error)
 	return t.base.RoundTrip(req)
 }
 
-func newThinkingHTTPClient() *http.Client {
-	return &http.Client{Transport: &thinkingTransport{}}
+func newThinkingHTTPClient(param map[string]any) *http.Client {
+	return &http.Client{Transport: &thinkingTransport{param: param}}
 }

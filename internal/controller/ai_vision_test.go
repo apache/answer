@@ -29,12 +29,22 @@ import (
 )
 
 // minimalPNGBytes builds a tiny blob that starts with the canonical PNG file
-// signature at runtime. The validation only inspects the declared MIME type,
-// base64 integrity and size, so a fully decodable image is not required; we
-// construct it on the fly instead of embedding a base64 blob in the source.
+// signature at runtime. The validation inspects the declared MIME type, base64
+// integrity, size and image magic bytes, so a fully decodable image is not
+// required; we construct it on the fly instead of embedding a base64 blob in
+// the source.
 func minimalPNGBytes() []byte {
 	sig := []byte{0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A} // \x89PNG\r\n\x1a\n
 	return append(sig, bytes.Repeat([]byte{0x00}, 40)...)
+}
+
+func jpegBytes() []byte {
+	return append([]byte{0xFF, 0xD8, 0xFF, 0xE0}, bytes.Repeat([]byte{0x00}, 40)...)
+}
+
+func webpBytes() []byte {
+	b := append([]byte("RIFF"), []byte{0x28, 0x00, 0x00, 0x00}...)
+	return append(append(b, []byte("WEBP")...), bytes.Repeat([]byte{0x00}, 32)...)
 }
 
 func dataURL() string {
@@ -65,6 +75,29 @@ func TestValidateAndPrepareImagesNoImages(t *testing.T) {
 	}
 	if msg.Content != "纯文本" || msg.MultiContent != nil {
 		t.Fatalf("expect plain content message, got %+v", msg)
+	}
+}
+
+func TestValidateAndPrepareImagesMagicBytes(t *testing.T) {
+	// Matching signatures of the accepted formats pass.
+	for _, tc := range []struct {
+		mime string
+		raw  []byte
+	}{
+		{"png", minimalPNGBytes()},
+		{"jpeg", jpegBytes()},
+		{"webp", webpBytes()},
+	} {
+		url := "data:image/" + tc.mime + ";base64," + base64.StdEncoding.EncodeToString(tc.raw)
+		if _, err := ValidateAndPrepareImages("hi", []string{url}); err != nil {
+			t.Fatalf("expect %s payload accepted, got %v", tc.mime, err)
+		}
+	}
+	// A declared image MIME type with non-image content is rejected.
+	text := "data:image/png;base64," + base64.StdEncoding.EncodeToString([]byte("<script>alert(1)</script>"))
+	if _, err := ValidateAndPrepareImages("hi", []string{text}); err == nil ||
+		!strings.Contains(err.Error(), "not a valid") {
+		t.Fatalf("expect non-image content error, got %v", err)
 	}
 }
 
