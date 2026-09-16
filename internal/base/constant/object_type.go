@@ -20,28 +20,30 @@
 package constant
 
 const (
-	QuestionObjectType   = "question"
-	AnswerObjectType     = "answer"
-	TagObjectType        = "tag"
-	UserObjectType       = "user"
-	CollectionObjectType = "collection"
-	CommentObjectType    = "comment"
-	ReportObjectType     = "report"
-	BadgeObjectType      = "badge"
-	BadgeAwardObjectType = "badge_award"
+	QuestionObjectType     = "question"
+	AnswerObjectType       = "answer"
+	TagObjectType          = "tag"
+	UserObjectType         = "user"
+	CollectionObjectType   = "collection"
+	CommentObjectType      = "comment"
+	ReportObjectType       = "report"
+	BadgeObjectType        = "badge"
+	BadgeAwardObjectType   = "badge_award"
+	AdminMessageObjectType = "admin_message" // notification object type of admin messages
 )
 
 var (
 	ObjectTypeStrMapping = map[string]int{
-		QuestionObjectType:   1,
-		AnswerObjectType:     2,
-		TagObjectType:        3,
-		UserObjectType:       4,
-		CollectionObjectType: 6,
-		CommentObjectType:    7,
-		ReportObjectType:     8,
-		BadgeObjectType:      9,
-		BadgeAwardObjectType: 10,
+		QuestionObjectType:     1,
+		AnswerObjectType:       2,
+		TagObjectType:          3,
+		UserObjectType:         4,
+		CollectionObjectType:   6,
+		CommentObjectType:      7,
+		ReportObjectType:       8,
+		BadgeObjectType:        9,
+		BadgeAwardObjectType:   10,
+		AdminMessageObjectType: 11,
 	}
 
 	ObjectTypeNumberMapping = map[int]string{

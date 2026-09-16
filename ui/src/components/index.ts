@@ -40,6 +40,7 @@ import Toast from './Toast';
 import AccordionNav from './AccordionNav';
 import Empty from './Empty';
 import BaseUserCard from './BaseUserCard';
+import MessageUserButton from './MessageUserButton';
 import FollowingTags from './FollowingTags';
 import QueryGroup from './QueryGroup';
 import BrandUpload from './BrandUpload';
@@ -93,6 +94,7 @@ export {
   AccordionNav,
   Empty,
   BaseUserCard,
+  MessageUserButton,
   FollowingTags,
   htmlRender,
   QueryGroup,

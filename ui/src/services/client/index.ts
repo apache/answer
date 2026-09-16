@@ -20,6 +20,7 @@
 export * from './activity';
 export * from './personal';
 export * from './notification';
+export * from './adminMessage';
 export * from './question';
 export * from './search';
 export * from './tag';

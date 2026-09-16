@@ -24,7 +24,7 @@ import { Link } from 'react-router-dom';
 
 import classNames from 'classnames';
 
-import { Icon, FormatTime } from '@/components';
+import { Icon, FormatTime, MessageUserButton } from '@/components';
 
 const ActionBar = ({
   nickName,
@@ -37,6 +37,8 @@ const ActionBar = ({
   onVote,
   onAction,
   userStatus = '',
+  commentId = '',
+  objectTitle = '',
 }) => {
   const { t } = useTranslation('translation', { keyPrefix: 'comment' });
 
@@ -75,6 +77,13 @@ const ActionBar = ({
           onClick={onReply}>
           {t('btn_reply')}
         </Button>
+        <MessageUserButton
+          username={username}
+          objectId={commentId}
+          objectTitle={objectTitle}
+          variant="icon"
+          className="ms-3"
+        />
       </div>
       <div className="align-items-center control-area d-none">
         {memberActions.map((action, index) => {
