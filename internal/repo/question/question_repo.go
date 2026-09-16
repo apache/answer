@@ -441,6 +441,8 @@ func (qr *questionRepo) GetQuestionPage(ctx context.Context, page, pageSize int,
 		session.OrderBy("question.pin desc,question.created_at DESC")
 	case "frequent":
 		session.OrderBy("question.pin DESC, question.linked_count DESC, question.updated_at DESC")
+	case "views":
+		session.OrderBy("question.pin DESC, question.view_count DESC, question.created_at DESC")
 	}
 
 	session.GroupBy("question.id")
@@ -854,6 +856,8 @@ func (qr *questionRepo) GetQuestionLink(ctx context.Context, page, pageSize int,
 		session.OrderBy("question.pin desc,question.created_at DESC")
 	case "frequent":
 		session.OrderBy("question.pin DESC, question.linked_count DESC, question.updated_at DESC")
+	case "views":
+		session.OrderBy("question.pin DESC, question.view_count DESC, question.created_at DESC")
 	}
 
 	if page > 0 && pageSize > 0 {

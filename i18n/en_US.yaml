@@ -1630,6 +1630,7 @@ ui:
     recommend: Recommend
     score: Score
     unanswered: Unanswered
+    views: Most viewed
     modified: modified
     answered: answered
     asked: asked
