@@ -229,17 +229,15 @@ func (s *ActivityLogAdminService) Export(ctx context.Context, req *schema.Activi
 	var writeErr error
 	err = s.repo.Iterate(ctx, q, ExportLimit, func(rows []*entity.ActivityLog) bool {
 		for _, it := range s.decorate(ctx, rows) {
+			// every column except the numeric delta is user-influenced text → escape for spreadsheets
 			cols := []string{
 				time.Unix(it.CreatedAt, 0).Format("2006-01-02 15:04:05"),
-				userCol(it.User, true), userCol(it.User, false),
-				it.Action, labels[it.Action],
-				it.ObjectType, it.ObjectID, it.Title,
-				userCol(it.Target, true), userCol(it.Target, false),
+				tsvText(userCol(it.User, true)), tsvText(userCol(it.User, false)),
+				tsvText(it.Action), tsvText(labels[it.Action]),
+				tsvText(it.ObjectType), tsvText(it.ObjectID), tsvText(it.Title),
+				tsvText(userCol(it.Target, true)), tsvText(userCol(it.Target, false)),
 				fmt.Sprintf("%d", it.RankDelta),
-				detailText(it.Detail), it.IP,
-			}
-			for i := range cols {
-				cols[i] = tsvClean(cols[i])
+				tsvText(detailText(it.Detail)), tsvText(it.IP),
 			}
 			if _, writeErr = io.WriteString(w, strings.Join(cols, "\t")+"\r\n"); writeErr != nil {
 				return false
@@ -287,9 +285,19 @@ func detailText(d map[string]any) string {
 	return strings.Join(parts, "; ")
 }
 
-func tsvClean(s string) string {
-	r := strings.NewReplacer("\t", " ", "\r", " ", "\n", " ")
-	return r.Replace(s)
+// tsvText makes a text cell safe for a TSV opened in a spreadsheet: no tabs / line breaks, and a
+// leading apostrophe when the value would otherwise be interpreted as a formula (=, +, -, @, or a
+// tab / CR that some spreadsheets strip before parsing) — CSV/TSV formula injection.
+func tsvText(s string) string {
+	s = strings.NewReplacer("\t", " ", "\r", " ", "\n", " ").Replace(s)
+	if s == "" {
+		return s
+	}
+	switch s[0] {
+	case '=', '+', '-', '@', '|', '%':
+		return "'" + s
+	}
+	return s
 }
 
 func isNumeric(s string) bool {

@@ -138,3 +138,22 @@ func TestLogPageView_Dedup(t *testing.T) {
 		t.Fatalf("unexpected entry %+v", e)
 	}
 }
+
+func TestTsvText_FormulaInjection(t *testing.T) {
+	cases := map[string]string{
+		"=1+1":               "'=1+1",
+		"+SUM(A1)":           "'+SUM(A1)",
+		"-2":                 "'-2",
+		"@cmd":               "'@cmd",
+		"plain title":        "plain title",
+		"tab\there\nline":    "tab here line",
+		"":                   "",
+		"'already":           "'already",
+		"Zamykanie miesiąca": "Zamykanie miesiąca",
+	}
+	for in, want := range cases {
+		if got := tsvText(in); got != want {
+			t.Errorf("tsvText(%q) = %q, want %q", in, got, want)
+		}
+	}
+}
