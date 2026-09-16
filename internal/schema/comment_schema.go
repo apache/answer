@@ -88,6 +88,9 @@ type UpdateCommentReq struct {
 	// user id
 	UserID  string `json:"-"`
 	IsAdmin bool   `json:"-"`
+	// for the reviewer plugin (edits go through review like new comments)
+	IP        string `json:"-"`
+	UserAgent string `json:"-"`
 
 	// whether user can edit it
 	CanEdit bool `json:"-"`
@@ -111,6 +114,8 @@ func (req *UpdateCommentReq) Check() (errFields []*validator.FormErrorField, err
 type UpdateCommentResp struct {
 	// comment id
 	CommentID string `json:"comment_id"`
+	// status after the edit was reviewed (11 = pending, hidden until a moderator approves it)
+	Status int `json:"status"`
 	// original comment content
 	OriginalText string `json:"original_text"`
 	// parsed comment content
@@ -175,6 +180,8 @@ type GetCommentReq struct {
 type GetCommentResp struct {
 	// comment id
 	CommentID string `json:"comment_id"`
+	// comment status (11 = pending review) so the UI can tell the author
+	Status int `json:"status"`
 	// create time
 	CreatedAt int64 `json:"created_at"`
 

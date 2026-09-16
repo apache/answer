@@ -195,6 +195,8 @@ func (cc *CommentController) UpdateComment(ctx *gin.Context) {
 
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
 	req.IsAdmin = middleware.GetIsAdminFromContext(ctx)
+	req.IP = ctx.ClientIP()
+	req.UserAgent = ctx.GetHeader("User-Agent")
 	canList, err := cc.rankService.CheckOperationPermissions(ctx, req.UserID, []string{
 		permission.CommentEdit,
 		permission.LinkUrlLimit,
