@@ -302,7 +302,8 @@ export type QuestionOrderBy =
   | 'hot'
   | 'score'
   | 'unanswered'
-  | 'frequent';
+  | 'frequent'
+  | 'views';
 
 export interface QueryQuestionsReq extends Paging {
   order: QuestionOrderBy;
