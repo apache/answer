@@ -31,6 +31,7 @@ import (
 	notficationcommon "github.com/apache/answer/internal/service/notification_common"
 	"github.com/apache/answer/pkg/uid"
 	"github.com/segmentfault/pacman/errors"
+	"github.com/segmentfault/pacman/log"
 )
 
 // notificationRepo notification repository
@@ -73,7 +74,22 @@ func (nr *notificationRepo) ClearUnRead(ctx context.Context, userID string, noti
 	if err != nil {
 		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
+	nr.markAdminMessagesRead(ctx, userID, "")
 	return
+}
+
+// markAdminMessagesRead stamps read_at on admin messages whose notification was just marked read
+func (nr *notificationRepo) markAdminMessagesRead(ctx context.Context, userID, notificationID string) {
+	sql := "UPDATE admin_message SET read_at = ? WHERE read_at IS NULL AND receiver_user_id = ? AND id IN (SELECT object_id FROM notification WHERE user_id = ? AND msg_type = ?"
+	args := []any{time.Now(), userID, userID, schema.NotificationInboxTypeMessages}
+	if notificationID != "" {
+		sql += " AND id = ?"
+		args = append(args, notificationID)
+	}
+	sql += ")"
+	if _, err := nr.data.DB.Context(ctx).Exec(append([]any{sql}, args...)...); err != nil {
+		log.Warnf("mark admin messages read: %v", err)
+	}
 }
 
 func (nr *notificationRepo) ClearIDUnRead(ctx context.Context, userID string, id string) (err error) {
@@ -83,6 +99,7 @@ func (nr *notificationRepo) ClearIDUnRead(ctx context.Context, userID string, id
 	if err != nil {
 		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
+	nr.markAdminMessagesRead(ctx, userID, id)
 	return
 }
 

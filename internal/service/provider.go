@@ -24,6 +24,7 @@ import (
 	"github.com/apache/answer/internal/service/activity"
 	"github.com/apache/answer/internal/service/activity_common"
 	"github.com/apache/answer/internal/service/activityqueue"
+	"github.com/apache/answer/internal/service/admin_message"
 	"github.com/apache/answer/internal/service/ai_conversation"
 	answercommon "github.com/apache/answer/internal/service/answer_common"
 	"github.com/apache/answer/internal/service/apikey"
@@ -128,6 +129,7 @@ var ProviderSetService = wire.NewSet(
 	meta.NewMetaService,
 	eventqueue.NewService,
 	badge.NewBadgeService,
+	admin_message.NewAdminMessageService,
 	badge.NewBadgeEventService,
 	badge.NewBadgeAwardService,
 	badge.NewBadgeGroupService,
