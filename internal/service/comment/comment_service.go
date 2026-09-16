@@ -323,10 +323,24 @@ func (cs *CommentService) UpdateComment(ctx context.Context, req *schema.UpdateC
 	if err = cs.commentRepo.UpdateCommentContent(ctx, old.ID, req.OriginalText, req.ParsedText); err != nil {
 		return nil, err
 	}
+	// an edit is reviewed like a new comment (upstream only reviews on creation, so a benign
+	// comment could be edited into anything). Staff are skipped by the reviewer plugin itself.
+	newStatus := old.Status
+	if old.Status == entity.CommentStatusAvailable {
+		edited := *old
+		edited.OriginalText, edited.ParsedText = req.OriginalText, req.ParsedText
+		if status := cs.reviewService.AddCommentReview(ctx, &edited, req.IP, req.UserAgent); status != entity.CommentStatusAvailable {
+			if err = cs.commentCommonRepo.UpdateCommentStatus(ctx, old.ID, status); err != nil {
+				return nil, err
+			}
+			newStatus = status
+		}
+	}
 	resp = &schema.UpdateCommentResp{
 		CommentID:    old.ID,
 		OriginalText: req.OriginalText,
 		ParsedText:   req.ParsedText,
+		Status:       newStatus,
 	}
 	cs.eventQueueService.Send(ctx, schema.NewEvent(constant.EventCommentUpdate, req.UserID).TID(old.ID).
 		CID(old.ID, old.UserID))
