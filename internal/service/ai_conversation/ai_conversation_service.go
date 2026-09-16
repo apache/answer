@@ -189,8 +189,9 @@ func (s *aiConversationService) GetConversationDetail(ctx context.Context, req *
 	}
 
 	recordList := make([]*schema.AIConversationRecord, 0, len(records))
-	for i, record := range records {
-		if i == 0 {
+	openingID := firstUserRecordID(records)
+	for _, record := range records {
+		if record.ID == openingID {
 			record.Content = conversation.Topic
 		}
 		recordList = append(recordList, &schema.AIConversationRecord{
@@ -319,8 +320,9 @@ func (s *aiConversationService) GetConversationDetailForAdmin(ctx context.Contex
 	}
 
 	recordList := make([]schema.AIConversationRecord, 0, len(records))
-	for i, record := range records {
-		if i == 0 {
+	openingID := firstUserRecordID(records)
+	for _, record := range records {
+		if record.ID == openingID {
 			record.Content = conversation.Topic
 		}
 		recordList = append(recordList, schema.AIConversationRecord{
@@ -341,6 +343,16 @@ func (s *aiConversationService) GetConversationDetailForAdmin(ctx context.Contex
 		Records:        recordList,
 		CreatedAt:      conversation.CreatedAt.Unix(),
 	}, nil
+}
+
+// firstUserRecordID returns the ID of the record holding the opening question, or zero.
+func firstUserRecordID(records []*entity.AIConversationRecord) int {
+	for _, record := range records {
+		if record.Role == "user" {
+			return record.ID
+		}
+	}
+	return 0
 }
 
 // getUserInfo
