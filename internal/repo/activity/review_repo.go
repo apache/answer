@@ -32,6 +32,7 @@ import (
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/service/activity"
 	"github.com/apache/answer/internal/service/activity_common"
+	"github.com/apache/answer/internal/service/activity_log"
 	"github.com/apache/answer/internal/service/config"
 	"github.com/apache/answer/internal/service/rank"
 	"github.com/segmentfault/pacman/errors"
@@ -107,7 +108,7 @@ func (ar *ReviewActivityRepo) Review(ctx context.Context, act *schema.PassReview
 			return nil, nil
 		}
 
-		err = ar.userRankRepo.ChangeUserRank(ctx, session, addActivity.UserID, user.Rank, addActivity.Rank)
+		err = ar.userRankRepo.ChangeUserRank(activity_log.WithRankContext(ctx, addActivity.ObjectID, addActivity.ActivityType), session, addActivity.UserID, user.Rank, addActivity.Rank)
 		if err != nil {
 			return nil, err
 		}

@@ -34,6 +34,7 @@ import (
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/activity"
 	"github.com/apache/answer/internal/service/activity_common"
+	"github.com/apache/answer/internal/service/activity_log"
 	"github.com/apache/answer/internal/service/noticequeue"
 	"github.com/apache/answer/internal/service/rank"
 	"github.com/apache/answer/pkg/converter"
@@ -250,7 +251,7 @@ func (ar *AnswerActivityRepo) changeUserRank(ctx context.Context, session *xorm.
 		if user == nil {
 			continue
 		}
-		if err = ar.userRankRepo.ChangeUserRank(ctx, session,
+		if err = ar.userRankRepo.ChangeUserRank(activity_log.WithRankContext(ctx, op.AnswerObjectID, act.ActivityType), session,
 			act.ActivityUserID, user.Rank, act.Rank); err != nil {
 			log.Error(err)
 			return err
@@ -270,7 +271,7 @@ func (ar *AnswerActivityRepo) rollbackUserRank(ctx context.Context, session *xor
 		if user == nil {
 			continue
 		}
-		if err = ar.userRankRepo.ChangeUserRank(ctx, session,
+		if err = ar.userRankRepo.ChangeUserRank(activity_log.WithRankContext(ctx, act.ObjectID, act.ActivityType), session,
 			act.UserID, user.Rank, -act.Rank); err != nil {
 			log.Error(err)
 			return err

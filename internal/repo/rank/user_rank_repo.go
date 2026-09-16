@@ -26,8 +26,10 @@ import (
 	"github.com/apache/answer/internal/base/pager"
 	"github.com/apache/answer/internal/base/reason"
 	"github.com/apache/answer/internal/entity"
+	"github.com/apache/answer/internal/service/activity_log"
 	"github.com/apache/answer/internal/service/config"
 	"github.com/apache/answer/internal/service/rank"
+	"github.com/apache/answer/pkg/obj"
 	"github.com/apache/answer/plugin"
 	"github.com/jinzhu/now"
 	"github.com/segmentfault/pacman/errors"
@@ -38,16 +40,41 @@ import (
 
 // UserRankRepo user rank repository
 type UserRankRepo struct {
-	data          *data.Data
-	configService *config.ConfigService
+	data               *data.Data
+	configService      *config.ConfigService
+	activityLogService *activity_log.ActivityLogService
 }
 
 // NewUserRankRepo new repository
-func NewUserRankRepo(data *data.Data, configService *config.ConfigService) rank.UserRankRepo {
+func NewUserRankRepo(data *data.Data, configService *config.ConfigService,
+	activityLogService *activity_log.ActivityLogService) rank.UserRankRepo {
 	return &UserRankRepo{
-		data:          data,
-		configService: configService,
+		data:               data,
+		configService:      configService,
+		activityLogService: activityLogService,
 	}
+}
+
+// logRankChange every reputation change ends up in the activity log
+func (ur *UserRankRepo) logRankChange(ctx context.Context, userID string, delta int) {
+	if delta == 0 || ur.activityLogService == nil {
+		return
+	}
+	rc := activity_log.RankContextFrom(ctx)
+	detail := activity_log.Detail{}
+	// no DB reads here: this runs inside the caller's transaction (on SQLite a read on another
+	// connection would wait for the write lock forever). The key is resolved when the log is displayed.
+	if rc.ActivityType > 0 {
+		detail["activity_type"] = rc.ActivityType
+	}
+	entry := &entity.ActivityLog{UserID: activity_log.UserSystem, Action: activity_log.ActionReputationChange,
+		TargetUserID: userID, RankDelta: delta, ObjectID: rc.ObjectID}
+	if rc.ObjectID != "" {
+		if t, err := obj.GetObjectTypeStrByObjectID(rc.ObjectID); err == nil {
+			entry.ObjectType = t
+		}
+	}
+	ur.activityLogService.LogDetail(ctx, entry, detail)
 }
 
 func (ur *UserRankRepo) GetMaxDailyRank(ctx context.Context) (maxDailyRank int, err error) {
@@ -97,6 +124,7 @@ func (ur *UserRankRepo) ChangeUserRank(
 	if err != nil {
 		return err
 	}
+	ur.logRankChange(ctx, userID, deltaRank)
 	return nil
 }
 
@@ -138,6 +166,7 @@ func (ur *UserRankRepo) TriggerUserRank(ctx context.Context,
 	if err != nil {
 		return false, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
+	ur.logRankChange(activity_log.WithRankContext(ctx, activity_log.RankContextFrom(ctx).ObjectID, activityType), userID, deltaRank)
 	return false, nil
 }
 

@@ -1840,6 +1840,7 @@ ui:
     ai_assistant: AI Assistant
     ai_settings: AI Settings
     mcp: MCP
+    activity_log: Activity log
   website_welcome: Welcome to {{site_name}}
   user_center:
     login: Login
@@ -2304,6 +2305,84 @@ ui:
       msg:
         should_be_number: the input should be number
         number_larger_1: number should be equal or larger than 1
+    activity_log:
+      title: Activity log
+      total: "{{count}} entries"
+      system: System
+      export: Export TSV
+      exporting: Exporting…
+      export_failed: Export failed
+      hint: Page views are kept for 90 days; other entries are kept permanently. Times are shown in your local time zone.
+      range:
+        today: Today
+        yesterday: Yesterday
+        7d: 7 days
+        30d: 30 days
+        custom: Custom
+      filter:
+        range: Date range
+        user: User
+        user_placeholder: username
+        action: Action
+        action_all: All actions
+        action_selected: "{{count}} selected"
+        action_clear: Clear selection
+        action_none: No entries in this range
+        search: Search
+        search_placeholder: any text from the grid
+      col:
+        time: Time
+        user: User
+        action: Action
+        object: Object / details
+        target: Target
+        points: Points
+      detail:
+        reason: reason
+        direction: direction
+        method: method
+        role: role
+        reply_to: reply to
+      action:
+        user_login: Logged in
+        user_update: Profile updated
+        user_share: Shared a link
+        user_role: Role changed
+        user_suspend: User suspended
+        user_unsuspend: User unsuspended
+        user_delete: User deleted
+        page_view: Page view
+        badge_award: Badge awarded
+        badge_revoke: Badge revoked
+        review_queued: Sent to review
+        review_approve: Review approved
+        review_reject: Review rejected
+        reputation_change: Reputation
+        comment_reply: Replied to comment
+        question_create: Question asked
+        question_update: Question edited
+        question_delete: Question deleted
+        question_vote_up: Question upvoted
+        question_vote_down: Question downvoted
+        question_vote_cancel: Question vote withdrawn
+        question_accept: Answer accepted
+        question_flag: Question flagged
+        question_react: Question reaction
+        answer_create: Answer posted
+        answer_update: Answer edited
+        answer_delete: Answer deleted
+        answer_vote_up: Answer upvoted
+        answer_vote_down: Answer downvoted
+        answer_vote_cancel: Answer vote withdrawn
+        answer_flag: Answer flagged
+        answer_react: Answer reaction
+        comment_create: Comment posted
+        comment_update: Comment edited
+        comment_delete: Comment deleted
+        comment_vote_up: Comment upvoted
+        comment_vote_down: Comment downvoted
+        comment_vote_cancel: Comment vote withdrawn
+        comment_flag: Comment flagged
     badges:
       action: Action
       active: Active

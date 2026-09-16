@@ -29,6 +29,7 @@ var ProviderSetController = wire.NewSet(
 	NewRoleController,
 	NewPluginController,
 	NewBadgeController,
+	NewActivityLogController,
 	NewAdminAPIKeyController,
 	NewAIConversationAdminController,
 )

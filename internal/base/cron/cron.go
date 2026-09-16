@@ -22,12 +22,15 @@ package cron
 import (
 	"context"
 	"fmt"
+	"os"
 
+	"github.com/apache/answer/internal/service/activity_log"
 	"github.com/apache/answer/internal/service/content"
 	"github.com/apache/answer/internal/service/file_record"
 	"github.com/apache/answer/internal/service/service_config"
 	"github.com/apache/answer/internal/service/siteinfo_common"
 	"github.com/apache/answer/internal/service/user_admin"
+	"github.com/apache/answer/pkg/converter"
 	"github.com/robfig/cron/v3"
 	"github.com/segmentfault/pacman/log"
 )
@@ -39,6 +42,7 @@ type ScheduledTaskManager struct {
 	fileRecordService *file_record.FileRecordService
 	userAdminService  *user_admin.UserAdminService
 	serviceConfig     *service_config.ServiceConfig
+	activityLog       *activity_log.ActivityLogService
 }
 
 // NewScheduledTaskManager new scheduled task manager
@@ -48,8 +52,10 @@ func NewScheduledTaskManager(
 	fileRecordService *file_record.FileRecordService,
 	userAdminService *user_admin.UserAdminService,
 	serviceConfig *service_config.ServiceConfig,
+	activityLog *activity_log.ActivityLogService,
 ) *ScheduledTaskManager {
 	manager := &ScheduledTaskManager{
+		activityLog:       activityLog,
 		siteInfoService:   siteInfoService,
 		questionService:   questionService,
 		fileRecordService: fileRecordService,
@@ -77,6 +83,18 @@ func (s *ScheduledTaskManager) Run() {
 		ctx := context.Background()
 		log.Infof("refresh hottest cron execution")
 		s.questionService.RefreshHottestCron(ctx)
+	})
+	if err != nil {
+		log.Error(err)
+	}
+
+	// activity log: page views are the bulk of the table → keep ACTIVITY_LOG_PAGEVIEW_DAYS days (default 90, 0 = forever)
+	pageViewDays := 90
+	if v := os.Getenv("ACTIVITY_LOG_PAGEVIEW_DAYS"); v != "" {
+		pageViewDays = converter.StringToInt(v)
+	}
+	_, err = c.AddFunc("30 3 * * *", func() {
+		s.activityLog.CleanupPageViews(context.Background(), pageViewDays)
 	})
 	if err != nil {
 		log.Error(err)

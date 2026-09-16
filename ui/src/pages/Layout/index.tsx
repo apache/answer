@@ -30,6 +30,7 @@ import {
   errorCodeStore,
   siteSecurityStore,
   themeSettingStore,
+  loggedUserInfoStore,
 } from '@/stores';
 import {
   Header,
@@ -41,7 +42,7 @@ import {
 } from '@/components';
 import { LoginToContinueModal, BadgeModal } from '@/components/Modal';
 import { changeTheme, Storage, scrollToElementTop } from '@/utils';
-import { useQueryNotificationStatus } from '@/services';
+import { useQueryNotificationStatus, postPageView } from '@/services';
 import { useExternalToast } from '@/hooks';
 import { EXTERNAL_CONTENT_DISPLAY_MODE } from '@/common/constants';
 
@@ -130,6 +131,18 @@ const Layout: FC = () => {
   useEffect(() => {
     httpStatusReset();
   }, [location]);
+
+  // tell the activity log which page the logged-in user opened
+  // (a moment later, so the page has set its title)
+  const loggedUserId = loggedUserInfoStore((state) => state.user?.id);
+  useEffect(() => {
+    if (!loggedUserId) return undefined;
+    const path = location.pathname;
+    const timer = setTimeout(() => {
+      postPageView({ path, title: document.title }).catch(() => undefined);
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [location.pathname, loggedUserId]);
 
   useEffect(() => {
     const systemThemeQuery = window.matchMedia('(prefers-color-scheme: dark)');

@@ -25,6 +25,7 @@ export * from './users';
 export * from './dashboard';
 export * from './plugins';
 export * from './badges';
+export * from './activityLog';
 export * from './ai';
 export * from './tags';
 export * from './apikeys';
