@@ -28,6 +28,7 @@ import {
   HealthStatus,
   Statistics,
   SystemInfo,
+  DailyActivity,
 } from './components';
 
 const Dashboard: FC = () => {
@@ -54,6 +55,9 @@ const Dashboard: FC = () => {
         </Col>
         <Col lg={6}>
           <AnswerLinks />
+        </Col>
+        <Col lg={12}>
+          <DailyActivity />
         </Col>
       </Row>
     </>

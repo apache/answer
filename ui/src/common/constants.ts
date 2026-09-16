@@ -117,6 +117,7 @@ export const ADMIN_NAV_MENUS = [
     children: [
       { name: 'users', pathPrefix: 'users/' },
       { name: 'badges' },
+      { name: 'activity_log', path: 'activity-log' },
       { name: 'rules', path: 'rules/privileges', pathPrefix: 'rules/' },
     ],
   },

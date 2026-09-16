@@ -62,6 +62,8 @@ type AnswerAPIRouter struct {
 	aiConversationController      *controller.AIConversationController
 	aiConversationAdminController *controller_admin.AIConversationAdminController
 	mcpController                 *controller.MCPController
+	activityLogController         *controller.ActivityLogController
+	adminActivityLogController    *controller_admin.ActivityLogController
 }
 
 func NewAnswerAPIRouter(
@@ -100,6 +102,8 @@ func NewAnswerAPIRouter(
 	aiConversationController *controller.AIConversationController,
 	aiConversationAdminController *controller_admin.AIConversationAdminController,
 	mcpController *controller.MCPController,
+	activityLogController *controller.ActivityLogController,
+	adminActivityLogController *controller_admin.ActivityLogController,
 ) *AnswerAPIRouter {
 	return &AnswerAPIRouter{
 		langController:                langController,
@@ -137,6 +141,8 @@ func NewAnswerAPIRouter(
 		aiConversationController:      aiConversationController,
 		aiConversationAdminController: aiConversationAdminController,
 		mcpController:                 mcpController,
+		activityLogController:         activityLogController,
+		adminActivityLogController:    adminActivityLogController,
 	}
 }
 
@@ -246,6 +252,8 @@ func (a *AnswerAPIRouter) RegisterAnswerAPIRouter(r *gin.RouterGroup) {
 
 	// vote
 	r.POST("/vote/up", a.voteController.VoteUp)
+	// page-view beacon (activity log)
+	r.POST("/activity-log/view", a.activityLogController.PageView)
 	r.POST("/vote/down", a.voteController.VoteDown)
 
 	// follow
@@ -414,6 +422,11 @@ func (a *AnswerAPIRouter) RegisterAnswerAdminAPIRouter(r *gin.RouterGroup) {
 
 	// badge
 	r.GET("/badges", a.adminBadgeController.GetBadgeList)
+	// community activity log
+	r.GET("/activity-log", a.adminActivityLogController.GetActivityLogPage)
+	r.GET("/activity-log/actions", a.adminActivityLogController.GetActivityLogActions)
+	r.GET("/activity-log/daily", a.adminActivityLogController.GetActivityLogDaily)
+	r.GET("/activity-log/export", a.adminActivityLogController.ExportActivityLog)
 	r.PUT("/badge/status", a.adminBadgeController.UpdateBadgeStatus)
 
 	// api key

@@ -398,6 +398,10 @@ const routes: RouteNode[] = [
             page: 'pages/Admin/Users',
           },
           {
+            path: 'activity-log',
+            page: 'pages/Admin/ActivityLog',
+          },
+          {
             path: 'users/settings',
             page: 'pages/Admin/UsersSettings',
           },

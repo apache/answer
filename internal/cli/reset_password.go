@@ -94,7 +94,7 @@ func ResetPassword(ctx context.Context, dataDirPath string, opts *ResetPasswordO
 	}
 	defer dataCleanup()
 
-	userRepo := user.NewUserRepo(dataData)
+	userRepo := user.NewUserRepo(dataData, nil) // CLI: no activity log
 	authRepo := auth.NewAuthRepo(dataData)
 	apiKeyRepo := api_key.NewAPIKeyRepo(dataData)
 	authSvc := authService.NewAuthService(authRepo, apiKeyRepo)
