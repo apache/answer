@@ -91,6 +91,30 @@ export const useQueryActivityLogActions = (params: ActivityLogParams) => {
   return { data, isLoading: !data && !error, error };
 };
 
+export interface ActivityLogDailyRow {
+  date: string;
+  from: number;
+  to: number;
+  questions: number;
+  answers: number;
+  comments: number;
+  reviews: number;
+  badges: number;
+  views: number;
+  logins: number;
+  actions: Record<string, number>;
+}
+
+export const useQueryActivityLogDaily = (days = 14) => {
+  const tzOffset = -new Date().getTimezoneOffset();
+  const apiUrl = `/answer/admin/api/activity-log/daily?${qs.stringify({ days, tz_offset: tzOffset })}`;
+  const { data, error } = useSWR<ActivityLogDailyRow[], Error>(
+    apiUrl,
+    request.instance.get,
+  );
+  return { data, isLoading: !data && !error, error };
+};
+
 // the export needs the Authorization header and a raw (non-JSON) body, so bypass the
 // JSON-unwrapping interceptor and hand the blob to the browser as a download
 export const exportActivityLog = async (params: ActivityLogParams) => {

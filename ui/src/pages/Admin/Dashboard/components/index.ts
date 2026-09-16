@@ -21,5 +21,6 @@ import SystemInfo from './SystemInfo';
 import Statistics from './Statistics';
 import AnswerLinks from './AnswerLinks';
 import HealthStatus from './HealthStatus';
+import DailyActivity from './DailyActivity';
 
-export { SystemInfo, Statistics, AnswerLinks, HealthStatus };
+export { SystemInfo, Statistics, AnswerLinks, HealthStatus, DailyActivity };

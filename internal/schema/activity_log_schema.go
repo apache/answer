@@ -73,3 +73,26 @@ type ActivityLogPageViewReq struct {
 	Title  string `validate:"omitempty,lte=300" json:"title"`
 	UserID string `json:"-"`
 }
+
+// ActivityLogDailyReq daily activity counts for the dashboard
+type ActivityLogDailyReq struct {
+	// Days how many days back (including today), default 14
+	Days int `validate:"omitempty,min=1,max=90" form:"days"`
+	// TzOffset browser offset from UTC in minutes (Date.getTimezoneOffset() negated, e.g. 120 for CEST)
+	TzOffset int `validate:"omitempty,min=-840,max=840" form:"tz_offset"`
+}
+
+// ActivityLogDailyRow counts of one local day
+type ActivityLogDailyRow struct {
+	Date      string           `json:"date"` // YYYY-MM-DD in the browser's zone
+	From      int64            `json:"from"` // unix start of that day
+	To        int64            `json:"to"`   // unix start of the next day
+	Questions int64            `json:"questions"`
+	Answers   int64            `json:"answers"`
+	Comments  int64            `json:"comments"`
+	Reviews   int64            `json:"reviews"`
+	Badges    int64            `json:"badges"`
+	Views     int64            `json:"views"`
+	Logins    int64            `json:"logins"`
+	Actions   map[string]int64 `json:"actions"` // every action key → count (for future columns)
+}

@@ -97,6 +97,8 @@ type ActivityLogRepo interface {
 	Iterate(ctx context.Context, q *Query, limit int, fn func(rows []*entity.ActivityLog) bool) error
 	ActionCounts(ctx context.Context, q *Query) (map[string]int64, error)
 	DeletePageViewsBefore(ctx context.Context, t time.Time) (int64, error)
+	// ListActionsSince created_at + action of rows since t (for daily aggregation)
+	ListActionsSince(ctx context.Context, t time.Time) ([]*entity.ActivityLog, error)
 	// SearchUserIDs ids of users whose username / display name / e-mail contains text
 	SearchUserIDs(ctx context.Context, text string, limit int) ([]string, error)
 }

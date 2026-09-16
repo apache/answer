@@ -142,6 +142,53 @@ func (s *ActivityLogAdminService) PageView(ctx context.Context, req *schema.Acti
 	s.logService.LogPageView(ctx, req.UserID, req.Path, req.Title)
 }
 
+// Daily counts per local day for the dashboard (today first)
+func (s *ActivityLogAdminService) Daily(ctx context.Context, req *schema.ActivityLogDailyReq) ([]*schema.ActivityLogDailyRow, error) {
+	days := req.Days
+	if days <= 0 {
+		days = 14
+	}
+	loc := time.FixedZone("browser", req.TzOffset*60)
+	today := time.Now().In(loc)
+	start := time.Date(today.Year(), today.Month(), today.Day(), 0, 0, 0, 0, loc).AddDate(0, 0, -(days - 1))
+	rows, err := s.repo.ListActionsSince(ctx, start)
+	if err != nil {
+		return nil, err
+	}
+	byDay := map[string]*schema.ActivityLogDailyRow{}
+	out := make([]*schema.ActivityLogDailyRow, 0, days)
+	for i := days - 1; i >= 0; i-- {
+		d := start.AddDate(0, 0, i)
+		row := &schema.ActivityLogDailyRow{Date: d.Format("2006-01-02"), From: d.Unix(), To: d.AddDate(0, 0, 1).Unix(), Actions: map[string]int64{}}
+		byDay[row.Date] = row
+		out = append(out, row)
+	}
+	for _, r := range rows {
+		row, ok := byDay[r.CreatedAt.In(loc).Format("2006-01-02")]
+		if !ok {
+			continue
+		}
+		row.Actions[r.Action]++
+		switch r.Action {
+		case "question.create":
+			row.Questions++
+		case "answer.create":
+			row.Answers++
+		case "comment.create", ActionCommentReply:
+			row.Comments++
+		case ActionReviewQueued:
+			row.Reviews++
+		case ActionBadgeAward:
+			row.Badges++
+		case ActionPageView:
+			row.Views++
+		case ActionUserLogin:
+			row.Logins++
+		}
+	}
+	return out, nil
+}
+
 // decorate resolves users and object titles for a batch of rows
 func (s *ActivityLogAdminService) decorate(ctx context.Context, rows []*entity.ActivityLog) []*schema.ActivityLogItem {
 	userIDs := make([]string, 0, len(rows)*2)

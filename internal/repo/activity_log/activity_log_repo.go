@@ -182,3 +182,13 @@ func (r *activityLogRepo) SearchUserIDs(ctx context.Context, text string, limit 
 	}
 	return ids, nil
 }
+
+// ListActionsSince created_at + action only, for the dashboard's daily buckets
+func (r *activityLogRepo) ListActionsSince(ctx context.Context, t time.Time) ([]*entity.ActivityLog, error) {
+	rows := make([]*entity.ActivityLog, 0)
+	err := r.data.DB.Context(ctx).Cols("created_at", "action").Where("created_at >= ?", t).Find(&rows)
+	if err != nil {
+		return nil, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	return rows, nil
+}

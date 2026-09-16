@@ -1865,6 +1865,17 @@ ui:
     dashboard:
       title: Dashboard
       welcome: Welcome to Admin!
+      daily_activity:
+        title: Activity in the last 14 days
+        day: Day
+        today: today
+        questions: Questions
+        answers: Answers
+        comments: Comments
+        reviews: To review
+        badges: Badges
+        views: Page views
+        open_log: Open in the activity log
       site_statistics: Site statistics
       questions: "Questions:"
       resolved: "Resolved:"

@@ -85,6 +85,24 @@ func (c *ActivityLogController) GetActivityLogActions(ctx *gin.Context) {
 	handler.HandleResponse(ctx, err, resp)
 }
 
+// GetActivityLogDaily daily counts for the dashboard
+// @Summary activity log daily counts
+// @Tags admin
+// @Produce json
+// @Security ApiKeyAuth
+// @Param days query int false "days back incl. today (default 14)"
+// @Param tz_offset query int false "browser UTC offset in minutes"
+// @Success 200 {object} handler.RespBody{data=[]schema.ActivityLogDailyRow}
+// @Router /answer/admin/api/activity-log/daily [get]
+func (c *ActivityLogController) GetActivityLogDaily(ctx *gin.Context) {
+	req := &schema.ActivityLogDailyReq{}
+	if handler.BindAndCheck(ctx, req) {
+		return
+	}
+	resp, err := c.activityLogAdminService.Daily(ctx, req)
+	handler.HandleResponse(ctx, err, resp)
+}
+
 // ExportActivityLog TSV export with the same filters as the page
 // @Summary activity log export (TSV)
 // @Tags admin
