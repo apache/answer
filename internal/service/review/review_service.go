@@ -21,12 +21,14 @@ package review
 
 import (
 	"context"
+	"strings"
 
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/pager"
 	"github.com/apache/answer/internal/base/reason"
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
+	"github.com/apache/answer/internal/service/activity_log"
 	answercommon "github.com/apache/answer/internal/service/answer_common"
 	commentcommon "github.com/apache/answer/internal/service/comment_common"
 	"github.com/apache/answer/internal/service/noticequeue"
@@ -72,6 +74,7 @@ type ReviewService struct {
 	siteInfoService                  siteinfo_common.SiteInfoCommonService
 	commentCommonRepo                commentcommon.CommentCommonRepo
 	vectorSyncService                vector_sync.Service
+	activityLogService               *activity_log.ActivityLogService
 }
 
 // NewReviewService new review service
@@ -90,6 +93,7 @@ func NewReviewService(
 	siteInfoService siteinfo_common.SiteInfoCommonService,
 	commentCommonRepo commentcommon.CommentCommonRepo,
 	vectorSyncService vector_sync.Service,
+	activityLogService *activity_log.ActivityLogService,
 ) *ReviewService {
 	return &ReviewService{
 		reviewRepo:                       reviewRepo,
@@ -106,6 +110,7 @@ func NewReviewService(
 		siteInfoService:                  siteInfoService,
 		commentCommonRepo:                commentCommonRepo,
 		vectorSyncService:                vectorSyncService,
+		activityLogService:               activityLogService,
 	}
 }
 
@@ -238,8 +243,21 @@ func (cs *ReviewService) callPluginToReview(ctx context.Context, userID, objectI
 		if err := cs.reviewRepo.AddReview(ctx, r); err != nil {
 			log.Errorf("add review failed, err: %v", err)
 		}
+		// the post went to the review queue ("quarantine") — actor is the bot, target the author
+		cs.activityLogService.LogDetail(ctx, &entity.ActivityLog{UserID: activity_log.UserSystem, Action: activity_log.ActionReviewQueued,
+			ObjectType: reviewContent.ObjectType, ObjectID: objectID, TargetUserID: userID},
+			activity_log.Detail{"reason": r.Reason, "submitter": r.Submitter, "title": reviewContent.Title,
+				"excerpt": excerptOf(reviewContent.Content), "review_id": r.ID})
 	}
 	return reviewStatus
+}
+
+func excerptOf(content string) string {
+	text := strings.TrimSpace(htmltext.ClearText(content))
+	if r := []rune(text); len(r) > 160 {
+		return string(r[:160]) + "…"
+	}
+	return text
 }
 
 // UpdateReview update review
@@ -259,10 +277,22 @@ func (cs *ReviewService) UpdateReview(ctx context.Context, req *schema.UpdateRev
 		return err
 	}
 
+	action := activity_log.ActionReviewApprove
 	if req.IsApprove() {
 		err = cs.reviewRepo.UpdateReviewStatus(ctx, req.ReviewID, req.UserID, entity.ReviewStatusApproved)
 	} else {
+		action = activity_log.ActionReviewReject
 		err = cs.reviewRepo.UpdateReviewStatus(ctx, req.ReviewID, req.UserID, entity.ReviewStatusRejected)
+	}
+	if err == nil {
+		entry := &entity.ActivityLog{UserID: req.UserID, Action: action, ObjectType: constant.ObjectTypeNumberMapping[review.ObjectType],
+			ObjectID: review.ObjectID, TargetUserID: review.UserID}
+		detail := activity_log.Detail{"reason": review.Reason, "review_id": review.ID}
+		if info, e := cs.objectInfoService.GetInfo(ctx, review.ObjectID); e == nil && info != nil {
+			entry.QuestionID, entry.AnswerID = info.QuestionID, info.AnswerID
+			detail["title"] = info.Title
+		}
+		cs.activityLogService.LogDetail(ctx, entry, detail)
 	}
 	return
 }

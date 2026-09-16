@@ -42,6 +42,7 @@ import (
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/activity_common"
+	"github.com/apache/answer/internal/service/activity_log"
 	"github.com/segmentfault/pacman/errors"
 	"xorm.io/xorm"
 )
@@ -276,7 +277,7 @@ func (vr *VoteRepo) changeUserRank(ctx context.Context, session *xorm.Session,
 		if user == nil {
 			continue
 		}
-		if err = vr.userRankRepo.ChangeUserRank(ctx, session,
+		if err = vr.userRankRepo.ChangeUserRank(activity_log.WithRankContext(ctx, op.ObjectID, activity.ActivityType), session,
 			activity.ActivityUserID, user.Rank, activity.Rank); err != nil {
 			log.Error(err)
 			return err
@@ -296,7 +297,7 @@ func (vr *VoteRepo) rollbackUserRank(ctx context.Context, session *xorm.Session,
 		if user == nil {
 			continue
 		}
-		if err = vr.userRankRepo.ChangeUserRank(ctx, session,
+		if err = vr.userRankRepo.ChangeUserRank(activity_log.WithRankContext(ctx, activity.ObjectID, activity.ActivityType), session,
 			activity.UserID, user.Rank, -activity.Rank); err != nil {
 			log.Error(err)
 			return err

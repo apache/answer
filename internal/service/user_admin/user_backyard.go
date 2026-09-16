@@ -45,6 +45,7 @@ import (
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/activity"
+	"github.com/apache/answer/internal/service/activity_log"
 	"github.com/apache/answer/internal/service/apikey"
 	"github.com/apache/answer/internal/service/auth"
 	"github.com/apache/answer/internal/service/role"
@@ -89,6 +90,7 @@ type UserAdminService struct {
 	pluginUserConfigRepo  plugin_common.PluginUserConfigRepo
 	badgeAwardRepo        badge.BadgeAwardRepo
 	apiKeyRepo            apikey.APIKeyRepo
+	activityLogService    *activity_log.ActivityLogService
 }
 
 // NewUserAdminService new user admin service
@@ -108,6 +110,7 @@ func NewUserAdminService(
 	pluginUserConfigRepo plugin_common.PluginUserConfigRepo,
 	badgeAwardRepo badge.BadgeAwardRepo,
 	apiKeyRepo apikey.APIKeyRepo,
+	activityLogService *activity_log.ActivityLogService,
 ) *UserAdminService {
 	return &UserAdminService{
 		userRepo:              userRepo,
@@ -125,6 +128,7 @@ func NewUserAdminService(
 		pluginUserConfigRepo:  pluginUserConfigRepo,
 		badgeAwardRepo:        badgeAwardRepo,
 		apiKeyRepo:            apiKeyRepo,
+		activityLogService:    activityLogService,
 	}
 }
 
@@ -165,6 +169,19 @@ func (us *UserAdminService) UpdateUserStatus(ctx context.Context, req *schema.Up
 	err = us.userRepo.UpdateUserStatus(ctx, userInfo.ID, userInfo.Status, userInfo.MailStatus, userInfo.EMail, suspendedUntil)
 	if err != nil {
 		return err
+	}
+	// activity log: suspend / unsuspend / delete by an admin
+	statusAction := map[bool]string{true: activity_log.ActionUserUnsuspend, false: ""}[req.IsNormal()]
+	switch {
+	case req.IsSuspended():
+		statusAction = activity_log.ActionUserSuspend
+	case req.IsDeleted():
+		statusAction = activity_log.ActionUserDelete
+	}
+	if statusAction != "" {
+		us.activityLogService.LogDetail(ctx, &entity.ActivityLog{UserID: req.LoginUserID, Action: statusAction,
+			ObjectType: constant.UserObjectType, ObjectID: req.UserID, TargetUserID: req.UserID},
+			activity_log.Detail{"status": req.Status, "suspend_duration": req.SuspendDuration, "remove_all_content": req.RemoveAllContent})
 	}
 	if req.IsInactive() || req.IsSuspended() || req.IsDeleted() {
 		if err := us.revokeUserAPIKeys(ctx, userInfo.ID); err != nil {
@@ -236,6 +253,8 @@ func (us *UserAdminService) UpdateUserRole(ctx context.Context, req *schema.Upda
 	if err != nil {
 		return err
 	}
+	us.activityLogService.LogDetail(ctx, &entity.ActivityLog{UserID: req.LoginUserID, Action: activity_log.ActionUserRole,
+		ObjectType: constant.UserObjectType, ObjectID: req.UserID, TargetUserID: req.UserID}, activity_log.Detail{"role_id": req.RoleID})
 	if err := us.revokeUserAPIKeys(ctx, req.UserID); err != nil {
 		return err
 	}

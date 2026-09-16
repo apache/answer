@@ -24,13 +24,16 @@ import (
 	"strings"
 	"time"
 
+	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/base/reason"
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
+	"github.com/apache/answer/internal/service/activity_log"
 	usercommon "github.com/apache/answer/internal/service/user_common"
 	"github.com/apache/answer/pkg/converter"
 	"github.com/apache/answer/plugin"
+	"github.com/gin-gonic/gin"
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
 	"xorm.io/builder"
@@ -39,13 +42,15 @@ import (
 
 // userRepo user repository
 type userRepo struct {
-	data *data.Data
+	data               *data.Data
+	activityLogService *activity_log.ActivityLogService
 }
 
 // NewUserRepo new repository
-func NewUserRepo(data *data.Data) usercommon.UserRepo {
+func NewUserRepo(data *data.Data, activityLogService *activity_log.ActivityLogService) usercommon.UserRepo {
 	return &userRepo{
-		data: data,
+		data:               data,
+		activityLogService: activityLogService,
 	}
 }
 
@@ -117,7 +122,28 @@ func (ur *userRepo) UpdateLastLoginDate(ctx context.Context, userID string) (err
 	if err != nil {
 		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
+	// every login path (password, Google, user center) updates the last login date → one log entry
+	ur.activityLogService.LogDetail(ctx, &entity.ActivityLog{UserID: userID, Action: activity_log.ActionUserLogin,
+		ObjectType: constant.UserObjectType, ObjectID: userID}, activity_log.Detail{"method": loginMethod(ctx)})
 	return nil
+}
+
+// loginMethod guesses how the user logged in from the request path
+func loginMethod(ctx context.Context) string {
+	ginCtx, ok := ctx.(*gin.Context)
+	if !ok || ginCtx == nil || ginCtx.Request == nil {
+		return "unknown"
+	}
+	path := ginCtx.Request.URL.Path
+	switch {
+	case strings.Contains(path, "/connector/"):
+		return strings.TrimPrefix(path[strings.LastIndex(path, "/"):], "/") // e.g. google
+	case strings.Contains(path, "/user-center/"):
+		return "user-center"
+	case strings.Contains(path, "/login/email"):
+		return "password"
+	}
+	return "other"
 }
 
 // UpdateEmailStatus update email status

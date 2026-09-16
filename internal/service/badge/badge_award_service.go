@@ -28,6 +28,7 @@ import (
 	"github.com/apache/answer/internal/base/translator"
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
+	"github.com/apache/answer/internal/service/activity_log"
 	"github.com/apache/answer/internal/service/noticequeue"
 	"github.com/apache/answer/internal/service/object_info"
 	usercommon "github.com/apache/answer/internal/service/user_common"
@@ -63,6 +64,7 @@ type BadgeAwardService struct {
 	userCommon               *usercommon.UserCommon
 	objectInfoService        *object_info.ObjService
 	notificationQueueService noticequeue.Service
+	activityLogService       *activity_log.ActivityLogService
 }
 
 func NewBadgeAwardService(
@@ -71,6 +73,7 @@ func NewBadgeAwardService(
 	userCommon *usercommon.UserCommon,
 	objectInfoService *object_info.ObjService,
 	notificationQueueService noticequeue.Service,
+	activityLogService *activity_log.ActivityLogService,
 ) *BadgeAwardService {
 	return &BadgeAwardService{
 		badgeAwardRepo:           badgeAwardRepo,
@@ -78,6 +81,7 @@ func NewBadgeAwardService(
 		userCommon:               userCommon,
 		objectInfoService:        objectInfoService,
 		notificationQueueService: notificationQueueService,
+		activityLogService:       activityLogService,
 	}
 }
 
@@ -187,6 +191,9 @@ func (bs *BadgeAwardService) Award(ctx context.Context, badgeID string, userID s
 		NotificationAction: constant.NotificationEarnedBadge,
 	}
 	bs.notificationQueueService.Send(ctx, msg)
+	bs.activityLogService.LogDetail(ctx, &entity.ActivityLog{UserID: activity_log.UserSystem, Action: activity_log.ActionBadgeAward,
+		ObjectType: constant.BadgeAwardObjectType, ObjectID: badgeAward.ID, TargetUserID: userID},
+		activity_log.Detail{"badge": badgeData.Name, "badge_id": badgeData.ID, "award_key": awardKey})
 	return nil
 }
 

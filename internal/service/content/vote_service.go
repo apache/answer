@@ -31,6 +31,7 @@ import (
 	"github.com/apache/answer/internal/base/pager"
 	"github.com/apache/answer/internal/base/translator"
 	"github.com/apache/answer/internal/entity"
+	"github.com/apache/answer/internal/service/activity_log"
 	"github.com/apache/answer/internal/service/activity_type"
 	"github.com/apache/answer/internal/service/comment_common"
 	"github.com/apache/answer/internal/service/config"
@@ -56,13 +57,14 @@ type VoteRepo interface {
 
 // VoteService user service
 type VoteService struct {
-	voteRepo          VoteRepo
-	configService     *config.ConfigService
-	questionRepo      questioncommon.QuestionRepo
-	answerRepo        answercommon.AnswerRepo
-	commentCommonRepo comment_common.CommentCommonRepo
-	objectService     *object_info.ObjService
-	eventQueueService eventqueue.Service
+	voteRepo           VoteRepo
+	configService      *config.ConfigService
+	questionRepo       questioncommon.QuestionRepo
+	answerRepo         answercommon.AnswerRepo
+	commentCommonRepo  comment_common.CommentCommonRepo
+	objectService      *object_info.ObjService
+	eventQueueService  eventqueue.Service
+	activityLogService *activity_log.ActivityLogService
 }
 
 func NewVoteService(
@@ -73,15 +75,17 @@ func NewVoteService(
 	commentCommonRepo comment_common.CommentCommonRepo,
 	objectService *object_info.ObjService,
 	eventQueueService eventqueue.Service,
+	activityLogService *activity_log.ActivityLogService,
 ) *VoteService {
 	return &VoteService{
-		voteRepo:          voteRepo,
-		configService:     configService,
-		questionRepo:      questionRepo,
-		answerRepo:        answerRepo,
-		commentCommonRepo: commentCommonRepo,
-		objectService:     objectService,
-		eventQueueService: eventQueueService,
+		voteRepo:           voteRepo,
+		configService:      configService,
+		questionRepo:       questionRepo,
+		answerRepo:         answerRepo,
+		commentCommonRepo:  commentCommonRepo,
+		objectService:      objectService,
+		eventQueueService:  eventQueueService,
+		activityLogService: activityLogService,
 	}
 }
 
@@ -131,7 +135,9 @@ func (vs *VoteService) VoteUp(ctx context.Context, req *schema.VoteReq) (resp *s
 	resp.Votes = resp.UpVotes - resp.DownVotes
 	if !req.IsCancel {
 		resp.VoteStatus = constant.ActVoteUp
-		vs.sendEvent(ctx, req, objectInfo, resp)
+		vs.sendEvent(ctx, req, objectInfo, resp, "up")
+	} else {
+		vs.logVoteCancel(ctx, req, objectInfo, "up")
 	}
 	return resp, nil
 }
@@ -180,7 +186,9 @@ func (vs *VoteService) VoteDown(ctx context.Context, req *schema.VoteReq) (resp 
 	resp.Votes = resp.UpVotes - resp.DownVotes
 	if !req.IsCancel {
 		resp.VoteStatus = constant.ActVoteDown
-		vs.sendEvent(ctx, req, objectInfo, resp)
+		vs.sendEvent(ctx, req, objectInfo, resp, "down")
+	} else {
+		vs.logVoteCancel(ctx, req, objectInfo, "down")
 	}
 	return resp, nil
 }
@@ -298,8 +306,20 @@ func (vs *VoteService) getActivities(ctx context.Context, op *schema.VoteOperati
 	return activities
 }
 
+// logVoteCancel cancelled votes are not events (badge rules must not re-run), only log entries
+func (vs *VoteService) logVoteCancel(ctx context.Context, req *schema.VoteReq, objectInfo *schema.SimpleObjectInfo, direction string) {
+	target := objectInfo.ObjectCreatorUserID
+	if target == req.UserID {
+		target = ""
+	}
+	vs.activityLogService.LogDetail(ctx, &entity.ActivityLog{
+		UserID: req.UserID, Action: objectInfo.ObjectType + ".vote_cancel", ObjectType: objectInfo.ObjectType,
+		ObjectID: objectInfo.ObjectID, QuestionID: objectInfo.QuestionID, AnswerID: objectInfo.AnswerID, TargetUserID: target,
+	}, activity_log.Detail{"direction": direction, "title": objectInfo.Title})
+}
+
 func (vs *VoteService) sendEvent(ctx context.Context,
-	req *schema.VoteReq, objectInfo *schema.SimpleObjectInfo, resp *schema.VoteResp) {
+	req *schema.VoteReq, objectInfo *schema.SimpleObjectInfo, resp *schema.VoteResp, direction string) {
 	var event *schema.EventMsg
 	switch objectInfo.ObjectType {
 	case constant.QuestionObjectType:
@@ -316,5 +336,6 @@ func (vs *VoteService) sendEvent(ctx context.Context,
 	}
 	event.AddExtra("vote_up_amount", fmt.Sprintf("%d", resp.UpVotes))
 	event.AddExtra("vote_down_amount", fmt.Sprintf("%d", resp.DownVotes))
+	event.AddExtra("vote_direction", direction) // for the activity log
 	vs.eventQueueService.Send(ctx, event)
 }
