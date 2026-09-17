@@ -77,6 +77,7 @@ var (
 		&entity.FileRecord{},
 		&entity.PluginKVStorage{},
 		&entity.APIKey{},
+		&entity.PersonalAccessToken{},
 		&entity.AIConversation{},
 		&entity.AIConversationRecord{},
 	}

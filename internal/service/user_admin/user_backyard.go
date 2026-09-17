@@ -36,6 +36,7 @@ import (
 	"github.com/apache/answer/internal/service/comment_common"
 	"github.com/apache/answer/internal/service/export"
 	notificationcommon "github.com/apache/answer/internal/service/notification_common"
+	personalaccesstoken "github.com/apache/answer/internal/service/personal_access_token"
 	"github.com/apache/answer/internal/service/plugin_common"
 	questioncommon "github.com/apache/answer/internal/service/question_common"
 	"github.com/apache/answer/pkg/token"
@@ -74,21 +75,22 @@ type UserAdminRepo interface {
 
 // UserAdminService user service
 type UserAdminService struct {
-	userRepo              UserAdminRepo
-	userRoleRelService    *role.UserRoleRelService
-	authService           *auth.AuthService
-	userCommonService     *usercommon.UserCommon
-	userActivity          activity.UserActiveActivityRepo
-	siteInfoCommonService siteinfo_common.SiteInfoCommonService
-	emailService          *export.EmailService
-	questionCommonRepo    questioncommon.QuestionRepo
-	answerCommonRepo      answercommon.AnswerRepo
-	commentCommonRepo     comment_common.CommentCommonRepo
-	userExternalLoginRepo user_external_login.UserExternalLoginRepo
-	notificationRepo      notificationcommon.NotificationRepo
-	pluginUserConfigRepo  plugin_common.PluginUserConfigRepo
-	badgeAwardRepo        badge.BadgeAwardRepo
-	apiKeyRepo            apikey.APIKeyRepo
+	userRepo                   UserAdminRepo
+	userRoleRelService         *role.UserRoleRelService
+	authService                *auth.AuthService
+	userCommonService          *usercommon.UserCommon
+	userActivity               activity.UserActiveActivityRepo
+	siteInfoCommonService      siteinfo_common.SiteInfoCommonService
+	emailService               *export.EmailService
+	questionCommonRepo         questioncommon.QuestionRepo
+	answerCommonRepo           answercommon.AnswerRepo
+	commentCommonRepo          comment_common.CommentCommonRepo
+	userExternalLoginRepo      user_external_login.UserExternalLoginRepo
+	notificationRepo           notificationcommon.NotificationRepo
+	pluginUserConfigRepo       plugin_common.PluginUserConfigRepo
+	badgeAwardRepo             badge.BadgeAwardRepo
+	apiKeyRepo                 apikey.APIKeyRepo
+	personalAccessTokenService *personalaccesstoken.Service
 }
 
 // NewUserAdminService new user admin service
@@ -108,23 +110,25 @@ func NewUserAdminService(
 	pluginUserConfigRepo plugin_common.PluginUserConfigRepo,
 	badgeAwardRepo badge.BadgeAwardRepo,
 	apiKeyRepo apikey.APIKeyRepo,
+	personalAccessTokenService *personalaccesstoken.Service,
 ) *UserAdminService {
 	return &UserAdminService{
-		userRepo:              userRepo,
-		userRoleRelService:    userRoleRelService,
-		authService:           authService,
-		userCommonService:     userCommonService,
-		userActivity:          userActivity,
-		siteInfoCommonService: siteInfoCommonService,
-		emailService:          emailService,
-		questionCommonRepo:    questionCommonRepo,
-		answerCommonRepo:      answerCommonRepo,
-		commentCommonRepo:     commentCommonRepo,
-		userExternalLoginRepo: userExternalLoginRepo,
-		notificationRepo:      notificationRepo,
-		pluginUserConfigRepo:  pluginUserConfigRepo,
-		badgeAwardRepo:        badgeAwardRepo,
-		apiKeyRepo:            apiKeyRepo,
+		userRepo:                   userRepo,
+		userRoleRelService:         userRoleRelService,
+		authService:                authService,
+		userCommonService:          userCommonService,
+		userActivity:               userActivity,
+		siteInfoCommonService:      siteInfoCommonService,
+		emailService:               emailService,
+		questionCommonRepo:         questionCommonRepo,
+		answerCommonRepo:           answerCommonRepo,
+		commentCommonRepo:          commentCommonRepo,
+		userExternalLoginRepo:      userExternalLoginRepo,
+		notificationRepo:           notificationRepo,
+		pluginUserConfigRepo:       pluginUserConfigRepo,
+		badgeAwardRepo:             badgeAwardRepo,
+		apiKeyRepo:                 apiKeyRepo,
+		personalAccessTokenService: personalAccessTokenService,
 	}
 }
 
@@ -178,6 +182,9 @@ func (us *UserAdminService) UpdateUserStatus(ctx context.Context, req *schema.Up
 	}
 
 	if req.IsDeleted() {
+		if err := us.personalAccessTokenService.RevokeAll(ctx, userInfo.ID); err != nil {
+			return err
+		}
 		us.removeAllUserConfiguration(ctx, userInfo.ID)
 	}
 

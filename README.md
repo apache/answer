@@ -36,6 +36,25 @@ We value your feedback and suggestions to improve our documentation. If you have
 
 You can also check out the [plugins here](https://answer.apache.org/plugins).
 
+### Agent access
+
+An administrator can enable **Personal access tokens** under **Admin → Security**. Users can then create scoped, expiring tokens from **Settings → Personal access tokens** for use with `answer-cli` or another HTTP client.
+
+Install the CLI from source:
+
+```bash
+go install github.com/apache/answer/cmd/answer-cli@latest
+answer-cli auth login --server https://answer.example.com --with-token
+```
+
+Install the portable Answer Agent Skill for supported coding agents:
+
+```bash
+npx skills add apache/answer
+```
+
+The Skill uses `answer-cli` to search Answer and, with explicit user approval, create questions, post answers, and vote.
+
 ## Building from Source
 
 ### Prerequisites
@@ -55,6 +74,8 @@ $ make generate
 $ make ui
 # Install backend dependencies and build
 $ make build
+# Build the remote API client
+$ make build-cli
 ```
 
 ## Contributing

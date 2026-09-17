@@ -1721,6 +1721,83 @@ definitions:
       type:
         type: string
     type: object
+  schema.PersonalAccessTokenCreateReq:
+    properties:
+      expires_at:
+        type: integer
+      name:
+        maxLength: 100
+        type: string
+      scopes:
+        items:
+          type: string
+        minItems: 1
+        type: array
+    required:
+    - expires_at
+    - name
+    - scopes
+    type: object
+  schema.PersonalAccessTokenCreateResp:
+    properties:
+      created_at:
+        type: integer
+      expires_at:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      revoked_at:
+        type: integer
+      scopes:
+        items:
+          type: string
+        type: array
+      status:
+        type: string
+      token:
+        type: string
+      token_suffix:
+        type: string
+    type: object
+  schema.PersonalAccessTokenCurrentResp:
+    properties:
+      token:
+        $ref: '#/definitions/schema.PersonalAccessTokenInfo'
+      user:
+        $ref: '#/definitions/schema.PersonalAccessTokenUserInfo'
+    type: object
+  schema.PersonalAccessTokenInfo:
+    properties:
+      created_at:
+        type: integer
+      expires_at:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      revoked_at:
+        type: integer
+      scopes:
+        items:
+          type: string
+        type: array
+      status:
+        type: string
+      token_suffix:
+        type: string
+    type: object
+  schema.PersonalAccessTokenUserInfo:
+    properties:
+      display_name:
+        type: string
+      id:
+        type: string
+      username:
+        type: string
+    type: object
   schema.PostRenderReq:
     properties:
       content:
@@ -2611,6 +2688,12 @@ definitions:
         type: string
       login_required:
         type: boolean
+      pat_reauthentication_window_minutes:
+        maximum: 120
+        minimum: 5
+        type: integer
+      personal_access_tokens_enabled:
+        type: boolean
     required:
     - external_content_display
     type: object
@@ -2624,6 +2707,12 @@ definitions:
         - ask_before_display
         type: string
       login_required:
+        type: boolean
+      pat_reauthentication_window_minutes:
+        maximum: 120
+        minimum: 5
+        type: integer
+      personal_access_tokens_enabled:
         type: boolean
     required:
     - external_content_display
@@ -3353,6 +3442,8 @@ definitions:
         maxLength: 32
         minLength: 8
         type: string
+      revoke_personal_access_tokens:
+        type: boolean
     required:
     - pass
     type: object
@@ -3400,6 +3491,17 @@ definitions:
     required:
     - code
     - pass
+    type: object
+  schema.UserReauthenticateReq:
+    properties:
+      captcha_code:
+        type: string
+      captcha_id:
+        type: string
+      password:
+        type: string
+    required:
+    - password
     type: object
   schema.UserRegisterReq:
     properties:
@@ -6268,6 +6370,82 @@ paths:
       summary: check user permission
       tags:
       - Permission
+  /answer/api/v1/personal-access-tokens:
+    delete:
+      parameters:
+      - description: personal access token id
+        in: query
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.RespBody'
+      security:
+      - ApiKeyAuth: []
+      summary: Revoke a personal access token
+      tags:
+      - Personal Access Token
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.RespBody'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/schema.PersonalAccessTokenInfo'
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: List personal access tokens
+      tags:
+      - Personal Access Token
+    post:
+      parameters:
+      - description: personal access token
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/schema.PersonalAccessTokenCreateReq'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.RespBody'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.PersonalAccessTokenCreateResp'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Create a personal access token
+      tags:
+      - Personal Access Token
+  /answer/api/v1/personal-access-tokens/current:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.RespBody'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.PersonalAccessTokenCurrentResp'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Inspect the current personal access token
+      tags:
+      - Personal Access Token
   /answer/api/v1/personal/answer/page:
     get:
       consumes:
@@ -8231,6 +8409,25 @@ paths:
                   $ref: '#/definitions/schema.UserRankingResp'
               type: object
       summary: get user ranking
+      tags:
+      - User
+  /answer/api/v1/user/reauthenticate:
+    post:
+      parameters:
+      - description: reauthentication
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/schema.UserReauthenticateReq'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.RespBody'
+      security:
+      - ApiKeyAuth: []
+      summary: Reauthenticate the current user
       tags:
       - User
   /answer/api/v1/user/register/email:

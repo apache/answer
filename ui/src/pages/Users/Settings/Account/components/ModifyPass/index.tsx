@@ -53,6 +53,11 @@ const Index: FC = () => {
       isInvalid: false,
       errorMsg: '',
     },
+    revoke_personal_access_tokens: {
+      value: false,
+      isInvalid: false,
+      errorMsg: '',
+    },
   });
 
   const infoCaptcha = useCaptchaPlugin('edit_userinfo');
@@ -141,6 +146,8 @@ const Index: FC = () => {
     const params: any = {
       old_pass: formData.old_pass.value,
       pass: formData.pass.value,
+      revoke_personal_access_tokens:
+        formData.revoke_personal_access_tokens.value,
     };
 
     const imgCode = infoCaptcha?.getCaptcha();
@@ -255,6 +262,24 @@ const Index: FC = () => {
             <Form.Control.Feedback type="invalid">
               {formData.pass2.errorMsg}
             </Form.Control.Feedback>
+          </Form.Group>
+          <Form.Group
+            controlId="revoke_personal_access_tokens"
+            className="mb-3">
+            <Form.Check
+              type="checkbox"
+              label={t('revoke_personal_access_tokens')}
+              checked={formData.revoke_personal_access_tokens.value}
+              onChange={(e) =>
+                handleChange({
+                  revoke_personal_access_tokens: {
+                    value: e.target.checked,
+                    isInvalid: false,
+                    errorMsg: '',
+                  },
+                })
+              }
+            />
           </Form.Group>
           <div>
             <Button type="submit" variant="primary" className="me-2">

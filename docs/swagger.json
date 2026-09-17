@@ -4657,6 +4657,145 @@
                 }
             }
         },
+        "/answer/api/v1/personal-access-tokens": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "Personal Access Token"
+                ],
+                "summary": "List personal access tokens",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.RespBody"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/schema.PersonalAccessTokenInfo"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "Personal Access Token"
+                ],
+                "summary": "Create a personal access token",
+                "parameters": [
+                    {
+                        "description": "personal access token",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.PersonalAccessTokenCreateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.RespBody"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.PersonalAccessTokenCreateResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "Personal Access Token"
+                ],
+                "summary": "Revoke a personal access token",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "personal access token id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.RespBody"
+                        }
+                    }
+                }
+            }
+        },
+        "/answer/api/v1/personal-access-tokens/current": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "Personal Access Token"
+                ],
+                "summary": "Inspect the current personal access token",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.RespBody"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.PersonalAccessTokenCurrentResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/answer/api/v1/personal/answer/page": {
             "get": {
                 "security": [
@@ -7926,6 +8065,38 @@
                 }
             }
         },
+        "/answer/api/v1/user/reauthenticate": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Reauthenticate the current user",
+                "parameters": [
+                    {
+                        "description": "reauthentication",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.UserReauthenticateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.RespBody"
+                        }
+                    }
+                }
+            }
+        },
         "/answer/api/v1/user/register/email": {
             "post": {
                 "description": "UserRegisterByEmail",
@@ -10914,6 +11085,122 @@
                 }
             }
         },
+        "schema.PersonalAccessTokenCreateReq": {
+            "type": "object",
+            "required": [
+                "expires_at",
+                "name",
+                "scopes"
+            ],
+            "properties": {
+                "expires_at": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 100
+                },
+                "scopes": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "schema.PersonalAccessTokenCreateResp": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "integer"
+                },
+                "expires_at": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "revoked_at": {
+                    "type": "integer"
+                },
+                "scopes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "status": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "token_suffix": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.PersonalAccessTokenCurrentResp": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "$ref": "#/definitions/schema.PersonalAccessTokenInfo"
+                },
+                "user": {
+                    "$ref": "#/definitions/schema.PersonalAccessTokenUserInfo"
+                }
+            }
+        },
+        "schema.PersonalAccessTokenInfo": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "integer"
+                },
+                "expires_at": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "revoked_at": {
+                    "type": "integer"
+                },
+                "scopes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "status": {
+                    "type": "string"
+                },
+                "token_suffix": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.PersonalAccessTokenUserInfo": {
+            "type": "object",
+            "properties": {
+                "display_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "schema.PostRenderReq": {
             "type": "object",
             "properties": {
@@ -12214,6 +12501,14 @@
                 },
                 "login_required": {
                     "type": "boolean"
+                },
+                "pat_reauthentication_window_minutes": {
+                    "type": "integer",
+                    "maximum": 120,
+                    "minimum": 5
+                },
+                "personal_access_tokens_enabled": {
+                    "type": "boolean"
                 }
             }
         },
@@ -12234,6 +12529,14 @@
                     ]
                 },
                 "login_required": {
+                    "type": "boolean"
+                },
+                "pat_reauthentication_window_minutes": {
+                    "type": "integer",
+                    "maximum": 120,
+                    "minimum": 5
+                },
+                "personal_access_tokens_enabled": {
                     "type": "boolean"
                 }
             }
@@ -13280,6 +13583,9 @@
                     "type": "string",
                     "maxLength": 32,
                     "minLength": 8
+                },
+                "revoke_personal_access_tokens": {
+                    "type": "boolean"
                 }
             }
         },
@@ -13345,6 +13651,23 @@
                 "pass": {
                     "type": "string",
                     "maxLength": 32
+                }
+            }
+        },
+        "schema.UserReauthenticateReq": {
+            "type": "object",
+            "required": [
+                "password"
+            ],
+            "properties": {
+                "captcha_code": {
+                    "type": "string"
+                },
+                "captcha_id": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
                 }
             }
         },

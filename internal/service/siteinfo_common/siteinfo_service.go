@@ -226,7 +226,10 @@ func (s *siteInfoCommonService) GetSitePolicies(ctx context.Context) (resp *sche
 
 // GetSiteSecurity get site security config
 func (s *siteInfoCommonService) GetSiteSecurity(ctx context.Context) (resp *schema.SiteSecurityResp, err error) {
-	resp = &schema.SiteSecurityResp{CheckUpdate: true}
+	resp = &schema.SiteSecurityResp{
+		CheckUpdate:                      true,
+		PATReauthenticationWindowMinutes: schema.DefaultPATReauthenticationWindowMinutes,
+	}
 	if err = s.GetSiteInfoByType(ctx, constant.SiteTypeSecurity, resp); err != nil {
 		return nil, err
 	}

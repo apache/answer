@@ -241,9 +241,11 @@ func (m *Mentor) initSiteInfoLoginConfig() {
 
 func (m *Mentor) initSiteInfoSecurityConfig() {
 	securityConfig := map[string]any{
-		"login_required":           m.userData.LoginRequired,
-		"external_content_display": m.userData.ExternalContentDisplay,
-		"check_update":             true,
+		"login_required":                      m.userData.LoginRequired,
+		"external_content_display":            m.userData.ExternalContentDisplay,
+		"check_update":                        true,
+		"personal_access_tokens_enabled":      false,
+		"pat_reauthentication_window_minutes": schema.DefaultPATReauthenticationWindowMinutes,
 	}
 	securityConfigDataBytes, _ := json.Marshal(securityConfig)
 	_, m.err = m.engine.Context(m.ctx).Insert(&entity.SiteInfo{

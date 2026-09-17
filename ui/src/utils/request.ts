@@ -84,10 +84,11 @@ class Request {
           data: errBody,
           config: errConfig,
         } = error.response || {};
-        const { data = {}, msg = '' } = errBody || {};
+        const { data = {}, msg = '', reason = '' } = errBody || {};
 
         const errorObject: {
           code: any;
+          reason: string;
           msg: string;
           data: any;
           // Currently only used for form errors
@@ -96,6 +97,7 @@ class Request {
           list?: any[];
         } = {
           code: status,
+          reason,
           msg,
           data,
         };
@@ -154,6 +156,13 @@ class Request {
           loggedUserInfoStore.getState().clear();
           floppyNavigation.navigateToLogin();
           return Promise.reject(false);
+        }
+
+        if (
+          status === 403 &&
+          reason.startsWith('error.personal_access_token.')
+        ) {
+          return Promise.reject(errorObject);
         }
 
         if (status === 403) {

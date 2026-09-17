@@ -21,6 +21,7 @@ package auth
 
 import (
 	"context"
+	"time"
 
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/service/apikey"
@@ -44,6 +45,7 @@ type AuthRepo interface {
 	RemoveAdminUserCacheInfo(ctx context.Context, accessToken string) (err error)
 	AddUserTokenMapping(ctx context.Context, userID, accessToken string) (err error)
 	RemoveUserTokens(ctx context.Context, userID string, remainToken string)
+	GetUserCacheInfoByUserID(ctx context.Context, userID string) (userInfo *entity.UserCacheInfo, exist bool, err error)
 }
 
 // AuthService kit service
@@ -92,6 +94,9 @@ func (as *AuthService) GetUserCacheInfo(ctx context.Context, accessToken string)
 
 func (as *AuthService) SetUserCacheInfo(ctx context.Context, userInfo *entity.UserCacheInfo) (
 	accessToken string, visitToken string, err error) {
+	if userInfo.AuthenticatedAt == 0 {
+		userInfo.AuthenticatedAt = time.Now().Unix()
+	}
 	accessToken = token.GenerateToken()
 	visitToken = token.GenerateToken()
 	err = as.authRepo.SetUserCacheInfo(ctx, accessToken, visitToken, userInfo)
@@ -99,6 +104,28 @@ func (as *AuthService) SetUserCacheInfo(ctx context.Context, userInfo *entity.Us
 		return "", "", err
 	}
 	return accessToken, visitToken, err
+}
+
+func (as *AuthService) GetUserCacheInfoByUserID(ctx context.Context, userID string) (*entity.UserCacheInfo, error) {
+	userInfo, exist, err := as.authRepo.GetUserCacheInfoByUserID(ctx, userID)
+	if err != nil || !exist {
+		return nil, err
+	}
+	if uc, ok := plugin.GetUserCenter(); ok && len(userInfo.ExternalID) > 0 {
+		if userStatus := uc.UserStatus(userInfo.ExternalID); userStatus != plugin.UserStatusAvailable {
+			userInfo.UserStatus = int(userStatus)
+		}
+	}
+	return userInfo, nil
+}
+
+func (as *AuthService) MarkReauthenticated(ctx context.Context, accessToken string) error {
+	userInfo, err := as.GetUserCacheInfo(ctx, accessToken)
+	if err != nil || userInfo == nil {
+		return err
+	}
+	userInfo.AuthenticatedAt = time.Now().Unix()
+	return as.authRepo.SetUserCacheInfo(ctx, accessToken, userInfo.VisitToken, userInfo)
 }
 
 func (as *AuthService) CheckUserVisitToken(ctx context.Context, visitToken string) bool {

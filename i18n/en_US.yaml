@@ -155,6 +155,14 @@ backend:
     password:
       space_invalid:
         other: Password cannot contain spaces.
+    personal_access_token:
+      insufficient_scope:
+        other: The personal access token does not have the required scope.
+      reauthentication_required:
+        other: Please authenticate again before creating a personal access token.
+    feature:
+      disabled:
+        other: This feature is disabled.
     admin:
       cannot_update_their_password:
         other: You cannot modify your password.
@@ -1325,6 +1333,7 @@ ui:
       notification: Notifications
       account: Account
       interface: Interface
+      personal_access_tokens: Personal access tokens
     profile:
       heading: Profile
       btn_name: Save
@@ -1393,11 +1402,55 @@ ui:
         label: New password
       pass_confirm:
         label: Confirm new password
+      revoke_personal_access_tokens: Revoke all personal access tokens
     interface:
       heading: Interface
       lang:
         label: Interface language
         text: User interface language. It will change when you refresh the page.
+    personal_access_tokens:
+      heading: Personal access tokens
+      description: Create scoped credentials for command-line tools and delegated automation.
+      disabled: Personal access tokens are disabled by an administrator. Existing tokens cannot authenticate, but you can still revoke them.
+      create: Create token
+      create_failed: Failed to create the personal access token.
+      name: Name
+      token: Token
+      scopes: Scopes
+      expiration: Expiration
+      expires: Expires
+      status: Status
+      show_inactive: Show expired and revoked tokens
+      revoke: Revoke
+      revoke_confirm: Are you sure you want to revoke this token?
+      created_title: Personal access token created
+      created_warning: Copy this token now. It will not be shown again.
+      copy: Copy token
+      days: "{{count}} days"
+      custom_expiration: Custom date
+      reauthenticate: Confirm your identity
+      reauthenticate_failed: Authentication failed.
+      reauthenticate_external: Sign out and sign in again with your external identity provider, then retry.
+      password: Current password
+      continue: Continue
+      scope_group:
+        question: Question
+        answer: Answer
+        vote: Vote
+      scope:
+        question:
+          read: Read questions
+          create: Create questions
+        answer:
+          read: Read answers
+          create: Create answers
+        vote:
+          write: Cast and retract votes
+      token_status:
+        active: Active
+        expired: Expired
+        revoked: Revoked
+        temporarily_unavailable: Disabled by administrator
     my_logins:
       title: My logins
       label: Log in or sign up on this site using these accounts.
@@ -2256,6 +2309,14 @@ ui:
         title: Password login
         label: Allow email and password login
         text: "WARNING: If turn off, you may be unable to log in if you have not previously configured other login method."
+    security:
+      page_title: Security
+      personal_access_tokens:
+        label: Enable personal access tokens
+        text: Allow users to create scoped credentials for command-line tools and delegated automation.
+      pat_reauthentication_window:
+        label: Reauthentication window (minutes)
+        text: Require users to authenticate again before creating a token when this period has elapsed. Allowed range is 5–120 minutes.
     installed_plugins:
       title: Installed Plugins
       plugin_link: Plugins extend and expand the functionality. You may find plugins in the <1>Plugin Repository</1>.

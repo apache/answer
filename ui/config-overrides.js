@@ -29,6 +29,14 @@ const path = require("path");
 const i18nPath = path.resolve(__dirname, "../i18n");
 
 module.exports = {
+  jest: function(config) {
+    config.moduleNameMapper = {
+      ...(config.moduleNameMapper || {}),
+      '^@/(.*)$': '<rootDir>/src/$1',
+      '^@i18n/(.*)$': '<rootDir>/../i18n/$1',
+    };
+    return config;
+  },
   webpack: function(config, env) {
     addWebpackAlias({
       "@": path.resolve(__dirname, "src"),

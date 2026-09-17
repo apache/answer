@@ -25,6 +25,7 @@ import (
 
 // ProviderSetMiddleware is providers.
 var ProviderSetMiddleware = wire.NewSet(
+	NewPATRequestAuthorizer,
 	NewAuthUserMiddleware,
 	NewAvatarMiddleware,
 	NewShortIDMiddleware,
