@@ -175,6 +175,11 @@ func (cc *ConnectorController) ConnectorRedirect(connector plugin.Connector) (fn
 			ctx.Redirect(http.StatusFound, "/50x")
 			return
 		}
+		if requirer, ok := connector.(plugin.ConnectorStateRequired); ok && requirer.ConnectorRequireState() && stateInfo == nil {
+			log.Errorf("missing or invalid connector oauth state for provider %s", connector.ConnectorSlugName())
+			ctx.Redirect(http.StatusFound, "/50x")
+			return
+		}
 		if stateInfo != nil && stateInfo.Intent == schema.ExternalLoginOAuthStateBindIntent {
 			if err = cc.userExternalService.BindExternalLoginToUser(ctx, stateInfo.UserID, u); err != nil {
 				log.Errorf("bind external login failed: %v", err)
