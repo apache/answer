@@ -44,6 +44,10 @@ type Connector interface {
 	ConnectorReceiver(ctx *GinContext, receiverURL string) (userInfo ExternalLoginUserInfo, err error)
 }
 
+type ConnectorStateRequired interface {
+	ConnectorRequireState() bool
+}
+
 // ExternalLoginUserInfo external login user info
 type ExternalLoginUserInfo struct {
 	// required. The unique user ID provided by the third-party login
