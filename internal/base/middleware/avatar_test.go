@@ -20,6 +20,7 @@
 package middleware
 
 import (
+	"mime"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -29,10 +30,14 @@ import (
 )
 
 func TestContentTypeByExt(t *testing.T) {
-	assert.Equal(t, "image/svg+xml", contentTypeByExt(".svg"))
-	assert.Equal(t, "image/png", contentTypeByExt(".png"))
-	assert.Equal(t, "image/jpeg", contentTypeByExt(".JPG"))
-	assert.Equal(t, "image/webp", contentTypeByExt(".webp"))
+	// compare the media type only: mime.TypeByExtension may add parameters (e.g. charset)
+	// depending on the platform's MIME database
+	assert.Equal(t, "image/svg+xml", mediaType(t, contentTypeByExt(".svg")))
+	assert.Equal(t, "image/png", mediaType(t, contentTypeByExt(".png")))
+	assert.Equal(t, "image/jpeg", mediaType(t, contentTypeByExt(".JPG")))
+	assert.Equal(t, "image/webp", mediaType(t, contentTypeByExt(".webp")))
+	assert.Equal(t, "application/octet-stream", contentTypeByExt(""))
+	assert.Equal(t, "application/octet-stream", contentTypeByExt("."))
 	// unknown extension keeps the legacy behaviour
 	assert.Equal(t, "image/unknownext", contentTypeByExt(".unknownext"))
 }
@@ -51,6 +56,16 @@ func TestAvatarThumbSetsContentTypeForUploads(t *testing.T) {
 		req, _ := http.NewRequest(http.MethodGet, path, nil)
 		req.RequestURI = path // set by the real server; the middleware reads it
 		r.ServeHTTP(w, req)
-		assert.Equal(t, want, w.Header().Get("Content-Type"), path)
+		assert.Equal(t, want, mediaType(t, w.Header().Get("Content-Type")), path)
 	}
+}
+
+// mediaType strips any parameters from a Content-Type value
+func mediaType(t *testing.T, contentType string) string {
+	t.Helper()
+	mt, _, err := mime.ParseMediaType(contentType)
+	if err != nil {
+		t.Fatalf("invalid content type %q: %v", contentType, err)
+	}
+	return mt
 }
