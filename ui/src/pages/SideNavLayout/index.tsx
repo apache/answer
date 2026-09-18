@@ -27,16 +27,16 @@ import '@/common/sideNavLayout.scss';
 const Index: FC = () => {
   return (
     <div className="d-flex">
-      <div
+      <nav
         className="position-sticky px-3 border-end pt-4 d-none d-lg-block"
         id="pcSideNav">
         <SideNav />
-      </div>
+      </nav>
       <div className="flex-fill w-100 overflow-x-hidden">
         <div className="d-flex justify-content-center px-0 px-md-4">
-          <div className="answer-container main-mx-with">
+          <main className="answer-container main-mx-with">
             <Outlet />
-          </div>
+          </main>
         </div>
         <div className="d-flex justify-content-center px-0 px-md-4">
           <div className="main-mx-with">
