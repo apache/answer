@@ -41,6 +41,7 @@ import (
 	"github.com/apache/answer/internal/service/activity_common"
 	"github.com/apache/answer/internal/service/activityqueue"
 	answercommon "github.com/apache/answer/internal/service/answer_common"
+	bulkdelete "github.com/apache/answer/internal/service/bulk_delete"
 	collectioncommon "github.com/apache/answer/internal/service/collection_common"
 	"github.com/apache/answer/internal/service/config"
 	"github.com/apache/answer/internal/service/export"
@@ -1582,26 +1583,30 @@ func (qs *QuestionService) AdminSetQuestionStatus(ctx context.Context, req *sche
 	if !exist {
 		return errors.BadRequest(reason.QuestionNotFound)
 	}
-	err = qs.questionRepo.UpdateQuestionStatus(ctx, questionInfo.ID, setStatus)
+	if questionInfo.Status == setStatus {
+		return nil
+	}
+	switch {
+	case setStatus == entity.QuestionStatusDeleted:
+		err = qs.RemoveQuestion(ctx, &schema.RemoveQuestionReq{
+			ID:      questionInfo.ID,
+			UserID:  req.UserID,
+			IsAdmin: true,
+		})
+	case setStatus == entity.QuestionStatusAvailable && questionInfo.Status == entity.QuestionStatusDeleted:
+		err = qs.RecoverQuestion(ctx, &schema.QuestionRecoverReq{
+			QuestionID: questionInfo.ID,
+			UserID:     req.UserID,
+		})
+	default:
+		err = qs.questionRepo.UpdateQuestionStatus(ctx, questionInfo.ID, setStatus)
+	}
 	if err != nil {
 		return err
 	}
 
 	msg := &schema.NotificationMsg{}
 	if setStatus == entity.QuestionStatusDeleted {
-		// #2372 In order to simplify the process and complexity, as well as to consider if it is in-house,
-		// facing the problem of recovery.
-		// err = qs.answerActivityService.DeleteQuestion(ctx, questionInfo.ID, questionInfo.CreatedAt, questionInfo.VoteCount)
-		// if err != nil {
-		// 	log.Errorf("admin delete question then rank rollback error %s", err.Error())
-		// }
-		qs.activityQueueService.Send(ctx, &schema.ActivityMsg{
-			UserID:           questionInfo.UserID,
-			TriggerUserID:    converter.StringToInt64(req.UserID),
-			ObjectID:         questionInfo.ID,
-			OriginalObjectID: questionInfo.ID,
-			ActivityTypeKey:  constant.ActQuestionDeleted,
-		})
 		msg.NotificationAction = constant.NotificationYourQuestionWasDeleted
 	}
 	if setStatus == entity.QuestionStatusAvailable && questionInfo.Status == entity.QuestionStatusClosed {
@@ -1623,17 +1628,6 @@ func (qs *QuestionService) AdminSetQuestionStatus(ctx context.Context, req *sche
 		})
 		msg.NotificationAction = constant.NotificationYourQuestionIsClosed
 	}
-	// recover
-	if setStatus == entity.QuestionStatusAvailable && questionInfo.Status == entity.QuestionStatusDeleted {
-		qs.activityQueueService.Send(ctx, &schema.ActivityMsg{
-			UserID:           req.UserID,
-			TriggerUserID:    converter.StringToInt64(req.UserID),
-			ObjectID:         questionInfo.ID,
-			OriginalObjectID: questionInfo.ID,
-			ActivityTypeKey:  constant.ActQuestionUndeleted,
-		})
-	}
-
 	if len(msg.NotificationAction) > 0 {
 		msg.ObjectID = questionInfo.ID
 		msg.Type = schema.NotificationTypeInbox
@@ -1642,13 +1636,21 @@ func (qs *QuestionService) AdminSetQuestionStatus(ctx context.Context, req *sche
 		msg.ObjectType = constant.QuestionObjectType
 		qs.notificationQueueService.Send(ctx, msg)
 	}
-	switch setStatus {
-	case entity.QuestionStatusDeleted:
-		qs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionDelete, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: questionInfo.ID})
-	case entity.QuestionStatusAvailable:
+	if setStatus == entity.QuestionStatusAvailable && questionInfo.Status != entity.QuestionStatusDeleted {
 		qs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: questionInfo.ID})
 	}
 	return nil
+}
+
+// AdminDeleteQuestions deletes questions one at a time to preserve the existing admin delete side effects.
+func (qs *QuestionService) AdminDeleteQuestions(ctx context.Context, req *schema.DeleteQuestionsReq) *schema.BulkDeleteResp {
+	return bulkdelete.Execute(req.QuestionIDs, func(questionID string) error {
+		return qs.AdminSetQuestionStatus(ctx, &schema.AdminUpdateQuestionStatusReq{
+			QuestionID: questionID,
+			Status:     "deleted",
+			UserID:     req.UserID,
+		})
+	})
 }
 
 func (qs *QuestionService) AdminQuestionPage(

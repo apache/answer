@@ -43,6 +43,7 @@ import {
   getAdminUcAgent,
   AdminUcAgent,
   changeUserStatus,
+  deleteUsers,
   deletePermanently,
 } from '@/services';
 import { formatCount } from '@/utils';
@@ -78,6 +79,8 @@ const Users: FC = () => {
     show: false,
     userId: '',
   });
+  const [showBulkDeleteUsers, setShowBulkDeleteUsers] = useState(false);
+  const [selectedUserIDs, setSelectedUserIDs] = useState<string[]>([]);
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
   const curFilter = urlSearchParams.get('filter') || UserFilterKeys[0];
   const curPage = Number(urlSearchParams.get('page') || '1');
@@ -206,6 +209,54 @@ const Users: FC = () => {
     !ucAgent?.enabled ||
     (ucAgent?.enabled && adminUcAgent?.allow_update_user_status);
   const showAction = showActionPassword || showActionRole || showActionStatus;
+  const canBulkDelete = showActionStatus && curFilter !== 'deleted';
+  const pageUserIDs =
+    data?.list
+      .filter((user) => user.user_id !== currentUser?.id)
+      .map((user) => user.user_id) || [];
+  const allUsersSelected =
+    pageUserIDs.length > 0 &&
+    pageUserIDs.every((userID) => selectedUserIDs.includes(userID));
+
+  useEffect(() => {
+    setSelectedUserIDs([]);
+  }, [curFilter, curPage, curQuery]);
+
+  const toggleUser = (userID: string) => {
+    setSelectedUserIDs((selectedIDs) =>
+      selectedIDs.includes(userID)
+        ? selectedIDs.filter((id) => id !== userID)
+        : [...selectedIDs, userID],
+    );
+  };
+
+  const toggleAllUsers = () => {
+    setSelectedUserIDs(allUsersSelected ? [] : pageUserIDs);
+  };
+
+  const handleBulkDelete = (removeAllContent: boolean) => {
+    deleteUsers({
+      user_ids: selectedUserIDs,
+      remove_all_content: removeAllContent,
+    }).then((result) => {
+      const failedCount = result.failed_ids.length;
+      toastStore.getState().show({
+        msg:
+          failedCount > 0
+            ? t('bulk_delete.partial', {
+                succeeded: result.succeeded_ids.length,
+                failed: failedCount,
+              })
+            : t('bulk_delete.success', {
+                count: result.succeeded_ids.length,
+              }),
+        variant: failedCount > 0 ? 'warning' : 'success',
+      });
+      setSelectedUserIDs([]);
+      setShowBulkDeleteUsers(false);
+      refreshUsers();
+    });
+  };
 
   return (
     <>
@@ -225,6 +276,15 @@ const Users: FC = () => {
               size="sm"
               onClick={() => handleDeletePermanently()}>
               {t('deleted_permanently', { keyPrefix: 'btns' })}
+            </Button>
+          ) : null}
+          {canBulkDelete ? (
+            <Button
+              variant="outline-danger"
+              size="sm"
+              disabled={selectedUserIDs.length === 0}
+              onClick={() => setShowBulkDeleteUsers(true)}>
+              {t('bulk_delete.action', { count: selectedUserIDs.length })}
             </Button>
           ) : null}
           {showAddUser ? (
@@ -250,6 +310,16 @@ const Users: FC = () => {
       <Table responsive="md">
         <thead>
           <tr>
+            {canBulkDelete ? (
+              <th style={{ width: '1%' }}>
+                <Form.Check.Input
+                  type="checkbox"
+                  checked={allUsersSelected}
+                  onChange={toggleAllUsers}
+                  aria-label={t('bulk_delete.select_all')}
+                />
+              </th>
+            ) : null}
             <th>{t('name')}</th>
             <th style={{ width: '12%' }}>{t('reputation')}</th>
             <th style={{ width: '15%' }} className="min-w-15">
@@ -284,6 +354,18 @@ const Users: FC = () => {
           {data?.list.map((user) => {
             return (
               <tr key={user.user_id}>
+                {canBulkDelete ? (
+                  <td>
+                    {user.user_id !== currentUser?.id ? (
+                      <Form.Check.Input
+                        type="checkbox"
+                        checked={selectedUserIDs.includes(user.user_id)}
+                        onChange={() => toggleUser(user.user_id)}
+                        aria-label={t('bulk_delete.select')}
+                      />
+                    ) : null}
+                  </td>
+                ) : null}
                 <td>
                   <BaseUserCard
                     data={user}
@@ -370,6 +452,13 @@ const Users: FC = () => {
           });
         }}
         onDelete={(val) => handleDelete(val)}
+      />
+      <DeleteUserModal
+        show={showBulkDeleteUsers}
+        count={selectedUserIDs.length}
+        isBulk
+        onClose={() => setShowBulkDeleteUsers(false)}
+        onDelete={handleBulkDelete}
       />
       <SuspenseUserModal
         show={suspenseUserModalState.show}
