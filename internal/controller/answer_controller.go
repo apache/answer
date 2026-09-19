@@ -457,3 +457,27 @@ func (ac *AnswerController) AdminUpdateAnswerStatus(ctx *gin.Context) {
 	err := ac.answerService.AdminSetAnswerStatus(ctx, req)
 	handler.HandleResponse(ctx, err, nil)
 }
+
+// AdminDeleteAnswers deletes multiple answers.
+// @Summary delete multiple answers
+// @Description delete multiple answers
+// @Tags admin
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param data body schema.DeleteAnswersReq true "DeleteAnswersReq"
+// @Success 200 {object} handler.RespBody{data=schema.BulkDeleteResp}
+// @Router /answer/admin/api/answers [delete]
+func (ac *AnswerController) AdminDeleteAnswers(ctx *gin.Context) {
+	req := &schema.DeleteAnswersReq{}
+	if handler.BindAndCheck(ctx, req) {
+		return
+	}
+	for index, answerID := range req.AnswerIDs {
+		req.AnswerIDs[index] = uid.DeShortID(answerID)
+	}
+	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
+
+	resp := ac.answerService.AdminDeleteAnswers(ctx, req)
+	handler.HandleResponse(ctx, nil, resp)
+}

@@ -33,6 +33,7 @@ import (
 	"github.com/apache/answer/internal/base/validator"
 	answercommon "github.com/apache/answer/internal/service/answer_common"
 	"github.com/apache/answer/internal/service/badge"
+	bulkdelete "github.com/apache/answer/internal/service/bulk_delete"
 	"github.com/apache/answer/internal/service/comment_common"
 	"github.com/apache/answer/internal/service/export"
 	notificationcommon "github.com/apache/answer/internal/service/notification_common"
@@ -141,30 +142,32 @@ func (us *UserAdminService) UpdateUserStatus(ctx context.Context, req *schema.Up
 	if !exist {
 		return errors.BadRequest(reason.UserNotFound)
 	}
-	// if user status is deleted
-	if userInfo.Status == entity.UserStatusDeleted {
+	alreadyDeleted := userInfo.Status == entity.UserStatusDeleted
+	if alreadyDeleted && !req.IsDeleted() {
 		return nil
 	}
 
-	if req.IsInactive() {
-		userInfo.MailStatus = entity.EmailStatusToBeVerified
-	}
-	if req.IsDeleted() {
-		userInfo.Status = entity.UserStatusDeleted
-		userInfo.EMail = fmt.Sprintf("%s.%d", userInfo.EMail, time.Now().Unix())
-	}
-	if req.IsSuspended() {
-		userInfo.Status = entity.UserStatusSuspended
-	}
-	if req.IsNormal() {
-		userInfo.Status = entity.UserStatusAvailable
-		userInfo.MailStatus = entity.EmailStatusAvailable
-	}
+	if !alreadyDeleted {
+		if req.IsInactive() {
+			userInfo.MailStatus = entity.EmailStatusToBeVerified
+		}
+		if req.IsDeleted() {
+			userInfo.Status = entity.UserStatusDeleted
+			userInfo.EMail = fmt.Sprintf("%s.%d", userInfo.EMail, time.Now().Unix())
+		}
+		if req.IsSuspended() {
+			userInfo.Status = entity.UserStatusSuspended
+		}
+		if req.IsNormal() {
+			userInfo.Status = entity.UserStatusAvailable
+			userInfo.MailStatus = entity.EmailStatusAvailable
+		}
 
-	suspendedUntil := req.GetSuspendedUntil()
-	err = us.userRepo.UpdateUserStatus(ctx, userInfo.ID, userInfo.Status, userInfo.MailStatus, userInfo.EMail, suspendedUntil)
-	if err != nil {
-		return err
+		suspendedUntil := req.GetSuspendedUntil()
+		err = us.userRepo.UpdateUserStatus(ctx, userInfo.ID, userInfo.Status, userInfo.MailStatus, userInfo.EMail, suspendedUntil)
+		if err != nil {
+			return err
+		}
 	}
 	if req.IsInactive() || req.IsSuspended() || req.IsDeleted() {
 		if err := us.revokeUserAPIKeys(ctx, userInfo.ID); err != nil {
@@ -172,13 +175,18 @@ func (us *UserAdminService) UpdateUserStatus(ctx context.Context, req *schema.Up
 		}
 	}
 
-	// remove all content that user created, such as question, answer, comment, etc.
+	var cleanupErr error
 	if req.RemoveAllContent {
-		us.removeAllUserCreatedContent(ctx, userInfo.ID)
+		cleanupErr = us.removeAllUserCreatedContent(ctx, userInfo.ID)
 	}
 
 	if req.IsDeleted() {
-		us.removeAllUserConfiguration(ctx, userInfo.ID)
+		if err := us.removeAllUserConfiguration(ctx, userInfo.ID); cleanupErr == nil {
+			cleanupErr = err
+		}
+	}
+	if cleanupErr != nil {
+		return cleanupErr
 	}
 
 	// if user reputation is zero means this user is inactive, so try to activate this user.
@@ -188,41 +196,75 @@ func (us *UserAdminService) UpdateUserStatus(ctx context.Context, req *schema.Up
 	return nil
 }
 
+// DeleteUsers deletes users one at a time to preserve the existing user deletion workflow.
+func (us *UserAdminService) DeleteUsers(ctx context.Context, req *schema.DeleteUsersReq) *schema.BulkDeleteResp {
+	return bulkdelete.Execute(req.UserIDs, func(userID string) error {
+		return us.UpdateUserStatus(ctx, &schema.UpdateUserStatusReq{
+			UserID:           userID,
+			Status:           constant.UserDeleted,
+			RemoveAllContent: req.RemoveAllContent,
+			LoginUserID:      req.LoginUserID,
+		})
+	})
+}
+
 // removeAllUserConfiguration remove all user configuration
-func (us *UserAdminService) removeAllUserConfiguration(ctx context.Context, userID string) {
+func (us *UserAdminService) removeAllUserConfiguration(ctx context.Context, userID string) (firstErr error) {
 	err := us.userExternalLoginRepo.DeleteUserExternalLoginByUserID(ctx, userID)
 	if err != nil {
 		log.Errorf("remove all user external login error: %v", err)
+		firstErr = err
 	}
 	err = us.notificationRepo.DeleteNotification(ctx, userID)
 	if err != nil {
 		log.Errorf("remove all user notification error: %v", err)
+		if firstErr == nil {
+			firstErr = err
+		}
 	}
 	err = us.notificationRepo.DeleteUserNotificationConfig(ctx, userID)
 	if err != nil {
 		log.Errorf("remove all user notification config error: %v", err)
+		if firstErr == nil {
+			firstErr = err
+		}
 	}
 	err = us.pluginUserConfigRepo.DeleteUserPluginConfig(ctx, userID)
 	if err != nil {
 		log.Errorf("remove all user plugin config error: %v", err)
+		if firstErr == nil {
+			firstErr = err
+		}
 	}
 	err = us.badgeAwardRepo.DeleteUserBadgeAward(ctx, userID)
 	if err != nil {
 		log.Errorf("remove all user badge award error: %v", err)
+		if firstErr == nil {
+			firstErr = err
+		}
 	}
+	return firstErr
 }
 
 // removeAllUserCreatedContent remove all user created content
-func (us *UserAdminService) removeAllUserCreatedContent(ctx context.Context, userID string) {
+func (us *UserAdminService) removeAllUserCreatedContent(ctx context.Context, userID string) (firstErr error) {
 	if err := us.questionCommonRepo.RemoveAllUserQuestion(ctx, userID); err != nil {
 		log.Errorf("remove all user question error: %v", err)
+		firstErr = err
 	}
 	if err := us.answerCommonRepo.RemoveAllUserAnswer(ctx, userID); err != nil {
 		log.Errorf("remove all user answer error: %v", err)
+		if firstErr == nil {
+			firstErr = err
+		}
 	}
 	if err := us.commentCommonRepo.RemoveAllUserComment(ctx, userID); err != nil {
 		log.Errorf("remove all user comment error: %v", err)
+		if firstErr == nil {
+			firstErr = err
+		}
 	}
+	return firstErr
 }
 
 // UpdateUserRole update user role
