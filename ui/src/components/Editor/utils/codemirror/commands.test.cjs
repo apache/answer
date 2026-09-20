@@ -22,6 +22,7 @@ const fs = require('node:fs');
 const test = require('node:test');
 const ts = require('typescript');
 
+const previousTypeScriptLoader = require.extensions['.ts'];
 require.extensions['.ts'] = (module, filename) => {
   const source = fs.readFileSync(filename, 'utf8');
   const output = ts.transpileModule(source, {
@@ -36,7 +37,16 @@ require.extensions['.ts'] = (module, filename) => {
 };
 
 const { EditorState } = require('@codemirror/state');
-const { createCodeMirrorAdapter } = require('./adapter.ts');
+let createCodeMirrorAdapter;
+try {
+  ({ createCodeMirrorAdapter } = require('./adapter.ts'));
+} finally {
+  if (previousTypeScriptLoader) {
+    require.extensions['.ts'] = previousTypeScriptLoader;
+  } else {
+    delete require.extensions['.ts'];
+  }
+}
 
 function createEditorView(doc = '') {
   let state = EditorState.create({ doc });
