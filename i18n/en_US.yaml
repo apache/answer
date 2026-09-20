@@ -870,14 +870,8 @@ ui:
     thinking: Thinking…
     thoughts: Thoughts
   ai_translate:
-    button: Translate with AI
+    button: Translate into {{ language }}
     translating: Translating…
-    review_title: Review translation
-    review_description: Review and edit the translation into {{ language }} before applying it. Your original text is unchanged until you apply.
-    title_label: Translated title
-    content_label: Translated content
-    apply: Use translation
-    discard: Discard
     error: The content could not be translated. Please try again.
   notifications:
     title: Notifications

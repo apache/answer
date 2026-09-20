@@ -17,42 +17,85 @@
  * under the License.
  */
 
-import { useState } from 'react';
-import { Button, Form, Spinner } from 'react-bootstrap';
+import { useEffect, useMemo, useState } from 'react';
+import { Button, Spinner } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
+import classNames from 'classnames';
+
 import { aiControlStore, interfaceStore, toastStore } from '@/stores';
-import {
-  translateContent,
-  TranslateContentResponse,
-} from '@/services/client/ai';
-import Modal from '../Modal';
+import { translateContent } from '@/services/client/ai';
+import { doesTextNeedTranslation } from '@/utils/languageDetection';
+import Icon from '../Icon';
+
+import './index.scss';
 
 interface Props {
   title?: string;
-  content: string;
+  content?: string;
   className?: string;
-  onApply: (translation: { title?: string; content: string }) => void;
+  onApply: (value: string) => void;
 }
 
+const getLanguageName = (locale: string, displayLocale?: string) => {
+  const language = locale.split(/[-_]/)[0];
+  try {
+    return (
+      new Intl.DisplayNames([displayLocale?.replace('_', '-') || 'en'], {
+        type: 'language',
+      }).of(language) || locale
+    );
+  } catch {
+    return locale;
+  }
+};
+
 const AITranslateButton = ({ title, content, className, onApply }: Props) => {
-  const { t } = useTranslation('translation', { keyPrefix: 'ai_translate' });
+  const { t, i18n } = useTranslation('translation', {
+    keyPrefix: 'ai_translate',
+  });
   const { ai_enabled: aiEnabled, ai_translation_enabled: translationEnabled } =
     aiControlStore((state) => state);
   const targetLanguage = interfaceStore((state) => state.interface.language);
   const [loading, setLoading] = useState(false);
-  const [translation, setTranslation] =
-    useState<TranslateContentResponse | null>(null);
+  const [languageMismatch, setLanguageMismatch] = useState(false);
+  const value = title ?? content ?? '';
+  const languageName = useMemo(
+    () => getLanguageName(targetLanguage, i18n.resolvedLanguage),
+    [i18n.resolvedLanguage, targetLanguage],
+  );
 
-  if (!aiEnabled || !translationEnabled) {
+  useEffect(() => {
+    if (!aiEnabled || !translationEnabled) {
+      setLanguageMismatch(false);
+      return undefined;
+    }
+
+    let active = true;
+    const timeout = window.setTimeout(async () => {
+      const mismatch = await doesTextNeedTranslation(value, targetLanguage);
+      if (active) {
+        setLanguageMismatch(mismatch);
+      }
+    }, 300);
+
+    return () => {
+      active = false;
+      window.clearTimeout(timeout);
+    };
+  }, [aiEnabled, targetLanguage, translationEnabled, value]);
+
+  if (!aiEnabled || !translationEnabled || !languageMismatch) {
     return null;
   }
 
   const requestTranslation = async () => {
     setLoading(true);
     try {
-      const result = await translateContent({ title, content });
-      setTranslation(result);
+      const result = await translateContent(
+        title !== undefined ? { title } : { content },
+      );
+      onApply(title !== undefined ? result.title : result.content);
     } catch (error: any) {
       toastStore.getState().show({
         msg: error?.msg || t('error'),
@@ -63,74 +106,25 @@ const AITranslateButton = ({ title, content, className, onApply }: Props) => {
     }
   };
 
-  const updateTranslation = (changes: Partial<TranslateContentResponse>) => {
-    setTranslation((current) => (current ? { ...current, ...changes } : null));
-  };
+  const label = loading
+    ? t('translating')
+    : t('button', { language: languageName });
 
   return (
-    <>
-      <Button
-        type="button"
-        variant="link"
-        size="sm"
-        className={`p-0 text-decoration-none ${className || ''}`}
-        disabled={loading || (!title?.trim() && !content.trim())}
-        onClick={requestTranslation}>
-        {loading && <Spinner size="sm" className="me-2" />}
-        {loading ? t('translating') : t('button')}
-      </Button>
-      <Modal
-        title={t('review_title')}
-        visible={Boolean(translation)}
-        scrollable
-        cancelText={t('discard')}
-        cancelBtnVariant="outline-secondary"
-        confirmText={t('apply')}
-        confirmBtnVariant="primary"
-        confirmBtnDisabled={
-          !translation?.content.trim() && !translation?.title.trim()
-        }
-        onCancel={() => setTranslation(null)}
-        onConfirm={() => {
-          if (!translation) {
-            return;
-          }
-          onApply({
-            title: title === undefined ? undefined : translation.title,
-            content: translation.content,
-          });
-          setTranslation(null);
-        }}>
-        <p className="text-secondary small">
-          {t('review_description', {
-            language: translation?.target_language || targetLanguage,
-          })}
-        </p>
-        {title !== undefined && (
-          <Form.Group className="mb-3">
-            <Form.Label>{t('title_label')}</Form.Label>
-            <Form.Control
-              value={translation?.title || ''}
-              maxLength={150}
-              onChange={(event) =>
-                updateTranslation({ title: event.currentTarget.value })
-              }
-            />
-          </Form.Group>
-        )}
-        <Form.Group>
-          <Form.Label>{t('content_label')}</Form.Label>
-          <Form.Control
-            as="textarea"
-            rows={14}
-            value={translation?.content || ''}
-            onChange={(event) =>
-              updateTranslation({ content: event.currentTarget.value })
-            }
-          />
-        </Form.Group>
-      </Modal>
-    </>
+    <Button
+      type="button"
+      variant="light"
+      className={classNames('ai-translate-button', className)}
+      disabled={loading}
+      title={label}
+      aria-label={label}
+      onClick={requestTranslation}>
+      {loading ? (
+        <Spinner animation="border" size="sm" />
+      ) : (
+        <Icon type="bi" name="translate" />
+      )}
+    </Button>
   );
 };
 

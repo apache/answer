@@ -289,15 +289,14 @@ const Index = () => {
                   setForceType('');
                 }}
                 ref={editorRef}
+                bottomRightAction={
+                  <AITranslateButton
+                    className="ai-translate-button-editor"
+                    content={formData.content.value}
+                    onApply={handleAnswerChange}
+                  />
+                }
               />
-              <div className="mt-2">
-                <AITranslateButton
-                  content={formData.content.value}
-                  onApply={(translated) =>
-                    handleAnswerChange(translated.content)
-                  }
-                />
-              </div>
               <Form.Control
                 value={formData.content.value}
                 type="text"

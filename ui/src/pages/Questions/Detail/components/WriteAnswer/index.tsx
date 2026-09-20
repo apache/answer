@@ -287,21 +287,22 @@ const Index: FC<Props> = ({ visible = false, data, callback }) => {
                 onBlur={() => {
                   setFocusType('');
                 }}
+                bottomRightAction={
+                  <AITranslateButton
+                    className="ai-translate-button-editor"
+                    content={formData.content.value}
+                    onApply={(value) =>
+                      setFormData({
+                        content: {
+                          value,
+                          isInvalid: false,
+                          errorMsg: '',
+                        },
+                      })
+                    }
+                  />
+                }
               />
-              <div className="mt-2">
-                <AITranslateButton
-                  content={formData.content.value}
-                  onApply={(translated) =>
-                    setFormData({
-                      content: {
-                        value: translated.content,
-                        isInvalid: false,
-                        errorMsg: '',
-                      },
-                    })
-                  }
-                />
-              </div>
 
               <Alert
                 variant="warning"

@@ -475,16 +475,31 @@ const Ask = () => {
             )}
             <Form.Group controlId="title" className="mb-3">
               <Form.Label>{t('form.fields.title.label')}</Form.Label>
-              <Form.Control
-                type="text"
-                value={formData.title.value}
-                isInvalid={formData.title.isInvalid}
-                onChange={handleTitleChange}
-                placeholder={t('form.fields.title.placeholder')}
-                autoFocus
-                contentEditable
-              />
-              <Form.Control.Feedback type="invalid">
+              <div className="position-relative">
+                <Form.Control
+                  type="text"
+                  className="pe-5"
+                  value={formData.title.value}
+                  isInvalid={formData.title.isInvalid}
+                  onChange={handleTitleChange}
+                  placeholder={t('form.fields.title.placeholder')}
+                  autoFocus
+                  contentEditable
+                />
+                <AITranslateButton
+                  className="ai-translate-button-input"
+                  title={formData.title.value}
+                  onApply={(value) =>
+                    setFormData((previous) => ({
+                      ...previous,
+                      title: { ...previous.title, value },
+                    }))
+                  }
+                />
+              </div>
+              <Form.Control.Feedback
+                type="invalid"
+                className={formData.title.isInvalid ? 'd-block' : ''}>
                 {formData.title.errorMsg}
               </Form.Control.Feedback>
               {bool && <SearchQuestion similarQuestions={similarQuestions} />}
@@ -506,28 +521,18 @@ const Ask = () => {
                   setForceType('');
                 }}
                 ref={editorRef}
+                bottomRightAction={
+                  <AITranslateButton
+                    className="ai-translate-button-editor"
+                    content={formData.content.value}
+                    onApply={handleContentChange}
+                  />
+                }
               />
-              <div className="mt-2">
-                <AITranslateButton
-                  title={formData.title.value}
-                  content={formData.content.value}
-                  onApply={(translated) =>
-                    setFormData((previous) => ({
-                      ...previous,
-                      title: {
-                        ...previous.title,
-                        value: translated.title || previous.title.value,
-                      },
-                      content: {
-                        ...previous.content,
-                        value: translated.content,
-                      },
-                    }))
-                  }
-                />
-              </div>
               <Form.Text>{handleContentHint()}</Form.Text>
-              <Form.Control.Feedback type="invalid">
+              <Form.Control.Feedback
+                type="invalid"
+                className={formData.content.isInvalid ? 'd-block' : ''}>
                 {formData.content.errorMsg}
               </Form.Control.Feedback>
             </Form.Group>
@@ -569,15 +574,14 @@ const Ask = () => {
                       onBlur={() => {
                         setForceType('');
                       }}
+                      bottomRightAction={
+                        <AITranslateButton
+                          className="ai-translate-button-editor"
+                          content={formData.answer_content.value}
+                          onApply={handleAnswerChange}
+                        />
+                      }
                     />
-                    <div className="mt-2">
-                      <AITranslateButton
-                        content={formData.answer_content.value}
-                        onApply={(translated) =>
-                          handleAnswerChange(translated.content)
-                        }
-                      />
-                    </div>
                     <Form.Control
                       type="text"
                       isInvalid={formData.answer_content.isInvalid}

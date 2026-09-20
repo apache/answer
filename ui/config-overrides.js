@@ -29,6 +29,12 @@ const path = require("path");
 const i18nPath = path.resolve(__dirname, "../i18n");
 
 module.exports = {
+  jest: function(config) {
+    config.transformIgnorePatterns = [
+      '/node_modules/(?!franc-min|trigram-utils|n-gram|collapse-white-space)/',
+    ];
+    return config;
+  },
   webpack: function(config, env) {
     addWebpackAlias({
       "@": path.resolve(__dirname, "src"),

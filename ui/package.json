@@ -30,6 +30,7 @@
     "copy-to-clipboard": "^3.3.2",
     "dayjs": "^1.11.5",
     "diff": "^5.1.0",
+    "franc-min": "6.2.0",
     "front-matter": "^4.0.2",
     "i18next": "^21.9.0",
     "js-sha256": "0.11.0",

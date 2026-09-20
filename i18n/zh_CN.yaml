@@ -857,14 +857,8 @@ ui:
     ask_a_follow_up: 提出后续问题
     ask_placeholder: 提问
   ai_translate:
-    button: 使用 AI 翻译
+    button: 翻译为{{ language }}
     translating: 翻译中…
-    review_title: 检查翻译
-    review_description: 应用前请检查并编辑翻译为 {{ language }} 的内容。应用前原文不会改变。
-    title_label: 翻译后的标题
-    content_label: 翻译后的内容
-    apply: 使用翻译
-    discard: 丢弃
     error: 无法翻译内容，请重试。
   notifications:
     title: 通知
