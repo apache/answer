@@ -36,21 +36,22 @@ require.extensions['.ts'] = (module, filename) => {
 };
 
 const { EditorState } = require('@codemirror/state');
-const { createCommandMethods } = require('./commands.ts');
+const { createCodeMirrorAdapter } = require('./adapter.ts');
 
-function createEditor(doc = '') {
+function createEditorView(doc = '') {
   let state = EditorState.create({ doc });
 
   return {
+    contentDOM: {
+      addEventListener() {},
+      focus() {},
+      removeEventListener() {},
+    },
     get state() {
       return state;
     },
     dispatch(spec) {
       state = state.update(spec).state;
-    },
-    getCursor() {
-      const range = state.selection.ranges[0];
-      return { line: state.doc.lineAt(range.from).number };
     },
   };
 }
@@ -59,13 +60,13 @@ for (const [name, command, expected] of [
   ['unordered', 'insertUnorderedList', '- '],
   ['ordered', 'insertOrderedList', '1. '],
 ]) {
-  test(`${name} list command inserts a marker in an empty editor`, () => {
-    const editor = createEditor();
-    const commands = createCommandMethods(editor);
+  test(`${name} list toolbar command inserts a marker in an empty editor`, () => {
+    const view = createEditorView();
+    const editor = createCodeMirrorAdapter(view);
 
-    commands[command]();
+    editor[command]();
 
-    assert.equal(editor.state.doc.toString(), expected);
-    assert.equal(editor.state.selection.main.head, expected.length);
+    assert.equal(view.state.doc.toString(), expected);
+    assert.equal(view.state.selection.main.head, expected.length);
   });
 }

@@ -144,8 +144,7 @@ export function createCommandMethods(editor: Editor) {
     },
 
     insertOrderedList: () => {
-      const cursor = editor.getCursor();
-      const line = editor.state.doc.line(cursor.line);
+      const line = editor.state.doc.lineAt(editor.state.selection.main.head);
       if (insertListMarkerOnBlankLine(line, '1. ')) {
         return;
       }
@@ -162,8 +161,7 @@ export function createCommandMethods(editor: Editor) {
     },
 
     insertUnorderedList: () => {
-      const cursor = editor.getCursor();
-      const line = editor.state.doc.line(cursor.line);
+      const line = editor.state.doc.lineAt(editor.state.selection.main.head);
       if (insertListMarkerOnBlankLine(line, '- ')) {
         return;
       }
