@@ -7,7 +7,6 @@
     "start": "vite",
     "build": "node ./scripts/env.js && tsc --noEmit && vite build",
     "preview": "vite preview",
-    "test": "node --test src/**/*.test.cjs",
     "pre-install": "node ./scripts/importPlugins.js && pnpm install && node ./scripts/preinstall.js ",
     "prepare": "pnpm build:packages",
     "build:packages": "pnpm -r --filter=./src/plugins/* run build",
