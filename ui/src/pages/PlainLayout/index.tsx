@@ -17,29 +17,26 @@
  * under the License.
  */
 
+/* A layout that is nothing but a main landmark.
+ *
+ * Most pages reach their `main` through `SideNavLayout` or `Admin`. The rest —
+ * signing in, registering, recovering an account, the error pages — hang
+ * straight off `pages/Layout`, which wraps the header and would therefore put
+ * the navigation inside `main` if the landmark were added there.
+ *
+ * A pathless layout route solves that without touching a single page: the
+ * children keep their paths, their order and their guards, and gain a landmark
+ * they can be skipped to.
+ */
+
 import { FC, memo } from 'react';
 import { Outlet } from 'react-router-dom';
 
-import { SideNav } from '@/components';
-
-import '@/common/sideNavLayout.scss';
-
 const Index: FC = () => {
   return (
-    <div className="d-flex flex-fill">
-      <nav
-        className="position-sticky px-3 border-end py-4 d-none d-xl-block"
-        id="pcSideNav">
-        <SideNav />
-      </nav>
-      <div className="flex-fill w-100 d-flex flex-column">
-        <div className="d-flex justify-content-center flex-grow-1 px-0 px-md-4">
-          <main className="d-flex flex-column flex-1 main-mx-with">
-            <Outlet />
-          </main>
-        </div>
-      </div>
-    </div>
+    <main>
+      <Outlet />
+    </main>
   );
 };
 
