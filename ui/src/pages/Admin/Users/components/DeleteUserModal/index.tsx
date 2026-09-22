@@ -21,7 +21,13 @@ import { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
-const DeleteUserModal = ({ show, onClose, onDelete }) => {
+const DeleteUserModal = ({
+  show,
+  onClose,
+  onDelete,
+  count = 1,
+  isBulk = false,
+}) => {
   const { t } = useTranslation('translation', { keyPrefix: 'admin.users' });
   const [checkVal, setCheckVal] = useState(false);
 
@@ -33,10 +39,16 @@ const DeleteUserModal = ({ show, onClose, onDelete }) => {
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>{t('delete_user.title')}</Modal.Title>
+        <Modal.Title>
+          {t(isBulk ? 'bulk_delete.title' : 'delete_user.title', { count })}
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <p>{t('delete_user.content')}</p>
+        <p>
+          {t(isBulk ? 'bulk_delete.content' : 'delete_user.content', {
+            count,
+          })}
+        </p>
         <div className="text-danger mb-2">
           {t('delete_user.remove')} {t('optional', { keyPrefix: 'form' })}
         </div>
@@ -65,7 +77,12 @@ const DeleteUserModal = ({ show, onClose, onDelete }) => {
         <Button variant="link" onClick={handleClose}>
           {t('cancel', { keyPrefix: 'btns' })}
         </Button>
-        <Button variant="danger" onClick={() => onDelete(checkVal)}>
+        <Button
+          variant="danger"
+          onClick={() => {
+            onDelete(checkVal);
+            setCheckVal(false);
+          }}>
           {t('delete', { keyPrefix: 'btns' })}
         </Button>
       </Modal.Footer>

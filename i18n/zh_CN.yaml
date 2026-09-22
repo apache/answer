@@ -1969,6 +1969,14 @@ ui:
         remove: 移除内容
         label: 删除所有问题、 答案、 评论等
         text: 如果你只想删除用户账户，请不要选中此项。
+      bulk_delete:
+        action: 删除所选项 ({{ count }})
+        title: 删除 {{ count }} 位用户
+        content: 确定要删除 {{ count }} 位用户？此操作无法撤销！
+        select: 选择用户
+        select_all: 选择本页所有用户
+        success: "已删除 {{ count }} 位用户。"
+        partial: "已删除 {{ succeeded }} 位用户；{{ failed }} 位用户无法删除。"
       suspend_user:
         title: 挂起此用户
         content: 被封禁的用户将无法登录。
@@ -1987,6 +1995,14 @@ ui:
       pending: 等待处理
       filter:
         placeholder: "按标题过滤，问题:id"
+      bulk_delete:
+        action: 删除所选项 ({{ count }})
+        title: 删除 {{ count }} 个问题
+        content: 确定要删除 {{ count }} 个问题？
+        select: 选择问题
+        select_all: 选择本页所有问题
+        success: "已删除 {{ count }} 个问题。"
+        partial: "已删除 {{ succeeded }} 个问题；{{ failed }} 个问题无法删除。"
     answers:
       page_title: 回答
       post: 标题
@@ -1997,6 +2013,14 @@ ui:
       change: 更改
       filter:
         placeholder: "按标题筛选，答案:id"
+      bulk_delete:
+        action: 删除所选项 ({{ count }})
+        title: 删除 {{ count }} 个回答
+        content: 确定要删除 {{ count }} 个回答？
+        select: 选择回答
+        select_all: 选择本页所有回答
+        success: "已删除 {{ count }} 个回答。"
+        partial: "已删除 {{ succeeded }} 个回答；{{ failed }} 个回答无法删除。"
     general:
       page_title: 一般
       name:

@@ -27,6 +27,16 @@ export const changeUserStatus = (params) => {
   return request.put('/answer/admin/api/user/status', params);
 };
 
+export const deleteUsers = (params: {
+  user_ids: string[];
+  remove_all_content: boolean;
+}) => {
+  return request.delete<Type.BulkDeleteResult>(
+    '/answer/admin/api/users',
+    params,
+  );
+};
+
 export const useQueryUsers = (params) => {
   const apiUrl = `/answer/admin/api/users/page?${qs.stringify(params)}`;
   const { data, error, mutate } = useSWR<Type.ListResult, Error>(
