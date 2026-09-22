@@ -17,7 +17,7 @@
  * under the License.
  */
 
-.ai-translate-button {
+.btn.ai-translate-button {
   position: absolute;
   z-index: 5;
   display: inline-flex;
@@ -28,6 +28,18 @@
   padding: 0;
   line-height: 1;
   border: 0;
+
+  > .bi {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+
+    &::before {
+      vertical-align: 0;
+    }
+  }
 
   &.ai-translate-button-input {
     top: 50%;
