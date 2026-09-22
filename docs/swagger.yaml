@@ -2272,6 +2272,8 @@ definitions:
         type: boolean
       prompt_config:
         $ref: '#/definitions/schema.AIPromptConfig'
+      translation_enabled:
+        type: boolean
     type: object
   schema.SiteAIResp:
     properties:
@@ -2286,6 +2288,8 @@ definitions:
         type: boolean
       prompt_config:
         $ref: '#/definitions/schema.AIPromptConfig'
+      translation_enabled:
+        type: boolean
     type: object
   schema.SiteAdvancedReq:
     properties:
@@ -2434,6 +2438,8 @@ definitions:
   schema.SiteInfoResp:
     properties:
       ai_enabled:
+        type: boolean
+      ai_translation_enabled:
         type: boolean
       branding:
         $ref: '#/definitions/schema.SiteBrandingResp'

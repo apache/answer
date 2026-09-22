@@ -869,6 +869,10 @@ ui:
     ask_placeholder: Ask a question
     thinking: Thinking…
     thoughts: Thoughts
+  ai_translate:
+    button: Translate into {{ language }}
+    translating: Translating…
+    error: The content could not be translated. Please try again.
   notifications:
     title: Notifications
     inbox: Inbox
@@ -2347,6 +2351,10 @@ ui:
         label: AI enabled
         check: Enable AI features
         text: The AI model must be configured correctly before it can be used.
+      translation_enabled:
+        label: AI translation
+        check: Enable AI translation for questions and answers
+        text: When enabled, authors can translate drafts into the site's configured language before posting.
       provider:
         label: Provider
       api_host:
