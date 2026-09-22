@@ -26,7 +26,6 @@ import (
 	"github.com/apache/answer/internal/service/apikey"
 	"github.com/apache/answer/pkg/token"
 	"github.com/apache/answer/plugin"
-	"github.com/segmentfault/pacman/log"
 )
 
 // AuthRepo auth repository
@@ -103,13 +102,14 @@ func (as *AuthService) SetUserCacheInfo(ctx context.Context, userInfo *entity.Us
 
 func (as *AuthService) CheckUserVisitToken(ctx context.Context, visitToken string) bool {
 	accessToken, err := as.authRepo.GetUserVisitCacheInfo(ctx, visitToken)
-	if err != nil {
+	if err != nil || len(accessToken) == 0 {
 		return false
 	}
-	if len(accessToken) == 0 {
+	userInfo, err := as.GetUserCacheInfo(ctx, accessToken)
+	if err != nil || userInfo == nil {
 		return false
 	}
-	return true
+	return userInfo.EmailStatus == entity.EmailStatusAvailable && userInfo.UserStatus == entity.UserStatusAvailable
 }
 
 func (as *AuthService) SetUserStatus(ctx context.Context, userInfo *entity.UserCacheInfo) (err error) {
@@ -198,9 +198,7 @@ func (as *AuthService) AuthAPIKey(ctx context.Context, read bool, apiKey string)
 	}
 	// If the request is not read-only, check if the API key has write permissions
 	if !read && apiKeyInfo.Scope == "read-only" {
-		log.Warnf("API key %s does not have write permissions", apiKeyInfo.AccessKey)
 		return false, nil
 	}
-	log.Infof("API key %s is valid, scope: %s", apiKeyInfo.AccessKey, apiKeyInfo.Scope)
 	return true, nil
 }

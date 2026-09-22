@@ -93,7 +93,7 @@ const Index: FC = () => {
       {doInsertCustomCSS && (
         <link
           rel="stylesheet"
-          href={`${process.env.PUBLIC_URL}${REACT_BASE_PATH}/custom.css`}
+          href={`${import.meta.env.BASE_URL.slice(0, -1)}${REACT_BASE_PATH}/custom.css`}
         />
       )}
       {/* Social media meta share tags start here */}

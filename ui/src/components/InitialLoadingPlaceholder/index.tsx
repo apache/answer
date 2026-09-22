@@ -17,7 +17,7 @@
  * under the License.
  */
 
-// Same as spin in `public/index.html`
+// Same as spin in `index.html`
 
 import './index.scss';
 

@@ -258,6 +258,14 @@ func (as *AnswerService) Insert(ctx context.Context, req *schema.AnswerAddReq) (
 	if !exist {
 		return "", errors.BadRequest(reason.QuestionNotFound)
 	}
+	if err := (&schema.SimpleObjectInfo{
+		ObjectType:            constant.QuestionObjectType,
+		QuestionCreatorUserID: questionInfo.UserID,
+		QuestionStatus:        questionInfo.Status,
+		QuestionShow:          questionInfo.Show,
+	}).CheckVisibility(req.UserID, req.IsAdminModerator); err != nil {
+		return "", err
+	}
 	if questionInfo.Status == entity.QuestionStatusClosed || questionInfo.Status == entity.QuestionStatusDeleted {
 		err = errors.BadRequest(reason.AnswerCannotAddByClosedQuestion)
 		return "", err
