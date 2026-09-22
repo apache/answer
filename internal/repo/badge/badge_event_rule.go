@@ -182,15 +182,92 @@ func (br *eventRuleRepo) ReachAnswerAcceptedAmount(ctx context.Context,
 		return nil, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
 
-	for _, b := range badges {
-		// get badge requirement
+	// Single award badges behind this handler form a ladder: every one of them stands for a level
+	// the user has reached, so only the highest level reached is awarded, and only when it is above
+	// the level the user already holds (an administrator can grant one by hand). Without this a user
+	// who was given the top badge received the lowest one as soon as their first answer was
+	// accepted, and crossing several thresholds at once granted the whole ladder at a time.
+	// Multi award badges, which every post can earn on its own, keep the previous behaviour.
+	tiers, others := splitSingleAwardBadges(badges)
+	for _, b := range others {
 		requirement := b.GetIntParam("amount")
 		if requirement == 0 || amount < requirement {
 			continue
 		}
 		awards = append(awards, br.createBadgeAward(event.AnswerUserID, event.AnswerID, b))
 	}
+	if best := highestTierReached(tiers, amount); best != nil {
+		held, err := br.highestHeldTier(ctx, event.AnswerUserID, tiers)
+		if err != nil {
+			return nil, err
+		}
+		if best.GetIntParam("amount") > held {
+			awards = append(awards, br.createBadgeAward(event.AnswerUserID, event.AnswerID, best))
+		}
+	}
 	return awards, nil
+}
+
+// splitSingleAwardBadges separates the tiered (single award) badges from the rest
+func splitSingleAwardBadges(badges []*entity.Badge) (tiers, others []*entity.Badge) {
+	for _, b := range badges {
+		if b.Single == entity.BadgeSingleAward {
+			tiers = append(tiers, b)
+		} else {
+			others = append(others, b)
+		}
+	}
+	return tiers, others
+}
+
+// highestTierReached returns the highest tier whose requirement the user has reached
+func highestTierReached(tiers []*entity.Badge, amount int64) (best *entity.Badge) {
+	for _, b := range tiers {
+		requirement := b.GetIntParam("amount")
+		if requirement == 0 || amount < requirement {
+			continue
+		}
+		if best == nil || requirement > best.GetIntParam("amount") {
+			best = b
+		}
+	}
+	return best
+}
+
+// highestHeldTierOf returns the requirement of the highest tier the user already holds
+func highestHeldTierOf(tiers []*entity.Badge, awarded map[string]bool) (held int64) {
+	for _, b := range tiers {
+		if !awarded[b.ID] {
+			continue
+		}
+		if requirement := b.GetIntParam("amount"); requirement > held {
+			held = requirement
+		}
+	}
+	return held
+}
+
+// highestHeldTier reads which tiers the user already holds
+func (br *eventRuleRepo) highestHeldTier(ctx context.Context, userID string, tiers []*entity.Badge) (int64, error) {
+	if userID == "" || len(tiers) == 0 {
+		return 0, nil
+	}
+	ids := make([]string, 0, len(tiers))
+	for _, b := range tiers {
+		ids = append(ids, b.ID)
+	}
+	held := make([]*entity.BadgeAward, 0)
+	err := br.data.DB.Context(ctx).Where("user_id = ?", userID).
+		And("is_badge_deleted = ?", entity.IsBadgeNotDeleted).
+		In("badge_id", ids).Find(&held)
+	if err != nil {
+		return 0, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	awarded := make(map[string]bool, len(held))
+	for _, a := range held {
+		awarded[a.BadgeID] = true
+	}
+	return highestHeldTierOf(tiers, awarded), nil
 }
 
 // ReachAnswerVote reach answer vote
