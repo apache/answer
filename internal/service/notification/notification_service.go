@@ -182,6 +182,15 @@ func (ns *NotificationService) ClearUnRead(ctx context.Context, userID string, n
 }
 
 func (ns *NotificationService) ClearIDUnRead(ctx context.Context, userID string, id string) error {
+	// The badge alert lives in the cache, the notification row does not have to: it may have been
+	// deleted, or the notification may already be read. Both cases used to leave the alert behind,
+	// and the congratulations dialog then came back on every page load, so drop the alert first.
+	// The cache key is built from the caller's own user id, so this can only ever clear the
+	// caller's own alert.
+	if err := ns.notificationCommon.RemoveBadgeAwardAlertCache(ctx, userID, id); err != nil {
+		log.Errorf("remove badge award alert cache failed: %v", err)
+	}
+
 	notificationInfo, exist, err := ns.notificationRepo.GetById(ctx, id)
 	if err != nil {
 		log.Errorf("get notification failed: %v", err)
@@ -195,11 +204,6 @@ func (ns *NotificationService) ClearIDUnRead(ctx context.Context, userID string,
 		if err != nil {
 			return err
 		}
-	}
-
-	err = ns.notificationCommon.RemoveBadgeAwardAlertCache(ctx, userID, id)
-	if err != nil {
-		log.Errorf("remove badge award alert cache failed: %v", err)
 	}
 
 	_ = ns.notificationCommon.DecreaseRedDot(ctx, userID, notificationInfo.Type)
