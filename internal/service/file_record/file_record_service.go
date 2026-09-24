@@ -92,10 +92,10 @@ func (fs *FileRecordService) AddFileRecord(ctx context.Context, userID, filePath
 
 // CleanOrphanUploadFiles clean orphan upload files
 func (fs *FileRecordService) CleanOrphanUploadFiles(ctx context.Context) {
-	page, pageSize := 1, 1000
+	pageSize := 1000
 
 	for {
-		fileRecordList, total, err := fs.fileRecordRepo.GetFileRecordPage(ctx, page, pageSize, &entity.FileRecord{
+		fileRecordList, total, err := fs.fileRecordRepo.GetFileRecordPage(ctx, 1, pageSize, &entity.FileRecord{
 			Status: entity.FileRecordStatusAvailable,
 		})
 		if err != nil {
@@ -105,6 +105,7 @@ func (fs *FileRecordService) CleanOrphanUploadFiles(ctx context.Context) {
 		if len(fileRecordList) == 0 || total == 0 {
 			break
 		}
+		changed := false
 		for _, fileRecord := range fileRecordList {
 			// If this file record created in 48 hours, no need to check
 			if fileRecord.CreatedAt.AddDate(0, 0, 2).After(time.Now()) {
@@ -122,6 +123,8 @@ func (fs *FileRecordService) CleanOrphanUploadFiles(ctx context.Context) {
 				}
 				if err := fs.DeleteAndMoveFileRecord(ctx, fileRecord); err != nil {
 					log.Error(err)
+				} else {
+					changed = true
 				}
 				continue
 			}
@@ -145,6 +148,8 @@ func (fs *FileRecordService) CleanOrphanUploadFiles(ctx context.Context) {
 					fileRecord.ObjectID = lastRevision.ObjectID
 					if err := fs.fileRecordRepo.UpdateFileRecord(ctx, fileRecord); err != nil {
 						log.Errorf("update file record object id error: %v", err)
+					} else {
+						changed = true
 					}
 					continue
 				}
@@ -152,9 +157,13 @@ func (fs *FileRecordService) CleanOrphanUploadFiles(ctx context.Context) {
 			// Delete and move the file record
 			if err := fs.DeleteAndMoveFileRecord(ctx, fileRecord); err != nil {
 				log.Error(err)
+			} else {
+				changed = true
 			}
 		}
-		page++
+		if !changed {
+			break
+		}
 	}
 }
 
