@@ -47,6 +47,16 @@ const Index = () => {
       isInvalid: false,
       errorMsg: '',
     },
+    home_chat_enabled: {
+      value: false,
+      isInvalid: false,
+      errorMsg: '',
+    },
+    home_chat_guest_enabled: {
+      value: false,
+      isInvalid: false,
+      errorMsg: '',
+    },
     provider: {
       value: '',
       isInvalid: false,
@@ -68,6 +78,10 @@ const Index = () => {
       isInvalid: false,
       errorMsg: '',
     },
+    welcome_text: '',
+    initial_messages: '',
+    prompt_zh: '',
+    prompt_en: '',
   });
   const [apiHostPlaceholder, setApiHostPlaceholder] = useState('');
   const [modelsData, setModels] = useState<{ id: string }[]>([]);
@@ -225,13 +239,27 @@ const Index = () => {
 
     const params = {
       enabled: formData.enabled.value,
+      home_chat_enabled: !!formData.home_chat_enabled.value,
+      home_chat_guest_enabled: !!formData.home_chat_guest_enabled.value,
       chosen_provider: formData.provider.value,
       ai_providers: newProviders,
+      ai_welcome_text: formData.welcome_text,
+      ai_initial_messages: formData.initial_messages,
+      // Always round-trip the prompts: an omitted prompt_config resets the
+      // stored prompts to the built-in defaults on the backend.
+      prompt_config: {
+        zh_cn: formData.prompt_zh,
+        en_us: formData.prompt_en,
+      },
     };
     saveAiConfig(params)
       .then(() => {
         aiControlStore.getState().update({
           ai_enabled: formData.enabled.value,
+          ai_home_chat_enabled: !!formData.home_chat_enabled.value,
+          ai_home_chat_guest_enabled: !!formData.home_chat_guest_enabled.value,
+          ai_welcome_text: formData.welcome_text,
+          ai_initial_messages: formData.initial_messages,
         });
 
         historyConfigRef.current = {
@@ -274,6 +302,16 @@ const Index = () => {
         isInvalid: false,
         errorMsg: '',
       },
+      home_chat_enabled: {
+        value: !!aiConfig.home_chat_enabled,
+        isInvalid: false,
+        errorMsg: '',
+      },
+      home_chat_guest_enabled: {
+        value: !!aiConfig.home_chat_guest_enabled,
+        isInvalid: false,
+        errorMsg: '',
+      },
       provider: {
         value: currentAiConfig?.provider || '',
         isInvalid: false,
@@ -295,6 +333,10 @@ const Index = () => {
         isInvalid: false,
         errorMsg: '',
       },
+      welcome_text: aiConfig.ai_welcome_text || '',
+      initial_messages: aiConfig.ai_initial_messages || '',
+      prompt_zh: aiConfig.prompt_config?.zh_cn || '',
+      prompt_en: aiConfig.prompt_config?.en_us || '',
     });
   };
 
@@ -348,6 +390,112 @@ const Index = () => {
             <Form.Control.Feedback type="invalid">
               {formData.enabled.errorMsg}
             </Form.Control.Feedback>
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="home_chat_enabled">
+            <Form.Check
+              type="switch"
+              id="switch-home-chat-enabled"
+              label={t('home_chat.label')}
+              checked={!!formData.home_chat_enabled.value}
+              onChange={(e) =>
+                handleValueChange({
+                  home_chat_enabled: {
+                    value: e.target.checked,
+                    errorMsg: '',
+                    isInvalid: false,
+                  },
+                })
+              }
+            />
+            <Form.Text className="text-muted">
+              {t('home_chat.tip')}
+            </Form.Text>
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="home_chat_guest_enabled">
+            <Form.Check
+              type="switch"
+              id="switch-home-chat-guest"
+              label={t('home_chat_guest.label')}
+              checked={!!formData.home_chat_guest_enabled.value}
+              onChange={(e) =>
+                handleValueChange({
+                  home_chat_guest_enabled: {
+                    value: e.target.checked,
+                    errorMsg: '',
+                    isInvalid: false,
+                  },
+                })
+              }
+            />
+            <Form.Text className="text-muted">
+              {t('home_chat_guest.tip')}
+            </Form.Text>
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="welcome_text">
+            <Form.Label>{t('welcome_text.label')}</Form.Label>
+            <Form.Control
+              type="text"
+              autoComplete="off"
+              value={formData.welcome_text}
+              onChange={(e) =>
+                handleValueChange({
+                  welcome_text: e.target.value,
+                })
+              }
+            />
+            <Form.Text className="text-muted">
+              {t('welcome_text.tip')}
+            </Form.Text>
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="initial_messages">
+            <Form.Label>{t('initial_messages.label')}</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={4}
+              value={formData.initial_messages}
+              onChange={(e) =>
+                handleValueChange({
+                  initial_messages: e.target.value,
+                })
+              }
+            />
+            <Form.Text className="text-muted">
+              {t('initial_messages.tip')}
+            </Form.Text>
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="prompt_config">
+            <Form.Label>{t('prompt_config.label')}</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={5}
+              className="mb-2"
+              placeholder={t('prompt_config.zh_placeholder')}
+              value={formData.prompt_zh}
+              onChange={(e) =>
+                handleValueChange({
+                  prompt_zh: e.target.value,
+                })
+              }
+            />
+            <Form.Control
+              as="textarea"
+              rows={5}
+              placeholder={t('prompt_config.en_placeholder')}
+              value={formData.prompt_en}
+              onChange={(e) =>
+                handleValueChange({
+                  prompt_en: e.target.value,
+                })
+              }
+            />
+            <Form.Text className="text-muted">
+              {t('prompt_config.tip')}
+            </Form.Text>
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="provider">

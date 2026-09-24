@@ -18,21 +18,21 @@
  */
 
 import { useEffect, useState } from 'react';
-import { Row, Col, Spinner, Button } from 'react-bootstrap';
+import { Row, Col, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import classNames from 'classnames';
-import { v4 as uuidv4 } from 'uuid';
 
 import * as Type from '@/common/interface';
-import requestAi, { cancelCurrentRequest } from '@/utils/requestAi';
-import { Sender, BubbleUser, BubbleAi, Icon } from '@/components';
+import { Icon } from '@/components';
 import { getConversationDetail, getConversationList } from '@/services';
 import { usePageTags } from '@/hooks';
+import { LOGGED_TOKEN_STORAGE_KEY } from '@/common/constants';
 import { Storage } from '@/utils';
 
 import ConversationsList from './components/ConversationList';
+import AnswerChatBot from '@/components/AnswerChatBot';
 
 interface ConversationListItem {
   conversation_id: string;
@@ -42,8 +42,6 @@ interface ConversationListItem {
 const Index = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'ai_assistant' });
   const [isShowConversationList, setIsShowConversationList] = useState(false);
-  const [isGenerate, setIsGenerate] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [recentNewItem, setRecentNewItem] = useState<any>(null);
   const [conversions, setConversions] = useState<Type.ConversationDetail>({
     records: [],
@@ -54,7 +52,6 @@ const Index = () => {
   });
   const navigate = useNavigate();
   const { id = '' } = useParams<{ id: string }>();
-  const [temporaryBottomSpace, setTemporaryBottomSpace] = useState(0);
   const [conversationsPage, setConversationsPage] = useState(1);
 
   const [conversationsList, setConversationsList] = useState<{
@@ -65,17 +62,7 @@ const Index = () => {
     list: [],
   });
 
-  const calculateTemporarySpace = () => {
-    const viewportHeight = window.innerHeight;
-    const navHeight = 64;
-    const senderHeight = (document.querySelector('.sender-wrap') as HTMLElement)
-      ?.offsetHeight;
-    const neededSpace = viewportHeight - senderHeight - navHeight - 120;
-    const height = neededSpace;
-    console.log('lasMsgHeight', height);
-
-    setTemporaryBottomSpace(height);
-  };
+  const guest = !Storage.get(LOGGED_TOKEN_STORAGE_KEY);
 
   const resetPageState = () => {
     setConversions({
@@ -85,7 +72,6 @@ const Index = () => {
       topic: '',
       updated_at: 0,
     });
-    setIsGenerate(false);
     setRecentNewItem(null);
   };
 
@@ -100,138 +86,12 @@ const Index = () => {
     });
   };
 
-  const handleSubmit = async (userMsg) => {
-    setIsLoading(true);
-    if (conversions?.records.length === 0) {
-      setRecentNewItem({
-        conversation_id: id,
-        topic: userMsg,
-      });
-    }
-    const chatId = Date.now();
-    setConversions((prev) => ({
-      ...prev,
-      topic: userMsg,
-      conversation_id: id,
-      records: [
-        ...prev.records,
-        {
-          id: chatId,
-          role: 'user',
-          content: userMsg,
-          chat_completion_id: String(chatId), // Add required properties
-          helpful: 0,
-          unhelpful: 0,
-          created_at: chatId,
-        },
-      ],
-    }));
-
-    // scroll to user message after the page height is stable
-    requestAnimationFrame(() => {
-      const userBubbles = document.querySelectorAll('.bubble-user-wrap');
-      const lastUserBubble = userBubbles[userBubbles.length - 1];
-      if (lastUserBubble) {
-        lastUserBubble.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-        });
-      }
-    });
-
-    calculateTemporarySpace();
-
-    const params = {
-      conversation_id: id,
-      messages: [
-        {
-          role: 'user',
-          content: userMsg,
-        },
-      ],
-    };
-
-    await requestAi('/answer/api/v1/chat/completions', {
-      body: JSON.stringify(params),
-      onMessage: (res) => {
-        const delta = res.choices[0]?.delta;
-        const deltaContent = delta?.content || '';
-        const deltaReasoning = delta?.reasoning_content || '';
-        if (!deltaContent && !deltaReasoning) {
-          return;
-        }
-        setIsLoading(false);
-        setIsGenerate(true);
-        setConversions((prev) => {
-          const updatedRecords = [...prev.records];
-          const lastConversion = updatedRecords[updatedRecords.length - 1];
-          if (lastConversion?.chat_completion_id === res?.chat_completion_id) {
-            updatedRecords[updatedRecords.length - 1] = {
-              ...lastConversion,
-              content: (lastConversion.content || '') + deltaContent,
-              reasoning_content:
-                (lastConversion.reasoning_content || '') + deltaReasoning,
-            };
-          } else {
-            updatedRecords.push({
-              chat_completion_id: res.chat_completion_id,
-              role: delta?.role || 'assistant',
-              content: deltaContent,
-              reasoning_content: deltaReasoning,
-              helpful: 0,
-              unhelpful: 0,
-              created_at: Date.now(),
-            });
-          }
-          return {
-            ...prev,
-            conversation_id: params.conversation_id,
-            records: updatedRecords,
-          };
-        });
-      },
-      onError: (error) => {
-        setIsLoading(false);
-        setIsGenerate(false);
-        console.error('Error:', error);
-      },
-      onComplete: () => {
-        setIsGenerate(false);
-        setIsLoading(false);
-      },
-    });
-  };
-
-  const handleSender = (userMsg) => {
-    if (conversions?.records.length <= 0) {
-      const newConversationId = uuidv4();
-      navigate(`/ai-assistant/${newConversationId}`);
-      Storage.set('_a_once_msg', userMsg);
-    } else {
-      handleSubmit(userMsg);
-    }
-  };
-
-  const handleCancel = () => {
-    if (cancelCurrentRequest()) {
-      setIsGenerate(false);
-    }
-  };
-
   usePageTags({
     title: conversions?.topic || t('ai_assistant', { keyPrefix: 'page_title' }),
   });
 
   useEffect(() => {
     if (id) {
-      const msg = Storage.get('_a_once_msg');
-      Storage.remove('_a_once_msg');
-      if (msg) {
-        if (msg) {
-          handleSubmit(msg);
-        }
-        return;
-      }
       fetchDetail();
     } else {
       resetPageState();
@@ -314,65 +174,32 @@ const Index = () => {
         <Col
           className={classNames(
             'page-main flex-auto d-flex flex-column flex-grow-1',
-            !conversions?.conversation_id ? 'justify-content-center' : '',
           )}
           style={{ maxWidth: '772px' }}>
-          {conversions?.records.length > 0 && (
-            <div className="flex-grow-1 pb-5">
-              {conversions?.records.map((item, index) => {
-                const isLastMessage =
-                  index === Number(conversions?.records.length) - 1;
-                return (
-                  <div
-                    key={`${item.chat_completion_id}-${item.role}`}
-                    className={`${isLastMessage ? '' : 'mb-4'}`}>
-                    {item.role === 'user' ? (
-                      <BubbleUser content={item.content} />
-                    ) : (
-                      <BubbleAi
-                        minHeight={isLastMessage ? temporaryBottomSpace : 0}
-                        canType={isGenerate && isLastMessage}
-                        chatId={item.chat_completion_id}
-                        isLast={isLastMessage}
-                        isCompleted={!isGenerate || !isLastMessage}
-                        content={item.content}
-                        reasoningContent={item.reasoning_content || ''}
-                        actionData={{
-                          helpful: item.helpful,
-                          unhelpful: item.unhelpful,
-                        }}
-                      />
-                    )}
-                  </div>
-                );
-              })}
-
-              {temporaryBottomSpace > 0 && isLoading && (
-                <div
-                  style={{
-                    height: `${temporaryBottomSpace}px`,
-                  }}>
-                  {isLoading && (
-                    <Spinner
-                      animation="border"
-                      size="sm"
-                      variant="secondary"
-                      className="mt-4"
-                    />
-                  )}
-                </div>
-              )}
-            </div>
-          )}
-          {conversions?.conversation_id ? null : (
-            <h5 className="text-center mb-3">{t('description')}</h5>
-          )}
-          <Sender
-            onSubmit={handleSender}
-            onCancel={handleCancel}
-            isGenerate={isGenerate || isLoading}
-            hasConversation={!!conversions?.conversation_id}
-          />
+          <div
+            style={{
+              flex: '1 1 auto',
+              minHeight: 0,
+              display: 'flex',
+              flexDirection: 'column',
+            }}>
+            <AnswerChatBot
+              conversationId={id}
+              initialRecords={conversions?.records || []}
+              guest={guest}
+              onConversationCreated={(cid) => {
+                if (id !== cid) {
+                  navigate(`/ai-assistant/${cid}`, { replace: true });
+                }
+              }}
+              height="100%">
+              <div
+                slot="sender-footer-prefix"
+                className="small text-secondary ps-2 text-truncate">
+                {t('ai_disclaimer')}
+              </div>
+            </AnswerChatBot>
+          </div>
         </Col>
         {isShowConversationList && (
           <Col className="page-right-side mt-4 mt-xl-0">

@@ -112,6 +112,10 @@ func (sc *SiteInfoController) GetSiteInfo(ctx *gin.Context) {
 	}
 	if aiConf, err := sc.siteInfoService.GetSiteAI(ctx); err == nil {
 		resp.AIEnabled = aiConf.Enabled
+		resp.AIHomeChatEnabled = aiConf.HomeChatEnabled
+		resp.AIHomeChatGuestEnabled = aiConf.HomeChatGuestEnabled
+		resp.AIWelcomeText = aiConf.WelcomeText
+		resp.AIInitialMessages = aiConf.InitialMessages
 	}
 
 	if mcpConf, err := sc.siteInfoService.GetSiteMCP(ctx); err == nil {
