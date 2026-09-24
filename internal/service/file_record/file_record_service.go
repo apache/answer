@@ -43,8 +43,7 @@ import (
 type FileRecordRepo interface {
 	AddFileRecord(ctx context.Context, fileRecord *entity.FileRecord) (err error)
 	UpdateFileRecord(ctx context.Context, fileRecord *entity.FileRecord) (err error)
-	GetFileRecordPage(ctx context.Context, page, pageSize int, cond *entity.FileRecord) (
-		fileRecordList []*entity.FileRecord, total int64, err error)
+	GetFileRecordListAfterID(ctx context.Context, lastID, limit int) (fileRecordList []*entity.FileRecord, err error)
 	DeleteFileRecord(ctx context.Context, id int) (err error)
 	GetFileRecordByURL(ctx context.Context, fileURL string) (record *entity.FileRecord, err error)
 }
@@ -92,20 +91,23 @@ func (fs *FileRecordService) AddFileRecord(ctx context.Context, userID, filePath
 
 // CleanOrphanUploadFiles clean orphan upload files
 func (fs *FileRecordService) CleanOrphanUploadFiles(ctx context.Context) {
-	page, pageSize := 1, 1000
+	pageSize := 1000
+	// Scan available file records by id cursor. Records are marked as deleted during the
+	// scan, so they leave the available result set: offset pagination would shift the
+	// remaining records forward and skip some of them.
+	lastID := 0
 
 	for {
-		fileRecordList, total, err := fs.fileRecordRepo.GetFileRecordPage(ctx, page, pageSize, &entity.FileRecord{
-			Status: entity.FileRecordStatusAvailable,
-		})
+		fileRecordList, err := fs.fileRecordRepo.GetFileRecordListAfterID(ctx, lastID, pageSize)
 		if err != nil {
-			log.Errorf("get file record page error: %v", err)
+			log.Errorf("get file record list error: %v", err)
 			return
 		}
-		if len(fileRecordList) == 0 || total == 0 {
+		if len(fileRecordList) == 0 {
 			break
 		}
 		for _, fileRecord := range fileRecordList {
+			lastID = fileRecord.ID
 			// If this file record created in 48 hours, no need to check
 			if fileRecord.CreatedAt.AddDate(0, 0, 2).After(time.Now()) {
 				continue
@@ -154,7 +156,6 @@ func (fs *FileRecordService) CleanOrphanUploadFiles(ctx context.Context) {
 				log.Error(err)
 			}
 		}
-		page++
 	}
 }
 

@@ -22,12 +22,10 @@ package file_record
 import (
 	"context"
 
-	"github.com/apache/answer/internal/base/pager"
-	"github.com/apache/answer/internal/service/file_record"
-
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/base/reason"
 	"github.com/apache/answer/internal/entity"
+	"github.com/apache/answer/internal/service/file_record"
 	"github.com/segmentfault/pacman/errors"
 )
 
@@ -52,13 +50,20 @@ func (fr *fileRecordRepo) AddFileRecord(ctx context.Context, fileRecord *entity.
 	return
 }
 
-// GetFileRecordPage get fileRecord page
-func (fr *fileRecordRepo) GetFileRecordPage(ctx context.Context, page, pageSize int, cond *entity.FileRecord) (
-	fileRecordList []*entity.FileRecord, total int64, err error) {
+// GetFileRecordListAfterID get available file record list whose id is greater than lastID,
+// the result is ordered by id ascending. It is used to scan all available file records by
+// id cursor, because the scanned records may be marked as deleted during the scan and
+// offset pagination would skip records in that case.
+func (fr *fileRecordRepo) GetFileRecordListAfterID(ctx context.Context, lastID, limit int) (
+	fileRecordList []*entity.FileRecord, err error) {
 	fileRecordList = make([]*entity.FileRecord, 0)
 
-	session := fr.data.DB.Context(ctx)
-	total, err = pager.Help(page, pageSize, &fileRecordList, cond, session)
+	err = fr.data.DB.Context(ctx).
+		Where("status = ?", entity.FileRecordStatusAvailable).
+		And("id > ?", lastID).
+		OrderBy("id ASC").
+		Limit(limit).
+		Find(&fileRecordList)
 	if err != nil {
 		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
