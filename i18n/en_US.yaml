@@ -2271,7 +2271,7 @@ ui:
         text: When enabled, users must verify their email address before using the site.
       allowed_email_domains:
         title: Allowed email domains
-        text: Email domains that users must register accounts with. One domain per line. Ignored when empty.
+        text: Email domains users must use to register accounts. Enter one domain per line, including the @ symbol (for example, @example.com). Ignored when empty.
       private:
         title: Private
         label: Login required

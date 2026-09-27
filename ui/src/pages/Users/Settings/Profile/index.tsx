@@ -177,7 +177,7 @@ const Index: React.FC = () => {
         isInvalid: true,
         errorMsg: t('username.msg_range'),
       };
-    } else if (/[^a-z0-9\-._]/.test(username.value)) {
+    } else if (/[^a-z0-9\-._]/i.test(username.value)) {
       bol = false;
       formData.username = {
         value: username.value,

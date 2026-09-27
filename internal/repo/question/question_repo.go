@@ -817,10 +817,9 @@ func (qr *questionRepo) UpdateQuestionLinkStatus(ctx context.Context, status int
 }
 
 // GetQuestionLink get linked question to questionID
-func (qr *questionRepo) GetQuestionLink(ctx context.Context, page, pageSize int, questionID string, orderCond string, inDays int) (questionList []*entity.Question, total int64, err error) {
+func (qr *questionRepo) GetQuestionLink(ctx context.Context, page, pageSize int, questionID, loginUserID string, isAdminModerator bool, orderCond string, inDays int) (questionList []*entity.Question, total int64, err error) {
 	questionList = make([]*entity.Question, 0)
 	questionID = uid.DeShortID(questionID)
-	questionStatus := []int{entity.QuestionStatusAvailable, entity.QuestionStatusClosed, entity.QuestionStatusPending}
 	if questionID == "0" {
 		return nil, 0, errors.InternalServer(reason.DatabaseError).WithError(
 			fmt.Errorf("questionID is empty"),
@@ -833,8 +832,15 @@ func (qr *questionRepo) GetQuestionLink(ctx context.Context, page, pageSize int,
 		Where("question_link.to_question_id = ? AND question.show = ?", questionID, entity.QuestionShow).
 		Distinct("question.id").
 		Where("question_link.status = ?", entity.QuestionLinkStatusAvailable).
-		Select("question.*").
-		In("question.status", questionStatus)
+		Select("question.*")
+	switch {
+	case isAdminModerator:
+		session.Where("question.status IN (?, ?, ?)", entity.QuestionStatusAvailable, entity.QuestionStatusClosed, entity.QuestionStatusPending)
+	case loginUserID != "":
+		session.Where("(question.status IN (?, ?) OR (question.status = ? AND question.user_id = ?))", entity.QuestionStatusAvailable, entity.QuestionStatusClosed, entity.QuestionStatusPending, loginUserID)
+	default:
+		session.In("question.status", []int{entity.QuestionStatusAvailable, entity.QuestionStatusClosed})
+	}
 
 	switch orderCond {
 	case "newest":

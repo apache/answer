@@ -58,7 +58,7 @@ func GetTagPermission(ctx context.Context, status int, canEdit, canDelete, canMe
 		})
 	}
 
-	if canRecover && status == entity.QuestionStatusDeleted {
+	if canRecover && status == entity.TagStatusDeleted {
 		actions = append(actions, &schema.PermissionMemberAction{
 			Action: "undelete",
 			Name:   translator.Tr(lang, undeleteActionName),

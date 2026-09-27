@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Suspense, lazy, useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect, useState, type ComponentType } from 'react';
 import { RouteObject } from 'react-router-dom';
 
 import Layout from '@/pages/Layout';
@@ -26,6 +26,42 @@ import { mergeRoutePlugins } from '@/utils/pluginKit';
 import baseRoutes, { RouteNode } from './routes';
 import RouteGuard from './RouteGuard';
 import RouteErrorBoundary from './RouteErrorBoundary';
+
+type PageLoader = () => Promise<{ default: ComponentType }>;
+
+// Page components live at `pages/<Name>/index.tsx`, or, for nested pages,
+// `pages/<Name>/<Sub>/index.tsx` and `pages/<Name>/<Sub>/<Leaf>/index.tsx`.
+// `route.page` values reference either the directory (`Foo/Bar`) or the
+// directory plus explicit `/index`; both are normalized to the same lookup
+// key below. The glob is bounded to those three depths, and `components`
+// subtrees are excluded, so a component's own `index.tsx` never becomes a
+// route chunk. `Layout` is excluded too: it is imported statically below
+// and handled outside this lookup.
+const pageModules = import.meta.glob<{ default: ComponentType }>([
+  '../pages/*/index.tsx',
+  '../pages/*/*/index.tsx',
+  '../pages/*/*/*/index.tsx',
+  '!../pages/**/components/**',
+  '!../pages/Layout/**',
+]);
+
+const pagesByKey: Record<string, PageLoader> = {};
+Object.keys(pageModules).forEach((filePath) => {
+  const key = filePath
+    .replace(/^\.\.\/pages\//, '')
+    .replace(/\/index\.tsx$/, '');
+  pagesByKey[key] = pageModules[filePath];
+});
+
+const missingPageLoader =
+  (page: string, lookupKey: string): PageLoader =>
+  () =>
+    Promise.reject(
+      new Error(
+        `No page module found for "${page}" (looked up as "${lookupKey}"). ` +
+          `Known page keys: ${Object.keys(pagesByKey).sort().join(', ')}`,
+      ),
+    );
 
 const routeWrapper = (routeNodes: RouteNode[], root: RouteNode[]) => {
   routeNodes.forEach((rn) => {
@@ -39,16 +75,15 @@ const routeWrapper = (routeNodes: RouteNode[], root: RouteNode[]) => {
       );
       rn.errorElement = <RouteErrorBoundary />;
     } else {
-      /**
-       * cannot use a fully dynamic import statement
-       * ref: https://webpack.js.org/api/module-methods/#import-1
-       */
-
+      // The import target must be statically analyzable so each page
+      // resolves to its own lazy-loaded chunk rather than one shared bundle.
       let Ctrl;
 
       if (typeof rn.page === 'string') {
-        const pagePath = rn.page.replace('pages/', '');
-        Ctrl = lazy(() => import(`@/pages/${pagePath}`));
+        const pagePath = rn.page.replace('pages/', '').replace(/\/index$/, '');
+        Ctrl = lazy(
+          pagesByKey[pagePath] ?? missingPageLoader(rn.page, pagePath),
+        );
       } else {
         Ctrl = rn.page;
       }

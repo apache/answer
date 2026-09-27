@@ -29,7 +29,7 @@ import (
 
 // GetAvatarURL get avatar url from gravatar by email
 func GetAvatarURL(baseURL, email string) string {
-	hasher := sha256.Sum256([]byte(strings.TrimSpace(email)))
+	hasher := sha256.Sum256([]byte(strings.ToLower(strings.TrimSpace(email))))
 	hash := hex.EncodeToString(hasher[:])
 	return baseURL + hash
 }

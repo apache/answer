@@ -101,7 +101,7 @@ spec:
         - name: data
           {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ include "answer.fullname" . }}-claim
+            claimName: {{ .Values.persistence.existingClaim | default (printf "%s-claim" (include "answer.fullname" .)) }}
           {{- else }}
           emptyDir: {}
           {{- end -}}

@@ -53,10 +53,11 @@ func (a *StaticRouter) RegisterStaticRouter(r *gin.RouterGroup) {
 		filePath := c.Param("filepath")
 		// The original filename is 123.pdf
 		originalFilename := filepath.Base(filePath)
-		// The real filename is hash.pdf
-		realFilename := strings.TrimSuffix(filePath, "/"+originalFilename) + filepath.Ext(originalFilename)
-		// The file local path is /uploads/files/post/hash.pdf
-		fileLocalPath := filepath.Join(a.serviceConfig.UploadPath, constant.FilesPostSubPath, realFilename)
+		fileLocalPath, ok := attachmentFileLocalPath(a.serviceConfig.UploadPath, filePath, originalFilename)
+		if !ok {
+			c.Redirect(http.StatusFound, "/404")
+			return
+		}
 		// If the file is not exist, return 404
 		if !dir.CheckFileExist(fileLocalPath) {
 			c.Redirect(http.StatusFound, "/404")
@@ -64,4 +65,15 @@ func (a *StaticRouter) RegisterStaticRouter(r *gin.RouterGroup) {
 		}
 		c.FileAttachment(fileLocalPath, originalFilename)
 	})
+}
+
+func attachmentFileLocalPath(uploadPath, requestPath, originalFilename string) (string, bool) {
+	realFilename := strings.TrimSuffix(requestPath, "/"+originalFilename) + filepath.Ext(originalFilename)
+	attachmentRoot := filepath.Join(uploadPath, constant.FilesPostSubPath)
+	fileLocalPath := filepath.Join(attachmentRoot, realFilename)
+	relPath, err := filepath.Rel(attachmentRoot, fileLocalPath)
+	if err != nil || filepath.IsAbs(relPath) || relPath == ".." || strings.HasPrefix(relPath, ".."+string(filepath.Separator)) {
+		return "", false
+	}
+	return fileLocalPath, true
 }

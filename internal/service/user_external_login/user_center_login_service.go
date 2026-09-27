@@ -40,11 +40,31 @@ import (
 	"github.com/segmentfault/pacman/log"
 )
 
+type userCenterLoginUserRepo interface {
+	AddUser(ctx context.Context, user *entity.User) (err error)
+	GetByUserID(ctx context.Context, userID string) (userInfo *entity.User, exist bool, err error)
+	GetByUsername(ctx context.Context, username string) (userInfo *entity.User, exist bool, err error)
+	UpdateLastLoginDate(ctx context.Context, userID string) (err error)
+}
+
+type userCenterLoginExternalLoginRepo interface {
+	AddUserExternalLogin(ctx context.Context, user *entity.UserExternalLogin) (err error)
+	GetByExternalID(ctx context.Context, provider, externalID string) (
+		userInfo *entity.UserExternalLogin, exist bool, err error)
+	GetUserExternalLoginList(ctx context.Context, userID string) (resp []*entity.UserExternalLogin, err error)
+}
+
+type userCenterLoginUserCommonService interface {
+	MakeUsername(ctx context.Context, username string) (string, error)
+	CacheLoginUserInfo(ctx context.Context, userID string, userStatus, emailStatus int, externalID string) (
+		accessToken string, userCacheInfo *entity.UserCacheInfo, err error)
+}
+
 // UserCenterLoginService user external login service
 type UserCenterLoginService struct {
-	userRepo              usercommon.UserRepo
-	userExternalLoginRepo UserExternalLoginRepo
-	userCommonService     *usercommon.UserCommon
+	userRepo              userCenterLoginUserRepo
+	userExternalLoginRepo userCenterLoginExternalLoginRepo
+	userCommonService     userCenterLoginUserCommonService
 	userActivity          activity.UserActiveActivityRepo
 	siteInfoCommonService siteinfo_common.SiteInfoCommonService
 }
@@ -134,7 +154,7 @@ func (us *UserCenterLoginService) ExternalLogin(
 	}
 
 	accessToken, _, err := us.userCommonService.CacheLoginUserInfo(
-		ctx, oldUserInfo.ID, oldUserInfo.MailStatus, oldUserInfo.Status, oldExternalLoginUserInfo.ExternalID)
+		ctx, oldUserInfo.ID, oldUserInfo.MailStatus, oldUserInfo.Status, basicUserInfo.ExternalID)
 	return &schema.UserExternalLoginResp{AccessToken: accessToken}, err
 }
 

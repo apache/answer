@@ -72,6 +72,7 @@ func (vc *VoteController) VoteUp(ctx *gin.Context) {
 	}
 	req.ObjectID = uid.DeShortID(req.ObjectID)
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
+	req.IsAdminModerator = middleware.GetUserIsAdminModerator(ctx)
 
 	can, needRank, err := vc.rankService.CheckVotePermission(ctx, req.UserID, req.ObjectID, true)
 	if err != nil {
@@ -85,7 +86,7 @@ func (vc *VoteController) VoteUp(ctx *gin.Context) {
 		return
 	}
 
-	isAdmin := middleware.GetUserIsAdminModerator(ctx)
+	isAdmin := req.IsAdminModerator
 	if !isAdmin {
 		captchaPass := vc.actionService.ActionRecordVerifyCaptcha(ctx, entity.CaptchaActionVote, req.UserID, req.CaptchaID, req.CaptchaCode)
 		if !captchaPass {
@@ -126,7 +127,8 @@ func (vc *VoteController) VoteDown(ctx *gin.Context) {
 	}
 	req.ObjectID = uid.DeShortID(req.ObjectID)
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
-	isAdmin := middleware.GetUserIsAdminModerator(ctx)
+	req.IsAdminModerator = middleware.GetUserIsAdminModerator(ctx)
+	isAdmin := req.IsAdminModerator
 
 	can, needRank, err := vc.rankService.CheckVotePermission(ctx, req.UserID, req.ObjectID, false)
 	if err != nil {

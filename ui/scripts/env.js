@@ -28,10 +28,10 @@ const envFilePath = path.resolve(__dirname, '../.env.production');
 const config = yaml.load(fs.readFileSync(configFilePath, 'utf8'));
 
 // Generate .env file content
-let envContent = 'TSC_COMPILE_ON_ERROR=true\nESLINT_NO_DEV_ERRORS=true\n';
+let envContent = '';
 for (const key in config.ui) {
   const value = config.ui[key];
-  envContent += `${key !== 'public_url' ? 'REACT_APP_' : ''}${key.toUpperCase()}=${value}\n`;
+  envContent += `REACT_APP_${key.toUpperCase()}=${value}\n`;
 }
 
 // Write .env file

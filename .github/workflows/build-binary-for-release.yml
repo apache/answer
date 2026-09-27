@@ -36,7 +36,7 @@ jobs:
     - name: Set up Node
       uses: actions/setup-node@v4
       with:
-        node-version: 20.18.1
+        node-version: 20.19.0
 
     - name: Node Build
       run: make install-ui-packages ui

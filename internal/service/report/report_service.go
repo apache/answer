@@ -99,6 +99,9 @@ func (rs *ReportService) AddReport(ctx context.Context, req *schema.AddReportReq
 	if objInfo.IsDeleted() {
 		return errors.BadRequest(reason.NewObjectAlreadyDeleted)
 	}
+	if err := objInfo.CheckVisibility(req.UserID, req.IsAdminModerator); err != nil {
+		return err
+	}
 
 	cf, err := rs.configService.GetConfigByID(ctx, req.ReportType)
 	if err != nil || cf == nil {

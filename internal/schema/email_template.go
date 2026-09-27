@@ -21,6 +21,7 @@ package schema
 
 import (
 	"encoding/json"
+	"slices"
 
 	"github.com/apache/answer/internal/base/constant"
 )
@@ -28,7 +29,7 @@ import (
 const (
 	AccountActivationSourceType EmailSourceType = "account-activation"
 	PasswordResetSourceType     EmailSourceType = "password-reset"
-	ConfirmNewEmailSourceType   EmailSourceType = "password-reset"
+	ConfirmNewEmailSourceType   EmailSourceType = "confirm-new-email"
 	UnsubscribeSourceType       EmailSourceType = "unsubscribe"
 	BindingSourceType           EmailSourceType = "binding"
 )
@@ -54,6 +55,10 @@ func (r *EmailCodeContent) ToJSONString() string {
 
 func (r *EmailCodeContent) FromJSONString(data string) error {
 	return json.Unmarshal([]byte(data), &r)
+}
+
+func (r *EmailCodeContent) IsSourceType(sourceTypes ...EmailSourceType) bool {
+	return slices.Contains(sourceTypes, r.SourceType)
 }
 
 type RegisterTemplateData struct {

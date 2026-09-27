@@ -44,7 +44,8 @@ type AddCommentReq struct {
 	CaptchaCode         string   `json:"captcha_code"`
 
 	// user id
-	UserID string `json:"-"`
+	UserID           string `json:"-"`
+	IsAdminModerator bool   `json:"-"`
 	// whether user can add it
 	CanAdd bool `json:"-"`
 	// whether user can edit it
@@ -232,7 +233,9 @@ type GetCommentPersonalWithPageReq struct {
 	// username
 	Username string `validate:"omitempty,gt=0,lte=100" form:"username"`
 	// user id
-	UserID string `json:"-"`
+	UserID           string `json:"-"`
+	LoginUserID      string `json:"-"`
+	IsAdminModerator bool   `json:"-"`
 }
 
 // GetCommentPersonalWithPageResp comment response

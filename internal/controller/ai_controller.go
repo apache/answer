@@ -324,19 +324,45 @@ func (c *AIController) getPromptByLanguage(language i18n.Language, question stri
 		return c.getDefaultPrompt(language, question)
 	}
 
-	return fmt.Sprintf(promptTemplate, question)
+	return c.adaptPromptToCapabilities(fmt.Sprintf(promptTemplate, question))
 }
 
 // getDefaultPrompt prompt
 func (c *AIController) getDefaultPrompt(language i18n.Language, question string) string {
+	var prompt string
 	switch language {
 	case i18n.LanguageChinese:
-		return fmt.Sprintf(constant.DefaultAIPromptConfigZhCN, question)
+		prompt = fmt.Sprintf(constant.DefaultAIPromptConfigZhCN, question)
 	case i18n.LanguageEnglish:
-		return fmt.Sprintf(constant.DefaultAIPromptConfigEnUS, question)
+		prompt = fmt.Sprintf(constant.DefaultAIPromptConfigEnUS, question)
 	default:
-		return fmt.Sprintf(constant.DefaultAIPromptConfigEnUS, question)
+		prompt = fmt.Sprintf(constant.DefaultAIPromptConfigEnUS, question)
 	}
+	return c.adaptPromptToCapabilities(prompt)
+}
+
+// adaptPromptToCapabilities removes instructions for tools the current
+// deployment cannot serve, so the model is never prompted to call a missing
+// capability.
+func (c *AIController) adaptPromptToCapabilities(prompt string) string {
+	if c.mcpController.SemanticSearchAvailable() {
+		return prompt
+	}
+	return stripSemanticSearchLine(prompt)
+}
+
+// stripSemanticSearchLine drops every prompt line that references the
+// semantic_search tool.
+func stripSemanticSearchLine(prompt string) string {
+	lines := strings.Split(prompt, "\n")
+	kept := make([]string, 0, len(lines))
+	for _, line := range lines {
+		if strings.Contains(line, semanticSearchToolName) {
+			continue
+		}
+		kept = append(kept, line)
+	}
+	return strings.Join(kept, "\n")
 }
 
 // initializeConversationContext
@@ -699,10 +725,25 @@ func (c *AIController) sendErrorResponse(w http.ResponseWriter, id, model, error
 	sendStreamData(w, errorResponse)
 }
 
-// getMCPTools
+// semanticSearchToolName is the MCP tool backed by the optional VectorSearch
+// plugin. It must not be advertised when no such plugin is enabled.
+const semanticSearchToolName = "semantic_search"
+
+// getMCPTools builds the tool list advertised to the model. The
+// semantic_search tool is omitted when no VectorSearch plugin is enabled,
+// otherwise the model can select a capability that always fails.
 func (c *AIController) getMCPTools() []openai.Tool {
-	openaiTools := make([]openai.Tool, 0)
-	for _, mcpTool := range mcp_tools.MCPToolsList {
+	return c.buildOpenAITools(mcp_tools.MCPToolsList, c.mcpController.SemanticSearchAvailable())
+}
+
+// buildOpenAITools converts MCP tools into OpenAI tool definitions, optionally
+// excluding the semantic_search tool.
+func (c *AIController) buildOpenAITools(tools []mcp.Tool, includeSemanticSearch bool) []openai.Tool {
+	openaiTools := make([]openai.Tool, 0, len(tools))
+	for _, mcpTool := range tools {
+		if !includeSemanticSearch && mcpTool.Name == semanticSearchToolName {
+			continue
+		}
 		openaiTool := c.convertMCPToolToOpenAI(mcpTool)
 		openaiTools = append(openaiTools, openaiTool)
 	}

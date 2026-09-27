@@ -25,8 +25,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const contentSecurityPolicy = "default-src 'self'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: http: https:; font-src 'self' data:; connect-src 'self'"
+
 func HeadersByRequestURI() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		c.Header("Content-Security-Policy", contentSecurityPolicy)
+		c.Header("X-Content-Type-Options", "nosniff")
 		if strings.HasPrefix(c.Request.RequestURI, "/static/") {
 			c.Header("cache-control", "public, max-age=31536000")
 		}
