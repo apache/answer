@@ -185,7 +185,7 @@ type QuestionUpdate struct {
 	Content string `validate:"gte=0,lte=65535" json:"content"`
 	// html
 	HTML       string   `json:"-"`
-	InviteUser []string `validate:"omitempty"  json:"invite_user"`
+	InviteUser []string `validate:"omitempty,max=20" json:"invite_user"`
 	// tags
 	Tags []*TagItem `validate:"dive" json:"tags"`
 	// edit summary
@@ -205,7 +205,7 @@ type QuestionRecoverReq struct {
 
 type QuestionUpdateInviteUser struct {
 	ID         string   `validate:"required" json:"id"`
-	InviteUser []string `validate:"omitempty"  json:"invite_user"`
+	InviteUser []string `validate:"omitempty,max=20" json:"invite_user"`
 	UserID     string   `json:"-"`
 	QuestionPermission
 	CaptchaID   string `json:"captcha_id"` // captcha_id
