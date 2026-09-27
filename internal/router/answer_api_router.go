@@ -336,12 +336,15 @@ func (a *AnswerAPIRouter) RegisterAnswerAPIRouter(r *gin.RouterGroup) {
 func (a *AnswerAPIRouter) RegisterAnswerAdminAPIRouter(r *gin.RouterGroup) {
 	r.GET("/question/page", a.questionController.AdminQuestionPage)
 	r.PUT("/question/status", a.questionController.AdminUpdateQuestionStatus)
+	r.DELETE("/questions", a.questionController.AdminDeleteQuestions)
 	r.GET("/answer/page", a.questionController.AdminAnswerPage)
 	r.PUT("/answer/status", a.answerController.AdminUpdateAnswerStatus)
+	r.DELETE("/answers", a.answerController.AdminDeleteAnswers)
 
 	// user
 	r.GET("/users/page", a.adminUserController.GetUserPage)
 	r.PUT("/user/status", a.adminUserController.UpdateUserStatus)
+	r.DELETE("/users", a.adminUserController.DeleteUsers)
 	r.PUT("/user/role", a.adminUserController.UpdateUserRole)
 	r.GET("/user/activation", a.adminUserController.GetUserActivation)
 	r.POST("/user/activation", a.adminUserController.SendUserActivation)

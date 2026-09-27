@@ -489,6 +489,12 @@ type AdminUpdateQuestionStatusReq struct {
 	UserID     string `json:"-"`
 }
 
+// DeleteQuestionsReq deletes multiple questions from the admin console.
+type DeleteQuestionsReq struct {
+	QuestionIDs []string `validate:"required,min=1,max=500,dive,required" json:"question_ids"`
+	UserID      string   `json:"-"`
+}
+
 type PersonalQuestionPageReq struct {
 	Page        int    `validate:"omitempty,min=1" form:"page"`
 	PageSize    int    `validate:"omitempty,min=1" form:"page_size"`

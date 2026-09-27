@@ -34,6 +34,7 @@ import (
 	"github.com/apache/answer/internal/service/activity_common"
 	"github.com/apache/answer/internal/service/activityqueue"
 	answercommon "github.com/apache/answer/internal/service/answer_common"
+	bulkdelete "github.com/apache/answer/internal/service/bulk_delete"
 	collectioncommon "github.com/apache/answer/internal/service/collection_common"
 	"github.com/apache/answer/internal/service/export"
 	"github.com/apache/answer/internal/service/noticequeue"
@@ -644,6 +645,9 @@ func (as *AnswerService) AdminSetAnswerStatus(ctx context.Context, req *schema.A
 	if !exist {
 		return errors.BadRequest(reason.AnswerNotFound)
 	}
+	if answerInfo.Status == setStatus {
+		return nil
+	}
 
 	if setStatus == entity.AnswerStatusDeleted {
 		if err := as.RemoveAnswer(ctx, &schema.RemoveAnswerReq{
@@ -665,7 +669,7 @@ func (as *AnswerService) AdminSetAnswerStatus(ctx context.Context, req *schema.A
 	}
 
 	// recover
-	if setStatus == entity.QuestionStatusAvailable && answerInfo.Status == entity.QuestionStatusDeleted {
+	if setStatus == entity.AnswerStatusAvailable && answerInfo.Status == entity.AnswerStatusDeleted {
 		if err := as.RecoverAnswer(ctx, &schema.RecoverAnswerReq{
 			AnswerID: req.AnswerID,
 			UserID:   req.UserID,
@@ -682,6 +686,17 @@ func (as *AnswerService) AdminSetAnswerStatus(ctx context.Context, req *schema.A
 		as.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: answerInfo.QuestionID})
 	}
 	return nil
+}
+
+// AdminDeleteAnswers deletes answers one at a time to preserve the existing admin delete side effects.
+func (as *AnswerService) AdminDeleteAnswers(ctx context.Context, req *schema.DeleteAnswersReq) *schema.BulkDeleteResp {
+	return bulkdelete.Execute(req.AnswerIDs, func(answerID string) error {
+		return as.AdminSetAnswerStatus(ctx, &schema.AdminUpdateAnswerStatusReq{
+			AnswerID: answerID,
+			Status:   "deleted",
+			UserID:   req.UserID,
+		})
+	})
 }
 
 func (as *AnswerService) SearchList(ctx context.Context, req *schema.AnswerListReq) ([]*schema.AnswerInfo, int64, error) {

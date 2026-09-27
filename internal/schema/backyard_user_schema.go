@@ -47,6 +47,19 @@ func (r *UpdateUserStatusReq) IsSuspended() bool { return r.Status == constant.U
 func (r *UpdateUserStatusReq) IsDeleted() bool   { return r.Status == constant.UserDeleted }
 func (r *UpdateUserStatusReq) IsInactive() bool  { return r.Status == constant.UserInactive }
 
+// DeleteUsersReq deletes multiple users from the admin console.
+type DeleteUsersReq struct {
+	UserIDs          []string `validate:"required,min=1,max=500,dive,required" json:"user_ids"`
+	RemoveAllContent bool     `json:"remove_all_content"`
+	LoginUserID      string   `json:"-"`
+}
+
+// BulkDeleteResp reports the IDs that were processed successfully and the IDs that failed.
+type BulkDeleteResp struct {
+	SucceededIDs []string `json:"succeeded_ids"`
+	FailedIDs    []string `json:"failed_ids"`
+}
+
 // GetSuspendedUntil calculates the suspended until time based on duration
 func (r *UpdateUserStatusReq) GetSuspendedUntil() time.Time {
 	if !r.IsSuspended() || r.SuspendDuration == "" || r.SuspendDuration == "forever" {

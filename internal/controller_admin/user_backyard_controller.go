@@ -67,6 +67,31 @@ func (uc *UserAdminController) UpdateUserStatus(ctx *gin.Context) {
 	handler.HandleResponse(ctx, err, nil)
 }
 
+// DeleteUsers deletes multiple users.
+// @Summary delete multiple users
+// @Description delete multiple users
+// @Security ApiKeyAuth
+// @Tags admin
+// @Accept json
+// @Produce json
+// @Param data body schema.DeleteUsersReq true "DeleteUsersReq"
+// @Success 200 {object} handler.RespBody{data=schema.BulkDeleteResp}
+// @Router /answer/admin/api/users [delete]
+func (uc *UserAdminController) DeleteUsers(ctx *gin.Context) {
+	if u, ok := plugin.GetUserCenter(); ok && u.Description().UserStatusAgentEnabled {
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
+		return
+	}
+	req := &schema.DeleteUsersReq{}
+	if handler.BindAndCheck(ctx, req) {
+		return
+	}
+
+	req.LoginUserID = middleware.GetLoginUserIDFromContext(ctx)
+	resp := uc.userService.DeleteUsers(ctx, req)
+	handler.HandleResponse(ctx, nil, resp)
+}
+
 // UpdateUserRole update user role
 // @Summary update user role
 // @Description update user role

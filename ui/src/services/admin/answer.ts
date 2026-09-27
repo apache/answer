@@ -48,3 +48,9 @@ export const changeAnswerStatus = (
     status,
   });
 };
+
+export const deleteAnswers = (answerIds: string[]) => {
+  return request.delete<Type.BulkDeleteResult>('/answer/admin/api/answers', {
+    answer_ids: answerIds,
+  });
+};

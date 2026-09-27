@@ -47,6 +47,12 @@ export const changeQuestionStatus = (
   });
 };
 
+export const deleteQuestions = (questionIds: string[]) => {
+  return request.delete<Type.BulkDeleteResult>('/answer/admin/api/questions', {
+    question_ids: questionIds,
+  });
+};
+
 export const getQuestionSetting = () => {
   return request.get<Type.AdminQuestionSetting>(
     '/answer/admin/api/siteinfo/question',
