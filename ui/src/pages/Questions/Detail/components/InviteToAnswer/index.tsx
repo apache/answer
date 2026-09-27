@@ -37,6 +37,8 @@ interface Props {
   questionId: string;
   readOnly?: boolean;
 }
+const MAX_INVITE_USERS = 20;
+
 const Index: FC<Props> = ({ questionId, readOnly = false }) => {
   const { t } = useTranslation('translation', {
     keyPrefix: 'invite_to_answer',
@@ -69,6 +71,9 @@ const Index: FC<Props> = ({ questionId, readOnly = false }) => {
         return _.id !== user.id;
       });
     } else {
+      if (userList.length >= MAX_INVITE_USERS) {
+        return;
+      }
       userList.push(user);
     }
     setUsers(userList);
