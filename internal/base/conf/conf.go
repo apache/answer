@@ -21,9 +21,11 @@ package conf
 
 import (
 	"bytes"
+	"errors"
 	"os"
 	"path/filepath"
 
+	"github.com/apache/answer/configs"
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/base/path"
 	"github.com/apache/answer/internal/base/server"
@@ -46,20 +48,6 @@ type AllConfig struct {
 	UI            *server.UI                    `json:"ui" mapstructure:"ui" yaml:"ui"`
 }
 
-type envConfigOverrides struct {
-	SwaggerHost        string
-	SwaggerAddressPort string
-	SiteAddr           string
-}
-
-func loadEnvs() (envOverrides *envConfigOverrides) {
-	return &envConfigOverrides{
-		SwaggerHost:        os.Getenv("SWAGGER_HOST"),
-		SwaggerAddressPort: os.Getenv("SWAGGER_ADDRESS_PORT"),
-		SiteAddr:           os.Getenv("SITE_ADDR"),
-	}
-}
-
 type PathIgnore struct {
 	Users []string `yaml:"users"`
 }
@@ -77,21 +65,32 @@ type Data struct {
 
 // SetDefault set default config
 func (c *AllConfig) SetDefault() {
+	if c.Server == nil {
+		c.Server = &Server{}
+	}
+	if c.Server.HTTP == nil {
+		c.Server.HTTP = &server.HTTP{}
+	}
+	if c.Data == nil {
+		c.Data = &Data{}
+	}
+	if c.Data.Database == nil {
+		c.Data.Database = &data.Database{}
+	}
+	if c.Data.Cache == nil {
+		c.Data.Cache = &data.CacheConf{}
+	}
+	if c.I18n == nil {
+		c.I18n = &translator.I18n{}
+	}
+	if c.ServiceConfig == nil {
+		c.ServiceConfig = &service_config.ServiceConfig{}
+	}
+	if c.Swaggerui == nil {
+		c.Swaggerui = &router.SwaggerConfig{}
+	}
 	if c.UI == nil {
 		c.UI = &server.UI{}
-	}
-}
-
-func (c *AllConfig) SetEnvironmentOverrides() {
-	envs := loadEnvs()
-	if envs.SiteAddr != "" {
-		c.Server.HTTP.Addr = envs.SiteAddr
-	}
-	if envs.SwaggerHost != "" {
-		c.Swaggerui.Host = envs.SwaggerHost
-	}
-	if envs.SwaggerAddressPort != "" {
-		c.Swaggerui.Address = envs.SwaggerAddressPort
 	}
 }
 
@@ -101,15 +100,27 @@ func ReadConfig(configFilePath string) (c *AllConfig, err error) {
 		configFilePath = filepath.Join(path.ConfigFileDir, path.DefaultConfigFileName)
 	}
 	c = &AllConfig{}
-	config, err := viper.NewWithPath(configFilePath)
-	if err != nil {
-		return nil, err
-	}
-	if err = config.Parse(&c); err != nil {
-		return nil, err
+	_, statErr := os.Stat(configFilePath)
+	switch {
+	case statErr == nil:
+		config, err := viper.NewWithPath(configFilePath)
+		if err != nil {
+			return nil, err
+		}
+		if err = config.Parse(&c); err != nil {
+			return nil, err
+		}
+	case errors.Is(statErr, os.ErrNotExist) && RuntimeEnvironmentConfigured():
+		if err = yaml.Unmarshal(configs.Config, c); err != nil {
+			return nil, err
+		}
+	default:
+		return nil, statErr
 	}
 	c.SetDefault()
-	c.SetEnvironmentOverrides()
+	if err = c.SetEnvironmentOverrides(); err != nil {
+		return nil, err
+	}
 	return c, nil
 }
 
