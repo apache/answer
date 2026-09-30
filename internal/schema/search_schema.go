@@ -50,7 +50,8 @@ func (s *SearchDTO) Check() (errField []*validator.FormErrorField, err error) {
 func ReplaceSearchContent(content string) (string, []string) {
 	// Define the regular expressions for key:value pairs and [tag]
 	keyValueRegex := regexp.MustCompile(`\w+:\S+`)
-	tagRegex := regexp.MustCompile(`\[\w+\]`)
+	// Tag slugs may contain characters such as "-", "." or "+" (e.g. [react-native], [node.js], [c++]).
+	tagRegex := regexp.MustCompile(`\[[^\[\]\s]+\]`)
 	// Define the pattern for characters to replace
 	replaceCharsPattern := regexp.MustCompile(`[+#.<>\-_()*]`)
 
