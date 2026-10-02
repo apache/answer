@@ -20,36 +20,24 @@
 package writer
 
 import (
-	"bufio"
 	"os"
+	"path/filepath"
+	"testing"
 )
 
-// ReplaceFile remove old file and write new file
-func ReplaceFile(filePath, content string) error {
-	_ = os.Remove(filePath)
-	return WriteFile(filePath, content)
-}
-
-// WriteFile write file to path
-func WriteFile(filePath, content string) error {
-	file, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o666)
+func TestWriteFileTruncatesExistingFile(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "file.txt")
+	if err := os.WriteFile(path, []byte("123456"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := WriteFile(path, "abc"); err != nil {
+		t.Fatal(err)
+	}
+	content, err := os.ReadFile(path)
 	if err != nil {
-		return err
+		t.Fatal(err)
 	}
-	defer func() {
-		_ = file.Close()
-	}()
-	writer := bufio.NewWriter(file)
-	if _, err := writer.WriteString(content); err != nil {
-		return err
+	if string(content) != "abc" {
+		t.Fatalf("got %q, want %q", content, "abc")
 	}
-	if err := writer.Flush(); err != nil {
-		return err
-	}
-	return nil
-}
-
-// MoveFile move file to new path
-func MoveFile(oldPath, newPath string) error {
-	return os.Rename(oldPath, newPath)
 }
