@@ -933,6 +933,7 @@ func (qc *QuestionController) PersonalCollectionPage(ctx *gin.Context) {
 	}
 
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
+	req.IsAdminModerator = middleware.GetUserIsAdminModerator(ctx)
 
 	resp, err := qc.questionService.PersonalCollectionPage(ctx, req)
 	handler.HandleResponse(ctx, err, resp)

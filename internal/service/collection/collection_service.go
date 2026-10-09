@@ -22,33 +22,53 @@ package collection
 import (
 	"context"
 
+	"github.com/apache/answer/internal/base/reason"
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
 	collectioncommon "github.com/apache/answer/internal/service/collection_common"
 	questioncommon "github.com/apache/answer/internal/service/question_common"
+	"github.com/segmentfault/pacman/errors"
 )
+
+type ObjectInfoService interface {
+	GetInfo(ctx context.Context, objectID string) (*schema.SimpleObjectInfo, error)
+}
 
 // CollectionService user service
 type CollectionService struct {
 	collectionRepo      collectioncommon.CollectionRepo
 	collectionGroupRepo CollectionGroupRepo
 	questionCommon      *questioncommon.QuestionCommon
+	objectInfoService   ObjectInfoService
 }
 
 func NewCollectionService(
 	collectionRepo collectioncommon.CollectionRepo,
 	collectionGroupRepo CollectionGroupRepo,
 	questionCommon *questioncommon.QuestionCommon,
+	objectInfoService ObjectInfoService,
 ) *CollectionService {
 	return &CollectionService{
 		collectionRepo:      collectionRepo,
 		collectionGroupRepo: collectionGroupRepo,
 		questionCommon:      questionCommon,
+		objectInfoService:   objectInfoService,
 	}
 }
 
 func (cs *CollectionService) CollectionSwitch(ctx context.Context, req *schema.CollectionSwitchReq) (
 	resp *schema.CollectionSwitchResp, err error) {
+	objectInfo, err := cs.objectInfoService.GetInfo(ctx, req.ObjectID)
+	if err != nil {
+		if serviceErr, ok := err.(*errors.Error); ok && serviceErr.Reason == reason.ObjectNotFound {
+			return nil, errors.NotFound(reason.QuestionNotFound)
+		}
+		return nil, err
+	}
+	if err := objectInfo.CheckVisibility(req.UserID, req.IsAdminModerator); err != nil {
+		return nil, err
+	}
+
 	collectionGroup, err := cs.collectionGroupRepo.CreateDefaultGroupIfNotExist(ctx, req.UserID)
 	if err != nil {
 		return nil, err

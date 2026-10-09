@@ -1284,6 +1284,7 @@ func (qs *QuestionService) PersonalCollectionPage(ctx context.Context, req *sche
 	collectionSearch.UserID = req.UserID
 	collectionSearch.Page = req.Page
 	collectionSearch.PageSize = req.PageSize
+	collectionSearch.IsAdminModerator = req.IsAdminModerator
 	collectionList, total, err := qs.collectionCommon.SearchList(ctx, collectionSearch)
 	if err != nil {
 		return nil, err
@@ -1302,7 +1303,7 @@ func (qs *QuestionService) PersonalCollectionPage(ctx context.Context, req *sche
 			id = uid.EnShortID(id)
 		}
 		_, ok := questionMaps[id]
-		if ok {
+		if ok && canViewPersonalCollectionQuestion(questionMaps[id], req.UserID, req.IsAdminModerator) {
 			questionMaps[id].LastAnsweredUserInfo = nil
 			questionMaps[id].UpdateUserInfo = nil
 			questionMaps[id].Content = ""
@@ -1315,6 +1316,15 @@ func (qs *QuestionService) PersonalCollectionPage(ctx context.Context, req *sche
 	}
 
 	return pager.NewPageModel(total, list), nil
+}
+
+func canViewPersonalCollectionQuestion(question *schema.QuestionInfoResp, userID string, isAdminModerator bool) bool {
+	return (&schema.SimpleObjectInfo{
+		ObjectType:            constant.QuestionObjectType,
+		QuestionCreatorUserID: question.UserID,
+		QuestionStatus:        question.Status,
+		QuestionShow:          question.Show,
+	}).CheckVisibility(userID, isAdminModerator) == nil
 }
 
 func (qs *QuestionService) SearchUserTopList(ctx context.Context, userName string, loginUserID string) ([]*schema.UserQuestionInfo, []*schema.UserAnswerInfo, error) {

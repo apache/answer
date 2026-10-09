@@ -138,3 +138,31 @@ func TestCheckQuestionVisibility(t *testing.T) {
 		})
 	}
 }
+
+func TestCanViewPersonalCollectionQuestion(t *testing.T) {
+	testCases := []struct {
+		name    string
+		status  int
+		show    int
+		author  string
+		viewer  string
+		isAdmin bool
+		allow   bool
+	}{
+		{"public question", entity.QuestionStatusAvailable, entity.QuestionShow, "author", "viewer", false, true},
+		{"closed question", entity.QuestionStatusClosed, entity.QuestionShow, "author", "viewer", false, true},
+		{"hidden question", entity.QuestionStatusAvailable, entity.QuestionHide, "author", "viewer", false, false},
+		{"pending question", entity.QuestionStatusPending, entity.QuestionShow, "author", "viewer", false, false},
+		{"owner hidden question", entity.QuestionStatusAvailable, entity.QuestionHide, "author", "author", false, true},
+		{"moderator hidden question", entity.QuestionStatusAvailable, entity.QuestionHide, "author", "viewer", true, true},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			question := &schema.QuestionInfoResp{UserID: testCase.author, Status: testCase.status, Show: testCase.show}
+			if got := canViewPersonalCollectionQuestion(question, testCase.viewer, testCase.isAdmin); got != testCase.allow {
+				t.Fatalf("canViewPersonalCollectionQuestion() = %t, want %t", got, testCase.allow)
+			}
+		})
+	}
+}

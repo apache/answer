@@ -33,8 +33,9 @@ type Collection struct {
 
 type CollectionSearch struct {
 	Collection
-	Page     int `json:"page" form:"page"`           // Query number of pages
-	PageSize int `json:"page_size" form:"page_size"` // Search page size
+	Page             int  `json:"page" form:"page"`           // Query number of pages
+	PageSize         int  `json:"page_size" form:"page_size"` // Search page size
+	IsAdminModerator bool `json:"-"`
 }
 
 // TableName collection table name

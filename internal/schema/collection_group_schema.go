@@ -28,10 +28,11 @@ const (
 
 // CollectionSwitchReq switch collection request
 type CollectionSwitchReq struct {
-	ObjectID string `validate:"required" json:"object_id"`
-	GroupID  string `validate:"required" json:"group_id"`
-	Bookmark bool   `validate:"omitempty" json:"bookmark"`
-	UserID   string `json:"-"`
+	ObjectID         string `validate:"required" json:"object_id"`
+	GroupID          string `validate:"required" json:"group_id"`
+	Bookmark         bool   `validate:"omitempty" json:"bookmark"`
+	UserID           string `json:"-"`
+	IsAdminModerator bool   `json:"-"`
 }
 
 // CollectionSwitchResp switch collection response

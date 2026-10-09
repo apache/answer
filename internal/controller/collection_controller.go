@@ -56,6 +56,7 @@ func (cc *CollectionController) CollectionSwitch(ctx *gin.Context) {
 
 	req.ObjectID = uid.DeShortID(req.ObjectID)
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
+	req.IsAdminModerator = middleware.GetUserIsAdminModerator(ctx)
 
 	resp, err := cc.collectionService.CollectionSwitch(ctx, req)
 	handler.HandleResponse(ctx, err, resp)

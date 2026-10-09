@@ -508,9 +508,10 @@ type PersonalAnswerPageReq struct {
 }
 
 type PersonalCollectionPageReq struct {
-	Page     int    `validate:"omitempty,min=1" form:"page"`
-	PageSize int    `validate:"omitempty,min=1" form:"page_size"`
-	UserID   string `json:"-"`
+	Page             int    `validate:"omitempty,min=1" form:"page"`
+	PageSize         int    `validate:"omitempty,min=1" form:"page_size"`
+	UserID           string `json:"-"`
+	IsAdminModerator bool   `json:"-"`
 }
 
 type GetQuestionLinkReq struct {

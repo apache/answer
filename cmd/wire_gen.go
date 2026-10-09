@@ -228,7 +228,7 @@ func initApplication(debug bool, serverConf *conf.Server, dbConf *data.Database,
 	followService := follow.NewFollowService(followFollowRepo, followRepo, tagCommonRepo)
 	followController := controller.NewFollowController(followService)
 	collectionGroupRepo := collection.NewCollectionGroupRepo(dataData)
-	collectionService := collection2.NewCollectionService(collectionRepo, collectionGroupRepo, questionCommon)
+	collectionService := collection2.NewCollectionService(collectionRepo, collectionGroupRepo, questionCommon, objService)
 	collectionController := controller.NewCollectionController(collectionService)
 	questionController := controller.NewQuestionController(questionService, answerService, rankService, siteInfoCommonService, captchaService, rateLimitMiddleware)
 	answerController := controller.NewAnswerController(answerService, rankService, captchaService, siteInfoCommonService, rateLimitMiddleware)

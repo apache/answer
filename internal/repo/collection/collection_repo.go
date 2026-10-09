@@ -203,12 +203,17 @@ func (cr *collectionRepo) SearchList(ctx context.Context, search *entity.Collect
 	offset := search.Page * search.PageSize
 	session := cr.data.DB.Context(ctx).Where("")
 	if len(search.UserID) > 0 {
-		session = session.And("user_id = ?", search.UserID)
+		session = session.Join("INNER", "question", "collection.object_id = question.id").
+			And("collection.user_id = ?", search.UserID)
 	} else {
 		return rows, count, nil
 	}
+	if !search.IsAdminModerator {
+		session = session.And("(question.status IN (?, ?) AND question.show = ?) OR question.user_id = ?",
+			entity.QuestionStatusAvailable, entity.QuestionStatusClosed, entity.QuestionShow, search.UserID)
+	}
 	session = session.Limit(search.PageSize, offset)
-	count, err = session.OrderBy("updated_at desc").FindAndCount(&rows)
+	count, err = session.OrderBy("collection.updated_at desc").FindAndCount(&rows)
 	if err != nil {
 		return rows, count, err
 	}
