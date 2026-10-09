@@ -27,7 +27,12 @@ import unionBy from 'lodash/unionBy';
 
 import * as Types from '@/common/interface';
 import { Modal } from '@/components';
-import { usePageUsers, useReportModal, useCaptchaModal } from '@/hooks';
+import {
+  usePageUsers,
+  useReportModal,
+  useCaptchaModal,
+  useToast,
+} from '@/hooks';
 import {
   matchedUsers,
   parseUserInfo,
@@ -78,6 +83,7 @@ const Comment: FC<IProps> = ({ objectId, mode, commentId, children }) => {
   const editCaptcha = useCaptchaPlugin('edit');
   const dCaptcha = useCaptchaPlugin('delete');
   const vCaptcha = useCaptchaPlugin('vote');
+  const toast = useToast();
 
   const { t } = useTranslation('translation', { keyPrefix: 'comment' });
 
@@ -157,6 +163,15 @@ const Comment: FC<IProps> = ({ objectId, mode, commentId, children }) => {
     return updateComment(up)
       .then(async (res) => {
         await editCaptcha?.close();
+        // the edit went to the review queue: hide it and tell the author
+        if (res.status === 11) {
+          toast.onShow({
+            msg: t('post_pending', { keyPrefix: 'messages' }),
+            variant: 'warning',
+          });
+          setComments(comments.filter((c) => c.comment_id !== item.comment_id));
+          return;
+        }
         setComments(
           comments.map((comment) => {
             if (comment.comment_id === item.comment_id) {
@@ -191,6 +206,16 @@ const Comment: FC<IProps> = ({ objectId, mode, commentId, children }) => {
     return addComment(req)
       .then(async (res) => {
         await addCaptcha?.close();
+        // a new comment sent to the review queue is not shown, the author gets a notice
+        if (res.status === 11) {
+          toast.onShow({
+            msg: t('post_pending', { keyPrefix: 'messages' }),
+            variant: 'warning',
+          });
+          updateCurrentReplyId('');
+          setVisibleComment(false);
+          return;
+        }
         if (item.type === 'reply') {
           const index = comments.findIndex(
             (comment) => comment.comment_id === item.comment_id,
