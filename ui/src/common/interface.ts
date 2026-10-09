@@ -428,6 +428,7 @@ export interface SiteSettings {
   revision: string;
   site_security: AdminSettingsSecurity;
   ai_enabled: boolean;
+  ai_translation_enabled: boolean;
 }
 
 export interface AdminSettingBranding {
@@ -828,6 +829,7 @@ export interface AddOrEditApiKeyParams {
 
 export interface AiConfig {
   enabled: boolean;
+  translation_enabled: boolean;
   chosen_provider: string;
   ai_providers: Array<{
     provider: string;

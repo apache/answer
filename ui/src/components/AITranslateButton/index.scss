@@ -17,29 +17,38 @@
  * under the License.
  */
 
-import { create } from 'zustand';
+.btn.ai-translate-button {
+  position: absolute;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  line-height: 1;
+  border: 0;
 
-interface AiControlStore {
-  ai_enabled: boolean;
-  ai_translation_enabled: boolean;
-  update: (params: {
-    ai_enabled?: boolean;
-    ai_translation_enabled?: boolean;
-  }) => void;
-  reset: () => void;
+  > .bi {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+
+    &::before {
+      vertical-align: 0;
+    }
+  }
+
+  &.ai-translate-button-input {
+    top: 50%;
+    right: 8px;
+    transform: translateY(-50%);
+  }
+
+  &.ai-translate-button-editor {
+    right: 8px;
+    bottom: 8px;
+  }
 }
-
-const aiControlStore = create<AiControlStore>((set) => ({
-  ai_enabled: false,
-  ai_translation_enabled: true,
-  update: (params) =>
-    set((state) => {
-      return {
-        ...state,
-        ...params,
-      };
-    }),
-  reset: () => set({ ai_enabled: false, ai_translation_enabled: true }),
-}));
-
-export default aiControlStore;

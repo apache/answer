@@ -68,6 +68,7 @@ import BubbleAi from './BubbleAi';
 import BubbleUser from './BubbleUser';
 import Sender from './Sender';
 import TabNav from './TabNav';
+import AITranslateButton from './AITranslateButton';
 
 export {
   Avatar,
@@ -121,6 +122,7 @@ export {
   AdminSideNav,
   BubbleAi,
   BubbleUser,
+  AITranslateButton,
   Sender,
   TabNav,
 };

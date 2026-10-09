@@ -22,6 +22,25 @@ import qs from 'qs';
 import request from '@/utils/request';
 import type * as Type from '@/common/interface';
 
+export interface TranslateContentRequest {
+  title?: string;
+  content?: string;
+}
+
+export interface TranslateContentResponse {
+  title: string;
+  content: string;
+  target_language: string;
+}
+
+export const translateContent = (params: TranslateContentRequest) => {
+  return request.post<TranslateContentResponse>(
+    '/answer/api/v1/ai/translate',
+    params,
+    { timeout: 60000, ignoreError: '50X' },
+  );
+};
+
 export const getConversationList = (params: Type.Paging) => {
   return request.get<{ count: number; list: Type.ConversationListItem[] }>(
     `/answer/api/v1/ai/conversation/page?${qs.stringify(params)}`,
