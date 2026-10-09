@@ -58,6 +58,8 @@ const (
 	NotificationInvitedYouToAnswer = "notification.action.invited_you_to_answer"
 	// NotificationEarnedBadge earned badge
 	NotificationEarnedBadge = "notification.action.earned_badge"
+	// NotificationAdminMessage a message written by an admin / moderator
+	NotificationAdminMessage = "notification.action.admin_message"
 )
 
 type NotificationChannelKey string
@@ -99,5 +101,6 @@ var (
 		NotificationYourAnswerWasDeleted:   1,
 		NotificationYourCommentWasDeleted:  1,
 		NotificationInvitedYouToAnswer:     3,
+		NotificationAdminMessage:           4,
 	}
 )

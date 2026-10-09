@@ -27,16 +27,17 @@ import (
 )
 
 const (
-	NotificationTypeInbox        = 1
-	NotificationTypeAchievement  = 2
-	NotificationNotRead          = 1
-	NotificationRead             = 2
-	NotificationStatusNormal     = 1
-	NotificationStatusDelete     = 10
-	NotificationInboxTypeAll     = 0
-	NotificationInboxTypePosts   = 1
-	NotificationInboxTypeVotes   = 2
-	NotificationInboxTypeInvites = 3
+	NotificationTypeInbox         = 1
+	NotificationTypeAchievement   = 2
+	NotificationNotRead           = 1
+	NotificationRead              = 2
+	NotificationStatusNormal      = 1
+	NotificationStatusDelete      = 10
+	NotificationInboxTypeAll      = 0
+	NotificationInboxTypePosts    = 1
+	NotificationInboxTypeVotes    = 2
+	NotificationInboxTypeInvites  = 3
+	NotificationInboxTypeMessages = 4 // admin messages
 )
 
 var NotificationType = map[string]int{
@@ -45,10 +46,11 @@ var NotificationType = map[string]int{
 }
 
 var NotificationInboxType = map[string]int{
-	"all":     NotificationInboxTypeAll,
-	"posts":   NotificationInboxTypePosts,
-	"invites": NotificationInboxTypeInvites,
-	"votes":   NotificationInboxTypeVotes,
+	"all":      NotificationInboxTypeAll,
+	"posts":    NotificationInboxTypePosts,
+	"invites":  NotificationInboxTypeInvites,
+	"messages": NotificationInboxTypeMessages,
+	"votes":    NotificationInboxTypeVotes,
 }
 
 type NotificationContent struct {

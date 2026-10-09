@@ -27,6 +27,7 @@ import {
   Actions,
   Operate,
   BaseUserCard,
+  MessageUserButton,
   Comment,
   FormatTime,
   htmlRender,
@@ -104,6 +105,13 @@ const Index: FC<Props> = ({ data, initPage, hasAnswer, isLogged }) => {
 
       <div className="d-flex flex-wrap align-items-center small mb-4 text-secondary border-bottom pb-3">
         <BaseUserCard data={data.user_info} className="me-3" />
+        <MessageUserButton
+          username={data.user_info?.username}
+          objectId={data.id}
+          objectTitle={data.title}
+          variant="icon"
+          className="me-3"
+        />
 
         {isLogged ? (
           <>

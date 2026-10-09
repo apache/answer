@@ -30,6 +30,7 @@ import {
   Comment,
   htmlRender,
   ImgViewer,
+  MessageUserButton,
 } from '@/components';
 import { scrollToElementTop, bgFadeOut } from '@/utils';
 import { AnswerItem } from '@/common/interface';
@@ -118,6 +119,13 @@ const Index: FC<Props> = ({
             updateTimePrefix={t('edit')}
             isLogged={isLogged}
             timelinePath={`/posts/${data.question_id}/${data.id}/timeline`}
+          />
+          <MessageUserButton
+            username={data?.user_info?.username}
+            objectId={data?.id}
+            objectTitle={questionTitle}
+            variant="icon"
+            className="ms-2"
           />
         </div>
 
