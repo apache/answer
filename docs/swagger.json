@@ -11837,6 +11837,10 @@
         "schema.SiteCustomCssHTMLReq": {
             "type": "object",
             "properties": {
+                "custom_banner": {
+                    "type": "string",
+                    "maxLength": 65536
+                },
                 "custom_css": {
                     "type": "string",
                     "maxLength": 65536
@@ -11862,6 +11866,10 @@
         "schema.SiteCustomCssHTMLResp": {
             "type": "object",
             "properties": {
+                "custom_banner": {
+                    "type": "string",
+                    "maxLength": 65536
+                },
                 "custom_css": {
                     "type": "string",
                     "maxLength": 65536

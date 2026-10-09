@@ -2353,6 +2353,9 @@ definitions:
     type: object
   schema.SiteCustomCssHTMLReq:
     properties:
+      custom_banner:
+        maxLength: 65536
+        type: string
       custom_css:
         maxLength: 65536
         type: string
@@ -2371,6 +2374,9 @@ definitions:
     type: object
   schema.SiteCustomCssHTMLResp:
     properties:
+      custom_banner:
+        maxLength: 65536
+        type: string
       custom_css:
         maxLength: 65536
         type: string
