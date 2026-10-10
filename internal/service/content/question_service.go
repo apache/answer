@@ -1319,6 +1319,10 @@ func (qs *QuestionService) PersonalCollectionPage(ctx context.Context, req *sche
 }
 
 func canViewPersonalCollectionQuestion(question *schema.QuestionInfoResp, userID string, isAdminModerator bool) bool {
+	return canViewQuestion(question, userID, isAdminModerator)
+}
+
+func canViewQuestion(question *schema.QuestionInfoResp, userID string, isAdminModerator bool) bool {
 	return (&schema.SimpleObjectInfo{
 		ObjectType:            constant.QuestionObjectType,
 		QuestionCreatorUserID: question.UserID,
@@ -1354,6 +1358,7 @@ func (qs *QuestionService) SearchUserTopList(ctx context.Context, userName strin
 	answersearch.UserID = userinfo.ID
 	answersearch.PageSize = 5
 	answersearch.Order = entity.AnswerSearchOrderByVote
+	answersearch.OnlyPublicQuestion = true
 	questionIDs := make([]string, 0)
 	answerList, _, err := qs.questioncommon.AnswerCommon.Search(ctx, answersearch)
 	if err != nil {
@@ -1370,7 +1375,7 @@ func (qs *QuestionService) SearchUserTopList(ctx context.Context, userName strin
 	}
 	for _, item := range answerlist {
 		_, ok := questionMaps[item.QuestionID]
-		if ok {
+		if ok && canViewQuestion(questionMaps[item.QuestionID], "", false) {
 			item.QuestionInfo = questionMaps[item.QuestionID]
 		}
 	}
@@ -1383,6 +1388,9 @@ func (qs *QuestionService) SearchUserTopList(ctx context.Context, userName strin
 	}
 
 	for _, item := range answerlist {
+		if item.QuestionInfo == nil {
+			continue
+		}
 		info := &schema.UserAnswerInfo{}
 		_ = copier.Copy(info, item)
 		info.AnswerID = item.ID

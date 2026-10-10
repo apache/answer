@@ -87,3 +87,61 @@ func TestPersonalAnswerPageRespectsHiddenQuestionVisibility(t *testing.T) {
 	require.Equal(t, int64(2), ownerTotal)
 	require.Len(t, ownerAnswers, 2)
 }
+
+func TestAnswerSearchRespectsPublicParentQuestionVisibility(t *testing.T) {
+	ctx := context.Background()
+	questionRepo := question.NewQuestionRepo(testDataSource, unique.NewUniqueIDRepo(testDataSource))
+	answerRepo := answer.NewAnswerRepo(testDataSource, nil, nil, nil)
+
+	newQuestion := func(title string, status, show int) *entity.Question {
+		q := &entity.Question{
+			UserID:       "top-answer-question-owner",
+			Title:        title,
+			OriginalText: title,
+			ParsedText:   title,
+			Status:       status,
+			Show:         show,
+		}
+		require.NoError(t, questionRepo.AddQuestion(ctx, q))
+		return q
+	}
+	visibleQuestion := newQuestion("visible question", entity.QuestionStatusAvailable, entity.QuestionShow)
+	closedQuestion := newQuestion("closed question", entity.QuestionStatusClosed, entity.QuestionShow)
+	hiddenQuestion := newQuestion("hidden question", entity.QuestionStatusAvailable, entity.QuestionHide)
+	pendingQuestion := newQuestion("pending question", entity.QuestionStatusPending, entity.QuestionShow)
+	deletedQuestion := newQuestion("deleted question", entity.QuestionStatusDeleted, entity.QuestionShow)
+	questions := []*entity.Question{visibleQuestion, closedQuestion, hiddenQuestion, pendingQuestion, deletedQuestion}
+	answers := make([]*entity.Answer, 0, len(questions))
+	for _, q := range questions {
+		item := &entity.Answer{QuestionID: q.ID, UserID: "top-answer-author", OriginalText: "answer", ParsedText: "answer", Status: entity.AnswerStatusAvailable}
+		_, err := testDataSource.DB.Context(ctx).Insert(item)
+		require.NoError(t, err)
+		answers = append(answers, item)
+	}
+	t.Cleanup(func() {
+		for _, item := range answers {
+			_, _ = testDataSource.DB.Context(ctx).ID(item.ID).Delete(&entity.Answer{})
+		}
+		for _, q := range questions {
+			_, _ = testDataSource.DB.Context(ctx).ID(q.ID).Delete(&entity.Question{})
+		}
+	})
+
+	publicAnswers, total, err := answerRepo.SearchList(ctx, &entity.AnswerSearch{
+		Answer:             entity.Answer{UserID: "top-answer-author"},
+		OnlyPublicQuestion: true,
+		PageSize:           10,
+	})
+	require.NoError(t, err)
+	require.Equal(t, int64(2), total)
+	require.Len(t, publicAnswers, 2)
+	questionIDs := map[string]bool{}
+	for _, item := range publicAnswers {
+		questionIDs[item.QuestionID] = true
+	}
+	require.True(t, questionIDs[visibleQuestion.ID])
+	require.True(t, questionIDs[closedQuestion.ID])
+	require.False(t, questionIDs[hiddenQuestion.ID])
+	require.False(t, questionIDs[pendingQuestion.ID])
+	require.False(t, questionIDs[deletedQuestion.ID])
+}
