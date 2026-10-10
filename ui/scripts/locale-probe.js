@@ -17,30 +17,16 @@
  * under the License.
  */
 
-@import 'bootstrap/scss/functions';
-@import 'bootstrap/scss/variables';
-@import 'bootstrap/scss/mixins/_breakpoints';
-
-.comments-wrap {
-  .comment-item {
-    border-bottom: 1px solid var(--an-comment-item-border-bottom);
-    &:hover {
-      @include media-breakpoint-up(md) {
-        .control-area {
-          display: flex !important;
-        }
-      }
-    }
-  }
-  .fmt {
-    display: inline;
-    p {
-      &:last-child {
-        display: inline;
-      }
-    }
-    img {
-      display: block;
-    }
-  }
-}
+/*
+ * Mirrors how src/utils/localize.ts loads a language at runtime. The import
+ * specifier is a template literal resolved through an alias that points
+ * outside the frontend root, so whether it resolves is a property of the
+ * bundler rather than of this file.
+ *
+ * Keep this expression identical to the one in the application.
+ * check-locale-resolution.js asserts that it still matches.
+ */
+export const loadLocaleResource = async (langName) => {
+  const { default: resConf } = await import(`@i18n/${langName}.yaml`);
+  return resConf;
+};

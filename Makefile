@@ -1,4 +1,4 @@
-.PHONY: build clean ui
+.PHONY: build clean ui check-ui check-ui-assets check-ui-locales check-ui-plugin-i18n
 
 VERSION=2.0.3
 BIN=answer
@@ -46,6 +46,22 @@ check:
 
 test:
 	@$(GO) test ./internal/repo/repo_test
+
+# Frontend checks for behaviour a successful build does not demonstrate.
+# Each guards a runtime failure that leaves every build step reporting success.
+check-ui: check-ui-assets check-ui-locales check-ui-plugin-i18n
+
+# The server reads the built asset paths out of index.html.
+check-ui-assets:
+	@./script/check-built-assets.sh
+
+# The app loads languages other than the default one through a dynamic import.
+check-ui-locales:
+	@cd ui && pnpm check-locales
+
+# Plugin translations register while modules evaluate, in bundler-decided order.
+check-ui-plugin-i18n:
+	@cd ui && pnpm check-plugin-i18n
 
 # clean all build result
 clean:
