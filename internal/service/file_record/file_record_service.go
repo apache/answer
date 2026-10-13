@@ -105,6 +105,8 @@ func (fs *FileRecordService) CleanOrphanUploadFiles(ctx context.Context) {
 		if len(fileRecordList) == 0 || total == 0 {
 			break
 		}
+
+		deletedInBatch := 0
 		for _, fileRecord := range fileRecordList {
 			// If this file record created in 48 hours, no need to check
 			if fileRecord.CreatedAt.AddDate(0, 0, 2).After(time.Now()) {
@@ -122,6 +124,8 @@ func (fs *FileRecordService) CleanOrphanUploadFiles(ctx context.Context) {
 				}
 				if err := fs.DeleteAndMoveFileRecord(ctx, fileRecord); err != nil {
 					log.Error(err)
+				} else {
+					deletedInBatch++
 				}
 				continue
 			}
@@ -152,9 +156,23 @@ func (fs *FileRecordService) CleanOrphanUploadFiles(ctx context.Context) {
 			// Delete and move the file record
 			if err := fs.DeleteAndMoveFileRecord(ctx, fileRecord); err != nil {
 				log.Error(err)
+			} else {
+				deletedInBatch++
 			}
 		}
-		page++
+
+		// When records are deleted, they no longer match the `Status = Available`
+		// filter. This shrinks the result set and shifts subsequent records to lower
+		// positions. Incrementing the page counter in that case would skip past the
+		// records that slid into the previous page window (see issue #1631).
+		// Reset to page 1 so the next query scans the current front of the result set.
+		// If no records were deleted in this batch the Available set is unchanged, so
+		// it is safe to move on to the next page normally.
+		if deletedInBatch > 0 {
+			page = 1
+		} else {
+			page++
+		}
 	}
 }
 
