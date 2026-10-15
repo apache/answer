@@ -21,6 +21,7 @@ package repo_test
 
 import (
 	"context"
+	"sync"
 	"testing"
 
 	"github.com/apache/answer/internal/entity"
@@ -47,13 +48,60 @@ func Test_notificationRepo_ClearIDUnRead(t *testing.T) {
 	err := notificationRepo.AddNotification(context.TODO(), ent)
 	require.NoError(t, err)
 
-	err = notificationRepo.ClearIDUnRead(context.TODO(), ent.UserID, ent.ID)
+	affected, err := notificationRepo.ClearIDUnRead(context.TODO(), ent.UserID, ent.ID)
 	require.NoError(t, err)
+	assert.EqualValues(t, 1, affected)
 
 	got, exists, err := notificationRepo.GetById(context.TODO(), ent.ID)
 	require.NoError(t, err)
 	assert.True(t, exists)
 	assert.Equal(t, schema.NotificationRead, got.IsRead)
+
+	// a duplicate request must not report another unread to read transition
+	affected, err = notificationRepo.ClearIDUnRead(context.TODO(), ent.UserID, ent.ID)
+	require.NoError(t, err)
+	assert.EqualValues(t, 0, affected)
+
+	// a notification of another user must not be changed
+	affected, err = notificationRepo.ClearIDUnRead(context.TODO(), "another-user", ent.ID)
+	require.NoError(t, err)
+	assert.EqualValues(t, 0, affected)
+}
+
+func Test_notificationRepo_ClearIDUnReadConcurrent(t *testing.T) {
+	notificationRepo := notification.NewNotificationRepo(testDataSource)
+	ent := buildNotificationEntity()
+	err := notificationRepo.AddNotification(context.TODO(), ent)
+	require.NoError(t, err)
+
+	const requestCount = 5
+	var (
+		waitGroup sync.WaitGroup
+		mutex     sync.Mutex
+		affected  int64
+		errs      []error
+	)
+	start := make(chan struct{})
+	for i := 0; i < requestCount; i++ {
+		waitGroup.Add(1)
+		go func() {
+			defer waitGroup.Done()
+			<-start
+			rows, err := notificationRepo.ClearIDUnRead(context.TODO(), ent.UserID, ent.ID)
+			mutex.Lock()
+			defer mutex.Unlock()
+			if err != nil {
+				errs = append(errs, err)
+				return
+			}
+			affected += rows
+		}()
+	}
+	close(start)
+	waitGroup.Wait()
+
+	require.Empty(t, errs)
+	assert.EqualValues(t, 1, affected, "only one concurrent request may change the notification")
 }
 
 func Test_notificationRepo_ClearUnRead(t *testing.T) {
