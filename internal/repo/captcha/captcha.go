@@ -53,7 +53,7 @@ func (cr *captchaRepo) SetActionType(ctx context.Context, unit, actionType, conf
 	value.Num = amount
 	valueStr, err := json.Marshal(value)
 	if err != nil {
-		return nil
+		return err
 	}
 	err = cr.data.Cache.SetString(ctx, cacheKey, string(valueStr), 6*time.Minute)
 	if err != nil {
