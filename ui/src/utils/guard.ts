@@ -389,6 +389,7 @@ export const initAppSettingsStore = async () => {
     });
     aiControlStore.getState().update({
       ai_enabled: appSettings.ai_enabled,
+      ai_translation_enabled: appSettings.ai_translation_enabled ?? true,
     });
     siteSecurityStore.getState().update(appSettings.site_security);
   }

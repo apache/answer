@@ -27,7 +27,7 @@ import classNames from 'classnames';
 
 import { usePromptWithUnload } from '@/hooks';
 import { useCaptchaPlugin } from '@/utils/pluginKit';
-import { Editor, Modal, TextArea } from '@/components';
+import { AITranslateButton, Editor, Modal, TextArea } from '@/components';
 import { FormDataType, PostAnswerReq } from '@/common/interface';
 import { postAnswer } from '@/services';
 import { guard, handleFormError, SaveDraft, storageExpires } from '@/utils';
@@ -287,6 +287,21 @@ const Index: FC<Props> = ({ visible = false, data, callback }) => {
                 onBlur={() => {
                   setFocusType('');
                 }}
+                bottomRightAction={
+                  <AITranslateButton
+                    className="ai-translate-button-editor"
+                    content={formData.content.value}
+                    onApply={(value) =>
+                      setFormData({
+                        content: {
+                          value,
+                          isInvalid: false,
+                          errorMsg: '',
+                        },
+                      })
+                    }
+                  />
+                }
               />
 
               <Alert
