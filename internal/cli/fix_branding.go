@@ -22,9 +22,11 @@ package cli
 import (
 	"encoding/json"
 	"fmt"
+	"slices"
 
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/entity"
+	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/plugin"
 	"xorm.io/xorm"
 )
@@ -40,14 +42,7 @@ func fixBranding(x *xorm.Engine, opts *FixURLPrefixOptions, state *fixRunState) 
 		return fixResult{}, nil
 	}
 
-	type brandingContent struct {
-		Logo       string `json:"logo"`
-		MobileLogo string `json:"mobile_logo"`
-		SquareIcon string `json:"square_icon"`
-		Favicon    string `json:"favicon"`
-	}
-
-	content := &brandingContent{}
+	content := &schema.SiteBrandingReq{}
 	if err = json.Unmarshal([]byte(siteInfo.Content), content); err != nil {
 		return fixResult{}, fmt.Errorf("parse branding content failed: %w", err)
 	}
@@ -94,12 +89,20 @@ func fixBranding(x *xorm.Engine, opts *FixURLPrefixOptions, state *fixRunState) 
 		}
 	}
 
-	frResult, err := fixFileRecordBySources(x, opts, state,
-		[]string{string(plugin.AdminBranding)}, fixTypeBranding)
+	records, err := newFileRecordSync(x, opts, fixTypeBranding, string(plugin.AdminBranding))
 	if err != nil {
 		return fixResult{}, err
 	}
-	result.add(frResult)
+	for _, field := range fields {
+		// --limit may leave another field on the shared old URL.
+		oldURL := swapPrefix(*field.value, opts.DstPrefix, opts.SrcPrefix)
+		if slices.ContainsFunc(fields, func(f brandingField) bool { return *f.value == oldURL }) {
+			continue
+		}
+		if err := records.sync(*field.value); err != nil {
+			return fixResult{}, err
+		}
+	}
 
 	return result, nil
 }

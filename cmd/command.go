@@ -90,7 +90,7 @@ func init() {
 	resetPasswordCmd.Flags().StringVarP(&resetPasswordPassword, "password", "p", "", "new password (not recommended, will be recorded in shell history)")
 
 	fixCmd.Flags().BoolVar(&fixDryRun, "dry-run", false, "show what would be changed without modifying the database")
-	fixCmd.Flags().Int64Var(&fixLimit, "limit", 0, "stop after fixing NUM rows total across all selected fix types (0 = unlimited)")
+	fixCmd.Flags().Int64Var(&fixLimit, "limit", 0, "stop after fixing NUM rows total across all selected fix types; a post and its revisions count as one row, file records are not counted (default: unlimited)")
 
 	for _, cmd := range []*cobra.Command{initCmd, checkCmd, runCmd, dumpCmd, upgradeCmd, buildCmd, pluginCmd, configCmd, i18nCmd, resetPasswordCmd, fixCmd} {
 		rootCmd.AddCommand(cmd)
@@ -343,24 +343,31 @@ To run answer, use:
 	fixCmd = &cobra.Command{
 		Use:   "fix [all|branding|avatar|post] SRC_PREFIX DST_PREFIX",
 		Short: "Fix stored URL prefixes in the database (stop Answer and back up data first)",
-		Long: `Fix stored URL prefixes for branding, avatars, and post content.
+		Long: `Fix stored URL prefixes of uploaded files:
+  branding  logo, mobile logo, square icon and favicon
+  avatar    custom avatars, including copies in notifications
+  post      questions, answers, tags (with revisions) and comments
 
-WARNING: Stop Answer and back up your database before running this command.
+WARNING: Stop Answer and back up your database first. Values already on DST_PREFIX
+are skipped; ambiguous ones are reported for manual fix.
 
-Rows already using DST_PREFIX are skipped so the command can be rerun safely.
-If a text field contains both prefixes, it will be skipped and reported.
-
-After fixing branding data, the related site info cache will be invalidated.`,
+In text, only URLs after "](" or '="' are fixed. Not fixed: site URL, user
+bios, legal pages, custom CSS/HTML, plugin settings, close messages and
+plain-URL avatars from old versions.`,
 		Example: `  # Preview what would change
-  answer fix all /uploads/ /uploads/new/ --dry-run
+  answer fix all https://old.example.com/uploads/ https://new.example.com/uploads/ --dry-run
 
   # Fix up to 50 rows
-  answer fix all /uploads/ /cdn/ --limit 50
+  answer fix all https://old.example.com/uploads/ https://cdn.example.com/uploads/ --limit 50
 
   # Fix only avatars
-  answer fix avatar /uploads/ /cdn/`,
+  answer fix avatar https://old.example.com/uploads/ https://cdn.example.com/uploads/`,
 		Args: cobra.ExactArgs(3),
-		Run: func(_ *cobra.Command, args []string) {
+		Run: func(cmd *cobra.Command, args []string) {
+			if cmd.Flags().Changed("limit") && fixLimit <= 0 {
+				fmt.Fprintf(os.Stderr, "--limit must be greater than 0, got %d\n", fixLimit)
+				os.Exit(1)
+			}
 			path.FormatAllPath(dataDirPath)
 			c, err := conf.ReadConfig(path.GetConfigFilePath())
 			if err != nil {
