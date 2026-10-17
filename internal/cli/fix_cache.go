@@ -33,11 +33,15 @@ func invalidateSiteInfoCache(cacheFilePath string, fixTypes []string) {
 		return
 	}
 
-	// The branding site-info cache only lives in the file-backed memory cache.
-	// When a cache plugin (e.g. Redis) is used, no file path is configured, so
-	// warn the admin to flush it manually instead of silently doing nothing.
+	// The app uses an enabled cache plugin (e.g. Redis) instead of the file
+	// cache, even when a file path is configured, and the CLI cannot tell
+	// whether one is enabled. So always remind the admin about it.
+	key := constant.SiteInfoCacheKey + constant.SiteTypeBranding
+	defer fmt.Printf("[cache] if a cache plugin (e.g. Redis) is enabled, delete %s there, or branding refreshes when it expires (up to %s)\n",
+		key, constant.SiteInfoCacheTime)
+
 	if len(cacheFilePath) == 0 {
-		fmt.Println("[cache] no file cache configured; flush your cache backend or restart the application to refresh branding")
+		fmt.Println("[cache] no file cache configured")
 		return
 	}
 
@@ -47,11 +51,10 @@ func invalidateSiteInfoCache(cacheFilePath string, fixTypes []string) {
 		return
 	}
 
-	key := constant.SiteInfoCacheKey + constant.SiteTypeBranding
 	if err := memCache.Del(context.Background(), key); err != nil {
 		fmt.Printf("[cache] failed to delete key %s: %v\n", key, err)
 	} else {
-		fmt.Printf("[cache] invalidated %s\n", key)
+		fmt.Printf("[cache] invalidated %s in the cache file\n", key)
 	}
 
 	if err := memory.Save(memCache, cacheFilePath); err != nil {
