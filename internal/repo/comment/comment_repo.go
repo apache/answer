@@ -159,6 +159,48 @@ func (cr *commentRepo) GetCommentPage(ctx context.Context, commentQuery *comment
 	return
 }
 
+// GetPersonalCommentPage get personal comment page
+func (cr *commentRepo) GetPersonalCommentPage(ctx context.Context, commentQuery *comment.CommentQuery) (
+	commentList []*entity.Comment, total int64, err error,
+) {
+	commentList = make([]*entity.Comment, 0)
+
+	session := cr.data.DB.Context(ctx)
+	session.OrderBy(commentQuery.GetOrderBy())
+	session.Where("comment.status = ?", entity.CommentStatusAvailable)
+	session.Where("comment.user_id = ?", commentQuery.UserID)
+
+	if !commentQuery.IsAdminModerator {
+		// Only list comments whose target the viewer can see, following
+		// schema.SimpleObjectInfo.CheckVisibility: a target question must be
+		// available and shown, or owned by the viewer; a target answer must be
+		// available or owned by the viewer, and its parent question must be
+		// visible the same way. Filtering here keeps both the page content and
+		// the total on the visible comments only.
+		session.Join("LEFT", "question AS target_question", "comment.object_id = target_question.id")
+		session.Join("LEFT", "answer AS target_answer", "comment.object_id = target_answer.id")
+		session.Join("LEFT", "question AS parent_question", "target_answer.question_id = parent_question.id")
+		session.Where(
+			"(target_question.id IS NOT NULL AND"+
+				" ((target_question.status NOT IN (?, ?) AND target_question.show != ?) OR target_question.user_id = ?))"+
+				" OR (target_answer.id IS NOT NULL"+
+				" AND (target_answer.status NOT IN (?, ?) OR target_answer.user_id = ?)"+
+				" AND ((parent_question.status NOT IN (?, ?) AND parent_question.show != ?) OR parent_question.user_id = ?))",
+			entity.QuestionStatusDeleted, entity.QuestionStatusPending, entity.QuestionHide,
+			commentQuery.LoginUserID,
+			entity.AnswerStatusDeleted, entity.AnswerStatusPending, commentQuery.LoginUserID,
+			entity.QuestionStatusDeleted, entity.QuestionStatusPending, entity.QuestionHide,
+			commentQuery.LoginUserID,
+		)
+	}
+
+	total, err = pager.Help(commentQuery.Page, commentQuery.PageSize, &commentList, &entity.Comment{}, session)
+	if err != nil {
+		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	return
+}
+
 // RemoveAllUserComment remove all user comment
 func (cr *commentRepo) RemoveAllUserComment(ctx context.Context, userID string) (err error) {
 	session := cr.data.DB.Context(ctx).Where("user_id = ?", userID)

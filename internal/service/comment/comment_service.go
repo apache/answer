@@ -58,6 +58,8 @@ type CommentRepo interface {
 	GetComment(ctx context.Context, commentID string) (comment *entity.Comment, exist bool, err error)
 	GetCommentPage(ctx context.Context, commentQuery *CommentQuery) (
 		comments []*entity.Comment, total int64, err error)
+	GetPersonalCommentPage(ctx context.Context, commentQuery *CommentQuery) (
+		comments []*entity.Comment, total int64, err error)
 }
 
 type CommentQuery struct {
@@ -68,16 +70,20 @@ type CommentQuery struct {
 	QueryCond string
 	// user id
 	UserID string
+	// the viewer who requests the personal page; targets that this user cannot
+	// see are filtered out before pagination
+	LoginUserID      string
+	IsAdminModerator bool
 }
 
 func (c *CommentQuery) GetOrderBy() string {
 	if c.QueryCond == "vote" {
-		return "vote_count DESC,created_at ASC"
+		return "comment.vote_count DESC,comment.created_at ASC"
 	}
 	if c.QueryCond == "created_at" {
-		return "created_at DESC"
+		return "comment.created_at DESC"
 	}
-	return "created_at ASC"
+	return "comment.created_at ASC"
 }
 
 // CommentService user service
@@ -532,11 +538,13 @@ func (cs *CommentService) GetCommentPersonalWithPage(ctx context.Context, req *s
 	}
 
 	dto := &CommentQuery{
-		PageCond:  pager.PageCond{Page: req.Page, PageSize: req.PageSize},
-		UserID:    req.UserID,
-		QueryCond: "created_at",
+		PageCond:         pager.PageCond{Page: req.Page, PageSize: req.PageSize},
+		UserID:           req.UserID,
+		QueryCond:        "created_at",
+		LoginUserID:      req.LoginUserID,
+		IsAdminModerator: req.IsAdminModerator,
 	}
-	commentList, total, err := cs.commentRepo.GetCommentPage(ctx, dto)
+	commentList, total, err := cs.commentRepo.GetPersonalCommentPage(ctx, dto)
 	if err != nil {
 		return nil, err
 	}
