@@ -37,6 +37,7 @@ import (
 	"github.com/apache/answer/internal/service/activity_common"
 	"github.com/apache/answer/internal/service/noticequeue"
 	"github.com/apache/answer/internal/service/object_info"
+	"github.com/apache/answer/internal/service/role"
 	usercommon "github.com/apache/answer/internal/service/user_common"
 	"github.com/apache/answer/pkg/uid"
 	"github.com/apache/answer/plugin"
@@ -59,13 +60,22 @@ type NotificationRepo interface {
 	DeleteUserNotificationConfig(ctx context.Context, userID string) (err error)
 }
 
+type ObjectInfoService interface {
+	GetInfo(ctx context.Context, objectID string) (*schema.SimpleObjectInfo, error)
+}
+
+type UserRoleService interface {
+	GetUserRoleRelMapping(ctx context.Context, userIDs []string) (map[string]int, error)
+}
+
 type NotificationCommon struct {
 	data                     *data.Data
 	notificationRepo         NotificationRepo
 	activityRepo             activity_common.ActivityRepo
 	followRepo               activity_common.FollowRepo
 	userCommon               *usercommon.UserCommon
-	objectInfoService        *object_info.ObjService
+	objectInfoService        ObjectInfoService
+	userRoleService          UserRoleService
 	notificationQueueService noticequeue.Service
 	userExternalLoginRepo    user_external_login.UserExternalLoginRepo
 	siteInfoService          siteinfo_common.SiteInfoCommonService
@@ -78,6 +88,7 @@ func NewNotificationCommon(
 	activityRepo activity_common.ActivityRepo,
 	followRepo activity_common.FollowRepo,
 	objectInfoService *object_info.ObjService,
+	userRoleService *role.UserRoleRelService,
 	notificationQueueService noticequeue.Service,
 	userExternalLoginRepo user_external_login.UserExternalLoginRepo,
 	siteInfoService siteinfo_common.SiteInfoCommonService,
@@ -89,6 +100,7 @@ func NewNotificationCommon(
 		followRepo:               followRepo,
 		userCommon:               userCommon,
 		objectInfoService:        objectInfoService,
+		userRoleService:          userRoleService,
 		notificationQueueService: notificationQueueService,
 		userExternalLoginRepo:    userExternalLoginRepo,
 		siteInfoService:          siteInfoService,
@@ -345,8 +357,18 @@ func (ns *NotificationCommon) SendNotificationToAllFollower(ctx context.Context,
 		log.Error(err)
 		return
 	}
-	log.Infof("send notification to all followers: %s %d", condObjectID, len(userIDs))
-	for _, userID := range userIDs {
+	questionInfo, err := ns.objectInfoService.GetInfo(ctx, condObjectID)
+	if err != nil {
+		log.Errorf("get question %s for follower notification failed: %v", condObjectID, err)
+		return
+	}
+	visibleUserIDs, err := ns.visibleFollowers(ctx, questionInfo, userIDs)
+	if err != nil {
+		log.Errorf("filter followers for question %s failed: %v", condObjectID, err)
+		return
+	}
+	log.Infof("send notification to visible followers: %s %d", condObjectID, len(visibleUserIDs))
+	for _, userID := range visibleUserIDs {
 		t := &schema.NotificationMsg{}
 		_ = copier.Copy(t, msg)
 		t.ReceiverUserID = userID
@@ -354,6 +376,24 @@ func (ns *NotificationCommon) SendNotificationToAllFollower(ctx context.Context,
 		t.NoNeedPushAllFollow = true
 		ns.notificationQueueService.Send(ctx, t)
 	}
+}
+
+func (ns *NotificationCommon) visibleFollowers(ctx context.Context, questionInfo *schema.SimpleObjectInfo,
+	userIDs []string) ([]string, error) {
+	userRoleMapping, err := ns.userRoleService.GetUserRoleRelMapping(ctx, userIDs)
+	if err != nil {
+		return nil, err
+	}
+	visibleUserIDs := make([]string, 0, len(userIDs))
+	for _, userID := range userIDs {
+		roleID := userRoleMapping[userID]
+		isAdminModerator := roleID == role.RoleAdminID || roleID == role.RoleModeratorID
+		if err := questionInfo.CheckVisibility(userID, isAdminModerator); err != nil {
+			continue
+		}
+		visibleUserIDs = append(visibleUserIDs, userID)
+	}
+	return visibleUserIDs, nil
 }
 
 func (ns *NotificationCommon) syncNotificationToPlugin(ctx context.Context, objInfo *schema.SimpleObjectInfo,

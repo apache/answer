@@ -42,6 +42,8 @@ type FollowDTO struct {
 	IsCancel bool
 	// user TagID
 	UserID string
+	// whether the requester is an administrator or moderator
+	IsAdminModerator bool
 }
 
 // UpdateFollowTagsReq update user follow tags

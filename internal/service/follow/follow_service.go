@@ -22,10 +22,14 @@ package follow
 import (
 	"context"
 
+	"github.com/apache/answer/internal/base/constant"
+	"github.com/apache/answer/internal/base/reason"
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/activity_common"
 	tagcommon "github.com/apache/answer/internal/service/tag_common"
+	"github.com/apache/answer/pkg/obj"
+	"github.com/segmentfault/pacman/errors"
 )
 
 type FollowRepo interface {
@@ -33,21 +37,28 @@ type FollowRepo interface {
 	FollowCancel(ctx context.Context, objectId, userId string) error
 }
 
+type ObjectInfoService interface {
+	GetInfo(ctx context.Context, objectID string) (*schema.SimpleObjectInfo, error)
+}
+
 type FollowService struct {
-	tagRepo          tagcommon.TagCommonRepo
-	followRepo       FollowRepo
-	followCommonRepo activity_common.FollowRepo
+	tagRepo           tagcommon.TagCommonRepo
+	followRepo        FollowRepo
+	followCommonRepo  activity_common.FollowRepo
+	objectInfoService ObjectInfoService
 }
 
 func NewFollowService(
 	followRepo FollowRepo,
 	followCommonRepo activity_common.FollowRepo,
 	tagRepo tagcommon.TagCommonRepo,
+	objectInfoService ObjectInfoService,
 ) *FollowService {
 	return &FollowService{
-		followRepo:       followRepo,
-		followCommonRepo: followCommonRepo,
-		tagRepo:          tagRepo,
+		followRepo:        followRepo,
+		followCommonRepo:  followCommonRepo,
+		tagRepo:           tagRepo,
+		objectInfoService: objectInfoService,
 	}
 }
 
@@ -56,6 +67,9 @@ func (fs *FollowService) Follow(ctx context.Context, dto *schema.FollowDTO) (res
 	if dto.IsCancel {
 		err = fs.followRepo.FollowCancel(ctx, dto.ObjectID, dto.UserID)
 	} else {
+		if err := fs.checkVisibility(ctx, dto); err != nil {
+			return resp, err
+		}
 		err = fs.followRepo.Follow(ctx, dto.ObjectID, dto.UserID)
 	}
 	if err != nil {
@@ -69,6 +83,24 @@ func (fs *FollowService) Follow(ctx context.Context, dto *schema.FollowDTO) (res
 	resp.Follows = follows
 	resp.IsFollowed = !dto.IsCancel
 	return resp, nil
+}
+
+func (fs *FollowService) checkVisibility(ctx context.Context, dto *schema.FollowDTO) error {
+	objectType, err := obj.GetObjectTypeStrByObjectID(dto.ObjectID)
+	if err != nil {
+		return err
+	}
+	if objectType != constant.QuestionObjectType && objectType != constant.AnswerObjectType && objectType != constant.CommentObjectType {
+		return nil
+	}
+	objectInfo, err := fs.objectInfoService.GetInfo(ctx, dto.ObjectID)
+	if err != nil {
+		if serviceErr, ok := err.(*errors.Error); ok && serviceErr.Reason == reason.ObjectNotFound {
+			return errors.NotFound(reason.QuestionNotFound)
+		}
+		return err
+	}
+	return objectInfo.CheckVisibility(dto.UserID, dto.IsAdminModerator)
 }
 
 // UpdateFollowTags update user follow tags

@@ -58,6 +58,7 @@ func (fc *FollowController) Follow(ctx *gin.Context) {
 	dto := &schema.FollowDTO{}
 	_ = copier.Copy(dto, req)
 	dto.UserID = middleware.GetLoginUserIDFromContext(ctx)
+	dto.IsAdminModerator = middleware.GetUserIsAdminModerator(ctx)
 
 	resp, err := fc.followService.Follow(ctx, dto)
 	if err != nil {
