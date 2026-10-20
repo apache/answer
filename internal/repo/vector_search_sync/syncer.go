@@ -49,7 +49,13 @@ func (p *PluginSyncer) GetQuestionsPage(ctx context.Context, page, pageSize int)
 	[]*plugin.VectorSearchContent, error) {
 	questions := make([]*entity.Question, 0)
 	startNum := (page - 1) * pageSize
-	err := p.data.DB.Context(ctx).Limit(pageSize, startNum).Find(&questions)
+	// Vector indexes are shared retrieval infrastructure. Only index content that
+	// is public to every caller; authorization is still enforced again when a
+	// result is read from the primary database.
+	err := p.data.DB.Context(ctx).
+		Where("show = ? AND status IN (?, ?)", entity.QuestionShow,
+			entity.QuestionStatusAvailable, entity.QuestionStatusClosed).
+		OrderBy("id ASC").Limit(pageSize, startNum).Find(&questions)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +68,12 @@ func (p *PluginSyncer) GetAnswersPage(ctx context.Context, page, pageSize int) (
 	[]*plugin.VectorSearchContent, error) {
 	answers := make([]*entity.Answer, 0)
 	startNum := (page - 1) * pageSize
-	err := p.data.DB.Context(ctx).Limit(pageSize, startNum).Find(&answers)
+	err := p.data.DB.Context(ctx).
+		Join("INNER", "question", "answer.question_id = question.id").
+		Where("answer.status = ? AND question.show = ? AND question.status IN (?, ?)",
+			entity.AnswerStatusAvailable, entity.QuestionShow,
+			entity.QuestionStatusAvailable, entity.QuestionStatusClosed).
+		OrderBy("answer.id ASC").Limit(pageSize, startNum).Find(&answers)
 	if err != nil {
 		return nil, err
 	}
@@ -74,6 +85,9 @@ func (p *PluginSyncer) buildQuestionContents(ctx context.Context, questions []*e
 	[]*plugin.VectorSearchContent, error) {
 	result := make([]*plugin.VectorSearchContent, 0, len(questions))
 	for _, q := range questions {
+		if !isPublicQuestion(q) {
+			continue
+		}
 		meta := plugin.VectorSearchMetadata{
 			QuestionID: uid.DeShortID(q.ID),
 		}
@@ -83,11 +97,15 @@ func (p *PluginSyncer) buildQuestionContents(ctx context.Context, questions []*e
 
 		// Get answers for this question
 		answers := make([]*entity.Answer, 0)
-		err := p.data.DB.Context(ctx).Where("question_id = ?", q.ID).Find(&answers)
+		err := p.data.DB.Context(ctx).Where("question_id = ? AND status = ?", q.ID,
+			entity.AnswerStatusAvailable).Find(&answers)
 		if err != nil {
 			log.Warnf("get answers for question %s failed: %v", q.ID, err)
 		} else {
 			for _, a := range answers {
+				if a.Status != entity.AnswerStatusAvailable {
+					continue
+				}
 				parts = append(parts, fmt.Sprintf("Answer: %s", a.OriginalText))
 				answerMeta := plugin.VectorSearchMetadataAnswer{
 					AnswerID: uid.DeShortID(a.ID),
@@ -95,12 +113,16 @@ func (p *PluginSyncer) buildQuestionContents(ctx context.Context, questions []*e
 
 				// Get comments on this answer
 				answerComments := make([]*entity.Comment, 0)
-				err := p.data.DB.Context(ctx).Where("object_id = ?", a.ID).
+				err := p.data.DB.Context(ctx).Where("object_id = ? AND status = ?", a.ID,
+					entity.CommentStatusAvailable).
 					OrderBy("created_at ASC").Limit(50).Find(&answerComments)
 				if err != nil {
 					log.Warnf("get comments for answer %s failed: %v", a.ID, err)
 				} else {
 					for _, c := range answerComments {
+						if c.Status != entity.CommentStatusAvailable {
+							continue
+						}
 						parts = append(parts, fmt.Sprintf("Comment on answer: %s", c.OriginalText))
 						answerMeta.Comments = append(answerMeta.Comments, plugin.VectorSearchMetadataComment{
 							CommentID: uid.DeShortID(c.ID),
@@ -113,12 +135,16 @@ func (p *PluginSyncer) buildQuestionContents(ctx context.Context, questions []*e
 
 		// Get comments on the question
 		questionComments := make([]*entity.Comment, 0)
-		err = p.data.DB.Context(ctx).Where("object_id = ?", q.ID).
+		err = p.data.DB.Context(ctx).Where("object_id = ? AND status = ?", q.ID,
+			entity.CommentStatusAvailable).
 			OrderBy("created_at ASC").Limit(50).Find(&questionComments)
 		if err != nil {
 			log.Warnf("get comments for question %s failed: %v", q.ID, err)
 		} else {
 			for _, c := range questionComments {
+				if c.Status != entity.CommentStatusAvailable {
+					continue
+				}
 				parts = append(parts, fmt.Sprintf("Comment: %s", c.OriginalText))
 				meta.Comments = append(meta.Comments, plugin.VectorSearchMetadataComment{
 					CommentID: uid.DeShortID(c.ID),
@@ -143,6 +169,9 @@ func (p *PluginSyncer) buildAnswerContents(ctx context.Context, answers []*entit
 	[]*plugin.VectorSearchContent, error) {
 	result := make([]*plugin.VectorSearchContent, 0, len(answers))
 	for _, a := range answers {
+		if a.Status != entity.AnswerStatusAvailable {
+			continue
+		}
 		// Get parent question for title
 		question := &entity.Question{}
 		exist, err := p.data.DB.Context(ctx).Where("id = ?", a.QuestionID).Get(question)
@@ -151,6 +180,9 @@ func (p *PluginSyncer) buildAnswerContents(ctx context.Context, answers []*entit
 			continue
 		}
 		if !exist {
+			continue
+		}
+		if !isPublicQuestion(question) {
 			continue
 		}
 
@@ -169,12 +201,16 @@ func (p *PluginSyncer) buildAnswerContents(ctx context.Context, answers []*entit
 
 		// Get comments on this answer
 		answerComments := make([]*entity.Comment, 0)
-		err = p.data.DB.Context(ctx).Where("object_id = ?", a.ID).
+		err = p.data.DB.Context(ctx).Where("object_id = ? AND status = ?", a.ID,
+			entity.CommentStatusAvailable).
 			OrderBy("created_at ASC").Limit(50).Find(&answerComments)
 		if err != nil {
 			log.Warnf("get comments for answer %s failed: %v", a.ID, err)
 		} else {
 			for _, c := range answerComments {
+				if c.Status != entity.CommentStatusAvailable {
+					continue
+				}
 				parts = append(parts, fmt.Sprintf("Comment: %s", c.OriginalText))
 				answerMeta.Comments = append(answerMeta.Comments, plugin.VectorSearchMetadataComment{
 					CommentID: uid.DeShortID(c.ID),
@@ -193,6 +229,11 @@ func (p *PluginSyncer) buildAnswerContents(ctx context.Context, answers []*entit
 		})
 	}
 	return result, nil
+}
+
+func isPublicQuestion(question *entity.Question) bool {
+	return question != nil && question.Show == entity.QuestionShow &&
+		(question.Status == entity.QuestionStatusAvailable || question.Status == entity.QuestionStatusClosed)
 }
 
 // BuildQuestionContentByID builds vector content for one question using the same

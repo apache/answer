@@ -533,6 +533,19 @@ func (qs *QuestionService) OperationQuestion(ctx context.Context, req *schema.Op
 	if err != nil {
 		return err
 	}
+	// Rebuild on visibility changes. The builder deletes the vector document
+	// when the question is no longer public, and restores it when it is shown.
+	if req.Operation == schema.QuestionOperationHide || req.Operation == schema.QuestionOperationShow {
+		action := vector_sync.ActionUpsert
+		if req.Operation == schema.QuestionOperationShow {
+			action = vector_sync.ActionRestoreQuestion
+		}
+		qs.vectorSyncService.Send(ctx, &vector_sync.Task{
+			Action:     action,
+			ObjectType: vector_sync.ObjectTypeQuestion,
+			ObjectID:   questionInfo.ID,
+		})
+	}
 
 	actMap := make(map[string]constant.ActivityTypeKey)
 	actMap[schema.QuestionOperationPin] = constant.ActQuestionPin
@@ -791,7 +804,7 @@ func (qs *QuestionService) RecoverQuestion(ctx context.Context, req *schema.Ques
 		OriginalObjectID: questionInfo.ID,
 		ActivityTypeKey:  constant.ActQuestionUndeleted,
 	})
-	qs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: questionInfo.ID})
+	qs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionRestoreQuestion, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: questionInfo.ID})
 	return nil
 }
 
@@ -1691,7 +1704,11 @@ func (qs *QuestionService) AdminSetQuestionStatus(ctx context.Context, req *sche
 	case entity.QuestionStatusDeleted:
 		qs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionDelete, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: questionInfo.ID})
 	case entity.QuestionStatusAvailable:
-		qs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: vector_sync.ActionUpsert, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: questionInfo.ID})
+		action := vector_sync.ActionUpsert
+		if questionInfo.Status == entity.QuestionStatusDeleted {
+			action = vector_sync.ActionRestoreQuestion
+		}
+		qs.vectorSyncService.Send(ctx, &vector_sync.Task{Action: action, ObjectType: vector_sync.ObjectTypeQuestion, ObjectID: questionInfo.ID})
 	}
 	return nil
 }

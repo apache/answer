@@ -26,6 +26,7 @@ import (
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/repo/search_sync"
 	"github.com/apache/answer/internal/repo/vector_search_sync"
+	"github.com/apache/answer/internal/service/vector_sync"
 
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
@@ -106,7 +107,7 @@ func (ps *PluginCommonService) UpdatePluginConfig(ctx context.Context, req *sche
 	})
 	_ = plugin.CallVectorSearch(func(vs plugin.VectorSearch) error {
 		if vs.Info().SlugName == req.PluginSlugName {
-			vs.RegisterSyncer(ctx, vector_search_sync.NewPluginSyncer(ps.data))
+			ps.registerVectorSyncer(vs)
 		}
 		return nil
 	})
@@ -185,7 +186,7 @@ func (ps *PluginCommonService) initPluginData() {
 
 	// register syncer for vector search plugins on startup
 	_ = plugin.CallVectorSearch(func(vs plugin.VectorSearch) error {
-		vs.RegisterSyncer(context.Background(), vector_search_sync.NewPluginSyncer(ps.data))
+		ps.registerVectorSyncer(vs)
 		return nil
 	})
 
@@ -227,5 +228,18 @@ func (ps *PluginCommonService) initPluginData() {
 			}
 			page++
 		}
+	}()
+}
+
+// registerVectorSyncer removes historical restricted documents before asking a
+// plugin to rebuild its index. This can involve remote vector-store calls, so it
+// must not block startup or a plugin configuration request.
+func (ps *PluginCommonService) registerVectorSyncer(vs plugin.VectorSearch) {
+	go func() {
+		ctx := context.Background()
+		if err := vector_sync.RemoveRestrictedContents(ctx, ps.data, vs); err != nil {
+			log.Errorf("remove restricted vector content for %s failed: %v", vs.Info().SlugName, err)
+		}
+		vs.RegisterSyncer(ctx, vector_search_sync.NewPluginSyncer(ps.data))
 	}()
 }
