@@ -184,7 +184,7 @@ func (vr *VoteRepo) GetAndSaveVoteResult(ctx context.Context, objectID, objectTy
 	up, down int64, err error) {
 	up = vr.countVoteUp(ctx, objectID, objectType)
 	down = vr.countVoteDown(ctx, objectID, objectType)
-	err = vr.updateVotes(ctx, objectID, objectType, int(up-down))
+	err = vr.updateVotes(ctx, objectID, objectType)
 	return
 }
 
@@ -437,16 +437,35 @@ func (vr *VoteRepo) countVote(ctx context.Context, objectID, objectType, action 
 	return count, err
 }
 
-func (vr *VoteRepo) updateVotes(ctx context.Context, objectID, objectType string, voteCount int) (err error) {
-	session := vr.data.DB.Context(ctx)
+// updateVotes refreshes the stored vote count with a single statement that
+// recounts the active vote activities. Counting and writing in one statement
+// keeps a slower request from overwriting a newer total with a stale one.
+func (vr *VoteRepo) updateVotes(ctx context.Context, objectID, objectType string) (err error) {
+	// A missing activity type (e.g. comments have no vote down) yields id 0,
+	// which matches no activity, same as the count helpers behave.
+	upActivityType, _ := vr.activityRepo.GetActivityTypeByObjectType(ctx, objectType, constant.ActVoteUp)
+	downActivityType, _ := vr.activityRepo.GetActivityTypeByObjectType(ctx, objectType, constant.ActVoteDown)
+
+	var tableName string
 	switch objectType {
 	case constant.QuestionObjectType:
-		_, err = session.ID(objectID).Cols("vote_count").Update(&entity.Question{VoteCount: voteCount})
+		tableName = vr.data.DB.TableName(&entity.Question{})
 	case constant.AnswerObjectType:
-		_, err = session.ID(objectID).Cols("vote_count").Update(&entity.Answer{VoteCount: voteCount})
+		tableName = vr.data.DB.TableName(&entity.Answer{})
 	case constant.CommentObjectType:
-		_, err = session.ID(objectID).Cols("vote_count").Update(&entity.Comment{VoteCount: voteCount})
+		tableName = vr.data.DB.TableName(&entity.Comment{})
+	default:
+		return nil
 	}
+
+	activityTable := vr.data.DB.TableName(&entity.Activity{})
+	_, err = vr.data.DB.Context(ctx).Exec(
+		"UPDATE "+tableName+" SET vote_count = "+
+			"((SELECT COUNT(*) FROM "+activityTable+" WHERE object_id = ? AND activity_type = ? AND cancelled = 0)"+
+			" - "+
+			"(SELECT COUNT(*) FROM "+activityTable+" WHERE object_id = ? AND activity_type = ? AND cancelled = 0)) "+
+			"WHERE id = ?",
+		objectID, upActivityType, objectID, downActivityType, objectID)
 	if err != nil {
 		log.Error(err)
 	}
