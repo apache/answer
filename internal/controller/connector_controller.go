@@ -175,7 +175,7 @@ func (cc *ConnectorController) ConnectorRedirect(connector plugin.Connector) (fn
 			ctx.Redirect(http.StatusFound, "/50x")
 			return
 		}
-		if requirer, ok := connector.(plugin.ConnectorStateRequired); ok && requirer.ConnectorRequireState() && stateInfo == nil {
+		if connectorRequiresState(connector) && stateInfo == nil {
 			log.Errorf("missing or invalid connector oauth state for provider %s", connector.ConnectorSlugName())
 			ctx.Redirect(http.StatusFound, "/50x")
 			return
@@ -207,6 +207,11 @@ func (cc *ConnectorController) ConnectorRedirect(connector plugin.Connector) (fn
 				siteGeneral.SiteUrl, resp.BindingKey))
 		}
 	}
+}
+
+func connectorRequiresState(connector any) bool {
+	requirer, ok := connector.(plugin.ConnectorStateRequired)
+	return ok && requirer.ConnectorRequireState()
 }
 
 // ConnectorsInfo get all enabled connectors
