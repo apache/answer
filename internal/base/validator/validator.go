@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"sync"
 	"unicode"
 
 	"github.com/apache/answer/internal/base/reason"
@@ -96,7 +97,10 @@ type FormErrorField struct {
 }
 
 // GlobalValidatorMapping is a mapping from validator to translator used
-var GlobalValidatorMapping = make(map[i18n.Language]*MyValidator, 0)
+var (
+	GlobalValidatorMapping = make(map[i18n.Language]*MyValidator, 0)
+	validatorMappingMu     sync.RWMutex
+)
 
 func init() {
 	for _, t := range allLanguageTranslators {
@@ -180,9 +184,44 @@ func createDefaultValidator(la i18n.Language) *validator.Validate {
 }
 
 func GetValidatorByLang(lang i18n.Language) *MyValidator {
-	if GlobalValidatorMapping[lang] != nil {
-		return GlobalValidatorMapping[lang]
+	validatorMappingMu.RLock()
+	if v := GlobalValidatorMapping[lang]; v != nil {
+		validatorMappingMu.RUnlock()
+		return v
 	}
+	validatorMappingMu.RUnlock()
+
+	baseLang := string(lang)
+	if idx := strings.IndexAny(baseLang, "_-"); idx > 0 {
+		baseLang = baseLang[:idx]
+	}
+
+	for _, t := range allLanguageTranslators {
+		tBase := string(t.La)
+		if idx := strings.IndexAny(tBase, "_-"); idx > 0 {
+			tBase = tBase[:idx]
+		}
+		if strings.EqualFold(baseLang, tBase) {
+			validatorMappingMu.Lock()
+			defer validatorMappingMu.Unlock()
+			if v := GlobalValidatorMapping[lang]; v != nil {
+				return v
+			}
+			tran, val := getTran(t.Lo), createDefaultValidator(lang)
+			if t.RegisterFunc != nil {
+				if err := t.RegisterFunc(val, tran); err != nil {
+					log.Error(err)
+					break
+				}
+			}
+			v := &MyValidator{Validate: val, Tran: tran, Lang: lang}
+			GlobalValidatorMapping[lang] = v
+			return v
+		}
+	}
+
+	validatorMappingMu.RLock()
+	defer validatorMappingMu.RUnlock()
 	return GlobalValidatorMapping[i18n.DefaultLanguage]
 }
 
@@ -196,12 +235,16 @@ func (m *MyValidator) Check(value any) (errFields []*FormErrorField, err error) 
 			if len(field.ErrorField) == 0 {
 				continue
 			}
-			firstRune := []rune(field.ErrorMsg)[0]
+			runes := []rune(field.ErrorMsg)
+			if len(runes) == 0 {
+				continue
+			}
+			firstRune := runes[0]
 			if !unicode.IsLetter(firstRune) || !unicode.Is(unicode.Latin, firstRune) {
 				continue
 			}
 			upperFirstRune := unicode.ToUpper(firstRune)
-			field.ErrorMsg = string(upperFirstRune) + field.ErrorMsg[1:]
+			field.ErrorMsg = string(upperFirstRune) + string(runes[1:])
 			if !strings.HasSuffix(field.ErrorMsg, ".") {
 				field.ErrorMsg += "."
 			}
