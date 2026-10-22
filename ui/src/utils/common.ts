@@ -95,8 +95,9 @@ const bgFadeOut = (el) => {
  * @returns Array<{displayName: string, userName: string}>
  */
 function matchedUsers(markdown) {
-  const globalReg = /\B@([\w|]+)/g;
-  const reg = /\B@([\w\\_\\.]+)/;
+  // Same pattern as parseUserInfo: usernames may contain "-" and ".".
+  const globalReg = /\B@([\w\\_\\.\\-]+)/g;
+  const reg = /\B@([\w\\_\\.\\-]+)/;
 
   const users = markdown.match(globalReg);
   if (!users) {
