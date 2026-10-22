@@ -68,7 +68,8 @@ func (a *StaticRouter) RegisterStaticRouter(r *gin.RouterGroup) {
 }
 
 func attachmentFileLocalPath(uploadPath, requestPath, originalFilename string) (string, bool) {
-	realFilename := strings.TrimSuffix(requestPath, "/"+originalFilename) + filepath.Ext(originalFilename)
+	// The uploader saves attachments with a lowercased extension, so match it here.
+	realFilename := strings.TrimSuffix(requestPath, "/"+originalFilename) + strings.ToLower(filepath.Ext(originalFilename))
 	attachmentRoot := filepath.Join(uploadPath, constant.FilesPostSubPath)
 	fileLocalPath := filepath.Join(attachmentRoot, realFilename)
 	relPath, err := filepath.Rel(attachmentRoot, fileLocalPath)
