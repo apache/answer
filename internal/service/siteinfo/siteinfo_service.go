@@ -372,12 +372,20 @@ func (s *SiteInfoService) GetSiteAI(ctx context.Context) (resp *schema.SiteAIRes
 		}
 	}
 	resp.SiteAIProviders = providers
+	if resp.TranslationEnabled == nil {
+		enabled := true
+		resp.TranslationEnabled = &enabled
+	}
 	s.maskAIKeys(resp)
 	return resp, nil
 }
 
 // SaveSiteAI save site AI configuration
 func (s *SiteInfoService) SaveSiteAI(ctx context.Context, req *schema.SiteAIReq) (err error) {
+	if req.TranslationEnabled == nil {
+		enabled := true
+		req.TranslationEnabled = &enabled
+	}
 	if err := s.restoreMaskedAIKeys(ctx, req); err != nil {
 		return err
 	}

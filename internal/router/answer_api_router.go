@@ -324,8 +324,9 @@ func (a *AnswerAPIRouter) RegisterAnswerAPIRouter(r *gin.RouterGroup) {
 	// meta
 	r.PUT("/meta/reaction", a.metaController.AddOrUpdateReaction)
 
-	// AI chat
+	// AI
 	r.POST("/chat/completions", a.aiController.ChatCompletions)
+	r.POST("/ai/translate", a.aiController.TranslateContent)
 
 	// AI conversation
 	r.GET("/ai/conversation/page", a.aiConversationController.GetConversationList)

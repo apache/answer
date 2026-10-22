@@ -47,6 +47,11 @@ const Index = () => {
       isInvalid: false,
       errorMsg: '',
     },
+    translation_enabled: {
+      value: true,
+      isInvalid: false,
+      errorMsg: '',
+    },
     provider: {
       value: '',
       isInvalid: false,
@@ -225,6 +230,7 @@ const Index = () => {
 
     const params = {
       enabled: formData.enabled.value,
+      translation_enabled: formData.translation_enabled.value,
       chosen_provider: formData.provider.value,
       ai_providers: newProviders,
     };
@@ -232,6 +238,7 @@ const Index = () => {
       .then(() => {
         aiControlStore.getState().update({
           ai_enabled: formData.enabled.value,
+          ai_translation_enabled: formData.translation_enabled.value,
         });
 
         historyConfigRef.current = {
@@ -271,6 +278,11 @@ const Index = () => {
     setFormData({
       enabled: {
         value: aiConfig.enabled || false,
+        isInvalid: false,
+        errorMsg: '',
+      },
+      translation_enabled: {
+        value: aiConfig.translation_enabled ?? true,
         isInvalid: false,
         errorMsg: '',
       },
@@ -348,6 +360,29 @@ const Index = () => {
             <Form.Control.Feedback type="invalid">
               {formData.enabled.errorMsg}
             </Form.Control.Feedback>
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="translation_enabled">
+            <Form.Label>{t('translation_enabled.label')}</Form.Label>
+            <Form.Switch
+              type="switch"
+              id="translation_enabled"
+              label={t('translation_enabled.check')}
+              checked={formData.translation_enabled.value}
+              disabled={!formData.enabled.value}
+              onChange={(e) =>
+                handleValueChange({
+                  translation_enabled: {
+                    value: e.target.checked,
+                    errorMsg: '',
+                    isInvalid: false,
+                  },
+                })
+              }
+            />
+            <Form.Text className="text-muted">
+              {t('translation_enabled.text')}
+            </Form.Text>
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="provider">
