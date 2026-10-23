@@ -1528,18 +1528,6 @@ func (qs *QuestionService) SimilarQuestion(ctx context.Context, questionID strin
 func (qs *QuestionService) GetQuestionPage(ctx context.Context, req *schema.QuestionPageReq) (
 	questions []*schema.QuestionPageResp, total int64, err error) {
 	questions = make([]*schema.QuestionPageResp, 0)
-	// query by user role
-	showHidden := false
-	if req.LoginUserID != "" && req.UserIDBeSearched != "" {
-		showHidden = req.LoginUserID == req.UserIDBeSearched
-		if !showHidden {
-			userRole, err := qs.userRoleRelService.GetUserRole(ctx, req.LoginUserID)
-			if err != nil {
-				return nil, 0, err
-			}
-			showHidden = userRole == role.RoleAdminID || userRole == role.RoleModeratorID
-		}
-	}
 	// query by tag condition
 	var tagIDs = make([]string, 0)
 	if len(req.Tag) > 0 {
@@ -1559,7 +1547,8 @@ func (qs *QuestionService) GetQuestionPage(ctx context.Context, req *schema.Ques
 		}
 	}
 
-	// query by user condition
+	// Determine the target user before evaluating whether the caller may view
+	// that user's hidden questions.
 	if req.Username != "" {
 		userinfo, exist, err := qs.userCommon.GetUserBasicInfoByUserName(ctx, req.Username)
 		if err != nil {
@@ -1569,6 +1558,19 @@ func (qs *QuestionService) GetQuestionPage(ctx context.Context, req *schema.Ques
 			return questions, 0, nil
 		}
 		req.UserIDBeSearched = userinfo.ID
+	}
+
+	// query by user role
+	showHidden := false
+	if req.LoginUserID != "" && req.UserIDBeSearched != "" {
+		showHidden = req.LoginUserID == req.UserIDBeSearched
+		if !showHidden {
+			userRole, err := qs.userRoleRelService.GetUserRole(ctx, req.LoginUserID)
+			if err != nil {
+				return nil, 0, err
+			}
+			showHidden = userRole == role.RoleAdminID || userRole == role.RoleModeratorID
+		}
 	}
 
 	if req.OrderCond == schema.QuestionOrderCondHot {

@@ -373,10 +373,10 @@ type QuestionPageReq struct {
 	Username  string `validate:"omitempty,gt=0,lte=100" form:"username"`
 	InDays    int    `validate:"omitempty,min=1" form:"in_days"`
 
-	LoginUserID      string `json:"-"`
-	UserIDBeSearched string `json:"-"`
-	TagID            string `json:"-"`
-	ShowPending      bool   `json:"-"`
+	LoginUserID      string `json:"-" form:"-"`
+	UserIDBeSearched string `json:"-" form:"-"`
+	TagID            string `json:"-" form:"-"`
+	ShowPending      bool   `json:"-" form:"-"`
 }
 
 const (
