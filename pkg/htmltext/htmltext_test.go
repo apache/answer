@@ -21,8 +21,11 @@ package htmltext
 
 import (
 	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -330,4 +333,57 @@ func TestFetchMatchedExcerpt(t *testing.T) {
 	expected = "... have 中文 and 😂..."
 	actual = FetchMatchedExcerpt(html, []string{"中文", "😂"}, "...", 6)
 	assert.Equal(t, expected, actual)
+}
+
+func TestGetPicByUrlReturnsBody(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("image-bytes"))
+	}))
+	defer srv.Close()
+
+	assert.Equal(t, "image-bytes", GetPicByUrl(srv.URL))
+}
+
+func TestGetPicByUrlReturnsEmptyOnErrorStatus(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNotFound)
+		_, _ = w.Write([]byte("not found"))
+	}))
+	defer srv.Close()
+
+	assert.Equal(t, "", GetPicByUrl(srv.URL))
+}
+
+// A slow origin must not pin the handler goroutine indefinitely: /favicon.ico
+// calls GetPicByUrl on every anonymous request, so an unresponsive branding URL
+// would otherwise accumulate stuck goroutines with no upper bound.
+func TestGetPicByUrlTimesOut(t *testing.T) {
+	release := make(chan struct{})
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		<-release
+	}))
+	defer func() {
+		close(release)
+		srv.Close()
+	}()
+
+	original := picClient.Timeout
+	picClient.Timeout = 100 * time.Millisecond
+	defer func() { picClient.Timeout = original }()
+
+	done := make(chan string, 1)
+	go func() { done <- GetPicByUrl(srv.URL) }()
+
+	select {
+	case got := <-done:
+		assert.Equal(t, "", got, "a timed-out fetch must yield an empty result")
+	case <-time.After(10 * time.Second):
+		t.Fatal("GetPicByUrl did not honour the client timeout")
+	}
+}
+
+func TestPicClientHasTimeout(t *testing.T) {
+	// Guards against regressing to a bare &http.Client{}, which has no timeout.
+	assert.NotZero(t, picClient.Timeout)
 }

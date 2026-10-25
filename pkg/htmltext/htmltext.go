@@ -26,6 +26,7 @@ import (
 	"regexp"
 	"strings"
 	"sync/atomic"
+	"time"
 	"unicode"
 	"unicode/utf8"
 
@@ -238,15 +239,27 @@ func FetchMatchedExcerpt(html string, words []string, trimMarker string, trimLen
 	return FetchRangedExcerpt(html, trimMarker, runeOffset, runeLimit)
 }
 
+// fetchedPicMaxBytes caps how much of a remote image is read, so a hostile or
+// misconfigured URL cannot exhaust memory.
+const fetchedPicMaxBytes = 5 << 20
+
+// picClient is used for anonymous, user-influenced outbound fetches. The zero
+// value of http.Client has no timeout, so a slow or blackholed host would block
+// the handler goroutine until the OS gives up.
+var picClient = &http.Client{Timeout: 15 * time.Second}
+
 func GetPicByUrl(url string) string {
-	res, err := http.Get(url)
+	res, err := picClient.Get(url)
 	if err != nil {
 		return ""
 	}
 	defer func() {
 		_ = res.Body.Close()
 	}()
-	pix, err := io.ReadAll(res.Body)
+	if res.StatusCode != http.StatusOK {
+		return ""
+	}
+	pix, err := io.ReadAll(io.LimitReader(res.Body, fetchedPicMaxBytes))
 	if err != nil {
 		return ""
 	}
