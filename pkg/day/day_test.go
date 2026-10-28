@@ -102,3 +102,44 @@ func TestFormat_AllLanguagesNoHang(t *testing.T) {
 		}
 	}
 }
+
+// Format takes an IANA time zone name and must render the instant in that zone.
+// Before the fix the loaded location was discarded, so every caller (the UI,
+// the email templates and the "account suspended until" notice, which passes
+// "UTC" explicitly) got the server's local zone instead.
+func TestFormatTimezone(t *testing.T) {
+	// 2023-11-14 22:13:20 UTC
+	const sec = int64(1700000000)
+
+	tests := []struct {
+		name     string
+		format   string
+		tz       string
+		expected string
+	}{
+		{"utc", "YYYY-MM-DD HH:mm", "UTC", "2023-11-14 22:13"},
+		{"tokyo_crosses_midnight", "YYYY-MM-DD HH:mm", "Asia/Tokyo", "2023-11-15 07:13"},
+		{"new_york", "YYYY-MM-DD HH:mm", "America/New_York", "2023-11-14 17:13"},
+		{"kolkata_half_hour_offset", "YYYY-MM-DD HH:mm", "Asia/Kolkata", "2023-11-15 03:43"},
+		{"los_angeles_long_date", "MMMM D, YYYY HH:mm", "America/Los_Angeles", "November 14, 2023 14:13"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.expected, Format(sec, tt.format, tt.tz))
+		})
+	}
+}
+
+// A zone that cannot be resolved must fall back to the server's local zone
+// instead of failing or silently shifting the instant.
+func TestFormatUnknownTimezoneFallsBackToLocal(t *testing.T) {
+	const sec = int64(1700000000)
+	expected := time.Unix(sec, 0).In(time.Local).Format("2006-01-02 15:04")
+
+	for _, tz := range []string{"", "Not/AZone", "UTC+99"} {
+		t.Run("tz="+tz, func(t *testing.T) {
+			assert.Equal(t, expected, Format(sec, "YYYY-MM-DD HH:mm", tz))
+		})
+	}
+}

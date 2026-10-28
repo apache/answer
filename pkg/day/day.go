@@ -59,8 +59,13 @@ func Format(unix int64, format, tz string) (formatted string) {
 		from = suffix
 	}
 
-	_, _ = time.LoadLocation(tz)
-	formatted = time.Unix(unix, 0).Format(toFormat.String())
+	loc, err := time.LoadLocation(tz)
+	if err != nil || tz == "" {
+		// An empty or unknown zone must not shift the instant that is being
+		// rendered: fall back to the server local zone.
+		loc = time.Local
+	}
+	formatted = time.Unix(unix, 0).In(loc).Format(toFormat.String())
 	return
 }
 
