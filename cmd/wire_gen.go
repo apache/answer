@@ -265,7 +265,7 @@ func initApplication(debug bool, serverConf *conf.Server, dbConf *data.Database,
 	activityActivityRepo := activity.NewActivityRepo(dataData, configService)
 	activityCommon := activity_common2.NewActivityCommon(activityRepo, service)
 	commentCommonService := comment_common.NewCommentCommonService(commentCommonRepo)
-	activityService := activity2.NewActivityService(activityActivityRepo, userCommon, activityCommon, tagCommonService, objService, commentCommonService, revisionService, metaCommonService, configService)
+	activityService := activity2.NewActivityService(activityActivityRepo, userCommon, activityCommon, tagCommonService, objService, commentCommonService, revisionService, rankService, metaCommonService, configService)
 	activityController := controller.NewActivityController(activityService)
 	roleController := controller_admin.NewRoleController(roleService)
 	pluginConfigRepo := plugin_config.NewPluginConfigRepo(dataData)

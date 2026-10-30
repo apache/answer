@@ -36,6 +36,8 @@ import (
 	"github.com/apache/answer/internal/service/comment_common"
 	"github.com/apache/answer/internal/service/config"
 	"github.com/apache/answer/internal/service/object_info"
+	"github.com/apache/answer/internal/service/permission"
+	"github.com/apache/answer/internal/service/rank"
 	"github.com/apache/answer/internal/service/revision_common"
 	"github.com/apache/answer/internal/service/tag_common"
 	usercommon "github.com/apache/answer/internal/service/user_common"
@@ -51,6 +53,10 @@ type ActivityRepo interface {
 	GetObjectAllActivity(ctx context.Context, objectID string, showVote bool) (activityList []*entity.Activity, err error)
 }
 
+type timelineRevisionPermissionChecker interface {
+	CheckOperationPermissions(ctx context.Context, userID string, actions []string) (can []bool, err error)
+}
+
 // ActivityService activity service
 type ActivityService struct {
 	activityRepo          ActivityRepo
@@ -60,6 +66,7 @@ type ActivityService struct {
 	objectInfoService     *object_info.ObjService
 	commentCommonService  *comment_common.CommentCommonService
 	revisionService       *revision_common.RevisionService
+	rankService           timelineRevisionPermissionChecker
 	metaService           *metacommon.MetaCommonService
 	configService         *config.ConfigService
 }
@@ -73,6 +80,7 @@ func NewActivityService(
 	objectInfoService *object_info.ObjService,
 	commentCommonService *comment_common.CommentCommonService,
 	revisionService *revision_common.RevisionService,
+	rankService *rank.RankService,
 	metaService *metacommon.MetaCommonService,
 	configService *config.ConfigService,
 ) *ActivityService {
@@ -84,6 +92,7 @@ func NewActivityService(
 		tagCommonService:      tagCommonService,
 		commentCommonService:  commentCommonService,
 		revisionService:       revisionService,
+		rankService:           rankService,
 		metaService:           metaService,
 		configService:         configService,
 	}
@@ -282,7 +291,47 @@ func (as *ActivityService) ensureTimelineRevisionVisible(ctx context.Context, re
 	if err != nil {
 		return err
 	}
+	if err := as.ensureTimelineRevisionStatusVisible(ctx, revisionInfo, userID); err != nil {
+		return err
+	}
 	return as.ensureTimelineObjectVisible(ctx, revisionInfo.ObjectID, userID, isAdminModerator)
+}
+
+func (as *ActivityService) ensureTimelineRevisionStatusVisible(ctx context.Context, revisionInfo *entity.Revision,
+	userID string) error {
+	if isTimelineRevisionPublic(revisionInfo.Status) {
+		return nil
+	}
+
+	reviewPermission, ok := timelineRevisionReviewPermission(revisionInfo.ObjectType)
+	if !ok {
+		return errors.NotFound(reason.ObjectNotFound)
+	}
+	canReview, err := as.rankService.CheckOperationPermissions(ctx, userID, []string{reviewPermission})
+	if err != nil {
+		return err
+	}
+	if len(canReview) == 0 || !canReview[0] {
+		return errors.NotFound(reason.ObjectNotFound)
+	}
+	return nil
+}
+
+func isTimelineRevisionPublic(status int) bool {
+	return status == entity.RevisionNormalStatus || status == entity.RevisionReviewPassStatus
+}
+
+func timelineRevisionReviewPermission(objectType int) (string, bool) {
+	switch objectType {
+	case constant.ObjectTypeStrMapping[constant.QuestionObjectType]:
+		return permission.QuestionAudit, true
+	case constant.ObjectTypeStrMapping[constant.AnswerObjectType]:
+		return permission.AnswerAudit, true
+	case constant.ObjectTypeStrMapping[constant.TagObjectType]:
+		return permission.TagAudit, true
+	default:
+		return "", false
+	}
 }
 
 func (as *ActivityService) ensureTimelineObjectVisible(ctx context.Context, objectID, userID string,
