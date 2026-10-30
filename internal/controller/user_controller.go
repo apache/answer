@@ -50,6 +50,7 @@ type UserController struct {
 	emailService                  *export.EmailService
 	siteInfoCommonService         siteinfo_common.SiteInfoCommonService
 	userNotificationConfigService *user_notification_config.UserNotificationConfigService
+	loginHandoffService           *auth.LoginHandoffService
 }
 
 // NewUserController new controller
@@ -60,6 +61,7 @@ func NewUserController(
 	emailService *export.EmailService,
 	siteInfoCommonService siteinfo_common.SiteInfoCommonService,
 	userNotificationConfigService *user_notification_config.UserNotificationConfigService,
+	loginHandoffService *auth.LoginHandoffService,
 ) *UserController {
 	return &UserController{
 		authService:                   authService,
@@ -68,7 +70,35 @@ func NewUserController(
 		emailService:                  emailService,
 		siteInfoCommonService:         siteInfoCommonService,
 		userNotificationConfigService: userNotificationConfigService,
+		loginHandoffService:           loginHandoffService,
 	}
+}
+
+// ExchangeLoginHandoff exchanges a short-lived, one-time login handoff code for an access token.
+// @Summary Exchange a login handoff code
+// @Description Exchange a short-lived, one-time login handoff code for an access token
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param data body schema.LoginHandoffExchangeReq true "Login handoff code"
+// @Success 200 {object} handler.RespBody{data=schema.LoginHandoffExchangeResp}
+// @Router /answer/api/v1/user/login/handoff [post]
+func (uc *UserController) ExchangeLoginHandoff(ctx *gin.Context) {
+	req := &schema.LoginHandoffExchangeReq{}
+	if handler.BindAndCheck(ctx, req) {
+		return
+	}
+	accessToken, exists, err := uc.loginHandoffService.Consume(ctx, req.Code)
+	if err != nil {
+		handler.HandleResponse(ctx, err, nil)
+		return
+	}
+	if !exists {
+		handler.HandleResponse(ctx, errors.BadRequest(reason.RequestFormatError), nil)
+		return
+	}
+	ctx.Header("Cache-Control", "no-store")
+	handler.HandleResponse(ctx, nil, &schema.LoginHandoffExchangeResp{AccessToken: accessToken})
 }
 
 // GetUserInfoByUserID get user info, if user no login response http code is 200, but user info is null

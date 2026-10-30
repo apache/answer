@@ -23,6 +23,13 @@ import useSWR from 'swr';
 import request from '@/utils/request';
 import type * as Type from '@/common/interface';
 
+export const exchangeLoginHandoff = (code: string) => {
+  return request.post<{ access_token: string }>(
+    '/answer/api/v1/user/login/handoff',
+    { code },
+  );
+};
+
 export const uploadImage = (params: { file: File; type: Type.UploadType }) => {
   const form = new FormData();
   form.append('source', String(params.type));

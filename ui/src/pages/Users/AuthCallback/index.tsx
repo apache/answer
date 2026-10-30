@@ -17,20 +17,36 @@
  * under the License.
  */
 
-import { FC, memo, useEffect } from 'react';
+import { FC, memo, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { usePageTags } from '@/hooks';
 import { guard } from '@/utils';
+import { exchangeLoginHandoff } from '@/services/common';
 
 const Index: FC = () => {
   const { t } = useTranslation('translation', { keyPrefix: 'page_title' });
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const handled = useRef(false);
   useEffect(() => {
-    const token = searchParams.get('access_token');
-    guard.handleLoginWithToken(token, navigate);
+    if (handled.current) {
+      return;
+    }
+    handled.current = true;
+    const code = new URLSearchParams(window.location.hash.slice(1)).get('code');
+    window.history.replaceState(
+      null,
+      document.title,
+      `${window.location.pathname}${window.location.search}`,
+    );
+    if (!code) {
+      guard.handleLoginWithToken(null, navigate);
+      return;
+    }
+    exchangeLoginHandoff(code)
+      .then((res) => guard.handleLoginWithToken(res.access_token, navigate))
+      .catch(() => guard.handleLoginWithToken(null, navigate));
   }, []);
   usePageTags({
     title: t('oauth_callback'),

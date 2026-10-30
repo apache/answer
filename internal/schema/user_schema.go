@@ -103,6 +103,16 @@ type UserLoginResp struct {
 	SuspendedUntil int64 `json:"suspended_until"`
 }
 
+// LoginHandoffExchangeReq exchanges a short-lived authentication handoff code.
+type LoginHandoffExchangeReq struct {
+	Code string `json:"code" validate:"required,gt=0,lte=128"`
+}
+
+// LoginHandoffExchangeResp contains the access token after a successful exchange.
+type LoginHandoffExchangeResp struct {
+	AccessToken string `json:"access_token"`
+}
+
 func (r *UserLoginResp) ConvertFromUserEntity(userInfo *entity.User) {
 	_ = copier.Copy(r, userInfo)
 	r.CreatedAt = userInfo.CreatedAt.Unix()

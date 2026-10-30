@@ -1648,6 +1648,19 @@ definitions:
       text:
         type: string
     type: object
+  schema.LoginHandoffExchangeReq:
+    properties:
+      code:
+        maxLength: 128
+        type: string
+    required:
+    - code
+    type: object
+  schema.LoginHandoffExchangeResp:
+    properties:
+      access_token:
+        type: string
+    type: object
   schema.NotificationChannelConfig:
     properties:
       enable:
@@ -7986,6 +7999,34 @@ paths:
                   $ref: '#/definitions/schema.UserLoginResp'
               type: object
       summary: UserEmailLogin
+      tags:
+      - User
+  /answer/api/v1/user/login/handoff:
+    post:
+      consumes:
+      - application/json
+      description: Exchange a short-lived, one-time login handoff code for an access
+        token
+      parameters:
+      - description: Login handoff code
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/schema.LoginHandoffExchangeReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.RespBody'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.LoginHandoffExchangeResp'
+              type: object
+      summary: Exchange a login handoff code
       tags:
       - User
   /answer/api/v1/user/logout:

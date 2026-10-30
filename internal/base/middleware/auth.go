@@ -320,8 +320,5 @@ func GetLoginUserIDInt64FromContext(ctx *gin.Context) (userID int64) {
 // ExtractToken extract token from context
 func ExtractToken(ctx *gin.Context) (token string) {
 	token = ctx.GetHeader("Authorization")
-	if len(token) == 0 {
-		token = ctx.Query("Authorization")
-	}
 	return strings.TrimPrefix(token, "Bearer ")
 }

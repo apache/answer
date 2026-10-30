@@ -151,6 +151,7 @@ func (a *AnswerAPIRouter) RegisterMustUnAuthAnswerAPIRouter(authUserMiddleware *
 
 	// user
 	r.GET("/user/info", a.userController.GetUserInfoByUserID)
+	r.POST("/user/login/handoff", a.userController.ExchangeLoginHandoff)
 	r.GET("/user/action/record", authUserMiddleware.Auth(), a.userController.ActionRecord)
 	routerGroup := r.Group("", middleware.BanAPIForUserCenter)
 	routerGroup.POST("/user/login/email", a.userController.UserEmailLogin)

@@ -45,6 +45,8 @@ const (
 	ConnectorOAuthStateCacheKey                = "answer:connector:oauth-state:"
 	ConnectorOAuthStateCacheTime               = 10 * time.Minute
 	ConnectorOAuthBindStateCacheTime           = 5 * time.Minute
+	LoginHandoffCacheKey                       = "answer:login:handoff:"
+	LoginHandoffCacheTime                      = time.Minute
 	SiteMapQuestionCacheKeyPrefix              = "answer:sitemap:question:%d"
 	SiteMapQuestionCacheTime                   = time.Hour
 	SitemapMaxSize                             = 50000

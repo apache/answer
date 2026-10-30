@@ -27,6 +27,7 @@ import (
 	"github.com/apache/answer/internal/base/handler"
 	"github.com/apache/answer/internal/base/middleware"
 	"github.com/apache/answer/internal/schema"
+	"github.com/apache/answer/internal/service/auth"
 	"github.com/apache/answer/internal/service/export"
 	"github.com/apache/answer/internal/service/siteinfo_common"
 	"github.com/apache/answer/internal/service/user_external_login"
@@ -46,6 +47,7 @@ type ConnectorController struct {
 	siteInfoService     siteinfo_common.SiteInfoCommonService
 	userExternalService *user_external_login.UserExternalLoginService
 	emailService        *export.EmailService
+	loginHandoffService *auth.LoginHandoffService
 }
 
 // NewConnectorController new controller
@@ -53,11 +55,13 @@ func NewConnectorController(
 	siteInfoService siteinfo_common.SiteInfoCommonService,
 	emailService *export.EmailService,
 	userExternalService *user_external_login.UserExternalLoginService,
+	loginHandoffService *auth.LoginHandoffService,
 ) *ConnectorController {
 	return &ConnectorController{
 		siteInfoService:     siteInfoService,
 		userExternalService: userExternalService,
 		emailService:        emailService,
+		loginHandoffService: loginHandoffService,
 	}
 }
 
@@ -195,8 +199,10 @@ func (cc *ConnectorController) ConnectorRedirect(connector plugin.Connector) (fn
 			return
 		}
 		if len(resp.AccessToken) > 0 {
-			ctx.Redirect(http.StatusFound, fmt.Sprintf("%s/users/auth-landing?access_token=%s",
-				siteGeneral.SiteUrl, resp.AccessToken))
+			if err := redirectToAuthLanding(ctx, siteGeneral.SiteUrl, cc.loginHandoffService, resp.AccessToken); err != nil {
+				log.Errorf("create login handoff failed: %v", err)
+				ctx.Redirect(http.StatusFound, "/50x")
+			}
 		} else {
 			ctx.Redirect(http.StatusFound, fmt.Sprintf("%s/users/confirm-email?binding_key=%s",
 				siteGeneral.SiteUrl, resp.BindingKey))

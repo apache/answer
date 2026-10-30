@@ -26,6 +26,7 @@ import (
 	"github.com/apache/answer/internal/base/handler"
 	"github.com/apache/answer/internal/base/middleware"
 	"github.com/apache/answer/internal/schema"
+	"github.com/apache/answer/internal/service/auth"
 	"github.com/apache/answer/internal/service/siteinfo_common"
 	"github.com/apache/answer/internal/service/user_external_login"
 	"github.com/apache/answer/plugin"
@@ -42,16 +43,19 @@ const (
 type UserCenterController struct {
 	userCenterLoginService *user_external_login.UserCenterLoginService
 	siteInfoService        siteinfo_common.SiteInfoCommonService
+	loginHandoffService    *auth.LoginHandoffService
 }
 
 // NewUserCenterController new controller
 func NewUserCenterController(
 	userCenterLoginService *user_external_login.UserCenterLoginService,
 	siteInfoService siteinfo_common.SiteInfoCommonService,
+	loginHandoffService *auth.LoginHandoffService,
 ) *UserCenterController {
 	return &UserCenterController{
 		userCenterLoginService: userCenterLoginService,
 		siteInfoService:        siteInfoService,
+		loginHandoffService:    loginHandoffService,
 	}
 }
 
@@ -162,8 +166,10 @@ func (uc *UserCenterController) UserCenterLoginCallback(ctx *gin.Context) {
 		return
 	}
 	userCenter.AfterLogin(userInfo.ExternalID, resp.AccessToken)
-	ctx.Redirect(http.StatusFound, fmt.Sprintf("%s/users/auth-landing?access_token=%s",
-		siteGeneral.SiteUrl, resp.AccessToken))
+	if err := redirectToAuthLanding(ctx, siteGeneral.SiteUrl, uc.loginHandoffService, resp.AccessToken); err != nil {
+		log.Errorf("create login handoff failed: %v", err)
+		ctx.Redirect(http.StatusFound, "/50x")
+	}
 }
 
 func (uc *UserCenterController) UserCenterSignUpCallback(ctx *gin.Context) {
@@ -197,8 +203,10 @@ func (uc *UserCenterController) UserCenterSignUpCallback(ctx *gin.Context) {
 		return
 	}
 	userCenter.AfterLogin(userInfo.ExternalID, resp.AccessToken)
-	ctx.Redirect(http.StatusFound, fmt.Sprintf("%s/users/auth-landing?access_token=%s",
-		siteGeneral.SiteUrl, resp.AccessToken))
+	if err := redirectToAuthLanding(ctx, siteGeneral.SiteUrl, uc.loginHandoffService, resp.AccessToken); err != nil {
+		log.Errorf("create login handoff failed: %v", err)
+		ctx.Redirect(http.StatusFound, "/50x")
+	}
 }
 
 // UserCenterUserSettings user center user settings
