@@ -82,10 +82,8 @@ func Test_notificationRepo_ClearIDUnReadConcurrent(t *testing.T) {
 		errs      []error
 	)
 	start := make(chan struct{})
-	for i := 0; i < requestCount; i++ {
-		waitGroup.Add(1)
-		go func() {
-			defer waitGroup.Done()
+	for range requestCount {
+		waitGroup.Go(func() {
 			<-start
 			rows, err := notificationRepo.ClearIDUnRead(context.TODO(), ent.UserID, ent.ID)
 			mutex.Lock()
@@ -95,7 +93,7 @@ func Test_notificationRepo_ClearIDUnReadConcurrent(t *testing.T) {
 				return
 			}
 			affected += rows
-		}()
+		})
 	}
 	close(start)
 	waitGroup.Wait()

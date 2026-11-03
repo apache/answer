@@ -257,7 +257,7 @@ func applyUnitFix(x *xorm.Engine, result *fixResult, opts *FixURLPrefixOptions, 
 	if opts.DryRun {
 		return nil
 	}
-	_, err := x.Transaction(func(session *xorm.Session) (interface{}, error) {
+	_, err := x.Transaction(func(session *xorm.Session) (any, error) {
 		for _, item := range fixable {
 			if err := item.update(session); err != nil {
 				return nil, err
