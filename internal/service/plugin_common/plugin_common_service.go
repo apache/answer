@@ -101,7 +101,7 @@ func (ps *PluginCommonService) UpdatePluginConfig(ctx context.Context, req *sche
 
 	_ = plugin.CallSearch(func(search plugin.Search) error {
 		if search.Info().SlugName == req.PluginSlugName {
-			search.RegisterSyncer(ctx, search_sync.NewPluginSyncer(ps.data))
+			ps.registerSearchSyncer(search)
 		}
 		return nil
 	})
@@ -184,6 +184,12 @@ func (ps *PluginCommonService) initPluginData() {
 		})
 	}
 
+	// Register syncers after plugin configuration is loaded.
+	_ = plugin.CallSearch(func(search plugin.Search) error {
+		ps.registerSearchSyncer(search)
+		return nil
+	})
+
 	// register syncer for vector search plugins on startup
 	_ = plugin.CallVectorSearch(func(vs plugin.VectorSearch) error {
 		ps.registerVectorSyncer(vs)
@@ -228,6 +234,19 @@ func (ps *PluginCommonService) initPluginData() {
 			}
 			page++
 		}
+	}()
+}
+
+// registerSearchSyncer removes historical restricted documents before asking a
+// plugin to rebuild its index. The result path independently rechecks database
+// visibility, so this background cleanup cannot reopen the disclosure.
+func (ps *PluginCommonService) registerSearchSyncer(search plugin.Search) {
+	go func() {
+		ctx := context.Background()
+		if err := search_sync.RemoveRestrictedContents(ctx, ps.data, search); err != nil {
+			log.Errorf("remove restricted search content for %s failed: %v", search.Info().SlugName, err)
+		}
+		search.RegisterSyncer(ctx, search_sync.NewPluginSyncer(ps.data))
 	}()
 }
 

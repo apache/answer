@@ -81,6 +81,7 @@ func (qr *questionRepo) AddQuestion(ctx context.Context, question *entity.Questi
 // RemoveQuestion delete question
 func (qr *questionRepo) RemoveQuestion(ctx context.Context, id string) (err error) {
 	id = uid.DeShortID(id)
+	_ = qr.deleteSearchQuestionDocuments(ctx, id)
 	_, err = qr.data.DB.Context(ctx).Where("id =?", id).Delete(&entity.Question{})
 	if err != nil {
 		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
@@ -153,7 +154,7 @@ func (qr *questionRepo) UpdateQuestionStatus(ctx context.Context, questionID str
 	if err != nil {
 		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
-	_ = qr.UpdateSearch(ctx, questionID)
+	_ = qr.syncSearchQuestionDocuments(ctx, questionID)
 	return nil
 }
 
@@ -163,7 +164,7 @@ func (qr *questionRepo) UpdateQuestionStatusWithOutUpdateTime(ctx context.Contex
 	if err != nil {
 		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
-	_ = qr.UpdateSearch(ctx, question.ID)
+	_ = qr.syncSearchQuestionDocuments(ctx, question.ID)
 	return nil
 }
 
@@ -177,6 +178,9 @@ func (qr *questionRepo) DeletePermanentlyQuestions(ctx context.Context) (err err
 	}
 	if len(ids) == 0 {
 		return nil
+	}
+	for _, id := range ids {
+		_ = qr.deleteSearchQuestionDocuments(ctx, id)
 	}
 
 	// delete all revisions permanently
@@ -198,7 +202,7 @@ func (qr *questionRepo) RecoverQuestion(ctx context.Context, questionID string) 
 	if err != nil {
 		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
-	_ = qr.UpdateSearch(ctx, questionID)
+	_ = qr.syncSearchQuestionDocuments(ctx, questionID)
 	return nil
 }
 
@@ -208,6 +212,7 @@ func (qr *questionRepo) UpdateQuestionOperation(ctx context.Context, question *e
 	if err != nil {
 		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
+	_ = qr.syncSearchQuestionDocuments(ctx, question.ID)
 	return nil
 }
 
@@ -599,6 +604,9 @@ func (qr *questionRepo) UpdateSearch(ctx context.Context, questionID string) (er
 	if err != nil {
 		return err
 	}
+	if !isSearchPublicQuestion(question) {
+		return s.DeleteContent(ctx, questionID)
+	}
 
 	// get tags
 	var (
@@ -634,6 +642,124 @@ func (qr *questionRepo) UpdateSearch(ctx context.Context, questionID string) (er
 	return
 }
 
+// syncSearchQuestionDocuments keeps question and answer search documents in
+// step with a question visibility or status transition. Search indexes are not
+// an authorization source, so restricted content must be removed eagerly.
+func (qr *questionRepo) syncSearchQuestionDocuments(ctx context.Context, questionID string) error {
+	var search plugin.Search
+	_ = plugin.CallSearch(func(s plugin.Search) error {
+		search = s
+		return nil
+	})
+	if search == nil {
+		return nil
+	}
+
+	questionID = uid.DeShortID(questionID)
+	question, exist, err := qr.GetQuestion(ctx, questionID)
+	if err != nil || !exist {
+		return err
+	}
+	questionID = uid.DeShortID(question.ID)
+
+	answers := make([]*entity.Answer, 0)
+	if err := qr.data.DB.Context(ctx).Where("question_id = ?", questionID).Find(&answers); err != nil {
+		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+
+	if !isSearchPublicQuestion(question) {
+		if err := search.DeleteContent(ctx, questionID); err != nil {
+			return err
+		}
+		for _, answer := range answers {
+			if err := search.DeleteContent(ctx, uid.DeShortID(answer.ID)); err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+
+	if err := qr.UpdateSearch(ctx, questionID); err != nil {
+		return err
+	}
+
+	tags, err := qr.getSearchTags(ctx, questionID)
+	if err != nil {
+		return err
+	}
+	for _, answer := range answers {
+		answerID := uid.DeShortID(answer.ID)
+		if answer.Status != entity.AnswerStatusAvailable {
+			if err := search.DeleteContent(ctx, answerID); err != nil {
+				return err
+			}
+			continue
+		}
+		if err := search.UpdateContent(ctx, &plugin.SearchContent{
+			ObjectID:    answerID,
+			Title:       question.Title,
+			Type:        constant.AnswerObjectType,
+			Content:     answer.OriginalText,
+			Status:      plugin.SearchContentStatus(answer.Status),
+			Tags:        tags,
+			QuestionID:  questionID,
+			UserID:      answer.UserID,
+			Views:       int64(question.ViewCount),
+			Created:     answer.CreatedAt.Unix(),
+			Active:      answer.UpdatedAt.Unix(),
+			Score:       int64(answer.VoteCount),
+			HasAccepted: answer.Accepted == schema.AnswerAcceptedEnable,
+		}); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (qr *questionRepo) deleteSearchQuestionDocuments(ctx context.Context, questionID string) error {
+	var search plugin.Search
+	_ = plugin.CallSearch(func(s plugin.Search) error {
+		search = s
+		return nil
+	})
+	if search == nil {
+		return nil
+	}
+
+	questionID = uid.DeShortID(questionID)
+	if err := search.DeleteContent(ctx, questionID); err != nil {
+		return err
+	}
+	answers := make([]*entity.Answer, 0)
+	if err := qr.data.DB.Context(ctx).Where("question_id = ?", questionID).Find(&answers); err != nil {
+		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	for _, answer := range answers {
+		if err := search.DeleteContent(ctx, uid.DeShortID(answer.ID)); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (qr *questionRepo) getSearchTags(ctx context.Context, questionID string) ([]string, error) {
+	tagList := make([]*entity.TagRel, 0)
+	if err := qr.data.DB.Context(ctx).Where("object_id = ? AND status = ?", questionID,
+		entity.TagRelStatusAvailable).Find(&tagList); err != nil {
+		return nil, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	tags := make([]string, 0, len(tagList))
+	for _, tag := range tagList {
+		tags = append(tags, tag.TagID)
+	}
+	return tags, nil
+}
+
+func isSearchPublicQuestion(question *entity.Question) bool {
+	return question != nil && question.Show == entity.QuestionShow &&
+		(question.Status == entity.QuestionStatusAvailable || question.Status == entity.QuestionStatusClosed)
+}
+
 func (qr *questionRepo) RemoveAllUserQuestion(ctx context.Context, userID string) (err error) {
 	// get all question id that need to be deleted
 	questionIDs := make([]string, 0)
@@ -662,7 +788,7 @@ func (qr *questionRepo) RemoveAllUserQuestion(ctx context.Context, userID string
 
 	// update search content
 	for _, id := range questionIDs {
-		_ = qr.UpdateSearch(ctx, id)
+		_ = qr.syncSearchQuestionDocuments(ctx, id)
 	}
 	return nil
 }

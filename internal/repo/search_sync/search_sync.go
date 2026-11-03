@@ -21,6 +21,7 @@ package search_sync
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/base/data"
@@ -30,6 +31,8 @@ import (
 	"github.com/apache/answer/plugin"
 	"github.com/segmentfault/pacman/log"
 )
+
+const cleanupPageSize = 500
 
 func NewPluginSyncer(data *data.Data) plugin.SearchSyncer {
 	return &PluginSyncer{data: data}
@@ -43,7 +46,12 @@ func (p *PluginSyncer) GetAnswersPage(ctx context.Context, page, pageSize int) (
 	answerList []*plugin.SearchContent, err error) {
 	answers := make([]*entity.Answer, 0)
 	startNum := (page - 1) * pageSize
-	err = p.data.DB.Context(ctx).Limit(pageSize, startNum).Find(&answers)
+	err = p.data.DB.Context(ctx).
+		Join("INNER", "question", "answer.question_id = question.id").
+		Where("answer.status = ? AND question.show = ? AND question.status IN (?, ?)",
+			entity.AnswerStatusAvailable, entity.QuestionShow,
+			entity.QuestionStatusAvailable, entity.QuestionStatusClosed).
+		OrderBy("answer.id ASC").Limit(pageSize, startNum).Find(&answers)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +62,10 @@ func (p *PluginSyncer) GetQuestionsPage(ctx context.Context, page, pageSize int)
 	questionList []*plugin.SearchContent, err error) {
 	questions := make([]*entity.Question, 0)
 	startNum := (page - 1) * pageSize
-	err = p.data.DB.Context(ctx).Limit(pageSize, startNum).Find(&questions)
+	err = p.data.DB.Context(ctx).
+		Where("show = ? AND status IN (?, ?)", entity.QuestionShow,
+			entity.QuestionStatusAvailable, entity.QuestionStatusClosed).
+		OrderBy("id ASC").Limit(pageSize, startNum).Find(&questions)
 	if err != nil {
 		return nil, err
 	}
@@ -64,13 +75,16 @@ func (p *PluginSyncer) GetQuestionsPage(ctx context.Context, page, pageSize int)
 func (p *PluginSyncer) convertAnswers(ctx context.Context, answers []*entity.Answer) (
 	answerList []*plugin.SearchContent, err error) {
 	for _, answer := range answers {
+		if answer.Status != entity.AnswerStatusAvailable {
+			continue
+		}
 		question := &entity.Question{}
 		exist, err := p.data.DB.Context(ctx).Where("id = ?", answer.QuestionID).Get(question)
 		if err != nil {
 			log.Errorf("get question failed %s", err)
 			continue
 		}
-		if !exist {
+		if !exist || !isPublicQuestion(question) {
 			continue
 		}
 
@@ -109,6 +123,9 @@ func (p *PluginSyncer) convertAnswers(ctx context.Context, answers []*entity.Ans
 func (p *PluginSyncer) convertQuestions(ctx context.Context, questions []*entity.Question) (
 	questionList []*plugin.SearchContent, err error) {
 	for _, question := range questions {
+		if !isPublicQuestion(question) {
+			continue
+		}
 		tagListList := make([]*entity.TagRel, 0)
 		tags := make([]string, 0)
 		err := p.data.DB.Context(ctx).Where("object_id = ?", question.ID).
@@ -138,4 +155,62 @@ func (p *PluginSyncer) convertQuestions(ctx context.Context, questions []*entity
 		questionList = append(questionList, content)
 	}
 	return questionList, nil
+}
+
+func isPublicQuestion(question *entity.Question) bool {
+	return question != nil && question.Show == entity.QuestionShow &&
+		(question.Status == entity.QuestionStatusAvailable || question.Status == entity.QuestionStatusClosed)
+}
+
+// RemoveRestrictedContents removes documents written before visibility filtering
+// was enforced. It uses the existing Search interface so search plugins remain
+// source and binary compatible.
+func RemoveRestrictedContents(ctx context.Context, data *data.Data, search plugin.Search) error {
+	if data == nil || data.DB == nil || search == nil {
+		return nil
+	}
+
+	questions := make([]*entity.Question, 0, cleanupPageSize)
+	// Object IDs are positive numeric IDs. Start from zero so the predicate
+	// also works with databases that store the ID column as BIGINT.
+	lastID := "0"
+	for {
+		questions = questions[:0]
+		if err := data.DB.Context(ctx).Where("id > ?", lastID).OrderBy("id ASC").Limit(cleanupPageSize).Find(&questions); err != nil {
+			return fmt.Errorf("list questions for search cleanup: %w", err)
+		}
+		for _, question := range questions {
+			if isPublicQuestion(question) {
+				answers := make([]*entity.Answer, 0)
+				if err := data.DB.Context(ctx).Where("question_id = ? AND status <> ?", question.ID,
+					entity.AnswerStatusAvailable).Find(&answers); err != nil {
+					return fmt.Errorf("list restricted answers for question %s: %w", question.ID, err)
+				}
+				for _, answer := range answers {
+					if err := search.DeleteContent(ctx, uid.DeShortID(answer.ID)); err != nil {
+						return fmt.Errorf("delete restricted answer search document %s: %w", answer.ID, err)
+					}
+				}
+				continue
+			}
+
+			if err := search.DeleteContent(ctx, uid.DeShortID(question.ID)); err != nil {
+				return fmt.Errorf("delete restricted question search document %s: %w", question.ID, err)
+			}
+			answers := make([]*entity.Answer, 0)
+			if err := data.DB.Context(ctx).Where("question_id = ?", question.ID).Find(&answers); err != nil {
+				return fmt.Errorf("list answers for restricted question %s: %w", question.ID, err)
+			}
+			for _, answer := range answers {
+				if err := search.DeleteContent(ctx, uid.DeShortID(answer.ID)); err != nil {
+					return fmt.Errorf("delete answer search document %s: %w", answer.ID, err)
+				}
+			}
+		}
+		if len(questions) < cleanupPageSize {
+			break
+		}
+		lastID = questions[len(questions)-1].ID
+	}
+	return nil
 }

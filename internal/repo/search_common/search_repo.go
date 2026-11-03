@@ -474,12 +474,15 @@ func (sr *searchRepo) ParseSearchPluginResult(ctx context.Context, sres []plugin
 		switch r.Type {
 		case "question":
 			b = builder.MySQL().Select(qFields...).From("question").Where(builder.Eq{"id": r.ID}).
-				And(builder.Lt{"`status`": entity.QuestionStatusDeleted})
+				And(builder.Lt{"`status`": entity.QuestionStatusDeleted}).
+				And(builder.Eq{"`show`": entity.QuestionShow})
 		case "answer":
 			b = builder.MySQL().Select(aFields...).From("answer").LeftJoin("`question`", "`question`.`id` = `answer`.`question_id`").
 				Where(builder.Eq{"`answer`.`id`": r.ID}).
 				And(builder.Lt{"`question`.`status`": entity.QuestionStatusDeleted}).
 				And(builder.Lt{"`answer`.`status`": entity.AnswerStatusDeleted}).And(builder.Eq{"`question`.`show`": entity.QuestionShow})
+		default:
+			continue
 		}
 		qres, err = sr.data.DB.Context(ctx).Query(b)
 		if err != nil || len(qres) == 0 {
@@ -495,6 +498,9 @@ func (sr *searchRepo) parseResult(ctx context.Context, res []map[string][]byte, 
 	questionIDs := make([]string, 0)
 	userIDs := make([]string, 0)
 	resultList := make([]*schema.SearchResult, 0)
+	if len(res) == 0 {
+		return resultList, nil
+	}
 	for _, r := range res {
 		questionIDs = append(questionIDs, string(r["question_id"]))
 		userIDs = append(userIDs, string(r["user_id"]))

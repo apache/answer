@@ -505,6 +505,10 @@ func (ar *answerRepo) updateSearch(ctx context.Context, answerID string) (err er
 	if !exist {
 		return
 	}
+	if answer.Status != entity.AnswerStatusAvailable || question.Show != entity.QuestionShow ||
+		(question.Status != entity.QuestionStatusAvailable && question.Status != entity.QuestionStatusClosed) {
+		return s.DeleteContent(ctx, answerID)
+	}
 
 	// get tags
 	var (
@@ -553,6 +557,9 @@ func (ar *answerRepo) DeletePermanentlyAnswers(ctx context.Context) error {
 	if len(ids) == 0 {
 		return nil
 	}
+	for _, id := range ids {
+		_ = ar.deleteSearchAnswerDocument(ctx, id)
+	}
 
 	// delete all revisions permanently
 	_, err = ar.data.DB.Context(ctx).In("object_id", ids).Delete(&entity.Revision{})
@@ -565,4 +572,16 @@ func (ar *answerRepo) DeletePermanentlyAnswers(ctx context.Context) error {
 		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
 	return nil
+}
+
+func (ar *answerRepo) deleteSearchAnswerDocument(ctx context.Context, answerID string) error {
+	var search plugin.Search
+	_ = plugin.CallSearch(func(s plugin.Search) error {
+		search = s
+		return nil
+	})
+	if search == nil {
+		return nil
+	}
+	return search.DeleteContent(ctx, uid.DeShortID(answerID))
 }
