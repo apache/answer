@@ -35,7 +35,7 @@ func TestFormat(t *testing.T) {
 	tz := "UTC"
 
 	actual := Format(sec, "MMM D, YYYY [a las] HH:mm", tz)
-	expected := time.Unix(sec, 0).Format("Jan 2, 2006") + " a las " + time.Unix(sec, 0).Format("15:04")
+	expected := time.Unix(sec, 0).UTC().Format("Jan 2, 2006") + " a las " + time.Unix(sec, 0).UTC().Format("15:04")
 	assert.Equal(t, expected, actual)
 }
 
