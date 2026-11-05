@@ -179,29 +179,53 @@ func MakePlugin[T Base](super bool) (CallFn[T], RegisterFn[T]) {
 }
 
 type statusManager struct {
-	lock   sync.Mutex
-	status map[string]bool
+	lock    sync.RWMutex
+	status  map[string]bool
+	refresh func()
 }
 
 func (m *statusManager) Enable(name string, enabled bool) {
+	captchaPlugins := coordinatedCaptchaPlugins(name)
+	cdnPlugins := coordinatedCDNPlugins(name)
+
 	m.lock.Lock()
 	defer m.lock.Unlock()
+	m.status[name] = enabled
 	if !enabled {
-		m.status[name] = enabled
 		return
 	}
-	m.status[name] = enabled
 
-	for _, slugName := range coordinatedCaptchaPlugins(name) {
-		m.status[slugName] = false
+	for _, slugName := range captchaPlugins {
+		if m.status[slugName] {
+			m.status[slugName] = false
+		}
 	}
 
-	for _, slugName := range coordinatedCDNPlugins(name) {
-		m.status[slugName] = false
+	for _, slugName := range cdnPlugins {
+		if m.status[slugName] {
+			m.status[slugName] = false
+		}
 	}
 }
 
+// SetRefreshFunc registers a callback to refresh the status snapshot before a
+// plugin check. The callback must not call IsEnabled itself.
+func (m *statusManager) SetRefreshFunc(refresh func()) {
+	m.lock.Lock()
+	m.refresh = refresh
+	m.lock.Unlock()
+}
+
 func (m *statusManager) IsEnabled(name string) bool {
+	m.lock.RLock()
+	refresh := m.refresh
+	m.lock.RUnlock()
+	if refresh != nil {
+		refresh()
+	}
+
+	m.lock.RLock()
+	defer m.lock.RUnlock()
 	if status, ok := m.status[name]; ok {
 		return status
 	}
@@ -210,12 +234,56 @@ func (m *statusManager) IsEnabled(name string) bool {
 
 // MarshalJSON implements the json.Marshaler interface.
 func (m *statusManager) MarshalJSON() ([]byte, error) {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
 	return json.Marshal(m.status)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface.
 func (m *statusManager) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &m.status)
+	status := make(map[string]bool)
+	if err := json.Unmarshal(data, &status); err != nil {
+		return err
+	}
+	if status == nil {
+		status = make(map[string]bool)
+	}
+
+	m.lock.Lock()
+	m.status = status
+	m.lock.Unlock()
+	return nil
+}
+
+// UpdateJSON applies a plugin status change to a persisted status map without
+// changing the in-memory status. The caller can persist the returned JSON
+// before making it visible to this process.
+func (m *statusManager) UpdateJSON(data []byte, name string, enabled bool) ([]byte, error) {
+	status := make(map[string]bool)
+	if len(data) > 0 {
+		if err := json.Unmarshal(data, &status); err != nil {
+			return nil, err
+		}
+	}
+	if status == nil {
+		status = make(map[string]bool)
+	}
+
+	status[name] = enabled
+	if enabled {
+		for _, slugName := range coordinatedCaptchaPlugins(name) {
+			if status[slugName] {
+				status[slugName] = false
+			}
+		}
+		for _, slugName := range coordinatedCDNPlugins(name) {
+			if status[slugName] {
+				status[slugName] = false
+			}
+		}
+	}
+
+	return json.Marshal(status)
 }
 
 // Translate translates the key to the current language of the context

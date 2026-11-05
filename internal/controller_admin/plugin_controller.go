@@ -20,8 +20,6 @@
 package controller_admin
 
 import (
-	"encoding/json"
-
 	"github.com/apache/answer/internal/base/handler"
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/plugin_common"
@@ -148,8 +146,7 @@ func (pc *PluginController) UpdatePluginStatus(ctx *gin.Context) {
 		return
 	}
 
-	plugin.StatusManager.Enable(req.PluginSlugName, req.Enabled)
-	err := pc.pluginCommonService.UpdatePluginStatus(ctx)
+	err := pc.pluginCommonService.UpdatePluginStatus(ctx, req.PluginSlugName, req.Enabled)
 	handler.HandleResponse(ctx, err, nil)
 }
 
@@ -207,18 +204,6 @@ func (pc *PluginController) UpdatePluginConfig(ctx *gin.Context) {
 		return
 	}
 
-	configFields, _ := json.Marshal(req.ConfigFields)
-	err := plugin.CallConfig(func(fn plugin.Config) error {
-		if fn.Info().SlugName == req.PluginSlugName {
-			return fn.ConfigReceiver(configFields)
-		}
-		return nil
-	})
-	if err != nil {
-		handler.HandleResponse(ctx, err, nil)
-		return
-	}
-
-	err = pc.pluginCommonService.UpdatePluginConfig(ctx, req)
+	err := pc.pluginCommonService.UpdatePluginConfig(ctx, req)
 	handler.HandleResponse(ctx, err, nil)
 }
