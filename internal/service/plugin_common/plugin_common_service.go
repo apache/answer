@@ -63,13 +63,15 @@ type PluginCommonService struct {
 	pluginUserConfigRepo PluginUserConfigRepo
 	data                 *data.Data
 	importerService      *importer.ImporterService
-	pluginStatusMu       sync.Mutex
+	pluginStatusMu       sync.RWMutex
+	pluginStatusExpires  time.Time
 	pluginConfigMu       sync.Mutex
 	pluginConfigValues   map[string]string
 }
 
 const (
-	pluginConfigRefreshInterval = 10 * time.Second
+	pluginStatusTTL             = time.Minute
+	pluginConfigRefreshInterval = time.Minute
 	pluginStatusUpdateAttempts  = 10
 )
 
@@ -90,6 +92,9 @@ func NewPluginCommonService(
 		pluginConfigValues:   make(map[string]string),
 	}
 	p.initPluginData()
+	plugin.StatusManager.SetRefreshFunc(func() {
+		p.refreshPluginStatus(context.Background())
+	})
 	p.startPluginConfigRefresh()
 	return p
 }
@@ -122,6 +127,7 @@ func (ps *PluginCommonService) UpdatePluginStatus(ctx context.Context, pluginSlu
 		if err := plugin.StatusManager.UnmarshalJSON(updated); err != nil {
 			return errors.InternalServer(reason.UnknownError).WithError(err)
 		}
+		ps.pluginStatusExpires = time.Now().Add(pluginStatusTTL)
 		return nil
 	}
 
@@ -276,7 +282,6 @@ func (ps *PluginCommonService) startPluginConfigRefresh() {
 	go func() {
 		defer ticker.Stop()
 		for range ticker.C {
-			ps.refreshPluginStatus(context.Background())
 			if err := ps.refreshPluginConfigs(context.Background(), false, true); err != nil {
 				log.Error(err)
 			}
@@ -285,8 +290,23 @@ func (ps *PluginCommonService) startPluginConfigRefresh() {
 }
 
 func (ps *PluginCommonService) refreshPluginStatus(ctx context.Context) {
+	ps.pluginStatusMu.RLock()
+	fresh := time.Now().Before(ps.pluginStatusExpires)
+	ps.pluginStatusMu.RUnlock()
+	if fresh {
+		return
+	}
+
 	ps.pluginStatusMu.Lock()
 	defer ps.pluginStatusMu.Unlock()
+	// Another check or local update may have refreshed the whole snapshot while
+	// this caller waited. Serialize the DB read and application with local
+	// updates so an older refresh can never overwrite a successful update.
+	if time.Now().Before(ps.pluginStatusExpires) {
+		return
+	}
+	// Keep the last good snapshot on failure and bound retries during an outage.
+	defer func() { ps.pluginStatusExpires = time.Now().Add(pluginStatusTTL) }()
 
 	pluginStatus, err := ps.configService.GetStringValueFromDB(ctx, constant.PluginStatus)
 	if err != nil {

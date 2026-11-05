@@ -22,13 +22,17 @@ package plugin_common
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"sync"
+	"sync/atomic"
 	"testing"
+	"time"
 
 	"github.com/apache/answer/internal/base/constant"
 	basedata "github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/entity"
 	configRepo "github.com/apache/answer/internal/repo/config"
+	"github.com/apache/answer/internal/schema"
 	configService "github.com/apache/answer/internal/service/config"
 	"github.com/apache/answer/plugin"
 	"github.com/segmentfault/pacman/contrib/cache/memory"
@@ -195,8 +199,10 @@ func (p *pluginCommonTestConfigPlugin) configValue() string {
 }
 
 type pluginCommonTestConfigRepo struct {
-	mu      sync.RWMutex
-	configs map[string]string
+	mu        sync.RWMutex
+	configs   map[string]string
+	readError error
+	afterRead func()
 }
 
 func (r *pluginCommonTestConfigRepo) SavePluginConfig(
@@ -210,12 +216,15 @@ func (r *pluginCommonTestConfigRepo) GetPluginConfigAll(
 	context.Context,
 ) ([]*entity.PluginConfig, error) {
 	r.mu.RLock()
-	defer r.mu.RUnlock()
 	configs := make([]*entity.PluginConfig, 0, len(r.configs))
 	for slugName, value := range r.configs {
 		configs = append(configs, &entity.PluginConfig{PluginSlugName: slugName, Value: value})
 	}
-	return configs, nil
+	r.mu.RUnlock()
+	if r.afterRead != nil {
+		r.afterRead()
+	}
+	return configs, r.readError
 }
 
 func (r *pluginCommonTestConfigRepo) set(slugName, value string) {
@@ -225,4 +234,255 @@ func (r *pluginCommonTestConfigRepo) set(slugName, value string) {
 		r.configs = make(map[string]string)
 	}
 	r.configs[slugName] = value
+}
+
+func TestPluginStatusSnapshotTTL(t *testing.T) {
+	service, repo := newPluginStatusSnapshotTestService(t)
+	ctx := context.Background()
+	setStoredPluginStatus(t, repo, `{"first":true,"second":true}`)
+
+	// Startup loads the entire snapshot before any normal plugin check.
+	service.refreshPluginStatus(ctx)
+	setStoredPluginStatus(t, repo, `{"first":false,"third":true}`)
+	if !plugin.StatusManager.IsEnabled("first") || !plugin.StatusManager.IsEnabled("second") {
+		t.Fatal("checks before expiry did not use the startup snapshot")
+	}
+	if got := repo.reads.Load(); got != 1 {
+		t.Fatalf("database reads before expiry = %d, want 1", got)
+	}
+
+	expirePluginStatusSnapshot(service)
+	if plugin.StatusManager.IsEnabled("first") || plugin.StatusManager.IsEnabled("second") ||
+		!plugin.StatusManager.IsEnabled("third") {
+		t.Fatal("first check after expiry did not replace the whole snapshot")
+	}
+	if got := repo.reads.Load(); got != 2 {
+		t.Fatalf("database reads after expiry = %d, want 2", got)
+	}
+}
+
+func TestPluginStatusSnapshotCoalescesExpiredChecks(t *testing.T) {
+	_, repo := newPluginStatusSnapshotTestService(t)
+	setStoredPluginStatus(t, repo, `{"enabled":true}`)
+	readStarted, releaseRead := make(chan struct{}), make(chan struct{})
+	repo.afterRead = func() {
+		close(readStarted)
+		<-releaseRead
+	}
+
+	var checks sync.WaitGroup
+	for range 32 {
+		checks.Go(func() {
+			if !plugin.StatusManager.IsEnabled("enabled") {
+				t.Error("expired check did not see the refreshed status")
+			}
+		})
+	}
+	<-readStarted
+	close(releaseRead)
+	checks.Wait()
+	if got := repo.reads.Load(); got != 1 {
+		t.Fatalf("database reads for concurrent expired checks = %d, want 1", got)
+	}
+}
+
+func TestPluginStatusSnapshotKeepsLastGoodValueOnFailure(t *testing.T) {
+	for _, failure := range []string{"database", "invalid JSON"} {
+		t.Run(failure, func(t *testing.T) {
+			service, repo := newPluginStatusSnapshotTestService(t)
+			if err := service.UpdatePluginStatus(context.Background(), "enabled", true); err != nil {
+				t.Fatal(err)
+			}
+			if failure == "database" {
+				repo.failRead.Store(true)
+			} else {
+				setStoredPluginStatus(t, repo, `{`)
+			}
+			expirePluginStatusSnapshot(service)
+			reads := repo.reads.Load()
+			for range 10 {
+				if !plugin.StatusManager.IsEnabled("enabled") {
+					t.Fatal("failed refresh overwrote a successful local update")
+				}
+			}
+			if got := repo.reads.Load() - reads; got != 1 {
+				t.Fatalf("database reads during failed refresh = %d, want 1", got)
+			}
+
+			repo.failRead.Store(false)
+			setStoredPluginStatus(t, repo, `{"enabled":false}`)
+			expirePluginStatusSnapshot(service)
+			if plugin.StatusManager.IsEnabled("enabled") {
+				t.Fatal("refresh did not recover after the failure")
+			}
+		})
+	}
+}
+
+func TestPluginStatusSnapshotSerializesRefreshWithLocalUpdate(t *testing.T) {
+	service, repo := newPluginStatusSnapshotTestService(t)
+	setStoredPluginStatus(t, repo, `{"enabled":false}`)
+	readStarted, releaseRead := make(chan struct{}), make(chan struct{})
+	var firstRead sync.Once
+	repo.afterRead = func() {
+		firstRead.Do(func() {
+			close(readStarted)
+			<-releaseRead
+		})
+	}
+	refreshDone := make(chan struct{})
+	go func() {
+		service.refreshPluginStatus(context.Background())
+		close(refreshDone)
+	}()
+	<-readStarted
+	updateStarted, updateDone := make(chan struct{}), make(chan error, 1)
+	go func() {
+		close(updateStarted)
+		updateDone <- service.UpdatePluginStatus(context.Background(), "enabled", true)
+	}()
+	<-updateStarted
+	close(releaseRead)
+	<-refreshDone
+	if err := <-updateDone; err != nil {
+		t.Fatal(err)
+	}
+	reads := repo.reads.Load()
+	if !plugin.StatusManager.IsEnabled("enabled") {
+		t.Fatal("older refresh overwrote a successful local update")
+	}
+	if got := repo.reads.Load(); got != reads {
+		t.Fatal("successful local update did not renew the snapshot TTL")
+	}
+}
+
+func newPluginStatusSnapshotTestService(t *testing.T) (*PluginCommonService, *pluginStatusSnapshotTestRepo) {
+	t.Helper()
+	oldStatus, err := plugin.StatusManager.MarshalJSON()
+	if err != nil {
+		t.Fatal(err)
+	}
+	service, data := newPluginCommonTestService(t, &pluginCommonTestConfigRepo{})
+	repo := &pluginStatusSnapshotTestRepo{ConfigRepo: configRepo.NewConfigRepo(data)}
+	service.configService = configService.NewConfigService(repo)
+	plugin.StatusManager.SetRefreshFunc(func() { service.refreshPluginStatus(context.Background()) })
+	t.Cleanup(func() {
+		plugin.StatusManager.SetRefreshFunc(nil)
+		if err := plugin.StatusManager.UnmarshalJSON(oldStatus); err != nil {
+			t.Error(err)
+		}
+		if err := data.DB.Close(); err != nil {
+			t.Error(err)
+		}
+	})
+	return service, repo
+}
+
+func expirePluginStatusSnapshot(service *PluginCommonService) {
+	service.pluginStatusMu.Lock()
+	service.pluginStatusExpires = time.Time{}
+	service.pluginStatusMu.Unlock()
+}
+
+func setStoredPluginStatus(t *testing.T, repo *pluginStatusSnapshotTestRepo, value string) {
+	t.Helper()
+	if err := repo.UpdateConfig(context.Background(), constant.PluginStatus, value); err != nil {
+		t.Fatal(err)
+	}
+}
+
+type pluginStatusSnapshotTestRepo struct {
+	configService.ConfigRepo
+	reads     atomic.Int64
+	failRead  atomic.Bool
+	afterRead func()
+}
+
+func (r *pluginStatusSnapshotTestRepo) GetConfigByKey(context.Context, string) (*entity.Config, error) {
+	return nil, fmt.Errorf("status refresh must bypass the config cache")
+}
+
+func (r *pluginStatusSnapshotTestRepo) GetConfigByKeyFromDB(ctx context.Context, key string) (*entity.Config, error) {
+	r.reads.Add(1)
+	if r.failRead.Load() {
+		return nil, fmt.Errorf("database unavailable")
+	}
+	value, err := r.ConfigRepo.GetConfigByKeyFromDB(ctx, key)
+	if r.afterRead != nil {
+		r.afterRead()
+	}
+	return value, err
+}
+
+func TestPluginConfigRefreshKeepsLocalUpdateOnFailure(t *testing.T) {
+	registerPluginCommonConfigTestPlugin(t)
+	repo := &pluginCommonTestConfigRepo{}
+	service, data := newPluginCommonTestService(t, repo)
+	t.Cleanup(func() {
+		if err := data.DB.Close(); err != nil {
+			t.Error(err)
+		}
+	})
+	req := &schema.UpdatePluginConfigReq{
+		PluginSlugName: pluginCommonConfigTestSlug,
+		ConfigFields:   map[string]any{"value": "local"},
+	}
+	if err := service.UpdatePluginConfig(context.Background(), req); err != nil {
+		t.Fatal(err)
+	}
+	repo.readError = fmt.Errorf("database unavailable")
+	if err := service.refreshPluginConfigs(context.Background(), false, false); err == nil {
+		t.Fatal("expected refresh to fail")
+	}
+	if got := pluginCommonConfigTestInstance.configValue(); got != `{"value":"local"}` {
+		t.Fatalf("failed refresh replaced local config with %s", got)
+	}
+	if got := service.pluginConfigValues[pluginCommonConfigTestSlug]; got != `{"value":"local"}` {
+		t.Fatalf("failed refresh replaced applied config snapshot with %s", got)
+	}
+}
+
+func TestPluginConfigRefreshSerializesWithLocalUpdate(t *testing.T) {
+	registerPluginCommonConfigTestPlugin(t)
+	repo := &pluginCommonTestConfigRepo{configs: map[string]string{
+		pluginCommonConfigTestSlug: `{"value":"old"}`,
+	}}
+	service, data := newPluginCommonTestService(t, repo)
+	t.Cleanup(func() {
+		if err := data.DB.Close(); err != nil {
+			t.Error(err)
+		}
+	})
+	readStarted, releaseRead := make(chan struct{}), make(chan struct{})
+	repo.afterRead = func() {
+		close(readStarted)
+		<-releaseRead
+	}
+	refreshDone := make(chan error, 1)
+	go func() {
+		refreshDone <- service.refreshPluginConfigs(context.Background(), false, false)
+	}()
+	<-readStarted
+	updateStarted, updateDone := make(chan struct{}), make(chan error, 1)
+	go func() {
+		close(updateStarted)
+		updateDone <- service.UpdatePluginConfig(context.Background(), &schema.UpdatePluginConfigReq{
+			PluginSlugName: pluginCommonConfigTestSlug,
+			ConfigFields:   map[string]any{"value": "local"},
+		})
+	}()
+	<-updateStarted
+	close(releaseRead)
+	if err := <-refreshDone; err != nil {
+		t.Fatal(err)
+	}
+	if err := <-updateDone; err != nil {
+		t.Fatal(err)
+	}
+	if got := pluginCommonConfigTestInstance.configValue(); got != `{"value":"local"}` {
+		t.Fatalf("older refresh replaced successful local update with %s", got)
+	}
+	if got := service.pluginConfigValues[pluginCommonConfigTestSlug]; got != `{"value":"local"}` {
+		t.Fatalf("older refresh replaced applied config snapshot with %s", got)
+	}
 }

@@ -179,8 +179,9 @@ func MakePlugin[T Base](super bool) (CallFn[T], RegisterFn[T]) {
 }
 
 type statusManager struct {
-	lock   sync.RWMutex
-	status map[string]bool
+	lock    sync.RWMutex
+	status  map[string]bool
+	refresh func()
 }
 
 func (m *statusManager) Enable(name string, enabled bool) {
@@ -207,7 +208,22 @@ func (m *statusManager) Enable(name string, enabled bool) {
 	}
 }
 
+// SetRefreshFunc registers a callback to refresh the status snapshot before a
+// plugin check. The callback must not call IsEnabled itself.
+func (m *statusManager) SetRefreshFunc(refresh func()) {
+	m.lock.Lock()
+	m.refresh = refresh
+	m.lock.Unlock()
+}
+
 func (m *statusManager) IsEnabled(name string) bool {
+	m.lock.RLock()
+	refresh := m.refresh
+	m.lock.RUnlock()
+	if refresh != nil {
+		refresh()
+	}
+
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 	if status, ok := m.status[name]; ok {
