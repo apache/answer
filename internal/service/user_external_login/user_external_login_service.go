@@ -186,19 +186,31 @@ func (us *UserExternalLoginService) ExternalLogin(
 		}, nil
 	}
 
-	if _, exist, err := us.userRepo.GetByEmail(ctx, externalUserInfo.Email); err != nil {
+	oldUserInfo, exist, err := us.userRepo.GetByEmail(ctx, externalUserInfo.Email)
+	if err != nil {
 		return nil, err
-	} else if exist {
+	}
+	if !exist {
+		// if user is not a member, register a new user
+		oldUserInfo, err = us.registerNewUser(ctx, externalUserInfo)
+		if err != nil {
+			return nil, err
+		}
+		// set default user notification config for external user
+		if err := us.userNotificationConfigService.SetDefaultUserNotificationConfig(ctx, []string{oldUserInfo.ID}); err != nil {
+			log.Errorf("set default user notification config failed, err: %v", err)
+		}
+	} else if oldUserInfo.Status == entity.UserStatusDeleted {
 		return &schema.UserExternalLoginResp{
 			ErrTitle: translator.Tr(handler.GetLangByCtx(ctx), reason.UserAccessDenied),
 			ErrMsg:   translator.Tr(handler.GetLangByCtx(ctx), reason.UserAccessDenied),
 		}, nil
+	} else {
+		if err := us.userRepo.UpdateLastLoginDate(ctx, oldUserInfo.ID); err != nil {
+			log.Errorf("update user last login date failed: %v", err)
+		}
 	}
-	// if user is not a member, register a new user
-	oldUserInfo, err := us.registerNewUser(ctx, externalUserInfo)
-	if err != nil {
-		return nil, err
-	}
+
 	// bind external user info to user
 	err = us.bindOldUser(ctx, externalUserInfo, oldUserInfo)
 	if err != nil {
@@ -209,11 +221,6 @@ func (us *UserExternalLoginService) ExternalLogin(
 	newMailStatus, err := us.activeUser(ctx, oldUserInfo, externalUserInfo)
 	if err != nil {
 		log.Error(err)
-	}
-
-	// set default user notification config for external user
-	if err := us.userNotificationConfigService.SetDefaultUserNotificationConfig(ctx, []string{oldUserInfo.ID}); err != nil {
-		log.Errorf("set default user notification config failed, err: %v", err)
 	}
 
 	accessToken, _, err := us.userCommonService.CacheLoginUserInfo(
@@ -361,18 +368,30 @@ func (us *UserExternalLoginService) ExternalLoginBindingUserSendEmail(
 		return &schema.ExternalLoginBindingUserSendEmailResp{}, nil
 	}
 
-	if _, exist, err := us.userRepo.GetByEmail(ctx, req.Email); err != nil {
+	oldUserInfo, exist, err := us.userRepo.GetByEmail(ctx, req.Email)
+	if err != nil {
 		return nil, err
 	} else if exist && !req.Must {
 		resp.EmailExistAndMustBeConfirmed = true
 		return resp, nil
-	} else if exist {
-		resp.EmailExistAndMustBeConfirmed = true
-		return resp, nil
 	}
 
-	externalLoginInfo.Email = req.Email
-	userInfo, err := us.registerNewUser(ctx, externalLoginInfo)
+	var userInfo *entity.User
+	if !exist {
+		externalLoginInfo.Email = req.Email
+		userInfo, err = us.registerNewUser(ctx, externalLoginInfo)
+		if err != nil {
+			return nil, err
+		}
+		resp.AccessToken, _, err = us.userCommonService.CacheLoginUserInfo(
+			ctx, userInfo.ID, userInfo.MailStatus, userInfo.Status, externalLoginInfo.ExternalID)
+		if err != nil {
+			log.Error(err)
+		}
+	} else {
+		externalLoginInfo.Email = req.Email
+		userInfo = oldUserInfo
+	}
 	if err != nil {
 		return nil, err
 	}
