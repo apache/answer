@@ -20,6 +20,7 @@
 package htmltext
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -381,6 +382,32 @@ func TestGetPicByUrlTimesOut(t *testing.T) {
 	case <-time.After(10 * time.Second):
 		t.Fatal("GetPicByUrl did not honour the client timeout")
 	}
+}
+
+// A body at the cap is still a complete image and must be served.
+func TestGetPicByUrlAcceptsBodyAtSizeLimit(t *testing.T) {
+	body := bytes.Repeat([]byte("a"), fetchedPicMaxBytes)
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write(body)
+	}))
+	defer srv.Close()
+
+	got := GetPicByUrl(srv.URL)
+	assert.Len(t, got, fetchedPicMaxBytes)
+}
+
+// One byte past the cap means the response was truncated, so the bytes are not
+// a usable image. Handing them back as a success would serve a corrupt favicon.
+func TestGetPicByUrlRejectsBodyOverSizeLimit(t *testing.T) {
+	body := bytes.Repeat([]byte("a"), fetchedPicMaxBytes+1)
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write(body)
+	}))
+	defer srv.Close()
+
+	assert.Equal(t, "", GetPicByUrl(srv.URL))
 }
 
 func TestPicClientHasTimeout(t *testing.T) {
