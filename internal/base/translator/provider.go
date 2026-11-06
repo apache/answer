@@ -25,11 +25,13 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"sync/atomic"
 
 	"github.com/google/wire"
 	myTran "github.com/segmentfault/pacman/contrib/i18n"
 	"github.com/segmentfault/pacman/i18n"
 	"github.com/segmentfault/pacman/log"
+	"golang.org/x/text/language"
 	"gopkg.in/yaml.v3"
 )
 
@@ -51,7 +53,54 @@ const DefaultLangOption = "Default"
 var (
 	// LanguageOptions language
 	LanguageOptions []*LangOption
+
+	// languageMatcher resolves regional language tags to a configured language option.
+	languageMatcher atomic.Pointer[languageMatch]
 )
+
+// languageMatch pairs a language matcher with the option values it was built from,
+// so the matcher index maps back to the configured value such as es_ES.
+type languageMatch struct {
+	matcher language.Matcher
+	values  []string
+}
+
+// SetLanguageOptions sets the configured language options and rebuilds the matcher
+// used by MatchLanguage.
+func SetLanguageOptions(options []*LangOption) {
+	LanguageOptions = options
+
+	values := make([]string, 0, len(options))
+	tags := make([]language.Tag, 0, len(options))
+	for _, option := range options {
+		if option.Value == DefaultLangOption {
+			continue
+		}
+		tag, err := language.Parse(strings.ReplaceAll(option.Value, "_", "-"))
+		if err != nil {
+			log.Warnf("language option %q is not a valid language tag: %s", option.Value, err)
+			continue
+		}
+		values = append(values, option.Value)
+		tags = append(tags, tag)
+	}
+	languageMatcher.Store(&languageMatch{matcher: language.NewMatcher(tags), values: values})
+}
+
+// MatchLanguage returns the configured language option that best matches the given
+// tag, for example es_ES for es-MX, pt_PT for pt-AO or zh_TW for zh-HK. It reports
+// false when no configured language is a plausible match for the tag.
+func MatchLanguage(tag language.Tag) (string, bool) {
+	match := languageMatcher.Load()
+	if match == nil || len(match.values) == 0 {
+		return "", false
+	}
+	_, idx, confidence := match.matcher.Match(tag)
+	if confidence == language.No || idx < 0 || idx >= len(match.values) {
+		return "", false
+	}
+	return match.values[idx], true
+}
 
 // NewTranslator new a translator
 func NewTranslator(c *I18n) (tr i18n.Translator, err error) {
@@ -120,10 +169,10 @@ func NewTranslator(c *I18n) (tr i18n.Translator, err error) {
 	if err != nil {
 		return nil, fmt.Errorf("i18n file parsing failed: %s", err)
 	}
-	LanguageOptions = s.LangOption
-	for _, option := range LanguageOptions {
+	for _, option := range s.LangOption {
 		option.Label = fmt.Sprintf("%s (%d%%)", option.Label, option.Progress)
 	}
+	SetLanguageOptions(s.LangOption)
 	return GlobalTrans, err
 }
 

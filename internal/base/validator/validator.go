@@ -183,6 +183,37 @@ func createDefaultValidator(la i18n.Language) *validator.Validate {
 	return validate
 }
 
+// baseLanguage returns the language subtag of a locale such as pt_BR or es-MX.
+func baseLanguage(lang string) string {
+	if idx := strings.IndexAny(lang, "_-"); idx > 0 {
+		return lang[:idx]
+	}
+	return lang
+}
+
+// registerRegionalValidator builds and caches a validator for a regional locale
+// (such as es_MX) on top of the translator of its base language. The write lock
+// is scoped to this call so callers never hold it while falling back. It returns
+// nil if the translations cannot be registered.
+func registerRegionalValidator(lang i18n.Language, t *TranslatorLocal) *MyValidator {
+	validatorMappingMu.Lock()
+	defer validatorMappingMu.Unlock()
+
+	if v := GlobalValidatorMapping[lang]; v != nil {
+		return v
+	}
+	tran, val := getTran(t.Lo), createDefaultValidator(lang)
+	if t.RegisterFunc != nil {
+		if err := t.RegisterFunc(val, tran); err != nil {
+			log.Error(err)
+			return nil
+		}
+	}
+	v := &MyValidator{Validate: val, Tran: tran, Lang: lang}
+	GlobalValidatorMapping[lang] = v
+	return v
+}
+
 func GetValidatorByLang(lang i18n.Language) *MyValidator {
 	validatorMappingMu.RLock()
 	if v := GlobalValidatorMapping[lang]; v != nil {
@@ -191,33 +222,15 @@ func GetValidatorByLang(lang i18n.Language) *MyValidator {
 	}
 	validatorMappingMu.RUnlock()
 
-	baseLang := string(lang)
-	if idx := strings.IndexAny(baseLang, "_-"); idx > 0 {
-		baseLang = baseLang[:idx]
-	}
-
+	baseLang := baseLanguage(string(lang))
 	for _, t := range allLanguageTranslators {
-		tBase := string(t.La)
-		if idx := strings.IndexAny(tBase, "_-"); idx > 0 {
-			tBase = tBase[:idx]
+		if !strings.EqualFold(baseLang, baseLanguage(string(t.La))) {
+			continue
 		}
-		if strings.EqualFold(baseLang, tBase) {
-			validatorMappingMu.Lock()
-			defer validatorMappingMu.Unlock()
-			if v := GlobalValidatorMapping[lang]; v != nil {
-				return v
-			}
-			tran, val := getTran(t.Lo), createDefaultValidator(lang)
-			if t.RegisterFunc != nil {
-				if err := t.RegisterFunc(val, tran); err != nil {
-					log.Error(err)
-					break
-				}
-			}
-			v := &MyValidator{Validate: val, Tran: tran, Lang: lang}
-			GlobalValidatorMapping[lang] = v
+		if v := registerRegionalValidator(lang, t); v != nil {
 			return v
 		}
+		break
 	}
 
 	validatorMappingMu.RLock()
