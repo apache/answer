@@ -259,8 +259,13 @@ func GetPicByUrl(url string) string {
 	if res.StatusCode != http.StatusOK {
 		return ""
 	}
-	pix, err := io.ReadAll(io.LimitReader(res.Body, fetchedPicMaxBytes))
+	// Read one byte past the cap: LimitReader alone would silently truncate an
+	// oversized body and hand back a corrupt image as if the fetch succeeded.
+	pix, err := io.ReadAll(io.LimitReader(res.Body, fetchedPicMaxBytes+1))
 	if err != nil {
+		return ""
+	}
+	if len(pix) > fetchedPicMaxBytes {
 		return ""
 	}
 	return string(pix)
