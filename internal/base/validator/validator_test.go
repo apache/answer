@@ -20,10 +20,15 @@
 package validator
 
 import (
+	"errors"
 	"strings"
 	"testing"
+	"time"
 	"unicode/utf8"
 
+	"github.com/go-playground/locales/en"
+	ut "github.com/go-playground/universal-translator"
+	"github.com/go-playground/validator/v10"
 	"github.com/segmentfault/pacman/i18n"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -57,6 +62,37 @@ func TestGetValidatorByLang_RegionalLocaleFallback(t *testing.T) {
 	require.Error(t, errPT)
 	require.Len(t, errFieldsPT, 1)
 	assert.Contains(t, errFieldsPT[0].ErrorMsg, "máximo")
+}
+
+// A failing RegisterFunc must release the write lock before the fallback takes
+// the read lock, otherwise the lookup deadlocks.
+func TestGetValidatorByLang_RegisterFuncFailureDoesNotDeadlock(t *testing.T) {
+	failing := &TranslatorLocal{
+		La: i18n.Language("xx_XX"),
+		Lo: en.New(),
+		RegisterFunc: func(*validator.Validate, ut.Translator) error {
+			return errors.New("register failed")
+		},
+	}
+	original := allLanguageTranslators
+	allLanguageTranslators = append(append([]*TranslatorLocal{}, original...), failing)
+	t.Cleanup(func() { allLanguageTranslators = original })
+
+	result := make(chan *MyValidator, 1)
+	go func() { result <- GetValidatorByLang(i18n.Language("xx_YY")) }()
+
+	select {
+	case v := <-result:
+		require.NotNil(t, v)
+		assert.Equal(t, i18n.DefaultLanguage, v.Lang)
+	case <-time.After(5 * time.Second):
+		t.Fatal("GetValidatorByLang deadlocked after a RegisterFunc failure")
+	}
+
+	validatorMappingMu.RLock()
+	_, cached := GlobalValidatorMapping[i18n.Language("xx_YY")]
+	validatorMappingMu.RUnlock()
+	assert.False(t, cached, "a failed registration must not be cached")
 }
 
 func TestCheck_MultiByteLatinCapitalization(t *testing.T) {
