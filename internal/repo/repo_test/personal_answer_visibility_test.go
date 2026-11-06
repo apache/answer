@@ -30,29 +30,35 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestPersonalAnswerPageRespectsHiddenQuestionVisibility(t *testing.T) {
+func TestPersonalAnswerPageRespectsPublicParentQuestionVisibility(t *testing.T) {
 	ctx := context.Background()
 	questionRepo := question.NewQuestionRepo(testDataSource, unique.NewUniqueIDRepo(testDataSource))
 	answerRepo := answer.NewAnswerRepo(testDataSource, nil, nil, nil)
 
-	newQuestion := func(title string, show int) *entity.Question {
+	newQuestion := func(title string, status, show int) *entity.Question {
 		q := &entity.Question{
 			UserID:       "personal-answer-question-owner",
 			Title:        title,
 			OriginalText: title,
 			ParsedText:   title,
-			Status:       entity.QuestionStatusAvailable,
+			Status:       status,
 			Show:         show,
 		}
 		require.NoError(t, questionRepo.AddQuestion(ctx, q))
 		return q
 	}
 
-	visibleQuestion := newQuestion("visible question", entity.QuestionShow)
-	hiddenQuestion := newQuestion("hidden question", entity.QuestionHide)
+	visibleQuestion := newQuestion("visible question", entity.QuestionStatusAvailable, entity.QuestionShow)
+	closedQuestion := newQuestion("closed question", entity.QuestionStatusClosed, entity.QuestionShow)
+	hiddenQuestion := newQuestion("hidden question", entity.QuestionStatusAvailable, entity.QuestionHide)
+	pendingQuestion := newQuestion("pending question", entity.QuestionStatusPending, entity.QuestionShow)
+	deletedQuestion := newQuestion("deleted question", entity.QuestionStatusDeleted, entity.QuestionShow)
 	answers := []*entity.Answer{
 		{QuestionID: visibleQuestion.ID, UserID: "personal-answer-author", OriginalText: "visible answer", ParsedText: "visible answer", Status: entity.AnswerStatusAvailable},
+		{QuestionID: closedQuestion.ID, UserID: "personal-answer-author", OriginalText: "closed answer", ParsedText: "closed answer", Status: entity.AnswerStatusAvailable},
 		{QuestionID: hiddenQuestion.ID, UserID: "personal-answer-author", OriginalText: "hidden answer", ParsedText: "hidden answer", Status: entity.AnswerStatusAvailable},
+		{QuestionID: pendingQuestion.ID, UserID: "personal-answer-author", OriginalText: "pending answer", ParsedText: "pending answer", Status: entity.AnswerStatusAvailable},
+		{QuestionID: deletedQuestion.ID, UserID: "personal-answer-author", OriginalText: "deleted answer", ParsedText: "deleted answer", Status: entity.AnswerStatusAvailable},
 	}
 	for _, item := range answers {
 		_, err := testDataSource.DB.Context(ctx).Insert(item)
@@ -62,7 +68,7 @@ func TestPersonalAnswerPageRespectsHiddenQuestionVisibility(t *testing.T) {
 		for _, item := range answers {
 			_, _ = testDataSource.DB.Context(ctx).ID(item.ID).Delete(&entity.Answer{})
 		}
-		for _, item := range []*entity.Question{visibleQuestion, hiddenQuestion} {
+		for _, item := range []*entity.Question{visibleQuestion, closedQuestion, hiddenQuestion, pendingQuestion, deletedQuestion} {
 			_, _ = testDataSource.DB.Context(ctx).ID(item.ID).Delete(&entity.Question{})
 		}
 	})
@@ -73,9 +79,17 @@ func TestPersonalAnswerPageRespectsHiddenQuestionVisibility(t *testing.T) {
 		UserID:   "personal-answer-author",
 	})
 	require.NoError(t, err)
-	require.Equal(t, int64(1), publicTotal)
-	require.Len(t, publicAnswers, 1)
-	require.Equal(t, visibleQuestion.ID, publicAnswers[0].QuestionID)
+	require.Equal(t, int64(2), publicTotal)
+	require.Len(t, publicAnswers, 2)
+	publicQuestionIDs := map[string]bool{}
+	for _, item := range publicAnswers {
+		publicQuestionIDs[item.QuestionID] = true
+	}
+	require.True(t, publicQuestionIDs[visibleQuestion.ID])
+	require.True(t, publicQuestionIDs[closedQuestion.ID])
+	require.False(t, publicQuestionIDs[hiddenQuestion.ID])
+	require.False(t, publicQuestionIDs[pendingQuestion.ID])
+	require.False(t, publicQuestionIDs[deletedQuestion.ID])
 
 	ownerAnswers, ownerTotal, err := answerRepo.GetPersonalAnswerPage(ctx, &entity.PersonalAnswerPageQueryCond{
 		Page:       1,
@@ -84,8 +98,8 @@ func TestPersonalAnswerPageRespectsHiddenQuestionVisibility(t *testing.T) {
 		ShowHidden: true,
 	})
 	require.NoError(t, err)
-	require.Equal(t, int64(2), ownerTotal)
-	require.Len(t, ownerAnswers, 2)
+	require.Equal(t, int64(5), ownerTotal)
+	require.Len(t, ownerAnswers, 5)
 }
 
 func TestAnswerSearchRespectsPublicParentQuestionVisibility(t *testing.T) {

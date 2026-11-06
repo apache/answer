@@ -401,7 +401,8 @@ func (ar *answerRepo) GetPersonalAnswerPage(ctx context.Context, req *entity.Per
 	session := ar.data.DB.Context(ctx)
 	if !req.ShowHidden {
 		session = session.Join("INNER", "question", "answer.question_id = question.id").
-			And("question.show = ?", entity.QuestionShow)
+			And("question.show = ? AND question.status IN (?, ?)",
+				entity.QuestionShow, entity.QuestionStatusAvailable, entity.QuestionStatusClosed)
 	}
 	switch req.Order {
 	case entity.AnswerSearchOrderByTime:
