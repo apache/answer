@@ -21,6 +21,7 @@ import React, { useEffect, useRef, useState, FC } from 'react';
 import { Dropdown } from 'react-bootstrap';
 
 import { useSearchUserStaff } from '@/services';
+import usePageUsers from '@/hooks/usePageUsers';
 import * as Types from '@/common/interface';
 
 import './index.scss';
@@ -40,6 +41,7 @@ const Mentions: FC<IProps> = ({ children, pageUsers, onSelected }) => {
   const [users, setUsers] = useState<Types.PageUser[]>([]);
   const [cursor, setCursor] = useState(0);
   const [isRequested, setRequestedState] = useState(false);
+  const { setUsers: savePageUsers } = usePageUsers();
   const { data: staffUserList = [] } = useSearchUserStaff(val);
   const mapStaffUsers =
     staffUserList
@@ -107,6 +109,9 @@ const Mentions: FC<IProps> = ({ children, pageUsers, onSelected }) => {
       return;
     }
 
+    if (item?.userName) {
+      savePageUsers(item);
+    }
     const text = `@${item?.userName} `;
     onSelected(
       `${value.substring(

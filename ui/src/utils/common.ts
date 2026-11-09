@@ -23,6 +23,7 @@ import * as Diff from 'diff';
 import pattern from '@/common/pattern';
 import { USER_AGENT_NAMES } from '@/common/constants';
 import type * as Type from '@/common/interface';
+import { matchedUsers, parseUserInfo, parseEditMentionUser } from './mention';
 
 function thousandthDivision(num) {
   const reg = /\d{1,3}(?=(\d{3})+$)/g;
@@ -88,43 +89,6 @@ const bgFadeOut = (el) => {
     }, 3200);
   }
 };
-
-/**
- * Extract user info from markdown
- * @param markdown string
- * @returns Array<{displayName: string, userName: string}>
- */
-function matchedUsers(markdown) {
-  // Same pattern as parseUserInfo: usernames may contain "-" and ".".
-  const globalReg = /\B@([\w\\_\\.\\-]+)/g;
-  const reg = /\B@([\w\\_\\.\\-]+)/;
-
-  const users = markdown.match(globalReg);
-  if (!users) {
-    return [];
-  }
-  return users.map((user) => {
-    const matched = user.match(reg);
-    return {
-      userName: matched[1],
-    };
-  });
-}
-
-/**
- * Identify user information from markdown
- * @param markdown string
- * @returns string
- */
-function parseUserInfo(markdown) {
-  const globalReg = /\B@([\w\\_\\.\\-]+)/g;
-  return markdown.replace(globalReg, '[@$1](/users/$1)');
-}
-
-function parseEditMentionUser(markdown) {
-  const globalReg = /\[@([^\]]+)\]\([^)]+\)/g;
-  return markdown.replace(globalReg, '@$1');
-}
 
 function formatUptime(value) {
   const t = i18next.t.bind(i18next);
