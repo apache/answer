@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { memo, FC, useEffect, useRef } from 'react';
+import { memo, FC, useEffect, useRef, useState } from 'react';
 import { Button, Alert, Badge } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
@@ -59,7 +59,12 @@ const Index: FC<Props> = ({
   const [searchParams] = useSearchParams();
   const answerRef = useRef<HTMLDivElement>(null);
 
-  useRenderHtmlPlugin(answerRef.current?.querySelector('.fmt') as HTMLElement);
+  const [contentElement, setContentElement] = useState<HTMLElement | null>(
+    null,
+  );
+
+  // A callback ref initializes plugins after the article actually mounts.
+  useRenderHtmlPlugin(contentElement);
 
   const acceptAnswer = () => {
     acceptanceAnswer({
@@ -71,15 +76,15 @@ const Index: FC<Props> = ({
   };
 
   useEffect(() => {
-    if (!answerRef?.current) {
+    if (!contentElement) {
       return;
     }
 
-    htmlRender(answerRef.current.querySelector('.fmt'), {
+    htmlRender(contentElement, {
       copySuccessText: t('copied', { keyPrefix: 'messages' }),
       copyText: t('copy', { keyPrefix: 'messages' }),
     });
-  }, [answerRef.current]);
+  }, [contentElement, data?.html]);
 
   useEffect(() => {
     if (aid === data.id) {
@@ -132,6 +137,7 @@ const Index: FC<Props> = ({
       </div>
       <ImgViewer>
         <article
+          ref={setContentElement}
           className="fmt text-break text-wrap"
           dangerouslySetInnerHTML={{ __html: data?.html }}
         />
