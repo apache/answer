@@ -353,7 +353,7 @@ func TestGetPicByUrlReturnsEmptyOnErrorStatus(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	assert.Equal(t, "", GetPicByUrl(srv.URL))
+	assert.Empty(t, GetPicByUrl(srv.URL))
 }
 
 // A slow origin must not pin the handler goroutine indefinitely: /favicon.ico
@@ -378,7 +378,7 @@ func TestGetPicByUrlTimesOut(t *testing.T) {
 
 	select {
 	case got := <-done:
-		assert.Equal(t, "", got, "a timed-out fetch must yield an empty result")
+		assert.Empty(t, got, "a timed-out fetch must yield an empty result")
 	case <-time.After(10 * time.Second):
 		t.Fatal("GetPicByUrl did not honour the client timeout")
 	}
@@ -407,7 +407,7 @@ func TestGetPicByUrlRejectsBodyOverSizeLimit(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	assert.Equal(t, "", GetPicByUrl(srv.URL))
+	assert.Empty(t, GetPicByUrl(srv.URL))
 }
 
 func TestPicClientHasTimeout(t *testing.T) {
