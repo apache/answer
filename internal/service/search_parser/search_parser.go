@@ -155,21 +155,22 @@ func (sp *SearchParser) parseTags(ctx context.Context, query *string) (tags [][]
 func (sp *SearchParser) parseUserID(ctx context.Context, query *string, currentUserID string) (userID string) {
 	var (
 		exprUsername = `user:(\S+)`
-		exprMe       = "user:me"
 		q            = *query
 	)
 
 	re := regexp.MustCompile(exprUsername)
 	res := re.FindStringSubmatch(q)
-	if strings.Contains(q, exprMe) {
-		userID = currentUserID
-		q = strings.ReplaceAll(q, exprMe, "")
-	} else if len(res) > 1 {
+	if len(res) > 1 {
 		name := res[1]
-		user, has, err := sp.userCommon.GetUserBasicInfoByUserName(ctx, name)
-		if err == nil && has {
-			userID = user.ID
+		if name == "me" {
+			userID = currentUserID
 			q = re.ReplaceAllString(q, "")
+		} else if sp.userCommon != nil {
+			user, has, err := sp.userCommon.GetUserBasicInfoByUserName(ctx, name)
+			if err == nil && has {
+				userID = user.ID
+				q = re.ReplaceAllString(q, "")
+			}
 		}
 	}
 	*query = strings.TrimSpace(q)
