@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { memo, FC, useState, useEffect, useRef } from 'react';
+import { memo, FC, useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
@@ -50,9 +50,11 @@ const Index: FC<Props> = ({ data, initPage, hasAnswer, isLogged }) => {
   });
   const [searchParams] = useSearchParams();
   const [followed, setFollowed] = useState(data?.is_followed);
-  const ref = useRef<HTMLDivElement>(null);
+  const [contentElement, setContentElement] = useState<HTMLElement | null>(
+    null,
+  );
 
-  useRenderHtmlPlugin(ref.current);
+  useRenderHtmlPlugin(contentElement);
 
   const handleFollow = (e) => {
     e.preventDefault();
@@ -74,15 +76,15 @@ const Index: FC<Props> = ({ data, initPage, hasAnswer, isLogged }) => {
   }, [data]);
 
   useEffect(() => {
-    if (!ref.current) {
+    if (!contentElement) {
       return;
     }
 
-    htmlRender(ref.current, {
+    htmlRender(contentElement, {
       copySuccessText: t('copied', { keyPrefix: 'messages' }),
       copyText: t('copy', { keyPrefix: 'messages' }),
     });
-  }, [ref.current]);
+  }, [contentElement, data?.html]);
 
   if (!data?.id) {
     return null;
@@ -159,7 +161,7 @@ const Index: FC<Props> = ({ data, initPage, hasAnswer, isLogged }) => {
 
       <ImgViewer>
         <article
-          ref={ref}
+          ref={setContentElement}
           className="fmt text-break text-wrap last-p mb-4"
           dangerouslySetInnerHTML={{ __html: data?.html }}
         />

@@ -89,18 +89,19 @@ const Index = () => {
     getHtml: () => '',
   });
 
-  const questionContentRef = useRef<HTMLDivElement>(null);
-  useRenderHtmlPlugin(questionContentRef.current);
+  const [questionContentElement, setQuestionContentElement] =
+    useState<HTMLDivElement | null>(null);
+  useRenderHtmlPlugin(questionContentElement);
 
   useEffect(() => {
-    if (!questionContentRef?.current) {
+    if (!questionContentElement) {
       return;
     }
-    htmlRender(questionContentRef.current, {
+    htmlRender(questionContentElement, {
       copySuccessText: t('copied', { keyPrefix: 'messages' }),
       copyText: t('copy', { keyPrefix: 'messages' }),
     });
-  }, [questionContentRef]);
+  }, [questionContentElement, data?.question.html]);
 
   usePromptWithUnload({
     when: contentChanged,
@@ -232,13 +233,13 @@ const Index = () => {
 
           <div className="question-content-wrap">
             <div
-              ref={questionContentRef}
+              ref={setQuestionContentElement}
               className="content position-absolute top-0 w-100"
               dangerouslySetInnerHTML={{ __html: data?.question.html }}
             />
             <div
               className="resize-bottom"
-              style={{ maxHeight: questionContentRef?.current?.scrollHeight }}
+              style={{ maxHeight: questionContentElement?.scrollHeight }}
             />
             <div className="line bg-light  d-flex justify-content-center align-items-center">
               <Icon type="bi" name="grip-horizontal" className="mt-1" />
