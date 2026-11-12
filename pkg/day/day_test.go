@@ -143,3 +143,42 @@ func TestFormatUnknownTimezoneFallsBackToLocal(t *testing.T) {
 		})
 	}
 }
+
+// Location resolves an IANA name and must fall back to the server's local
+// zone for empty or unknown names, so a bad configuration never shifts the
+// rendered instant.
+func TestLocation(t *testing.T) {
+	assert.Equal(t, time.UTC, Location("UTC"))
+	assert.Equal(t, time.Local, Location(""))
+	assert.Equal(t, time.Local, Location("Not/AZone"))
+
+	tokyo, err := time.LoadLocation("Asia/Tokyo")
+	assert.Nil(t, err)
+	assert.Equal(t, tokyo, Location("Asia/Tokyo"))
+}
+
+// FormatISO feeds every server-rendered <time datetime="..."> attribute: it
+// renders the instant in the requested zone with a real ISO-8601 marker -
+// "Z" only for UTC, an explicit offset otherwise.
+func TestFormatISO(t *testing.T) {
+	// 2023-11-14 22:13:20 UTC
+	const sec = int64(1700000000)
+
+	tests := []struct {
+		name     string
+		tz       string
+		expected string
+	}{
+		{"utc_renders_z", "UTC", "2023-11-14T22:13:20.000Z"},
+		{"tokyo_offset", "Asia/Tokyo", "2023-11-15T07:13:20.000+09:00"},
+		{"new_york_offset", "America/New_York", "2023-11-14T17:13:20.000-05:00"},
+		{"kolkata_half_hour", "Asia/Kolkata", "2023-11-15T03:43:20.000+05:30"},
+		{"london_winter_is_z", "Europe/London", "2023-11-14T22:13:20.000Z"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.expected, FormatISO(sec, tt.tz))
+		})
+	}
+}

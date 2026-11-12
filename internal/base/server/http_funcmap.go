@@ -78,8 +78,7 @@ var funcMap = template.FuncMap{
 		return trans
 	},
 	"timeFormatISO": func(tz string, timestamp int64) string {
-		_, _ = time.LoadLocation(tz)
-		return time.Unix(timestamp, 0).Format("2006-01-02T15:04:05.000Z")
+		return day.FormatISO(timestamp, tz)
 	},
 	"translatorTimeFormatLongDate": func(la i18n.Language, tz string, timestamp int64) string {
 		trans := translator.GlobalTrans.Tr(la, "ui.dates.long_date_with_time")
@@ -91,7 +90,6 @@ var funcMap = template.FuncMap{
 			between int64 = 0
 			trans   string
 		)
-		_, _ = time.LoadLocation(tz)
 		if now > timestamp {
 			between = now - timestamp
 		}
@@ -119,7 +117,7 @@ var funcMap = template.FuncMap{
 
 		if between >= 3600*24 &&
 			between < 3600*24*366 &&
-			time.Unix(timestamp, 0).Format("2006") == time.Unix(now, 0).Format("2006") {
+			sameYearInZone(timestamp, now, tz) {
 			trans = translator.GlobalTrans.Tr(la, "ui.dates.long_date")
 			return day.Format(timestamp, trans, tz)
 		}
@@ -135,6 +133,18 @@ var funcMap = template.FuncMap{
 		}
 	},
 	"urlTitle": htmltext.UrlTitle,
+}
+
+// sameYearInZone reports whether two instants fall into the same calendar
+// year when rendered in the given IANA zone. The relative/absolute date
+// rendering uses this to decide whether the year may be omitted, and the
+// decision must follow the zone the value is rendered in, not the server's
+// zone: two instants sharing a year in Tokyo can sit on opposite sides of
+// New Year in Los Angeles.
+func sameYearInZone(a, b int64, tz string) bool {
+	yearA := time.Unix(a, 0).In(day.Location(tz)).Format("2006")
+	yearB := time.Unix(b, 0).In(day.Location(tz)).Format("2006")
+	return yearA == yearB
 }
 
 func FormatLinkNofollow(html string) string {
