@@ -674,6 +674,12 @@ func (newQuestionNotificationTestConfigRepo) UpdateConfig(context.Context, strin
 	return nil
 }
 
+func (newQuestionNotificationTestConfigRepo) CompareAndSwapConfig(
+	context.Context, string, string, string,
+) (bool, error) {
+	return false, nil
+}
+
 type newQuestionNotificationTestEmailRepo struct {
 	codesByUserID map[string][]string
 }

@@ -22,6 +22,9 @@ package plugin_common
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"sync"
+	"time"
 
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/repo/search_sync"
@@ -60,7 +63,17 @@ type PluginCommonService struct {
 	pluginUserConfigRepo PluginUserConfigRepo
 	data                 *data.Data
 	importerService      *importer.ImporterService
+	pluginStatusMu       sync.RWMutex
+	pluginStatusExpires  time.Time
+	pluginConfigMu       sync.Mutex
+	pluginConfigValues   map[string]string
 }
+
+const (
+	pluginStatusTTL             = time.Minute
+	pluginConfigRefreshInterval = time.Minute
+	pluginStatusUpdateAttempts  = 10
+)
 
 // NewPluginCommonService new report service
 func NewPluginCommonService(
@@ -76,36 +89,95 @@ func NewPluginCommonService(
 		pluginUserConfigRepo: pluginUserConfigRepo,
 		data:                 data,
 		importerService:      importerService,
+		pluginConfigValues:   make(map[string]string),
 	}
 	p.initPluginData()
+	plugin.StatusManager.SetRefreshFunc(func() {
+		p.refreshPluginStatus(context.Background())
+	})
+	p.startPluginConfigRefresh()
 	return p
 }
 
 // UpdatePluginStatus update plugin status
-func (ps *PluginCommonService) UpdatePluginStatus(ctx context.Context) (err error) {
-	content, err := plugin.StatusManager.MarshalJSON()
-	if err != nil {
-		return errors.InternalServer(reason.UnknownError).WithError(err)
+func (ps *PluginCommonService) UpdatePluginStatus(ctx context.Context, pluginSlugName string, enabled bool) error {
+	ps.pluginStatusMu.Lock()
+	defer ps.pluginStatusMu.Unlock()
+
+	for range pluginStatusUpdateAttempts {
+		current, err := ps.configService.GetStringValueFromDB(ctx, constant.PluginStatus)
+		if err != nil {
+			return err
+		}
+
+		updated, err := plugin.StatusManager.UpdateJSON([]byte(current), pluginSlugName, enabled)
+		if err != nil {
+			return errors.InternalServer(reason.UnknownError).WithError(err)
+		}
+
+		swapped, err := ps.configService.CompareAndSwapConfig(
+			ctx, constant.PluginStatus, current, string(updated))
+		if err != nil {
+			return err
+		}
+		if !swapped {
+			continue
+		}
+
+		if err := plugin.StatusManager.UnmarshalJSON(updated); err != nil {
+			return errors.InternalServer(reason.UnknownError).WithError(err)
+		}
+		ps.pluginStatusExpires = time.Now().Add(pluginStatusTTL)
+		return nil
 	}
-	return ps.configService.UpdateConfig(ctx, constant.PluginStatus, string(content))
+
+	return errors.InternalServer(reason.UnknownError).WithError(
+		fmt.Errorf("plugin status changed concurrently; retry the request"))
 }
 
 // UpdatePluginConfig update plugin config
 func (ps *PluginCommonService) UpdatePluginConfig(ctx context.Context, req *schema.UpdatePluginConfigReq) (err error) {
-	configValue, _ := json.Marshal(req.ConfigFields)
-	err = ps.pluginConfigRepo.SavePluginConfig(ctx, req.PluginSlugName, string(configValue))
+	configValue, err := json.Marshal(req.ConfigFields)
 	if err != nil {
+		return errors.InternalServer(reason.UnknownError).WithError(err)
+	}
+
+	ps.pluginConfigMu.Lock()
+	err = plugin.CallConfig(func(fn plugin.Config) error {
+		if fn.Info().SlugName == req.PluginSlugName {
+			return fn.ConfigReceiver(configValue)
+		}
+		return nil
+	})
+	if err != nil {
+		ps.pluginConfigMu.Unlock()
 		return err
 	}
 
+	err = ps.pluginConfigRepo.SavePluginConfig(ctx, req.PluginSlugName, string(configValue))
+	if err != nil {
+		ps.pluginConfigMu.Unlock()
+		return err
+	}
+	if ps.pluginConfigValues == nil {
+		ps.pluginConfigValues = make(map[string]string)
+	}
+	ps.pluginConfigValues[req.PluginSlugName] = string(configValue)
+	ps.pluginConfigMu.Unlock()
+
+	ps.registerPluginConfigDependents(ctx, req.PluginSlugName)
+	return nil
+}
+
+func (ps *PluginCommonService) registerPluginConfigDependents(ctx context.Context, pluginSlugName string) {
 	_ = plugin.CallSearch(func(search plugin.Search) error {
-		if search.Info().SlugName == req.PluginSlugName {
+		if search.Info().SlugName == pluginSlugName {
 			search.RegisterSyncer(ctx, search_sync.NewPluginSyncer(ps.data))
 		}
 		return nil
 	})
 	_ = plugin.CallVectorSearch(func(vs plugin.VectorSearch) error {
-		if vs.Info().SlugName == req.PluginSlugName {
+		if vs.Info().SlugName == pluginSlugName {
 			vs.RegisterSyncer(ctx, vector_search_sync.NewPluginSyncer(ps.data))
 		}
 		return nil
@@ -114,7 +186,6 @@ func (ps *PluginCommonService) UpdatePluginConfig(ctx context.Context, req *sche
 		importer.RegisterImporterFunc(ctx, ps.importerService.NewImporterFunc())
 		return nil
 	})
-	return nil
 }
 
 // UpdatePluginUserConfig update plugin config
@@ -150,38 +221,14 @@ func (ps *PluginCommonService) initPluginData() {
 		return nil
 	})
 
-	// init plugin status
-	pluginStatus, err := ps.configService.GetStringValueFromDB(context.TODO(), constant.PluginStatus)
-	if err != nil {
+	ps.refreshPluginStatus(context.Background())
+	if err := ps.refreshPluginConfigs(context.Background(), true, false); err != nil {
 		log.Error(err)
-	} else {
-		if err := plugin.StatusManager.UnmarshalJSON([]byte(pluginStatus)); err != nil {
-			log.Error(err)
-		}
 	}
-
-	// init plugin config
-	pluginConfigs, err := ps.pluginConfigRepo.GetPluginConfigAll(context.Background())
-	if err != nil {
-		log.Error(err)
-	} else {
-		for _, pluginConfig := range pluginConfigs {
-			err := plugin.CallConfig(func(fn plugin.Config) error {
-				if fn.Info().SlugName == pluginConfig.PluginSlugName {
-					return fn.ConfigReceiver([]byte(pluginConfig.Value))
-				}
-				return nil
-			})
-			if err != nil {
-				log.Errorf("parse plugin config failed: %s %v", pluginConfig.PluginSlugName, err)
-			}
-		}
-
-		_ = plugin.CallCache(func(cache plugin.Cache) error {
-			ps.data.Cache = cache
-			return nil
-		})
-	}
+	_ = plugin.CallCache(func(cache plugin.Cache) error {
+		ps.data.Cache = cache
+		return nil
+	})
 
 	// register syncer for vector search plugins on startup
 	_ = plugin.CallVectorSearch(func(vs plugin.VectorSearch) error {
@@ -228,4 +275,88 @@ func (ps *PluginCommonService) initPluginData() {
 			page++
 		}
 	}()
+}
+
+func (ps *PluginCommonService) startPluginConfigRefresh() {
+	ticker := time.NewTicker(pluginConfigRefreshInterval)
+	go func() {
+		defer ticker.Stop()
+		for range ticker.C {
+			if err := ps.refreshPluginConfigs(context.Background(), false, true); err != nil {
+				log.Error(err)
+			}
+		}
+	}()
+}
+
+func (ps *PluginCommonService) refreshPluginStatus(ctx context.Context) {
+	ps.pluginStatusMu.RLock()
+	fresh := time.Now().Before(ps.pluginStatusExpires)
+	ps.pluginStatusMu.RUnlock()
+	if fresh {
+		return
+	}
+
+	ps.pluginStatusMu.Lock()
+	defer ps.pluginStatusMu.Unlock()
+	// Another check or local update may have refreshed the whole snapshot while
+	// this caller waited. Serialize the DB read and application with local
+	// updates so an older refresh can never overwrite a successful update.
+	if time.Now().Before(ps.pluginStatusExpires) {
+		return
+	}
+	// Keep the last good snapshot on failure and bound retries during an outage.
+	defer func() { ps.pluginStatusExpires = time.Now().Add(pluginStatusTTL) }()
+
+	pluginStatus, err := ps.configService.GetStringValueFromDB(ctx, constant.PluginStatus)
+	if err != nil {
+		log.Error(err)
+		return
+	}
+	if err := plugin.StatusManager.UnmarshalJSON([]byte(pluginStatus)); err != nil {
+		log.Error(err)
+	}
+}
+
+func (ps *PluginCommonService) refreshPluginConfigs(ctx context.Context, force, registerDependents bool) error {
+	ps.pluginConfigMu.Lock()
+	pluginConfigs, err := ps.pluginConfigRepo.GetPluginConfigAll(ctx)
+	if err != nil {
+		ps.pluginConfigMu.Unlock()
+		return err
+	}
+	if ps.pluginConfigValues == nil {
+		ps.pluginConfigValues = make(map[string]string)
+	}
+
+	changedPlugins := make([]string, 0, len(pluginConfigs))
+	for _, pluginConfig := range pluginConfigs {
+		if !force && ps.pluginConfigValues[pluginConfig.PluginSlugName] == pluginConfig.Value {
+			continue
+		}
+
+		applied := false
+		err := plugin.CallConfig(func(fn plugin.Config) error {
+			if fn.Info().SlugName != pluginConfig.PluginSlugName {
+				return nil
+			}
+			applied = true
+			return fn.ConfigReceiver([]byte(pluginConfig.Value))
+		})
+		if err != nil {
+			log.Errorf("parse plugin config failed: %s %v", pluginConfig.PluginSlugName, err)
+			continue
+		}
+		if applied {
+			ps.pluginConfigValues[pluginConfig.PluginSlugName] = pluginConfig.Value
+			changedPlugins = append(changedPlugins, pluginConfig.PluginSlugName)
+		}
+	}
+	ps.pluginConfigMu.Unlock()
+	if registerDependents {
+		for _, pluginSlugName := range changedPlugins {
+			ps.registerPluginConfigDependents(ctx, pluginSlugName)
+		}
+	}
+	return nil
 }

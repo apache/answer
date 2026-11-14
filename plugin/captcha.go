@@ -64,19 +64,23 @@ func CaptchaEnabled() (enabled bool) {
 	return
 }
 
-func coordinatedCaptchaPlugins(slugName string) (enabledSlugNames []string) {
+func coordinatedCaptchaPlugins(slugName string) (coordinatedSlugNames []string) {
 	isCaptcha := false
-	_ = callCaptcha(func(captcha Captcha) error {
+	_ = CallBase(func(base Base) error {
+		captcha, ok := base.(Captcha)
+		if !ok {
+			return nil
+		}
 		name := captcha.Info().SlugName
 		if slugName == name {
 			isCaptcha = true
 		} else {
-			enabledSlugNames = append(enabledSlugNames, name)
+			coordinatedSlugNames = append(coordinatedSlugNames, name)
 		}
 		return nil
 	})
 	if isCaptcha {
-		return enabledSlugNames
+		return coordinatedSlugNames
 	}
 	return nil
 }
