@@ -48,6 +48,7 @@ type AIConversationRecord struct {
 	ChatCompletionID string `json:"chat_completion_id"`
 	Role             string `json:"role"`
 	Content          string `json:"content"`
+	ReasoningContent string `json:"reasoning_content,omitempty"`
 	Helpful          int    `json:"helpful"`
 	Unhelpful        int    `json:"unhelpful"`
 	CreatedAt        int64  `json:"created_at"`

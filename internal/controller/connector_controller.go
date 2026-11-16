@@ -22,6 +22,7 @@ package controller
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 
 	"github.com/apache/answer/internal/base/handler"
 	"github.com/apache/answer/internal/base/middleware"
@@ -106,6 +107,27 @@ func (cc *ConnectorController) ConnectorLogin(connector plugin.Connector) (fn fu
 			return
 		}
 
+		state := ctx.Query("state")
+		if len(state) > 0 {
+			stateInfo, err := cc.userExternalService.GetOAuthState(ctx, state)
+			if err != nil || stateInfo == nil || stateInfo.Provider != connector.ConnectorSlugName() {
+				log.Errorf("invalid connector oauth state for provider %s", connector.ConnectorSlugName())
+				ctx.Redirect(http.StatusFound, "/50x")
+				return
+			}
+		} else {
+			state, err = cc.userExternalService.GenerateOAuthState(ctx, connector.ConnectorSlugName(),
+				schema.ExternalLoginOAuthStateLoginIntent, "")
+			if err != nil {
+				log.Errorf("generate connector oauth state failed: %v", err)
+				ctx.Redirect(http.StatusFound, "/50x")
+				return
+			}
+			q := ctx.Request.URL.Query()
+			q.Set("state", state)
+			ctx.Request.URL.RawQuery = q.Encode()
+		}
+
 		receiverURL := fmt.Sprintf("%s%s%s%s", general.SiteUrl,
 			commonRouterPrefix, ConnectorRedirectRouterPrefix, connector.ConnectorSlugName())
 		redirectURL := connector.ConnectorSender(ctx, receiverURL)
@@ -140,6 +162,27 @@ func (cc *ConnectorController) ConnectorRedirect(connector plugin.Connector) (fn
 			Email:       userInfo.Email,
 			Avatar:      userInfo.Avatar,
 			MetaInfo:    userInfo.MetaInfo,
+		}
+		stateInfo, err := cc.userExternalService.ConsumeOAuthState(ctx, ctx.Query("state"))
+		if err != nil {
+			log.Errorf("get connector oauth state failed: %v", err)
+			ctx.Redirect(http.StatusFound, "/50x")
+			return
+		}
+		if stateInfo != nil && stateInfo.Provider != connector.ConnectorSlugName() {
+			log.Errorf("connector oauth state provider mismatch: %s != %s",
+				stateInfo.Provider, connector.ConnectorSlugName())
+			ctx.Redirect(http.StatusFound, "/50x")
+			return
+		}
+		if stateInfo != nil && stateInfo.Intent == schema.ExternalLoginOAuthStateBindIntent {
+			if err = cc.userExternalService.BindExternalLoginToUser(ctx, stateInfo.UserID, u); err != nil {
+				log.Errorf("bind external login failed: %v", err)
+				ctx.Redirect(http.StatusFound, "/50x")
+				return
+			}
+			ctx.Redirect(http.StatusFound, fmt.Sprintf("%s/users/settings/account", siteGeneral.SiteUrl))
+			return
 		}
 		resp, err := cc.userExternalService.ExternalLogin(ctx, u)
 		if err != nil {
@@ -237,19 +280,32 @@ func (cc *ConnectorController) ConnectorsUserInfo(ctx *gin.Context) {
 	}
 
 	resp := make([]*schema.ConnectorUserInfoResp, 0)
-	_ = plugin.CallConnector(func(fn plugin.Connector) error {
+	err = plugin.CallConnector(func(fn plugin.Connector) error {
 		externalID := userExternalLoginMapping[fn.ConnectorSlugName()]
 		connectorName := fn.ConnectorName()
+		link := fmt.Sprintf("%s%s%s%s", general.SiteUrl,
+			commonRouterPrefix, ConnectorLoginRouterPrefix, fn.ConnectorSlugName())
+		if len(externalID) == 0 {
+			state, err := cc.userExternalService.GenerateOAuthState(ctx, fn.ConnectorSlugName(),
+				schema.ExternalLoginOAuthStateBindIntent, userID)
+			if err != nil {
+				return err
+			}
+			link = fmt.Sprintf("%s?state=%s", link, url.QueryEscape(state))
+		}
 		resp = append(resp, &schema.ConnectorUserInfoResp{
-			Name: connectorName.Translate(ctx),
-			Icon: fn.ConnectorLogoSVG(),
-			Link: fmt.Sprintf("%s%s%s%s", general.SiteUrl,
-				commonRouterPrefix, ConnectorLoginRouterPrefix, fn.ConnectorSlugName()),
+			Name:       connectorName.Translate(ctx),
+			Icon:       fn.ConnectorLogoSVG(),
+			Link:       link,
 			Binding:    len(externalID) > 0,
 			ExternalID: externalID,
 		})
 		return nil
 	})
+	if err != nil {
+		handler.HandleResponse(ctx, err, nil)
+		return
+	}
 	handler.HandleResponse(ctx, nil, resp)
 }
 

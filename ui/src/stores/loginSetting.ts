@@ -32,6 +32,7 @@ const loginSetting = create<IType>((set) => ({
     allow_email_registrations: true,
     allow_email_domains: [],
     allow_password_login: true,
+    require_email_verification: true,
   },
   update: (params) =>
     set(() => {

@@ -52,6 +52,10 @@ func NewHTTPServer(debug bool,
 		gin.SetMode(gin.ReleaseMode)
 	}
 	r := gin.New()
+	r.Use(middleware.Recovery(
+		uiConf.APIBaseURL+"/answer/api/v1",
+		uiConf.APIBaseURL+"/answer/admin/api",
+	))
 	r.Use(func(ctx *gin.Context) {
 		if strings.Contains(ctx.Request.URL.Path, "/chat/completions") {
 			return
@@ -74,7 +78,7 @@ func NewHTTPServer(debug bool,
 	rootGroup := r.Group("")
 	swaggerRouter.Register(rootGroup)
 	static := r.Group(uiConf.APIBaseURL)
-	static.Use(avatarMiddleware.AvatarThumb(), authUserMiddleware.VisitAuth())
+	static.Use(authUserMiddleware.VisitAuth(), avatarMiddleware.AvatarThumb())
 	staticRouter.RegisterStaticRouter(static)
 
 	// The route must be available without logging in

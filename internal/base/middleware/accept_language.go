@@ -29,10 +29,16 @@ import (
 	"golang.org/x/text/language"
 )
 
+const maxAcceptLanguageLength = 256
+
 // ExtractAndSetAcceptLanguage extract accept language from header and set to context
 func ExtractAndSetAcceptLanguage(ctx *gin.Context) {
 	// The language of our front-end configuration, like en_US
 	acceptLanguage := ctx.GetHeader(constant.AcceptLanguageFlag)
+	if len(acceptLanguage) > maxAcceptLanguageLength {
+		ctx.Set(constant.AcceptLanguageFlag, i18n.LanguageEnglish)
+		return
+	}
 	tag, _, err := language.ParseAcceptLanguage(acceptLanguage)
 	if err != nil || len(tag) == 0 {
 		ctx.Set(constant.AcceptLanguageFlag, i18n.LanguageEnglish)

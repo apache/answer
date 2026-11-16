@@ -279,6 +279,7 @@ func (uc *UserController) UserRegisterByEmail(ctx *gin.Context) {
 		handler.HandleResponse(ctx, errors.BadRequest(reason.EmailIllegalDomainError), nil)
 		return
 	}
+	req.RequireEmailVerification = siteInfo.RequireEmailVerification
 	req.IP = ctx.ClientIP()
 	isAdmin := middleware.GetUserIsAdminModerator(ctx)
 	if !isAdmin {

@@ -81,3 +81,11 @@ func (ar *apiKeyRepo) DeleteAPIKey(ctx context.Context, id int) (err error) {
 	}
 	return
 }
+
+func (ar *apiKeyRepo) DeleteAPIKeysByUserID(ctx context.Context, userID string) (err error) {
+	_, err = ar.data.DB.Context(ctx).Where("user_id = ?", userID).Delete(&entity.APIKey{})
+	if err != nil {
+		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	return
+}

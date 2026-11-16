@@ -208,6 +208,7 @@ func (ac *AnswerController) AddAnswer(ctx *gin.Context) {
 	}()
 	req.QuestionID = uid.DeShortID(req.QuestionID)
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
+	req.IsAdminModerator = middleware.GetUserIsAdminModerator(ctx)
 
 	canList, err := ac.rankService.CheckOperationPermissions(ctx, req.UserID, []string{
 		permission.AnswerEdit,
@@ -220,7 +221,7 @@ func (ac *AnswerController) AddAnswer(ctx *gin.Context) {
 	}
 
 	linkUrlLimitUser := canList[2]
-	isAdmin := middleware.GetUserIsAdminModerator(ctx)
+	isAdmin := req.IsAdminModerator
 	if !isAdmin || !linkUrlLimitUser {
 		captchaPass := ac.actionService.ActionRecordVerifyCaptcha(ctx, entity.CaptchaActionAnswer, req.UserID, req.CaptchaID, req.CaptchaCode)
 		if !captchaPass {

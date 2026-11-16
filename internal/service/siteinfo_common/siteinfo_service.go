@@ -235,7 +235,7 @@ func (s *siteInfoCommonService) GetSiteSecurity(ctx context.Context) (resp *sche
 
 // GetSiteLogin get site login config
 func (s *siteInfoCommonService) GetSiteLogin(ctx context.Context) (resp *schema.SiteLoginResp, err error) {
-	resp = &schema.SiteLoginResp{}
+	resp = &schema.SiteLoginResp{RequireEmailVerification: true}
 	if err = s.GetSiteInfoByType(ctx, constant.SiteTypeLogin, resp); err != nil {
 		return nil, err
 	}

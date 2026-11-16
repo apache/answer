@@ -102,13 +102,11 @@ func (q *Queue[T]) Close() {
 
 // startWorker starts the background goroutine that processes messages.
 func (q *Queue[T]) startWorker() {
-	q.wg.Add(1)
-	go func() {
-		defer q.wg.Done()
+	q.wg.Go(func() {
 		for msg := range q.queue {
 			q.processMessage(msg)
 		}
-	}()
+	})
 }
 
 // processMessage handles a single message with proper synchronization.

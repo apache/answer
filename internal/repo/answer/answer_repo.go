@@ -196,8 +196,12 @@ func (ar *answerRepo) GetAnswerCount(ctx context.Context) (count int64, err erro
 // GetAnswerList get answer list all
 func (ar *answerRepo) GetAnswerList(ctx context.Context, answer *entity.Answer) (answerList []*entity.Answer, err error) {
 	answerList = make([]*entity.Answer, 0)
-	answer.ID = uid.DeShortID(answer.ID)
-	answer.QuestionID = uid.DeShortID(answer.QuestionID)
+	if len(answer.ID) > 0 {
+		answer.ID = uid.DeShortID(answer.ID)
+	}
+	if len(answer.QuestionID) > 0 {
+		answer.QuestionID = uid.DeShortID(answer.QuestionID)
+	}
 	err = ar.data.DB.Context(ctx).Find(&answerList, answer)
 	if err != nil {
 		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
@@ -390,20 +394,24 @@ func (ar *answerRepo) GetPersonalAnswerPage(ctx context.Context, req *entity.Per
 		UserID: req.UserID,
 	}
 	session := ar.data.DB.Context(ctx)
+	if !req.ShowHidden {
+		session = session.Join("INNER", "question", "answer.question_id = question.id").
+			And("question.show = ?", entity.QuestionShow)
+	}
 	switch req.Order {
 	case entity.AnswerSearchOrderByTime:
-		session = session.OrderBy("created_at desc")
+		session = session.OrderBy("answer.created_at desc")
 	case entity.AnswerSearchOrderByTimeAsc:
-		session = session.OrderBy("created_at asc")
+		session = session.OrderBy("answer.created_at asc")
 	case entity.AnswerSearchOrderByVote:
-		session = session.OrderBy("vote_count desc")
+		session = session.OrderBy("answer.vote_count desc")
 	default:
-		session = session.OrderBy("adopted desc,vote_count desc,created_at asc")
+		session = session.OrderBy("answer.adopted desc,answer.vote_count desc,answer.created_at asc")
 	}
 	if req.ShowPending {
-		session = session.And("status != ?", entity.AnswerStatusDeleted)
+		session = session.And("answer.status != ?", entity.AnswerStatusDeleted)
 	} else {
-		session = session.And("status = ?", entity.AnswerStatusAvailable)
+		session = session.And("answer.status = ?", entity.AnswerStatusAvailable)
 	}
 	resp = make([]*entity.Answer, 0)
 	total, err = pager.Help(req.Page, req.PageSize, &resp, cond, session)

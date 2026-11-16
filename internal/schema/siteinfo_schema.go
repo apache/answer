@@ -218,10 +218,20 @@ type SiteUsersReq struct {
 
 // SiteLoginReq site login request
 type SiteLoginReq struct {
-	AllowNewRegistrations   bool     `json:"allow_new_registrations"`
-	AllowEmailRegistrations bool     `json:"allow_email_registrations"`
-	AllowPasswordLogin      bool     `json:"allow_password_login"`
-	AllowEmailDomains       []string `json:"allow_email_domains"`
+	AllowNewRegistrations    bool     `json:"allow_new_registrations"`
+	AllowEmailRegistrations  bool     `json:"allow_email_registrations"`
+	AllowPasswordLogin       bool     `json:"allow_password_login"`
+	AllowEmailDomains        []string `json:"allow_email_domains"`
+	RequireEmailVerification *bool    `validate:"required" json:"require_email_verification" swaggertype:"boolean"`
+}
+
+// SiteLoginResp site login response
+type SiteLoginResp struct {
+	AllowNewRegistrations    bool     `json:"allow_new_registrations"`
+	AllowEmailRegistrations  bool     `json:"allow_email_registrations"`
+	AllowPasswordLogin       bool     `json:"allow_password_login"`
+	AllowEmailDomains        []string `json:"allow_email_domains"`
+	RequireEmailVerification bool     `json:"require_email_verification"`
 }
 
 // SiteCustomCssHTMLReq site custom css html
@@ -309,9 +319,6 @@ type SiteInterfaceResp SiteInterfaceReq
 
 // SiteBrandingResp site branding response
 type SiteBrandingResp SiteBrandingReq
-
-// SiteLoginResp site login response
-type SiteLoginResp SiteLoginReq
 
 // SiteCustomCssHTMLResp site custom css html response
 type SiteCustomCssHTMLResp SiteCustomCssHTMLReq

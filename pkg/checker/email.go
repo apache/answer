@@ -27,7 +27,8 @@ func EmailInAllowEmailDomain(email string, allowEmailDomains []string) bool {
 	}
 
 	for _, domain := range allowEmailDomains {
-		if strings.HasSuffix(email, domain) {
+		domain = strings.TrimPrefix(domain, "@")
+		if strings.HasSuffix(email, "@"+domain) {
 			return true
 		}
 	}

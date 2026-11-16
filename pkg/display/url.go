@@ -54,7 +54,7 @@ func AnswerURL(permalink int, siteUrl, questionID, title, answerID string) strin
 // CommentURL get comment url
 func CommentURL(permalink int, siteUrl, questionID, title, answerID, commentID string) string {
 	if len(answerID) > 0 {
-		return AnswerURL(permalink, siteUrl, questionID, answerID, title) + "?commentId=" + commentID
+		return AnswerURL(permalink, siteUrl, questionID, title, answerID) + "?commentId=" + commentID
 	}
 	return QuestionURL(permalink, siteUrl, questionID, title) + "?commentId=" + commentID
 }

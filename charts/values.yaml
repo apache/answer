@@ -91,6 +91,8 @@ persistence:
   accessMode: ReadWriteOnce
   size: 5Gi
   annotations: {}
+  # Use an existing PVC instead of creating one; when set, no PVC is created by this chart
+  existingClaim: ""
   # To restore a PVC from a VolumeSnapshot, set the dataSource;
   # the kind and apiGroup are optional and default to the shown values
   dataSource: {}

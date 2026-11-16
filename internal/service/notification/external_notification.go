@@ -45,6 +45,7 @@ type ExternalNotificationService struct {
 	notificationQueueService   noticequeue.ExternalService
 	userExternalLoginRepo      user_external_login.UserExternalLoginRepo
 	siteInfoService            siteinfo_common.SiteInfoCommonService
+	newQuestionEmailWorker     *newQuestionEmailWorker
 }
 
 func NewExternalNotificationService(
@@ -67,6 +68,10 @@ func NewExternalNotificationService(
 		userExternalLoginRepo:      userExternalLoginRepo,
 		siteInfoService:            siteInfoService,
 	}
+	n.newQuestionEmailWorker = newQuestionEmailWorkerWithDefaults(
+		newQuestionNotificationEmailSendInterval,
+		n.sendNewQuestionNotificationEmail,
+	)
 	notificationQueueService.RegisterHandler(n.Handler)
 	return n
 }

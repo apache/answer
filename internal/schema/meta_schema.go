@@ -22,15 +22,17 @@ package schema
 import "slices"
 
 type UpdateReactionReq struct {
-	ObjectID string `validate:"required" json:"object_id"`
-	Emoji    string `validate:"required,oneof=heart smile frown" json:"emoji"`
-	Reaction string `validate:"required,oneof=activate deactivate" json:"reaction"`
-	UserID   string `json:"-"`
+	ObjectID         string `validate:"required" json:"object_id"`
+	Emoji            string `validate:"required,oneof=heart smile frown" json:"emoji"`
+	Reaction         string `validate:"required,oneof=activate deactivate" json:"reaction"`
+	UserID           string `json:"-"`
+	IsAdminModerator bool   `json:"-"`
 }
 
 type GetReactionReq struct {
-	ObjectID string `validate:"required" form:"object_id"`
-	UserID   string `json:"-"`
+	ObjectID         string `validate:"required" form:"object_id"`
+	UserID           string `json:"-"`
+	IsAdminModerator bool   `json:"-"`
 }
 
 // ReactionsSummaryMeta reactions summary meta

@@ -61,6 +61,8 @@ func DecodeAndCheckImageFile(localFilePath string, maxImageMegapixel int) bool {
 		if !decodeAndCheckImageFile(localFilePath, maxImageMegapixel, ext, webpImageCheck) {
 			return false
 		}
+	default:
+		return false
 	}
 	return true
 }

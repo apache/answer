@@ -35,6 +35,7 @@ type APIKeyRepo interface {
 	UpdateAPIKey(ctx context.Context, apiKey entity.APIKey) (err error)
 	AddAPIKey(ctx context.Context, apiKey entity.APIKey) (err error)
 	DeleteAPIKey(ctx context.Context, id int) (err error)
+	DeleteAPIKeysByUserID(ctx context.Context, userID string) (err error)
 }
 
 type APIKeyService struct {
@@ -113,4 +114,8 @@ func (s *APIKeyService) DeleteAPIKey(ctx context.Context, req *schema.DeleteAPIK
 		return err
 	}
 	return nil
+}
+
+func (s *APIKeyService) DeleteUserAPIKeys(ctx context.Context, userID string) error {
+	return s.apiKeyRepo.DeleteAPIKeysByUserID(ctx, userID)
 }

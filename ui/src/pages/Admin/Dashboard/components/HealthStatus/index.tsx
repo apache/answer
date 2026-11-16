@@ -22,10 +22,10 @@ import { Card, Row, Col } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
+import { gt, gte } from 'semver';
+
 import type * as Type from '@/common/interface';
 import { siteSecurityStore } from '@/stores';
-
-const { gt, gte } = require('semver');
 
 interface IProps {
   data: Type.AdminDashboard['info'];

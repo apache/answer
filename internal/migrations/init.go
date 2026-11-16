@@ -226,9 +226,10 @@ func (m *Mentor) initSiteInfoGeneralData() {
 
 func (m *Mentor) initSiteInfoLoginConfig() {
 	loginConfig := map[string]any{
-		"allow_new_registrations":   true,
-		"allow_email_registrations": true,
-		"allow_password_login":      true,
+		"allow_new_registrations":    true,
+		"allow_email_registrations":  true,
+		"allow_password_login":       true,
+		"require_email_verification": true,
 	}
 	loginConfigDataBytes, _ := json.Marshal(loginConfig)
 	_, m.err = m.engine.Context(m.ctx).Insert(&entity.SiteInfo{

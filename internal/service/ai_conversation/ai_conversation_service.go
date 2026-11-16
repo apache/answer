@@ -51,6 +51,7 @@ type ConversationMessage struct {
 	ChatCompletionID string `json:"chat_completion_id"`
 	Role             string `json:"role"`
 	Content          string `json:"content"`
+	ReasoningContent string `json:"reasoning_content,omitempty"`
 }
 
 // aiConversationService
@@ -97,6 +98,7 @@ func (s *aiConversationService) SaveConversationRecords(ctx context.Context, con
 	}
 
 	content := strings.Builder{}
+	reasoning := strings.Builder{}
 
 	for _, record := range records {
 		if len(record.ChatCompletionID) > 0 {
@@ -120,12 +122,17 @@ func (s *aiConversationService) SaveConversationRecords(ctx context.Context, con
 
 		content.WriteString(record.Content)
 		content.WriteString("\n")
+		if record.ReasoningContent != "" {
+			reasoning.WriteString(record.ReasoningContent)
+			reasoning.WriteString("\n")
+		}
 	}
 	aiRecord := &entity.AIConversationRecord{
 		ConversationID:   conversationID,
 		ChatCompletionID: chatcmplID,
 		Role:             "assistant",
 		Content:          content.String(),
+		ReasoningContent: reasoning.String(),
 		Helpful:          0,
 		Unhelpful:        0,
 	}
@@ -190,6 +197,7 @@ func (s *aiConversationService) GetConversationDetail(ctx context.Context, req *
 			ChatCompletionID: record.ChatCompletionID,
 			Role:             record.Role,
 			Content:          record.Content,
+			ReasoningContent: record.ReasoningContent,
 			Helpful:          record.Helpful,
 			Unhelpful:        record.Unhelpful,
 			CreatedAt:        record.CreatedAt.Unix(),
@@ -319,6 +327,7 @@ func (s *aiConversationService) GetConversationDetailForAdmin(ctx context.Contex
 			ChatCompletionID: record.ChatCompletionID,
 			Role:             record.Role,
 			Content:          record.Content,
+			ReasoningContent: record.ReasoningContent,
 			Helpful:          record.Helpful,
 			Unhelpful:        record.Unhelpful,
 			CreatedAt:        record.CreatedAt.Unix(),

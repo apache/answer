@@ -143,8 +143,9 @@ type StreamChoice struct {
 }
 
 type Delta struct {
-	Role    string `json:"role,omitempty"`
-	Content string `json:"content,omitempty"`
+	Role             string `json:"role,omitempty"`
+	Content          string `json:"content,omitempty"`
+	ReasoningContent string `json:"reasoning_content,omitempty"`
 }
 
 type Usage struct {
@@ -323,19 +324,45 @@ func (c *AIController) getPromptByLanguage(language i18n.Language, question stri
 		return c.getDefaultPrompt(language, question)
 	}
 
-	return fmt.Sprintf(promptTemplate, question)
+	return c.adaptPromptToCapabilities(fmt.Sprintf(promptTemplate, question))
 }
 
 // getDefaultPrompt prompt
 func (c *AIController) getDefaultPrompt(language i18n.Language, question string) string {
+	var prompt string
 	switch language {
 	case i18n.LanguageChinese:
-		return fmt.Sprintf(constant.DefaultAIPromptConfigZhCN, question)
+		prompt = fmt.Sprintf(constant.DefaultAIPromptConfigZhCN, question)
 	case i18n.LanguageEnglish:
-		return fmt.Sprintf(constant.DefaultAIPromptConfigEnUS, question)
+		prompt = fmt.Sprintf(constant.DefaultAIPromptConfigEnUS, question)
 	default:
-		return fmt.Sprintf(constant.DefaultAIPromptConfigEnUS, question)
+		prompt = fmt.Sprintf(constant.DefaultAIPromptConfigEnUS, question)
 	}
+	return c.adaptPromptToCapabilities(prompt)
+}
+
+// adaptPromptToCapabilities removes instructions for tools the current
+// deployment cannot serve, so the model is never prompted to call a missing
+// capability.
+func (c *AIController) adaptPromptToCapabilities(prompt string) string {
+	if c.mcpController.SemanticSearchAvailable() {
+		return prompt
+	}
+	return stripSemanticSearchLine(prompt)
+}
+
+// stripSemanticSearchLine drops every prompt line that references the
+// semantic_search tool.
+func stripSemanticSearchLine(prompt string) string {
+	lines := strings.Split(prompt, "\n")
+	kept := make([]string, 0, len(lines))
+	for _, line := range lines {
+		if strings.Contains(line, semanticSearchToolName) {
+			continue
+		}
+		kept = append(kept, line)
+	}
+	return strings.Join(kept, "\n")
 }
 
 // initializeConversationContext
@@ -443,14 +470,15 @@ func (c *AIController) handleAIConversation(ctx *gin.Context, w http.ResponseWri
 			Stream:   true,
 		}
 
-		toolCalls, newMessages, finished, aiResponse := c.processAIStream(ctx, w, id, conversationCtx.Model, client, aiReq, messages)
+		toolCalls, newMessages, finished, aiResponse, reasoningContent := c.processAIStream(ctx, w, id, conversationCtx.Model, client, aiReq, messages)
 		messages = newMessages
 
 		log.Debugf("Round %d: toolCalls=%v", round+1, toolCalls)
-		if aiResponse != "" {
+		if aiResponse != "" || reasoningContent != "" {
 			conversationCtx.Messages = append(conversationCtx.Messages, &ai_conversation.ConversationMessage{
-				Role:    "assistant",
-				Content: aiResponse,
+				Role:             "assistant",
+				Content:          aiResponse,
+				ReasoningContent: reasoningContent,
 			})
 		}
 
@@ -459,7 +487,7 @@ func (c *AIController) handleAIConversation(ctx *gin.Context, w http.ResponseWri
 		}
 
 		if len(toolCalls) > 0 {
-			messages = c.executeToolCalls(ctx, w, id, conversationCtx.Model, toolCalls, messages)
+			messages = c.executeToolCalls(ctx, w, id, conversationCtx.Model, toolCalls, messages, aiResponse, reasoningContent)
 		} else {
 			return
 		}
@@ -471,12 +499,12 @@ func (c *AIController) handleAIConversation(ctx *gin.Context, w http.ResponseWri
 // processAIStream
 func (c *AIController) processAIStream(
 	_ *gin.Context, w http.ResponseWriter, id, model string, client *openai.Client, aiReq openai.ChatCompletionRequest, messages []openai.ChatCompletionMessage) (
-	[]openai.ToolCall, []openai.ChatCompletionMessage, bool, string) {
+	[]openai.ToolCall, []openai.ChatCompletionMessage, bool, string, string) {
 	stream, err := client.CreateChatCompletionStream(context.Background(), aiReq)
 	if err != nil {
 		log.Errorf("Failed to create stream: %v", err)
 		c.sendErrorResponse(w, id, model, "Failed to create AI stream")
-		return nil, messages, true, ""
+		return nil, messages, true, "", ""
 	}
 	defer func() {
 		_ = stream.Close()
@@ -484,6 +512,7 @@ func (c *AIController) processAIStream(
 
 	var currentToolCalls []openai.ToolCall
 	var accumulatedContent strings.Builder
+	var accumulatedReasoning strings.Builder
 	var accumulatedMessage openai.ChatCompletionMessage
 	toolCallsMap := make(map[int]*openai.ToolCall)
 
@@ -528,6 +557,27 @@ func (c *AIController) processAIStream(
 			}
 		}
 
+		if choice.Delta.ReasoningContent != "" {
+			accumulatedReasoning.WriteString(choice.Delta.ReasoningContent)
+
+			reasoningResponse := StreamResponse{
+				ChatCompletionID: id,
+				Object:           "chat.completion.chunk",
+				Created:          time.Now().Unix(),
+				Model:            model,
+				Choices: []StreamChoice{
+					{
+						Index: 0,
+						Delta: Delta{
+							ReasoningContent: choice.Delta.ReasoningContent,
+						},
+						FinishReason: nil,
+					},
+				},
+			}
+			sendStreamData(w, reasoningResponse)
+		}
+
 		if choice.Delta.Content != "" {
 			accumulatedContent.WriteString(choice.Delta.Content)
 
@@ -554,26 +604,30 @@ func (c *AIController) processAIStream(
 				for _, toolCall := range toolCallsMap {
 					currentToolCalls = append(currentToolCalls, *toolCall)
 				}
-				return currentToolCalls, messages, false, accumulatedContent.String()
+				return currentToolCalls, messages, false, accumulatedContent.String(), accumulatedReasoning.String()
 			} else {
 				aiResponseContent := accumulatedContent.String()
-				if aiResponseContent != "" {
+				aiReasoningContent := accumulatedReasoning.String()
+				if aiResponseContent != "" || aiReasoningContent != "" {
 					accumulatedMessage = openai.ChatCompletionMessage{
-						Role:    openai.ChatMessageRoleAssistant,
-						Content: aiResponseContent,
+						Role:             openai.ChatMessageRoleAssistant,
+						Content:          aiResponseContent,
+						ReasoningContent: aiReasoningContent,
 					}
 					messages = append(messages, accumulatedMessage)
 				}
-				return nil, messages, true, aiResponseContent
+				return nil, messages, true, aiResponseContent, aiReasoningContent
 			}
 		}
 	}
 
 	aiResponseContent := accumulatedContent.String()
-	if aiResponseContent != "" {
+	aiReasoningContent := accumulatedReasoning.String()
+	if aiResponseContent != "" || aiReasoningContent != "" {
 		accumulatedMessage = openai.ChatCompletionMessage{
-			Role:    openai.ChatMessageRoleAssistant,
-			Content: aiResponseContent,
+			Role:             openai.ChatMessageRoleAssistant,
+			Content:          aiResponseContent,
+			ReasoningContent: aiReasoningContent,
 		}
 		messages = append(messages, accumulatedMessage)
 	}
@@ -582,14 +636,14 @@ func (c *AIController) processAIStream(
 		for _, toolCall := range toolCallsMap {
 			currentToolCalls = append(currentToolCalls, *toolCall)
 		}
-		return currentToolCalls, messages, false, aiResponseContent
+		return currentToolCalls, messages, false, aiResponseContent, aiReasoningContent
 	}
 
-	return currentToolCalls, messages, len(currentToolCalls) == 0, aiResponseContent
+	return currentToolCalls, messages, len(currentToolCalls) == 0, aiResponseContent, aiReasoningContent
 }
 
 // executeToolCalls
-func (c *AIController) executeToolCalls(ctx *gin.Context, _ http.ResponseWriter, _, _ string, toolCalls []openai.ToolCall, messages []openai.ChatCompletionMessage) []openai.ChatCompletionMessage {
+func (c *AIController) executeToolCalls(ctx *gin.Context, _ http.ResponseWriter, _, _ string, toolCalls []openai.ToolCall, messages []openai.ChatCompletionMessage, assistantContent, reasoningContent string) []openai.ChatCompletionMessage {
 	validToolCalls := make([]openai.ToolCall, 0)
 	for _, toolCall := range toolCalls {
 		if toolCall.ID == "" || toolCall.Function.Name == "" {
@@ -611,8 +665,10 @@ func (c *AIController) executeToolCalls(ctx *gin.Context, _ http.ResponseWriter,
 	}
 
 	assistantMsg := openai.ChatCompletionMessage{
-		Role:      openai.ChatMessageRoleAssistant,
-		ToolCalls: validToolCalls,
+		Role:             openai.ChatMessageRoleAssistant,
+		Content:          assistantContent,
+		ReasoningContent: reasoningContent,
+		ToolCalls:        validToolCalls,
 	}
 	messages = append(messages, assistantMsg)
 
@@ -669,10 +725,25 @@ func (c *AIController) sendErrorResponse(w http.ResponseWriter, id, model, error
 	sendStreamData(w, errorResponse)
 }
 
-// getMCPTools
+// semanticSearchToolName is the MCP tool backed by the optional VectorSearch
+// plugin. It must not be advertised when no such plugin is enabled.
+const semanticSearchToolName = "semantic_search"
+
+// getMCPTools builds the tool list advertised to the model. The
+// semantic_search tool is omitted when no VectorSearch plugin is enabled,
+// otherwise the model can select a capability that always fails.
 func (c *AIController) getMCPTools() []openai.Tool {
-	openaiTools := make([]openai.Tool, 0)
-	for _, mcpTool := range mcp_tools.MCPToolsList {
+	return c.buildOpenAITools(mcp_tools.MCPToolsList, c.mcpController.SemanticSearchAvailable())
+}
+
+// buildOpenAITools converts MCP tools into OpenAI tool definitions, optionally
+// excluding the semantic_search tool.
+func (c *AIController) buildOpenAITools(tools []mcp.Tool, includeSemanticSearch bool) []openai.Tool {
+	openaiTools := make([]openai.Tool, 0, len(tools))
+	for _, mcpTool := range tools {
+		if !includeSemanticSearch && mcpTool.Name == semanticSearchToolName {
+			continue
+		}
 		openaiTool := c.convertMCPToolToOpenAI(mcpTool)
 		openaiTools = append(openaiTools, openaiTool)
 	}

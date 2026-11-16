@@ -30,6 +30,7 @@ type AIConversationRecord struct {
 	ChatCompletionID string    `xorm:"not null VARCHAR(255) chat_completion_id"`
 	Role             string    `xorm:"not null default '' VARCHAR(128) role"`
 	Content          string    `xorm:"not null MEDIUMTEXT content"`
+	ReasoningContent string    `xorm:"MEDIUMTEXT reasoning_content"`
 	Helpful          int       `xorm:"not null default 0 INT(11) helpful"`
 	Unhelpful        int       `xorm:"not null default 0 INT(11) unhelpful"`
 }

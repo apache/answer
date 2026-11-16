@@ -488,6 +488,7 @@ export interface AdminSettingsLogin {
   allow_email_registrations: boolean;
   allow_email_domains: string[];
   allow_password_login: boolean;
+  require_email_verification: boolean;
 }
 
 /**
@@ -860,6 +861,7 @@ export interface AdminConversationListItem {
 export interface ConversationDetailItem {
   chat_completion_id: string;
   content: string;
+  reasoning_content?: string;
   role: string;
   helpful: number;
   unhelpful: number;

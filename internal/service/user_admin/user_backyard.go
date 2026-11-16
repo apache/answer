@@ -45,6 +45,7 @@ import (
 	"github.com/apache/answer/internal/entity"
 	"github.com/apache/answer/internal/schema"
 	"github.com/apache/answer/internal/service/activity"
+	"github.com/apache/answer/internal/service/apikey"
 	"github.com/apache/answer/internal/service/auth"
 	"github.com/apache/answer/internal/service/role"
 	"github.com/apache/answer/internal/service/siteinfo_common"
@@ -87,6 +88,7 @@ type UserAdminService struct {
 	notificationRepo      notificationcommon.NotificationRepo
 	pluginUserConfigRepo  plugin_common.PluginUserConfigRepo
 	badgeAwardRepo        badge.BadgeAwardRepo
+	apiKeyRepo            apikey.APIKeyRepo
 }
 
 // NewUserAdminService new user admin service
@@ -105,6 +107,7 @@ func NewUserAdminService(
 	notificationRepo notificationcommon.NotificationRepo,
 	pluginUserConfigRepo plugin_common.PluginUserConfigRepo,
 	badgeAwardRepo badge.BadgeAwardRepo,
+	apiKeyRepo apikey.APIKeyRepo,
 ) *UserAdminService {
 	return &UserAdminService{
 		userRepo:              userRepo,
@@ -121,6 +124,7 @@ func NewUserAdminService(
 		notificationRepo:      notificationRepo,
 		pluginUserConfigRepo:  pluginUserConfigRepo,
 		badgeAwardRepo:        badgeAwardRepo,
+		apiKeyRepo:            apiKeyRepo,
 	}
 }
 
@@ -161,6 +165,12 @@ func (us *UserAdminService) UpdateUserStatus(ctx context.Context, req *schema.Up
 	err = us.userRepo.UpdateUserStatus(ctx, userInfo.ID, userInfo.Status, userInfo.MailStatus, userInfo.EMail, suspendedUntil)
 	if err != nil {
 		return err
+	}
+	if req.IsInactive() || req.IsSuspended() || req.IsDeleted() {
+		if err := us.revokeUserAPIKeys(ctx, userInfo.ID); err != nil {
+			return err
+		}
+		us.authService.RemoveUserAllTokens(ctx, userInfo.ID)
 	}
 
 	// remove all content that user created, such as question, answer, comment, etc.
@@ -227,9 +237,16 @@ func (us *UserAdminService) UpdateUserRole(ctx context.Context, req *schema.Upda
 	if err != nil {
 		return err
 	}
+	if err := us.revokeUserAPIKeys(ctx, req.UserID); err != nil {
+		return err
+	}
 
 	us.authService.RemoveUserAllTokens(ctx, req.UserID)
 	return
+}
+
+func (us *UserAdminService) revokeUserAPIKeys(ctx context.Context, userID string) error {
+	return us.apiKeyRepo.DeleteAPIKeysByUserID(ctx, userID)
 }
 
 // AddUser add user
@@ -581,8 +598,9 @@ func (us *UserAdminService) GetUserActivation(ctx context.Context, req *schema.G
 	}
 
 	data := &schema.EmailCodeContent{
-		Email:  userInfo.EMail,
-		UserID: userInfo.ID,
+		SourceType: schema.AccountActivationSourceType,
+		Email:      userInfo.EMail,
+		UserID:     userInfo.ID,
 	}
 	code := token.GenerateToken()
 	us.emailService.SaveCode(ctx, userInfo.ID, code, data.ToJSONString())
@@ -608,8 +626,9 @@ func (us *UserAdminService) SendUserActivation(ctx context.Context, req *schema.
 	}
 
 	data := &schema.EmailCodeContent{
-		Email:  userInfo.EMail,
-		UserID: userInfo.ID,
+		SourceType: schema.AccountActivationSourceType,
+		Email:      userInfo.EMail,
+		UserID:     userInfo.ID,
 	}
 	code := token.GenerateToken()
 	verifyEmailURL := fmt.Sprintf("%s/users/account-activation?code=%s", general.SiteUrl, code)

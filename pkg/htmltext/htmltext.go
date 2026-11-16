@@ -25,6 +25,8 @@ import (
 	"net/url"
 	"regexp"
 	"strings"
+	"sync/atomic"
+	"unicode"
 	"unicode/utf8"
 
 	"github.com/Machiel/slugify"
@@ -32,6 +34,7 @@ import (
 	"github.com/apache/answer/pkg/converter"
 	strip "github.com/grokify/html-strip-tags-go"
 	"github.com/mozillazg/go-pinyin"
+	"github.com/mozillazg/go-unidecode"
 )
 
 var (
@@ -47,7 +50,26 @@ var (
 		"\r", " ",
 		"\t", " ",
 	)
+
+	// Without this, pure non-Latin titles (Arabic, Cyrillic, Hebrew, ...) get
+	// stripped by slugify and collapse to the "topic" fallback. Chinese is
+	// handled separately by convertChinese.
+	transliterateNonLatin atomic.Bool
 )
+
+func init() {
+	transliterateNonLatin.Store(true)
+}
+
+// SetTransliterateNonLatin toggles non-Latin script transliteration for URL slugs.
+func SetTransliterateNonLatin(enabled bool) {
+	transliterateNonLatin.Store(enabled)
+}
+
+// IsTransliterateNonLatinEnabled reports whether non-Latin transliteration is on.
+func IsTransliterateNonLatinEnabled() bool {
+	return transliterateNonLatin.Load()
+}
 
 // ClearText clear HTML, get the clear text
 func ClearText(html string) string {
@@ -66,6 +88,9 @@ func ClearText(html string) string {
 
 func UrlTitle(title string) (text string) {
 	title = convertChinese(title)
+	if transliterateNonLatin.Load() {
+		title = convertNonLatin(title)
+	}
 	title = clearEmoji(title)
 	title = slugify.Slugify(title)
 	title = url.QueryEscape(title)
@@ -93,6 +118,30 @@ func convertChinese(content string) string {
 		return content
 	}
 	return strings.Join(pinyin.LazyConvert(content, nil), "-")
+}
+
+// Short-circuits on Latin-only / Chinese-only input so existing slugs stay byte-identical.
+func convertNonLatin(content string) string {
+	if !containsNonLatin(content) {
+		return content
+	}
+	return unidecode.Unidecode(content)
+}
+
+func containsNonLatin(content string) bool {
+	for _, r := range content {
+		switch {
+		case r < 0x0080: // ASCII
+			continue
+		case r >= 0x0080 && r <= 0x024F: // Latin-1 Supplement, Latin Extended-A/B
+			continue
+		case unicode.Is(unicode.Han, r): // handled by convertChinese
+			continue
+		case unicode.IsLetter(r):
+			return true
+		}
+	}
+	return false
 }
 
 func cutLongTitle(title string) string {

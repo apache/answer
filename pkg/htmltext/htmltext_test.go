@@ -87,6 +87,111 @@ func TestUrlTitle(t *testing.T) {
 	}
 }
 
+func TestUrlTitleTable(t *testing.T) {
+	// Long pure-Arabic title: 50 copies of the same Arabic word, joined by spaces.
+	// Unidecode of "كيف" is "kyf", so the slug becomes "kyf-" repeated and
+	// exceeds cutLongTitle's 150-byte cap.
+	longArabic := strings.Repeat("كيف ", 50)
+	wantLongArabic := strings.Repeat("kyf-", 37) + "ky" // 37*4 + 2 = 150 bytes
+
+	cases := []struct {
+		name  string
+		title string
+		want  string
+	}{
+		{
+			name:  "empty",
+			title: "",
+			want:  "topic",
+		},
+		{
+			name:  "pure latin unchanged",
+			title: "hello world",
+			want:  "hello-world",
+		},
+		{
+			// Pinyin conversion drops Latin runes by design — matches pre-fix behavior.
+			name:  "pure chinese unchanged",
+			title: "这是一个，标题，title",
+			want:  "zhe-shi-yi-ge-biao-ti",
+		},
+		{
+			// The fix: previously collapsed to "topic" for all of these scripts.
+			// Outputs are an ASCII approximation, not linguistically correct
+			// romanization — see PR description.
+			name:  "arabic transliterated",
+			title: "كيف حالك",
+			want:  "kyf-hlk",
+		},
+		{
+			name:  "mixed latin and arabic",
+			title: "مرحبا hello",
+			want:  "mrhb-hello",
+		},
+		{
+			name:  "thai transliterated",
+			title: "ไทย ไทย",
+			want:  "aithy-aithy",
+		},
+		{
+			name:  "japanese hiragana transliterated",
+			title: "こんにちは",
+			want:  "konnichiha",
+		},
+		{
+			// Japanese with Han-block kanji is caught by the pre-existing pinyin
+			// pre-step (Chinese reading, not Japanese), so this path is unchanged
+			// by this PR. Pinning to document the existing behavior.
+			name:  "japanese kanji goes through pinyin path unchanged",
+			title: "日本",
+			want:  "ri-ben",
+		},
+		{
+			name:  "korean transliterated",
+			title: "안녕하세요",
+			want:  "annyeonghaseyo",
+		},
+		{
+			name:  "hebrew transliterated",
+			title: "שלום עולם",
+			want:  "shlvm-vlm",
+		},
+		{
+			name:  "cyrillic transliterated",
+			title: "Привет мир",
+			want:  "privet-mir",
+		},
+		{
+			name:  "emoji only falls back to topic",
+			title: "😂😂😂",
+			want:  "topic",
+		},
+		{
+			name:  "long arabic truncates at cutLongTitle boundary",
+			title: longArabic,
+			want:  wantLongArabic,
+		},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			got := UrlTitle(tc.title)
+			assert.Equal(t, tc.want, got)
+		})
+	}
+}
+
+func TestUrlTitleTransliterationToggle(t *testing.T) {
+	defer SetTransliterateNonLatin(true)
+
+	SetTransliterateNonLatin(false)
+	// With transliteration off, pure-Arabic titles collapse to the existing
+	// "topic" fallback (the pre-fix behavior).
+	assert.Equal(t, "topic", UrlTitle("كيف حالك"))
+
+	SetTransliterateNonLatin(true)
+	assert.Equal(t, "kyf-hlk", UrlTitle("كيف حالك"))
+}
+
 func TestFindFirstMatchedWord(t *testing.T) {
 	var (
 		expectedWord,

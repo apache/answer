@@ -41,6 +41,21 @@ func TestGetAvatarURL(t *testing.T) {
 			args: args{email: "answer@answer.com"},
 			want: "https://www.gravatar.com/avatar/7296942c1f63d97f6c124705142009867638f7b3dbcdadd0cb1bcb40e427eb8e",
 		},
+		{
+			name: "mixed case address",
+			args: args{email: "Answer@Answer.com"},
+			want: "https://www.gravatar.com/avatar/7296942c1f63d97f6c124705142009867638f7b3dbcdadd0cb1bcb40e427eb8e",
+		},
+		{
+			name: "upper case address",
+			args: args{email: "ANSWER@ANSWER.COM"},
+			want: "https://www.gravatar.com/avatar/7296942c1f63d97f6c124705142009867638f7b3dbcdadd0cb1bcb40e427eb8e",
+		},
+		{
+			name: "padded mixed case address",
+			args: args{email: "  Answer@Answer.com  "},
+			want: "https://www.gravatar.com/avatar/7296942c1f63d97f6c124705142009867638f7b3dbcdadd0cb1bcb40e427eb8e",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

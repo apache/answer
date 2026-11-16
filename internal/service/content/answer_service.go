@@ -258,6 +258,14 @@ func (as *AnswerService) Insert(ctx context.Context, req *schema.AnswerAddReq) (
 	if !exist {
 		return "", errors.BadRequest(reason.QuestionNotFound)
 	}
+	if err := (&schema.SimpleObjectInfo{
+		ObjectType:            constant.QuestionObjectType,
+		QuestionCreatorUserID: questionInfo.UserID,
+		QuestionStatus:        questionInfo.Status,
+		QuestionShow:          questionInfo.Show,
+	}).CheckVisibility(req.UserID, req.IsAdminModerator); err != nil {
+		return "", err
+	}
 	if questionInfo.Status == entity.QuestionStatusClosed || questionInfo.Status == entity.QuestionStatusDeleted {
 		err = errors.BadRequest(reason.AnswerCannotAddByClosedQuestion)
 		return "", err
@@ -471,7 +479,7 @@ func (as *AnswerService) AcceptAnswer(ctx context.Context, req *schema.AcceptAns
 		}
 
 		// check answer belong to question
-		if acceptedAnswerInfo.QuestionID != req.QuestionID {
+		if !sameObjectID(acceptedAnswerInfo.QuestionID, req.QuestionID) {
 			return errors.BadRequest(reason.AnswerNotFound)
 		}
 		acceptedAnswerInfo.ID = uid.DeShortID(acceptedAnswerInfo.ID)
@@ -513,6 +521,12 @@ func (as *AnswerService) AcceptAnswer(ctx context.Context, req *schema.AcceptAns
 	return nil
 }
 
+// sameObjectID reports whether two object ids refer to the same row,
+// regardless of whether each is in short-id or long-id form.
+func sameObjectID(a, b string) bool {
+	return uid.DeShortID(a) == uid.DeShortID(b)
+}
+
 func (as *AnswerService) updateAnswerRank(ctx context.Context, userID string,
 	questionInfo *entity.Question, newAnswerInfo *entity.Answer, oldAnswerInfo *entity.Answer,
 ) {
@@ -548,10 +562,16 @@ func (as *AnswerService) Get(ctx context.Context, answerID, loginUserID string, 
 	if !exist {
 		return nil, nil, false, errors.NotFound(reason.AnswerNotFound)
 	}
+
 	if (question.Status == entity.QuestionStatusDeleted ||
 		question.Status == entity.QuestionStatusPending ||
 		question.Show == entity.QuestionHide) &&
 		!isAdminModerator && question.UserID != loginUserID {
+		return nil, nil, false, errors.NotFound(reason.AnswerNotFound)
+	}
+	if (answerInfo.Status == entity.AnswerStatusDeleted ||
+		answerInfo.Status == entity.AnswerStatusPending) &&
+		!isAdminModerator && answerInfo.UserID != loginUserID {
 		return nil, nil, false, errors.NotFound(reason.AnswerNotFound)
 	}
 	info := as.ShowFormat(ctx, answerInfo)

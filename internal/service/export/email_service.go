@@ -20,6 +20,7 @@
 package export
 
 import (
+	"context"
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
@@ -40,7 +41,6 @@ import (
 	"github.com/apache/answer/internal/service/siteinfo_common"
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
-	"golang.org/x/net/context"
 	"gopkg.in/gomail.v2"
 )
 

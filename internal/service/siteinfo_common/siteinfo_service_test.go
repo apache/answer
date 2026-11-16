@@ -50,3 +50,47 @@ func TestSiteInfoCommonService_GetSiteGeneral(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "name", resp.Name)
 }
+
+func TestSiteInfoCommonService_GetSiteLoginRequireEmailVerification(t *testing.T) {
+	tests := []struct {
+		name     string
+		content  string
+		expected bool
+	}{
+		{
+			name:     "missing key defaults true",
+			content:  `{"allow_new_registrations":true,"allow_email_registrations":true,"allow_password_login":true}`,
+			expected: true,
+		},
+		{
+			name:     "null defaults true",
+			content:  `{"allow_new_registrations":true,"allow_email_registrations":true,"allow_password_login":true,"require_email_verification":null}`,
+			expected: true,
+		},
+		{
+			name:     "explicit false is preserved",
+			content:  `{"allow_new_registrations":true,"allow_email_registrations":true,"allow_password_login":true,"require_email_verification":false}`,
+			expected: false,
+		},
+		{
+			name:     "explicit true is preserved",
+			content:  `{"allow_new_registrations":true,"allow_email_registrations":true,"allow_password_login":true,"require_email_verification":true}`,
+			expected: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctl := gomock.NewController(t)
+			defer ctl.Finish()
+			repo := mock.NewMockSiteInfoRepo(ctl)
+			repo.EXPECT().GetByType(gomock.Any(), constant.SiteTypeLogin).
+				Return(&entity.SiteInfo{Content: tt.content}, true, nil)
+
+			siteInfoCommonService := NewSiteInfoCommonService(repo)
+			resp, err := siteInfoCommonService.GetSiteLogin(context.TODO())
+			require.NoError(t, err)
+			assert.Equal(t, tt.expected, resp.RequireEmailVerification)
+		})
+	}
+}

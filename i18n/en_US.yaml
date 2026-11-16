@@ -867,6 +867,8 @@ ui:
     copy: Copy
     ask_a_follow_up: Ask a follow-up
     ask_placeholder: Ask a question
+    thinking: Thinking…
+    thoughts: Thoughts
   notifications:
     title: Notifications
     inbox: Inbox
@@ -2239,9 +2241,13 @@ ui:
         title: Email registration
         label: Allow email registration
         text: Turn off to prevent anyone creating new account through email.
+      email_verification:
+        title: Email verification
+        label: Require email verification
+        text: When enabled, users must verify their email address before using the site.
       allowed_email_domains:
         title: Allowed email domains
-        text: Email domains that users must register accounts with. One domain per line. Ignored when empty.
+        text: Email domains users must use to register accounts. Enter one domain per line, including the @ symbol (for example, @example.com). Ignored when empty.
       private:
         title: Private
         label: Login required
@@ -2482,5 +2488,3 @@ ui:
     copy: Copy to clipboard
     copied: Copied
     external_content_warning: External images/media are not displayed.
-
-

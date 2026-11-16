@@ -124,6 +124,16 @@ var (
 	registerVectorSearch = MakePlugin[VectorSearch](false)
 )
 
+// IsVectorSearchEnabled reports whether at least one VectorSearch plugin is currently enabled.
+func IsVectorSearchEnabled() bool {
+	enabled := false
+	_ = CallVectorSearch(func(vs VectorSearch) error {
+		enabled = true
+		return nil
+	})
+	return enabled
+}
+
 // GenerateEmbedding is a base utility function that generates an embedding vector
 // using an OpenAI-compatible API. Plugins that don't have a built-in vectorizer
 // (most vector databases) can call this function with their own credentials.
