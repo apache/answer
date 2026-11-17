@@ -1544,11 +1544,11 @@ ui:
     tips:
       title: Sfaturi de căutare avansate
       tag: "<1>[tag]</1> search with a tag"
-      user: "<1>utilizator:username</1> căutare de către autor"
-      answer: "<1>răspunsuri:0</1> întrebări fără răspuns"
-      score: "<1>scor:3</1> postări cu un scor de 3+"
-      question: "<1>este:question</1> întrebări de căutare"
-      is_answer: "<1>este:răspuner</1> răspunsuri la căutare"
+      user: "<1>user:username</1> căutare de către autor"
+      answer: "<1>answers:0</1> întrebări fără răspuns"
+      score: "<1>score:3</1> postări cu un scor de 3+"
+      question: "<1>is:question</1> întrebări de căutare"
+      is_answer: "<1>is:answer</1> răspunsuri la căutare"
     empty: Nu am putut găsi nimic. <br /> Încearcă cuvinte cheie diferite sau mai puţin specifice.
   share:
     name: Distribuiți
