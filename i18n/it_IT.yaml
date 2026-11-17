@@ -1545,8 +1545,8 @@ ui:
       title: Suggerimenti per ricerca avanzata
       tag: "<1>[tag]</1> cerca dentro un tag"
       user: "<1>user:username</1> ricerca per autore"
-      answer: "<1>risposte:0</1> domande senza risposta"
-      score: "<1>punteggio:3</1> messaggi con un punteggio di 3+"
+      answer: "<1>answers:0</1> domande senza risposta"
+      score: "<1>score:3</1> messaggi con un punteggio di 3+"
       question: "<1>is:question</1> cerca domande"
       is_answer: "<1>is:answer</1> cerca risposte"
     empty: Non siamo riusciti a trovare nulla. <br /> Prova parole chiave diverse o meno specifiche.
