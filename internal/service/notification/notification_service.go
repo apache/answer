@@ -190,16 +190,22 @@ func (ns *NotificationService) ClearIDUnRead(ctx context.Context, userID string,
 	if !exist || notificationInfo.UserID != userID {
 		return nil
 	}
-	if notificationInfo.IsRead == schema.NotificationNotRead {
-		err := ns.notificationRepo.ClearIDUnRead(ctx, userID, id)
-		if err != nil {
-			return err
-		}
+
+	// The update is conditional and atomic, it only changes the notification while it is still
+	// unread and reports how many rows were changed.
+	affected, err := ns.notificationRepo.ClearIDUnRead(ctx, userID, id)
+	if err != nil {
+		return err
 	}
 
 	err = ns.notificationCommon.RemoveBadgeAwardAlertCache(ctx, userID, id)
 	if err != nil {
 		log.Errorf("remove badge award alert cache failed: %v", err)
+	}
+
+	if affected == 0 {
+		// The notification was already read, so the red dot cache must not be decreased again.
+		return nil
 	}
 
 	_ = ns.notificationCommon.DecreaseRedDot(ctx, userID, notificationInfo.Type)
