@@ -21,20 +21,25 @@ import { create } from 'zustand';
 
 interface AiControlStore {
   ai_enabled: boolean;
-  update: (params: { ai_enabled: boolean }) => void;
+  ai_translation_enabled: boolean;
+  update: (params: {
+    ai_enabled?: boolean;
+    ai_translation_enabled?: boolean;
+  }) => void;
   reset: () => void;
 }
 
 const aiControlStore = create<AiControlStore>((set) => ({
   ai_enabled: false,
-  update: (params: { ai_enabled: boolean }) =>
+  ai_translation_enabled: true,
+  update: (params) =>
     set((state) => {
       return {
         ...state,
         ...params,
       };
     }),
-  reset: () => set({ ai_enabled: false }),
+  reset: () => set({ ai_enabled: false, ai_translation_enabled: true }),
 }));
 
 export default aiControlStore;

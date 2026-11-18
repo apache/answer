@@ -1545,11 +1545,11 @@ ui:
     tips:
       title: 詳細検索のヒント
       tag: "<1>[tag]</1> タグで検索"
-      user: "<1>ユーザー:ユーザー名</1>作成者による検索"
-      answer: "<1>回答:0</1>未回答の質問"
-      score: "<1>スコア:3</1>3以上のスコアを持つ投稿"
-      question: "<1>質問</1>質問を検索"
-      is_answer: "<1>は答え</1>答えを検索"
+      user: "<1>user:username</1>作成者による検索"
+      answer: "<1>answers:0</1>未回答の質問"
+      score: "<1>score:3</1>3以上のスコアを持つ投稿"
+      question: "<1>is:question</1>質問を検索"
+      is_answer: "<1>is:answer</1>答えを検索"
     empty: 何も見つかりませんでした。 <br /> 別のキーワードまたはそれ以下の特定のキーワードをお試しください。
   share:
     name: シェア

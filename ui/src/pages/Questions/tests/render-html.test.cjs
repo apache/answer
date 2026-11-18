@@ -98,6 +98,7 @@ function loadComponent(relativePath) {
   );
   const mocks = {
     '@/components': {
+      AITranslateButton: Empty,
       Tag: Empty,
       Actions: Empty,
       Operate: Empty,
