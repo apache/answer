@@ -175,6 +175,8 @@ backend:
         other: Answers cannot be added to this question.
       content_cannot_empty:
         other: Answer content cannot be empty.
+      restrict_answer:
+        other: You can only write one answer to this question.
     comment:
       edit_without_permission:
         other: You do not have permission to edit this comment.
@@ -333,6 +335,11 @@ backend:
     upload:
       unsupported_file_format:
         other: Unsupported file format.
+      source_unsupported:
+        other: Unsupported upload source.
+    feature:
+      disabled:
+        other: This feature is disabled.
     site_info:
       config_not_found:
         other: Site config not found.
