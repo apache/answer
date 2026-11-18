@@ -153,7 +153,7 @@ func TestLocation(t *testing.T) {
 	assert.Equal(t, time.Local, Location("Not/AZone"))
 
 	tokyo, err := time.LoadLocation("Asia/Tokyo")
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, tokyo, Location("Asia/Tokyo"))
 }
 
