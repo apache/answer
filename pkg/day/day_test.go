@@ -27,6 +27,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v3"
 )
 
@@ -153,7 +154,7 @@ func TestLocation(t *testing.T) {
 	assert.Equal(t, time.Local, Location("Not/AZone"))
 
 	tokyo, err := time.LoadLocation("Asia/Tokyo")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, tokyo, Location("Asia/Tokyo"))
 }
 
