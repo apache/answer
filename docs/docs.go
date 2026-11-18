@@ -11743,6 +11743,9 @@ const docTemplate = `{
                 },
                 "prompt_config": {
                     "$ref": "#/definitions/schema.AIPromptConfig"
+                },
+                "translation_enabled": {
+                    "type": "boolean"
                 }
             }
         },
@@ -11764,6 +11767,9 @@ const docTemplate = `{
                 },
                 "prompt_config": {
                     "$ref": "#/definitions/schema.AIPromptConfig"
+                },
+                "translation_enabled": {
+                    "type": "boolean"
                 }
             }
         },
@@ -11975,6 +11981,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "ai_enabled": {
+                    "type": "boolean"
+                },
+                "ai_translation_enabled": {
                     "type": "boolean"
                 },
                 "branding": {
