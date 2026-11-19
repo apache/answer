@@ -44,20 +44,20 @@ import (
 	"gopkg.in/gomail.v2"
 )
 
-// EmailService kit service
+// EmailService handles email composition and delivery.
 type EmailService struct {
 	configService   *config.ConfigService
 	emailRepo       EmailRepo
 	siteInfoService siteinfo_common.SiteInfoCommonService
 }
 
-// EmailRepo email repository
+// EmailRepo defines the interface for storing and verifying email verification codes.
 type EmailRepo interface {
 	SetCode(ctx context.Context, userID, code, content string, duration time.Duration) error
 	VerifyCode(ctx context.Context, code string) (content string, err error)
 }
 
-// NewEmailService email service
+// NewEmailService creates a new EmailService instance.
 func NewEmailService(
 	configService *config.ConfigService,
 	emailRepo EmailRepo,
@@ -70,7 +70,7 @@ func NewEmailService(
 	}
 }
 
-// EmailConfig email config
+// EmailConfig holds SMTP email configuration settings.
 type EmailConfig struct {
 	FromEmail          string `json:"from_email"`
 	FromName           string `json:"from_name"`
@@ -90,7 +90,7 @@ func (e *EmailConfig) IsTLS() bool {
 	return e.Encryption == "TLS"
 }
 
-// SaveCode save code
+// SaveCode stores a verification code in the cache for the given user.
 func (es *EmailService) SaveCode(ctx context.Context, userID, code, codeContent string) {
 	err := es.emailRepo.SetCode(ctx, userID, code, codeContent, constant.UserEmailCodeCacheTime)
 	if err != nil {
@@ -98,7 +98,7 @@ func (es *EmailService) SaveCode(ctx context.Context, userID, code, codeContent 
 	}
 }
 
-// SendAndSaveCode send email and save code
+// SendAndSaveCode saves a verification code and sends the corresponding email to the recipient.
 func (es *EmailService) SendAndSaveCode(ctx context.Context, userID, toEmailAddr, subject, body, code, codeContent string) {
 	err := es.emailRepo.SetCode(ctx, userID, code, codeContent, constant.UserEmailCodeCacheTime)
 	if err != nil {
@@ -108,7 +108,7 @@ func (es *EmailService) SendAndSaveCode(ctx context.Context, userID, toEmailAddr
 	es.Send(ctx, toEmailAddr, subject, body)
 }
 
-// SendAndSaveCodeWithTime send email and save code
+// SendAndSaveCodeWithTime saves a verification code with a custom expiry duration and sends the email.
 func (es *EmailService) SendAndSaveCodeWithTime(
 	ctx context.Context, userID, toEmailAddr, subject, body, code, codeContent string, duration time.Duration) {
 	err := es.emailRepo.SetCode(ctx, userID, code, codeContent, duration)
@@ -119,7 +119,7 @@ func (es *EmailService) SendAndSaveCodeWithTime(
 	es.Send(ctx, toEmailAddr, subject, body)
 }
 
-// Send email send
+// Send sends an HTML email to the specified recipient via SMTP.
 func (es *EmailService) Send(ctx context.Context, toEmailAddr, subject, body string) {
 	log.Infof("try to send email to %s", toEmailAddr)
 	ec, err := es.GetEmailConfig(ctx)
@@ -137,7 +137,8 @@ func (es *EmailService) Send(ctx context.Context, toEmailAddr, subject, body str
 	m.SetHeader("From", fmt.Sprintf("%s <%s>", fromName, ec.FromEmail))
 	m.SetHeader("To", toEmailAddr)
 	m.SetHeader("Subject", subject)
-	m.SetBody("text/html", body)
+	m.SetHeader("MIME-Version", "1.0")
+	m.SetBody("text/html; charset=UTF-8", body)
 
 	d := gomail.NewDialer(ec.SMTPHost, ec.SMTPPort, ec.SMTPUsername, ec.SMTPPassword)
 	if ec.IsSSL() {
@@ -156,7 +157,7 @@ func (es *EmailService) Send(ctx context.Context, toEmailAddr, subject, body str
 	}
 }
 
-// VerifyUrlExpired email send
+// VerifyUrlExpired checks whether the verification URL associated with the given code has expired.
 func (es *EmailService) VerifyUrlExpired(ctx context.Context, code string) (content string) {
 	content, err := es.emailRepo.VerifyCode(ctx, code)
 	if err != nil {
@@ -211,7 +212,7 @@ func (es *EmailService) ChangeEmailTemplate(ctx context.Context, changeEmailUrl 
 	return title, body, nil
 }
 
-// TestTemplate send test email template parse
+// TestTemplate generates the title and body for a test email.
 func (es *EmailService) TestTemplate(ctx context.Context) (title, body string, err error) {
 	siteInfo, err := es.siteInfoService.GetSiteGeneral(ctx)
 	if err != nil {
@@ -229,7 +230,7 @@ func escapeEmailHTMLText(text string) string {
 	return html.EscapeString(text)
 }
 
-// NewAnswerTemplate new answer template
+// NewAnswerTemplate generates the email title and body notifying a user their question received a new answer.
 func (es *EmailService) NewAnswerTemplate(ctx context.Context, raw *schema.NewAnswerTemplateRawData) (
 	title, body string, err error) {
 	siteInfo, err := es.siteInfoService.GetSiteGeneral(ctx)
@@ -262,7 +263,7 @@ func (es *EmailService) NewAnswerTemplate(ctx context.Context, raw *schema.NewAn
 	return title, body, nil
 }
 
-// NewInviteAnswerTemplate new invite answer template
+// NewInviteAnswerTemplate generates the email title and body for an invitation to answer a question.
 func (es *EmailService) NewInviteAnswerTemplate(ctx context.Context, raw *schema.NewInviteAnswerTemplateRawData) (
 	title, body string, err error) {
 	siteInfo, err := es.siteInfoService.GetSiteGeneral(ctx)
@@ -293,7 +294,7 @@ func (es *EmailService) NewInviteAnswerTemplate(ctx context.Context, raw *schema
 	return title, body, nil
 }
 
-// NewCommentTemplate new comment template
+// NewCommentTemplate generates the email title and body notifying a user of a new comment on their post.
 func (es *EmailService) NewCommentTemplate(ctx context.Context, raw *schema.NewCommentTemplateRawData) (
 	title, body string, err error) {
 	siteInfo, err := es.siteInfoService.GetSiteGeneral(ctx)
@@ -327,7 +328,7 @@ func (es *EmailService) NewCommentTemplate(ctx context.Context, raw *schema.NewC
 	return title, body, nil
 }
 
-// NewQuestionTemplate new question template
+// NewQuestionTemplate generates the email title and body notifying subscribers of a new question.
 func (es *EmailService) NewQuestionTemplate(ctx context.Context, raw *schema.NewQuestionTemplateRawData) (
 	title, body string, err error) {
 	siteInfo, err := es.siteInfoService.GetSiteGeneral(ctx)
@@ -373,7 +374,7 @@ func (es *EmailService) GetEmailConfig(ctx context.Context) (ec *EmailConfig, er
 	return ec, nil
 }
 
-// SetEmailConfig set email config
+// SetEmailConfig persists the email SMTP configuration.
 func (es *EmailService) SetEmailConfig(ctx context.Context, ec *EmailConfig) (err error) {
 	data, _ := json.Marshal(ec)
 	return es.configService.UpdateConfig(ctx, constant.EmailConfigKey, string(data))
