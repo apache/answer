@@ -2360,6 +2360,16 @@ ui:
       model:
         label: Model
         msg: Model is required
+      prompt:
+        label: Prompt
+        text: >-
+          Instructions sent to the model with every question. Use %s where the
+          user's question should be inserted. Leave empty to use the built-in
+          default.
+        msg: >-
+          The prompt must contain %s exactly once, marking where the user's
+          question is inserted, and no other format verb. Write %% for a
+          literal percent sign.
       add_success: AI settings updated successfully.
     conversations:
       topic: Topic

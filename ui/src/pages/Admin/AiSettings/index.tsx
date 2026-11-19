@@ -68,6 +68,11 @@ const Index = () => {
       isInvalid: false,
       errorMsg: '',
     },
+    prompt: {
+      value: '',
+      isInvalid: false,
+      errorMsg: '',
+    },
   });
   const [apiHostPlaceholder, setApiHostPlaceholder] = useState('');
   const [modelsData, setModels] = useState<{ id: string }[]>([]);
@@ -169,7 +174,7 @@ const Index = () => {
   const checkValidate = () => {
     let bol = true;
 
-    const { api_host, api_key, model } = formData;
+    const { api_host, api_key, model, prompt } = formData;
 
     if (!api_host.value) {
       bol = false;
@@ -197,6 +202,25 @@ const Index = () => {
         isInvalid: true,
         errorMsg: t('model.msg'),
       };
+    }
+
+    // The prompt is a format template: the backend runs it through
+    // fmt.Sprintf with the user's question, so it needs exactly one %s and no
+    // other verb. Getting this wrong fails quietly -- Go appends
+    // %!(EXTRA string=...) and the question never reaches the model -- so
+    // reject it here rather than at answer time. An empty prompt is valid and
+    // means the built-in default.
+    if (prompt.value) {
+      const verbs = prompt.value.replace(/%%/g, '').match(/%./g) || [];
+      const questionVerbs = verbs.filter((verb) => verb === '%s');
+      if (questionVerbs.length !== 1 || verbs.length !== questionVerbs.length) {
+        bol = false;
+        formData.prompt = {
+          ...formData.prompt,
+          isInvalid: true,
+          errorMsg: t('prompt.msg'),
+        };
+      }
     }
 
     setFormData({
@@ -227,6 +251,10 @@ const Index = () => {
       enabled: formData.enabled.value,
       chosen_provider: formData.provider.value,
       ai_providers: newProviders,
+      prompt_config: {
+        zh_cn: historyConfigRef.current?.prompt_config?.zh_cn || '',
+        en_us: formData.prompt.value,
+      },
     };
     saveAiConfig(params)
       .then(() => {
@@ -292,6 +320,11 @@ const Index = () => {
       },
       model: {
         value: currentAiConfig?.model || '',
+        isInvalid: false,
+        errorMsg: '',
+      },
+      prompt: {
+        value: aiConfig.prompt_config?.en_us || '',
         isInvalid: false,
         errorMsg: '',
       },
@@ -476,6 +509,29 @@ const Index = () => {
 
             <div className="invalid-feedback">{formData.model.errorMsg}</div>
           </div>
+
+          <Form.Group controlId="prompt" className="mb-3">
+            <Form.Label>{t('prompt.label')}</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={8}
+              value={formData.prompt.value}
+              isInvalid={formData.prompt.isInvalid}
+              onChange={(e) =>
+                handleValueChange({
+                  prompt: {
+                    value: e.target.value,
+                    errorMsg: '',
+                    isInvalid: false,
+                  },
+                })
+              }
+            />
+            <Form.Text className="text-muted">{t('prompt.text')}</Form.Text>
+            <Form.Control.Feedback type="invalid">
+              {formData.prompt.errorMsg}
+            </Form.Control.Feedback>
+          </Form.Group>
 
           <Button type="submit">{t('save', { keyPrefix: 'btns' })}</Button>
         </Form>
