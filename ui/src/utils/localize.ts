@@ -75,6 +75,9 @@ const pullLanguageConf = (res) => {
     if (langConf && langConf.ui) {
       res.resources = langConf.ui;
       Storage.set(LANG_RESOURCE_STORAGE_KEY, res);
+      // The stale cached bundle was already added at boot; merge the fresh
+      // one in place so new/changed keys apply without a second page load.
+      i18next.addResourceBundle(res.lng, 'translation', langConf.ui, true, true);
     }
   });
 };

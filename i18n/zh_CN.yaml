@@ -853,9 +853,18 @@ ui:
     show_more: 显示更多
     new: 新聊天
     ai_generate: 来自帖子的 AI，可能不准确。
+    ai_disclaimer: 内容由 AI 生成，仅供参考，请自行甄别
+    ai_name: AI 助手
+    request_failed: 请求失败，请稍后重试
+    suggestion_1: 这个网站是做什么的？
+    suggestion_2: 如何提出一个新问题？
+    suggestion_3: 如何搜索我感兴趣的内容？
+    suggestion_4: 如何关注或收藏问题？
     copy: 复制
     ask_a_follow_up: 提出后续问题
     ask_placeholder: 提问
+    thinking: 思考中…
+    thoughts: 思考过程
   notifications:
     title: 通知
     inbox: 收件箱
@@ -2305,6 +2314,23 @@ ui:
         label: AI 已启用
         check: 启用AI功能
         text: AI 模型必须正确配置才能使用。
+      home_chat:
+        label: 首页展示 AI 助手
+        tip: 开启后将在网站首页右下角展示 AI 助手悬浮入口。
+      home_chat_guest:
+        label: 允许游客使用首页 AI 助手
+        tip: 开启后未登录访客也可使用首页 AI 助手；游客会话仅保留在浏览器中，不会被保存。
+      welcome_text:
+        label: AI 助手欢迎语
+        tip: 显示在 AI 助手开场的提示语，留空使用默认文案。
+      initial_messages:
+        label: 建议问题列表
+        tip: 每行一条，展示为欢迎语下方的建议问题，点击即可发送；留空使用默认建议问题。
+      prompt_config:
+        label: 系统提示词
+        zh_placeholder: 中文系统提示词（留空使用默认）
+        en_placeholder: English system prompt (leave empty for default)
+        tip: 发送给 AI 模型的系统提示词，可用 %s 代表用户问题；留空使用内置默认提示词。
       provider:
         label: 提供商
       api_host:
