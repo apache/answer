@@ -141,15 +141,32 @@ func (cr *commentRepo) GetCommentCount(ctx context.Context) (count int64, err er
 	return
 }
 
+// GetUserCommentObjectIDs gets distinct targets of a user's available comments.
+func (cr *commentRepo) GetUserCommentObjectIDs(ctx context.Context, userID string) (objectIDs []string, err error) {
+	objectIDs = make([]string, 0)
+	err = cr.data.DB.Context(ctx).Table(new(entity.Comment)).Distinct("object_id").
+		Where("user_id = ?", userID).And("status = ?", entity.CommentStatusAvailable).Find(&objectIDs)
+	if err != nil {
+		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	return
+}
+
 // GetCommentPage get comment page
 func (cr *commentRepo) GetCommentPage(ctx context.Context, commentQuery *comment.CommentQuery) (
 	commentList []*entity.Comment, total int64, err error,
 ) {
 	commentList = make([]*entity.Comment, 0)
+	if commentQuery.ObjectIDs != nil && len(commentQuery.ObjectIDs) == 0 {
+		return commentList, 0, nil
+	}
 
 	session := cr.data.DB.Context(ctx)
 	session.OrderBy(commentQuery.GetOrderBy())
 	session.Where("status = ?", entity.CommentStatusAvailable)
+	if commentQuery.ObjectIDs != nil {
+		session.In("object_id", commentQuery.ObjectIDs)
+	}
 
 	cond := &entity.Comment{ObjectID: commentQuery.ObjectID, UserID: commentQuery.UserID}
 	total, err = pager.Help(commentQuery.Page, commentQuery.PageSize, &commentList, cond, session)

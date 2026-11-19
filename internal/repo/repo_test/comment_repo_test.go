@@ -112,3 +112,65 @@ func Test_commentRepo_CannotGetDeletedComment(t *testing.T) {
 	require.NoError(t, err)
 	assert.False(t, exist)
 }
+
+func TestCommentRepoObjectFiltering(t *testing.T) {
+	ctx := context.Background()
+	commentRepo := comment.NewCommentRepo(testDataSource, unique.NewUniqueIDRepo(testDataSource))
+	const userID = "700101"
+	const firstObjectID = "10010000000700101"
+	const secondObjectID = "10010000000700102"
+	comments := []*entity.Comment{
+		{UserID: userID, ObjectID: firstObjectID, Status: entity.CommentStatusAvailable},
+		{UserID: userID, ObjectID: firstObjectID, Status: entity.CommentStatusAvailable},
+		{UserID: userID, ObjectID: secondObjectID, Status: entity.CommentStatusAvailable},
+		{UserID: userID, ObjectID: "10010000000700103", Status: entity.CommentStatusDeleted},
+		{UserID: userID, ObjectID: "10010000000700104", Status: entity.CommentStatusPending},
+		{UserID: "700102", ObjectID: "10010000000700105", Status: entity.CommentStatusAvailable},
+	}
+	t.Cleanup(func() {
+		for _, item := range comments {
+			_, err := testDataSource.DB.Context(ctx).ID(item.ID).Delete(&entity.Comment{})
+			require.NoError(t, err)
+		}
+	})
+	for _, item := range comments {
+		require.NoError(t, commentRepo.AddComment(ctx, item))
+	}
+
+	objectIDs, err := commentRepo.GetUserCommentObjectIDs(ctx, userID)
+	require.NoError(t, err)
+	require.ElementsMatch(t, []string{firstObjectID, secondObjectID}, objectIDs)
+	objectIDs, err = commentRepo.GetUserCommentObjectIDs(ctx, "700103")
+	require.NoError(t, err)
+	require.NotNil(t, objectIDs)
+	require.Empty(t, objectIDs)
+
+	for _, tc := range []struct {
+		name      string
+		objectIDs []string
+		count     int64
+	}{
+		{"unrestricted", nil, 3},
+		{"empty filter", []string{}, 0},
+		{"repeated target", []string{firstObjectID}, 2},
+		{"both targets", []string{firstObjectID, secondObjectID}, 3},
+		{"missing target", []string{"10010000000700109"}, 0},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			for page := 1; page <= 2; page++ {
+				list, count, err := commentRepo.GetCommentPage(ctx, &commentService.CommentQuery{
+					PageCond: pager.PageCond{Page: page, PageSize: 2}, UserID: userID, ObjectIDs: tc.objectIDs,
+				})
+				require.NoError(t, err)
+				require.Equal(t, tc.count, count)
+				wantLength := min(2, max(0, int(tc.count)-(page-1)*2))
+				require.Len(t, list, wantLength)
+				for _, item := range list {
+					if tc.objectIDs != nil {
+						require.Contains(t, tc.objectIDs, item.ObjectID)
+					}
+				}
+			}
+		})
+	}
+}

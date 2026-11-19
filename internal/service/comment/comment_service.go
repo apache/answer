@@ -56,6 +56,7 @@ type CommentRepo interface {
 	UpdateCommentContent(ctx context.Context, commentID string, original string, parsedText string) (err error)
 	UpdateCommentStatus(ctx context.Context, commentID string, status int) (err error)
 	GetComment(ctx context.Context, commentID string) (comment *entity.Comment, exist bool, err error)
+	GetUserCommentObjectIDs(ctx context.Context, userID string) (objectIDs []string, err error)
 	GetCommentPage(ctx context.Context, commentQuery *CommentQuery) (
 		comments []*entity.Comment, total int64, err error)
 }
@@ -64,6 +65,8 @@ type CommentQuery struct {
 	pager.PageCond
 	// object id
 	ObjectID string
+	// A nil slice leaves object IDs unrestricted; an empty slice matches no comments.
+	ObjectIDs []string
 	// query condition
 	QueryCond string
 	// user id
@@ -531,9 +534,31 @@ func (cs *CommentService) GetCommentPersonalWithPage(ctx context.Context, req *s
 		return nil, errors.BadRequest(reason.UserNotFound)
 	}
 
+	objectIDs, err := cs.commentRepo.GetUserCommentObjectIDs(ctx, req.UserID)
+	if err != nil {
+		return nil, err
+	}
+	visibleObjectIDs := make([]string, 0, len(objectIDs))
+	visibleObjects := make(map[string]*schema.SimpleObjectInfo, len(objectIDs))
+	for _, objectID := range objectIDs {
+		if len(objectID) == 0 {
+			continue
+		}
+		objInfo, err := cs.objectInfoService.GetInfo(ctx, objectID)
+		if err != nil {
+			log.Error(err)
+			continue
+		}
+		if canViewPersonalComment(objInfo, req.LoginUserID, req.IsAdminModerator) {
+			visibleObjectIDs = append(visibleObjectIDs, objectID)
+			visibleObjects[objectID] = objInfo
+		}
+	}
+
 	dto := &CommentQuery{
 		PageCond:  pager.PageCond{Page: req.Page, PageSize: req.PageSize},
 		UserID:    req.UserID,
+		ObjectIDs: visibleObjectIDs,
 		QueryCond: "created_at",
 	}
 	commentList, total, err := cs.commentRepo.GetCommentPage(ctx, dto)
@@ -542,17 +567,7 @@ func (cs *CommentService) GetCommentPersonalWithPage(ctx context.Context, req *s
 	}
 	resp := make([]*schema.GetCommentPersonalWithPageResp, 0)
 	for _, comment := range commentList {
-		if len(comment.ObjectID) == 0 {
-			continue
-		}
-		objInfo, err := cs.objectInfoService.GetInfo(ctx, comment.ObjectID)
-		if err != nil {
-			log.Error(err)
-			continue
-		}
-		if !canViewPersonalComment(objInfo, req.LoginUserID, req.IsAdminModerator) {
-			continue
-		}
+		objInfo := visibleObjects[comment.ObjectID]
 		commentResp := &schema.GetCommentPersonalWithPageResp{
 			CommentID:  comment.ID,
 			CreatedAt:  comment.CreatedAt.Unix(),
