@@ -53,6 +53,45 @@ const Inbox = ({ data, handleReadNotification }) => {
           default:
             url = '';
         }
+        // a message from an admin / moderator: title + body inline, no post behind it
+        if (item.object_info.object_type === 'admin_message') {
+          const map = item.object_info.object_map || {};
+          const contextUrl = map.question
+            ? `/questions/${map.question}${map.answer ? `/${map.answer}` : ''}`
+            : '';
+          return (
+            <ListGroup.Item
+              key={item.id}
+              className={classNames(
+                'py-3 border-start-0 border-end-0',
+                !item.is_read && 'warning',
+              )}
+              onClick={() => !item.is_read && handleReadNotification(item.id)}>
+              <div>
+                {item.user_info && item.user_info.status !== 'deleted' ? (
+                  <Link to={`/users/${item.user_info.username}`}>
+                    {item.user_info.display_name}{' '}
+                  </Link>
+                ) : (
+                  <span>{item.user_info?.display_name || t('someone')} </span>
+                )}
+                {item.notification_action}{' '}
+                <strong>{item.object_info.title}</strong>
+              </div>
+              <div className="mt-1" style={{ whiteSpace: 'pre-wrap' }}>
+                {map.body}
+              </div>
+              {contextUrl ? (
+                <div className="small mt-1">
+                  <Link to={contextUrl}>{t('message_context')}</Link>
+                </div>
+              ) : null}
+              <div className="text-secondary small">
+                <FormatTime time={item.update_time} />
+              </div>
+            </ListGroup.Item>
+          );
+        }
         return (
           <ListGroup.Item
             key={item.id}

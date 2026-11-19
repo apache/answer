@@ -42,7 +42,7 @@ const Notifications = () => {
   const [page, setPage] = useState(1);
   const [notificationData, setNotificationData] = useState<any>([]);
   const { t } = useTranslation('translation', { keyPrefix: 'notifications' });
-  const inboxTypeNavs = ['all', 'posts', 'invites', 'votes'];
+  const inboxTypeNavs = ['all', 'posts', 'invites', 'votes', 'messages'];
   const { type = 'inbox', subType = inboxTypeNavs[0] } = useParams();
 
   const queryParams: {

@@ -62,6 +62,7 @@ type AnswerAPIRouter struct {
 	aiConversationController      *controller.AIConversationController
 	aiConversationAdminController *controller_admin.AIConversationAdminController
 	mcpController                 *controller.MCPController
+	adminMessageController        *controller.AdminMessageController
 }
 
 func NewAnswerAPIRouter(
@@ -100,6 +101,7 @@ func NewAnswerAPIRouter(
 	aiConversationController *controller.AIConversationController,
 	aiConversationAdminController *controller_admin.AIConversationAdminController,
 	mcpController *controller.MCPController,
+	adminMessageController *controller.AdminMessageController,
 ) *AnswerAPIRouter {
 	return &AnswerAPIRouter{
 		langController:                langController,
@@ -137,6 +139,7 @@ func NewAnswerAPIRouter(
 		aiConversationController:      aiConversationController,
 		aiConversationAdminController: aiConversationAdminController,
 		mcpController:                 mcpController,
+		adminMessageController:        adminMessageController,
 	}
 }
 
@@ -246,6 +249,9 @@ func (a *AnswerAPIRouter) RegisterAnswerAPIRouter(r *gin.RouterGroup) {
 
 	// vote
 	r.POST("/vote/up", a.voteController.VoteUp)
+	// messages from admins / moderators (role checked in the service)
+	r.POST("/admin-message", a.adminMessageController.Send)
+	r.GET("/admin-message/page", a.adminMessageController.Page)
 	r.POST("/vote/down", a.voteController.VoteDown)
 
 	// follow

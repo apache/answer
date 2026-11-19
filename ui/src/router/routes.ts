@@ -398,6 +398,10 @@ const routes: RouteNode[] = [
             page: 'pages/Admin/Users',
           },
           {
+            path: 'admin-messages',
+            page: 'pages/Admin/AdminMessages',
+          },
+          {
             path: 'users/settings',
             page: 'pages/Admin/UsersSettings',
           },

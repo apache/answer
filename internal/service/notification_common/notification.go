@@ -128,6 +128,10 @@ func (ns *NotificationCommon) AddNotification(ctx context.Context, msg *schema.N
 		objectMap := make(map[string]string)
 		objectMap["badge_id"] = msg.ExtraInfo["badge_id"]
 		req.ObjectInfo.ObjectMap = objectMap
+	} else if msg.ObjectType == constant.AdminMessageObjectType {
+		// admin message: no post behind it, the message itself is the object
+		req.ObjectInfo.Title = msg.Title
+		req.ObjectInfo.ObjectMap = msg.ExtraInfo
 	} else {
 		objInfo, err = ns.objectInfoService.GetInfo(ctx, req.ObjectInfo.ObjectID)
 		if err != nil {
