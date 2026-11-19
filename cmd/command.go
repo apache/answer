@@ -77,6 +77,7 @@ func init() {
 	upgradeCmd.Flags().StringVarP(&upgradeVersion, "from", "f", "", "upgrade from specific version, eg: -f v1.1.0")
 
 	configCmd.Flags().StringSliceVarP(&configFields, "with", "w", []string{}, "the fields that need to be set to the default value, eg: -w allow_password_login")
+	configCmd.AddCommand(configExportEnvCmd)
 
 	i18nCmd.Flags().StringVarP(&i18nSourcePath, "source", "s", "", "i18n source path, eg: -s ./i18n/source")
 
@@ -130,6 +131,19 @@ To run answer, use:
 				}
 
 				fmt.Println("config file read successfully, try to connect database...")
+				if cli.CheckDBTableExist(c.Data.Database) {
+					fmt.Println("connect to database successfully and table already exists, do nothing.")
+					return
+				}
+			}
+
+			if conf.RuntimeEnvironmentConfigured() {
+				fmt.Println("runtime configuration found in environment, try to connect database...")
+				c, err := conf.ReadConfig(path.GetConfigFilePath())
+				if err != nil {
+					fmt.Println("read environment config failed: ", err.Error())
+					return
+				}
 				if cli.CheckDBTableExist(c.Data.Database) {
 					fmt.Println("connect to database successfully and table already exists, do nothing.")
 					return
@@ -283,6 +297,29 @@ To run answer, use:
 			} else {
 				fmt.Println("set default config successfully")
 			}
+		},
+	}
+
+	configExportEnvCmd = &cobra.Command{
+		Use:          "export-env",
+		Short:        "Export runtime configuration in dotenv format",
+		SilenceUsage: true,
+		Long: `Export the effective runtime configuration in dotenv format.
+The output can contain database credentials and is only written to standard output
+when this command is explicitly invoked.`,
+		Args: cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, _ []string) error {
+			path.FormatAllPath(dataDirPath)
+			c, err := conf.ReadConfig(path.GetConfigFilePath())
+			if err != nil {
+				return fmt.Errorf("read config failed: %w", err)
+			}
+			output, err := conf.ExportEnvironment(c)
+			if err != nil {
+				return fmt.Errorf("export config failed: %w", err)
+			}
+			_, err = fmt.Fprintln(cmd.OutOrStdout(), output)
+			return err
 		},
 	}
 
