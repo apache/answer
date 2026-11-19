@@ -20,13 +20,23 @@
 package router
 
 import (
+	"github.com/apache/answer/internal/base/constant"
 	"github.com/apache/answer/internal/schema/mcp_tools"
 	"github.com/gin-gonic/gin"
 	"github.com/mark3labs/mcp-go/server"
 )
 
+// newMCPSSEServer builds the SSE server from the shared MCP endpoint constants
+// so the configured endpoints cannot drift from the paths mounted below.
+func newMCPSSEServer(s *server.MCPServer) *server.SSEServer {
+	return server.NewSSEServer(s,
+		server.WithSSEEndpoint(constant.MCPSSEPath),
+		server.WithMessageEndpoint(constant.MCPMessagePath),
+	)
+}
+
 func (a *AnswerAPIRouter) RegisterMCPRouter(r *gin.RouterGroup) {
-	s := server.NewMCPServer("Answer Enterprise MCP Server", "1.0.0")
+	s := server.NewMCPServer(constant.MCPServerName, constant.MCPServerVersion)
 
 	s.AddTool(mcp_tools.NewQuestionsTool(), a.mcpController.MCPQuestionsHandler())
 	s.AddTool(mcp_tools.NewAnswersTool(), a.mcpController.MCPAnswersHandler())
@@ -35,10 +45,7 @@ func (a *AnswerAPIRouter) RegisterMCPRouter(r *gin.RouterGroup) {
 	s.AddTool(mcp_tools.NewTagDetailTool(), a.mcpController.MCPTagDetailsHandler())
 	s.AddTool(mcp_tools.NewUserTool(), a.mcpController.MCPUserDetailsHandler())
 
-	sseServer := server.NewSSEServer(s,
-		server.WithSSEEndpoint("/answer/api/v1/mcp/see"),
-		server.WithMessageEndpoint("/answer/api/v1/mcp/message"),
-	)
+	sseServer := newMCPSSEServer(s)
 	r.GET("/mcp/sse", gin.WrapH(sseServer.SSEHandler()))
 	r.POST("/mcp/message", gin.WrapH(sseServer.MessageHandler()))
 }

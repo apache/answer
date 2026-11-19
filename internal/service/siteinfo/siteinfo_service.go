@@ -479,7 +479,7 @@ func (s *SiteInfoService) GetSiteMCP(ctx context.Context) (resp *schema.SiteMCPR
 	}
 
 	resp.Type = "Server-Sent Event (SSE)"
-	resp.URL = fmt.Sprintf("%s/answer/api/v1/mcp/sse", siteInfo.SiteUrl)
+	resp.URL = fmt.Sprintf("%s%s", siteInfo.SiteUrl, constant.MCPSSEPath)
 	resp.HTTPHeader = "Authorization={key}"
 	return
 }
