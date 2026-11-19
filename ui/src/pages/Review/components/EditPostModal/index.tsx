@@ -28,7 +28,7 @@ import { usePageUsers } from '@/hooks';
 import { useCaptchaPlugin } from '@/utils/pluginKit';
 import { Editor, TagSelector, Mentions, TextArea } from '@/components';
 import {
-  // matchedUsers,
+  matchedUsers,
   parseUserInfo,
   handleFormError,
   parseEditMentionUser,
@@ -187,7 +187,10 @@ const Index: FC<Props> = ({
       const { value } = formData.content;
       // const users = matchedUsers(value);
       // const userNames = unionBy(users.map((user) => user.userName));
-      const commentMarkDown = parseUserInfo(value);
+      const commentMarkDown = parseUserInfo(value, [
+        ...pageUsers.getUsers(),
+        ...matchedUsers(originalData.content),
+      ]);
 
       // params.mention_username_list = userNames;
       params.content = commentMarkDown;

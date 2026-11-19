@@ -27,7 +27,7 @@ let globalUsers: Types.PageUser[] = [];
 const usePageUsers = () => {
   const [users, setUsers] = useState<Types.PageUser[]>(globalUsers);
   const getUsers = () => {
-    return users;
+    return uniqBy([...users, ...globalUsers], 'userName');
   };
   return {
     getUsers,

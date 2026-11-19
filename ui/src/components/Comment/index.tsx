@@ -114,10 +114,18 @@ const Comment: FC<IProps> = ({ objectId, mode, commentId, children }) => {
         displayName: item.user_display_name,
         userName: item.username,
       });
-      user.push({
-        id: item.reply_comment_id,
-        displayName: item.reply_user_display_name,
-        userName: item.username,
+      if (item.reply_username) {
+        user.push({
+          id: item.reply_user_id,
+          displayName: item.reply_user_display_name,
+          userName: item.reply_username,
+        });
+      }
+      matchedUsers(item.original_text).forEach((mention) => {
+        user.push({
+          displayName: mention.userName,
+          userName: mention.userName,
+        });
       });
     });
     pageUsers.setUsers(user);
@@ -225,9 +233,10 @@ const Comment: FC<IProps> = ({ objectId, mode, commentId, children }) => {
   };
 
   const handleSendReply = (item) => {
-    const users = matchedUsers(item.value);
+    const knownUsers = pageUsers.getUsers();
+    const users = matchedUsers(item.value, knownUsers);
     const userNames = unionBy(users.map((user) => user.userName));
-    const commentMarkDown = parseUserInfo(item.value);
+    const commentMarkDown = parseUserInfo(item.value, knownUsers);
 
     const params = {
       object_id: objectId,
