@@ -38,4 +38,10 @@ func TestReplaceSearchContent(t *testing.T) {
 	ret = strings.Join(append(patterns, replacedContent), " ")
 
 	assert.Equal(t, "user:aaa-sss score:3 [tag1] [tag2] ssssfdfdf as fsadf", ret)
+
+	content = "[react-native] [node.js] [c++] navigation-bar"
+	replacedContent, patterns = ReplaceSearchContent(content)
+	ret = strings.Join(append(patterns, replacedContent), " ")
+
+	assert.Equal(t, "[react-native] [node.js] [c++] navigation bar", ret)
 }
