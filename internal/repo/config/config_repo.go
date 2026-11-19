@@ -141,3 +141,44 @@ func (cr configRepo) UpdateConfig(ctx context.Context, key string, value string)
 	}
 	return
 }
+
+func (cr configRepo) CompareAndSwapConfig(
+	ctx context.Context, key, oldValue, newValue string,
+) (swapped bool, err error) {
+	oldConfig := &entity.Config{Key: key}
+	exist, err := cr.data.DB.Context(ctx).Get(oldConfig)
+	if err != nil {
+		return false, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	if !exist {
+		return false, errors.BadRequest(reason.ObjectNotFound)
+	}
+	if oldConfig.Value != oldValue {
+		return false, nil
+	}
+
+	affected, err := cr.data.DB.Context(ctx).ID(oldConfig.ID).Where("value = ?", oldValue).
+		Update(&entity.Config{Value: newValue})
+	if err != nil {
+		return false, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	if affected == 0 {
+		if oldValue != newValue {
+			return false, nil
+		}
+		current, err := cr.GetConfigByKeyFromDB(ctx, key)
+		if err != nil {
+			return false, err
+		}
+		return current.Value == newValue, nil
+	}
+
+	// Invalidate both cached forms. The next reader will load the latest DB value.
+	if err := cr.data.Cache.Del(ctx, constant.ConfigKEY2ContentCacheKeyPrefix+key); err != nil {
+		log.Error(err)
+	}
+	if err := cr.data.Cache.Del(ctx, fmt.Sprintf("%s%d", constant.ConfigID2KEYCacheKeyPrefix, oldConfig.ID)); err != nil {
+		log.Error(err)
+	}
+	return true, nil
+}

@@ -33,6 +33,7 @@ type ConfigRepo interface {
 	GetConfigByKey(ctx context.Context, key string) (c *entity.Config, err error)
 	GetConfigByKeyFromDB(ctx context.Context, key string) (c *entity.Config, err error)
 	UpdateConfig(ctx context.Context, key, value string) (err error)
+	CompareAndSwapConfig(ctx context.Context, key, oldValue, newValue string) (swapped bool, err error)
 }
 
 // ConfigService user service
@@ -115,4 +116,12 @@ func (cs *ConfigService) GetIDByKey(ctx context.Context, key string) (id int, er
 
 func (cs *ConfigService) UpdateConfig(ctx context.Context, key, value string) (err error) {
 	return cs.configRepo.UpdateConfig(ctx, key, value)
+}
+
+// CompareAndSwapConfig updates a config only when its current value still
+// matches oldValue.
+func (cs *ConfigService) CompareAndSwapConfig(
+	ctx context.Context, key, oldValue, newValue string,
+) (swapped bool, err error) {
+	return cs.configRepo.CompareAndSwapConfig(ctx, key, oldValue, newValue)
 }
