@@ -115,7 +115,7 @@ func (r *aiConversationRepo) GetRecordsByConversationID(ctx context.Context, con
 	records := make([]*entity.AIConversationRecord, 0)
 	err := r.data.DB.Context(ctx).
 		Where(builder.Eq{"conversation_id": conversationID}).
-		OrderBy("created_at ASC").
+		OrderBy("created_at ASC, id ASC").
 		Find(&records)
 	if err != nil {
 		log.Errorf("get ai conversation records failed: %v", err)
