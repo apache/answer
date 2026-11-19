@@ -1009,6 +1009,30 @@ func (qc *QuestionController) AdminUpdateQuestionStatus(ctx *gin.Context) {
 	handler.HandleResponse(ctx, err, nil)
 }
 
+// AdminDeleteQuestions deletes multiple questions.
+// @Summary delete multiple questions
+// @Description delete multiple questions
+// @Tags admin
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param data body schema.DeleteQuestionsReq true "DeleteQuestionsReq"
+// @Success 200 {object} handler.RespBody{data=schema.BulkDeleteResp}
+// @Router /answer/admin/api/questions [delete]
+func (qc *QuestionController) AdminDeleteQuestions(ctx *gin.Context) {
+	req := &schema.DeleteQuestionsReq{}
+	if handler.BindAndCheck(ctx, req) {
+		return
+	}
+	for index, questionID := range req.QuestionIDs {
+		req.QuestionIDs[index] = uid.DeShortID(questionID)
+	}
+	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
+
+	resp := qc.questionService.AdminDeleteQuestions(ctx, req)
+	handler.HandleResponse(ctx, nil, resp)
+}
+
 // GetQuestionLink get question link
 // @Summary get question link
 // @Description get question link

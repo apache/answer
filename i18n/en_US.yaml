@@ -2010,6 +2010,14 @@ ui:
         remove: Remove their content
         label: Remove all questions, answers, comments, etc.
         text: Don’t check this if you wish to only delete the user’s account.
+      bulk_delete:
+        action: Delete selected ({{ count }})
+        title: Delete {{ count }} users
+        content: Are you sure you want to delete {{ count }} users? This is permanent!
+        select: Select user
+        select_all: Select all users on this page
+        success: "{{ count }} users deleted."
+        partial: "{{ succeeded }} users deleted; {{ failed }} could not be deleted."
       suspend_user:
         title: Suspend this user
         content: A suspended user can't log in.
@@ -2028,6 +2036,14 @@ ui:
       pending: Pending
       filter:
         placeholder: "Filter by title, question:id"
+      bulk_delete:
+        action: Delete selected ({{ count }})
+        title: Delete {{ count }} questions
+        content: Are you sure you want to delete {{ count }} questions?
+        select: Select question
+        select_all: Select all questions on this page
+        success: "{{ count }} questions deleted."
+        partial: "{{ succeeded }} questions deleted; {{ failed }} could not be deleted."
     answers:
       page_title: Answers
       post: Post
@@ -2038,6 +2054,14 @@ ui:
       change: Change
       filter:
         placeholder: "Filter by title, answer:id"
+      bulk_delete:
+        action: Delete selected ({{ count }})
+        title: Delete {{ count }} answers
+        content: Are you sure you want to delete {{ count }} answers?
+        select: Select answer
+        select_all: Select all answers on this page
+        success: "{{ count }} answers deleted."
+        partial: "{{ succeeded }} answers deleted; {{ failed }} could not be deleted."
     general:
       page_title: General
       name:

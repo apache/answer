@@ -175,3 +175,9 @@ type AdminUpdateAnswerStatusReq struct {
 	Status   string `validate:"required,oneof=available deleted" json:"status"`
 	UserID   string `json:"-"`
 }
+
+// DeleteAnswersReq deletes multiple answers from the admin console.
+type DeleteAnswersReq struct {
+	AnswerIDs []string `validate:"required,min=1,max=500,dive,required" json:"answer_ids"`
+	UserID    string   `json:"-"`
+}

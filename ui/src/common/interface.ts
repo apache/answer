@@ -323,6 +323,11 @@ export interface AdminContentsReq extends Paging {
   query?: string;
 }
 
+export interface BulkDeleteResult {
+  succeeded_ids: string[];
+  failed_ids: string[];
+}
+
 /**
  * @description interface for Answer
  */

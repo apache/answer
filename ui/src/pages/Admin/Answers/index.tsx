@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Form, Table, Stack, Button } from 'react-bootstrap';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -36,7 +36,7 @@ import {
 } from '@/components';
 import { ADMIN_LIST_STATUS, ADMIN_QA_NAV_MENUS } from '@/common/constants';
 import * as Type from '@/common/interface';
-import { deletePermanently, useAnswerSearch } from '@/services';
+import { deleteAnswers, deletePermanently, useAnswerSearch } from '@/services';
 import { escapeRemove } from '@/utils';
 import { pathFactory } from '@/router/pathFactory';
 import { toastStore } from '@/stores';
@@ -56,6 +56,7 @@ const Answers: FC = () => {
   const curPage = Number(urlSearchParams.get('page')) || 1;
   const curQuery = urlSearchParams.get('query') || '';
   const questionId = urlSearchParams.get('questionId') || '';
+  const [selectedAnswerIDs, setSelectedAnswerIDs] = useState<string[]>([]);
   const { t } = useTranslation('translation', { keyPrefix: 'admin.answers' });
 
   const {
@@ -70,6 +71,15 @@ const Answers: FC = () => {
     question_id: questionId,
   });
   const count = listData?.count || 0;
+  const canBulkDelete = curFilter === 'normal';
+  const pageAnswerIDs = listData?.list?.map((item) => item.id) || [];
+  const allAnswersSelected =
+    pageAnswerIDs.length > 0 &&
+    pageAnswerIDs.every((answerID) => selectedAnswerIDs.includes(answerID));
+
+  useEffect(() => {
+    setSelectedAnswerIDs([]);
+  }, [curFilter, curPage, curQuery, questionId]);
 
   const handleDeletePermanently = () => {
     Modal.confirm({
@@ -95,6 +105,48 @@ const Answers: FC = () => {
     urlSearchParams.delete('page');
     setUrlSearchParams(urlSearchParams);
   };
+
+  const toggleAnswer = (answerID: string) => {
+    setSelectedAnswerIDs((selectedIDs) =>
+      selectedIDs.includes(answerID)
+        ? selectedIDs.filter((id) => id !== answerID)
+        : [...selectedIDs, answerID],
+    );
+  };
+
+  const toggleAllAnswers = () => {
+    setSelectedAnswerIDs(allAnswersSelected ? [] : pageAnswerIDs);
+  };
+
+  const handleBulkDelete = () => {
+    Modal.confirm({
+      title: t('bulk_delete.title', { count: selectedAnswerIDs.length }),
+      content: t('bulk_delete.content', { count: selectedAnswerIDs.length }),
+      cancelBtnVariant: 'link',
+      confirmText: t('delete', { keyPrefix: 'btns' }),
+      confirmBtnVariant: 'danger',
+      onConfirm: () => {
+        deleteAnswers(selectedAnswerIDs).then((result) => {
+          const failedCount = result.failed_ids.length;
+          toastStore.getState().show({
+            msg:
+              failedCount > 0
+                ? t('bulk_delete.partial', {
+                    succeeded: result.succeeded_ids.length,
+                    failed: failedCount,
+                  })
+                : t('bulk_delete.success', {
+                    count: result.succeeded_ids.length,
+                  }),
+            variant: failedCount > 0 ? 'warning' : 'success',
+          });
+          setSelectedAnswerIDs([]);
+          refreshList();
+        });
+      },
+    });
+  };
+
   return (
     <>
       <h3 className="mb-4">
@@ -117,6 +169,15 @@ const Answers: FC = () => {
               {t('deleted_permanently', { keyPrefix: 'btns' })}
             </Button>
           ) : null}
+          {canBulkDelete ? (
+            <Button
+              variant="outline-danger"
+              size="sm"
+              disabled={selectedAnswerIDs.length === 0}
+              onClick={handleBulkDelete}>
+              {t('bulk_delete.action', { count: selectedAnswerIDs.length })}
+            </Button>
+          ) : null}
         </Stack>
 
         <Form.Control
@@ -132,6 +193,16 @@ const Answers: FC = () => {
       <Table responsive="md">
         <thead>
           <tr>
+            {canBulkDelete ? (
+              <th style={{ width: '1%' }}>
+                <Form.Check.Input
+                  type="checkbox"
+                  checked={allAnswersSelected}
+                  onChange={toggleAllAnswers}
+                  aria-label={t('bulk_delete.select_all')}
+                />
+              </th>
+            ) : null}
             <th className="min-w-15">{t('post')}</th>
             <th style={{ width: '11%' }}>{t('votes')}</th>
             <th style={{ width: '14%' }}>{t('created')}</th>
@@ -145,6 +216,16 @@ const Answers: FC = () => {
           {listData?.list?.map((li) => {
             return (
               <tr key={li.id}>
+                {canBulkDelete ? (
+                  <td>
+                    <Form.Check.Input
+                      type="checkbox"
+                      checked={selectedAnswerIDs.includes(li.id)}
+                      onChange={() => toggleAnswer(li.id)}
+                      aria-label={t('bulk_delete.select')}
+                    />
+                  </td>
+                ) : null}
                 <td>
                   <Link
                     to={pathFactory.answerLanding({
