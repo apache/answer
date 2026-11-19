@@ -6,13 +6,13 @@ Apache Answer combines a Go backend with a React/TypeScript frontend. `cmd/answe
 
 ## Build, Test, and Development Commands
 
-Use Go 1.25+, Node.js matching `ui/package.json` (`^20.19.0 || >=22.12.0`), and pnpm 9.7.0.
+Use Go 1.25+, Node.js matching `ui/package.json` (`^20.19.0 || >=22.12.0`), and pnpm 9.7.0. `make lint` also requires Docker or Podman installed and running for the ASF header formatter.
 
 - `make generate`: install generators, regenerate Go code/API documentation, and tidy modules.
 - `make ui`: install frontend dependencies and build the UI.
 - `make build`: regenerate code and build the `answer` executable.
 - `./answer init -C ./data` then `./answer run -C ./data`: initialize and run locally.
-- `cd ui && pnpm start`: run the Vite development server on port 3000.
+- Before `cd ui && pnpm start` (Vite, port 3000), set `REACT_APP_API_URL=http://localhost:8080/` in `ui/.env.development.local`, matching your backend address. This overrides the checked-in private proxy target; restart Vite after changes.
 - `make test`: run repository integration tests.
 - `go test ./...`: run the full Go test suite.
 - `make lint`: regenerate code, check ASF headers, and run golangci-lint.
