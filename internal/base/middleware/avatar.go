@@ -21,6 +21,7 @@ package middleware
 
 import (
 	"fmt"
+	"mime"
 	"net/http"
 	"net/url"
 	"os"
@@ -73,7 +74,7 @@ func (am *AvatarMiddleware) AvatarThumb() gin.HandlerFunc {
 				ctx.Abort()
 				return
 			}
-			ctx.Header("content-type", fmt.Sprintf("image/%s", strings.TrimLeft(path.Ext(filePath), ".")))
+			ctx.Header("Content-Type", contentTypeByExt(path.Ext(filePath)))
 			_, err = ctx.Writer.Write(avatarFile)
 			if err != nil {
 				log.Error(err)
@@ -86,9 +87,23 @@ func (am *AvatarMiddleware) AvatarThumb() gin.HandlerFunc {
 				ctx.Next()
 				return
 			}
-			ext := strings.TrimPrefix(filepath.Ext(urlInfo.Path), ".")
-			ctx.Header("content-type", fmt.Sprintf("image/%s", ext))
+			ctx.Header("Content-Type", contentTypeByExt(filepath.Ext(urlInfo.Path)))
 		}
 		ctx.Next()
 	}
+}
+
+// contentTypeByExt returns the MIME type for a file extension (with leading dot).
+// It prefers the registered MIME table (e.g. ".svg" -> "image/svg+xml", which browsers
+// require to render SVG in <img>) and falls back to the legacy "image/<ext>" guess.
+// Paths without an extension get application/octet-stream rather than an invalid "image/".
+func contentTypeByExt(ext string) string {
+	ext = strings.ToLower(ext)
+	if ct := mime.TypeByExtension(ext); ct != "" {
+		return ct
+	}
+	if name := strings.TrimPrefix(ext, "."); name != "" {
+		return fmt.Sprintf("image/%s", name)
+	}
+	return "application/octet-stream"
 }
