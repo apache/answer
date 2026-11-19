@@ -479,6 +479,7 @@ export interface AdminSettingsCustom {
   custom_css: string;
   custom_head: string;
   custom_header: string;
+  custom_banner: string;
   custom_footer: string;
   custom_sidebar: string;
 }

@@ -2225,6 +2225,9 @@ ui:
       header:
         label: Header
         text: This will insert after &lt;body>
+      banner:
+        label: Banner
+        text: This will insert below the site header.
       footer:
         label: Footer
         text: This will insert before &lt;/body>.
