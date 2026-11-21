@@ -41,4 +41,9 @@ func (a *AnswerAPIRouter) RegisterMCPRouter(r *gin.RouterGroup) {
 	)
 	r.GET("/mcp/sse", gin.WrapH(sseServer.SSEHandler()))
 	r.POST("/mcp/message", gin.WrapH(sseServer.MessageHandler()))
+
+	// Streamable HTTP is the transport current MCP clients default to; the SSE
+	// endpoints above stay for clients that only speak the deprecated one.
+	streamableServer := server.NewStreamableHTTPServer(s)
+	r.Any("/mcp", gin.WrapH(streamableServer))
 }
