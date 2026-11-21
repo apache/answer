@@ -29,6 +29,7 @@ func (a *AnswerAPIRouter) RegisterMCPRouter(r *gin.RouterGroup) {
 	s := server.NewMCPServer("Answer Enterprise MCP Server", "1.0.0")
 
 	s.AddTool(mcp_tools.NewQuestionsTool(), a.mcpController.MCPQuestionsHandler())
+	s.AddTool(mcp_tools.NewQuestionDetailTool(), a.mcpController.MCPQuestionDetailHandler())
 	s.AddTool(mcp_tools.NewAnswersTool(), a.mcpController.MCPAnswersHandler())
 	s.AddTool(mcp_tools.NewCommentsTool(), a.mcpController.MCPCommentsHandler())
 	s.AddTool(mcp_tools.NewTagsTool(), a.mcpController.MCPTagsHandler())
