@@ -182,9 +182,67 @@ func (vr *VoteRepo) CancelVote(ctx context.Context, op *schema.VoteOperationInfo
 
 func (vr *VoteRepo) GetAndSaveVoteResult(ctx context.Context, objectID, objectType string) (
 	up, down int64, err error) {
-	up = vr.countVoteUp(ctx, objectID, objectType)
-	down = vr.countVoteDown(ctx, objectID, objectType)
-	err = vr.updateVotes(ctx, objectID, objectType, int(up-down))
+	var target any
+	switch objectType {
+	case constant.QuestionObjectType:
+		target = &entity.Question{}
+	case constant.AnswerObjectType:
+		target = &entity.Answer{}
+	case constant.CommentObjectType:
+		target = &entity.Comment{}
+	default:
+		return 0, 0, errors.BadRequest(reason.ObjectNotFound)
+	}
+
+	// Resolve configuration before opening the transaction: these lookups may
+	// need a separate connection, while SQLite uses a single connection.
+	upType, err := vr.activityRepo.GetActivityTypeByObjectType(ctx, objectType, constant.ActVoteUp)
+	if err != nil {
+		return 0, 0, err
+	}
+	activityTypes := []int{upType}
+	downType := 0
+	if objectType != constant.CommentObjectType {
+		downType, err = vr.activityRepo.GetActivityTypeByObjectType(ctx, objectType, constant.ActVoteDown)
+		if err != nil {
+			return 0, 0, err
+		}
+		activityTypes = append(activityTypes, downType)
+	}
+
+	_, err = vr.data.DB.Transaction(func(session *xorm.Session) (any, error) {
+		session = session.Context(ctx)
+		// Acquire the target's write lock before reading any vote totals.
+		// This also starts a write transaction on SQLite, where FOR UPDATE
+		// is unavailable. Keep the value and update timestamp unchanged.
+		if _, err := session.ID(objectID).NoAutoTime().Cols("vote_count").
+			SetExpr("vote_count", "vote_count").Update(target); err != nil {
+			return nil, err
+		}
+
+		var counts []struct {
+			ActivityType int
+			Count        int64 `xorm:"vote_count"`
+		}
+		if err := session.Table(new(entity.Activity)).Select("activity_type, COUNT(*) AS vote_count").
+			Where("object_id = ?", objectID).And("cancelled = ?", entity.ActivityAvailable).
+			In("activity_type", activityTypes).GroupBy("activity_type").Find(&counts); err != nil {
+			return nil, err
+		}
+		for _, count := range counts {
+			switch count.ActivityType {
+			case upType:
+				up = count.Count
+			case downType:
+				down = count.Count
+			}
+		}
+		_, err := session.ID(objectID).Cols("vote_count").SetExpr("vote_count", up-down).Update(target)
+		return nil, err
+	})
+	if err != nil {
+		return 0, 0, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
 	return
 }
 
@@ -406,51 +464,6 @@ func (vr *VoteRepo) getExistActivity(ctx context.Context, op *schema.VoteOperati
 		}
 	}
 	return activities, nil
-}
-
-func (vr *VoteRepo) countVoteUp(ctx context.Context, objectID, objectType string) (count int64) {
-	count, err := vr.countVote(ctx, objectID, objectType, constant.ActVoteUp)
-	if err != nil {
-		log.Errorf("get vote up count error: %v", err)
-	}
-	return count
-}
-
-func (vr *VoteRepo) countVoteDown(ctx context.Context, objectID, objectType string) (count int64) {
-	count, err := vr.countVote(ctx, objectID, objectType, constant.ActVoteDown)
-	if err != nil {
-		log.Errorf("get vote down count error: %v", err)
-	}
-	return count
-}
-
-func (vr *VoteRepo) countVote(ctx context.Context, objectID, objectType, action string) (count int64, err error) {
-	activity := &entity.Activity{}
-	activityType, _ := vr.activityRepo.GetActivityTypeByObjectType(ctx, objectType, action)
-	count, err = vr.data.DB.Context(ctx).Where(builder.Eq{"object_id": objectID}).
-		And(builder.Eq{"activity_type": activityType}).
-		And(builder.Eq{"cancelled": 0}).
-		Count(activity)
-	if err != nil {
-		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
-	}
-	return count, err
-}
-
-func (vr *VoteRepo) updateVotes(ctx context.Context, objectID, objectType string, voteCount int) (err error) {
-	session := vr.data.DB.Context(ctx)
-	switch objectType {
-	case constant.QuestionObjectType:
-		_, err = session.ID(objectID).Cols("vote_count").Update(&entity.Question{VoteCount: voteCount})
-	case constant.AnswerObjectType:
-		_, err = session.ID(objectID).Cols("vote_count").Update(&entity.Answer{VoteCount: voteCount})
-	case constant.CommentObjectType:
-		_, err = session.ID(objectID).Cols("vote_count").Update(&entity.Comment{VoteCount: voteCount})
-	}
-	if err != nil {
-		log.Error(err)
-	}
-	return
 }
 
 func (vr *VoteRepo) sendAchievementNotification(ctx context.Context, activityUserID, objectUserID, objectID string) {
