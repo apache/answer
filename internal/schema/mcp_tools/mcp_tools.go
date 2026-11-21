@@ -61,6 +61,16 @@ func NewQuestionsTool() mcp.Tool {
 	return listFilesTool
 }
 
+func NewQuestionDetailTool() mcp.Tool {
+	return mcp.NewTool("get_question_detail",
+		mcp.WithDescription("Get the full content of a specific question by its ID. The question ID is provided by the get_questions tool."),
+		mcp.WithString(schema.MCPSearchCondQuestionID,
+			mcp.Required(),
+			mcp.Description("The ID of the question to retrieve"),
+		),
+	)
+}
+
 func NewAnswersTool() mcp.Tool {
 	listFilesTool := mcp.NewTool("get_answers_by_question_id",
 		mcp.WithDescription("Search for all answers corresponding to the question ID. The question ID is provided by get_questions tool."),
