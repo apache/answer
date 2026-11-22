@@ -101,8 +101,8 @@ func (c *MCPController) MCPQuestionsHandler() func(ctx context.Context, request 
 
 		searchResp, err := c.searchService.Search(ctx, &schema.SearchDTO{
 			Query: cond.ToQueryString() + " is:question",
-			Page:  1,
-			Size:  5,
+			Page:  cond.Page,
+			Size:  cond.PageSize,
 			Order: "newest",
 		})
 		if err != nil {
@@ -256,7 +256,7 @@ func (c *MCPController) MCPCommentsHandler() func(ctx context.Context, request m
 		}
 
 		dto := &comment.CommentQuery{
-			PageCond:  pager.PageCond{Page: 1, PageSize: 5},
+			PageCond:  pager.PageCond{Page: cond.Page, PageSize: cond.PageSize},
 			QueryCond: "newest",
 			ObjectID:  cond.ObjectID,
 		}
