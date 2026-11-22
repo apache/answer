@@ -27,6 +27,13 @@ import (
 )
 
 const (
+	// MCPDefaultPage is the default page number for MCP list tools.
+	MCPDefaultPage = 1
+	// MCPDefaultPageSize is the default number of results per page for MCP list tools.
+	MCPDefaultPageSize = 5
+	// MCPMaxPageSize is the upper bound for page_size so clients cannot request unbounded results.
+	MCPMaxPageSize = 50
+
 	MCPSearchCondKeyword       = "keyword"
 	MCPSearchCondUsername      = "username"
 	MCPSearchCondScore         = "score"
@@ -46,6 +53,8 @@ type MCPSearchCond struct {
 	Score      int      `json:"score"`
 	Tags       []string `json:"tags"`
 	QuestionID string   `json:"question_id"`
+	Page       int      `json:"page"`
+	PageSize   int      `json:"page_size"`
 }
 
 type MCPSearchQuestionDetail struct {
@@ -54,6 +63,8 @@ type MCPSearchQuestionDetail struct {
 
 type MCPSearchCommentCond struct {
 	ObjectID string `json:"object_id"`
+	Page     int    `json:"page"`
+	PageSize int    `json:"page_size"`
 }
 
 type MCPSearchTagCond struct {
@@ -159,6 +170,7 @@ func NewMCPSearchCond(request mcp.CallToolRequest) *MCPSearchCond {
 	if questionID, ok := getRequestValue(request, MCPSearchCondQuestionID); ok {
 		cond.QuestionID = questionID
 	}
+	cond.Page, cond.PageSize = newMCPPagination(request)
 	return cond
 }
 
@@ -183,7 +195,25 @@ func NewMCPSearchCommentCond(request mcp.CallToolRequest) *MCPSearchCommentCond 
 	if keyword, ok := getRequestValue(request, MCPSearchCondObjectID); ok {
 		cond.ObjectID = keyword
 	}
+	cond.Page, cond.PageSize = newMCPPagination(request)
 	return cond
+}
+
+// newMCPPagination reads the page and page_size arguments, applying defaults
+// and an upper bound on page_size.
+func newMCPPagination(request mcp.CallToolRequest) (page, pageSize int) {
+	page = request.GetInt(MCPSearchCondPage, MCPDefaultPage)
+	if page < 1 {
+		page = MCPDefaultPage
+	}
+	pageSize = request.GetInt(MCPSearchCondPageSize, MCPDefaultPageSize)
+	if pageSize < 1 {
+		pageSize = MCPDefaultPageSize
+	}
+	if pageSize > MCPMaxPageSize {
+		pageSize = MCPMaxPageSize
+	}
+	return page, pageSize
 }
 
 func NewMCPSearchTagCond(request mcp.CallToolRequest) *MCPSearchTagCond {
