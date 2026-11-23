@@ -208,6 +208,41 @@ func (ar *authRepo) AddUserTokenMapping(ctx context.Context, userID, accessToken
 }
 
 // RemoveUserTokens Log out all users under this user id
+func (ar *authRepo) GetUserCacheInfoByUserID(ctx context.Context, userID string) (*entity.UserCacheInfo, bool, error) {
+	user := &entity.User{}
+	exists, err := ar.data.DB.Context(ctx).ID(userID).Get(user)
+	if err != nil {
+		return nil, false, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	if !exists {
+		return nil, false, nil
+	}
+
+	roleID := 1
+	roleRel := &entity.UserRoleRel{}
+	if hasRole, roleErr := ar.data.DB.Context(ctx).Where("user_id = ?", userID).Get(roleRel); roleErr != nil {
+		return nil, false, errors.InternalServer(reason.DatabaseError).WithError(roleErr).WithStack()
+	} else if hasRole {
+		roleID = roleRel.RoleID
+	}
+
+	externalID := ""
+	externalLogin := &entity.UserExternalLogin{}
+	if hasExternal, externalErr := ar.data.DB.Context(ctx).Where("user_id = ?", userID).Get(externalLogin); externalErr != nil {
+		return nil, false, errors.InternalServer(reason.DatabaseError).WithError(externalErr).WithStack()
+	} else if hasExternal {
+		externalID = externalLogin.ExternalID
+	}
+
+	return &entity.UserCacheInfo{
+		UserID:      user.ID,
+		UserStatus:  user.Status,
+		EmailStatus: user.MailStatus,
+		RoleID:      roleID,
+		ExternalID:  externalID,
+	}, true, nil
+}
+
 func (ar *authRepo) RemoveUserTokens(ctx context.Context, userID string, remainToken string) {
 	key := constant.UserTokenMappingCacheKey + userID
 	resp, _, err := ar.data.Cache.GetString(ctx, key)
