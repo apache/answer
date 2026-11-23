@@ -203,6 +203,10 @@ const routes: RouteNode[] = [
                 page: 'pages/Users/Settings/Interface',
               },
               {
+                path: 'personal-access-tokens',
+                page: 'pages/Users/Settings/PersonalAccessTokens',
+              },
+              {
                 path: ':slug_name',
                 page: 'pages/Users/Settings/Plugins',
               },

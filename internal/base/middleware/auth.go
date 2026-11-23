@@ -44,21 +44,32 @@ var ctxUUIDKey = "ctxUuidKey"
 type AuthUserMiddleware struct {
 	authService           *auth.AuthService
 	siteInfoCommonService siteinfo_common.SiteInfoCommonService
+	patAuthorizer         *PATRequestAuthorizer
 }
 
 // NewAuthUserMiddleware new auth user middleware
 func NewAuthUserMiddleware(
 	authService *auth.AuthService,
-	siteInfoCommonService siteinfo_common.SiteInfoCommonService) *AuthUserMiddleware {
+	siteInfoCommonService siteinfo_common.SiteInfoCommonService,
+	patAuthorizer *PATRequestAuthorizer,
+) *AuthUserMiddleware {
 	return &AuthUserMiddleware{
 		authService:           authService,
 		siteInfoCommonService: siteInfoCommonService,
+		patAuthorizer:         patAuthorizer,
 	}
 }
 
 // Auth get token and auth user, set user info to context if user is already login
 func (am *AuthUserMiddleware) Auth() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		if handled, userInfo := am.patAuthorizer.Resolve(ctx); handled {
+			if userInfo != nil {
+				ctx.Set(ctxUUIDKey, userInfo)
+				ctx.Next()
+			}
+			return
+		}
 		token := ExtractToken(ctx)
 		if len(token) == 0 {
 			ctx.Next()
@@ -110,6 +121,19 @@ func (am *AuthUserMiddleware) EjectUserBySiteInfo() gin.HandlerFunc {
 // MustAuthWithoutAccountAvailable auth user info, any login user can access though user is not active.
 func (am *AuthUserMiddleware) MustAuthWithoutAccountAvailable() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		if handled, userInfo := am.patAuthorizer.Resolve(ctx); handled {
+			if userInfo == nil {
+				return
+			}
+			if userInfo.UserStatus == entity.UserStatusDeleted {
+				handler.HandleResponse(ctx, errors.Unauthorized(reason.UnauthorizedError), nil)
+				ctx.Abort()
+				return
+			}
+			ctx.Set(ctxUUIDKey, userInfo)
+			ctx.Next()
+			return
+		}
 		token := ExtractToken(ctx)
 		if len(token) == 0 {
 			handler.HandleResponse(ctx, errors.Unauthorized(reason.UnauthorizedError), nil)
@@ -139,6 +163,17 @@ func (am *AuthUserMiddleware) MustAuthWithoutAccountAvailable() gin.HandlerFunc 
 // MustAuthAndAccountAvailable auth user info and check user status, only allow active user access.
 func (am *AuthUserMiddleware) MustAuthAndAccountAvailable() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		if handled, userInfo := am.patAuthorizer.Resolve(ctx); handled {
+			if userInfo == nil {
+				return
+			}
+			if !checkAvailableAccount(ctx, userInfo) {
+				return
+			}
+			ctx.Set(ctxUUIDKey, userInfo)
+			ctx.Next()
+			return
+		}
 		token := ExtractToken(ctx)
 		if len(token) == 0 {
 			handler.HandleResponse(ctx, errors.Unauthorized(reason.UnauthorizedError), nil)
@@ -177,8 +212,32 @@ func (am *AuthUserMiddleware) MustAuthAndAccountAvailable() gin.HandlerFunc {
 	}
 }
 
+func checkAvailableAccount(ctx *gin.Context, userInfo *entity.UserCacheInfo) bool {
+	if userInfo.EmailStatus != entity.EmailStatusAvailable {
+		handler.HandleResponse(ctx, errors.Forbidden(reason.EmailNeedToBeVerified),
+			&schema.ForbiddenResp{Type: schema.ForbiddenReasonTypeInactive})
+		ctx.Abort()
+		return false
+	}
+	if userInfo.UserStatus == entity.UserStatusSuspended {
+		handler.HandleResponse(ctx, errors.Forbidden(reason.UserSuspended),
+			&schema.ForbiddenResp{Type: schema.ForbiddenReasonTypeUserSuspended})
+		ctx.Abort()
+		return false
+	}
+	if userInfo.UserStatus == entity.UserStatusDeleted {
+		handler.HandleResponse(ctx, errors.Unauthorized(reason.UnauthorizedError), nil)
+		ctx.Abort()
+		return false
+	}
+	return true
+}
+
 func (am *AuthUserMiddleware) AdminAuth() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		if handled, _ := am.patAuthorizer.Resolve(ctx); handled {
+			return
+		}
 		token := ExtractToken(ctx)
 		if len(token) == 0 {
 			handler.HandleResponse(ctx, errors.Unauthorized(reason.UnauthorizedError), nil)

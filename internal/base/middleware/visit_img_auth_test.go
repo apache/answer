@@ -77,7 +77,7 @@ func TestVisitAuthRejectsRevokedAndSuspendedSessions(t *testing.T) {
 		gin.SetMode(gin.TestMode)
 		engine := gin.New()
 		siteInfo := siteinfo_common.NewSiteInfoCommonService(visitAuthTestSiteInfoRepo{})
-		authMiddleware := NewAuthUserMiddleware(service, siteInfo)
+		authMiddleware := NewAuthUserMiddleware(service, siteInfo, nil)
 		engine.Use(authMiddleware.VisitAuth())
 		engine.StaticFile("/uploads/post/private.txt", filePath)
 		req := httptest.NewRequest(http.MethodGet, "/uploads/post/private.txt", nil)
