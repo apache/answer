@@ -198,13 +198,29 @@ func (ur *UserRankRepo) checkUserTodayRank(ctx context.Context,
 	return true, nil
 }
 
-func (ur *UserRankRepo) UserRankPage(ctx context.Context, userID string, page, pageSize int) (
+func (ur *UserRankRepo) GetUserRankObjectIDs(ctx context.Context, userID string) (objectIDs []string, err error) {
+	objectIDs = make([]string, 0)
+	err = ur.data.DB.Context(ctx).Table(entity.Activity{}.TableName()).
+		Distinct("object_id").
+		Where("has_rank = ? AND cancelled = ? AND `rank` > ? AND user_id = ?", 1, entity.ActivityAvailable, 0, userID).
+		Find(&objectIDs)
+	if err != nil {
+		return nil, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	return objectIDs, nil
+}
+
+func (ur *UserRankRepo) UserRankPage(ctx context.Context, userID string, objectIDs []string, page, pageSize int) (
 	rankPage []*entity.Activity, total int64, err error,
 ) {
 	rankPage = make([]*entity.Activity, 0)
+	if len(objectIDs) == 0 {
+		return rankPage, 0, nil
+	}
 
 	session := ur.data.DB.Context(ctx).Where(builder.Eq{"has_rank": 1}.And(builder.Eq{"cancelled": 0})).And(builder.Gt{"`rank`": 0})
 	session.Desc("created_at")
+	session.In("object_id", objectIDs)
 
 	cond := &entity.Activity{UserID: userID}
 	total, err = pager.Help(page, pageSize, &rankPage, cond, session)

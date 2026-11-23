@@ -54,7 +54,11 @@ func (cc *RankController) GetRankPersonalWithPage(ctx *gin.Context) {
 		return
 	}
 
-	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
+	req.LoginUserID = middleware.GetLoginUserIDFromContext(ctx)
+	if len(req.Username) == 0 {
+		req.UserID = req.LoginUserID
+	}
+	req.IsAdminModerator = middleware.GetUserIsAdminModerator(ctx)
 
 	resp, err := cc.rankService.GetRankPersonalPage(ctx, req)
 	handler.HandleResponse(ctx, err, resp)

@@ -53,7 +53,8 @@ type UserRankRepo interface {
 	ChangeUserRank(ctx context.Context, session *xorm.Session,
 		userID string, userCurrentScore, deltaRank int) (err error)
 	TriggerUserRank(ctx context.Context, session *xorm.Session, userId string, rank int, activityType int) (isReachStandard bool, err error)
-	UserRankPage(ctx context.Context, userId string, page, pageSize int) (rankPage []*entity.Activity, total int64, err error)
+	GetUserRankObjectIDs(ctx context.Context, userID string) (objectIDs []string, err error)
+	UserRankPage(ctx context.Context, userID string, objectIDs []string, page, pageSize int) (rankPage []*entity.Activity, total int64, err error)
 }
 
 // RankService rank service
@@ -279,17 +280,33 @@ func (rs *RankService) GetRankPersonalPage(ctx context.Context, req *schema.GetR
 		return nil, errors.BadRequest(reason.UserNotFound)
 	}
 
-	userRankPage, total, err := rs.userRankRepo.UserRankPage(ctx, req.UserID, req.Page, req.PageSize)
+	objectIDs, err := rs.userRankRepo.GetUserRankObjectIDs(ctx, req.UserID)
+	if err != nil {
+		return nil, err
+	}
+	visibleObjectIDs := make([]string, 0, len(objectIDs))
+	for _, objectID := range objectIDs {
+		objInfo, err := rs.objectInfoService.GetInfo(ctx, objectID)
+		if err != nil {
+			log.Error(err)
+			continue
+		}
+		if err := objInfo.CheckVisibility(req.LoginUserID, req.IsAdminModerator); err == nil {
+			visibleObjectIDs = append(visibleObjectIDs, objectID)
+		}
+	}
+
+	userRankPage, total, err := rs.userRankRepo.UserRankPage(ctx, req.UserID, visibleObjectIDs, req.Page, req.PageSize)
 	if err != nil {
 		return nil, err
 	}
 
-	resp := rs.decorateRankPersonalPageResp(ctx, userRankPage)
+	resp := rs.decorateRankPersonalPageResp(ctx, userRankPage, req.LoginUserID, req.IsAdminModerator)
 	return pager.NewPageModel(total, resp), nil
 }
 
 func (rs *RankService) decorateRankPersonalPageResp(
-	ctx context.Context, userRankPage []*entity.Activity) []*schema.GetRankPersonalPageResp {
+	ctx context.Context, userRankPage []*entity.Activity, loginUserID string, isAdminModerator bool) []*schema.GetRankPersonalPageResp {
 	resp := make([]*schema.GetRankPersonalPageResp, 0)
 	lang := handler.GetLangByCtx(ctx)
 
@@ -300,6 +317,9 @@ func (rs *RankService) decorateRankPersonalPageResp(
 		objInfo, err := rs.objectInfoService.GetInfo(ctx, userRankInfo.ObjectID)
 		if err != nil {
 			log.Error(err)
+			continue
+		}
+		if err := objInfo.CheckVisibility(loginUserID, isAdminModerator); err != nil {
 			continue
 		}
 
@@ -318,9 +338,6 @@ func (rs *RankService) decorateRankPersonalPageResp(
 		commentResp.Title = objInfo.Title
 		commentResp.UrlTitle = htmltext.UrlTitle(objInfo.Title)
 		commentResp.Content = objInfo.Content
-		if objInfo.QuestionStatus == entity.QuestionStatusDeleted {
-			commentResp.Title = translator.Tr(lang, constant.DeletedQuestionTitleTrKey)
-		}
 		commentResp.QuestionID = objInfo.QuestionID
 		commentResp.AnswerID = objInfo.AnswerID
 		resp = append(resp, commentResp)
