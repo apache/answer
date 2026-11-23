@@ -190,7 +190,7 @@ const PersonalAccessTokens = () => {
   return (
     <div>
       <h3 className="mb-3">{t('heading')}</h3>
-      <p className="text-secondary">{t('description')}</p>
+      <p className="text-secondary">{t('description_text')}</p>
       {!security.personal_access_tokens_enabled && (
         <div className="alert alert-warning">{t('disabled')}</div>
       )}

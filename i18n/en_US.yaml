@@ -1418,7 +1418,7 @@ ui:
         text: User interface language. It will change when you refresh the page.
     personal_access_tokens:
       heading: Personal access tokens
-      description: Create scoped credentials for command-line tools and delegated automation.
+      description_text: Create scoped credentials for command-line tools and delegated automation.
       disabled: Personal access tokens are disabled by an administrator. Existing tokens cannot authenticate, but you can still revoke them.
       create: Create token
       create_failed: Failed to create the personal access token.
