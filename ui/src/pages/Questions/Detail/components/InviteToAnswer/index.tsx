@@ -37,7 +37,7 @@ interface Props {
   questionId: string;
   readOnly?: boolean;
 }
-const MAX_INVITE_USERS = 20;
+const MAX_INVITE_USERS = 5;
 
 const Index: FC<Props> = ({ questionId, readOnly = false }) => {
   const { t } = useTranslation('translation', {
