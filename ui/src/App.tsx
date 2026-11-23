@@ -31,7 +31,7 @@ function App() {
     return <InitialLoadingPlaceholder />;
   }
   const router = createBrowserRouter(routes, {
-    basename: process.env.REACT_APP_BASE_URL,
+    basename: import.meta.env.REACT_APP_BASE_URL,
   });
   return <RouterProvider router={router} />;
 }

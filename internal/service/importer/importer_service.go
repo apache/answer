@@ -32,6 +32,7 @@ import (
 	"github.com/apache/answer/internal/service/permission"
 	"github.com/apache/answer/internal/service/rank"
 	usercommon "github.com/apache/answer/internal/service/user_common"
+	"github.com/apache/answer/pkg/converter"
 	"github.com/apache/answer/plugin"
 	"github.com/gin-gonic/gin"
 	"github.com/segmentfault/pacman/errors"
@@ -70,7 +71,7 @@ func (ip *ImporterService) NewImporterFunc() plugin.ImporterFunc {
 }
 
 func (ip *ImporterService) ImportQuestion(ctx context.Context, questionInfo plugin.QuestionImporterInfo) (err error) {
-	req := &schema.QuestionAdd{}
+	req := newImportedQuestionRequest(questionInfo)
 	errFields := make([]*validator.FormErrorField, 0)
 	// To limit rate, remove the following code from comment: Part 1/2
 	// reject, rejectKey := ipc.rateLimitMiddleware.DuplicateRequestRejection(ctx, req)
@@ -94,16 +95,6 @@ func (ip *ImporterService) ImportQuestion(ctx context.Context, questionInfo plug
 	// 	}
 	// }()
 	req.UserID = userInfo.ID
-	req.Title = questionInfo.Title
-	req.Content = questionInfo.Content
-	req.HTML = "<p>" + questionInfo.Content + "</p>"
-	req.Tags = make([]*schema.TagItem, len(questionInfo.Tags))
-	for i, tag := range questionInfo.Tags {
-		req.Tags[i] = &schema.TagItem{
-			SlugName:    tag,
-			DisplayName: tag,
-		}
-	}
 	canList, requireRanks, err := ip.rankService.CheckOperationPermissionsForRanks(ctx, req.UserID, []string{
 		permission.QuestionAdd,
 		permission.QuestionEdit,
@@ -168,4 +159,20 @@ func (ip *ImporterService) ImportQuestion(ctx context.Context, questionInfo plug
 	}
 	log.Info("Add Question Successfully")
 	return nil
+}
+
+func newImportedQuestionRequest(questionInfo plugin.QuestionImporterInfo) *schema.QuestionAdd {
+	req := &schema.QuestionAdd{
+		Title:   questionInfo.Title,
+		Content: questionInfo.Content,
+		HTML:    converter.Markdown2HTML(questionInfo.Content),
+		Tags:    make([]*schema.TagItem, len(questionInfo.Tags)),
+	}
+	for i, tag := range questionInfo.Tags {
+		req.Tags[i] = &schema.TagItem{
+			SlugName:    tag,
+			DisplayName: tag,
+		}
+	}
+	return req
 }

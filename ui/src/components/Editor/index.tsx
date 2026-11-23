@@ -79,6 +79,7 @@ interface Props extends EventRef {
   className?;
   value;
   autoFocus?: boolean;
+  bottomRightAction?: React.ReactNode;
 }
 
 const MDEditor: ForwardRefRenderFunction<EditorRef, Props> = (
@@ -90,6 +91,7 @@ const MDEditor: ForwardRefRenderFunction<EditorRef, Props> = (
     onFocus,
     onBlur,
     autoFocus = false,
+    bottomRightAction,
   },
   ref,
 ) => {
@@ -140,12 +142,17 @@ const MDEditor: ForwardRefRenderFunction<EditorRef, Props> = (
 
   if (isLoading) {
     return (
-      <div className={classNames('md-editor-wrap rounded', className)}>
+      <div
+        className={classNames(
+          'md-editor-wrap rounded position-relative',
+          className,
+        )}>
         <div
           className="d-flex justify-content-center align-items-center"
           style={{ minHeight: '200px' }}>
           <Spinner animation="border" variant="secondary" />
         </div>
+        {bottomRightAction}
       </div>
     );
   }
@@ -166,28 +173,35 @@ const MDEditor: ForwardRefRenderFunction<EditorRef, Props> = (
     };
 
     return (
-      <FullEditorComponent
-        value={value}
-        onChange={onChange}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        placeholder={editorPlaceholder}
-        autoFocus={autoFocus}
-        imageUploadHandler={handleImageUpload}
-        uploadConfig={{
-          maxImageSizeMiB: max_image_size,
-          allowedExtensions: [
-            ...authorized_image_extensions,
-            ...authorized_attachment_extensions,
-          ],
-        }}
-      />
+      <div className="position-relative">
+        <FullEditorComponent
+          value={value}
+          onChange={onChange}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          placeholder={editorPlaceholder}
+          autoFocus={autoFocus}
+          imageUploadHandler={handleImageUpload}
+          uploadConfig={{
+            maxImageSizeMiB: max_image_size,
+            allowedExtensions: [
+              ...authorized_image_extensions,
+              ...authorized_attachment_extensions,
+            ],
+          }}
+        />
+        {bottomRightAction}
+      </div>
     );
   }
 
   return (
     <>
-      <div className={classNames('md-editor-wrap rounded', className)}>
+      <div
+        className={classNames(
+          'md-editor-wrap rounded position-relative',
+          className,
+        )}>
         <div className="toolbar-wrap px-3 d-flex align-items-center flex-wrap">
           <EditorContext.Provider value={currentEditor}>
             <PluginRender
@@ -232,6 +246,7 @@ const MDEditor: ForwardRefRenderFunction<EditorRef, Props> = (
             setCurrentEditor(editor);
           }}
         />
+        {bottomRightAction}
       </div>
       <Viewer ref={previewRef} value={value} />
     </>

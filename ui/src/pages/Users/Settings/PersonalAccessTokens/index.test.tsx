@@ -17,38 +17,43 @@
  * under the License.
  */
 
-import { fireEvent, render, screen } from '@testing-library/react';
+// @vitest-environment jsdom
+
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { afterEach, expect, test, vi } from 'vitest';
 
 import PersonalAccessTokens from './index';
 
-const security = {
-  personal_access_tokens_enabled: false,
-};
+const { security } = vi.hoisted(() => ({
+  security: { personal_access_tokens_enabled: false },
+}));
 
-jest.mock('react-i18next', () => ({
+vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 
-jest.mock('@/services', () => ({
-  usePersonalAccessTokens: () => ({ data: [], mutate: jest.fn() }),
-  createPersonalAccessToken: jest.fn(),
-  revokePersonalAccessToken: jest.fn(),
-  reauthenticate: jest.fn(),
+vi.mock('@/services', () => ({
+  usePersonalAccessTokens: () => ({ data: [], mutate: vi.fn() }),
+  createPersonalAccessToken: vi.fn(),
+  revokePersonalAccessToken: vi.fn(),
+  reauthenticate: vi.fn(),
 }));
 
-jest.mock('@/stores', () => ({
+vi.mock('@/stores', () => ({
   siteSecurityStore: () => security,
   loggedUserInfoStore: (selector) =>
     selector({ user: { have_password: true } }),
 }));
 
-jest.mock('@/hooks', () => ({
-  useToast: () => ({ onShow: jest.fn() }),
+vi.mock('@/hooks', () => ({
+  useToast: () => ({ onShow: vi.fn() }),
 }));
 
-jest.mock('@/utils/pluginKit', () => ({
+vi.mock('@/utils/pluginKit', () => ({
   useCaptchaPlugin: () => undefined,
 }));
+
+afterEach(cleanup);
 
 test('hides token creation while the instance feature is disabled', () => {
   security.personal_access_tokens_enabled = false;

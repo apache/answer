@@ -36,11 +36,16 @@ import (
 	"github.com/apache/answer/internal/schema"
 	answercommon "github.com/apache/answer/internal/service/answer_common"
 	metacommon "github.com/apache/answer/internal/service/meta_common"
+	"github.com/apache/answer/internal/service/object_info"
 	questioncommon "github.com/apache/answer/internal/service/question_common"
 	usercommon "github.com/apache/answer/internal/service/user_common"
 	"github.com/apache/answer/pkg/obj"
 	myErrors "github.com/segmentfault/pacman/errors"
 )
+
+type objectInfoService interface {
+	GetInfo(ctx context.Context, objectID string) (objInfo *schema.SimpleObjectInfo, err error)
+}
 
 // MetaService user service
 type MetaService struct {
@@ -48,6 +53,7 @@ type MetaService struct {
 	userCommon        *usercommon.UserCommon
 	questionRepo      questioncommon.QuestionRepo
 	answerRepo        answercommon.AnswerRepo
+	objectInfoService objectInfoService
 	eventQueueService eventqueue.Service
 }
 
@@ -56,6 +62,7 @@ func NewMetaService(
 	userCommon *usercommon.UserCommon,
 	answerRepo answercommon.AnswerRepo,
 	questionRepo questioncommon.QuestionRepo,
+	objectInfoService *object_info.ObjService,
 	eventQueueService eventqueue.Service,
 ) *MetaService {
 	return &MetaService{
@@ -63,12 +70,16 @@ func NewMetaService(
 		questionRepo:      questionRepo,
 		userCommon:        userCommon,
 		answerRepo:        answerRepo,
+		objectInfoService: objectInfoService,
 		eventQueueService: eventQueueService,
 	}
 }
 
 // GetReactionByObjectId get reaction
 func (ms *MetaService) GetReactionByObjectId(ctx context.Context, req *schema.GetReactionReq) (resp *schema.GetReactionByObjectIdResp, err error) {
+	if err := ms.checkReactionVisibility(ctx, req.ObjectID, req.UserID, req.IsAdminModerator); err != nil {
+		return nil, err
+	}
 	reactionMeta, err := ms.metaCommonService.GetMetaByObjectIdAndKey(ctx, req.ObjectID, entity.ObjectReactSummaryKey)
 
 	// if not exist, return nil
@@ -91,6 +102,9 @@ func (ms *MetaService) GetReactionByObjectId(ctx context.Context, req *schema.Ge
 
 // AddOrUpdateReaction add or update reaction
 func (ms *MetaService) AddOrUpdateReaction(ctx context.Context, req *schema.UpdateReactionReq) (resp *schema.GetReactionByObjectIdResp, err error) {
+	if err := ms.checkReactionVisibility(ctx, req.ObjectID, req.UserID, req.IsAdminModerator); err != nil {
+		return nil, err
+	}
 	// check if object exist and it's answer or question
 	objectType, err := obj.GetObjectTypeStrByObjectID(req.ObjectID)
 	if err != nil {
@@ -156,6 +170,14 @@ func (ms *MetaService) AddOrUpdateReaction(ctx context.Context, req *schema.Upda
 	}
 	ms.eventQueueService.Send(ctx, event)
 	return resp, nil
+}
+
+func (ms *MetaService) checkReactionVisibility(ctx context.Context, objectID, userID string, isAdminModerator bool) error {
+	objectInfo, err := ms.objectInfoService.GetInfo(ctx, objectID)
+	if err != nil {
+		return err
+	}
+	return objectInfo.CheckVisibility(userID, isAdminModerator)
 }
 
 // updateReaction update reaction

@@ -17,10 +17,8 @@
 /go.work*
 /logs
 /ui/node_modules
-/ui/build/*/*/*
-/ui/build/*.json
-/ui/build/*.html
-/ui/build/*.txt
+/ui/build/*
+!/ui/build/favicon.ico
 /vendor
 Thumbs*.db
 tmp

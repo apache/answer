@@ -32,7 +32,7 @@ func ReplaceFile(filePath, content string) error {
 
 // WriteFile write file to path
 func WriteFile(filePath, content string) error {
-	file, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE, 0o666)
+	file, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o666)
 	if err != nil {
 		return err
 	}

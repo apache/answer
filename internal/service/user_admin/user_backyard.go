@@ -174,6 +174,7 @@ func (us *UserAdminService) UpdateUserStatus(ctx context.Context, req *schema.Up
 		if err := us.revokeUserAPIKeys(ctx, userInfo.ID); err != nil {
 			return err
 		}
+		us.authService.RemoveUserAllTokens(ctx, userInfo.ID)
 	}
 
 	// remove all content that user created, such as question, answer, comment, etc.
@@ -604,8 +605,9 @@ func (us *UserAdminService) GetUserActivation(ctx context.Context, req *schema.G
 	}
 
 	data := &schema.EmailCodeContent{
-		Email:  userInfo.EMail,
-		UserID: userInfo.ID,
+		SourceType: schema.AccountActivationSourceType,
+		Email:      userInfo.EMail,
+		UserID:     userInfo.ID,
 	}
 	code := token.GenerateToken()
 	us.emailService.SaveCode(ctx, userInfo.ID, code, data.ToJSONString())
@@ -631,8 +633,9 @@ func (us *UserAdminService) SendUserActivation(ctx context.Context, req *schema.
 	}
 
 	data := &schema.EmailCodeContent{
-		Email:  userInfo.EMail,
-		UserID: userInfo.ID,
+		SourceType: schema.AccountActivationSourceType,
+		Email:      userInfo.EMail,
+		UserID:     userInfo.ID,
 	}
 	code := token.GenerateToken()
 	verifyEmailURL := fmt.Sprintf("%s/users/account-activation?code=%s", general.SiteUrl, code)

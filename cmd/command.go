@@ -59,6 +59,10 @@ var (
 	resetPasswordEmail string
 	// resetPasswordPassword new password for password reset
 	resetPasswordPassword string
+	// fixDryRun decides whether to run fix command in dry-run mode, it prints the affected rows but does not update the database
+	fixDryRun bool
+	// fixLimit limits the total number of rows fixed across all selected types. 0 means unlimited.
+	fixLimit int64
 )
 
 func init() {
@@ -85,7 +89,10 @@ func init() {
 	resetPasswordCmd.Flags().StringVarP(&resetPasswordEmail, "email", "e", "", "user email address")
 	resetPasswordCmd.Flags().StringVarP(&resetPasswordPassword, "password", "p", "", "new password (not recommended, will be recorded in shell history)")
 
-	for _, cmd := range []*cobra.Command{initCmd, checkCmd, runCmd, dumpCmd, upgradeCmd, buildCmd, pluginCmd, configCmd, i18nCmd, resetPasswordCmd} {
+	fixCmd.Flags().BoolVar(&fixDryRun, "dry-run", false, "show what would be changed without modifying the database")
+	fixCmd.Flags().Int64Var(&fixLimit, "limit", 0, "stop after fixing NUM rows total across all selected fix types; a post and its revisions count as one row, file records are not counted (default: unlimited)")
+
+	for _, cmd := range []*cobra.Command{initCmd, checkCmd, runCmd, dumpCmd, upgradeCmd, buildCmd, pluginCmd, configCmd, i18nCmd, resetPasswordCmd, fixCmd} {
 		rootCmd.AddCommand(cmd)
 	}
 }
@@ -328,6 +335,62 @@ To run answer, use:
 			}
 			if err := cli.ResetPassword(context.Background(), dataDirPath, opts); err != nil {
 				fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+				os.Exit(1)
+			}
+		},
+	}
+
+	fixCmd = &cobra.Command{
+		Use:   "fix [all|branding|avatar|post] SRC_PREFIX DST_PREFIX",
+		Short: "Fix stored URL prefixes in the database (stop Answer and back up data first)",
+		Long: `Fix stored URL prefixes of uploaded files:
+  branding  logo, mobile logo, square icon and favicon
+  avatar    custom avatars, including copies in notifications
+  post      questions, answers, tags (with revisions) and comments
+
+WARNING: Stop Answer and back up your database first. Values already on DST_PREFIX
+are skipped; ambiguous ones are reported for manual fix.
+
+In text, only URLs after "](" or '="' are fixed. Not fixed: site URL, user
+bios, legal pages, custom CSS/HTML, plugin settings, close messages and
+plain-URL avatars from old versions.`,
+		Example: `  # Preview what would change
+  answer fix all https://old.example.com/uploads/ https://new.example.com/uploads/ --dry-run
+
+  # Fix up to 50 rows
+  answer fix all https://old.example.com/uploads/ https://cdn.example.com/uploads/ --limit 50
+
+  # Fix only avatars
+  answer fix avatar https://old.example.com/uploads/ https://cdn.example.com/uploads/`,
+		Args: cobra.ExactArgs(3),
+		Run: func(cmd *cobra.Command, args []string) {
+			if cmd.Flags().Changed("limit") && fixLimit <= 0 {
+				fmt.Fprintf(os.Stderr, "--limit must be greater than 0, got %d\n", fixLimit)
+				os.Exit(1)
+			}
+			path.FormatAllPath(dataDirPath)
+			c, err := conf.ReadConfig(path.GetConfigFilePath())
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "read config failed: %v\n", err)
+				os.Exit(1)
+			}
+			var cacheFilePath string
+			if c.Data.Cache != nil {
+				cacheFilePath = c.Data.Cache.FilePath
+			}
+			opts := &cli.FixURLPrefixOptions{
+				FixType:       args[0],
+				SrcPrefix:     args[1],
+				DstPrefix:     args[2],
+				DryRun:        fixDryRun,
+				Limit:         fixLimit,
+				CacheFilePath: cacheFilePath,
+			}
+			if fixDryRun {
+				fmt.Println("[dry-run] no changes will be written to the database")
+			}
+			if err := cli.FixURLPrefix(c.Data.Database, opts); err != nil {
+				fmt.Fprintf(os.Stderr, "fix failed: %v\n", err)
 				os.Exit(1)
 			}
 		},

@@ -856,6 +856,10 @@ ui:
     copy: 复制
     ask_a_follow_up: 提出后续问题
     ask_placeholder: 提问
+  ai_translate:
+    button: 翻译为{{ language }}
+    translating: 翻译中…
+    error: 无法翻译内容，请重试。
   notifications:
     title: 通知
     inbox: 收件箱
@@ -2205,7 +2209,7 @@ ui:
         text: 关闭以阻止任何人通过邮箱创建新账户。
       allowed_email_domains:
         title: 允许的邮箱域
-        text: 允许注册账户的邮箱域。每行一个域名。留空时忽略。
+        text: 允许用于注册账户的邮箱域。每行一个域名，须包含 @ 符号（例如 @example.com）。留空时忽略。
       private:
         title: 非公开的
         label: 需要登录
@@ -2305,6 +2309,10 @@ ui:
         label: AI 已启用
         check: 启用AI功能
         text: AI 模型必须正确配置才能使用。
+      translation_enabled:
+        label: AI 翻译
+        check: 为问题和回答启用 AI 翻译
+        text: 启用后，作者可以在发布前将草稿翻译为站点配置的语言。
       provider:
         label: 提供商
       api_host:
@@ -2446,5 +2454,4 @@ ui:
     copy: 复制到剪贴板
     copied: 已复制
     external_content_warning: 外部图像/媒体未显示。
-
 

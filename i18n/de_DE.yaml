@@ -1554,10 +1554,10 @@ ui:
       title: Erweiterte Suchtipps
       tag: "<1>[tag]</1> Suche mit einem Tag"
       user: "<1>user:username</1> Suche nach Autor"
-      answer: "<1>Antworten:0</1> unbeantwortete Fragen"
+      answer: "<1>answers:0</1> unbeantwortete Fragen"
       score: "<1>score:3</1> Beiträge mit einer 3+ Punktzahl"
       question: "<1>is:question</1> Suchfragen"
-      is_answer: "<1>ist:answer</1> Suchantworten"
+      is_answer: "<1>is:answer</1> Suchantworten"
     empty: Wir konnten nichts finden. <br /> Versuche es mit anderen oder weniger spezifischen Keywords.
   share:
     name: Teilen
