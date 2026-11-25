@@ -110,7 +110,7 @@ func (bs *BadgeAwardService) GetBadgeAwardList(
 
 		// if exist object info
 		objInfo, e := bs.objectInfoService.GetInfo(ctx, badgeAward.AwardKey)
-		if e == nil && !objInfo.IsDeleted() {
+		if e == nil && objInfo.CheckVisibility(req.LoginUserID, req.IsAdminModerator) == nil {
 			objectID = objInfo.ObjectID
 			questionID = objInfo.QuestionID
 			answerID = objInfo.AnswerID

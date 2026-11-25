@@ -783,6 +783,12 @@ func (qc *QuestionController) UpdateQuestionInviteUser(ctx *gin.Context) {
 	}
 	req.ID = uid.DeShortID(req.ID)
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
+	per, err := qc.questionPermission(ctx, req.UserID, req.ID)
+	if err != nil {
+		handler.HandleResponse(ctx, err, nil)
+		return
+	}
+	req.QuestionPermission = per
 	isAdmin := middleware.GetUserIsAdminModerator(ctx)
 	if !isAdmin {
 		captchaPass := qc.actionService.ActionRecordVerifyCaptcha(ctx, entity.CaptchaActionInvitationAnswer, req.UserID, req.CaptchaID, req.CaptchaCode)
@@ -796,15 +802,6 @@ func (qc *QuestionController) UpdateQuestionInviteUser(ctx *gin.Context) {
 		}
 	}
 
-	canList, err := qc.rankService.CheckOperationPermissions(ctx, req.UserID, []string{
-		permission.AnswerInviteSomeoneToAnswer,
-	})
-	if err != nil {
-		handler.HandleResponse(ctx, err, nil)
-		return
-	}
-
-	req.CanInviteOtherToAnswer = canList[0]
 	if !req.CanInviteOtherToAnswer {
 		handler.HandleResponse(ctx, errors.Forbidden(reason.RankFailToMeetTheCondition), nil)
 		return

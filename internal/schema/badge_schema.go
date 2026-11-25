@@ -129,7 +129,11 @@ type GetBadgeAwardWithPageReq struct {
 	// username
 	Username string `validate:"omitempty,gt=0,lte=100" form:"username"`
 	// user id
-	UserID string `json:"-"`
+	UserID string `json:"-" form:"-"`
+	// login user id
+	LoginUserID string `json:"-" form:"-"`
+	// is admin or moderator
+	IsAdminModerator bool `json:"-" form:"-"`
 }
 
 type GetBadgeAwardWithPageResp struct {

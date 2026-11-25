@@ -93,6 +93,8 @@ func (b *BadgeController) GetBadgeAwardList(ctx *gin.Context) {
 		return
 	}
 	req.BadgeID = uid.DeShortID(req.BadgeID)
+	req.LoginUserID = middleware.GetLoginUserIDFromContext(ctx)
+	req.IsAdminModerator = middleware.GetUserIsAdminModerator(ctx)
 
 	resp, total, err := b.badgeAwardService.GetBadgeAwardList(ctx, req)
 	if err != nil {

@@ -816,6 +816,13 @@ func (qs *QuestionService) UpdateQuestionInviteUser(ctx context.Context, req *sc
 	if !exist {
 		return errors.BadRequest(reason.QuestionNotFound)
 	}
+	if err := checkQuestionVisibility(&schema.QuestionInfoResp{
+		UserID: originQuestion.UserID,
+		Status: originQuestion.Status,
+		Show:   originQuestion.Show,
+	}, req.UserID, req.QuestionPermission); err != nil {
+		return err
+	}
 
 	// verify invite user
 	inviteUserInfoList, err := qs.userCommon.BatchGetUserBasicInfoByUserNames(ctx, req.InviteUser)
