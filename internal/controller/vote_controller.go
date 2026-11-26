@@ -182,6 +182,8 @@ func (vc *VoteController) UserVotes(ctx *gin.Context) {
 	}
 
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
+	req.LoginUserID = req.UserID
+	req.IsAdminModerator = middleware.GetUserIsAdminModerator(ctx)
 
 	resp, err := vc.VoteService.ListUserVotes(ctx, req)
 	handler.HandleResponse(ctx, err, resp)

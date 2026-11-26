@@ -50,7 +50,8 @@ type VoteRepo interface {
 	Vote(ctx context.Context, op *schema.VoteOperationInfo) (err error)
 	CancelVote(ctx context.Context, op *schema.VoteOperationInfo) (err error)
 	GetAndSaveVoteResult(ctx context.Context, objectID, objectType string) (up, down int64, err error)
-	ListUserVotes(ctx context.Context, userID string, page int, pageSize int, activityTypes []int) (
+	GetUserVoteObjectIDs(ctx context.Context, userID string, activityTypes []int) (objectIDs []string, err error)
+	ListUserVotes(ctx context.Context, userID string, objectIDs []string, page int, pageSize int, activityTypes []int) (
 		voteList []*entity.Activity, total int64, err error)
 }
 
@@ -211,7 +212,26 @@ func (vs *VoteService) ListUserVotes(ctx context.Context, req schema.GetVoteWith
 		activityTypeMapping[cfg.ID] = typeKey
 	}
 
-	voteList, total, err := vs.voteRepo.ListUserVotes(ctx, req.UserID, req.Page, req.PageSize, activityTypes)
+	objectIDs, err := vs.voteRepo.GetUserVoteObjectIDs(ctx, req.UserID, activityTypes)
+	if err != nil {
+		return nil, err
+	}
+	visibleObjectIDs := make([]string, 0, len(objectIDs))
+	for _, objectID := range objectIDs {
+		objInfo, err := vs.objectService.GetInfo(ctx, objectID)
+		if err != nil {
+			log.Error(err)
+			continue
+		}
+		if err := objInfo.CheckVisibility(req.LoginUserID, req.IsAdminModerator); err == nil {
+			visibleObjectIDs = append(visibleObjectIDs, objectID)
+		}
+	}
+	if len(visibleObjectIDs) == 0 {
+		return pager.NewPageModel(0, []*schema.GetVoteWithPageResp{}), nil
+	}
+
+	voteList, total, err := vs.voteRepo.ListUserVotes(ctx, req.UserID, visibleObjectIDs, req.Page, req.PageSize, activityTypes)
 	if err != nil {
 		return nil, err
 	}
@@ -223,6 +243,9 @@ func (vs *VoteService) ListUserVotes(ctx context.Context, req schema.GetVoteWith
 		objInfo, err := vs.objectService.GetInfo(ctx, voteInfo.ObjectID)
 		if err != nil {
 			log.Error(err)
+			continue
+		}
+		if err := objInfo.CheckVisibility(req.LoginUserID, req.IsAdminModerator); err != nil {
 			continue
 		}
 
@@ -238,9 +261,6 @@ func (vs *VoteService) ListUserVotes(ctx context.Context, req schema.GetVoteWith
 		}
 		item.VoteType = translator.Tr(lang,
 			activity_type.ActivityTypeFlagMapping[activityTypeMapping[voteInfo.ActivityType]])
-		if objInfo.QuestionStatus == entity.QuestionStatusDeleted {
-			item.Title = translator.Tr(lang, constant.DeletedQuestionTitleTrKey)
-		}
 		votes = append(votes, item)
 	}
 	return pager.NewPageModel(total, votes), err

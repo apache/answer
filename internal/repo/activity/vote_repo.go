@@ -188,7 +188,23 @@ func (vr *VoteRepo) GetAndSaveVoteResult(ctx context.Context, objectID, objectTy
 	return
 }
 
-func (vr *VoteRepo) ListUserVotes(ctx context.Context, userID string,
+func (vr *VoteRepo) GetUserVoteObjectIDs(ctx context.Context, userID string, activityTypes []int) (objectIDs []string, err error) {
+	activities := make([]*entity.Activity, 0)
+	cond := builder.And(
+		builder.Eq{"user_id": userID},
+		builder.Eq{"cancelled": 0},
+		builder.In("activity_type", activityTypes),
+	)
+	if err := vr.data.DB.Context(ctx).Where(cond).Distinct("object_id").Find(&activities); err != nil {
+		return nil, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+	for _, activity := range activities {
+		objectIDs = append(objectIDs, activity.ObjectID)
+	}
+	return objectIDs, nil
+}
+
+func (vr *VoteRepo) ListUserVotes(ctx context.Context, userID string, objectIDs []string,
 	page int, pageSize int, activityTypes []int) (voteList []*entity.Activity, total int64, err error) {
 	session := vr.data.DB.Context(ctx)
 	cond := builder.
@@ -196,6 +212,7 @@ func (vr *VoteRepo) ListUserVotes(ctx context.Context, userID string,
 			builder.Eq{"user_id": userID},
 			builder.Eq{"cancelled": 0},
 			builder.In("activity_type", activityTypes),
+			builder.In("object_id", objectIDs),
 		)
 
 	session.Where(cond).Desc("updated_at")

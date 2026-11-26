@@ -74,7 +74,11 @@ type GetVoteWithPageReq struct {
 	// page size
 	PageSize int `validate:"omitempty,min=1" form:"page_size"`
 	// user id
-	UserID string `json:"-"`
+	UserID string `json:"-" form:"-"`
+	// login user id
+	LoginUserID string `json:"-" form:"-"`
+	// is admin or moderator
+	IsAdminModerator bool `json:"-" form:"-"`
 }
 
 type GetVoteWithPageResp struct {
