@@ -29,6 +29,7 @@ import (
 	"github.com/apache/answer/internal/base/data"
 	"github.com/apache/answer/internal/base/reason"
 	"github.com/apache/answer/internal/entity"
+	"github.com/apache/answer/plugin"
 	"github.com/segmentfault/pacman/errors"
 	"github.com/segmentfault/pacman/log"
 )
@@ -207,7 +208,7 @@ func (ar *authRepo) AddUserTokenMapping(ctx context.Context, userID, accessToken
 	return ar.data.Cache.SetString(ctx, key, string(content), constant.UserTokenCacheTime)
 }
 
-// RemoveUserTokens Log out all users under this user id
+// GetUserCacheInfoByUserID reloads account state and the active UserCenter binding.
 func (ar *authRepo) GetUserCacheInfoByUserID(ctx context.Context, userID string) (*entity.UserCacheInfo, bool, error) {
 	user := &entity.User{}
 	exists, err := ar.data.DB.Context(ctx).ID(userID).Get(user)
@@ -227,11 +228,15 @@ func (ar *authRepo) GetUserCacheInfoByUserID(ctx context.Context, userID string)
 	}
 
 	externalID := ""
-	externalLogin := &entity.UserExternalLogin{}
-	if hasExternal, externalErr := ar.data.DB.Context(ctx).Where("user_id = ?", userID).Get(externalLogin); externalErr != nil {
-		return nil, false, errors.InternalServer(reason.DatabaseError).WithError(externalErr).WithStack()
-	} else if hasExternal {
-		externalID = externalLogin.ExternalID
+	if userCenter, enabled := plugin.GetUserCenter(); enabled {
+		externalLogin := &entity.UserExternalLogin{}
+		if hasExternal, externalErr := ar.data.DB.Context(ctx).
+			Where("user_id = ? AND provider = ?", userID, userCenter.Info().SlugName).
+			Get(externalLogin); externalErr != nil {
+			return nil, false, errors.InternalServer(reason.DatabaseError).WithError(externalErr).WithStack()
+		} else if hasExternal {
+			externalID = externalLogin.ExternalID
+		}
 	}
 
 	return &entity.UserCacheInfo{
