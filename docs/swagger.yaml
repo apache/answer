@@ -2003,6 +2003,7 @@ definitions:
       invite_user:
         items:
           type: string
+        maxItems: 5
         type: array
       tags:
         description: tags
@@ -2030,6 +2031,7 @@ definitions:
       invite_user:
         items:
           type: string
+        maxItems: 5
         type: array
     required:
     - id

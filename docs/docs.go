@@ -11346,6 +11346,7 @@ const docTemplate = `{
                 },
                 "invite_user": {
                     "type": "array",
+                    "maxItems": 5,
                     "items": {
                         "type": "string"
                     }
@@ -11383,6 +11384,7 @@ const docTemplate = `{
                 },
                 "invite_user": {
                     "type": "array",
+                    "maxItems": 5,
                     "items": {
                         "type": "string"
                     }

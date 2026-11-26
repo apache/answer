@@ -11319,6 +11319,7 @@
                 },
                 "invite_user": {
                     "type": "array",
+                    "maxItems": 5,
                     "items": {
                         "type": "string"
                     }
@@ -11356,6 +11357,7 @@
                 },
                 "invite_user": {
                     "type": "array",
+                    "maxItems": 5,
                     "items": {
                         "type": "string"
                     }
