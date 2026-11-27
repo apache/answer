@@ -24,11 +24,13 @@ import { useTranslation } from 'react-i18next';
 import classnames from 'classnames';
 
 import { Icon } from '@/components';
+import aiControlStore from '@/stores/aiControl';
+import { useToast } from '@/hooks';
 
 import './index.scss';
 
 interface IProps {
-  onSubmit?: (value: string) => void;
+  onSubmit?: (value: string, images: string[]) => void;
   onCancel?: () => void;
   isGenerate: boolean;
   hasConversation: boolean;
@@ -41,11 +43,47 @@ const Sender: FC<IProps> = ({
   hasConversation,
 }) => {
   const { t } = useTranslation('translation', { keyPrefix: 'ai_assistant' });
+  const toast = useToast();
   const containerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [initialized, setInitialized] = useState(false);
   const [inputValue, setInputValue] = useState('');
+  const [images, setImages] = useState<string[]>([]);
   const [isFocus, setIsFocus] = useState(false);
+  const visionEnabled = aiControlStore((s) => s.ai_vision_enabled);
+
+  const addImages = (files: FileList | null) => {
+    if (!files?.length) return;
+    const room = 4 - images.length;
+    if (room <= 0) {
+      toast.onShow({
+        msg: t('image_max_count'),
+        variant: 'danger',
+      });
+      return;
+    }
+    Array.from(files)
+      .slice(0, room)
+      .forEach((file) => {
+        if (!/^image\/(png|jpe?g|webp)$/.test(file.type)) return;
+        if (file.size > 4 * 1024 * 1024) {
+          toast.onShow({
+            msg: t('image_too_large'),
+            variant: 'danger',
+          });
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+          const dataUrl = String(reader.result);
+          setImages((prev) =>
+            prev.length < 4 && !prev.includes(dataUrl) ? [...prev, dataUrl] : prev,
+          );
+        };
+        reader.readAsDataURL(file);
+      });
+  };
 
   const handleFocus = () => {
     setIsFocus(true);
@@ -89,8 +127,9 @@ const Sender: FC<IProps> = ({
     if (isGenerate || !inputValue.trim()) {
       return;
     }
-    onSubmit?.(inputValue);
+    onSubmit?.(inputValue, images);
     setInputValue('');
+    setImages([]);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -145,7 +184,53 @@ const Sender: FC<IProps> = ({
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
         />
+        {images.length > 0 && (
+          <div className="d-flex flex-wrap gap-2 mb-2">
+            {images.map((img, i) => (
+              <div key={`${i}-${img.slice(-12)}`} className="position-relative">
+                <img
+                  src={img}
+                  alt=""
+                  style={{ width: '48px', height: '48px', objectFit: 'cover' }}
+                  className="rounded border"
+                />
+                <button
+                  type="button"
+                  aria-label="remove"
+                  onClick={() =>
+                    setImages((prev) => prev.filter((_, j) => j !== i))
+                  }
+                  className="btn btn-sm btn-dark position-absolute top-0 end-0 py-0 px-1 rounded-circle"
+                  style={{ transform: 'translate(40%, -40%)' }}>
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
         <div className="clearfix tools">
+          {visionEnabled && !isGenerate && (
+            <>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                multiple
+                hidden
+                onChange={(e) => {
+                  addImages(e.target.files);
+                  e.target.value = '';
+                }}
+              />
+              <Button
+                variant="link"
+                className="p-0 lh-1 link-secondary float-start me-2"
+                title={t('image_upload')}
+                onClick={() => fileInputRef.current?.click()}>
+                <Icon name="image" size="20px" />
+              </Button>
+            </>
+          )}
           {isGenerate ? (
             <Button
               variant="link"
