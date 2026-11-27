@@ -20,11 +20,67 @@
 package router
 
 import (
+	"sort"
 	"testing"
 
 	"github.com/apache/answer/internal/base/constant"
+	"github.com/apache/answer/internal/controller"
 	"github.com/mark3labs/mcp-go/server"
 )
+
+const semanticSearchToolName = "semantic_search"
+
+var basicMCPToolNames = []string{
+	"get_questions",
+	"get_question_detail",
+	"get_answers_by_question_id",
+	"get_comments",
+	"get_tags",
+	"get_tag_detail",
+	"get_user",
+}
+
+func registeredMCPToolNames(tools map[string]*server.ServerTool) []string {
+	names := make([]string, 0, len(tools))
+	for name := range tools {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+	return names
+}
+
+func TestAddMCPToolsRegistersSemanticSearchWhenAvailable(t *testing.T) {
+	s := server.NewMCPServer("test", "1.0.0")
+	addMCPTools(s, &controller.MCPController{}, true)
+
+	tools := s.ListTools()
+	if _, ok := tools[semanticSearchToolName]; !ok {
+		t.Fatalf("semantic_search must be registered when a vector search plugin is available: %v", registeredMCPToolNames(tools))
+	}
+	for _, name := range basicMCPToolNames {
+		if _, ok := tools[name]; !ok {
+			t.Fatalf("%s must stay registered: %v", name, registeredMCPToolNames(tools))
+		}
+	}
+}
+
+func TestAddMCPToolsOmitsSemanticSearchWhenUnavailable(t *testing.T) {
+	s := server.NewMCPServer("test", "1.0.0")
+	addMCPTools(s, &controller.MCPController{}, false)
+
+	tools := s.ListTools()
+	if _, ok := tools[semanticSearchToolName]; ok {
+		t.Fatalf("semantic_search must not be registered without a vector search plugin: %v", registeredMCPToolNames(tools))
+	}
+	if len(tools) != len(basicMCPToolNames) {
+		t.Fatalf("expect %d tools, got %d: %v", len(basicMCPToolNames), len(tools), registeredMCPToolNames(tools))
+	}
+	for _, name := range basicMCPToolNames {
+		if _, ok := tools[name]; !ok {
+			t.Fatalf("%s must stay registered: %v", name, registeredMCPToolNames(tools))
+		}
+	}
+}
 
 // TestMCPSSEEndpointConfig guards the MCP endpoint configuration against the
 // "see"/"sse" typo and against the path drifting between the SSE server config,

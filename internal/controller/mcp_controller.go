@@ -419,6 +419,17 @@ func (c *MCPController) MCPSemanticSearchHandler() func(ctx context.Context, req
 			var meta plugin.VectorSearchMetadata
 			_ = json.Unmarshal([]byte(r.Metadata), &meta)
 
+			// The vector index holds every synced record, so a question hidden or
+			// deleted after the sync is still in it. A result is only answered from
+			// what the other MCP handlers would show, never from the index alone.
+			question, qErr := c.questioncommon.Info(ctx, meta.QuestionID, "")
+			if qErr != nil {
+				log.Warnf("get question %s for semantic search failed: %v", meta.QuestionID, qErr)
+			}
+			if !mcpQuestionIsPublic(question) {
+				continue
+			}
+
 			item := &schema.MCPSemanticSearchResp{
 				ObjectID:   r.ObjectID,
 				ObjectType: r.ObjectType,
@@ -434,18 +445,13 @@ func (c *MCPController) MCPSemanticSearchHandler() func(ctx context.Context, req
 
 			// Query content from DB using IDs stored in metadata
 			if r.ObjectType == "question" {
-				question, qErr := c.questioncommon.Info(ctx, meta.QuestionID, "")
-				if qErr != nil {
-					log.Warnf("get question %s for semantic search failed: %v", meta.QuestionID, qErr)
-				} else {
-					item.Title = question.Title
-					item.Content = question.Content
-				}
+				item.Title = question.Title
+				item.Content = question.Content
 
 				// Fetch answers by ID from metadata
 				for _, a := range meta.Answers {
 					answerEntity, exist, aErr := c.answerRepo.GetAnswer(ctx, a.AnswerID)
-					if aErr != nil || !exist {
+					if aErr != nil || !exist || answerEntity.Status != entity.AnswerStatusAvailable {
 						continue
 					}
 					answerItem := &schema.MCPSemanticSearchAnswer{
@@ -455,7 +461,7 @@ func (c *MCPController) MCPSemanticSearchHandler() func(ctx context.Context, req
 					// Fetch comments on this answer from DB
 					for _, ac := range a.Comments {
 						cmt, cExist, cErr := c.commentRepo.GetComment(ctx, ac.CommentID)
-						if cErr == nil && cExist {
+						if cErr == nil && cExist && cmt.Status == entity.CommentStatusAvailable {
 							answerItem.Comments = append(answerItem.Comments, &schema.MCPSemanticSearchComment{
 								CommentID: ac.CommentID,
 								Content:   cmt.OriginalText,
@@ -468,7 +474,7 @@ func (c *MCPController) MCPSemanticSearchHandler() func(ctx context.Context, req
 				// Fetch question comments from DB
 				for _, qc := range meta.Comments {
 					cmt, cExist, cErr := c.commentRepo.GetComment(ctx, qc.CommentID)
-					if cErr == nil && cExist {
+					if cErr == nil && cExist && cmt.Status == entity.CommentStatusAvailable {
 						item.Comments = append(item.Comments, &schema.MCPSemanticSearchComment{
 							CommentID: qc.CommentID,
 							Content:   cmt.OriginalText,
@@ -476,30 +482,24 @@ func (c *MCPController) MCPSemanticSearchHandler() func(ctx context.Context, req
 					}
 				}
 			} else if r.ObjectType == "answer" {
-				// Fetch question title for context
-				question, qErr := c.questioncommon.Info(ctx, meta.QuestionID, "")
-				if qErr == nil {
-					item.Title = question.Title
+				// Fetch answer content from DB; the answer a result stands for must
+				// still be available, or there is nothing to show for this result.
+				answerID := meta.AnswerID
+				if answerID == "" && len(meta.Answers) > 0 {
+					answerID = meta.Answers[0].AnswerID
 				}
-
-				// Fetch answer content from DB
-				if meta.AnswerID != "" {
-					answerEntity, exist, aErr := c.answerRepo.GetAnswer(ctx, meta.AnswerID)
-					if aErr == nil && exist {
-						item.Content = answerEntity.OriginalText
-					}
-				} else if len(meta.Answers) > 0 {
-					answerEntity, exist, aErr := c.answerRepo.GetAnswer(ctx, meta.Answers[0].AnswerID)
-					if aErr == nil && exist {
-						item.Content = answerEntity.OriginalText
-					}
+				answerEntity, exist, aErr := c.answerRepo.GetAnswer(ctx, answerID)
+				if aErr != nil || !exist || answerEntity.Status != entity.AnswerStatusAvailable {
+					continue
 				}
+				item.Title = question.Title
+				item.Content = answerEntity.OriginalText
 
 				// Fetch answer comments from DB
 				if len(meta.Answers) > 0 {
 					for _, ac := range meta.Answers[0].Comments {
 						cmt, cExist, cErr := c.commentRepo.GetComment(ctx, ac.CommentID)
-						if cErr == nil && cExist {
+						if cErr == nil && cExist && cmt.Status == entity.CommentStatusAvailable {
 							item.Comments = append(item.Comments, &schema.MCPSemanticSearchComment{
 								CommentID: ac.CommentID,
 								Content:   cmt.OriginalText,
