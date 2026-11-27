@@ -27,6 +27,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/apache/answer/internal/base/constant"
 	"github.com/gin-gonic/gin"
 	"github.com/mark3labs/mcp-go/server"
 )
@@ -100,8 +101,8 @@ func TestRegisterMCPRouterServesStreamableHTTP(t *testing.T) {
 	if err := json.Unmarshal(initialize.Body.Bytes(), &initResponse); err != nil {
 		t.Fatalf("decode initialize response: %v", err)
 	}
-	if initResponse.Result.ServerInfo.Name != "Answer Enterprise MCP Server" {
-		t.Fatalf("initialize serverInfo.name = %q, want %q", initResponse.Result.ServerInfo.Name, "Answer Enterprise MCP Server")
+	if initResponse.Result.ServerInfo.Name != constant.MCPServerName {
+		t.Fatalf("initialize serverInfo.name = %q, want %q", initResponse.Result.ServerInfo.Name, constant.MCPServerName)
 	}
 
 	initialized := postMCP(t, engine, endpoint, sessionID, map[string]any{
