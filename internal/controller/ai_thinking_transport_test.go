@@ -78,6 +78,37 @@ func TestThinkingParamForHost(t *testing.T) {
 	}
 }
 
+func TestThinkingParamForRegionalModelStudioHosts(t *testing.T) {
+	// Alibaba Cloud Model Studio documents regional OpenAI-compatible
+	// endpoints as https://{workspace}.{region}.maas.aliyuncs.com/compatible-mode/v1;
+	// they use the same top-level enable_thinking flag as the DashScope gateways.
+	for _, host := range []string{
+		"https://ws-example.cn-beijing.maas.aliyuncs.com/compatible-mode/v1",
+		"https://ws-example.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1",
+		"https://ws-example.us-east-1.maas.aliyuncs.com/compatible-mode/v1",
+		"https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
+		"dashscope.aliyuncs.com/compatible-mode/v1",
+	} {
+		if !reflect.DeepEqual(thinkingParamForHost(host),
+			map[string]any{"enable_thinking": true}) {
+			t.Fatalf("host %q should get enable_thinking", host)
+		}
+	}
+}
+
+func TestThinkingParamForHostMatchesHostnameOnly(t *testing.T) {
+	for _, host := range []string{
+		"https://evil.example.com/?hook=dashscope.aliyuncs.com",
+		"https://evil.example.com/maas.aliyuncs.com",
+		"https://notdashscope.aliyuncs.com",
+		"https://fakemaas.aliyuncs.com",
+	} {
+		if thinkingParamForHost(host) != nil {
+			t.Fatalf("host %q must not get a provider-specific parameter", host)
+		}
+	}
+}
+
 func TestThinkingTransportInjectsDashScopeFlag(t *testing.T) {
 	srv, got, post := newCaptureServer()
 	defer srv.Close()

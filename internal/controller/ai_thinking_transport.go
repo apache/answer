@@ -24,28 +24,58 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 )
+
+// isHostOrSubdomain reports whether host equals base or lives under it,
+// e.g. ws-example.cn-beijing.maas.aliyuncs.com under maas.aliyuncs.com.
+// Both arguments must already be lowercase hostnames without a port.
+func isHostOrSubdomain(host, base string) bool {
+	return host == base || strings.HasSuffix(host, "."+base)
+}
 
 // thinkingParamForHost returns the request body patch that enables thinking
 // for a provider host, or nil when the host has no documented
 // OpenAI-compatible thinking parameter. The flag is gateway-specific rather
 // than a neutral OpenAI extension:
 //   - DashScope/Qwen compatibility mode documents top-level "enable_thinking"
-//     (https://help.aliyun.com/en/model-studio/qwen-api-via-dashscope).
+//     (https://help.aliyun.com/en/model-studio/qwen-api-via-dashscope). It
+//     applies to the dashscope.aliyuncs.com and dashscope-intl.aliyuncs.com
+//     gateways as well as the regional Model Studio endpoints served as
+//     https://{workspace}.{region}.maas.aliyuncs.com/compatible-mode/v1.
 //   - DeepSeek documents an object parameter, thinking: {"type": "enabled"}
 //     (https://api-docs.deepseek.com/guides/thinking_mode/).
 //   - Gemini's OpenAI-compatible endpoint accepts neither.
 //
-// Unknown hosts receive no provider-specific field instead of a global guess.
+// Hosts are matched on the parsed URL hostname (scheme-less values are parsed
+// as https), never on substrings, so a gateway name embedded in a path, query
+// or look-alike domain cannot trigger injection. Unknown hosts receive no
+// provider-specific field instead of a global guess.
 func thinkingParamForHost(apiHost string) map[string]any {
-	h := strings.ToLower(strings.TrimSpace(apiHost))
+	raw := strings.TrimSpace(apiHost)
+	if raw == "" {
+		return nil
+	}
+	if !strings.Contains(raw, "://") {
+		raw = "https://" + raw
+	}
+	u, err := url.Parse(raw)
+	if err != nil {
+		return nil
+	}
+	host := strings.ToLower(u.Hostname())
+	if host == "" {
+		return nil
+	}
 	switch {
-	case strings.Contains(h, "dashscope.aliyuncs.com"):
-		return map[string]any{"enable_thinking": true}
-	case strings.Contains(h, "api.deepseek.com"):
+	case host == "api.deepseek.com":
 		return map[string]any{"thinking": map[string]any{"type": "enabled"}}
+	case isHostOrSubdomain(host, "dashscope.aliyuncs.com"),
+		isHostOrSubdomain(host, "dashscope-intl.aliyuncs.com"),
+		isHostOrSubdomain(host, "maas.aliyuncs.com"):
+		return map[string]any{"enable_thinking": true}
 	default:
 		return nil
 	}
