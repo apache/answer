@@ -22,6 +22,7 @@ package auth_test
 import (
 	"context"
 	"fmt"
+	"path/filepath"
 	"testing"
 
 	"github.com/apache/answer/internal/base/data"
@@ -29,7 +30,65 @@ import (
 	authrepo "github.com/apache/answer/internal/repo/auth"
 	authservice "github.com/apache/answer/internal/service/auth"
 	"github.com/apache/answer/plugin"
+	"github.com/stretchr/testify/require"
 )
+
+func TestGetUserCacheInfoByUserIDUsesActiveUserCenterBinding(t *testing.T) {
+	tests := []struct {
+		name       string
+		enabled    bool
+		bindings   []entity.UserExternalLogin
+		externalID string
+	}{
+		{name: "no user center", bindings: []entity.UserExternalLogin{{Provider: "github", ExternalID: "github-user"}}},
+		{name: "no binding", enabled: true},
+		{name: "github only", enabled: true, bindings: []entity.UserExternalLogin{{Provider: "github", ExternalID: "github-user"}}},
+		{name: "inactive user center", enabled: true, bindings: []entity.UserExternalLogin{{Provider: "inactive-user-center", ExternalID: "inactive-user"}}},
+		{name: "active user center", enabled: true, bindings: []entity.UserExternalLogin{{Provider: "auth-test-user-center", ExternalID: "central-user"}}, externalID: "central-user"},
+		{name: "multiple providers", enabled: true, bindings: []entity.UserExternalLogin{
+			{Provider: "github", ExternalID: "github-user"},
+			{Provider: "auth-test-user-center", ExternalID: "central-user"},
+		}, externalID: "central-user"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			db, err := data.NewDB(false, &data.Database{Driver: "sqlite3", Connection: filepath.Join(t.TempDir(), "auth.db")})
+			require.NoError(t, err)
+			t.Cleanup(func() { require.NoError(t, db.Close()) })
+			require.NoError(t, db.Sync2(new(entity.User), new(entity.UserRoleRel), new(entity.UserExternalLogin)))
+			_, err = db.Insert(&entity.User{ID: "1", Status: entity.UserStatusAvailable, MailStatus: entity.EmailStatusAvailable})
+			require.NoError(t, err)
+			// A matching provider binding belonging to another user must also be ignored.
+			_, err = db.Insert(&entity.UserExternalLogin{UserID: "2", Provider: "auth-test-user-center", ExternalID: "another-user"})
+			require.NoError(t, err)
+			for _, binding := range tt.bindings {
+				binding.UserID = "1"
+				_, err = db.Insert(&binding)
+				require.NoError(t, err)
+			}
+			previous := plugin.CallUserCenter
+			center := &authTestUserCenter{status: plugin.UserStatusSuspended}
+			plugin.CallUserCenter = func(call plugin.Caller[plugin.UserCenter]) error {
+				if tt.enabled {
+					return call(center)
+				}
+				return nil
+			}
+			t.Cleanup(func() { plugin.CallUserCenter = previous })
+			service := authservice.NewAuthService(authrepo.NewAuthRepo(&data.Data{DB: db}), nil)
+			user, err := service.GetUserCacheInfoByUserID(t.Context(), "1")
+			require.NoError(t, err)
+			require.NotNil(t, user)
+			require.Equal(t, tt.externalID, user.ExternalID)
+			require.Equal(t, tt.externalID, center.externalID)
+			expectedStatus := entity.UserStatusAvailable
+			if tt.externalID != "" {
+				expectedStatus = entity.UserStatusSuspended
+			}
+			require.Equal(t, expectedStatus, user.UserStatus)
+		})
+	}
+}
 
 func TestGetUserCacheInfoChecksUserCenterStatus(t *testing.T) {
 	cache, cleanup, err := data.NewCache(&data.CacheConf{})

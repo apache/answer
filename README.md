@@ -36,6 +36,10 @@ We value your feedback and suggestions to improve our documentation. If you have
 
 You can also check out the [plugins here](https://answer.apache.org/plugins).
 
+### Personal access tokens
+
+Administrators can enable **Personal access tokens** under **Admin → Security**. Users can create scoped, expiring tokens from **Settings → Personal access tokens** to use existing REST endpoints as their own account.
+
 ## Building from Source
 
 ### Prerequisites

@@ -30,6 +30,29 @@ import { modifyPassword } from '@/services';
 import { handleFormError, scrollToElementTop } from '@/utils';
 import { loggedUserInfoStore } from '@/stores';
 
+const initialFormData = (): FormDataType => ({
+  old_pass: {
+    value: '',
+    isInvalid: false,
+    errorMsg: '',
+  },
+  pass: {
+    value: '',
+    isInvalid: false,
+    errorMsg: '',
+  },
+  pass2: {
+    value: '',
+    isInvalid: false,
+    errorMsg: '',
+  },
+  revoke_personal_access_tokens: {
+    value: false,
+    isInvalid: false,
+    errorMsg: '',
+  },
+});
+
 const Index: FC = () => {
   const { t } = useTranslation('translation', {
     keyPrefix: 'settings.account',
@@ -37,28 +60,13 @@ const Index: FC = () => {
   const { user } = loggedUserInfoStore();
   const [showForm, setFormState] = useState(false);
   const toast = useToast();
-  const [formData, setFormData] = useState<FormDataType>({
-    old_pass: {
-      value: '',
-      isInvalid: false,
-      errorMsg: '',
-    },
-    pass: {
-      value: '',
-      isInvalid: false,
-      errorMsg: '',
-    },
-    pass2: {
-      value: '',
-      isInvalid: false,
-      errorMsg: '',
-    },
-  });
+  const [formData, setFormData] = useState<FormDataType>(initialFormData);
 
   const infoCaptcha = useCaptchaPlugin('edit_userinfo');
 
-  const handleFormState = () => {
-    setFormState((pre) => !pre);
+  const closeForm = () => {
+    setFormData(initialFormData());
+    setFormState(false);
   };
 
   const handleChange = (params: FormDataType) => {
@@ -141,6 +149,8 @@ const Index: FC = () => {
     const params: any = {
       old_pass: formData.old_pass.value,
       pass: formData.pass.value,
+      revoke_personal_access_tokens:
+        formData.revoke_personal_access_tokens.value,
     };
 
     const imgCode = infoCaptcha?.getCaptcha();
@@ -155,7 +165,7 @@ const Index: FC = () => {
           msg: t('update_password', { keyPrefix: 'toast' }),
           variant: 'success',
         });
-        handleFormState();
+        closeForm();
       })
       .catch((err) => {
         if (err.isError) {
@@ -256,12 +266,30 @@ const Index: FC = () => {
               {formData.pass2.errorMsg}
             </Form.Control.Feedback>
           </Form.Group>
+          <Form.Group
+            controlId="revoke_personal_access_tokens"
+            className="mb-3">
+            <Form.Check
+              type="checkbox"
+              label={t('revoke_personal_access_tokens')}
+              checked={formData.revoke_personal_access_tokens.value}
+              onChange={(e) =>
+                handleChange({
+                  revoke_personal_access_tokens: {
+                    value: e.target.checked,
+                    isInvalid: false,
+                    errorMsg: '',
+                  },
+                })
+              }
+            />
+          </Form.Group>
           <div>
             <Button type="submit" variant="primary" className="me-2">
               {t('save', { keyPrefix: 'btns' })}
             </Button>
 
-            <Button variant="link" onClick={() => handleFormState()}>
+            <Button variant="link" onClick={closeForm}>
               {t('cancel', { keyPrefix: 'btns' })}
             </Button>
           </div>
@@ -273,9 +301,7 @@ const Index: FC = () => {
           <Button
             variant="outline-secondary"
             type="submit"
-            onClick={() => {
-              handleFormState();
-            }}>
+            onClick={() => setFormState(true)}>
             {t('change_pass_btn')}
           </Button>
         </>

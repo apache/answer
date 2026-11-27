@@ -39,6 +39,7 @@ import (
 	"github.com/apache/answer/internal/repo/limit"
 	"github.com/apache/answer/internal/repo/meta"
 	"github.com/apache/answer/internal/repo/notification"
+	"github.com/apache/answer/internal/repo/personal_access_token"
 	"github.com/apache/answer/internal/repo/plugin_config"
 	"github.com/apache/answer/internal/repo/question"
 	"github.com/apache/answer/internal/repo/rank"
@@ -112,5 +113,6 @@ var ProviderSetRepo = wire.NewSet(
 	badge_award.NewBadgeAwardRepo,
 	file_record.NewFileRecordRepo,
 	api_key.NewAPIKeyRepo,
+	personal_access_token.NewRepository,
 	ai_conversation.NewAIConversationRepo,
 )

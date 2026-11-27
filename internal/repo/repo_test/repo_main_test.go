@@ -45,7 +45,7 @@ var (
 		ImageVersion: "10.4.7",
 		ENV:          []string{"MYSQL_ROOT_PASSWORD=root", "MYSQL_DATABASE=answer", "MYSQL_ROOT_HOST=%"},
 		PortID:       "3306/tcp",
-		Connection:   "root:root@(localhost:%s)/answer?parseTime=true", // port is not fixed, it will be got by port id
+		Connection:   "root:root@(localhost:%s)/answer?charset=utf8mb4&parseTime=true", // port is not fixed, it will be got by port id
 	}
 	postgresDBSetting = TestDBSetting{
 		Driver:       string(schemas.POSTGRES),
