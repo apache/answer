@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { EditorSelection } from '@codemirror/state';
+import { EditorSelection, Line } from '@codemirror/state';
 
 import { Editor, Level } from '../../types';
 
@@ -33,6 +33,22 @@ import { Editor, Level } from '../../types';
  * @returns Object containing all command methods
  */
 export function createCommandMethods(editor: Editor) {
+  const insertListMarkerOnBlankLine = (line: Line, marker: string) => {
+    if (line.text.trim() !== '') {
+      return false;
+    }
+
+    editor.dispatch({
+      changes: {
+        from: line.from,
+        to: line.to,
+        insert: marker,
+      },
+      selection: EditorSelection.cursor(line.from + marker.length),
+    });
+    return true;
+  };
+
   // Create methods object that allows self-reference
   const methods = {
     wrapText: (before: string, after = before, defaultText) => {
@@ -128,8 +144,10 @@ export function createCommandMethods(editor: Editor) {
     },
 
     insertOrderedList: () => {
-      const cursor = editor.getCursor();
-      const line = editor.state.doc.line(cursor.line);
+      const line = editor.state.doc.lineAt(editor.state.selection.main.head);
+      if (insertListMarkerOnBlankLine(line, '1. ')) {
+        return;
+      }
       const lineText = line.text.trim();
       if (/^\d+\.\s/.test(lineText)) {
         return;
@@ -143,8 +161,10 @@ export function createCommandMethods(editor: Editor) {
     },
 
     insertUnorderedList: () => {
-      const cursor = editor.getCursor();
-      const line = editor.state.doc.line(cursor.line);
+      const line = editor.state.doc.lineAt(editor.state.selection.main.head);
+      if (insertListMarkerOnBlankLine(line, '- ')) {
+        return;
+      }
       const lineText = line.text.trim();
       if (/^[-*+]\s/.test(lineText)) {
         return;

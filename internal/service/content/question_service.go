@@ -1466,7 +1466,7 @@ func canViewSimilarQuestion(question *entity.Question, userID string, per schema
 func (qs *QuestionService) SimilarQuestion(ctx context.Context, questionID string, loginUserID string) ([]*schema.QuestionPageResp, int64, error) {
 	question, err := qs.questioncommon.Info(ctx, questionID, loginUserID)
 	if err != nil {
-		return nil, 0, nil
+		return nil, 0, err
 	}
 	tagNames := make([]string, 0, len(question.Tags))
 	for _, tag := range question.Tags {

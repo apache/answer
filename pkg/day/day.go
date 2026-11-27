@@ -59,9 +59,27 @@ func Format(unix int64, format, tz string) (formatted string) {
 		from = suffix
 	}
 
-	_, _ = time.LoadLocation(tz)
-	formatted = time.Unix(unix, 0).Format(toFormat.String())
+	formatted = time.Unix(unix, 0).In(Location(tz)).Format(toFormat.String())
 	return
+}
+
+// Location resolves an IANA time zone name to a *time.Location. An empty or
+// unknown name falls back to the server's local zone, so a bad configuration
+// never shifts the instant that is being rendered.
+func Location(tz string) *time.Location {
+	loc, err := time.LoadLocation(tz)
+	if err != nil || tz == "" {
+		return time.Local
+	}
+	return loc
+}
+
+// FormatISO renders a unix timestamp as an ISO-8601 string in the given IANA
+// time zone, e.g. "2023-11-15T07:13:20.000+09:00". The zone marker is a real
+// offset, or "Z" when the instant renders in UTC, so the output is always a
+// valid datetime attribute for the <time> element and for schema.org dates.
+func FormatISO(unix int64, tz string) string {
+	return time.Unix(unix, 0).In(Location(tz)).Format("2006-01-02T15:04:05.000Z07:00")
 }
 
 func nextStdChunk(from []rune) (to, suffix []rune) {

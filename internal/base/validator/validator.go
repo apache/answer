@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"sync"
 	"unicode"
 
 	"github.com/apache/answer/internal/base/reason"
@@ -96,7 +97,10 @@ type FormErrorField struct {
 }
 
 // GlobalValidatorMapping is a mapping from validator to translator used
-var GlobalValidatorMapping = make(map[i18n.Language]*MyValidator, 0)
+var (
+	GlobalValidatorMapping = make(map[i18n.Language]*MyValidator, 0)
+	validatorMappingMu     sync.RWMutex
+)
 
 func init() {
 	for _, t := range allLanguageTranslators {
@@ -179,10 +183,58 @@ func createDefaultValidator(la i18n.Language) *validator.Validate {
 	return validate
 }
 
-func GetValidatorByLang(lang i18n.Language) *MyValidator {
-	if GlobalValidatorMapping[lang] != nil {
-		return GlobalValidatorMapping[lang]
+// baseLanguage returns the language subtag of a locale such as pt_BR or es-MX.
+func baseLanguage(lang string) string {
+	if idx := strings.IndexAny(lang, "_-"); idx > 0 {
+		return lang[:idx]
 	}
+	return lang
+}
+
+// registerRegionalValidator builds and caches a validator for a regional locale
+// (such as es_MX) on top of the translator of its base language. The write lock
+// is scoped to this call so callers never hold it while falling back. It returns
+// nil if the translations cannot be registered.
+func registerRegionalValidator(lang i18n.Language, t *TranslatorLocal) *MyValidator {
+	validatorMappingMu.Lock()
+	defer validatorMappingMu.Unlock()
+
+	if v := GlobalValidatorMapping[lang]; v != nil {
+		return v
+	}
+	tran, val := getTran(t.Lo), createDefaultValidator(lang)
+	if t.RegisterFunc != nil {
+		if err := t.RegisterFunc(val, tran); err != nil {
+			log.Error(err)
+			return nil
+		}
+	}
+	v := &MyValidator{Validate: val, Tran: tran, Lang: lang}
+	GlobalValidatorMapping[lang] = v
+	return v
+}
+
+func GetValidatorByLang(lang i18n.Language) *MyValidator {
+	validatorMappingMu.RLock()
+	if v := GlobalValidatorMapping[lang]; v != nil {
+		validatorMappingMu.RUnlock()
+		return v
+	}
+	validatorMappingMu.RUnlock()
+
+	baseLang := baseLanguage(string(lang))
+	for _, t := range allLanguageTranslators {
+		if !strings.EqualFold(baseLang, baseLanguage(string(t.La))) {
+			continue
+		}
+		if v := registerRegionalValidator(lang, t); v != nil {
+			return v
+		}
+		break
+	}
+
+	validatorMappingMu.RLock()
+	defer validatorMappingMu.RUnlock()
 	return GlobalValidatorMapping[i18n.DefaultLanguage]
 }
 
@@ -196,12 +248,16 @@ func (m *MyValidator) Check(value any) (errFields []*FormErrorField, err error) 
 			if len(field.ErrorField) == 0 {
 				continue
 			}
-			firstRune := []rune(field.ErrorMsg)[0]
+			runes := []rune(field.ErrorMsg)
+			if len(runes) == 0 {
+				continue
+			}
+			firstRune := runes[0]
 			if !unicode.IsLetter(firstRune) || !unicode.Is(unicode.Latin, firstRune) {
 				continue
 			}
 			upperFirstRune := unicode.ToUpper(firstRune)
-			field.ErrorMsg = string(upperFirstRune) + field.ErrorMsg[1:]
+			field.ErrorMsg = string(upperFirstRune) + string(runes[1:])
 			if !strings.HasSuffix(field.ErrorMsg, ".") {
 				field.ErrorMsg += "."
 			}

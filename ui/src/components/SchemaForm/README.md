@@ -2,7 +2,7 @@
 
 ## Introduction
 
-A React component capable of building HTML forms out of a [JSON schema](https://json-schema.org/understanding-json-schema/index.html).
+A React component capable of building HTML forms out of a [JSON schema](https://json-schema.org/understanding-json-schema/).
 
 ## Usage
 
@@ -375,6 +375,6 @@ For backend generating modal form you can return json like this.
 
 ## reference
 
-- [json schema](https://json-schema.org/understanding-json-schema/index.html)
+- [json schema](https://json-schema.org/understanding-json-schema/)
 - [react-jsonschema-form](https://github.com/rjsf-team/react-jsonschema-form)
 - [vue-json-schema-form](https://github.com/lljj-x/vue-json-schema-form/)

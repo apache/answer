@@ -51,8 +51,24 @@ func NewQuestionsTool() mcp.Tool {
 		mcp.WithString(schema.MCPSearchCondScore,
 			mcp.Description("Minimum score that the question must have"),
 		),
+		mcp.WithNumber(schema.MCPSearchCondPage,
+			mcp.Description("Page number to return (default 1)"),
+		),
+		mcp.WithNumber(schema.MCPSearchCondPageSize,
+			mcp.Description("Number of results per page (default 5, max 50)"),
+		),
 	)
 	return listFilesTool
+}
+
+func NewQuestionDetailTool() mcp.Tool {
+	return mcp.NewTool("get_question_detail",
+		mcp.WithDescription("Get the full content of a specific question by its ID. The question ID is provided by the get_questions tool."),
+		mcp.WithString(schema.MCPSearchCondQuestionID,
+			mcp.Required(),
+			mcp.Description("The ID of the question to retrieve"),
+		),
+	)
 }
 
 func NewAnswersTool() mcp.Tool {
@@ -70,6 +86,12 @@ func NewCommentsTool() mcp.Tool {
 		mcp.WithDescription("Searching for comments that already existed in the system"),
 		mcp.WithString(schema.MCPSearchCondObjectID,
 			mcp.Description("Queries comments on an object, either a question or an answer. object_id is the id of the object."),
+		),
+		mcp.WithNumber(schema.MCPSearchCondPage,
+			mcp.Description("Page number to return (default 1)"),
+		),
+		mcp.WithNumber(schema.MCPSearchCondPageSize,
+			mcp.Description("Number of results per page (default 5, max 50)"),
 		),
 	)
 	return listFilesTool

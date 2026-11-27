@@ -54,6 +54,12 @@ func ExtractAndSetAcceptLanguage(ctx *gin.Context) {
 		}
 	}
 
+	// A regional variant such as es-MX or zh-HK resolves to the closest configured language.
+	if matched, ok := translator.MatchLanguage(tag[0]); ok {
+		ctx.Set(constant.AcceptLanguageFlag, i18n.Language(matched))
+		return
+	}
+
 	// default language
 	ctx.Set(constant.AcceptLanguageFlag, i18n.LanguageEnglish)
 }
