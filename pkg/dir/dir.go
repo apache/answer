@@ -42,10 +42,15 @@ func CheckFileExist(path string) bool {
 func DirSize(path string) (int64, error) {
 	var size int64
 	err := filepath.Walk(path, func(_ string, info os.FileInfo, err error) error {
+		// filepath.Walk passes a nil info when it cannot stat the root, so the
+		// error has to be handled before info is dereferenced.
+		if err != nil {
+			return err
+		}
 		if !info.IsDir() {
 			size += info.Size()
 		}
-		return err
+		return nil
 	})
 	return size, err
 }

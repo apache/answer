@@ -1544,11 +1544,11 @@ ui:
     tips:
       title: Astuces de recherche avancée
       tag: "<1>[tag]</1> recherche à l'aide d'un tag"
-      user: "<1>utilisateur:username</1> recherche par auteur"
-      answer: "<1>réponses:0</1> questions sans réponses"
+      user: "<1>user:username</1> recherche par auteur"
+      answer: "<1>answers:0</1> questions sans réponses"
       score: "<1>score:3</1> messages avec plus de 3 points"
-      question: "<1>est:question</1> rechercher des questions"
-      is_answer: "<1>est :réponse</1> réponses de recherche"
+      question: "<1>is:question</1> rechercher des questions"
+      is_answer: "<1>is:answer</1> réponses de recherche"
     empty: Nous n'avons rien trouvé. <br /> Essayez des mots-clés différents ou moins spécifiques.
   share:
     name: Partager

@@ -155,15 +155,16 @@ func (sp *SearchParser) parseTags(ctx context.Context, query *string) (tags [][]
 func (sp *SearchParser) parseUserID(ctx context.Context, query *string, currentUserID string) (userID string) {
 	var (
 		exprUsername = `user:(\S+)`
-		exprMe       = "user:me"
+		me           = "me"
 		q            = *query
 	)
 
 	re := regexp.MustCompile(exprUsername)
 	res := re.FindStringSubmatch(q)
-	if strings.Contains(q, exprMe) {
+	// only "user:me" itself means the current user, not a username that starts with "me"
+	if len(res) > 1 && res[1] == me {
 		userID = currentUserID
-		q = strings.ReplaceAll(q, exprMe, "")
+		q = re.ReplaceAllString(q, "")
 	} else if len(res) > 1 {
 		name := res[1]
 		user, has, err := sp.userCommon.GetUserBasicInfoByUserName(ctx, name)

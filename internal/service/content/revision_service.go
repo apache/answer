@@ -508,7 +508,7 @@ func (rs *RevisionService) CheckCanUpdateRevision(ctx context.Context, req *sche
 	resp *schema.ErrTypeData, err error) {
 	_, exist, err := rs.revisionRepo.ExistUnreviewedByObjectID(ctx, req.ID)
 	if err != nil {
-		return nil, nil
+		return nil, err
 	}
 	if exist {
 		return &schema.ErrTypeToast, errors.BadRequest(reason.RevisionReviewUnderway)

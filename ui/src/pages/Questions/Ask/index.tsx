@@ -30,7 +30,12 @@ import fm from 'front-matter';
 
 import { writeSettingStore } from '@/stores';
 import { usePageTags, usePromptWithUnload } from '@/hooks';
-import { Editor, EditorRef, TagSelector } from '@/components';
+import {
+  AITranslateButton,
+  Editor,
+  EditorRef,
+  TagSelector,
+} from '@/components';
 import type * as Type from '@/common/interface';
 import { DRAFT_QUESTION_STORAGE_KEY } from '@/common/constants';
 import {
@@ -470,16 +475,31 @@ const Ask = () => {
             )}
             <Form.Group controlId="title" className="mb-3">
               <Form.Label>{t('form.fields.title.label')}</Form.Label>
-              <Form.Control
-                type="text"
-                value={formData.title.value}
-                isInvalid={formData.title.isInvalid}
-                onChange={handleTitleChange}
-                placeholder={t('form.fields.title.placeholder')}
-                autoFocus
-                contentEditable
-              />
-              <Form.Control.Feedback type="invalid">
+              <div className="position-relative">
+                <Form.Control
+                  type="text"
+                  className="pe-5"
+                  value={formData.title.value}
+                  isInvalid={formData.title.isInvalid}
+                  onChange={handleTitleChange}
+                  placeholder={t('form.fields.title.placeholder')}
+                  autoFocus
+                  contentEditable
+                />
+                <AITranslateButton
+                  className="ai-translate-button-input"
+                  title={formData.title.value}
+                  onApply={(value) =>
+                    setFormData((previous) => ({
+                      ...previous,
+                      title: { ...previous.title, value },
+                    }))
+                  }
+                />
+              </div>
+              <Form.Control.Feedback
+                type="invalid"
+                className={formData.title.isInvalid ? 'd-block' : ''}>
                 {formData.title.errorMsg}
               </Form.Control.Feedback>
               {bool && <SearchQuestion similarQuestions={similarQuestions} />}
@@ -501,9 +521,18 @@ const Ask = () => {
                   setForceType('');
                 }}
                 ref={editorRef}
+                bottomRightAction={
+                  <AITranslateButton
+                    className="ai-translate-button-editor"
+                    content={formData.content.value}
+                    onApply={handleContentChange}
+                  />
+                }
               />
               <Form.Text>{handleContentHint()}</Form.Text>
-              <Form.Control.Feedback type="invalid">
+              <Form.Control.Feedback
+                type="invalid"
+                className={formData.content.isInvalid ? 'd-block' : ''}>
                 {formData.content.errorMsg}
               </Form.Control.Feedback>
             </Form.Group>
@@ -545,6 +574,13 @@ const Ask = () => {
                       onBlur={() => {
                         setForceType('');
                       }}
+                      bottomRightAction={
+                        <AITranslateButton
+                          className="ai-translate-button-editor"
+                          content={formData.answer_content.value}
+                          onApply={handleAnswerChange}
+                        />
+                      }
                     />
                     <Form.Control
                       type="text"

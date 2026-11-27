@@ -76,12 +76,20 @@ func (nr *notificationRepo) ClearUnRead(ctx context.Context, userID string, noti
 	return
 }
 
-func (nr *notificationRepo) ClearIDUnRead(ctx context.Context, userID string, id string) (err error) {
+// ClearIDUnRead marks the notification as read only when it is still unread. It returns the
+// number of changed rows, so the caller can tell whether the notification really changed from
+// unread to read and avoid decreasing the red dot cache for duplicate requests.
+func (nr *notificationRepo) ClearIDUnRead(ctx context.Context, userID string, id string) (affected int64, err error) {
 	info := &entity.Notification{}
 	info.IsRead = schema.NotificationRead
-	_, err = nr.data.DB.Context(ctx).Where("user_id = ?", userID).And("id = ?", id).Cols("is_read").Update(info)
+	affected, err = nr.data.DB.Context(ctx).
+		Where("user_id = ?", userID).
+		And("id = ?", id).
+		And("is_read = ?", schema.NotificationNotRead).
+		Cols("is_read").
+		Update(info)
 	if err != nil {
-		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+		err = errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
 	return
 }

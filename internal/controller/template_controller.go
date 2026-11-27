@@ -45,6 +45,7 @@ import (
 	"github.com/apache/answer/internal/service/siteinfo_common"
 	"github.com/apache/answer/pkg/checker"
 	"github.com/apache/answer/pkg/converter"
+	"github.com/apache/answer/pkg/day"
 	"github.com/apache/answer/pkg/htmltext"
 	"github.com/apache/answer/pkg/obj"
 	"github.com/apache/answer/pkg/uid"
@@ -422,6 +423,9 @@ func (tc *TemplateController) QuestionInfo(ctx *gin.Context) {
 	if siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionID || siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDByShortID {
 		siteInfo.Canonical = fmt.Sprintf("%s/questions/%s", siteInfo.General.SiteUrl, id)
 	}
+	// JSON-LD dates are machine-read (search engines), so they must carry the
+	// site's configured zone like every other server-rendered date.
+	siteLoc := day.Location(siteInfo.Interface.TimeZone)
 	jsonLD := &schema.QAPageJsonLD{}
 	jsonLD.Context = "https://schema.org"
 	jsonLD.Type = "QAPage"
@@ -430,7 +434,7 @@ func (tc *TemplateController) QuestionInfo(ctx *gin.Context) {
 	jsonLD.MainEntity.Text = detail.HTML
 	jsonLD.MainEntity.AnswerCount = int(answerCount)
 	jsonLD.MainEntity.UpvoteCount = detail.VoteCount
-	jsonLD.MainEntity.DateCreated = time.Unix(detail.CreateTime, 0)
+	jsonLD.MainEntity.DateCreated = time.Unix(detail.CreateTime, 0).In(siteLoc)
 	jsonLD.MainEntity.Author.Type = "Person"
 	jsonLD.MainEntity.Author.Name = detail.UserInfo.DisplayName
 	jsonLD.MainEntity.Author.URL = fmt.Sprintf("%s/users/%s", siteInfo.General.SiteUrl, detail.UserInfo.Username)
@@ -440,7 +444,7 @@ func (tc *TemplateController) QuestionInfo(ctx *gin.Context) {
 			acceptedAnswerItem := &schema.AcceptedAnswerItem{}
 			acceptedAnswerItem.Type = "Answer"
 			acceptedAnswerItem.Text = answer.HTML
-			acceptedAnswerItem.DateCreated = time.Unix(answer.CreateTime, 0)
+			acceptedAnswerItem.DateCreated = time.Unix(answer.CreateTime, 0).In(siteLoc)
 			acceptedAnswerItem.UpvoteCount = answer.VoteCount
 			acceptedAnswerItem.URL = fmt.Sprintf("%s/%s", siteInfo.Canonical, answer.ID)
 			acceptedAnswerItem.Author.Type = "Person"
@@ -451,7 +455,7 @@ func (tc *TemplateController) QuestionInfo(ctx *gin.Context) {
 			item := &schema.SuggestedAnswerItem{}
 			item.Type = "Answer"
 			item.Text = answer.HTML
-			item.DateCreated = time.Unix(answer.CreateTime, 0)
+			item.DateCreated = time.Unix(answer.CreateTime, 0).In(siteLoc)
 			item.UpvoteCount = answer.VoteCount
 			item.URL = fmt.Sprintf("%s/%s", siteInfo.Canonical, answer.ID)
 			item.Author.Type = "Person"

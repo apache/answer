@@ -1545,7 +1545,7 @@ ui:
       title: Porady dotyczące wyszukiwania zaawansowanego
       tag: "<1>[tag]</1> search with a tag"
       user: "<1>user:username</1> wyszukiwanie według autora"
-      answer: "<1> answers:0 </1> pytania bez odpowiedzi"
+      answer: "<1>answers:0</1> pytania bez odpowiedzi"
       score: "<1>score:3</1> posty z oceną 3+"
       question: "<1>is:question</1> wyszukiwanie pytań"
       is_answer: "<1>is:answer</1> wyszukiwanie odpowiedzi"
