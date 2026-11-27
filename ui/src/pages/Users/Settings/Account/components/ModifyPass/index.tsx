@@ -30,6 +30,29 @@ import { modifyPassword } from '@/services';
 import { handleFormError, scrollToElementTop } from '@/utils';
 import { loggedUserInfoStore } from '@/stores';
 
+const initialFormData = (): FormDataType => ({
+  old_pass: {
+    value: '',
+    isInvalid: false,
+    errorMsg: '',
+  },
+  pass: {
+    value: '',
+    isInvalid: false,
+    errorMsg: '',
+  },
+  pass2: {
+    value: '',
+    isInvalid: false,
+    errorMsg: '',
+  },
+  revoke_personal_access_tokens: {
+    value: false,
+    isInvalid: false,
+    errorMsg: '',
+  },
+});
+
 const Index: FC = () => {
   const { t } = useTranslation('translation', {
     keyPrefix: 'settings.account',
@@ -37,33 +60,13 @@ const Index: FC = () => {
   const { user } = loggedUserInfoStore();
   const [showForm, setFormState] = useState(false);
   const toast = useToast();
-  const [formData, setFormData] = useState<FormDataType>({
-    old_pass: {
-      value: '',
-      isInvalid: false,
-      errorMsg: '',
-    },
-    pass: {
-      value: '',
-      isInvalid: false,
-      errorMsg: '',
-    },
-    pass2: {
-      value: '',
-      isInvalid: false,
-      errorMsg: '',
-    },
-    revoke_personal_access_tokens: {
-      value: false,
-      isInvalid: false,
-      errorMsg: '',
-    },
-  });
+  const [formData, setFormData] = useState<FormDataType>(initialFormData);
 
   const infoCaptcha = useCaptchaPlugin('edit_userinfo');
 
-  const handleFormState = () => {
-    setFormState((pre) => !pre);
+  const closeForm = () => {
+    setFormData(initialFormData());
+    setFormState(false);
   };
 
   const handleChange = (params: FormDataType) => {
@@ -162,7 +165,7 @@ const Index: FC = () => {
           msg: t('update_password', { keyPrefix: 'toast' }),
           variant: 'success',
         });
-        handleFormState();
+        closeForm();
       })
       .catch((err) => {
         if (err.isError) {
@@ -286,7 +289,7 @@ const Index: FC = () => {
               {t('save', { keyPrefix: 'btns' })}
             </Button>
 
-            <Button variant="link" onClick={() => handleFormState()}>
+            <Button variant="link" onClick={closeForm}>
               {t('cancel', { keyPrefix: 'btns' })}
             </Button>
           </div>
@@ -298,9 +301,7 @@ const Index: FC = () => {
           <Button
             variant="outline-secondary"
             type="submit"
-            onClick={() => {
-              handleFormState();
-            }}>
+            onClick={() => setFormState(true)}>
             {t('change_pass_btn')}
           </Button>
         </>

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Badge, Button, Form, Modal, Table } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
@@ -52,6 +52,9 @@ const scopeGroups: Array<{
   },
 ];
 
+const isRevocable = (status: string) =>
+  status === 'active' || status === 'temporarily_unavailable';
+
 const PersonalAccessTokens = () => {
   const { t } = useTranslation('translation', {
     keyPrefix: 'settings.personal_access_tokens',
@@ -60,7 +63,12 @@ const PersonalAccessTokens = () => {
   const security = siteSecurityStore();
   const user = loggedUserInfoStore((state) => state.user);
   const reauthenticationCaptcha = useCaptchaPlugin('edit_userinfo');
-  const { data = [], mutate } = usePersonalAccessTokens();
+  const {
+    data,
+    mutate,
+    isLoading,
+    error: loadError,
+  } = usePersonalAccessTokens();
   const [showCreate, setShowCreate] = useState(false);
   const [showSecret, setShowSecret] = useState(false);
   const [showReauthenticate, setShowReauthenticate] = useState(false);
@@ -73,8 +81,15 @@ const PersonalAccessTokens = () => {
   const [showInactive, setShowInactive] = useState(false);
   const [createdToken, setCreatedToken] = useState('');
   const [password, setPassword] = useState('');
-  const [pendingCreate, setPendingCreate] =
-    useState<Type.CreatePersonalAccessTokenParams>();
+  const pendingCreate = useRef<Type.CreatePersonalAccessTokenParams>();
+  const submitting = useRef(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const refreshTokens = () => {
+    void mutate().catch(() => {
+      // SWR exposes refresh failures to the list's retryable error state.
+    });
+  };
 
   const canCreate = useMemo(
     () =>
@@ -86,7 +101,9 @@ const PersonalAccessTokens = () => {
 
   const visibleTokens = useMemo(
     () =>
-      showInactive ? data : data.filter((item) => item.status === 'active'),
+      showInactive
+        ? (data ?? [])
+        : (data ?? []).filter((item) => isRevocable(item.status)),
     [data, showInactive],
   );
 
@@ -103,16 +120,16 @@ const PersonalAccessTokens = () => {
       .then((result) => {
         setCreatedToken(result.token);
         setShowSecret(true);
-        setPendingCreate(undefined);
+        pendingCreate.current = undefined;
         resetCreate();
-        mutate();
+        refreshTokens();
       })
       .catch((error) => {
         if (
           error?.reason ===
           'error.personal_access_token.reauthentication_required'
         ) {
-          setPendingCreate(params);
+          pendingCreate.current = params;
           setShowReauthenticate(true);
           return;
         }
@@ -122,7 +139,25 @@ const PersonalAccessTokens = () => {
         });
       });
 
-  const createToken = () => {
+  const dismissCreate = () => {
+    if (submitting.current) return;
+    pendingCreate.current = undefined;
+    setPassword('');
+    resetCreate();
+  };
+
+  const dismissReauthentication = () => {
+    if (submitting.current) return;
+    pendingCreate.current = undefined;
+    setPassword('');
+    setShowReauthenticate(false);
+    void reauthenticationCaptcha?.close();
+  };
+
+  const createToken = async () => {
+    if (submitting.current || !canCreate) return;
+    submitting.current = true;
+    setIsSubmitting(true);
     const params: Type.CreatePersonalAccessTokenParams = {
       name: name.trim(),
       scopes: selectedScopes,
@@ -131,45 +166,58 @@ const PersonalAccessTokens = () => {
           ? dayjs(customExpiration).startOf('day').unix()
           : dayjs().add(Number(expirationDays), 'day').unix(),
     };
-    finishCreate(params);
+    try {
+      await finishCreate(params);
+    } finally {
+      submitting.current = false;
+      setIsSubmitting(false);
+    }
   };
 
-  const confirmReauthentication = () => {
-    if (!pendingCreate || !password) {
-      return;
-    }
+  const confirmReauthentication = async () => {
+    const createParams = pendingCreate.current;
+    if (submitting.current || !createParams || !password) return;
+    submitting.current = true;
+    setIsSubmitting(true);
     const params: {
       password: string;
       captcha_id?: string;
       captcha_code?: string;
-    } = {
-      password,
-    };
-    reauthenticationCaptcha?.resolveCaptchaReq(params);
-    reauthenticate(params)
-      .then(async () => {
-        await reauthenticationCaptcha?.close();
-        setPassword('');
-        setShowReauthenticate(false);
-        finishCreate(pendingCreate);
-      })
-      .catch((error) => {
-        if (error?.isError) {
-          reauthenticationCaptcha?.handleCaptchaError(error.list);
-        }
-        toast.onShow({
-          msg: error?.msg || t('reauthenticate_failed'),
-          variant: 'danger',
-        });
+    } = { password };
+    try {
+      reauthenticationCaptcha?.resolveCaptchaReq(params);
+      await reauthenticate(params);
+      await reauthenticationCaptcha?.close();
+      setPassword('');
+      setShowReauthenticate(false);
+      await finishCreate(createParams);
+    } catch (failure: any) {
+      if (failure?.isError) {
+        reauthenticationCaptcha?.handleCaptchaError(failure.list);
+      }
+      toast.onShow({
+        msg: failure?.msg || t('reauthenticate_failed'),
+        variant: 'danger',
       });
+    } finally {
+      submitting.current = false;
+      setIsSubmitting(false);
+    }
   };
 
   const handleReauthentication = () => {
+    const createParams = pendingCreate.current;
+    if (submitting.current || !createParams || !password) return;
+    const confirm = () => {
+      if (pendingCreate.current === createParams) {
+        void confirmReauthentication();
+      }
+    };
     if (!reauthenticationCaptcha) {
-      confirmReauthentication();
+      confirm();
       return;
     }
-    reauthenticationCaptcha.check(confirmReauthentication);
+    reauthenticationCaptcha.check(confirm);
   };
 
   const toggleScope = (scope: Type.PersonalAccessTokenScope) => {
@@ -184,7 +232,7 @@ const PersonalAccessTokens = () => {
     if (!window.confirm(t('revoke_confirm'))) {
       return;
     }
-    revokePersonalAccessToken(id).then(() => mutate());
+    revokePersonalAccessToken(id).then(refreshTokens);
   };
 
   return (
@@ -195,7 +243,11 @@ const PersonalAccessTokens = () => {
         <div className="alert alert-warning">{t('disabled')}</div>
       )}
       {security.personal_access_tokens_enabled && (
-        <Button size="sm" className="mb-3" onClick={() => setShowCreate(true)}>
+        <Button
+          size="sm"
+          className="mb-3"
+          disabled={isSubmitting || showSecret || showReauthenticate}
+          onClick={() => setShowCreate(true)}>
           {t('create')}
         </Button>
       )}
@@ -207,48 +259,65 @@ const PersonalAccessTokens = () => {
         checked={showInactive}
         onChange={(event) => setShowInactive(event.target.checked)}
       />
-      <Table responsive>
-        <thead>
-          <tr>
-            <th>{t('name')}</th>
-            <th>{t('token')}</th>
-            <th>{t('scopes')}</th>
-            <th>{t('expires')}</th>
-            <th>{t('status')}</th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          {visibleTokens.map((item) => (
-            <tr key={item.id}>
-              <td>{item.name}</td>
-              <td>answer_pat_••••{item.token_suffix}</td>
-              <td>
-                {item.scopes.map((scope) => t(`scope.${scope}`)).join(', ')}
-              </td>
-              <td>{dayjs.unix(item.expires_at).format('YYYY-MM-DD')}</td>
-              <td>
-                <Badge bg={item.status === 'active' ? 'success' : 'secondary'}>
-                  {t(`token_status.${item.status}`)}
-                </Badge>
-              </td>
-              <td className="text-end">
-                {item.status === 'active' && (
-                  <Button
-                    variant="link"
-                    size="sm"
-                    onClick={() => revoke(item.id)}>
-                    {t('revoke')}
-                  </Button>
-                )}
-              </td>
+      {loadError ? (
+        <div role="alert" className="alert alert-danger">
+          {t('load_failed')}
+          <Button variant="link" onClick={refreshTokens}>
+            {t('retry')}
+          </Button>
+        </div>
+      ) : isLoading || data === undefined ? (
+        <div role="status">{t('loading')}</div>
+      ) : (
+        <Table responsive>
+          <thead>
+            <tr>
+              <th>{t('name')}</th>
+              <th>{t('token')}</th>
+              <th>{t('scopes')}</th>
+              <th>{t('expires')}</th>
+              <th>{t('status')}</th>
+              <th />
             </tr>
-          ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {visibleTokens.length === 0 && (
+              <tr>
+                <td colSpan={6}>{t('empty')}</td>
+              </tr>
+            )}
+            {visibleTokens.map((item) => (
+              <tr key={item.id}>
+                <td>{item.name}</td>
+                <td>answer_pat_••••{item.token_suffix}</td>
+                <td>
+                  {item.scopes.map((scope) => t(`scope.${scope}`)).join(', ')}
+                </td>
+                <td>{dayjs.unix(item.expires_at).format('YYYY-MM-DD')}</td>
+                <td>
+                  <Badge
+                    bg={item.status === 'active' ? 'success' : 'secondary'}>
+                    {t(`token_status.${item.status}`)}
+                  </Badge>
+                </td>
+                <td className="text-end">
+                  {isRevocable(item.status) && (
+                    <Button
+                      variant="link"
+                      size="sm"
+                      onClick={() => revoke(item.id)}>
+                      {t('revoke')}
+                    </Button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      )}
 
-      <Modal show={showCreate} onHide={resetCreate}>
-        <Modal.Header closeButton>
+      <Modal show={showCreate} onHide={dismissCreate}>
+        <Modal.Header closeButton={!isSubmitting}>
           <Modal.Title>{t('create')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -304,10 +373,15 @@ const PersonalAccessTokens = () => {
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="link" onClick={resetCreate}>
+          <Button
+            variant="link"
+            disabled={isSubmitting}
+            onClick={dismissCreate}>
             {t('cancel', { keyPrefix: 'btns' })}
           </Button>
-          <Button disabled={!canCreate} onClick={createToken}>
+          <Button
+            disabled={!canCreate || isSubmitting || showReauthenticate}
+            onClick={createToken}>
             {t('create')}
           </Button>
         </Modal.Footer>
@@ -328,10 +402,8 @@ const PersonalAccessTokens = () => {
         </Modal.Footer>
       </Modal>
 
-      <Modal
-        show={showReauthenticate}
-        onHide={() => setShowReauthenticate(false)}>
-        <Modal.Header closeButton>
+      <Modal show={showReauthenticate} onHide={dismissReauthentication}>
+        <Modal.Header closeButton={!isSubmitting}>
           <Modal.Title>{t('reauthenticate')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -348,7 +420,9 @@ const PersonalAccessTokens = () => {
         </Modal.Body>
         {user.have_password && (
           <Modal.Footer>
-            <Button disabled={!password} onClick={handleReauthentication}>
+            <Button
+              disabled={!password || isSubmitting}
+              onClick={handleReauthentication}>
               {t('continue')}
             </Button>
           </Modal.Footer>

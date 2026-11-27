@@ -1422,6 +1422,10 @@ ui:
       disabled: Personal access tokens are disabled by an administrator. Existing tokens cannot authenticate, but you can still revoke them.
       create: Create token
       create_failed: Failed to create the personal access token.
+      loading: Loading personal access tokens…
+      load_failed: Failed to load personal access tokens.
+      retry: Retry
+      empty: No personal access tokens to show.
       name: Name
       token: Token
       scopes: Scopes
