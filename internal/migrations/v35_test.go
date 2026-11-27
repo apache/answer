@@ -20,89 +20,82 @@
 package migrations
 
 import (
-	"encoding/json"
+	"context"
 	"testing"
 
+	"github.com/apache/answer/internal/base/constant"
+	"github.com/apache/answer/internal/entity"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"xorm.io/xorm"
 )
 
-func providerHosts(t *testing.T, value string) map[string]string {
-	t.Helper()
-	providers := []map[string]any{}
-	require.NoError(t, json.Unmarshal([]byte(value), &providers))
-	hosts := make(map[string]string)
-	for _, p := range providers {
-		name, _ := p["name"].(string)
-		host, _ := p["default_api_host"].(string)
-		hosts[name] = host
-	}
-	return hosts
-}
-
-func TestFixGeminiProviderList(t *testing.T) {
-	legacy := []map[string]any{
-		{"name": "openai", "display_name": "OpenAI", "default_api_host": "https://api.openai.com"},
-		{"name": "gemini", "display_name": "Gemini", "default_api_host": legacyGeminiAPIHost},
-		{"name": "anthropic", "display_name": "Anthropic", "default_api_host": "https://api.anthropic.com"},
-	}
-	assert.True(t, fixGeminiProviderList(legacy))
-	data, err := json.Marshal(legacy)
+func TestRepairAdvancedSiteInfoAddsMissingSettings(t *testing.T) {
+	x, err := xorm.NewEngine("sqlite", ":memory:")
 	require.NoError(t, err)
-	hosts := providerHosts(t, string(data))
-	assert.Equal(t, geminiAPIHost, hosts["gemini"])
-	assert.Equal(t, "https://api.openai.com", hosts["openai"])
-	assert.Equal(t, "https://api.anthropic.com", hosts["anthropic"])
-}
+	defer func() {
+		_ = x.Close()
+	}()
+	require.NoError(t, x.Sync(new(entity.SiteInfo)))
 
-func TestFixGeminiProviderListKeepsCustomizedHost(t *testing.T) {
-	custom := []map[string]any{
-		{"name": "gemini", "display_name": "Gemini", "default_api_host": "https://gemini.example.com/proxy"},
-	}
-	assert.False(t, fixGeminiProviderList(custom))
-	assert.Equal(t, "https://gemini.example.com/proxy", custom[0]["default_api_host"])
-}
-
-func TestFixGeminiProviderListSkipsUpToDate(t *testing.T) {
-	upToDate := []map[string]any{
-		{"name": "gemini", "display_name": "Gemini", "default_api_host": geminiAPIHost},
-	}
-	assert.False(t, fixGeminiProviderList(upToDate))
-}
-
-func TestFixGeminiSiteAIContent(t *testing.T) {
-	legacyContent := `{"enabled":true,"chosen_provider":"gemini","ai_providers":[` +
-		`{"provider":"openai","api_host":"https://api.openai.com"},` +
-		`{"provider":"gemini","api_host":"https://generativelanguage.googleapis.com","api_key":"k*"}],` +
-		`"prompt_config":{"zh_cn":"z","en_us":"e"}}`
-	updated, changed, err := fixGeminiSiteAIContent(legacyContent)
+	_, err = x.Insert(&entity.SiteInfo{
+		Type:    constant.SiteTypeWrite,
+		Content: `{"max_image_size":5}`,
+		Status:  1,
+	})
 	require.NoError(t, err)
-	assert.True(t, changed)
 
-	parsed := struct {
-		ChosenProvider string `json:"chosen_provider"`
-		AIProviders    []struct {
-			Provider string `json:"provider"`
-			APIHost  string `json:"api_host"`
-		} `json:"ai_providers"`
-	}{}
-	require.NoError(t, json.Unmarshal([]byte(updated), &parsed))
-	assert.Equal(t, "gemini", parsed.ChosenProvider)
-	require.Len(t, parsed.AIProviders, 2)
-	assert.Equal(t, "https://api.openai.com", parsed.AIProviders[0].APIHost)
-	assert.Equal(t, geminiAPIHost, parsed.AIProviders[1].APIHost)
-}
+	var repairMigration Migration
+	for _, m := range GetMigrations() {
+		if m.Version() == "v2.0.4" {
+			repairMigration = m
+			break
+		}
+	}
+	require.NotNil(t, repairMigration)
+	require.NoError(t, repairMigration.Migrate(context.Background(), x))
 
-func TestFixGeminiSiteAIContentKeepsCustomizedHost(t *testing.T) {
-	customContent := `{"enabled":true,"chosen_provider":"gemini","ai_providers":[` +
-		`{"provider":"gemini","api_host":"https://gemini.example.com/proxy"}]}`
-	_, changed, err := fixGeminiSiteAIContent(customContent)
+	advanced := &entity.SiteInfo{}
+	exists, err := x.Where("type = ?", constant.SiteTypeAdvanced).Get(advanced)
 	require.NoError(t, err)
-	assert.False(t, changed)
+	require.True(t, exists)
+	assert.JSONEq(t, `{
+		"max_image_size": 5,
+		"max_attachment_size": 0,
+		"max_image_megapixel": 0,
+		"authorized_image_extensions": null,
+		"authorized_attachment_extensions": null
+	}`, advanced.Content)
 }
 
-func TestFixGeminiSiteAIContentInvalidJSON(t *testing.T) {
-	_, changed, err := fixGeminiSiteAIContent("not json")
-	assert.Error(t, err)
-	assert.False(t, changed)
+func TestRepairAdvancedSiteInfoPreservesExistingSettings(t *testing.T) {
+	x, err := xorm.NewEngine("sqlite", ":memory:")
+	require.NoError(t, err)
+	defer func() {
+		_ = x.Close()
+	}()
+	require.NoError(t, x.Sync(new(entity.SiteInfo)))
+
+	const existingContent = `{"max_image_size":99}`
+	_, err = x.Insert(
+		&entity.SiteInfo{
+			Type:    constant.SiteTypeWrite,
+			Content: `{invalid`,
+			Status:  1,
+		},
+		&entity.SiteInfo{
+			Type:    constant.SiteTypeAdvanced,
+			Content: existingContent,
+			Status:  1,
+		},
+	)
+	require.NoError(t, err)
+
+	require.NoError(t, repairAdvancedSiteInfo(context.Background(), x))
+
+	advanced := &entity.SiteInfo{}
+	exists, err := x.Where("type = ?", constant.SiteTypeAdvanced).Get(advanced)
+	require.NoError(t, err)
+	require.True(t, exists)
+	assert.JSONEq(t, existingContent, advanced.Content)
 }

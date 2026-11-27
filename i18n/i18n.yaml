@@ -43,7 +43,7 @@ language_options:
     progress: 96
   - label: "Русский"
     value: "ru_RU"
-    progress: 80
+    progress: 100
   - label: "简体中文"
     value: "zh_CN"
     progress: 100

@@ -110,7 +110,8 @@ var migrations = []Migration{
 	NewMigration("v2.0.1", "change avatar type to text", updateAvatarType, false),
 	NewMigration("v2.0.2", "add reasoning content to ai conversation record", addAIConversationReasoningContent, false),
 	NewMigration("v2.0.3", "add require email verification login setting", addRequireEmailVerification, true),
-	NewMigration("v2.0.4", "update unchanged legacy gemini api host", fixGeminiDefaultAPIHost, true),
+	NewMigration("v2.0.4", "repair missing advanced site settings", repairAdvancedSiteInfo, true),
+	NewMigration("v2.0.5", "update unchanged legacy gemini api host", fixGeminiDefaultAPIHost, true),
 }
 
 func GetMigrations() []Migration {

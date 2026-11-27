@@ -514,13 +514,13 @@ type PersonalCollectionPageReq struct {
 }
 
 type GetQuestionLinkReq struct {
-	Page       int    `validate:"omitempty,min=1" form:"page"`
-	PageSize   int    `validate:"omitempty,min=1,max=100" form:"page_size"`
-	QuestionID string `validate:"required" form:"question_id"`
-	OrderCond  string `validate:"omitempty,oneof=newest active hot score unanswered recommend frequent" form:"order"`
-	InDays     int    `validate:"omitempty,min=1" form:"in_days"`
-
-	LoginUserID string `json:"-"`
+	Page             int    `validate:"omitempty,min=1" form:"page"`
+	PageSize         int    `validate:"omitempty,min=1,max=100" form:"page_size"`
+	QuestionID       string `validate:"required" form:"question_id"`
+	OrderCond        string `validate:"omitempty,oneof=newest active hot score unanswered recommend frequent" form:"order"`
+	InDays           int    `validate:"omitempty,min=1" form:"in_days"`
+	LoginUserID      string `json:"-"`
+	IsAdminModerator bool   `json:"-"`
 }
 
 type GetQuestionLinkResp struct {

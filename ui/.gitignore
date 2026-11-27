@@ -10,10 +10,8 @@ node_modules
 
 # production
 
-/build/*/*/*
-/build/*.json
-/build/*.html
-/build/*.txt
+/build/*
+!/build/favicon.ico
 
 # misc
 .DS_Store

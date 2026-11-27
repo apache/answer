@@ -274,7 +274,7 @@ func initApplication(debug bool, serverConf *conf.Server, dbConf *data.Database,
 	permissionController := controller.NewPermissionController(rankService)
 	userPluginController := controller.NewUserPluginController(pluginCommonService)
 	reviewController := controller.NewReviewController(reviewService, rankService, captchaService)
-	metaService := meta2.NewMetaService(metaCommonService, userCommon, answerRepo, questionRepo, eventqueueService)
+	metaService := meta2.NewMetaService(metaCommonService, userCommon, answerRepo, questionRepo, objService, eventqueueService)
 	metaController := controller.NewMetaController(metaService)
 	badgeGroupRepo := badge_group.NewBadgeGroupRepo(dataData, uniqueIDRepo)
 	eventRuleRepo := badge.NewEventRuleRepo(dataData)

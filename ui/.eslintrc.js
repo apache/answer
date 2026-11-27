@@ -24,7 +24,6 @@ module.exports = {
     es2021: true,
   },
   extends: [
-    'react-app/jest',
     'plugin:react/recommended',
     'airbnb',
     'airbnb-typescript',

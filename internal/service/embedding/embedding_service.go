@@ -35,6 +35,12 @@ func NewEmbeddingService() *EmbeddingService {
 	return &EmbeddingService{}
 }
 
+// Available reports whether a VectorSearch plugin is currently enabled, so
+// callers can hide semantic search capabilities instead of failing at call time.
+func (s *EmbeddingService) Available() bool {
+	return plugin.IsVectorSearchEnabled()
+}
+
 // SearchSimilar delegates to the VectorSearch plugin.
 // Returns an error if no plugin is enabled.
 func (s *EmbeddingService) SearchSimilar(ctx context.Context, query string, topK int) ([]plugin.VectorSearchResult, error) {

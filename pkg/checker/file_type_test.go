@@ -17,14 +17,20 @@
  * under the License.
  */
 
-import React from 'react';
+package checker
 
-import { render, screen } from '@testing-library/react';
+import (
+	"os"
+	"path/filepath"
+	"testing"
+)
 
-import App from './App';
-
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
-});
+func TestDecodeAndCheckImageFileRejectsUnsupportedExtension(t *testing.T) {
+	filePath := filepath.Join(t.TempDir(), "not-an-image.svg")
+	if err := os.WriteFile(filePath, []byte("<svg></svg>"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if DecodeAndCheckImageFile(filePath, 1_000_000) {
+		t.Fatal("unsupported image extensions must be rejected")
+	}
+}

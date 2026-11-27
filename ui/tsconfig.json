@@ -33,7 +33,6 @@
   },
   "include": [
     "src",
-    "node_modules/@testing-library/jest-dom",
     "scripts"
   ],
   "exclude": [

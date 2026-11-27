@@ -140,7 +140,7 @@ backend:
   pass:
     other: Пароль
   old_pass:
-    other: Current password
+    other: Текущий пароль
   original_text:
     other: Это сообщение
   email_or_password_wrong_error:
@@ -182,7 +182,7 @@ backend:
       cannot_edit_after_deadline:
         other: Невозможно редактировать комментарий из-за того, что он был создан слишком давно.
       content_cannot_empty:
-        other: Comment content cannot be empty.
+        other: Содержимое комментария не может быть пустым.
     email:
       duplicate:
         other: Адрес электронной почты уже существует.
@@ -233,9 +233,9 @@ backend:
       cannot_update:
         other: Нет разрешения на обновление.
       content_cannot_empty:
-        other: .
+        other: Содержимое не может быть пустым
       content_less_than_minimum:
-        other: Not enough content entered.
+        other: Введено недостаточно содержимого.
     rank:
       fail_to_meet_the_condition:
         other: Ранг репутации не соответствует условию.
@@ -266,7 +266,7 @@ backend:
       cannot_set_synonym_as_itself:
         other: Вы не можете установить синоним текущего тега.
       minimum_count:
-        other: Not enough tags were entered.
+        other: Введено недостаточно тегов.
     smtp:
       config_from_name_cannot_be_email:
         other: Поле отправителя не может содержать email адрес.
@@ -311,13 +311,13 @@ backend:
       add_bulk_users_amount_error:
         other: "Количество пользователей, которое Вы добавляете, должно быть в промежутке от 1 до {{.MaxAmount}}."
       status_suspended_forever:
-        other: "<strong>This user was suspended forever.</strong> This user doesn't meet a community guideline."
+        other: "<strong>Этот пользователь заблокирован навсегда.</strong> Этот пользователь не соответствует правилам сообщества."
       status_suspended_until:
-        other: "<strong>This user was suspended until {{.SuspendedUntil}}.</strong> This user doesn't meet a community guideline."
+        other: "<strong>Этот пользователь заблокирован до {{.SuspendedUntil}}.</strong> Этот пользователь не соответствует правилам сообщества."
       status_deleted:
-        other: "This user was deleted."
+        other: "Этот пользователь удален."
       status_inactive:
-        other: "This user is inactive."
+        other: "Этот пользователь неактивен."
     config:
       read_config_failed:
         other: Не удалось прочитать конфигурацию
@@ -506,7 +506,7 @@ backend:
       title:
         other: "[{{.SiteName}}] Новый вопрос: {{.QuestionTitle}}"
       body:
-        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nNote: This is an automatic system email, please do not reply to this message as your response will not be seen.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Unsubscribe</a></small>"
+        other: "<a href='{{.QuestionUrl}}'>{{.QuestionTitle}}</a><br>\n<small>{{.Tags}}</small><br><br>\n\n--<br>\nПримечание: Данное сообщение является автоматическим, отвечать на него не нужно.<br><br>\n\n<small><a href='{{.UnsubscribeUrl}}'>Отписаться</a></small>"
     pass_reset:
       title:
         other: "[{{.SiteName }}] Пароль сброшен"
@@ -576,37 +576,37 @@ backend:
           other: Впервые добавить голос в сообщении.
       first_link:
         name:
-          other: First Link
+          other: Первая ссылка
         desc:
-          other: First added a link to another post.
+          other: Впервые добавил ссылку на другой пост.
       first_reaction:
         name:
-          other: First Reaction
+          other: Первая реакция
         desc:
-          other: First reacted to the post.
+          other: Впервые отреагировал на пост.
       first_share:
         name:
-          other: First Share
+          other: Первый репост
         desc:
-          other: First shared a post.
+          other: Впервые поделился постом.
       scholar:
         name:
-          other: Scholar
+          other: Ученик
         desc:
-          other: Asked a question and accepted an answer.
+          other: Задал вопрос и принял ответ.
       commentator:
         name:
-          other: Commentator
+          other: Комментатор
         desc:
           other: Оставить 5 комментариев.
       new_user_of_the_month:
         name:
-          other: New User of the Month
+          other: Новичок месяца
         desc:
-          other: Outstanding contributions in their first month.
+          other: Выдающийся вклад в первый месяц.
       read_guidelines:
         name:
-          other: Read Guidelines
+          other: Прочитал правила
         desc:
           other: Прочтите [правила сообщества].
       reader:
@@ -623,193 +623,193 @@ backend:
         name:
           other: Неплохо поделился
         desc:
-          other: Shared a post with 25 unique visitors.
+          other: Поделился постом с 25 уникальными посетителями.
       good_share:
         name:
-          other: Good Share
+          other: Хороший репост
         desc:
-          other: Shared a post with 300 unique visitors.
+          other: Поделился постом с 300 уникальными посетителями.
       great_share:
         name:
-          other: Great Share
+          other: Отличный репост
         desc:
-          other: Shared a post with 1000 unique visitors.
+          other: Поделился постом с 1000 уникальными посетителями.
       out_of_love:
         name:
-          other: Out of Love
+          other: От любви
         desc:
-          other: Used 50 up votes in a day.
+          other: Поставил 50 голосов «за» за день.
       higher_love:
         name:
-          other: Higher Love
+          other: Большая любовь
         desc:
-          other: Used 50 up votes in a day 5 times.
+          other: Поставил 50 голосов «за» за день 5 раз.
       crazy_in_love:
         name:
-          other: Crazy in Love
+          other: Без ума от любви
         desc:
-          other: Used 50 up votes in a day 20 times.
+          other: Поставил 50 голосов «за» за день 20 раз.
       promoter:
         name:
-          other: Promoter
+          other: Промоутер
         desc:
-          other: Invited a user.
+          other: Пригласил пользователя.
       campaigner:
         name:
-          other: Campaigner
+          other: Агитатор
         desc:
-          other: Invited 3 basic users.
+          other: Пригласил 3 базовых пользователей.
       champion:
         name:
-          other: Champion
+          other: Чемпион
         desc:
-          other: Invited 5 members.
+          other: Пригласил 5 участников.
       thank_you:
         name:
           other: Спасибо
         desc:
-          other: Has 20 up voted posts and gave 10 up votes.
+          other: Имеет 20 постов с голосами «за» и отдал 10 голосов «за».
       gives_back:
         name:
-          other: Gives Back
+          other: Отдает взамен
         desc:
-          other: Has 100 up voted posts and gave 100 up votes.
+          other: Имеет 100 постов с голосами «за» и отдал 100 голосов «за».
       empathetic:
         name:
-          other: Empathetic
+          other: Чуткий
         desc:
-          other: Has 500 up voted posts and gave 1000 up votes.
+          other: Имеет 500 постов с голосами «за» и отдал 1000 голосов «за».
       enthusiast:
         name:
-          other: Enthusiast
+          other: Энтузиаст
         desc:
-          other: Visited 10 consecutive days.
+          other: Заходил 10 дней подряд.
       aficionado:
         name:
-          other: Aficionado
+          other: Поклонник
         desc:
-          other: Visited 100 consecutive days.
+          other: Заходил 100 дней подряд.
       devotee:
         name:
-          other: Devotee
+          other: Преданный
         desc:
-          other: Visited 365 consecutive days.
+          other: Заходил 365 дней подряд.
       anniversary:
         name:
-          other: Anniversary
+          other: Годовщина
         desc:
-          other: Активный участник на год, опубликовал по крайней мере один раз.
+          other: Активный участник в течение года с минимум одной публикацией.
       appreciated:
         name:
-          other: Appreciated
+          other: Оцененный
         desc:
-          other: Received 1 up vote on 20 posts.
+          other: Получил 1 голос «за» на 20 постах.
       respected:
         name:
-          other: Respected
+          other: Уважаемый
         desc:
-          other: Received 2 up votes on 100 posts.
+          other: Получил 2 голоса «за» на 100 постах.
       admired:
         name:
-          other: Admired
+          other: Признанный
         desc:
-          other: Received 5 up votes on 300 posts.
+          other: Получил 5 голосов «за» на 300 постах.
       solved:
         name:
-          other: Solved
+          other: Решено
         desc:
-          other: Have an answer be accepted.
+          other: Один из ваших ответов был принят.
       guidance_counsellor:
         name:
-          other: Guidance Counsellor
+          other: Наставник
         desc:
-          other: Have 10 answers be accepted.
+          other: Принято 10 ваших ответов.
       know_it_all:
         name:
-          other: Know-it-All
+          other: Всезнайка
         desc:
-          other: Have 50 answers be accepted.
+          other: Принято 50 ваших ответов.
       solution_institution:
         name:
-          other: Solution Institution
+          other: Кладезь решений
         desc:
-          other: Have 150 answers be accepted.
+          other: Принято 150 ваших ответов.
       nice_answer:
         name:
-          other: Nice Answer
+          other: Хороший ответ
         desc:
-          other: Answer score of 10 or more.
+          other: Рейтинг ответа 10 или более.
       good_answer:
         name:
-          other: Good Answer
+          other: Отличный ответ
         desc:
-          other: Answer score of 25 or more.
+          other: Рейтинг ответа 25 или более.
       great_answer:
         name:
-          other: Great Answer
+          other: Превосходный ответ
         desc:
-          other: Answer score of 50 or more.
+          other: Рейтинг ответа 50 или более.
       nice_question:
         name:
-          other: Nice Question
+          other: Хороший вопрос
         desc:
-          other: Question score of 10 or more.
+          other: Рейтинг вопроса 10 или более.
       good_question:
         name:
-          other: Good Question
+          other: Отличный вопрос
         desc:
-          other: Question score of 25 or more.
+          other: Рейтинг вопроса 25 или более.
       great_question:
         name:
-          other: Great Question
+          other: Превосходный вопрос
         desc:
-          other: Question score of 50 or more.
+          other: Рейтинг вопроса 50 или более.
       popular_question:
         name:
-          other: Popular Question
+          other: Популярный вопрос
         desc:
-          other: Question with 500 views.
+          other: Вопрос с 500 просмотрами.
       notable_question:
         name:
-          other: Notable Question
+          other: Заметный вопрос
         desc:
-          other: Question with 1,000 views.
+          other: Вопрос с 1000 просмотрами.
       famous_question:
         name:
-          other: Famous Question
+          other: Знаменитый вопрос
         desc:
-          other: Question with 5,000 views.
+          other: Вопрос с 5000 просмотрами.
       popular_link:
         name:
-          other: Popular Link
+          other: Популярная ссылка
         desc:
-          other: Posted an external link with 50 clicks.
+          other: Опубликовал внешнюю ссылку с 50 переходами.
       hot_link:
         name:
-          other: Hot Link
+          other: Горячая ссылка
         desc:
-          other: Posted an external link with 300 clicks.
+          other: Опубликовал внешнюю ссылку с 300 переходами.
       famous_link:
         name:
-          other: Famous Link
+          other: Знаменитая ссылка
         desc:
-          other: Posted an external link with 100 clicks.
+          other: Опубликовал внешнюю ссылку с 100 переходами.
     default_badge_groups:
       getting_started:
         name:
-          other: Getting Started
+          other: Начало работы
       community:
         name:
-          other: Community
+          other: Сообщество
       posting:
         name:
-          other: Posting
+          other: Публикации
 # The following fields are used for interface presentation(Front-end)
 ui:
   how_to_format:
     title: 'Форматирование:'
     desc: >-
-      <ul class="mb-0"><li><p class="mb-2">mention a post: <code>#post_id</code></p></li> <li><p class="mb-2">to make links</p><pre class="mb-2"><code>&lt;https://url.com&gt;<br/><br/>[Title](https://url.com)</code></pre></li><li><p class="mb-2">put returns between paragraphs</p></li><li><p class="mb-2"><em>_italic_</em> or **<strong>bold</strong>**</p></li><li><p class="mb-2">indent code by 4 spaces</p></li><li><p class="mb-2">quote by placing <code>&gt;</code> at start of line</p></li><li><p class="mb-2">backtick escapes <code>`like _this_`</code></p></li><li><p class="mb-2">create code fences with backticks <code>`</code></p><pre class="mb-0"><code>```<br/>code here<br/>```</code></pre></li></ul>
+      <ul class="mb-0"><li><p class="mb-2">упомянуть пост: <code>#post_id</code></p></li> <li><p class="mb-2">чтобы создать ссылки</p><pre class="mb-2"><code>&lt;https://url.com&gt;<br/><br/>[Заголовок](https://url.com)</code></pre></li><li><p class="mb-2">разделяйте абзацы пустыми строками</p></li><li><p class="mb-2"><em>_курсив_</em> или **<strong>жирный</strong>**</p></li><li><p class="mb-2">отступ кода в 4 пробела</p></li><li><p class="mb-2">цитата с помощью <code>&gt;</code> в начале строки</p></li><li><p class="mb-2">обратные кавычки экранируют <code>`вот _так_`</code></p></li><li><p class="mb-2">создавайте блоки кода обратными кавычками <code>`</code></p><pre class="mb-0"><code>```<br/>код здесь<br/>```</code></pre></li></ul>
   pagination:
     prev: Назад
     next: Следующий
@@ -821,7 +821,7 @@ ui:
     tag_wiki: wiki тэг
     create_tag: Создать тег
     edit_tag: Изменить тег
-    ask_a_question: Create Question
+    ask_a_question: Создать вопрос
     edit_question: Редактировать вопрос
     edit_answer: Редактировать ответ
     search: Поиск
@@ -845,17 +845,17 @@ ui:
     http_50X: Ошибка HTTP 500
     http_403: Ошибка HTTP 403
     logout: Выйти
-    posts: Posts
-    ai_assistant: AI Assistant
+    posts: Посты
+    ai_assistant: AI-ассистент
   ai_assistant:
-    description: Got a question? Ask it and get answers, perspectives, and recommendations.
-    recent_conversations: Recent Conversations
-    show_more: Show more
-    new: New chat
-    ai_generate: AI-generated from posts and may not be accurate.
-    copy: Copy
-    ask_a_follow_up: Ask a follow-up
-    ask_placeholder: Ask a question
+    description: Есть вопрос? Задайте его и получите ответы, мнения и рекомендации.
+    recent_conversations: Недавние обсуждения
+    show_more: Показать еще
+    new: Новый чат
+    ai_generate: Сгенерировано ИИ на основе постов и может быть неточным.
+    copy: Копировать
+    ask_a_follow_up: Задать уточняющий вопрос
+    ask_placeholder: Задайте вопрос
   notifications:
     title: Уведомления
     inbox: Входящие
@@ -981,8 +981,8 @@ ui:
       cell: Ячейка
     file:
       text: Прикрепить файлы
-      not_supported: "Don’t support that file type. Try again with {{file_type}}."
-      max_size: "Attach files size cannot exceed {{size}} MB."
+      not_supported: "Этот тип файла не поддерживается. Попробуйте снова с {{file_type}}."
+      max_size: "Размер прикрепляемых файлов не может превышать {{size}} МБ."
   close_modal:
     title: Я закрываю этот пост как...
     btn_cancel: Отменить
@@ -1047,20 +1047,20 @@ ui:
     delete:
       title: Удалить этот тег
       tip_with_posts: >-
-        <p>We do not allow <strong>deleting tag with posts</strong>.</p> <p>Please remove this tag from the posts first.</p>
+        <p>Мы не разрешаем <strong>удалять тег с постами</strong>.</p> <p>Сначала удалите этот тег из постов.</p>
       tip_with_synonyms: >-
-        <p>We do not allow <strong>deleting tag with synonyms</strong>.</p> <p>Please remove the synonyms from this tag first.</p>
+        <p>Мы не разрешаем <strong>удалять тег с синонимами</strong>.</p> <p>Сначала удалите синонимы у этого тега.</p>
       tip: Вы уверены, что хотите удалить?
       close: Закрыть
     merge:
-      title: Merge tag
-      source_tag_title: Source tag
-      source_tag_description: The source tag and its associated data will be remapped to the target tag.
-      target_tag_title: Target tag
-      target_tag_description: A synonym between these two tags will be created after merging.
-      no_results: No tags matched
-      btn_submit: Submit
-      btn_close: Close
+      title: Объединить тег
+      source_tag_title: Исходный тег
+      source_tag_description: Исходный тег и связанные с ним данные будут переназначены на целевой тег.
+      target_tag_title: Целевой тег
+      target_tag_description: После объединения между этими двумя тегами будет создан синоним.
+      no_results: Нет подходящих тегов
+      btn_submit: Отправить
+      btn_close: Закрыть
   edit_tag:
     title: Изменить тег
     default_reason: Правка тега
@@ -1079,17 +1079,17 @@ ui:
     day: дней
     hours: часов
     days: дней
-    month: month
-    months: months
-    year: year
+    month: месяц
+    months: месяцев
+    year: год
   reaction:
     heart: сердечко
-    smile: smile
-    frown: frown
+    smile: улыбка
+    frown: недовольство
     btn_label: добавить или удалить реакции
     undo_emoji: отменить реакцию {{ emoji }}
-    react_emoji: react with {{ emoji }}
-    unreact_emoji: unreact with {{ emoji }}
+    react_emoji: поставить реакцию {{ emoji }}
+    unreact_emoji: убрать реакцию {{ emoji }}
   comment:
     btn_add_comment: Добавить комментарий
     reply_to: Ответить на
@@ -1135,12 +1135,12 @@ ui:
     search_placeholder: Фильтр по названию тега
     no_desc: Тег не имеет описания.
     more: Подробнее
-    wiki: Wiki
+    wiki: Вики
   ask:
-    title: Create Question
+    title: Создать вопрос
     edit_title: Редактировать вопрос
     default_reason: Редактировать вопрос
-    default_first_reason: Create question
+    default_first_reason: Создать вопрос
     similar_questions: Похожие вопросы
     form:
       fields:
@@ -1148,7 +1148,7 @@ ui:
           label: Версия
         title:
           label: Заголовок
-          placeholder: What's your topic? Be specific.
+          placeholder: О чем ваш вопрос? Сформулируйте конкретно.
           msg:
             empty: Заголовок не может быть пустым.
             range: Заголовок должен быть меньше 150 символов
@@ -1157,8 +1157,8 @@ ui:
           msg:
             empty: Вопрос не может быть пустым.
           hint:
-            optional_body: Describe what the question is about.
-            minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
+            optional_body: Опишите, о чем ваш вопрос.
+            minimum_characters: "Опишите, о чем ваш вопрос, требуется минимум {{min_content_length}} символов."
         tags:
           label: Теги
           msg:
@@ -1179,9 +1179,9 @@ ui:
     add_btn: Тег
     create_btn: новый тег
     search_tag: Поиск тега
-    hint: Describe what your content is about, at least one tag is required.
-    hint_zero_tags: Describe what your content is about.
-    hint_more_than_one_tag: "Describe what your content is about, at least {{min_tags_number}} tags are required."
+    hint: Опишите, о чем ваш контент, требуется минимум один тег.
+    hint_zero_tags: Опишите, о чем ваш контент.
+    hint_more_than_one_tag: "Опишите, о чем ваш контент, требуется минимум {{min_tags_number}} тегов."
     no_result: Нет соответствующих тэгов
     tag_required_text: Обязательный тег (хотя бы один)
   header:
@@ -1200,7 +1200,7 @@ ui:
     search:
       placeholder: Поиск
   footer:
-    build_on: Powered by <1> Apache Answer </1>
+    build_on: Сделано с помощью <1> Apache Answer </1>
   upload_img:
     name: Изменить
     loading: загрузка...
@@ -1232,8 +1232,8 @@ ui:
       label: Имя пользователя
       msg:
         empty: Имя пользователя не должно быть пустым.
-        range: Name must be between 2 to 30 characters in length.
-        character: 'Must use the character set "a-z", "0-9", " - . _"'
+        range: Имя должно содержать от 2 до 30 символов.
+        character: 'Используйте набор символов "a-z", "0-9", " - . _"'
     email:
       label: Email адрес
       msg:
@@ -1305,13 +1305,13 @@ ui:
       display_name:
         label: Отображаемое имя
         msg: Отображаемое имя не может быть пустым.
-        msg_range: Display name must be 2-30 characters in length.
+        msg_range: Отображаемое имя должно содержать от 2 до 30 символов.
       username:
         label: Имя пользователя
         caption: Люди могут упоминать вас как "@username".
         msg: Имя пользователя не может быть пустым.
-        msg_range: Username must be 2-30 characters in length.
-        character: 'Must use the character set "a-z", "0-9", "- . _"'
+        msg_range: Имя пользователя должно содержать от 2 до 30 символов.
+        character: 'Используйте набор символов "a-z", "0-9", "- . _"'
       avatar:
         label: Изображение профиля
         gravatar: Gravatar
@@ -1348,7 +1348,7 @@ ui:
       change_email_info: >-
         Мы отправили электронное письмо на этот адрес. Пожалуйста, следуйте инструкциям из письма.
       email:
-        label: Email
+        label: Эл. почта
       new_email:
         label: Новый email
         msg: Новый email не может быть пустым.
@@ -1386,27 +1386,27 @@ ui:
     review: Ваша версия будет отображаться после проверки.
     sent_success: Отправлено успешно
   related_question:
-    title: Related
+    title: Похожие
     answers: ответы
   linked_question:
-    title: Linked
-    description: Posts linked to
-    no_linked_question: No contents linked from this content.
+    title: Связанные
+    description: Посты, связанные с
+    no_linked_question: Из этого контента нет ссылок на другой контент.
   invite_to_answer:
-    title: Позвать на помощь
+    title: Помощь
     desc: Выберите людей, которые, по вашему мнению, могут знать ответ.
     invite: Пригласил вас ответить
     add: Добавить пользователей
     search: Поиск людей
   question_detail:
     action: Действия
-    created: Created
+    created: Создано
     Asked: Спросил(а)
     asked: спросил(а)
     update: Изменён
-    Edited: Edited
+    Edited: Изменено
     edit: отредактировал
-    commented: commented
+    commented: прокомментировал
     Views: Просмотрен
     Follow: Подписаться
     Following: Подписки
@@ -1424,7 +1424,7 @@ ui:
       title: Ответы
       score: Оценка
       newest: Последние
-      oldest: Oldest
+      oldest: Сначала старые
       btn_accept: Принять
       btn_accepted: Принято
     write_answer:
@@ -1450,12 +1450,12 @@ ui:
       content: Вы уверены, что хотите открыть заново?
     list:
       confirm_btn: Список
-      title: List this post
-      content: Are you sure you want to list?
+      title: Добавить эту запись в список
+      content: Вы уверены, что хотите добавить в список?
     unlist:
       confirm_btn: Убрать из списка
-      title: Unlist this post
-      content: Are you sure you want to unlist?
+      title: Убрать эту запись из списка
+      content: Вы уверены, что хотите убрать из списка?
     pin:
       title: Закрепить сообщение
       content: Вы уверены, что хотите закрепить глобально? Это сообщение появится вверху всех списков сообщений.
@@ -1477,14 +1477,14 @@ ui:
     save: Сохранить
     delete: Удалить
     undelete: Отменить удаление
-    list: List
-    unlist: Unlist
-    unlisted: Unlisted
+    list: В список
+    unlist: Убрать из списка
+    unlisted: Убрано из списка
     login: Авторизоваться
     signup: Регистрация
     logout: Выйти
     verify: Подтвердить
-    create: Create
+    create: Создать
     approve: Одобрить
     reject: Отклонить
     skip: Пропустить
@@ -1508,24 +1508,24 @@ ui:
     system_setting: Настройки системы
     default: По умолчанию
     reset: Сбросить
-    tag: Tag
-    post_lowercase: post
-    filter: Filter
-    ignore: Ignore
-    submit: Submit
-    normal: Normal
-    closed: Closed
-    deleted: Deleted
-    deleted_permanently: Deleted permanently
-    pending: Pending
-    more: More
-    view: View
-    card: Card
-    compact: Compact
-    display_below: Display below
-    always_display: Always display
-    or: or
-    back_sites: Back to sites
+    tag: Тег
+    post_lowercase: запись
+    filter: Фильтр
+    ignore: Игнорировать
+    submit: Отправить
+    normal: Обычная
+    closed: Закрыта
+    deleted: Удалена
+    deleted_permanently: Удалена навсегда
+    pending: В ожидании
+    more: Еще
+    view: Вид
+    card: Карточки
+    compact: Компактный
+    display_below: Показывать ниже
+    always_display: Всегда показывать
+    or: или
+    back_sites: Вернуться к сайтам
   search:
     title: Результаты поиска
     keywords: Ключевые слова
@@ -1533,7 +1533,7 @@ ui:
     follow: Подписаться
     following: Подписка
     counts: "Результатов: {{count}}"
-    counts_loading: "... Results"
+    counts_loading: "... Результаты"
     more: Ещё
     sort_btns:
       relevance: По релевантности
@@ -1543,7 +1543,7 @@ ui:
       more: Больше
     tips:
       title: Советы по расширенному поиску
-      tag: "<1>[tag]</1> search with a tag"
+      tag: "<1>[tag]</1> поиск по тегу"
       user: "<1>user:username</1> поиск по автору"
       answer: "<1>ответов:0</1> вопросы без ответов"
       score: "<1>score:3</1> записи с рейтингом 3+"
@@ -1556,18 +1556,18 @@ ui:
     via: Поделитесь постом через...
     copied: Скопировано
     facebook: Поделиться на Facebook
-    twitter: Share to X
+    twitter: Поделиться в X
   cannot_vote_for_self: Вы не можете проголосовать за свой собственный пост.
   modal_confirm:
     title: Ошибка...
   delete_permanently:
-    title: Delete permanently
-    content: Are you sure you want to delete permanently?
+    title: Удалить навсегда
+    content: Вы уверены, что хотите удалить навсегда?
   account_result:
     success: Ваша новая учетная запись подтверждена; вы будете перенаправлены на главную страницу.
     link: Перейти на главную
-    oops: Oops!
-    invalid: The link you used no longer works.
+    oops: Упс!
+    invalid: Ссылка, которую вы использовали, больше не работает.
     confirm_new_email: Ваш адрес электронной почты был обновлен.
     confirm_new_email_invalid: >-
       Извините, эта ссылка для подтверждения больше недействительна. Возможно, ваш адрес электронной почты уже был изменен?
@@ -1585,14 +1585,14 @@ ui:
     all_questions: Все вопросы
     x_questions: "{{ count }} вопросов"
     x_answers: "{{ count }} ответов"
-    x_posts: "{{ count }} Posts"
+    x_posts: "{{ count }} записей"
     questions: Вопросы
     answers: Ответы
     newest: Последние
     active: Активные
-    hot: Hot
-    frequent: Frequent
-    recommend: Recommend
+    hot: Популярные
+    frequent: Частые
+    recommend: Рекомендованные
     score: Оценка
     unanswered: Без ответа
     modified: изменён
@@ -1611,7 +1611,7 @@ ui:
     reputation: Репутация
     comments: Комментарии
     votes: Голоса
-    badges: Badges
+    badges: Значки
     newest: Последние
     score: Оценки
     edit_profile: Редактировать профиль
@@ -1626,20 +1626,20 @@ ui:
     top_questions: Топ вопросов
     stats: Статистика
     list_empty: Сообщений не найдено.<br />Возможно, вы хотели бы выбрать другую вкладку?
-    content_empty: No posts found.
+    content_empty: Записи не найдены.
     accepted: Принято
     answered: отвеченные
     asked: спросил
     downvoted: проголосовано против
-    mod_short: MOD
+    mod_short: МОД
     mod_long: Модераторы
     x_reputation: репутация
     x_votes: полученные голоса
     x_answers: ответы
     x_questions: вопросы
-    recent_badges: Recent Badges
+    recent_badges: Недавние значки
   install:
-    title: Installation
+    title: Установка
     next: Следующий
     done: Готово
     config_yaml_error: Не удается создать файл config.yaml.
@@ -1668,22 +1668,22 @@ ui:
       placeholder: /data/answer.db
       msg: Файл базы данных не может быть пустым.
     ssl_enabled:
-      label: Enable SSL
+      label: Включить SSL
     ssl_enabled_on:
-      label: On
+      label: Да
     ssl_enabled_off:
-      label: Off
+      label: Нет
     ssl_mode:
-      label: SSL Mode
+      label: Режим SSL
     ssl_root_cert:
-      placeholder: sslrootcert file path
-      msg: Path to sslrootcert file cannot be empty
+      placeholder: путь к файлу sslrootcert
+      msg: Путь к файлу sslrootcert не может быть пустым
     ssl_cert:
-      placeholder: sslcert file path
-      msg: Path to sslcert file cannot be empty
+      placeholder: путь к файлу sslcert
+      msg: Путь к файлу sslcert не может быть пустым
     ssl_key:
-      placeholder: sslkey file path
-      msg: Path to sslkey file cannot be empty
+      placeholder: путь к файлу sslkey
+      msg: Путь к файлу sslkey не может быть пустым
     config_yaml:
       title: Создайте файл config.yaml
       label: Файл config.yaml создан.
@@ -1716,8 +1716,8 @@ ui:
     admin_name:
       label: Имя
       msg: Имя не может быть пустым.
-      character: 'Must use the character set "a-z", "0-9", " - . _"'
-      msg_max_length: Name must be between 2 to 30 characters in length.
+      character: 'Можно использовать символы из набора "a-z", "0-9", " - . _"'
+      msg_max_length: Длина имени должна составлять от 2 до 30 символов.
     admin_password:
       label: Пароль
       text: >-
@@ -1726,16 +1726,16 @@ ui:
       msg_min_length: Длина пароля должна составлять не менее 8 символов.
       msg_max_length: Длина пароля должна составлять не более 32 символов.
     admin_confirm_password:
-      label: "Confirm Password"
-      text: "Please re-enter your password to confirm."
-      msg: "Confirm password does not match."
+      label: "Подтверждение пароля"
+      text: "Пожалуйста, введите пароль повторно для подтверждения."
+      msg: "Подтверждение пароля не совпадает."
     admin_email:
-      label: Email
+      label: Эл. почта
       text: Вам понадобится этот адрес электронной почты для входа в систему.
       msg:
         empty: Адрес электронной почты не может быть пустым.
         incorrect: Недопустимый формат e-mail адреса.
-    ready_title: Your site is ready
+    ready_title: Ваш сайт готов
     ready_desc: >-
       Если вам когда-нибудь захочется изменить дополнительные настройки, посетите <1>раздел администратора</1>; найдите его в меню сайта.
     good_luck: "Получайте удовольствие и удачи!"
@@ -1768,7 +1768,7 @@ ui:
     questions: Вопросы
     answers: Ответы
     users: Пользователи
-    badges: Badges
+    badges: Значки
     flags: Отметить
     settings: Настройки
     general: Основные
@@ -1777,7 +1777,7 @@ ui:
     branding: Фирменное оформление
     legal: Правовая информация
     write: Написать
-    terms: Terms
+    terms: Условия
     tos: Пользовательское Соглашение
     privacy: Конфиденциальность
     seo: SEO
@@ -1787,18 +1787,18 @@ ui:
     privileges: Привилегии
     plugins: Плагины
     installed_plugins: Установленные плагины
-    apperance: Appearance
-    community: Community
-    advanced: Advanced
-    tags: Tags
-    rules: Rules
-    policies: Policies
-    security: Security
-    files: Files
-    apikeys: API Keys
-    intelligence: Intelligence
-    ai_assistant: AI Assistant
-    ai_settings: AI Settings
+    apperance: Внешний вид
+    community: Сообщество
+    advanced: Дополнительно
+    tags: Теги
+    rules: Правила
+    policies: Политики
+    security: Безопасность
+    files: Файлы
+    apikeys: API-ключи
+    intelligence: Интеллект
+    ai_assistant: ИИ-ассистент
+    ai_settings: Настройки ИИ
     mcp: MCP
   website_welcome: Добро пожаловать на {{site_name}}
   user_center:
@@ -1807,32 +1807,32 @@ ui:
     login_failed_email_tip: Не удалось войти в систему, пожалуйста, разрешите этому приложению получить доступ к вашей электронной почте, прежде чем повторять попытку.
   badges:
     modal:
-      title: Congratulations
-      content: You've earned a new badge.
-      close: Close
-      confirm: View badges
-    title: Badges
-    awarded: Awarded
-    earned_×: Earned ×{{ number }}
-    ×_awarded: "{{ number }} awarded"
-    can_earn_multiple: You can earn this multiple times.
-    earned: Earned
+      title: Поздравляем
+      content: Вы получили новый значок.
+      close: Закрыть
+      confirm: Посмотреть значки
+    title: Значки
+    awarded: Присвоено
+    earned_×: Получено ×{{ number }}
+    ×_awarded: "присвоено: {{ number }}"
+    can_earn_multiple: Этот значок можно получить несколько раз.
+    earned: Получено
   admin:
     admin_header:
       title: Администратор
     dashboard:
       title: Панель управления
-      welcome: Welcome to Admin!
+      welcome: Добро пожаловать в панель администратора!
       site_statistics: Статистика сайта
       questions: "Вопросы:"
-      resolved: "Resolved:"
-      unanswered: "Unanswered:"
+      resolved: "Решено:"
+      unanswered: "Без ответа:"
       answers: "Ответы:"
       comments: "Комментарии:"
       votes: "Голоса:"
       users: "Пользователи:"
       flags: "Жалобы:"
-      reviews: "Reviews:"
+      reviews: "На проверке:"
       site_health: Здоровье сайта
       version: "Версия:"
       https: "HTTPS:"
@@ -1894,21 +1894,21 @@ ui:
       btn_cancel: Отменить
       btn_submit: Отправить
     edit_profile_modal:
-      title: Edit profile
+      title: Редактировать профиль
       form:
         fields:
           display_name:
-            label: Display name
-            msg_range: Display name must be 2-30 characters in length.
+            label: Отображаемое имя
+            msg_range: Отображаемое имя должно содержать от 2 до 30 символов.
           username:
-            label: Username
-            msg_range: Username must be 2-30 characters in length.
+            label: Имя пользователя
+            msg_range: Имя пользователя должно содержать от 2 до 30 символов.
           email:
-            label: Email
-            msg_invalid: Invalid Email Address.
-      edit_success: Edited successfully
-      btn_cancel: Cancel
-      btn_submit: Submit
+            label: Электронная почта
+            msg_invalid: Неверный адрес электронной почты.
+      edit_success: Изменено успешно
+      btn_cancel: Отмена
+      btn_submit: Отправить
     user_modal:
       title: Создание новых пользователей
       form:
@@ -1920,7 +1920,7 @@ ui:
             msg: "Пожалуйста, введите адрес электронной почты пользователя, по одному на строку."
           display_name:
             label: Отображаемое имя
-            msg: Display name must be 2-30 characters in length.
+            msg: Отображаемое имя должно содержать от 2 до 30 символов.
           email:
             label: Email
             msg: Некорректный email.
@@ -1934,10 +1934,10 @@ ui:
       name: Имя
       email: Email
       reputation: Репутация
-      created_at: Created time
-      delete_at: Deleted time
-      suspend_at: Suspended time
-      suspend_until: Suspend until
+      created_at: Время создания
+      delete_at: Время удаления
+      suspend_at: Время блокировки
+      suspend_until: Заблокировать до
       status: Статус
       role: Роль
       action: Действия
@@ -1955,7 +1955,7 @@ ui:
       filter:
         placeholder: "Фильтровать по имени, user:id"
       set_new_password: Задать новый пароль
-      edit_profile: Edit profile
+      edit_profile: Редактировать профиль
       change_status: Изменить статус
       change_role: Изменить роль
       show_logs: Показать логи
@@ -1972,11 +1972,11 @@ ui:
       suspend_user:
         title: Заблокировать этого пользователя
         content: Заблокированный пользователь не сможет войти.
-        label: How long will the user be suspended for?
-        forever: Forever
+        label: На какой срок заблокировать пользователя?
+        forever: Навсегда
     questions:
       page_title: Вопросы
-      unlisted: Unlisted
+      unlisted: Скрытый из списка
       post: Публикация
       votes: Голоса
       answers: Ответы
@@ -2035,11 +2035,11 @@ ui:
         msg: Часовой пояс не может быть пустым.
         text: Выберите город в том же часовом поясе, что и вы.
       avatar:
-        label: Default avatar
-        text: For users without a custom avatar of their own.
+        label: Аватар по умолчанию
+        text: Для пользователей без собственного аватара.
       gravatar_base_url:
-        label: Gravatar base URL
-        text: URL of the Gravatar provider's API base. Ignored when empty.
+        label: Базовый URL Gravatar
+        text: URL базы API провайдера Gravatar. Игнорируется, если пусто.
     smtp:
       page_title: SMTP
       from_email:
@@ -2106,49 +2106,49 @@ ui:
         label: Условия конфиденциальности
         text: "Вы можете добавить содержание политики конфиденциальности здесь. Если у вас уже есть документ, размещенный в другом месте, укажите полный URL-адрес здесь."
       external_content_display:
-        label: External content
-        text: "Content includes images, videos, and media embedded from external websites."
-        always_display: Always display external content
-        ask_before_display: Ask before displaying external content
+        label: Внешний контент
+        text: "Контент включает изображения, видео и медиа, встроенные с внешних сайтов."
+        always_display: Всегда отображать внешний контент
+        ask_before_display: Спрашивать перед отображением внешнего контента
     write:
-      page_title: Files
+      page_title: Файлы
       min_content:
-        label: Minimum question body length
-        text: Minimum allowed question body length in characters.
+        label: Минимальная длина текста вопроса
+        text: Минимально допустимая длина текста вопроса в символах.
       restrict_answer:
-        title: Answer write
+        title: Написание ответов
         label: Каждый пользователь может написать только один ответ на каждый вопрос
-        text: "Turn off to allow users to write multiple answers to the same question, which may cause answers to be unfocused."
+        text: "Отключите, чтобы разрешить пользователям писать несколько ответов на один вопрос, что может привести к потере фокуса ответов."
       min_tags:
-        label: "Minimum tags per question"
-        text: "Minimum number of tags required in a question."
+        label: "Минимум тегов на вопрос"
+        text: "Минимальное число тегов, требуемых в вопросе."
       recommend_tags:
         label: Рекомендованные теги
-        text: "Recommend tags will show in the dropdown list by default."
+        text: "Рекомендуемые теги по умолчанию будут отображаться в выпадающем списке."
         msg:
-          contain_reserved: "recommended tags cannot contain reserved tags"
+          contain_reserved: "рекомендуемые теги не могут содержать зарезервированные теги"
       required_tag:
-        title: Set required tags
-        label: Set “Recommend tags” as required tags
+        title: Задать обязательные теги
+        label: Сделать «рекомендуемые теги» обязательными
         text: "Каждый новый вопрос должен иметь хотя бы один рекомендуемый тег."
       reserved_tags:
         label: Зарезервированные теги
-        text: "Reserved tags can only be used by moderator."
+        text: "Зарезервированные теги могут использоваться только модератором."
       image_size:
-        label: Max image size (MB)
-        text: "The maximum image upload size."
+        label: Макс. размер изображения (МБ)
+        text: "Максимальный размер загружаемого изображения."
       attachment_size:
-        label: Max attachment size (MB)
-        text: "The maximum attachment files upload size."
+        label: Макс. размер вложения (МБ)
+        text: "Максимальный размер загружаемых файлов вложений."
       image_megapixels:
-        label: Max image megapixels
-        text: "Maximum number of megapixels allowed for an image."
+        label: Макс. число мегапикселей изображения
+        text: "Максимальное число мегапикселей, допустимое для изображения."
       image_extensions:
-        label: Authorized image extensions
-        text: "A list of file extensions allowed for image display, separate with commas."
+        label: Разрешенные расширения изображений
+        text: "Список расширений файлов, разрешенных для отображения изображений, через запятую."
       attachment_extensions:
-        label: Authorized attachment extensions
-        text: "A list of file extensions allowed for upload, separate with commas. WARNING: Allowing uploads may cause security issues."
+        label: Разрешенные расширения вложений
+        text: "Список расширений файлов, разрешенных для загрузки, через запятую. ВНИМАНИЕ: разрешение загрузки может привести к проблемам с безопасностью."
     seo:
       page_title: SEO
       permalink:
@@ -2165,27 +2165,30 @@ ui:
       color_scheme:
         label: Цветовая схема
       navbar_style:
-        label: Navbar background style
+        label: Стиль фона панели навигации
       primary_color:
         label: Основной цвет
         text: Измените цвета, используемые в ваших темах
       layout:
-        label: Layout
-        full_width: Full-width
-        fixed_width: Fixed-width
+        label: Макет
+        full_width: На всю ширину
+        fixed_width: Фиксированная ширина
     css_and_html:
       page_title: CSS и HTML
       custom_css:
         label: Пользовательский CSS
-        text: >
+        text: >-
+          Это будет вставлено как &lt;link>
 
       head:
         label: Head
-        text: >
+        text: >-
+          Это будет вставлено перед &lt;/head>
 
       header:
         label: Header
-        text: >
+        text: >-
+          Это будет вставлено после &lt;body>
 
       footer:
         label: Нижняя панель
@@ -2216,7 +2219,7 @@ ui:
         text: "Предупреждение: При отключении, вы не сможете войти, если ранее не настроили другой способ входа."
     installed_plugins:
       title: Установленные плагины
-      plugin_link: Plugins extend and expand the functionality. You may find plugins in the <1>Plugin Repository</1>.
+      plugin_link: Плагины расширяют и дополняют функциональность. Вы можете найти плагины в <1>репозитории плагинов</1>.
       filter:
         all: Все
         active: Активные
@@ -2260,94 +2263,94 @@ ui:
         label: Необходимый уровень репутации
         text: Выберите количество репутации, необходимое для получения привилегий
       msg:
-        should_be_number: the input should be number
-        number_larger_1: number should be equal or larger than 1
+        should_be_number: значение должно быть числом
+        number_larger_1: число должно быть равно или больше 1
     badges:
-      action: Action
-      active: Active
-      activate: Activate
-      all: All
-      awards: Awards
-      deactivate: Deactivate
+      action: Действие
+      active: Активные
+      activate: Активировать
+      all: Все
+      awards: Награды
+      deactivate: Деактивировать
       filter:
-        placeholder: Filter by name, badge:id
-      group: Group
-      inactive: Inactive
-      name: Name
-      show_logs: Show logs
-      status: Status
-      title: Badges
+        placeholder: Фильтр по имени, badge:id
+      group: Группа
+      inactive: Неактивные
+      name: Название
+      show_logs: Показать логи
+      status: Статус
+      title: Значки
     apikeys:
-      title: API Keys
-      add_api_key: Add API Key
-      desc: Description
-      scope: Scope
-      key: Key
-      created: Created
-      last_used: Last used
+      title: API-ключи
+      add_api_key: Добавить API-ключ
+      desc: Описание
+      scope: Область действия
+      key: Ключ
+      created: Создан
+      last_used: Последнее использование
       add_or_edit_modal:
-        add_title: Add API Key
-        edit_title: Edit API Key
-        description: Description
-        description_required: Description is required.
-        scope: Scope
-        global: Global
-        read-only: Read-only
+        add_title: Добавить API-ключ
+        edit_title: Изменить API-ключ
+        description: Описание
+        description_required: Описание обязательно.
+        scope: Область действия
+        global: Глобальный
+        read-only: Только для чтения
       created_modal:
-        title: API key created
-        api_key: API key
-        description: This key will not be displayed again. Make sure you take a copy before continuing.
+        title: API-ключ создан
+        api_key: API-ключ
+        description: Этот ключ больше не будет показан. Обязательно скопируйте его, прежде чем продолжить.
       delete_modal:
-        title: Delete API Key
-        content: Any applications or scripts using this key will no longer be able to access the API. This is permanent!
+        title: Удалить API-ключ
+        content: Любые приложения или скрипты, использующие этот ключ, больше не смогут обращаться к API. Это действие необратимо!
     ai_settings:
       enabled:
-        label: AI enabled
-        check: Enable AI features
-        text: The AI model must be configured correctly before it can be used.
+        label: ИИ включен
+        check: Включить функции ИИ
+        text: Перед использованием модель ИИ должна быть корректно настроена.
       provider:
-        label: Provider
+        label: Провайдер
       api_host:
-        label: API host
-        msg: API host is required
+        label: API-хост
+        msg: API-хост обязателен
       api_key:
-        label: API key
-        check: Check
-        check_success: "Connection successful."
-        msg: API key is required
+        label: API-ключ
+        check: Проверить
+        check_success: "Подключение выполнено успешно."
+        msg: API-ключ обязателен
       model:
-        label: Model
-        msg: Model is required
-      add_success: AI settings updated successfully.
+        label: Модель
+        msg: Модель обязательна
+      add_success: Настройки ИИ успешно обновлены.
     conversations:
-      topic: Topic
-      helpful: Helpful
-      unhelpful: Unhelpful
-      created: Created
-      action: Action
-      empty: No conversations found.
+      topic: Тема
+      helpful: Полезный
+      unhelpful: Бесполезный
+      created: Создан
+      action: Действие
+      empty: Диалоги не найдены.
       delete_modal:
-        title: Delete conversation
-        content: Are you sure you want to delete this conversation? This is permanent!
-        delete_success: Conversation deleted successfully.
+        title: Удалить диалог
+        content: Вы уверены, что хотите удалить этот диалог? Это действие необратимо!
+        delete_success: Диалог успешно удален.
     mcp:
       mcp_server:
-        label: MCP server
-        switch: Enabled
+        label: MCP-сервер
+        switch: Включен
       type:
-        label: Type
+        label: Тип
       url:
         label: URL
       http_header:
-        label: HTTP header
-        text: Please replace {key} with the API Key.
+        label: HTTP-заголовок
+        text: Замените {key} на API-ключ.
   form:
     optional: (опционально)
     empty: не может быть пустым
     invalid: недействителен
     btn_submit: Сохранить
     not_found_props: "Требуемое свойство {{ key }} не найдено."
-    select: Select
+    select: Выбрать
   page_review:
     review: На проверку
     proposed: предложенный
@@ -2359,22 +2362,22 @@ ui:
     edit_answer: Редактирование ответа
     edit_tag: Редактирование тега
     empty: Нет задач для проверки.
-    approve_revision_tip: Do you approve this revision?
-    approve_flag_tip: Do you approve this flag?
-    approve_post_tip: Do you approve this post?
-    approve_user_tip: Do you approve this user?
+    approve_revision_tip: Вы одобряете эту правку?
+    approve_flag_tip: Вы одобряете эту жалобу?
+    approve_post_tip: Вы одобряете этот пост?
+    approve_user_tip: Вы одобряете этого пользователя?
     suggest_edits: Предложенные исправления
-    flag_post: Flag post
-    flag_user: Flag user
-    queued_post: Queued post
-    queued_user: Queued user
-    filter_label: Type
+    flag_post: Пожаловаться на пост
+    flag_user: Пожаловаться на пользователя
+    queued_post: Пост в очереди
+    queued_user: Пользователь в очереди
+    filter_label: Тип
     reputation: репутация
-    flag_post_type: Flagged this post as {{ type }}.
-    flag_user_type: Flagged this user as {{ type }}.
-    edit_post: Edit post
-    list_post: List post
-    unlist_post: Unlist post
+    flag_post_type: На этот пост подана жалоба как на {{ type }}.
+    flag_user_type: На этого пользователя подана жалоба как на {{ type }}.
+    edit_post: Редактировать пост
+    list_post: Показать пост в списке
+    unlist_post: Скрыть пост из списка
   timeline:
     undeleted: Восстановлен
     deleted: Удаленные
@@ -2386,21 +2389,21 @@ ui:
     rollback: откатить
     edited: отредактированный
     answered: отвеченные
-    asked: asked
+    asked: задал вопрос
     closed: закрытый
     reopened: Открыт повторно
     created: созданный
     pin: закрепленный
     unpin: незакреплённые
-    show: listed
-    hide: unlisted
-    title: "History for"
+    show: показан в списке
+    hide: скрыт из списка
+    title: "История"
     tag_title: "Хронология"
-    show_votes: "Show votes"
+    show_votes: "Показать голоса"
     n_or_a: Недоступно
     title_for_question: "Хронология"
-    title_for_answer: "Timeline for answer to {{ title }} by {{ author }}"
-    title_for_tag: "Timeline for tag"
+    title_for_answer: "Хронология ответа на {{ title }} от {{ author }}"
+    title_for_tag: "Хронология тега"
     datetime: Дата и время
     type: Тип
     by: Автор
@@ -2420,31 +2423,31 @@ ui:
     discard_confirm: Вы уверены, что хотите отказаться от своего черновика?
   messages:
     post_deleted: Этот пост был удалён.
-    post_cancel_deleted: This post has been undeleted.
+    post_cancel_deleted: Этот пост был восстановлен.
     post_pin: Этот пост был закреплен.
     post_unpin: Этот пост был откреплен.
     post_hide_list: Это сообщение было скрыто из списка.
     post_show_list: Этот пост был показан в списке.
     post_reopen: Этот пост был вновь открыт.
-    post_list: This post has been listed.
-    post_unlist: This post has been unlisted.
-    post_pending: Your post is awaiting review. This is a preview, it will be visible after it has been approved.
-    post_closed: This post has been closed.
-    answer_deleted: This answer has been deleted.
-    answer_cancel_deleted: This answer has been undeleted.
-    change_user_role: This user's role has been changed.
-    user_inactive: This user is already inactive.
-    user_normal: This user is already normal.
-    user_suspended: This user has been suspended.
-    user_deleted: This user has been deleted.
-    user_added: User has been added successfully.
-    badge_activated: This badge has been activated.
-    badge_inactivated: This badge has been inactivated.
-    users_deleted: These users have been deleted.
-    posts_deleted: These questions have been deleted.
-    answers_deleted: These answers have been deleted.
-    copy: Copy to clipboard
-    copied: Copied
-    external_content_warning: External images/media are not displayed.
+    post_list: Этот пост был показан в списке.
+    post_unlist: Этот пост был скрыт из списка.
+    post_pending: Ваш пост ожидает проверки. Это предварительный просмотр, он станет видимым после одобрения.
+    post_closed: Этот пост был закрыт.
+    answer_deleted: Этот ответ был удален.
+    answer_cancel_deleted: Этот ответ был восстановлен.
+    change_user_role: Роль этого пользователя была изменена.
+    user_inactive: Этот пользователь уже неактивен.
+    user_normal: Этот пользователь уже имеет обычный статус.
+    user_suspended: Этот пользователь был заблокирован.
+    user_deleted: Этот пользователь был удален.
+    user_added: Пользователь успешно добавлен.
+    badge_activated: Этот значок был активирован.
+    badge_inactivated: Этот значок был деактивирован.
+    users_deleted: Эти пользователи были удалены.
+    posts_deleted: Эти вопросы были удалены.
+    answers_deleted: Эти ответы были удалены.
+    copy: Копировать в буфер обмена
+    copied: Скопировано
+    external_content_warning: Внешние изображения/медиа не отображаются.
 
 

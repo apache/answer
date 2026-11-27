@@ -20,6 +20,7 @@
 package controller
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"html/template"
@@ -50,13 +51,17 @@ import (
 	"github.com/apache/answer/ui"
 	"github.com/gin-gonic/gin"
 	"github.com/segmentfault/pacman/log"
+	"golang.org/x/net/html"
 )
 
 var SiteUrl = ""
 
 type TemplateController struct {
-	scriptPath               []string
-	cssPath                  string
+	scriptPath []string
+	// cssPath lists every stylesheet the frontend build emits, in document
+	// order; a build that emits more than one entry stylesheet needs all of
+	// them, not just the first, or server-rendered pages come back unstyled.
+	cssPath                  []string
 	templateRenderController *templaterender.TemplateRenderController
 	siteInfoService          siteinfo_common.SiteInfoCommonService
 	eventQueueService        eventqueue.Service
@@ -83,24 +88,64 @@ func NewTemplateController(
 		questionService:          questionService,
 	}
 }
-func GetStyle() (script []string, css string) {
+func GetStyle() (script []string, css []string) {
 	file, err := ui.Build.ReadFile("build/index.html")
 	if err != nil {
 		return
 	}
-	scriptRegexp := regexp.MustCompile(`<script defer="defer" src="([^"]*)"></script>`)
-	scriptData := scriptRegexp.FindAllStringSubmatch(string(file), -1)
-	for _, s := range scriptData {
-		if len(s) == 2 {
-			script = append(script, s[1])
-		}
+
+	// Script and stylesheet tags are read from the parsed document, so
+	// attribute order, attribute set (module vs classic scripts), and
+	// quoting do not matter. That shape has already changed once; a
+	// bundler change that breaks it now fails the guarding test instead
+	// of silently shipping pages with no JS or CSS.
+	doc, err := html.Parse(bytes.NewReader(file))
+	if err != nil {
+		return
 	}
 
-	cssRegexp := regexp.MustCompile(`<link href="(.*)" rel="stylesheet">`)
-	cssListData := cssRegexp.FindStringSubmatch(string(file))
-	if len(cssListData) == 2 {
-		css = cssListData[1]
+	attr := func(n *html.Node, key string) (string, bool) {
+		for _, a := range n.Attr {
+			if a.Key == key {
+				return a.Val, true
+			}
+		}
+		return "", false
 	}
+	isStylesheet := func(n *html.Node) bool {
+		rel, ok := attr(n, "rel")
+		if !ok {
+			return false
+		}
+		for tok := range strings.FieldsSeq(rel) {
+			if strings.EqualFold(tok, "stylesheet") {
+				return true
+			}
+		}
+		return false
+	}
+
+	var walk func(*html.Node)
+	walk = func(n *html.Node) {
+		if n.Type == html.ElementNode {
+			switch n.Data {
+			case "script":
+				if src, ok := attr(n, "src"); ok && src != "" {
+					script = append(script, src)
+				}
+			case "link":
+				if isStylesheet(n) {
+					if href, ok := attr(n, "href"); ok && href != "" {
+						css = append(css, href)
+					}
+				}
+			}
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			walk(c)
+		}
+	}
+	walk(doc)
 	return
 }
 func (tc *TemplateController) SiteInfo(ctx *gin.Context) *schema.TemplateSiteInfoResp {
@@ -560,7 +605,7 @@ func (tc *TemplateController) Page404(ctx *gin.Context) {
 
 func (tc *TemplateController) html(ctx *gin.Context, code int, tpl string, siteInfo *schema.TemplateSiteInfoResp, data gin.H) {
 	prefix := ""
-	cssPath := ""
+	cssPath := make([]string, len(tc.cssPath))
 	scriptPath := make([]string, len(tc.scriptPath))
 
 	_ = plugin.CallCDN(func(fn plugin.CDN) error {
@@ -572,7 +617,9 @@ func (tc *TemplateController) html(ctx *gin.Context, code int, tpl string, siteI
 		if prefix[len(prefix)-1:] == "/" {
 			prefix = strings.TrimSuffix(prefix, "/")
 		}
-		cssPath = prefix + tc.cssPath
+		for i, path := range tc.cssPath {
+			cssPath[i] = prefix + path
+		}
 		for i, path := range tc.scriptPath {
 			scriptPath[i] = prefix + path
 		}

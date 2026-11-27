@@ -1,5 +1,4 @@
 public
-config-overrides.js
 commitlint.config.js
 build
 .eslintrc.js
