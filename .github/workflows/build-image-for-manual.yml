@@ -47,15 +47,17 @@ jobs:
       run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login --username "${{ secrets.DOCKERHUB_USER }}" --password-stdin
 
     - name: Build and push
+      env:
+        IMAGE_TAG: ${{ inputs.tag_name }}
       run: |
         BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
         docker buildx build \
           --file ./Dockerfile \
           --platform linux/amd64,linux/arm64 \
           --push \
-          --tag "apache/answer:${{ inputs.tag_name }}" \
+          --tag "apache/answer:${IMAGE_TAG}" \
           --label org.opencontainers.image.created="${BUILD_DATE}" \
           --label org.opencontainers.image.revision="${GITHUB_SHA}" \
           --label org.opencontainers.image.source="https://github.com/${GITHUB_REPOSITORY}" \
-          --label org.opencontainers.image.version="${{ inputs.tag_name }}" \
+          --label org.opencontainers.image.version="${IMAGE_TAG}" \
           .
